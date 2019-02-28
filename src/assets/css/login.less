@@ -1,0 +1,167 @@
+@import './common.less';
+#login{
+  height: 100%;
+  position: relative;
+  font-family: 'systemfont';
+  background-image: url('../image/login/background.png');
+  background-size: 100% 100%;
+  .loginCtn{
+    width: 760px;
+    height: 640px;
+    position: absolute;
+    right: 0;
+    left: 0;
+    top: 0;
+    bottom: 80px;
+    margin: auto;
+    .enterpriseInfo{
+      img{
+        display: block;
+        width: 96px;
+        margin: 12px auto;
+      }
+      span{
+        display: block;
+        font-size:30px;
+        font-weight: 500;
+        text-align: center;
+        line-height: 46px;
+        margin-bottom: 40px;
+        color:rgba(254,254,254,1);
+        letter-spacing: 1px;
+      }
+    }
+    .main{
+      height: 440px;
+      background:rgba(255,255,255,0.5);
+      border-radius:2px;
+      display: flex;
+      .atLeft{
+        flex: 1;
+        border-right: 1px solid #B5B5B5;
+        .enterpriseImg{
+          height: 104px;
+          margin: 104px auto 36px;
+          position: relative;
+          img{
+            display: block;
+            height: 104px;
+            width: 104px;
+            margin: auto;
+            border-radius: 50%;
+          }
+          span{
+            position: absolute;
+            left: calc(50% + 52px);
+            line-height: 34px;
+            bottom: -17px;
+            color: #666666;
+          }
+        }
+        .enterpriseName{
+          text-align: center;
+          font-size:20px;
+          color: #444444;
+          font-weight: 500;
+          line-height: 46px;
+        }
+        .time{
+          font-size: 14px;
+          margin: 30px 0;
+          text-align: center;
+          line-height: 30px;
+        }
+      }
+      .atRight{
+        flex: 1;
+        .title{
+          font-size: 22px;
+          text-align: center;
+          margin: 40px 0 32px;
+          font-weight:500;
+        }
+        .inputCtn{
+          width: 264px;
+          height: 34px;
+          margin: 20px auto;
+          display: flex;
+          .icon{
+            width: 40px;
+            height: 100%;
+            background: #10AEF5;
+            border-radius: 2px;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            position: relative;
+            img{
+              position: absolute;
+              right: 0;
+              left: 0;
+              top: 0;
+              bottom: 0;
+              margin: auto;
+            }
+          }
+          input{
+            flex: 1;
+            padding: 0 10px;
+            font-size: 12px;
+            border:0;
+            border-radius: 2px;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            &:focus{
+              border:0;
+              outline: 2px solid #10AEF5;
+            }
+            &::-webkit-input-placeholder{
+              color:#CCCCCC;
+            }
+          }
+        }
+        .oprCtn{
+          display: flex;
+          font-size: 14px;
+          width: 264px;
+          height: 30px;
+          margin: 20px auto;
+          justify-content: space-between;
+          .forgotPsd{
+            text-decoration:underline;
+            &:hover{
+              cursor: pointer;
+            }
+          }
+        }
+        .loginBtn{
+          width: 264px;
+          line-height: 34px;
+          margin: auto;
+          text-align: center;
+          background:linear-gradient(-5deg,rgba(46,141,234,1),rgba(16,174,245,1));
+          font-size: 18px;
+          color: #ffffff;
+          border-radius: 2px;
+          cursor: pointer;
+        }
+        .regCtn{
+          width: 264px;
+          line-height: 34px;
+          margin: 24px auto;
+          display: flex;
+          justify-content: space-between;
+          .reg{
+            width: 110px;
+            background: #ffffff;
+            text-align: center;
+            color: #555555;
+            font-size: 14px;
+            font-weight:300;
+            cursor: pointer;
+            border-radius: 2px;
+          }
+        }
+      }
+    }
+  }
+}
