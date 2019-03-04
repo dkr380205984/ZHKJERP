@@ -31,6 +31,31 @@
     margin: auto;
     background: rgba(236,240,241,1);
     box-shadow:0px 2px 4px 0px rgba(0, 0, 0, 0.23);
+    .stepCtn{
+      overflow: hidden;
+      height: 484px;
+      .steps{
+        width: 200%;
+        display: flex;
+        transition: 0.5s;
+        &.atStep1{
+          transform: translate(0)
+        }
+        &.atStep2{
+          transform: translateX(-760px)
+        }
+        .stepOnce{
+          flex: 1;
+        }
+        .step2{
+          .inputCtn{
+            &:nth-child(1){
+              margin-top: 100px;
+            }
+          }
+        }
+      }
+    }
     .title{
       font-size: 22px;
       line-height: 80px;
@@ -44,9 +69,6 @@
       height: 40px;
       margin: 32px auto;
       display: flex;
-      &:nth-of-type(2){
-        margin-top: 70px;
-      }
       .label{
         width: 6em;
         line-height: 40px;
@@ -100,10 +122,30 @@
         background: @hoverBlue;
       }
     }
+    .btnCtn{
+      width: 270px;
+      margin: auto;
+      display: flex;
+      justify-content: space-around;
+      margin: 60px auto 20px;
+      .btn{
+        width: 120px;
+        line-height:36px;
+        font-size: 18px;
+        text-align: center;
+        background: @normalBlue;
+        border-radius:2px;
+        cursor: pointer;
+        color: #FFFFFF;
+        &:hover{
+          background: @hoverBlue;
+        }
+      }
+    }
     .goBack{
       position: absolute;
       left: 50px;
-      bottom: 50px;
+      bottom: 35px;
       line-height: 40px;
       background-image: url('../image/register/left.png');
       background-position: left center;
