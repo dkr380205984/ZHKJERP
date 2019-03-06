@@ -23,6 +23,15 @@ export default new Router({
       path: '/changePsd',
       name: 'changePsd',
       component: () => import('./views/changePsd.vue')
+    }, {
+      path: '/index',
+      name: 'index',
+      component: () => import('./views/index.vue'),
+      children: [{
+        path: 'productCreate',
+        name: 'productCreate',
+        component: () => import('./views/product/productCreate.vue')
+      }]
     }
   ]
 })

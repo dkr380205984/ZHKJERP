@@ -1,0 +1,92 @@
+@import './common.less';
+#index{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  font-family: 'systemfont';
+  .mainCtn{
+    flex: 1;
+    display: flex;
+    background: @gray;
+    .menuCtn{
+      width: 205px;
+      overflow: hidden;
+      &:hover{
+        overflow: auto;
+      }
+      .menuCtnForScroll{
+        min-height: 100%;
+        width: 200px;
+        display: flex;
+        flex-direction: column;
+        .myMenu{
+          flex: 1;
+          border-right: 0;
+        }
+        .el-menu-item{
+          background: #252E41!important;
+          &.is-active{
+            background: #1A95FF!important;
+          }
+          &:hover{
+            background: #006BAC!important;
+          }
+        }
+      }
+    }
+    .contentCtn{
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      .breadCtn{
+        margin-top: 1px;
+        height: 40px;
+        background: @white;
+        position: relative;
+        font-size: @fontMid;
+        line-height: 40px;
+        padding-left: 15px;
+        &::before{
+          content: '';
+          position: absolute;
+          left: -5px;
+          width: 5px;
+          height: 100%;
+          background: #ffffff;
+        }
+        .father{
+          color:@fontGray;
+          cursor: pointer;
+          &:hover{
+            color:@blue;
+          }
+        }
+        .break{
+          color:@fontGray;
+          margin: 0 10px;
+        }
+        .now{
+          color: @fontNormal;
+          cursor: pointer;
+          &:hover{
+            color:@blue;
+          }
+        }
+      }
+      .mainCtn{
+        flex: 1;
+        margin: 10px 0 0 5px;
+        background: @white;
+        overflow: hidden;
+        display: flex;
+        &:hover{
+          overflow: auto;
+        }
+        .mainCtnForScroll{
+          flex: 1;
+          margin-right: 5px;
+        }
+      }
+    }
+  }
+}
