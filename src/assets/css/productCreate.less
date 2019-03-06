@@ -1,0 +1,99 @@
+@import './common.less';
+#productCreate{
+  height: 100%;
+  font-family: 'systemfont';
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  .head{
+    height: 60px;
+    border-bottom: 1px solid #ECF0F1;
+    padding: 20px 40px;
+    h2{
+      line-height: 60px;
+      margin: 0;
+      font-size: 24px;
+      color:@fontNormal;
+    }
+  }
+  .body{
+    padding: 20px 40px;
+    flex: 1;
+    .inputCtn{
+      min-height: 40px;
+      margin:24px 0;
+      display: flex;
+      flex-wrap: wrap;
+      padding-left: 6em;
+      position: relative;
+      .label{
+        position: absolute;
+        width: 6em;
+        line-height: 40px;
+        text-align: right;
+        font-size: 16px;
+        color: #666666;
+        left: 0;
+      }
+      .ascaderCtn{
+        width: 400px;
+        margin-left: 15px;
+        .el-cascader{
+          width: 100%;
+        }
+      }
+      .elInput{
+        line-height: 38px;
+        margin-left: 15px;
+        width: 400px;
+        color: @fontNormal;
+      }
+      .elInputAp{
+        line-height: 38px;
+        margin-left: 15px;
+        width: 250px;
+        color: @fontNormal;
+        margin-bottom: 24px;
+      }
+      .elSelect{
+        line-height: 38px;
+        margin-left: 15px;
+        width: 200px;
+        color: @fontNormal;
+        margin-bottom:24px;
+      }
+      .addBtn{
+        padding: 0 18px;
+        height: 40px;
+        line-height: 40px;
+        background: #1A95FF;
+        border-radius: 2px;
+        margin-left: 15px;
+        cursor: pointer;
+        color: white;
+        span{
+          font-size: 16px;
+          &:nth-child(2){
+            margin-left: 5px;
+            font-size: 20px;
+            vertical-align: -1px;;
+          }
+        }
+      }
+      .upload-demo{
+        margin-left: 15px;
+      }
+      .textarea{
+        margin-left: 15px;
+        width: 400px;
+      }
+    }
+    .btnCtn{
+      display: flex;
+      padding-left: 6em;
+      justify-content: space-around;
+      width: 400px;
+      margin-top: 40px;
+    }
+  }
+}

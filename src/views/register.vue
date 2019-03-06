@@ -72,12 +72,15 @@
 </template>
 
 <script>
+import { register } from '@/assets/js/api.js'
 export default {
   data () {
     return {
       time: '发送验证码',
       timer: '',
       yzmNum: 60,
+      telephone: '',
+      password: '',
       types: '工厂职工',
       step: 1,
       typesArr: [{
@@ -114,6 +117,15 @@ export default {
           this.timer = ''
         }
       }, 1000)
+    },
+    goRegister () {
+      let _this = this
+      register({
+        telephone: _this.telephone,
+        password: _this.password
+      }).then((res) => {
+        console.log(res)
+      })
     }
   }
 }
