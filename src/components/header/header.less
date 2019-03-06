@@ -1,0 +1,77 @@
+
+@font-face{
+  font-family: 'systemfont';
+  src: url('../../assets/font/DroidSansChinese.ttf'); 
+}
+.headerCompt{
+  height: 50px;
+  display: flex;
+  font-family: 'systemfont';
+  .cmpCtn{
+    width: 200px;
+    background: #1A95FF;
+    display: flex;
+    align-items: center;
+    .cmpLogo{
+      width: 24px;
+      height: 24px;
+      margin: 0 8px 0 12px;
+    }
+    .cmpName{
+      font-size: 16px;
+      color: #fff;
+      text-align: center;
+    }
+  }
+  .menuCtn{
+    flex: 1;
+    box-shadow:0px 1px 1px 0px rgba(0, 0, 0, 0.08);
+    display: flex;
+    justify-content: space-between;
+    padding: 0 12px;
+    .menuLeft{
+      display: flex;
+      align-items: center;
+      .el-icon-refresh{
+        font-size: 24px;
+        margin-right: 12px;
+        cursor: pointer;
+        &:hover{
+          color:#1A95FF;
+        }
+      }
+      .search{
+        width: 228px;
+        line-height: 40px;
+        padding: 0 12px;
+        background: #ECF0F1;
+        border:0;
+        border-radius: 2px;
+        font-size: 14px;
+      }
+    }
+    .menuRight{
+      display: flex;
+      align-items: center;
+      .el-icon-setting{
+        font-size: 24px;
+        margin-right: 12px;
+        cursor: pointer;
+        &:hover{
+          color:#1A95FF;
+        }
+      }
+      .item{
+        margin-right: 30px;
+      }
+      .el-icon-bell{
+        font-size: 24px;
+        cursor: pointer;
+      }
+      .el-dropdown{
+        font-family: 'systemfont';
+        font-size: 16px;
+      }
+    }
+  }
+}
