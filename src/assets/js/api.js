@@ -8,4 +8,6 @@ const register = (params) => http.post(`${baseUrl}/auth/register`, params, 'appl
 const sendCode = (params) => http.post(`${baseUrl}/auth/send_code`, params, 'application/json')
 // 获取图片上传验证
 const getToken = () => http.get(`${baseUrl}/upload/token`)
-export { login, register, sendCode, getToken }
+// 修改密码
+const updatePsd = (params) => http.post(`${baseUrl}/auth/reset_pass`, params, 'application/json')
+export { login, register, sendCode, getToken, updatePsd }

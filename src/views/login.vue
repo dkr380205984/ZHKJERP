@@ -34,7 +34,7 @@
           <input type="text" placeholder="请输入手机号" v-model="telephone"/>
         </div>
         <div class="inputCtn">
-          <input type="text" placeholder="请输入密码" v-model="password"/>
+          <input type="password" placeholder="请输入密码" v-model="password"/>
         </div>
         <div class="psdOp">
           <el-checkbox v-model="remPsd">记住密码</el-checkbox>

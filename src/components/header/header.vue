@@ -6,9 +6,8 @@
     </div>
     <div class="menuCtn">
       <div class="menuLeft">
-        <!-- <i class="el-icon-back"></i> -->
-        <span class="goBack" @click="$router.push('/index')">缺一个返回首页的按钮</span>
-        <!-- <input class="search" placeholder="搜索..." /> -->
+        <div class="home" @click="goHome"></div>
+        <i class="el-icon-refresh"></i>
       </div>
       <div class="menuRight">
         <el-badge :value="200" :max="99" class="item">
@@ -42,6 +41,9 @@ export default {
         // 这里刷新页面是为了解决左侧导航栏不能刷新的问题
         window.location.replace('/index/personManage')
       }
+    },
+    goHome () {
+      window.location.replace('/index')
     }
   }
 }
