@@ -1,5 +1,6 @@
 <template>
   <div id="login">
+    <!-- 背景组件 -->
     <vue-particles
       color="#fff"
       :particleOpacity="0.7"
@@ -40,7 +41,7 @@
           <div class="fogotPsd" @click="$router.push('/changePsd')">忘记密码？</div>
         </div>
         <div class="loginBtn" @click="goLogin">登录</div>
-        <div class="regBtn" @click="$router.push('/register')">注册账号</div>
+        <div class="regBtn" @click="goRegister">注册账号</div>
       </div>
     </div>
   </div>
@@ -60,6 +61,7 @@ export default {
     }
   },
   methods: {
+    // 登录
     goLogin () {
       let _this = this
       login({
@@ -78,6 +80,12 @@ export default {
           })
           _this.password = ''
         }
+      })
+    },
+    // 注册
+    goRegister () {
+      Message.warning({
+        message: '注册功能暂不开放'
       })
     }
   },

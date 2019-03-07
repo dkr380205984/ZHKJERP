@@ -53,8 +53,8 @@
             :key="item.value"
             :label="item.label"
             :value="item.value">
-            <span style="float: left">{{ item.label }}</span>
-            <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
+            <div class="bgBlock" :style="{'background':item.color}"></div>
+            <div class="desc">{{item.label}}</div>
           </el-option>
         </el-select>
         <div class="addBtn" @click="colorNum++">
@@ -113,22 +113,28 @@ export default {
       value6: '',
       cities: [{
         value: 'Beijing',
-        label: '北京'
+        label: '红色',
+        color: '#ff0000'
       }, {
         value: 'Shanghai',
-        label: '上海'
+        label: '绿色',
+        color: '#00ff00'
       }, {
         value: 'Nanjing',
-        label: '南京'
+        label: '蓝色',
+        color: '#0000ff'
       }, {
         value: 'Chengdu',
-        label: '成都'
+        label: '黄色',
+        color: '#ffff00'
       }, {
         value: 'Shenzhen',
-        label: '深圳'
+        label: '紫色',
+        color: '#ff00ff'
       }, {
         value: 'Guangzhou',
-        label: '广州'
+        label: '浅蓝色',
+        color: '#00ffff'
       }],
       colorArr: [],
       colorNum: 1,

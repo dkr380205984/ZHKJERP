@@ -45,4 +45,14 @@ html,body{
     background: #006BAC!important;
   }
 }
+// 颜色下拉选择框的样式
+.el-select-dropdown__item{
+  display: flex;
+  align-items: center;
+  .bgBlock{
+    width: 40px;
+    height: 20px;
+    margin-right: 10px;
+  }
+}
 </style>
