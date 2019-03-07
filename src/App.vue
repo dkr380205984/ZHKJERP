@@ -8,6 +8,8 @@
 html,body{
   margin: 0;
   height: 100%;
+  min-width: 1366px;
+  overflow-x: auto;
 }
 #app{
   height: 100%;
