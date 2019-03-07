@@ -8,214 +8,214 @@ const menu = [{
     url: '/index/productCreate'
   }, {
     name: '产品列表',
-    url: ''
+    url: '/index/productList'
   }, {
     name: '添加样品订单',
-    url: ''
+    url: '/index/sampleCreate'
   }, {
     name: '样单统计',
-    url: ''
+    url: '/index/sampleList'
   } ]
 }, {
   name: '订单管理',
   children: [{
     name: '添加新订单',
-    url: ''
+    url: '/index/null'
   }, {
     name: '订单列表',
-    url: ''
+    url: '/index/null'
   }, {
     name: '订单统计列表',
-    url: ''
+    url: '/index/null'
   }, {
     name: '订单统计',
-    url: ''
+    url: '/index/null'
   }]
 }, {
   name: '原料管理',
   children: [{
     name: '原料订购',
-    url: ''
+    url: '/index/null'
   }, {
     name: '原料订购列表',
-    url: ''
+    url: '/index/null'
   }, {
     name: '原料库存列表',
-    url: ''
+    url: '/index/null'
   }, {
     name: '原料库存添加',
-    url: ''
+    url: '/index/null'
   }, {
     name: '原料价格表',
-    url: ''
+    url: '/index/null'
   }, {
     name: '新建原料计划单',
-    url: ''
+    url: '/index/null'
   }, {
     name: '新建染色计划单',
-    url: ''
+    url: '/index/null'
   }, {
     name: '新建倒纱计划单',
-    url: ''
+    url: '/index/null'
   }, {
     name: '原料计划列表',
-    url: ''
+    url: '/index/null'
   }, {
     name: '染色计划列表',
-    url: ''
+    url: '/index/null'
   }, {
     name: '倒纱计划列表',
-    url: ''
+    url: '/index/null'
   }, {
     name: '原料出库列表',
-    url: ''
+    url: '/index/null'
   }, {
     name: '原料统计',
-    url: ''
+    url: '/index/null'
   }]
 }, {
   name: '辅料管理',
   children: [{
     name: '辅料订购',
-    url: ''
+    url: '/index/null'
   }, {
     name: '辅料订购列表',
-    url: ''
+    url: '/index/null'
   }, {
     name: '辅料库存列表',
-    url: ''
+    url: '/index/null'
   }, {
     name: '辅料库存添加',
-    url: ''
+    url: '/index/null'
   }, {
     name: '新建辅料计划单',
-    url: ''
+    url: '/index/null'
   }, {
     name: '辅料计划单列表',
-    url: ''
+    url: '/index/null'
   }, {
     name: '辅料统计',
-    url: ''
+    url: '/index/null'
   } ]
 }, {
   name: '生产管理',
   children: [{
     name: '新建生产计划单',
-    url: ''
+    url: '/index/null'
   }, {
     name: '生产计划列表',
-    url: ''
+    url: '/index/null'
   }, {
     name: '更新生产计划单',
-    url: ''
+    url: '/index/null'
   }, {
     name: '生产补纱',
-    url: ''
+    url: '/index/null'
   }, {
     name: '生产统计',
-    url: ''
+    url: '/index/null'
   }]
 }, {
   name: '半成品管理',
   children: [{
     name: '半成品入库',
-    url: ''
+    url: '/index/null'
   }, {
     name: '半成品入库列表',
-    url: ''
+    url: '/index/null'
   }, {
     name: '半成品检验统计',
-    url: ''
+    url: '/index/null'
   }, {
     name: '半成品检验列表',
-    url: ''
+    url: '/index/null'
   }, {
     name: '半成品出库',
-    url: ''
+    url: '/index/null'
   }, {
     name: '半成品出库列表',
-    url: ''
+    url: '/index/null'
   }]
 }, {
   name: '外道加工管理',
   children: [{
     name: '新建外道加工计划单',
-    url: ''
+    url: '/index/null'
   }, {
     name: '外道加工计划列表',
-    url: ''
+    url: '/index/null'
   }, {
     name: '更新外道加工计划单',
-    url: ''
+    url: '/index/null'
   }, {
     name: '外道加工统计',
-    url: ''
+    url: '/index/null'
   }]
 }, {
   name: '成品管理',
   children: [{
     name: '成品入库',
-    url: ''
+    url: '/index/null'
   }, {
     name: '成品入库列表',
-    url: ''
+    url: '/index/null'
   }, {
     name: '成品检验统计',
-    url: ''
+    url: '/index/null'
   }, {
     name: '更新计划出库计划单',
-    url: ''
+    url: '/index/null'
   }]
 }, {
   name: '装箱出库管理',
   children: [{
     name: '装箱统计',
-    url: ''
+    url: '/index/null'
   }, {
     name: '装箱统计列表',
-    url: ''
+    url: '/index/null'
   }, {
     name: '新建订单出库计划单',
-    url: ''
+    url: '/index/null'
   }, {
     name: '订单出库统计',
-    url: ''
+    url: '/index/null'
   }, {
     name: '更新订单出库计划单',
-    url: ''
+    url: '/index/null'
   }]
 }, {
   name: '财务管理',
   children: [{
     name: '原料财务管理',
-    url: ''
+    url: '/index/null'
   }, {
     name: '辅料财务管理',
-    url: ''
+    url: '/index/null'
   }, {
     name: '生产财务管理',
-    url: ''
+    url: '/index/null'
   }, {
     name: '半成品财务管理',
-    url: ''
+    url: '/index/null'
   }, {
     name: '外道加工财务管理',
-    url: ''
+    url: '/index/null'
   }, {
     name: '成品财务管理',
-    url: ''
+    url: '/index/null'
   }, {
     name: '订单财务管理',
-    url: ''
+    url: '/index/null'
   }, {
     name: '订单财务统计',
-    url: ''
+    url: '/index/null'
   }, {
     name: '人力财务管理',
-    url: ''
+    url: '/index/null'
   }, {
     name: '公司财务统计',
-    url: ''
+    url: '/index/null'
   }]
 }]
 // 产品品类
