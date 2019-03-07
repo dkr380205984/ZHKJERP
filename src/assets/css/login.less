@@ -42,7 +42,7 @@
     .atRight{
       width: 380px;
       height: 440px;
-      background:rgba(236,240,241,1);
+      background:@gray;
       box-shadow:0px 2px 4px 0px rgba(0, 0, 0, 0.35);
       position: absolute;
       right: 30px;
@@ -59,17 +59,19 @@
         right: 0;
         top: -60px;
         line-height: 50px;
-        font-weight: 500;
+        font-weight:bold;
         color: #ECF0F1;
         font-size: @fontTitle;
         text-align: center;
+        letter-spacing: 1px;
       }
       .welcome{
         line-height: 30px;
         font-size: @fontSubhead;
         text-align: center;
-        margin: 44px 0 12px 0;
+        margin: 44px 0 30px 0;
         color: @fontNormal;
+        font-weight:bold;
       }
       .inputCtn{
         height: 40px;
@@ -82,6 +84,7 @@
           border: 1px solid #f7f7f7;
           border-radius: 2px;
           font-size: @fontBig;
+          font-family: 'systemfont';
           &:hover{
             border-color: #ddd;
           }
