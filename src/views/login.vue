@@ -108,11 +108,18 @@ export default {
     padding-left:4px;
   }
   .el-checkbox__input.is-checked .el-checkbox__inner, .el-checkbox__input.is-indeterminate .el-checkbox__inner{
-    border-color:#CEDDEF!important;
-    background-color: #CEDDEF;
+    border-color:#fff!important;
+    background-color: #fff;
     &:hover{
-      border-color:#CEDDEF!important;
+      border-color:#fff!important;
     }
+  }
+  .el-checkbox__inner::after{
+    border-color:#888;
+    border-width:2px;
+  }
+  .el-checkbox__inner:hover{
+    border-color:#fff;
   }
 }
 </style>
