@@ -31,6 +31,22 @@ export default new Router({
         path: 'productCreate',
         name: 'productCreate',
         component: () => import('./views/product/productCreate.vue')
+      }, {
+        path: 'productList',
+        name: 'productList',
+        component: () => import('./views/product/productList.vue')
+      }, {
+        path: 'sampleCreate',
+        name: 'sampleCreate',
+        component: () => import('./views/product/sampleCreate.vue')
+      }, {
+        path: 'sampleList',
+        name: 'sampleList',
+        component: () => import('./views/product/sampleList.vue')
+      }, {
+        path: 'personManage',
+        name: 'personManage',
+        component: () => import('./views/self/personManage.vue')
       }]
     }
   ]

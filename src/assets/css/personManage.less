@@ -1,0 +1,137 @@
+@import './common.less';
+#personManage{
+  height: 100%;
+  font-family: 'systemfont';
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  .head{
+    height: 60px;
+    border-bottom: 1px solid #ECF0F1;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    h2{
+      line-height: 60px;
+      margin: 0;
+      font-size: 24px;
+      color:@fontNormal;
+    }
+    .rightMenu{
+      display: flex;
+      align-items: center;
+      .el-select{
+        margin: 0 20px;
+        width: 200px;
+      }
+      .el-input{
+        width: 230px;
+        margin: 0 20px;
+      }
+      .addBtn{
+        padding: 0 18px;
+        height: 40px;
+        line-height: 40px;
+        background: #1A95FF;
+        border-radius: 2px;
+        margin-left: 15px;
+        cursor: pointer;
+        color: white;
+        span{
+          font-size: 16px;
+          &:nth-child(2){
+            margin-left: 5px;
+            font-size: 20px;
+            vertical-align: -1px;;
+          }
+        }
+      }
+    }
+  }
+  .body{
+    padding: 20px 40px;
+    flex: 1;
+  
+  }
+  .shade{
+    position: fixed;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0,0,0,0.8);
+    .main{
+      position: absolute;
+      width: 640px;
+      height: 540px;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      margin: auto;
+      background: #ffffff;
+      overflow: hidden;
+      border-radius: 4px;
+      .close{
+        position: absolute;
+        right: -30px;
+        top: -30px;
+        width: 60px;
+        height: 60px;
+        background: @blue;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: 0.1s;
+        color: #ECF0F1;
+        &:hover{
+          transform: scale(1.1);
+          color: #ffffff;
+          background: #1A95FF;
+        }
+        .icon{
+          position: absolute;
+          left: 15px;
+          bottom: 7px;
+          font-size: 16px;
+          font-weight: bold;
+        }
+      }
+      .title{
+        line-height: 66px;
+        font-size: @fontSubhead;
+        padding: 0 20px;
+        background: linear-gradient(to right,#5893D4,#CEDDEF);
+        border-radius: 4px;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+      .inputCtn{
+        margin: 20px;
+        position: relative;
+        font-size: @fontNormal;
+        padding-left: 5em;
+        height: 40px;
+        line-height: 40px;
+        .label{
+          position: absolute;
+          left: 0;
+          text-align: right;
+          width: 5em;
+        }
+        .elCtn{
+          margin-left: 15px;
+          width: 400px;
+        }
+      }
+      .btnCtn{
+        margin-top: 40px;
+        display: flex;
+        justify-content: center;
+        .okBtn{
+          margin: 0 30px;
+        }
+      }
+    }
+  }
+}
