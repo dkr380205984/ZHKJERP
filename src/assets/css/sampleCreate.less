@@ -1,0 +1,46 @@
+@import './common.less';
+#sampleCreate{
+  height: 100%;
+  font-family: 'systemfont';
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  .head{
+    height: 60px;
+    border-bottom: 1px solid #ECF0F1;
+    padding: 20px 40px;
+    h2{
+      line-height: 60px;
+      margin: 0;
+      font-size: 24px;
+      color:@fontNormal;
+    }
+  }
+  .body{
+    padding: 20px 40px;
+    flex: 1;
+    .inputCtn{
+      min-height: 40px;
+      margin:24px 0;
+      display: flex;
+      flex-wrap: wrap;
+      padding-left: 6em;
+      position: relative;
+      .label{
+        position: absolute;
+        width: 6em;
+        line-height: 40px;
+        text-align: right;
+        font-size: 16px;
+        color: #666666;
+        left: 0;
+      }
+      .elInput{
+        line-height: 38px;
+        margin-left: 15px;
+        width: 400px;
+        color: @fontNormal;
+      }
+    }
+  }
+}

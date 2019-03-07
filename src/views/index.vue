@@ -46,8 +46,12 @@ export default {
       menu: menu
     }
   },
+
+  methods: {
+
+  },
   created () {
-    console.log(this.$route.path)
+
   }
 }
 </script>
