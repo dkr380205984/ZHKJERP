@@ -31,10 +31,10 @@
         <div class="title">织慧科技订单管理系统</div>
         <div class="welcome">欢迎登录</div>
         <div class="inputCtn">
-          <input type="text" placeholder="请输入手机号" v-model="telephone"/>
+          <input type="text" placeholder="请输入手机号" v-model="telephone" @keydown.enter="goLogin"/>
         </div>
         <div class="inputCtn">
-          <input type="password" placeholder="请输入密码" v-model="password"/>
+          <input type="password" placeholder="请输入密码" v-model="password" @keydown.enter="goLogin"/>
         </div>
         <div class="psdOp">
           <el-checkbox v-model="remPsd">记住密码</el-checkbox>
@@ -54,8 +54,8 @@ export default {
   name: 'home',
   data () {
     return {
-      telephone: '',
-      password: '',
+      telephone: window.localStorage.getItem('zhUsername'),
+      password: window.localStorage.getItem('zhPassword'),
       remPsd: true,
       picArr: [require('../assets/image/login/rotation1.png'), require('../assets/image/login/rotation1.png'), require('../assets/image/login/rotation1.png')]
     }
@@ -75,6 +75,12 @@ export default {
           })
           window.sessionStorage.setItem('user_id', res.data.data.id)
           window.sessionStorage.setItem('company_id', res.data.data.company_id)
+          window.localStorage.setItem('zhUsername', _this.telephone)
+          if (_this.remPsd) {
+            window.localStorage.setItem('zhPassword', _this.password)
+          } else {
+            window.localStorage.setItem('zhPassword', '')
+          }
           _this.$router.push('/index')
         } else {
           Message.error({
