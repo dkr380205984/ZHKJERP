@@ -3,6 +3,7 @@
   height: 100%;
   position: relative;
   font-family: 'systemfont';
+  font-weight: 300;
   background-image: url('../image/login/background.png');
   background-size: 100% 100%;
   font-size: 0;
@@ -59,7 +60,7 @@
         right: 0;
         top: -60px;
         line-height: 50px;
-        font-weight:bold;
+        font-weight:500;
         color: #ECF0F1;
         font-size: @fontTitle;
         text-align: center;
@@ -71,7 +72,7 @@
         text-align: center;
         margin: 44px 0 30px 0;
         color: @fontNormal;
-        font-weight:bold;
+        font-weight:500;
       }
       .inputCtn{
         height: 40px;
@@ -93,6 +94,8 @@
           }
           &::-webkit-input-placeholder{
             color:@placeholderColor;
+            font-weight: 200;
+            font-size: @fontMid;
           }
         }
       }

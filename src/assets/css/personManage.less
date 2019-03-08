@@ -2,6 +2,7 @@
 #personManage{
   height: 100%;
   font-family: 'systemfont';
+  font-weight: 300;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -17,42 +18,58 @@
       margin: 0;
       font-size: 24px;
       color:@fontNormal;
-    }
-    .rightMenu{
-      display: flex;
-      align-items: center;
-      .el-select{
-        margin: 0 20px;
-        width: 200px;
-      }
-      .el-input{
-        width: 230px;
-        margin: 0 20px;
-      }
-      .addBtn{
-        padding: 0 18px;
-        height: 40px;
-        line-height: 40px;
-        background: #1A95FF;
-        border-radius: 2px;
-        margin-left: 15px;
-        cursor: pointer;
-        color: white;
-        span{
-          font-size: 16px;
-          &:nth-child(2){
-            margin-left: 5px;
-            font-size: 20px;
-            vertical-align: -1px;;
-          }
-        }
-      }
+      font-weight: 400;
     }
   }
   .body{
     padding: 20px 40px;
     flex: 1;
-  
+    .filterMenu{
+      margin-bottom: 20px;
+      font-size: @fontBig;
+      .filterLine{
+        height: 60px;
+        display: flex;
+        align-items: center;
+        padding-left: 5em;
+        position: relative;
+        .label{
+          position: absolute;
+          line-height: 60px;
+          left: 0;
+          color:@fontNormal;
+        }
+        .el-tag{
+          font-size: @fontBig;
+          margin-right: 20px;
+        }
+      }
+      .selectLine{
+        height: 60px;
+        display: flex;
+        align-items: center;
+        padding-left: 5em;
+        position: relative;
+        justify-content: space-between;
+        .el-select{
+          margin: 0 20px;
+          width: 200px;
+        }
+        .el-input{
+          width: 230px;
+          margin: 0 20px 0 0;
+        }
+        .label{
+          position: absolute;
+          line-height: 60px;
+          left: 0;
+          color:@fontNormal;
+        }
+        .rightFilter{
+          display: flex;
+        }
+      }
+    }
   }
   .shade{
     position: fixed;
@@ -79,7 +96,7 @@
         top: -30px;
         width: 60px;
         height: 60px;
-        background: @blue;
+        background: @normalBlue;
         border-radius: 50%;
         cursor: pointer;
         transition: 0.1s;
@@ -87,7 +104,7 @@
         &:hover{
           transform: scale(1.1);
           color: #ffffff;
-          background: #1A95FF;
+          background: @hoverBlue;
         }
         .icon{
           position: absolute;
@@ -101,10 +118,12 @@
         line-height: 66px;
         font-size: @fontSubhead;
         padding: 0 20px;
-        background: linear-gradient(to right,#5893D4,#CEDDEF);
+        background: linear-gradient(to right,#1A95FF,#CEDDEF);
         border-radius: 4px;
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 0;
+        color: #ffffff;
+        margin-bottom: 40px;
       }
       .inputCtn{
         margin: 20px;
@@ -118,6 +137,13 @@
           left: 0;
           text-align: right;
           width: 5em;
+          color: #666;
+          em{
+            color:@error;
+            line-height: 40px;
+            margin-right: 2px;
+            vertical-align: -4px;
+          }
         }
         .elCtn{
           margin-left: 15px;

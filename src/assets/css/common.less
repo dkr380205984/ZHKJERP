@@ -1,6 +1,37 @@
 @font-face{
   font-family: 'systemfont';
-  src: url('../font/DroidSansChinese.ttf'); 
+  font-weight: 100;
+  src: url('../font/SourceHanSansCN-ExtraLight.otf'); 
+}
+@font-face{
+  font-family: 'systemfont';
+  font-weight: 200;
+  src: url('../font/SourceHanSansCN-Light.otf'); 
+}
+@font-face{
+  font-family: 'systemfont';
+  font-weight: 300;
+  src: url('../font/SourceHanSansCN-Normal.otf'); 
+}
+@font-face{
+  font-family: 'systemfont';
+  font-weight: 400;
+  src: url('../font/SourceHanSansCN-Regular.otf'); 
+}
+@font-face{
+  font-family: 'systemfont';
+  font-weight: 500;
+  src: url('../font/SourceHanSansCN-Medium.otf'); 
+}
+@font-face{
+  font-family: 'systemfont';
+  font-weight: 600;
+  src: url('../font/SourceHanSansCN-Bold.otf'); 
+}
+@font-face{
+  font-family: 'systemfont';
+  font-weight: 700;
+  src: url('../font/SourceHanSansCN-Heavy.otf'); 
 }
 // 色系
 @systemBlue:#10AEF5;
@@ -14,12 +45,16 @@
 @white:#FFFFFF;
 @gray:#ECF0F1;
 // 成功和失败
+@normal:#1A95FF;
+@warning:#E6A23C;
 @error:#F56C6C;
-@success:#42D59F;
+@success:#67c23a;
 // 输入框常态，选中，移入
-@inputNormal:#B5B5B5;
-@inputFocus:#5893D4;
-@inputHover:#303030;
+@inputNormal:#E6E6E6;
+@inputFocus:#1A95FF;
+@inputHover:#B5B5B5;
+@inputSuccess:#67C23A;
+@inputError:#F56C6C;
 // 主标题
 @fontTitle:30px;
 // 副标题
@@ -33,8 +68,8 @@
 @fontNormal:#666666;
 @fontGray:#888888;
 // 按钮样式
-@hoverBlue:#10AEF5;
-@normalBlue:#40BEF7;
+@hoverBlue:#48AAFF;
+@normalBlue:#1A95FF;
 // 常用线条颜色
 @borderGray:#AAAAAA;
 // 常用按钮
@@ -44,12 +79,15 @@
   line-height: 34px;
   padding: 0 30px;
   box-sizing: border-box;
-  color: #555555;
-  border:1px solid #B5B5B5;
+  color: #666666;
+  border:1px solid #AAAAAA;
   border-radius: 2px;
   font-family: 'systemfont';
-  letter-spacing: 4px;
   cursor: pointer;
+  &:hover{
+    border-color:#48AAFF;
+    color:#48AAFF;
+  }
 }
 .okBtn{
   font-size: 16px;
@@ -58,11 +96,17 @@
   padding: 0 30px;
   box-sizing: border-box;
   color: #ffffff;
-  background: #10AEF5;
+  background: @normalBlue;
   border-radius: 2px;
   font-family: 'systemfont';
-  letter-spacing: 4px;
   cursor: pointer;
+  &:hover{
+    background: @hoverBlue;
+  }
+}
+::-webkit-input-placeholder{
+  font-family: 'systemfont';
+  font-weight: 200;
 }
 // 表格样式部分
 .tableCtn{
@@ -76,21 +120,21 @@
     height: 60px;
     display: flex;
     &.titleTableRow{
-      color:#333;
-      font-weight: bold;
-      font-size: @fontBig;
+      color:#666;
+      font-weight: 400;
+      font-size: 18px;
       letter-spacing: 1px;
-      background: #f2f2f2!important;
+      background: #EEEEEE!important;
     }
     &.bodyTableRow{
       &:hover{
-        background: @lightBlue;
+        background: #D8EAFF;
       }
-      color: #333;
+      color: #666;
       font-size: @fontMid;
     }
     &:nth-child(2n-1){
-      background: #fcfcfc;
+      background: #FAFAFA;
     }
     .tableColumn{
       flex: 1;
@@ -110,6 +154,9 @@
         }
         &.warning{
           background: @yellow;
+        }
+        &.success{
+          background: @success;
         }
       }
       &.flex1{

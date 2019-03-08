@@ -21,7 +21,7 @@
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="personManage">人员管理</el-dropdown-item>
-              <el-dropdown-item divided>退出登录</el-dropdown-item>
+              <el-dropdown-item command="login" divided>退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -36,10 +36,11 @@ export default {
   methods: {
     commondHandler (cmd) {
       console.log(cmd)
-      if (cmd) {
-        // this.$router.push({ name: cmd })
+      if (cmd === 'personManage') {
         // 这里刷新页面是为了解决左侧导航栏不能刷新的问题
         window.location.replace('/index/personManage')
+      } else if (cmd === 'login') {
+        window.location.replace('/login')
       }
     },
     goHome () {

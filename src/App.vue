@@ -55,4 +55,44 @@ html,body{
     margin-right: 10px;
   }
 }
+// 定义所有elment输入框的样式
+.el-input__inner{
+  font-family: 'systemfont';
+  border-color: #E6E6E6!important;
+  color: #666!important;
+  &:hover{
+    border-color:#B5B5B5!important;;
+  }
+  &:focus{
+    border-color:#1A95FF!important;
+  }
+}
+.el-select-dropdown__wrap{
+  font-family: 'systemfont';
+  font-weight: 300;
+  color:#666;
+}
+.el-select-dropdown__item{
+  color: #666;
+}
+.el-select-dropdown__item.selected{
+  font-weight: 400!important;
+}
+// 修改分页组件的样式
+.el-pager{
+  font-family: 'systemfont';
+  font-weight: 400;
+}
+.el-pagination.is-background .el-pager li:not(.disabled).active{
+  background: #1A95FF!important;
+}
+// 消息提示框
+.el-message-box{
+  font-family: 'systemfont';
+  font-weight: 300;
+}
+.el-button{
+  font-family: 'systemfont';
+  font-weight: 300;
+}
 </style>

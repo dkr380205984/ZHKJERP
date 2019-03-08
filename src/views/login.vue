@@ -73,6 +73,8 @@ export default {
           Message.success({
             message: '登录成功'
           })
+          window.sessionStorage.setItem('user_id', res.data.data.id)
+          window.sessionStorage.setItem('company_id', res.data.data.company_id)
           _this.$router.push('/index')
         } else {
           Message.error({
@@ -90,6 +92,7 @@ export default {
     }
   },
   created () {
+    console.log(window.sessionStorage.getItem('user_id'))
   }
 }
 </script>

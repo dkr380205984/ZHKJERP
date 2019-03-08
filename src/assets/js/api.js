@@ -10,4 +10,18 @@ const sendCode = (params) => http.post(`${baseUrl}/auth/send_code`, params, 'app
 const getToken = () => http.get(`${baseUrl}/upload/token`)
 // 修改密码
 const updatePsd = (params) => http.post(`${baseUrl}/auth/reset_pass`, params, 'application/json')
-export { login, register, sendCode, getToken, updatePsd }
+// 添加岗位
+const addStation = (params) => http.post(`${baseUrl}/auth//station/add`, params, 'application/json')
+// 添加分组
+const addGroup = (params) => http.post(`${baseUrl}/auth//group/add`, params, 'application/json')
+// 获取岗位
+const getStation = (params) => http.get(`${baseUrl}/auth//station/all`, params)
+// 获取分组
+const getGroup = (params) => http.get(`${baseUrl}/auth//group/all`, params)
+// 添加员工账号
+const addAuth = (params) => http.post(`${baseUrl}/auth/add`, params, 'application/json')
+// 获取员工分组
+const authList = (params) => http.get(`${baseUrl}/auth//list`, params)
+// 禁用员工
+const banAuth = (params) => http.post(`${baseUrl}/auth/check_status`, params, 'application/json')
+export { login, register, sendCode, getToken, updatePsd, addStation, addGroup, getStation, getGroup, addAuth, authList, banAuth }
