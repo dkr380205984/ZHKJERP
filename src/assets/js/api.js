@@ -24,4 +24,32 @@ const addAuth = (params) => http.post(`${baseUrl}/auth/add`, params, 'applicatio
 const authList = (params) => http.get(`${baseUrl}/auth//list`, params)
 // 禁用员工
 const banAuth = (params) => http.post(`${baseUrl}/auth/check_status`, params, 'application/json')
-export { login, register, sendCode, getToken, updatePsd, addStation, addGroup, getStation, getGroup, addAuth, authList, banAuth }
+// 删除上传图片
+const deletePic = (params) => http.post(`${baseUrl}/upload/delete`, params, 'application/json')
+// 获取类型列表
+const productTppeList = (params) => http.get(`${baseUrl}/product/category/list`, params)
+// 添加产品类型
+const proproductTppeSave = (params) => http.post(`${baseUrl}/product/category/save`, params, 'application/json')
+// 获取花型列表
+const flowerList = (params) => http.get(`${baseUrl}/product/flower/list`, params)
+// 添加花型
+const saveFlower = (params) => http.post(`${baseUrl}/product/flower/save`, params, 'application/json')
+export {
+  login,
+  register,
+  sendCode,
+  getToken,
+  updatePsd,
+  addStation,
+  addGroup,
+  getStation,
+  getGroup,
+  addAuth,
+  authList,
+  banAuth,
+  deletePic,
+  productTppeList,
+  saveFlower,
+  flowerList,
+  proproductTppeSave
+}

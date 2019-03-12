@@ -20,11 +20,20 @@
         <span class="label">产品成分:</span>
         <el-input class="elInput"  placeholder="请输入产品成分"  v-model="value1" clearable></el-input>
       </div>
-      <div class="inputCtn">
-        <span class="label">产品花型:</span>
-        <el-input class="elInput"  placeholder="请输入产品花型"  v-model="value1" clearable></el-input>
-      </div>
       <div class="inputCtn" style="margin-bottom:0">
+        <span class="label">产品花型:</span>
+        <el-select style="width:400px" v-for="item in colorNum" :key="item" class="elSelect" v-model="colorArr[item]" placeholder="请选择颜色">
+          <el-option
+            v-for="item in cities"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+            <div class="bgBlock" :style="{'background':item.color}"></div>
+            <div class="desc">{{item.label}}</div>
+          </el-option>
+        </el-select>
+      </div>
+      <div class="inputCtn" style="margin-bottom:0;margin-top:4px">
         <span class="label">产品尺寸:</span>
         <el-input class="elInputAp" placeholder="请输入数字" v-model="value2">
           <template slot="prepend">长</template>
@@ -71,6 +80,7 @@
           :on-preview="handlePreview"
           :on-remove="handleRemove"
           :on-success="handleSuccess"
+           :before-upload="beforeAvatarUpload"
           :file-list="fileList2"
           :data = postData
           list-type="picture">
@@ -97,8 +107,8 @@
 </template>
 
 <script>
-import { productType } from '@/assets/js/dictionary.js'
-import { getToken } from '@/assets/js/api.js'
+import { productType, colorList } from '@/assets/js/dictionary.js'
+import { getToken, deletePic } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -139,7 +149,8 @@ export default {
       colorArr: [],
       colorNum: 1,
       fileList2: [],
-      textarea: ''
+      textarea: '',
+      colorList: colorList
     }
   },
   created () {
@@ -159,9 +170,28 @@ export default {
     },
     handleRemove (file, fileList) {
       console.log(file, fileList)
+      deletePic({
+        url: 'zhihui.tlkrzf.com/' + file.response.key
+      }).then((res) => {
+        console.log(res)
+      })
     },
     handlePreview (file) {
       console.log(file)
+    },
+    beforeAvatarUpload: function (file) {
+      this.postData.key = file.name
+      const isJPG = file.type === 'image/jpeg'
+      const isPNG = file.type === 'image/png'
+      const isLt2M = file.size / 1024 / 1024 < 2
+      if (!isJPG && !isPNG) {
+        this.$message.error('图片只能是 JPG/PNG 格式!')
+        return false
+      }
+      if (!isLt2M) {
+        this.$message.error('图片大小不能超过 2MB!')
+        return false
+      }
     },
     handleSuccess (file) {
       console.log(file)

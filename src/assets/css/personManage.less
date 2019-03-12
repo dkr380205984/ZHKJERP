@@ -7,7 +7,7 @@
   display: flex;
   flex-direction: column;
   .head{
-    height: 60px;
+    min-height: 60px;
     border-bottom: 1px solid #ECF0F1;
     padding: 20px 40px;
     display: flex;
@@ -128,16 +128,17 @@
       .inputCtn{
         margin: 20px;
         position: relative;
-        font-size: @fontNormal;
+        font-size: @fontBig;
         padding-left: 5em;
         height: 40px;
         line-height: 40px;
+        color: @fontNormal;
         .label{
           position: absolute;
           left: 0;
           text-align: right;
           width: 5em;
-          color: #666;
+          color: @fontNormal;
           em{
             color:@error;
             line-height: 40px;

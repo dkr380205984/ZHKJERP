@@ -44,6 +44,10 @@ export default new Router({
         name: 'sampleList',
         component: () => import('./views/product/sampleList.vue')
       }, {
+        path: 'productSetting',
+        name: 'productSetting',
+        component: () => import('./views/product/productSetting.vue')
+      }, {
         path: 'personManage',
         name: 'personManage',
         component: () => import('./views/self/personManage.vue')

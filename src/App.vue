@@ -78,6 +78,12 @@ html,body{
 .el-select-dropdown__item.selected{
   font-weight: 400!important;
 }
+.el-input-group__prepend{
+  color: #666!important;
+}
+.el-input-group__append {
+ color: #666!important;
+}
 // 修改分页组件的样式
 .el-pager{
   font-family: 'systemfont';

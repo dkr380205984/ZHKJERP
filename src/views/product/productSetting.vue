@@ -1,0 +1,306 @@
+<template>
+  <div id='productSetting'>
+    <div class="head">
+      <h2>产品设置</h2>
+    </div>
+    <div class="body">
+       <div class="lineCtn" :style="{'max-height':flagObj.flowerFlag?'300px':'64px'}">
+        <div class="inputCtn">
+          <span class="label">添加花型:</span>
+          <el-input class="elInput" v-model="flower" placeholder="请输入花型"></el-input>
+          <div class="okBtn" @click="saveFlower">添加</div>
+          <div class="showAll" @click="flagObj.flowerFlag=!flagObj.flowerFlag">{{!flagObj.flowerFlag?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flagObj.flowerFlag?'showIcon':'hideIcon'"></i></div>
+        </div>
+        <div class="allInfo">
+          <div class="bgWhite"></div>
+          <div class="list">
+            <div class="btnCtn" v-for="item in flowerArr" :key="item.id">
+              <span>{{item.name}}</span>
+              <i class="iconCancle" @click="deleteFlower">x</i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="lineCtn" :style="{'max-height':flag?'300px':'64px'}">
+        <div class="inputCtn">
+          <span class="label">添加成分:</span>
+          <el-input class="elInput" v-model="value1" placeholder="请输入花型"></el-input>
+          <div class="okBtn">添加</div>
+          <div class="showAll" @click="flag=!flag">{{!flag?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flag?'showIcon':'hideIcon'"></i></div>
+        </div>
+        <div class="allInfo">
+          <div class="bgWhite"></div>
+          <div class="list"></div>
+        </div>
+      </div>
+      <div class="lineCtn" :style="{'max-height':flag?'300px':'64px'}">
+        <div class="inputCtn">
+          <span class="label">添加颜色:</span>
+          <el-input class="elInput" v-model="value1" placeholder="请输入花型"></el-input>
+          <el-color-picker style="margin-left:15px;" v-model="color"></el-color-picker>
+          <div class="okBtn">添加</div>
+          <div class="showAll" @click="flag=!flag">{{!flag?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flag?'showIcon':'hideIcon'"></i></div>
+        </div>
+        <div class="allInfo">
+          <div class="bgWhite"></div>
+          <div class="list"></div>
+        </div>
+      </div>
+      <div class="treeCtn">
+        <span class="label">添加产品:</span>
+        <el-input class="elInput" v-model="newType" placeholder="请输入一级大类"></el-input>
+        <div class="okBtn" @click="addType">添加</div>
+        <div class="treeMain">
+          <el-tree
+            ref="tree"
+            :key="tree_key"
+            :data="treeData"
+            node-key="id"
+            :render-content="renderContent"
+            :expand-on-click-node="false"
+            :default-expand-all="true"
+            :default-expanded-keys="defaultExpand">
+          </el-tree>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { proproductTppeSave, productTppeList, saveFlower, flowerList } from '@/assets/js/api.js'
+export default {
+  data () {
+    return {
+      flagObj: {
+        flowerFlag: false
+      },
+      color: null,
+      flag: false,
+      id: 10000,
+      flower: '',
+      flowerArr: [],
+      value1: '',
+      treeData: [],
+      newType: '',
+      tree_key: 0,
+      defaultExpand: []
+    }
+  },
+  methods: {
+    // 添加花型
+    saveFlower () {
+      if (this.flower) {
+        saveFlower({
+          company_id: window.sessionStorage.getItem('company_id'),
+          name: this.flower
+        }).then((res) => {
+          console.log(res)
+        })
+      } else {
+        this.$message.error({
+          message: '请在左侧输入框输入添加花型的名称'
+        })
+      }
+    },
+    // 删除花型
+    deleteFlower () {
+
+    },
+    // 添加大类
+    addType () {
+      if (this.newType) {
+        const nodeObj = { id: this.id++, label: this.newType, isEdit: false, children: [] }
+        this.treeData.push(nodeObj)
+        proproductTppeSave({
+          company_id: window.sessionStorage.getItem('company_id'),
+          items: [{
+            pid: '0',
+            name: this.newType
+          }]
+        }).then((res) => {
+          console.log(res)
+        })
+      } else {
+        this.$message.error({
+          message: '请在左侧输入框输入一级大类的名称'
+        })
+      }
+    },
+    // 编辑节点
+    nodeEdit (ev, store, data) {
+      data.isEdit = true
+      this.$nextTick(() => {
+        let $input = ev.target.parentNode.parentNode.querySelector('input') || ev.target.parentElement.parentElement.querySelector('input')
+        if (!$input) {
+          $input = ''
+        } else {
+          $input = $input.focus()
+        }
+      })
+    },
+    // 节点删除
+    nodeDelete (node, data) {
+      const parent = node.parent
+      const children = parent.data.children || parent.data
+      const index = children.findIndex(d => d.id === data.id)
+      children.splice(index, 1)
+    },
+    // 新增节点
+    nodeAppend (ev, data) {
+      console.log('新增节点', data)
+      const newChild = { id: this.id++, label: '新增产品', isEdit: true, pid: data.id }
+      if (!data.children) {
+        this.$set(data, 'children', [])
+      }
+      data.children.push(newChild)
+      // 新增节点后展开当前节点
+      this.$refs.tree.store.nodesMap[data.id].expanded = true
+      // 新增节点focus
+      this.$nextTick(() => {
+        let $input = ev.target.offsetParent.querySelector('input')
+        if (!$input) {
+          $input = ''
+        } else {
+          $input = $input.focus()
+        }
+      })
+    },
+    // 是否展示操作框
+    showOrEdit (data, node) {
+      if (data.isEdit) {
+        return <input class="tree_edit_input" type="text" value={data.label} on-blur={ev => this.edit_sure(ev, data, node)}/>
+      } else {
+        return <span className="node_labe">{data.label}</span>
+      }
+    },
+    // 完成编辑
+    edit_sure (ev, data, node) {
+      console.log('完成编辑', data)
+      const $input = ev.target.parentNode.parentNode.querySelector('input') || ev.target.parentElement.parentElement.querySelector('input')
+      if (!$input) {
+        return false
+      } else {
+        data.label = $input.value
+        data.isEdit = false
+        proproductTppeSave({
+          company_id: window.sessionStorage.getItem('company_id'),
+          items: [{
+            pid: data.pid,
+            name: $input.value
+          }]
+        }).then((res) => {
+          console.log(res)
+        })
+      }
+    },
+    // 操作dom节点添加
+    renderContent (h, { node, data, store }) {
+      if (data.level < 3) {
+        return (
+          <span class="tree_node_Ctn">
+            <span>
+              { this.showOrEdit(data, node) }
+            </span>
+            <div class="tree_node_op">
+              <i class="el-icon-plus" on-click={ (ev) => this.nodeAppend(ev, data) }></i>
+              <i class="el-icon-edit" on-click={ (ev) => this.nodeEdit(ev, store, data) }></i>
+              <i class="el-icon-delete" on-click={ () => this.nodeDelete(node, data) }></i>
+            </div>
+          </span>)
+      } else {
+        return (
+          <span class="tree_node_Ctn">
+            <span>
+              { this.showOrEdit(data, node) }
+            </span>
+            <div class="tree_node_op">
+              <i class="el-icon-edit" on-click={ (ev) => this.nodeEdit(ev, store, data) }></i>
+              <i class="el-icon-delete" on-click={ () => this.nodeDelete(node, data) }></i>
+            </div>
+          </span>)
+      }
+    }
+  },
+  created () {
+    // 获取类型树结构
+    productTppeList({
+      company_id: window.sessionStorage.getItem('company_id')
+    }).then((res) => {
+      // 用最简单粗暴的方式解析了三级结构
+      if (res.data.status) {
+        this.treeData = res.data.data.map((item) => {
+          return {
+            pid: item.pid,
+            id: item.id,
+            label: item.name,
+            level: 1,
+            children: item.child.map((item) => {
+              return {
+                pid: item.pid,
+                id: item.id,
+                label: item.name,
+                level: 2,
+                children: item.child.map((item) => {
+                  return {
+                    pid: item.pid,
+                    id: item.id,
+                    label: item.name,
+                    children: item.child,
+                    isEdit: false,
+                    level: 3
+                  }
+                }),
+                isEdit: false
+              }
+            }),
+            isEdit: false
+          }
+        })
+      }
+    })
+    // 获取花型列表
+    flowerList({
+      company_id: window.sessionStorage.getItem('company_id')
+    }).then((res) => {
+      console.log('花型列表', res)
+      if (res.data.status) {
+        this.flowerArr = res.data.data
+      }
+    })
+  }
+}
+</script>
+
+<style lang="less" scoped>
+  @import '~@/assets/css/productSetting.less';
+</style>
+<style lang="less">
+.tree_node_Ctn{
+  display:flex;
+  width:300px;
+  justify-content: space-between;
+  align-items: center;
+  &:hover{
+    .tree_node_op{
+      display: block;
+    }
+  }
+  .tree_edit_input{
+    color:#666;
+    font-size:12px;
+  }
+  .tree_node_op{
+    display:none;
+    margin-left:30px;
+    color:#666;
+  i{
+    margin:0 5px;
+    &:hover{
+      color:#1A95FF;
+    }
+  }
+}
+}
+
+</style>
