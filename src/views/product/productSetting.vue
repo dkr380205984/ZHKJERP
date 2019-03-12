@@ -1,5 +1,5 @@
 <template>
-  <div id='productSetting'>
+  <div id='productSetting'  v-loading="loading">
     <div class="head">
       <h2>产品设置</h2>
     </div>
@@ -16,34 +16,45 @@
           <div class="list">
             <div class="btnCtn" v-for="item in flowerArr" :key="item.id">
               <span>{{item.name}}</span>
-              <i class="iconCancle" @click="deleteFlower">x</i>
+              <i class="iconCancle" @click="deleteFlower(item.id)">x</i>
             </div>
           </div>
         </div>
       </div>
-      <div class="lineCtn" :style="{'max-height':flag?'300px':'64px'}">
+      <div class="lineCtn" :style="{'max-height':flagObj.ingredientFlag?'300px':'64px'}">
         <div class="inputCtn">
           <span class="label">添加成分:</span>
-          <el-input class="elInput" v-model="value1" placeholder="请输入花型"></el-input>
-          <div class="okBtn">添加</div>
-          <div class="showAll" @click="flag=!flag">{{!flag?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flag?'showIcon':'hideIcon'"></i></div>
+          <el-input class="elInput" v-model="ingredient" placeholder="请输入成分"></el-input>
+          <div class="okBtn" @click="saveIngredient">添加</div>
+          <div class="showAll" @click="flagObj.ingredientFlag=!flagObj.ingredientFlag">{{!flagObj.ingredientFlag?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flagObj.ingredientFlag?'showIcon':'hideIcon'"></i></div>
         </div>
         <div class="allInfo">
           <div class="bgWhite"></div>
-          <div class="list"></div>
+          <div class="list">
+            <div class="btnCtn" v-for="item in ingredientArr" :key="item.id">
+              <span>{{item.name}}</span>
+              <i class="iconCancle" @click="deleteIngredient(item.id)">x</i>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="lineCtn" :style="{'max-height':flag?'300px':'64px'}">
+      <div class="lineCtn" :style="{'max-height':flagObj.colorFlag?'300px':'64px'}">
         <div class="inputCtn">
           <span class="label">添加颜色:</span>
-          <el-input class="elInput" v-model="value1" placeholder="请输入花型"></el-input>
-          <el-color-picker style="margin-left:15px;" v-model="color"></el-color-picker>
-          <div class="okBtn">添加</div>
-          <div class="showAll" @click="flag=!flag">{{!flag?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flag?'showIcon':'hideIcon'"></i></div>
+          <el-input class="elInput" v-model="colorName" placeholder="请输入颜色"></el-input>
+          <el-color-picker style="margin-left:15px;" v-model="colorValue"></el-color-picker>
+          <div class="okBtn" @click="saveColor">添加</div>
+          <div class="showAll" @click="flagObj.colorFlag=!flagObj.colorFlag">{{!flagObj.colorFlag?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flagObj.colorFlag?'showIcon':'hideIcon'"></i></div>
         </div>
         <div class="allInfo">
           <div class="bgWhite"></div>
-          <div class="list"></div>
+           <div class="list">
+            <div class="btnCtn" v-for="item in colorArr" :key="item.id">
+              <div class="colorBlock" :style="{'background':item.color_code}"></div>
+              <span>{{item.name}}</span>
+              <i class="iconCancle" @click="deleteColor(item.id)">x</i>
+            </div>
+          </div>
         </div>
       </div>
       <div class="treeCtn">
@@ -68,34 +79,58 @@
 </template>
 
 <script>
-import { proproductTppeSave, productTppeList, saveFlower, flowerList } from '@/assets/js/api.js'
+import { proproductTppeSave, productTppeList, saveFlower, flowerList, deleteFlower, ingredientList, ingredientSave, ingredientDelete, colorList, colorSave, colorDelete, proproductTppeDelete } from '@/assets/js/api.js'
 export default {
   data () {
     return {
       flagObj: {
-        flowerFlag: false
+        flowerFlag: false,
+        ingredientFlag: false,
+        colorFlag: false
       },
-      color: null,
-      flag: false,
-      id: 10000,
+      id: -1,
       flower: '',
       flowerArr: [],
-      value1: '',
+      ingredient: '',
+      ingredientArr: [],
+      colorName: '',
+      colorValue: null,
+      colorArr: [],
       treeData: [],
       newType: '',
       tree_key: 0,
-      defaultExpand: []
+      defaultExpand: [],
+      loading: true
     }
   },
   methods: {
+    // 获取花型列表
+    getFlower () {
+      return flowerList({
+        company_id: window.sessionStorage.getItem('company_id')
+      }).then((res) => {
+        if (res.data.status) {
+          this.flowerArr = res.data.data
+        }
+      })
+    },
     // 添加花型
     saveFlower () {
       if (this.flower) {
+        this.loading = true
         saveFlower({
           company_id: window.sessionStorage.getItem('company_id'),
           name: this.flower
         }).then((res) => {
-          console.log(res)
+          if (res.data.status) {
+            this.$message.success({
+              message: '添加花型成功'
+            })
+            this.flower = ''
+            this.getFlower().then((res) => {
+              this.loading = false
+            })
+          }
         })
       } else {
         this.$message.error({
@@ -104,8 +139,161 @@ export default {
       }
     },
     // 删除花型
-    deleteFlower () {
-
+    deleteFlower (id) {
+      this.loading = true
+      deleteFlower({
+        id: id
+      }).then((res) => {
+        if (res.data.status) {
+          this.$message.success({
+            message: '删除成功'
+          })
+          this.getFlower().then((res) => {
+            this.loading = false
+          })
+        }
+      })
+    },
+    // 获取成分列表
+    getIngredient () {
+      return ingredientList({
+        company_id: window.sessionStorage.getItem('company_id')
+      }).then((res) => {
+        if (res.data.status) {
+          this.ingredientArr = res.data.data
+        }
+      })
+    },
+    // 添加成分
+    saveIngredient () {
+      if (this.ingredient) {
+        this.loading = true
+        ingredientSave({
+          company_id: window.sessionStorage.getItem('company_id'),
+          name: this.ingredient
+        }).then((res) => {
+          if (res.data.status) {
+            this.$message.success({
+              message: '添加成分成功'
+            })
+            this.ingredient = ''
+            this.getIngredient().then((res) => {
+              this.loading = false
+            })
+          }
+        })
+      } else {
+        this.$message.error({
+          message: '请在左侧输入框输入添加成分的名称'
+        })
+      }
+    },
+    // 删除成分
+    deleteIngredient (id) {
+      this.loading = true
+      ingredientDelete({
+        id: id
+      }).then((res) => {
+        if (res.data.status) {
+          this.$message.success({
+            message: '删除成功'
+          })
+          this.getIngredient().then((res) => {
+            this.loading = false
+          })
+        }
+      })
+    },
+    // 获取颜色列表
+    getColor () {
+      return colorList({
+        company_id: window.sessionStorage.getItem('company_id')
+      }).then((res) => {
+        if (res.data.status) {
+          this.colorArr = res.data.data
+        }
+      })
+    },
+    // 添加颜色
+    saveColor () {
+      if (this.colorName && this.colorValue) {
+        this.loading = true
+        colorSave({
+          company_id: window.sessionStorage.getItem('company_id'),
+          name: this.colorName,
+          color_code: this.colorValue,
+          id: null
+        }).then((res) => {
+          if (res.data.status) {
+            this.$message.success({
+              message: '添加颜色成功'
+            })
+            this.colorName = ''
+            this.colorValue = null
+            this.getColor().then((res) => {
+              this.loading = false
+            })
+          }
+        })
+      } else {
+        this.$message.error({
+          message: '请输入颜色名称和色块'
+        })
+      }
+    },
+    // 删除颜色
+    deleteColor (id) {
+      this.loading = true
+      colorDelete({
+        id: id
+      }).then((res) => {
+        if (res.data.status) {
+          this.$message.success({
+            message: '删除成功'
+          })
+          this.getColor().then((res) => {
+            this.loading = false
+          })
+        }
+      })
+    },
+    // 获取类型树结构
+    getType () {
+      return productTppeList({
+        company_id: window.sessionStorage.getItem('company_id')
+      }).then((res) => {
+      // 用最简单粗暴的方式解析了三级结构
+        if (res.data.status) {
+          this.treeData = res.data.data.map((item) => {
+            return {
+              pid: item.pid,
+              id: item.id,
+              label: item.name,
+              level: 1,
+              children: item.child.map((item) => {
+                return {
+                  pid: item.pid,
+                  id: item.id,
+                  label: item.name,
+                  level: 2,
+                  children: item.child.map((item) => {
+                    return {
+                      pid: item.pid,
+                      id: item.id,
+                      label: item.name,
+                      children: item.child,
+                      isEdit: false,
+                      level: 3
+                    }
+                  }),
+                  isEdit: false
+                }
+              }),
+              isEdit: false
+            }
+          })
+        }
+      })
     },
     // 添加大类
     addType () {
@@ -141,15 +329,34 @@ export default {
     },
     // 节点删除
     nodeDelete (node, data) {
-      const parent = node.parent
-      const children = parent.data.children || parent.data
-      const index = children.findIndex(d => d.id === data.id)
-      children.splice(index, 1)
+      this.$confirm('是否要删除该产品，这可能会影响包含该产品的订单?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        proproductTppeDelete({
+          id: data.id
+        }).then((res) => {
+          if (res.data.status) {
+            this.$message.success({
+              message: '删除成功'
+            })
+            const parent = node.parent
+            const children = parent.data.children || parent.data
+            const index = children.findIndex(d => d.id === data.id)
+            children.splice(index, 1)
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     },
     // 新增节点
     nodeAppend (ev, data) {
-      console.log('新增节点', data)
-      const newChild = { id: this.id++, label: '新增产品', isEdit: true, pid: data.id }
+      const newChild = { id: this.id--, label: '新增产品', isEdit: true, pid: data.id }
       if (!data.children) {
         this.$set(data, 'children', [])
       }
@@ -177,6 +384,12 @@ export default {
     // 完成编辑
     edit_sure (ev, data, node) {
       console.log('完成编辑', data)
+      this.loading = true
+      let realId = null
+      // <0说明是添加操作,>0则是编辑操作
+      if (data.id > 0) {
+        realId = data.id
+      }
       const $input = ev.target.parentNode.parentNode.querySelector('input') || ev.target.parentElement.parentElement.querySelector('input')
       if (!$input) {
         return false
@@ -185,12 +398,15 @@ export default {
         data.isEdit = false
         proproductTppeSave({
           company_id: window.sessionStorage.getItem('company_id'),
-          items: [{
-            pid: data.pid,
-            name: $input.value
-          }]
+          id: realId,
+          pid: data.pid,
+          name: $input.value
         }).then((res) => {
-          console.log(res)
+          if (res.data.status) {
+            this.getType().then((res) => {
+              this.loading = false
+            })
+          }
         })
       }
     },
@@ -223,50 +439,51 @@ export default {
     }
   },
   created () {
-    // 获取类型树结构
-    productTppeList({
-      company_id: window.sessionStorage.getItem('company_id')
-    }).then((res) => {
-      // 用最简单粗暴的方式解析了三级结构
-      if (res.data.status) {
-        this.treeData = res.data.data.map((item) => {
-          return {
-            pid: item.pid,
-            id: item.id,
-            label: item.name,
-            level: 1,
-            children: item.child.map((item) => {
-              return {
-                pid: item.pid,
-                id: item.id,
-                label: item.name,
-                level: 2,
-                children: item.child.map((item) => {
-                  return {
-                    pid: item.pid,
-                    id: item.id,
-                    label: item.name,
-                    children: item.child,
-                    isEdit: false,
-                    level: 3
-                  }
-                }),
-                isEdit: false
-              }
-            }),
-            isEdit: false
-          }
-        })
-      }
-    })
+    let companyId = window.sessionStorage.getItem('company_id')
     // 获取花型列表
-    flowerList({
-      company_id: window.sessionStorage.getItem('company_id')
-    }).then((res) => {
-      console.log('花型列表', res)
-      if (res.data.status) {
-        this.flowerArr = res.data.data
-      }
+    Promise.all([flowerList({
+      company_id: companyId
+    }), productTppeList({
+      company_id: companyId
+    }), ingredientList({
+      company_id: companyId
+    }), colorList({
+      company_id: companyId
+    })]).then((res) => {
+      console.log(res)
+      // 初始化花型和树形数据
+      this.flowerArr = res[0].data.data
+      this.treeData = res[1].data.data.map((item) => {
+        return {
+          pid: item.pid,
+          id: item.id,
+          label: item.name,
+          level: 1,
+          children: item.child.map((item) => {
+            return {
+              pid: item.pid,
+              id: item.id,
+              label: item.name,
+              level: 2,
+              children: item.child.map((item) => {
+                return {
+                  pid: item.pid,
+                  id: item.id,
+                  label: item.name,
+                  children: item.child,
+                  isEdit: false,
+                  level: 3
+                }
+              }),
+              isEdit: false
+            }
+          }),
+          isEdit: false
+        }
+      })
+      this.ingredientArr = res[2].data.data
+      this.colorArr = res[3].data.data
+      this.loading = false
     })
   }
 }

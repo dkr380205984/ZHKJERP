@@ -95,6 +95,7 @@
           display: flex;
           justify-content: flex-start;
           flex-wrap: wrap;
+          flex: 1;
           .btnCtn{
             line-height: 40px;
             padding: 0 30px;
@@ -102,6 +103,8 @@
             position: relative;
             color: @fontNormal;
             margin-bottom: 15px;
+            display: flex;
+            align-items: center;
             &:hover{
               .iconCancle{
                 display: block;
@@ -129,6 +132,12 @@
             &:hover{
               background: @normalBlue;
               color: #fff;
+            }
+            .colorBlock{
+              width: 15px;
+              height: 15px;
+              margin-right: 5px;
+              border-radius: 2px;
             }
           }
         }
