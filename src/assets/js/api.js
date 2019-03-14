@@ -66,6 +66,8 @@ const footageSave = (params) => http.post(`${baseUrl}/product/footage/save`, par
 const footageOne = (params) => http.get(`${baseUrl}/product/footage/category/all`, params)
 // 删除尺码
 const footageDelete = (params) => http.post(`${baseUrl}/product/footage/delete`, params, 'application/json')
+// 添加产品
+const saveProduct = (params) => http.post(`${baseUrl}/product/save`, params, 'application/json')
 export {
   login,
   register,
@@ -99,5 +101,6 @@ export {
   footageList,
   footageSave,
   footageOne,
-  footageDelete
+  footageDelete,
+  saveProduct
 }

@@ -31,6 +31,9 @@
       flex-wrap: wrap;
       padding-left: 7em;
       position: relative;
+      .lineCtn{
+        width: 100%;
+      }
       .unInput{
         line-height: 40px;
         margin-left: 15px;
@@ -104,6 +107,9 @@
         color: @fontNormal;
         margin-bottom:24px;
       }
+      .specialSel{
+        width: 120px;
+      }
       .addBtn{
         padding: 0 18px;
         height: 40px;
@@ -132,6 +138,13 @@
       .textarea{
         margin-left: 15px;
         width: 400px;
+      }
+      .tooltips{
+        position: absolute;
+        bottom: 0;
+        font-size: 12px;
+        margin-left: 18px;
+        color: @error;
       }
     }
     .btnCtn{

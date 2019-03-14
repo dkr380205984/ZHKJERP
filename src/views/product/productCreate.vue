@@ -33,29 +33,46 @@
       </div>
       <div class="inputCtn" style="margin-top:0;margin-bottom:0">
         <span class="label">产品成分:</span>
-        <el-select style="width:400px" class="elSelect" v-model="ingredient" placeholder="请选择成分">
-          <el-option
-            v-for="item in ingredientArr"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id">
-          </el-option>
-        </el-select>
+        <el-input style="width:300px;margin-left:15px;margin-bottom:24px"  v-for="item in ingredientNum" :key="item" placeholder="请输入比例" v-model="ingredientScale[item-1]" class="input-with-select">
+          <el-select slot="prepend" class="specialSel" v-model="ingredient[item-1]" placeholder="请选择成分">
+            <el-option
+              v-for="item in ingredientArr"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
+          <template slot="append">%</template>
+        </el-input>
+        <div class="addBtn" @click="ingredientNum++">
+          <span>添加成分</span>
+          <span>+</span>
+        </div>
+        <div class="tooltips" v-show="showError">
+          <i class="el-icon-warning"></i>
+          产品成分比例总和不等于100%，请检查比例
+        </div>
       </div>
       <div class="inputCtn" style="margin-bottom:0;margin-top:4px">
         <span class="label">产品尺寸:</span>
-        <el-select class="elInput" v-model="size" placeholder="请选择尺码">
-          <el-option
-            v-for="item in treeData"
-            :key="item.id"
-            :label="item.label"
-            :value="item.id">
-          </el-option>
-        </el-select>
-        <el-input class="elInputAp" placeholder="请输入数字" v-model="length" @keyup.native="filterNum('length')">
-          <template slot="prepend">长</template>
-          <template slot="append">厘米</template>
-        </el-input>
+        <div class="lineCtn" v-for="(itemf,indexf) in sizeNum" :key="indexf">
+          <el-select class="elInput" v-model="footage[indexf]" placeholder="请选择尺码" style="width:200px;margin-bottom: 24px;">
+            <el-option
+              v-for="item in child_footage"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
+          <el-input v-for="(item,index) in child_size" class="elInputAp" placeholder="请输入数字" v-model="sizeArr[indexf][index]" :key="item.id">
+            <template slot="prepend">{{item.name}}</template>
+            <template slot="append">厘米</template>
+          </el-input>
+        </div>
+        <div class="addBtn" @click="addSizeLine" style="margin-bottom:24px">
+          <span>添加尺寸</span>
+          <span>+</span>
+        </div>
       </div>
       <div class="inputCtn" style="margin-top:0">
         <span class="label">产品克重:</span>
@@ -65,7 +82,7 @@
       </div>
       <div class="inputCtn" style="margin-bottom:0">
         <span class="label">产品颜色:</span>
-        <el-select v-for="item in colorNum" :key="item" class="elSelect" v-model="color[item]" placeholder="请选择颜色">
+        <el-select v-for="item in colorNum" :key="item" class="elSelect" v-model="color[item-1]" placeholder="请选择颜色">
           <el-option
             v-for="item in colorArr"
             :key="item.id"
@@ -89,9 +106,10 @@
           :on-preview="handlePreview"
           :on-remove="handleRemove"
           :on-success="handleSuccess"
-           :before-upload="beforeAvatarUpload"
-          :file-list="fileList2"
+          :before-upload="beforeAvatarUpload"
+          :file-list="fileArr"
           :data = postData
+          ref="uploada"
           list-type="picture">
           <el-button size="small" type="primary">点击上传</el-button>
           <div slot="tip" class="el-upload__tip">只能上传jpg/png图片文件，且不超过10M</div>
@@ -116,37 +134,35 @@
 </template>
 
 <script>
-import { getToken, productTppeList, flowerList, ingredientList, colorList } from '@/assets/js/api.js'
+import { getToken, productTppeList, flowerList, ingredientList, colorList, saveProduct } from '@/assets/js/api.js'
 export default {
   data () {
     return {
       postData: { token: '' },
       loading: true,
-      selectedOptions: [],
-      value1: '',
-      value2: '',
-      value3: '',
-      value4: '',
-      value5: '',
-      value6: '',
-      cities: [],
       colorNum: 1,
-      fileList2: [],
+      sizeNum: 1,
+      ingredientNum: 1,
       textarea: '',
       flower: '',
       flowerArr: [],
       types: [],
       treeData: [],
-      ingredient: '',
+      ingredient: [],
+      ingredientScale: [100],
       ingredientArr: [],
       color: [],
       colorArr: [],
-      length: '',
-      width: '',
-      extra_size: '',
-      weight: '',
       fileArr: [],
-      size: ''
+      footage: [],
+      sizeArr: [[]],
+      child_footage: [{
+        id: -1,
+        name: '均码'
+      }],
+      child_size: [],
+      weight: '',
+      showError: false
     }
   },
   created () {
@@ -167,6 +183,8 @@ export default {
         return {
           value: item.id,
           label: item.name,
+          child_footage: item.child_footage,
+          child_size: item.child_size,
           children: item.child.length === 0 ? null : item.child.map((item) => {
             return {
               value: item.id,
@@ -188,8 +206,22 @@ export default {
     })
   },
   watch: {
-    fileList2 (oldVal, newVal) {
-      console.log(oldVal, newVal)
+    types (newVal) {
+      const obj = this.treeData.find((item) => item.value === newVal[0])
+      this.child_footage = obj.child_footage
+      this.child_size = obj.child_size
+    },
+    ingredientScale (newVal) {
+      let add = 0
+      newVal.forEach((item) => {
+        add += parseInt(item)
+      })
+      console.log(add)
+      if (add !== 100) {
+        this.showError = true
+      } else {
+        this.showError = false
+      }
     }
   },
   methods: {
@@ -202,7 +234,7 @@ export default {
     },
     // 文件上传相关操作
     handleRemove (file, fileList) {
-      console.log('remove', file, fileList)
+      console.log(file, fileList)
     },
     handlePreview (file) {
       console.log(file)
@@ -229,7 +261,7 @@ export default {
       }
     },
     handleSuccess (file) {
-      this.fileArr.push(file)
+      // this.fileArr.push(file)
     },
     // 清空操作
     clearAll () {
@@ -237,7 +269,129 @@ export default {
     },
     // 保存操作
     saveAll () {
-
+      // 表单验证
+      if (this.types.length === 0) {
+        this.$message.error({
+          message: '请选择产品品类'
+        })
+        return
+      }
+      if (!this.flower) {
+        this.$message.error({
+          message: '请选择产品花型'
+        })
+        return
+      }
+      if (this.ingredient.length < this.ingredientNum) {
+        this.$message.error({
+          message: '检测到未填写的产品成分，请选择后保存'
+        })
+        return
+      }
+      for (let i = 0; i < this.ingredient.length; i++) {
+        if (!this.ingredient[i]) {
+          this.$message.error({
+            message: '检测到未填写的产品成分，请选择后保存'
+          })
+          return
+        }
+      }
+      if (this.ingredientScale.length < this.ingredientNum) {
+        this.$message.error({
+          message: '检测到有未填写的产品占比，请输入后保存'
+        })
+        return
+      }
+      for (let i = 0; i < this.ingredientScale.length; i++) {
+        if (!this.ingredientScale[i]) {
+          this.$message.error({
+            message: '检测到未填写的产品成分，请输入后保存'
+          })
+          return
+        }
+      }
+      if (this.showError) {
+        this.$message.error({
+          message: '产品成分比例总和不等于100%，请重新输入占比'
+        })
+        return
+      }
+      if (this.footage.length < this.sizeNum) {
+        this.$message.error({
+          message: '检测到有未填写的产品尺码，请输入后保存'
+        })
+        return
+      }
+      for (let i = 0; i < this.footage.length; i++) {
+        if (!this.footage[i]) {
+          this.$message.error({
+            message: '检测到未填写的产品尺码，请选择后保存'
+          })
+          return
+        }
+      }
+      const imgArr = this.$refs.uploada.uploadFiles.map((item) => { return 'http://zhihui.tlkrzf.com/' + item.response.hash })
+      const sizeArr = this.footage.map((item, index) => {
+        return this.sizeArr[index].map((item2, index2) => {
+          return {
+            'size_name': this.child_size[index2].name || null,
+            'size_value': item2 || null,
+            'footage': this.child_footage.find((item3) => item3.id === item).name || null
+          }
+        })
+      }).flat() // ES6二维数组转一维
+      if (sizeArr.length < this.sizeNum * this.child_size.length) {
+        this.$message.error({
+          message: '检测到未填写的产品尺寸，请输入后保存'
+        })
+        return
+      }
+      for (let i = 0; i < sizeArr.length; i++) {
+        if (!(sizeArr[i].size_name && sizeArr[i].size_value)) {
+          this.$message.error({
+            message: '检测到未填写的产品尺寸，请输入后保存'
+          })
+          return
+        }
+      }
+      if (this.color.length < this.colorNum) {
+        this.$message.error({
+          message: '检测到未填写的颜色，请选择后保存'
+        })
+        return
+      }
+      const materialsArr = this.ingredientScale.map((item, index) => {
+        return {
+          'ingredient_value': item,
+          'ingredient_name': this.ingredientArr.find((item2) => item2.id === this.ingredient[index]).name
+        }
+      })
+      saveProduct({
+        product_code: null,
+        company_id: window.sessionStorage.getItem('company_id'),
+        category_id: this.types[0],
+        type_id: this.types[1],
+        style_id: this.types[2],
+        flower_id: this.flower,
+        weight: this.weight,
+        description: this.textarea,
+        user_id: window.sessionStorage.getItem('user_id'),
+        img: imgArr,
+        color: this.color,
+        size: sizeArr,
+        materials: materialsArr
+      }).then((res) => {
+        if (res.data.status) {
+          this.$message.success({
+            message: '添加成功'
+          })
+        }
+      })
+    },
+    // 解决了vue数据类型检测的bug
+    addSizeLine () {
+      this.sizeArr.push([])
+      this.sizeNum++
     }
   }
 }
@@ -252,5 +406,16 @@ export default {
   color: #666;
   font-family: 'systemfont';
   font-weight: 300;
+}
+.el-input-group--append .el-select .el-input.is-focus .el-input__inner, .el-input-group--prepend .el-select .el-input.is-focus .el-input__inner{
+  border:0!important;
+  &:hover{
+    border:0!important;
+    border-color:transparent!important;
+  }
+  &:focus{
+    border:0!important;
+    border-color:transparent!important;
+  }
 }
 </style>
