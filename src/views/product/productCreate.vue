@@ -1,69 +1,78 @@
 <template>
-  <div id="productCreate">
+  <div id="productCreate" v-loading="loading">
     <div class="head">
       <h2>添加新产品</h2>
     </div>
     <div class="body">
+       <div class="inputCtn">
+        <span class="label">产品编号:</span>
+        <span class="unInput">KB13229985</span>
+      </div>
       <div class="inputCtn">
         <span class="label">产品分类:</span>
         <div class="ascaderCtn">
           <el-cascader
-            :options="options"
+            :options="treeData"
             expand-trigger="hover"
-            v-model="selectedOptions"
+            v-model="types"
             @change="handleChange"
             placeholder="请选择产品品类">
           </el-cascader>
         </div>
       </div>
-      <div class="inputCtn">
-        <span class="label">产品成分:</span>
-        <el-input class="elInput"  placeholder="请输入产品成分"  v-model="value1" clearable></el-input>
-      </div>
       <div class="inputCtn" style="margin-bottom:0">
         <span class="label">产品花型:</span>
-        <el-select style="width:400px" v-for="item in colorNum" :key="item" class="elSelect" v-model="colorArr[item]" placeholder="请选择颜色">
+        <el-select style="width:400px" class="elSelect" v-model="flower" placeholder="请选择花型">
           <el-option
-            v-for="item in cities"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-            <div class="bgBlock" :style="{'background':item.color}"></div>
-            <div class="desc">{{item.label}}</div>
+            v-for="item in flowerArr"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+          </el-option>
+        </el-select>
+      </div>
+      <div class="inputCtn" style="margin-top:0;margin-bottom:0">
+        <span class="label">产品成分:</span>
+        <el-select style="width:400px" class="elSelect" v-model="ingredient" placeholder="请选择成分">
+          <el-option
+            v-for="item in ingredientArr"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
           </el-option>
         </el-select>
       </div>
       <div class="inputCtn" style="margin-bottom:0;margin-top:4px">
         <span class="label">产品尺寸:</span>
-        <el-input class="elInputAp" placeholder="请输入数字" v-model="value2">
+        <el-select class="elInput" v-model="size" placeholder="请选择尺码">
+          <el-option
+            v-for="item in treeData"
+            :key="item.id"
+            :label="item.label"
+            :value="item.id">
+          </el-option>
+        </el-select>
+        <el-input class="elInputAp" placeholder="请输入数字" v-model="length" @keyup.native="filterNum('length')">
           <template slot="prepend">长</template>
-          <template slot="append">厘米</template>
-        </el-input>
-        <el-input class="elInputAp" placeholder="请输入数字" v-model="value3">
-          <template slot="prepend">宽</template>
-          <template slot="append">厘米</template>
-        </el-input>
-        <el-input class="elInputAp" placeholder="请输入数字" v-model="value4">
-          <template slot="prepend">须头</template>
           <template slot="append">厘米</template>
         </el-input>
       </div>
       <div class="inputCtn" style="margin-top:0">
         <span class="label">产品克重:</span>
-        <el-input class="elInput" placeholder="请输入产品克重" v-model="value5">
+        <el-input class="elInput" placeholder="请输入产品克重" v-model="weight" @keyup.native="filterNum('weight')">
           <template slot="append">克</template>
         </el-input>
       </div>
       <div class="inputCtn" style="margin-bottom:0">
         <span class="label">产品颜色:</span>
-        <el-select v-for="item in colorNum" :key="item" class="elSelect" v-model="colorArr[item]" placeholder="请选择颜色">
+        <el-select v-for="item in colorNum" :key="item" class="elSelect" v-model="color[item]" placeholder="请选择颜色">
           <el-option
-            v-for="item in cities"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-            <div class="bgBlock" :style="{'background':item.color}"></div>
-            <div class="desc">{{item.label}}</div>
+            v-for="item in colorArr"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+            <div class="bgBlock" :style="{'background':item.color_code}"></div>
+            <div class="desc">{{item.name}}</div>
           </el-option>
         </el-select>
         <div class="addBtn" @click="colorNum++">
@@ -85,7 +94,7 @@
           :data = postData
           list-type="picture">
           <el-button size="small" type="primary">点击上传</el-button>
-          <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+          <div slot="tip" class="el-upload__tip">只能上传jpg/png图片文件，且不超过10M</div>
         </el-upload>
       </div>
       <div class="inputCtn" style="margin-top:50px">
@@ -99,21 +108,20 @@
         </el-input>
       </div>
       <div class="btnCtn">
-        <div class="cancleBtn">清空</div>
-        <div class="okBtn">保存</div>
+        <div class="cancleBtn" @click="clearAll">清空</div>
+        <div class="okBtn" @click="saveAll">保存</div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { productType, colorList } from '@/assets/js/dictionary.js'
-import { getToken, deletePic } from '@/assets/js/api.js'
+import { getToken, productTppeList, flowerList, ingredientList, colorList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
       postData: { token: '' },
-      options: productType,
+      loading: true,
       selectedOptions: [],
       value1: '',
       value2: '',
@@ -121,42 +129,62 @@ export default {
       value4: '',
       value5: '',
       value6: '',
-      cities: [{
-        value: 'Beijing',
-        label: '红色',
-        color: '#ff0000'
-      }, {
-        value: 'Shanghai',
-        label: '绿色',
-        color: '#00ff00'
-      }, {
-        value: 'Nanjing',
-        label: '蓝色',
-        color: '#0000ff'
-      }, {
-        value: 'Chengdu',
-        label: '黄色',
-        color: '#ffff00'
-      }, {
-        value: 'Shenzhen',
-        label: '紫色',
-        color: '#ff00ff'
-      }, {
-        value: 'Guangzhou',
-        label: '浅蓝色',
-        color: '#00ffff'
-      }],
-      colorArr: [],
+      cities: [],
       colorNum: 1,
       fileList2: [],
       textarea: '',
-      colorList: colorList
+      flower: '',
+      flowerArr: [],
+      types: [],
+      treeData: [],
+      ingredient: '',
+      ingredientArr: [],
+      color: [],
+      colorArr: [],
+      length: '',
+      width: '',
+      extra_size: '',
+      weight: '',
+      fileArr: [],
+      size: ''
     }
   },
   created () {
-    getToken().then((res) => {
+    let companyId = window.sessionStorage.getItem('company_id')
+    // 初始化接口
+    Promise.all([flowerList({
+      company_id: companyId
+    }), productTppeList({
+      company_id: companyId
+    }), ingredientList({
+      company_id: companyId
+    }), colorList({
+      company_id: companyId
+    }), getToken()]).then((res) => {
       console.log(res)
-      this.postData.token = res.data.data
+      this.flowerArr = res[0].data.data
+      this.treeData = res[1].data.data.map((item) => {
+        return {
+          value: item.id,
+          label: item.name,
+          children: item.child.length === 0 ? null : item.child.map((item) => {
+            return {
+              value: item.id,
+              label: item.name,
+              children: item.child.length === 0 ? null : item.child.map((item) => {
+                return {
+                  value: item.id,
+                  label: item.name
+                }
+              })
+            }
+          })
+        }
+      })
+      this.ingredientArr = res[2].data.data
+      this.colorArr = res[3].data.data
+      this.postData.token = res[4].data.data
+      this.loading = false
     })
   },
   watch: {
@@ -165,16 +193,16 @@ export default {
     }
   },
   methods: {
+    // 数字校验
+    filterNum (val) {
+      this[val] = this[val].replace(/[^0-9.]/g, '')
+    },
     handleChange (value) {
       console.log(value)
     },
+    // 文件上传相关操作
     handleRemove (file, fileList) {
-      console.log(file, fileList)
-      deletePic({
-        url: 'zhihui.tlkrzf.com/' + file.response.key
-      }).then((res) => {
-        console.log(res)
-      })
+      console.log('remove', file, fileList)
     },
     handlePreview (file) {
       console.log(file)
@@ -184,6 +212,9 @@ export default {
       const isJPG = file.type === 'image/jpeg'
       const isPNG = file.type === 'image/png'
       const isLt2M = file.size / 1024 / 1024 < 2
+      const isReapeat = this.fileArr.find((item) => {
+        return item.key === file.name
+      })
       if (!isJPG && !isPNG) {
         this.$message.error('图片只能是 JPG/PNG 格式!')
         return false
@@ -192,9 +223,21 @@ export default {
         this.$message.error('图片大小不能超过 2MB!')
         return false
       }
+      if (isReapeat) {
+        this.$message.error('不能重复上传图片')
+        return false
+      }
     },
     handleSuccess (file) {
-      console.log(file)
+      this.fileArr.push(file)
+    },
+    // 清空操作
+    clearAll () {
+
+    },
+    // 保存操作
+    saveAll () {
+
     }
   }
 }
@@ -202,4 +245,12 @@ export default {
 
 <style lang="less" scoped>
   @import '~@/assets/css/productCreate.less';
+</style>
+<style lang="less">
+.el-cascader-menu{
+  font-size: 14px;
+  color: #666;
+  font-family: 'systemfont';
+  font-weight: 300;
+}
 </style>

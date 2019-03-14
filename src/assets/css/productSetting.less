@@ -58,6 +58,16 @@
           line-height: 38px;
           height: 38px;
         }
+        .floatDiv{
+          position: absolute;
+          top: 0px;
+          font-size: @fontSmall;
+          margin-left: 15px;
+          color:@normalBlue;
+          .title{
+            margin-right: 5px;
+          }
+        }
         .showAll{
           position: absolute;
           right: 0px;
@@ -98,7 +108,7 @@
           flex: 1;
           .btnCtn{
             line-height: 40px;
-            padding: 0 30px;
+            padding: 0 18px;
             cursor: pointer;
             position: relative;
             color: @fontNormal;
@@ -116,8 +126,8 @@
               font-style: normal;
               color: #fff;
               font-size: 16px;
-              right:4px;
-              top: 2px;
+              right:1px;
+              top: 1px;
               height: 16px;
               width: 16px;
               border-radius: 50%;
@@ -138,6 +148,19 @@
               height: 15px;
               margin-right: 5px;
               border-radius: 2px;
+            }
+          }
+          .line{
+            height: 40px;
+            display: flex;
+            width: 100%;
+            align-items: center;
+            .lineTitle{
+              color: @fontNormal;
+              font-size: @fontBig;
+              line-height: 40px;
+              margin-bottom: 15px;
+              margin-right: 15px;
             }
           }
         }

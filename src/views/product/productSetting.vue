@@ -4,7 +4,7 @@
       <h2>产品设置</h2>
     </div>
     <div class="body">
-       <div class="lineCtn" :style="{'max-height':flagObj.flowerFlag?'300px':'64px'}">
+      <div class="lineCtn" :style="{'max-height':flagObj.flowerFlag?'300px':'64px'}">
         <div class="inputCtn">
           <span class="label">添加花型:</span>
           <el-input class="elInput" v-model="flower" placeholder="请输入花型"></el-input>
@@ -57,6 +57,70 @@
           </div>
         </div>
       </div>
+      <div class="lineCtn" :style="{'max-height':flagObj.sizeTFlag?'300px':'64px'}">
+        <div class="inputCtn">
+          <span class="label">添加尺寸:</span>
+          <el-select v-model="selectTypes2" placeholder="请选择大类" class="elInput">
+            <el-option
+              v-for="item in treeData"
+              :key="item.id"
+              :label="item.label"
+              :value="item.id">
+            </el-option>
+          </el-select>
+          <el-input class="elInput" placeholder="请逐个输入尺寸包含的种类" v-model="sizeTname" @keyup.enter.native="saveSizeTname"></el-input>
+          <div class="floatDiv">
+            <span class="title">{{selectTComputed}}</span>
+            <span class="content">{{sizeString}}</span>
+          </div>
+          <div class="okBtn" @click="saveSizeTname">添加</div>
+          <div class="showAll" @click="flagObj.sizeTFlag=!flagObj.sizeTFlag">{{!flagObj.sizeTFlag?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flagObj.sizeTFlag?'showIcon':'hideIcon'"></i></div>
+        </div>
+        <div class="allInfo">
+          <div class="bgWhite"></div>
+           <div class="list">
+            <div class="line" v-for="item in sizeTarr" :key="item.id">
+              <span class="lineTitle">{{item.name}}:</span>
+              <div class="btnCtn" v-for="itemchild in item.child_size" :key="itemchild.name">
+                <span>{{itemchild.name}}</span>
+                <i class="iconCancle" @click="deleteSizeT(itemchild.id)">x</i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="lineCtn" :style="{'max-height':flagObj.sizeFlag?'300px':'64px'}">
+        <div class="inputCtn">
+          <span class="label">添加尺码:</span>
+          <el-select v-model="selectTypes" placeholder="请选择大类" class="elInput">
+            <el-option
+              v-for="item in treeData"
+              :key="item.id"
+              :label="item.label"
+              :value="item.id">
+            </el-option>
+          </el-select>
+          <el-input class="elInput" placeholder="请逐个输入尺码包含的种类" v-model="sizeName" @keyup.enter.native="saveSizeName"></el-input>
+          <div class="floatDiv">
+            <span class="title">{{selectComputed}}</span>
+            <span class="content">{{sizeTString}}</span>
+          </div>
+          <div class="okBtn" @click="saveSizeName">添加</div>
+          <div class="showAll" @click="flagObj.sizeFlag=!flagObj.sizeFlag">{{!flagObj.sizeFlag?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flagObj.sizeFlag?'showIcon':'hideIcon'"></i></div>
+        </div>
+        <div class="allInfo">
+          <div class="bgWhite"></div>
+           <div class="list">
+            <div class="line" v-for="item in sizeArr" :key="item.id">
+              <span class="lineTitle">{{item.name}}:</span>
+              <div class="btnCtn" v-for="itemchild in item.child_footage" :key="itemchild.name">
+                <span>{{itemchild.name}}</span>
+                <i class="iconCancle" @click="deleteSize(itemchild.id)">x</i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="treeCtn">
         <span class="label">添加产品:</span>
         <el-input class="elInput" v-model="newType" placeholder="请输入一级大类"></el-input>
@@ -79,14 +143,37 @@
 </template>
 
 <script>
-import { proproductTppeSave, productTppeList, saveFlower, flowerList, deleteFlower, ingredientList, ingredientSave, ingredientDelete, colorList, colorSave, colorDelete, proproductTppeDelete } from '@/assets/js/api.js'
+import {
+  proproductTppeSave,
+  productTppeList,
+  saveFlower,
+  flowerList,
+  deleteFlower,
+  ingredientList,
+  ingredientSave,
+  ingredientDelete,
+  colorList,
+  colorSave,
+  colorDelete,
+  proproductTppeDelete,
+  sizeList,
+  sizeSave,
+  sizeOne,
+  sizeDelete,
+  footageOne,
+  footageList,
+  footageSave,
+  footageDelete
+} from '@/assets/js/api.js'
 export default {
   data () {
     return {
       flagObj: {
         flowerFlag: false,
         ingredientFlag: false,
-        colorFlag: false
+        colorFlag: false,
+        sizeFlag: false,
+        sizeTFlag: false
       },
       id: -1,
       flower: '',
@@ -100,7 +187,15 @@ export default {
       newType: '',
       tree_key: 0,
       defaultExpand: [],
-      loading: true
+      loading: true,
+      selectTypes: '',
+      selectTypes2: '',
+      sizeName: '',
+      sizeNameArr: [],
+      sizeTname: '',
+      sizeTnameArr: [],
+      sizeTarr: [],
+      sizeArr: []
     }
   },
   methods: {
@@ -436,6 +531,173 @@ export default {
             </div>
           </span>)
       }
+    },
+    // 添加尺码名称
+    saveSizeName () {
+      if (this.sizeName && this.selectTypes) {
+        this.loading = true
+        footageSave({
+          name: this.sizeName,
+          category_id: this.selectTypes,
+          company_id: window.sessionStorage.getItem('company_id')
+        }).then((res) => {
+          footageOne({
+            category_id: this.selectTypes
+          }).then((res) => {
+            this.sizeTnameArr = res.data.data
+          })
+          if (res.data.status) {
+            this.$message.success({
+              message: '添加成功'
+            })
+            this.sizeName = ''
+            footageList({
+              company_id: window.sessionStorage.getItem('company_id')
+            }).then((res) => {
+              this.sizeArr = res.data.data
+              this.loading = false
+            })
+          }
+        })
+      } else {
+        this.$message.error({
+          message: '请输入尺码大类和名称'
+        })
+      }
+    },
+    // 添加尺寸名称
+    saveSizeTname () {
+      if (this.sizeTname && this.selectTypes2) {
+        this.loading = true
+        sizeSave({
+          name: this.sizeTname,
+          unit: 'cm',
+          category_id: this.selectTypes2,
+          company_id: window.sessionStorage.getItem('company_id')
+        }).then((res) => {
+          sizeOne({
+            category_id: this.selectTypes2
+          }).then((res) => {
+            this.sizeNameArr = res.data.data
+          })
+          if (res.data.status) {
+            this.$message.success({
+              message: '添加成功'
+            })
+            this.sizeTname = ''
+            sizeList({
+              company_id: window.sessionStorage.getItem('company_id')
+            }).then((res) => {
+              this.sizeTarr = res.data.data
+              this.loading = false
+            })
+          }
+        })
+      } else {
+        this.$message.error({
+          message: '请输入尺寸大类和名称'
+        })
+      }
+    },
+    // 删除尺寸
+    deleteSizeT (id) {
+      this.loading = true
+      sizeDelete({
+        id: id
+      }).then((res) => {
+        if (res.data.status) {
+          this.$message.success({
+            message: '删除成功'
+          })
+          sizeList({
+            company_id: window.sessionStorage.getItem('company_id')
+          }).then((res) => {
+            this.sizeTarr = res.data.data
+            this.loading = false
+          })
+        }
+      })
+    },
+    // 删除尺码
+    deleteSize (id) {
+      this.loading = true
+      footageDelete({
+        id: id
+      }).then((res) => {
+        if (res.data.status) {
+          this.$message.success({
+            message: '删除成功'
+          })
+          footageList({
+            company_id: window.sessionStorage.getItem('company_id')
+          }).then((res) => {
+            this.sizeArr = res.data.data
+            this.loading = false
+          })
+        }
+      })
+    }
+  },
+  watch: {
+    selectTypes2 (newVal) {
+      sizeOne({
+        category_id: newVal
+      }).then((res) => {
+        this.sizeNameArr = res.data.data
+      })
+    },
+    selectTypes (newVal) {
+      footageOne({
+        category_id: newVal
+      }).then((res) => {
+        console.log(res)
+        this.sizeTnameArr = res.data.data
+      })
+    }
+  },
+  computed: {
+    // 添加尺寸得到id筛选label
+    selectComputed () {
+      if (this.selectTypes === '') {
+        return ''
+      } else {
+        let obj = {}
+        obj = this.treeData.find((item) => {
+          return item.id === this.selectTypes
+        })
+        return obj.label + '：'
+      }
+    },
+    selectComputed2 () {
+      if (this.selectTypes2 === '') {
+        return ''
+      } else {
+        let obj = {}
+        obj = this.treeData.find((item) => {
+          return item.id === this.selectTypes2
+        })
+        return obj.label + '：'
+      }
+    },
+    // 添加尺寸数组拆分
+    sizeString () {
+      return this.sizeNameArr.map((item) => { return item.name }).join(' / ')
+    },
+    // 添加尺码得到id筛选label
+    selectTComputed () {
+      if (this.selectTypes2 === '') {
+        return ''
+      } else {
+        let obj = {}
+        obj = this.treeData.find((item) => {
+          return item.id === this.selectTypes2
+        })
+        return obj.label + '：'
+      }
+    },
+    // 添加尺马数组拆分
+    sizeTString () {
+      return this.sizeTnameArr.map((item) => { return item.name }).join(' / ')
     }
   },
   created () {
@@ -448,6 +710,10 @@ export default {
     }), ingredientList({
       company_id: companyId
     }), colorList({
+      company_id: companyId
+    }), sizeList({
+      company_id: companyId
+    }), footageList({
       company_id: companyId
     })]).then((res) => {
       console.log(res)
@@ -483,6 +749,8 @@ export default {
       })
       this.ingredientArr = res[2].data.data
       this.colorArr = res[3].data.data
+      this.sizeTarr = res[4].data.data
+      this.sizeArr = res[5].data.data
       this.loading = false
     })
   }

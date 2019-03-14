@@ -50,6 +50,22 @@ const colorList = (params) => http.get(`${baseUrl}/product/color/list`, params)
 const colorSave = (params) => http.post(`${baseUrl}/product/color/save`, params, 'application/json')
 // 删除颜色
 const colorDelete = (params) => http.post(`${baseUrl}/product/color/delete`, params, 'application/json')
+// 尺寸列表
+const sizeList = (params) => http.get(`${baseUrl}/product/size/company/all`, params)
+// 添加尺寸
+const sizeSave = (params) => http.post(`${baseUrl}/product/size/save`, params, 'application/json')
+// 获取尺寸
+const sizeOne = (params) => http.get(`${baseUrl}/product/size/category/all`, params)
+// 删除尺寸
+const sizeDelete = (params) => http.post(`${baseUrl}/product/size/delete`, params, 'application/json')
+// 尺码列表
+const footageList = (params) => http.get(`${baseUrl}/product/category/list`, params)
+// 添加尺码
+const footageSave = (params) => http.post(`${baseUrl}/product/footage/save`, params, 'application/json')
+// 获取尺码
+const footageOne = (params) => http.get(`${baseUrl}/product/footage/category/all`, params)
+// 删除尺码
+const footageDelete = (params) => http.post(`${baseUrl}/product/footage/delete`, params, 'application/json')
 export {
   login,
   register,
@@ -75,5 +91,13 @@ export {
   colorList,
   colorSave,
   colorDelete,
-  proproductTppeDelete
+  proproductTppeDelete,
+  sizeList,
+  sizeSave,
+  sizeOne,
+  sizeDelete,
+  footageList,
+  footageSave,
+  footageOne,
+  footageDelete
 }
