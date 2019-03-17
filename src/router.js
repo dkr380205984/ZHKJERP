@@ -28,6 +28,10 @@ export default new Router({
       name: 'index',
       component: () => import('./views/index.vue'),
       children: [{
+        path: 'productDetail/:id',
+        name: 'productDetail',
+        component: () => import('./views/product/productDetail.vue')
+      }, {
         path: 'productCreate',
         name: 'productCreate',
         component: () => import('./views/product/productCreate.vue')

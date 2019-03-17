@@ -33,6 +33,53 @@
       position: relative;
       .lineCtn{
         width: 100%;
+        &:hover{
+          .deleteBtn2{
+            display: inline-block;
+          }
+        }
+        .deleteBtn2{
+          display: none;
+          width: 20px;
+          margin-left: 8px;
+          color: #666;
+          cursor: pointer;
+          font-size: 18px;
+          .el-icon-delete{
+            &:hover{
+              color: @normalBlue;
+            }
+          }
+        }
+      }
+      .cancleCtn{
+        position: relative;
+        padding-right: 22px;
+        &:hover{
+          .deleteBtn{
+            display: block;
+          }
+        }
+        .deleteBtn{
+          display: none;
+          position: absolute;
+          right: 0px;
+          top: 0px;
+          transform: translate(0px,50%);
+          color: #fff;
+          width: 18px;
+          height: 18px;
+          font-size: 18px;
+          line-height: 18px;
+          text-align: center;
+          color: #666;
+          cursor: pointer;
+          .el-icon-delete{
+            &:hover{
+              color: @normalBlue;
+            }
+          }
+        }
       }
       .unInput{
         line-height: 40px;
@@ -116,6 +163,7 @@
         line-height: 40px;
         border-radius: 2px;
         margin-left: 15px;
+        margin-bottom:24px;
         cursor: pointer;
         color: #909399;
         border:1px solid #E6E6E6;

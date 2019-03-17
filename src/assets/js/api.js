@@ -68,6 +68,10 @@ const footageOne = (params) => http.get(`${baseUrl}/product/footage/category/all
 const footageDelete = (params) => http.post(`${baseUrl}/product/footage/delete`, params, 'application/json')
 // 添加产品
 const saveProduct = (params) => http.post(`${baseUrl}/product/save`, params, 'application/json')
+// 产品列表
+const productList = (params) => http.get(`${baseUrl}/product/list`, params)
+// 单个产品获取
+const porductOne = (params) => http.get(`${baseUrl}/product/one`, params)
 export {
   login,
   register,
@@ -102,5 +106,7 @@ export {
   footageSave,
   footageOne,
   footageDelete,
-  saveProduct
+  saveProduct,
+  productList,
+  porductOne
 }
