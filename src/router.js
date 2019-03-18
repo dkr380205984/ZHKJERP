@@ -32,6 +32,10 @@ export default new Router({
         name: 'productDetail',
         component: () => import('./views/product/productDetail.vue')
       }, {
+        path: 'productUpdate/:id',
+        name: 'productUpdate',
+        component: () => import('./views/product/productUpdate.vue')
+      }, {
         path: 'productCreate',
         name: 'productCreate',
         component: () => import('./views/product/productCreate.vue')
@@ -51,6 +55,14 @@ export default new Router({
         path: 'productSetting',
         name: 'productSetting',
         component: () => import('./views/product/productSetting.vue')
+      }, {
+        path: 'designFormCreate',
+        name: 'designFormCreate',
+        component: () => import('./views/designForm/designFormCreate.vue')
+      }, {
+        path: 'designFormSetting',
+        name: 'designFormSetting',
+        component: () => import('./views/designForm/designFormSetting.vue')
       }, {
         path: 'personManage',
         name: 'personManage',

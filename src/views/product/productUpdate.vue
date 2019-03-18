@@ -1,7 +1,7 @@
 <template>
   <div id="productCreate" v-loading="loading">
     <div class="head">
-      <h2>添加新产品</h2>
+      <h2>产品修改</h2>
     </div>
     <div class="body">
       <div class="inputCtn">
@@ -16,13 +16,14 @@
             expand-trigger="hover"
             v-model="types"
             @change="handleChange"
+            disabled
             placeholder="请选择产品品类">
           </el-cascader>
         </div>
       </div>
       <div class="inputCtn" style="margin-bottom:0">
         <span class="label">产品花型:</span>
-        <el-select style="width:400px" class="elSelect" v-model="flower" placeholder="请选择花型">
+        <el-select style="width:400px" class="elSelect" v-model="flower" placeholder="请选择花型" disabled>
           <el-option
             v-for="item in flowerArr"
             :key="item.id"
@@ -133,15 +134,15 @@
         </el-input>
       </div>
       <div class="btnCtn">
-        <div class="cancleBtn" @click="clearAll">清空</div>
-        <div class="okBtn" @click="saveAll">保存</div>
+        <div class="cancleBtn" @click="$router.go(-1)">返回</div>
+        <div class="okBtn" @click="saveAll">修改</div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { getToken, productTppeList, flowerList, ingredientList, colorList, saveProduct } from '@/assets/js/api.js'
+import { getToken, productTppeList, flowerList, ingredientList, colorList, saveProduct, porductOne } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -162,7 +163,7 @@ export default {
       colorArr: [],
       fileArr: [],
       footage: [],
-      sizeArr: [[]],
+      sizeArr: [],
       child_footage: [{
         id: -1,
         name: '均码'
@@ -183,8 +184,11 @@ export default {
       company_id: companyId
     }), colorList({
       company_id: companyId
-    }), getToken()]).then((res) => {
-      console.log(res)
+    }), getToken(),
+    porductOne({
+      id: this.$route.params.id
+    })]).then((res) => {
+      console.log(res[5].data.data)
       this.flowerArr = res[0].data.data
       this.treeData = res[1].data.data.map((item) => {
         return {
@@ -209,6 +213,52 @@ export default {
       this.ingredientArr = res[2].data.data
       this.colorArr = res[3].data.data
       this.postData.token = res[4].data.data
+      // 初始化已有数据,详情数据给的都是name所以都要处理成id初始化
+      const product = res[5].data.data
+      this.color = product.color.map((item) => {
+        return this.colorArr.find((item2) => {
+          return item2.name === item.name
+        }).id
+      })
+      this.flower = this.flowerArr.find((item) => {
+        return item.name === product.flower_id
+      }).id
+      this.weight = product.weight
+      this.textarea = product.description
+      // 成分
+      this.ingredientNum = product.materials.length
+      this.ingredientScale = product.materials.map((item) => {
+        return item.ingredient_value
+      })
+      this.ingredient = product.materials.map((item) => {
+        return item.ingredient_name
+      })
+      // 尺码
+      this.footage = Object.keys(product.size)
+      this.footage.forEach((key) => {
+        this.sizeArr.push(product.size[key].map((item) => {
+          return item.size_value
+        }))
+      })
+      this.sizeNum = this.footage.length
+      // 类型
+      const categoryObj = this.treeData.find((item) => {
+        return item.label === product.category_name
+      })
+      const typeObj = product.type_name ? categoryObj.children.find((item) => {
+        return item.label === product.type_name
+      }) : ''
+      const styleObj = product.style_name ? typeObj.children.find((item) => {
+        return item.label === product.style_name
+      }) : ''
+      this.types.push(categoryObj.value, typeObj.value || '', styleObj.value || '')
+      // 图片
+      this.fileArr = product.img.map((item, index) => {
+        return {
+          name: '图片' + index,
+          url: item.image_url
+        }
+      })
       this.loading = false
     })
   },
@@ -271,42 +321,6 @@ export default {
     },
     handleSuccess (file) {
       // this.fileArr.push(file)
-    },
-    // 清空操作
-    clearAll () {
-      this.$confirm('是否清空输入的所有内容?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.textarea = ''
-        this.flower = ''
-        this.child_footage = [{
-          id: -1,
-          name: '均码'
-        }]
-        this.child_size = []
-        this.types = []
-        this.ingredient = []
-        this.ingredientScale = [100]
-        this.color = []
-        this.fileArr = []
-        this.footage = []
-        this.sizeArr = [[]]
-        this.weight = ''
-        this.colorNum = 1
-        this.sizeNum = 1
-        this.ingredientNum = 1
-        this.$message({
-          type: 'success',
-          message: '已清空!'
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消清空'
-        })
-      })
     },
     // 保存操作
     saveAll () {
@@ -501,5 +515,14 @@ export default {
     border:0!important;
     border-color:transparent!important;
   }
+}
+.el-cascader.is-disabled .el-cascader__label span{
+  color:#c0c4cc!important;
+}
+.el-cascader.is-disabled .el-cascader__label{
+  cursor: not-allowed!important;
+}
+.el-input.is-disabled .el-input__inner{
+  color:#c0c4cc!important;
 }
 </style>

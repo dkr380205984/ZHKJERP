@@ -94,7 +94,7 @@
           </div>
           <div class="tableColumn">{{item.user_id}}</div>
           <div class="tableColumn flex9">
-            <span class="btns normal" @click="goUpdata(item.id)">修改</span>
+            <span class="btns normal" @click="$router.push('/index/productUpdate/'+item.id)">修改</span>
             <span class="btns success" @click="$router.push('/index/productDetail/'+item.id)">查看</span>
           </div>
         </div>

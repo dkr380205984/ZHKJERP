@@ -20,6 +20,15 @@ const menu = [{
     url: '/index/productSetting'
   } ]
 }, {
+  name: '工艺单管理',
+  children: [{
+    name: '添加工艺单',
+    url: '/index/designFormCreate'
+  }, {
+    name: '工艺单设置',
+    url: '/index/designFormSetting'
+  }]
+}, {
   name: '订单管理',
   children: [{
     name: '添加新订单',
