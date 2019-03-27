@@ -10,12 +10,6 @@ const menu = [{
     name: '产品列表',
     url: '/index/productList'
   }, {
-    name: '添加样品订单',
-    url: '/index/sampleCreate'
-  }, {
-    name: '样单统计',
-    url: '/index/sampleList'
-  }, {
     name: '产品设置',
     url: '/index/productSetting'
   } ]
@@ -23,7 +17,10 @@ const menu = [{
   name: '工艺单管理',
   children: [{
     name: '添加工艺单',
-    url: '/index/designFormCreate'
+    url: '/index/designFormAdd'
+  }, {
+    name: '工艺单列表',
+    url: '/index/designFormList'
   }, {
     name: '工艺单设置',
     url: '/index/designFormSetting'
@@ -31,6 +28,12 @@ const menu = [{
 }, {
   name: '订单管理',
   children: [{
+    name: '添加样品订单',
+    url: '/index/sampleCreate'
+  }, {
+    name: '样单列表',
+    url: '/index/sampleList'
+  }, {
     name: '添加新订单',
     url: '/index/null'
   }, {

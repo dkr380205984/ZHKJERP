@@ -67,6 +67,10 @@ html,body{
     border-color:#1A95FF!important;
   }
 }
+.el-textarea__inner{
+  font-family: 'systemfont';
+  color: #666!important;
+}
 .el-select-dropdown__wrap{
   font-family: 'systemfont';
   font-weight: 300;

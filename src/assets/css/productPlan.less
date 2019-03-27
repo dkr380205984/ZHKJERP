@@ -1,5 +1,5 @@
 @import './common.less';
-#designFormCreate{
+#productPlan{
   height: 100%;
   font-family: 'systemfont';
   font-weight: 300;
@@ -82,34 +82,111 @@
             width: 100%;
           }
           &.rowLine{
-            max-width: 940px;
             flex-direction: column;
-            .overflowCtn{
-              width: 100%;
-            }
-            .selectCtn{
-              margin-left: 15px;
-              white-space: nowrap;
-              .tableConnect{
-                border-top: 1px solid #ccc;
-                display: inline-block;
-                border-bottom: 0;
-                .selectOnce{
-                  width: 62px;
-                  box-sizing: border-box;
-                  padding: 5px;
-                  border-left: 1px solid transparent;
-                  border-right: 1px solid #ccc;
-                  display: inline-block;
-                  &:nth-of-type(1){
-                    border-left-color:#ccc;
+            align-items: flex-start;
+          }
+          .specialCtn{
+            width: 840px;
+            min-height: 40px;
+            background: #FAFAFA;
+            margin-left: 15px;
+            margin-bottom: 24px;
+            padding: 10px 0px 10px 10px;
+            position: relative;
+            .blockCtn{
+              display: flex;
+              &:nth-child(1){
+                margin-bottom: 15px;
+              }
+              .el-select{
+                width: 155px;
+              }
+              .deleteCtn{
+                margin-left: 15px;
+                width: 30px;
+                text-align: right;
+                line-height: 40px;
+                cursor: pointer;
+                &:hover{
+                  color:@normalBlue;
+                }
+              }
+              .colorsCtn{
+                width: 630px;
+                margin-left: 15px;
+                display: flex;
+                flex-wrap: wrap;
+                .colorOnce{
+                  width: 590px;
+                  display: flex;
+                  flex-wrap: wrap;
+                  padding-left: 40px;
+                  position: relative;
+                }
+                .colorPicker{
+                  position: absolute;
+                  left: 0;
+                }
+                .allInputs{
+                  min-width: 165px;
+                  border:1px solid #E6E6E6;
+                  border-radius: 2px;
+                  display: flex;
+                  font-size: @fontMid;
+                  margin-left: 15px;
+                  margin-bottom: 15px;
+                  .labeled{
+                    line-height: 40px;
+                    height: 40px;
+                    padding: 0 15px;
+                    border-right: 1px solid #E6E6E6;
+                    background: #f5f7fa;
+                  }
+                  input{
+                    width: 40px;
+                    height: 40px;
+                    padding: 0;
+                    margin: 0;
+                    border:0;
+                    padding: 0 5px;
+                    &:focus{
+                      outline:0;
+                    }
+                  }
+                  .input1{
+                    flex: 1;
+                  }
+                  .input2{
+                    border-left: 1px solid #e6e6e6;
+                  }
+                }
+                .el-icon-delete{
+                  line-height: 40px;
+                  margin-left: 15px;
+                  cursor: pointer;
+                  &:hover{
+                    color:@normalBlue;
                   }
                 }
               }
             }
-            .excelCtn{
-              margin-left: 15px;
-              width: 2000px;
+            .deleteIcon{
+              position: absolute;
+              right: 10px;
+              top: 10px;
+              line-height: 22px;
+              width: 22px;
+              height: 22px;
+              text-align: center;
+              border-radius: 50%;
+              cursor: pointer;
+              color: @fontNormal;
+              font-weight: bold;
+              font-size: 18px;
+              &:hover{
+                background: @normalBlue;
+                color: #fff;
+              }
             }
           }
           .label{
@@ -120,10 +197,32 @@
             line-height: 40px;
             left: 0;
             top: 0;
-            &.must{
-              &::before{
-                content:'*';
-                color: @error;
+          }
+          .checkCtn{
+            display: flex;
+            align-items: center;
+            margin-left: 15px;
+            height: 40px;
+            color: @fontNormal;
+            .checkOne{
+              height: 38px;
+              padding: 0 20px;
+              cursor: pointer;
+              border:1px solid @inputNormal;
+              border-right: 0;
+              &:nth-child(1){
+                border-bottom-left-radius: 2px;
+                border-top-left-radius: 2px;
+              }
+              &:nth-last-child(1){
+                border-bottom-right-radius: 2px;
+                border-top-right-radius: 2px;
+                border-right: 1px solid @inputNormal;
+              }
+              &.active{
+                background: @normalBlue;
+                color: #fff;
+                border-color:@normalBlue;
               }
             }
           }

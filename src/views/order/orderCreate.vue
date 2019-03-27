@@ -7,54 +7,38 @@
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">产品编号:</span>
-          <el-input class="elInput" v-model="value1" disabled></el-input>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">产品品类:</span>
-          <el-input class="elInput" v-model="value2" disabled></el-input>
+
         </div>
         <div class="inputCtn">
-          <span class="label">产品成分:</span>
-          <el-input class="elInput" v-model="value3" disabled></el-input>
+          <span class="label">产品花纹:</span>
+
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">产品尺寸:</span>
-          <el-input class="elInput" v-model="value4" disabled></el-input>
-        </div>
-        <div class="inputCtn">
-          <span class="label">产品克重:</span>
-          <el-input class="elInput" v-model="value5" disabled></el-input>
+          <span class="label">产品成分:</span>
+
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">创建人:</span>
-          <el-input class="elInput" v-model="value7" disabled></el-input>
+
         </div>
         <div class="inputCtn">
           <span class="label">添加日期:</span>
-          <el-input class="elInput" v-model="value6" disabled></el-input>
+
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">产品图片:</span>
-          <img src="" />
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">产品描述:</span>
-          <el-input
-            type="textarea"
-            :autosize="{ minRows: 2, maxRows: 4}"
-            v-model="value8"
-            disabled>
-          </el-input>
+
         </div>
       </div>
       <div class="lineCtn">
@@ -211,7 +195,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/sampleCreate.less';
+  @import '~@/assets/css/orderCreate.less';
 </style>
 <style lang="less">
 #sampleCreate{

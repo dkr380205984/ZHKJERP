@@ -8,6 +8,7 @@
     flex: 1;
     display: flex;
     background: @gray;
+    overflow: auto;
     .menuCtn{
       width: 205px;
       overflow: hidden;
@@ -77,14 +78,11 @@
         flex: 1;
         margin: 10px 0 0 5px;
         background: @white;
-        overflow: hidden;
+        overflow-x:hidden;
+        overflow-y: auto;
         display: flex;
-        &:hover{
-          overflow: auto;
-        }
         .mainCtnForScroll{
           flex: 1;
-          margin-right: 5px;
         }
       }
     }

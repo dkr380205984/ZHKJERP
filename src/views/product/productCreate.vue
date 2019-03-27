@@ -71,6 +71,9 @@
             <template slot="prepend">{{item.name}}</template>
             <template slot="append">厘米</template>
           </el-input>
+          <el-input class="elInput" style="width:200px" placeholder="请输入产品克重" v-model="weight[indexf]">
+            <template slot="append">克</template>
+          </el-input>
           <div class="deleteBtn2" @click="deleteSize(itemf)"><i class="el-icon-delete"></i></div>
         </div>
         <div class="addBtn" @click="addSizeLine">
@@ -78,13 +81,7 @@
           <span>+</span>
         </div>
       </div>
-      <div class="inputCtn" style="margin-top:0">
-        <span class="label">产品克重:</span>
-        <el-input class="elInput" placeholder="请输入产品克重" v-model="weight" @keyup.native="filterNum('weight')">
-          <template slot="append">克</template>
-        </el-input>
-      </div>
-      <div class="inputCtn" style="margin-bottom:0">
+      <div class="inputCtn" style="margin-top:0;margin-bottom:0">
         <span class="label">产品颜色:</span>
         <div class="cancleCtn" v-for="item in colorNum" :key="item">
           <el-select class="elSelect" v-model="color[item-1]" placeholder="请选择颜色">
@@ -168,7 +165,7 @@ export default {
         name: '均码'
       }],
       child_size: [],
-      weight: '',
+      weight: [],
       showError: false
     }
   },
@@ -293,7 +290,7 @@ export default {
         this.fileArr = []
         this.footage = []
         this.sizeArr = [[]]
-        this.weight = ''
+        this.weight = []
         this.colorNum = 1
         this.sizeNum = 1
         this.ingredientNum = 1
@@ -377,7 +374,8 @@ export default {
           return {
             'size_name': this.child_size[index2].name || null,
             'size_value': item2 || null,
-            'footage': this.child_footage.find((item3) => item3.id === item).name || null
+            'footage': this.child_footage.find((item3) => item3.id === item).name || null,
+            'weight': this.weight[index]
           }
         })
       }).flat() // ES6二维数组转一维
@@ -414,7 +412,6 @@ export default {
         type_id: this.types[1],
         style_id: this.types[2] || null,
         flower_id: this.flower,
-        weight: this.weight,
         description: this.textarea,
         user_id: window.sessionStorage.getItem('user_id'),
         img: imgArr,

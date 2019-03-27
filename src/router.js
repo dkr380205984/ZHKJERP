@@ -44,19 +44,11 @@ export default new Router({
         name: 'productList',
         component: () => import('./views/product/productList.vue')
       }, {
-        path: 'sampleCreate',
-        name: 'sampleCreate',
-        component: () => import('./views/product/sampleCreate.vue')
-      }, {
-        path: 'sampleList',
-        name: 'sampleList',
-        component: () => import('./views/product/sampleList.vue')
-      }, {
         path: 'productSetting',
         name: 'productSetting',
         component: () => import('./views/product/productSetting.vue')
       }, {
-        path: 'designFormCreate',
+        path: 'designFormCreate/:id',
         name: 'designFormCreate',
         component: () => import('./views/designForm/designFormCreate.vue')
       }, {
@@ -64,9 +56,45 @@ export default new Router({
         name: 'designFormSetting',
         component: () => import('./views/designForm/designFormSetting.vue')
       }, {
+        path: 'designFormList',
+        name: 'designFormList',
+        component: () => import('./views/designForm/designFormList.vue')
+      }, {
+        path: 'designFormAdd',
+        name: 'designFormAdd',
+        component: () => import('./views/designForm/productList.vue')
+      }, {
+        path: 'productPlan/:id',
+        name: 'productPlan',
+        component: () => import('./views/designForm/productPlan.vue')
+      }, {
         path: 'personManage',
         name: 'personManage',
         component: () => import('./views/self/personManage.vue')
+      }, {
+        path: 'canvas',
+        name: 'canvas',
+        component: () => import('./views/designForm/designCanvas.vue')
+      }, {
+        path: 'sampleCreate',
+        name: 'sampleCreate',
+        component: () => import('./views/order/sampleCreate.vue')
+      }, {
+        path: 'sampleList',
+        name: 'sampleList',
+        component: () => import('./views/order/sampleList.vue')
+      }, {
+        path: 'orderCreate',
+        name: 'orderCreate',
+        component: () => import('./views/order/orderCreate.vue')
+      }, {
+        path: 'orderList',
+        name: 'orderList',
+        component: () => import('./views/order/orderList.vue')
+      }, {
+        path: 'orderAdd',
+        name: 'orderAdd',
+        component: () => import('./views/order/productList.vue')
       }]
     }
   ]

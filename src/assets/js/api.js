@@ -11,17 +11,17 @@ const getToken = () => http.get(`${baseUrl}/upload/token`)
 // 修改密码
 const updatePsd = (params) => http.post(`${baseUrl}/auth/reset_pass`, params, 'application/json')
 // 添加岗位
-const addStation = (params) => http.post(`${baseUrl}/auth//station/add`, params, 'application/json')
+const addStation = (params) => http.post(`${baseUrl}/auth/station/add`, params, 'application/json')
 // 添加分组
-const addGroup = (params) => http.post(`${baseUrl}/auth//group/add`, params, 'application/json')
+const addGroup = (params) => http.post(`${baseUrl}/auth/group/add`, params, 'application/json')
 // 获取岗位
-const getStation = (params) => http.get(`${baseUrl}/auth//station/all`, params)
+const getStation = (params) => http.get(`${baseUrl}/user/station/list`, params)
 // 获取分组
-const getGroup = (params) => http.get(`${baseUrl}/auth//group/all`, params)
+const getGroup = (params) => http.get(`${baseUrl}/user/group/list`, params)
 // 添加员工账号
 const addAuth = (params) => http.post(`${baseUrl}/auth/add`, params, 'application/json')
 // 获取员工分组
-const authList = (params) => http.get(`${baseUrl}/auth//list`, params)
+const authList = (params) => http.get(`${baseUrl}/user/list`, params)
 // 禁用员工
 const banAuth = (params) => http.post(`${baseUrl}/auth/check_status`, params, 'application/json')
 // 删除上传图片
@@ -64,6 +64,12 @@ const footageList = (params) => http.get(`${baseUrl}/product/category/list`, par
 const footageSave = (params) => http.post(`${baseUrl}/product/footage/save`, params, 'application/json')
 // 获取尺码
 const footageOne = (params) => http.get(`${baseUrl}/product/footage/category/all`, params)
+// 获取产品单位列表
+const unitList = (params) => http.get(`${baseUrl}/product/unit/all`, params)
+// 添加产品单位
+const unitSave = (params) => http.post(`${baseUrl}/product/unit/save`, params, 'application/json')
+// 删除产品单位
+const unitDelete = (params) => http.post(`${baseUrl}/product/unit/delete`, params, 'application/json')
 // 删除尺码
 const footageDelete = (params) => http.post(`${baseUrl}/product/footage/delete`, params, 'application/json')
 // 添加产品
@@ -72,6 +78,43 @@ const saveProduct = (params) => http.post(`${baseUrl}/product/save`, params, 'ap
 const productList = (params) => http.get(`${baseUrl}/product/list`, params)
 // 单个产品获取
 const porductOne = (params) => http.get(`${baseUrl}/product/one`, params)
+// 获取纱线类型+数量
+const YarnList = (params) => http.get(`${baseUrl}/yarn/list`, params)
+// 添加纱线支数
+const saveYarnCount = (params) => http.post(`${baseUrl}/yarn/count/save`, params, 'application/json')
+// 添加纱线类型
+const saveYarnType = (params) => http.post(`${baseUrl}/yarn/type/save`, params, 'application/json')
+// 添加纱线颜色
+const saveYarnColor = (params) => http.post(`${baseUrl}/yarn/color/save`, params, 'application/json')
+// 获取工序+边型+织造法+机型
+const editList = (params) => http.get(`${baseUrl}/production/edit/list`, params)
+// 添加机型
+const saveProductionType = (params) => http.post(`${baseUrl}/production/type/save`, params, 'application/json')
+// 添加工序
+const saveProductionProcess = (params) => http.post(`${baseUrl}/production/process/save`, params, 'application/json')
+// 添加织造法
+const saveProductionMethod = (params) => http.post(`${baseUrl}/production/method/save`, params, 'application/json')
+// 添加边型
+const saveProductionSide = (params) => http.post(`${baseUrl}/production/side/save`, params, 'application/json')
+// 添加工艺单
+const saveCraft = (params) => http.post(`${baseUrl}/product/craft/save`, params, 'application/json')
+// 工艺单列表
+const craftList = (params) => http.get(`${baseUrl}/product/craft/list`, params)
+// 获取产品计划单
+const productPlanOne = (params) => http.get(`${baseUrl}/product/plan/one`, params)
+// 产品计划单列表
+const productPlanList = (params) => http.get(`${baseUrl}/product/plan/list`, params)
+// 添加产品计划单
+const saveProductPlan = (params) => http.post(`${baseUrl}/product/plan/save`, params, 'application/json')
+// 根据Id获取计划单
+const productPlanDetail = (params) => http.get(`${baseUrl}/product/plan/product/one`, params)
+// 添加产品辅料
+const saveMaterial = (params) => http.post(`${baseUrl}/product/material/save`, params, 'application/json')
+// 删除产品辅料
+const deleteMaterial = (params) => http.post(`${baseUrl}/product/material/delete`, params, 'application/json')
+// 获取辅料列表
+const materialList = (params) => http.get(`${baseUrl}/product/material/list`, params)
+
 export {
   login,
   register,
@@ -108,5 +151,26 @@ export {
   footageDelete,
   saveProduct,
   productList,
-  porductOne
+  porductOne,
+  YarnList,
+  editList,
+  saveProductionType,
+  saveProductionProcess,
+  saveProductionMethod,
+  saveProductionSide,
+  saveYarnCount,
+  saveYarnType,
+  saveYarnColor,
+  saveCraft,
+  craftList,
+  productPlanOne,
+  productPlanList,
+  saveProductPlan,
+  productPlanDetail,
+  saveMaterial,
+  deleteMaterial,
+  materialList,
+  unitList,
+  unitSave,
+  unitDelete
 }

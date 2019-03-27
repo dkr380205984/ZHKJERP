@@ -38,6 +38,23 @@
           </div>
         </div>
       </div>
+      <div class="lineCtn" :style="{'max-height':flagObj.otherIngredient?'300px':'64px'}">
+        <div class="inputCtn">
+          <span class="label">添加辅料:</span>
+          <el-input class="elInput" v-model="otherIngredient" placeholder="请输入辅料"></el-input>
+          <div class="okBtn" @click="saveOtherIngredient">添加</div>
+          <div class="showAll" @click="flagObj.otherIngredient=!flagObj.otherIngredient">{{!flagObj.otherIngredient?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flagObj.otherIngredient?'showIcon':'hideIcon'"></i></div>
+        </div>
+        <div class="allInfo">
+          <div class="bgWhite"></div>
+          <div class="list">
+            <div class="btnCtn" v-for="item in otherIngredientArr" :key="item.id">
+              <span>{{item.name}}</span>
+              <i class="iconCancle" @click="deleteOtherIngredient(item.id)">x</i>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="lineCtn" :style="{'max-height':flagObj.colorFlag?'300px':'64px'}">
         <div class="inputCtn">
           <span class="label">添加颜色:</span>
@@ -163,7 +180,9 @@ import {
   footageOne,
   footageList,
   footageSave,
-  footageDelete
+  footageDelete,
+  saveMaterial,
+  materialList
 } from '@/assets/js/api.js'
 export default {
   data () {
@@ -173,9 +192,12 @@ export default {
         ingredientFlag: false,
         colorFlag: false,
         sizeFlag: false,
-        sizeTFlag: false
+        sizeTFlag: false,
+        otherIngredient: false
       },
       id: -1,
+      otherIngredient: '',
+      otherIngredientArr: [],
       flower: '',
       flowerArr: [],
       ingredient: '',
@@ -636,6 +658,39 @@ export default {
           })
         }
       })
+    },
+    // 添加辅料
+    saveOtherIngredient () {
+      if (this.otherIngredient) {
+        this.loading = true
+        saveMaterial({
+          company_id: window.sessionStorage.getItem('company_id'),
+          name: this.otherIngredient
+        }).then((res) => {
+          if (res.data.status) {
+            this.$message.success({
+              message: '添加辅料成功'
+            })
+            this.flower = ''
+            materialList({
+              company_id: window.sessionStorage.getItem('company_id')
+            }).then((res) => {
+              if (res.data.status) {
+                this.otherIngredientArr = res.data.data
+              }
+              this.loading = false
+            })
+          }
+        })
+      } else {
+        this.$message.error({
+          message: '请在左侧输入框输入添加花型的名称'
+        })
+      }
+    },
+    // 删除辅料
+    deleteOtherIngredient (id) {
+
     }
   },
   watch: {
@@ -715,6 +770,8 @@ export default {
       company_id: companyId
     }), footageList({
       company_id: companyId
+    }), materialList({
+      company_id: companyId
     })]).then((res) => {
       console.log(res)
       // 初始化花型和树形数据
@@ -751,6 +808,7 @@ export default {
       this.colorArr = res[3].data.data
       this.sizeTarr = res[4].data.data
       this.sizeArr = res[5].data.data
+      this.otherIngredientArr = res[6].data.data
       this.loading = false
     })
   }

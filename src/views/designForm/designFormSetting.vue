@@ -7,7 +7,14 @@
       <div class="lineCtn" :style="{'max-height':flagObj.piece?'300px':'64px'}">
         <div class="inputCtn">
           <span class="label">纱线支数:</span>
-          <el-input class="elInput" v-model="piece" placeholder="请输入纱线支数"></el-input>
+          <el-input class="elInput" v-model="piece" placeholder="请输入纱线支数">
+            <template slot="append">
+              <el-select style="width:80px" v-model="pieceUnit" placeholder="请选择">
+                <el-option label="支" value="0"></el-option>
+                <el-option label="厘米" value="1"></el-option>
+              </el-select>
+            </template>
+          </el-input>
           <div class="okBtn" @click="savePiece">添加</div>
           <div class="showAll" @click="flagObj.piece=!flagObj.piece">{{!flagObj.piece?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flagObj.piece?'showIcon':'hideIcon'"></i></div>
         </div>
@@ -15,25 +22,8 @@
           <div class="bgWhite"></div>
           <div class="list">
             <div class="btnCtn" v-for="item in pieceArr" :key="item.id">
-              <span>{{item.name}}</span>
+              <span>{{item.name}}{{item.unit|unitFilter}}</span>
               <i class="iconCancle" @click="deletePiece(item.id)">x</i>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="lineCtn" :style="{'max-height':flagObj.blast?'300px':'64px'}">
-        <div class="inputCtn">
-          <span class="label">纱线股数:</span>
-          <el-input class="elInput" v-model="blast" placeholder="请输入纱线股数"></el-input>
-          <div class="okBtn" @click="saveBlast">添加</div>
-          <div class="showAll" @click="flagObj.blast=!flagObj.blast">{{!flagObj.blast?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flagObj.blast?'showIcon':'hideIcon'"></i></div>
-        </div>
-        <div class="allInfo">
-          <div class="bgWhite"></div>
-          <div class="list">
-            <div class="btnCtn" v-for="item in blastArr" :key="item.id">
-              <span>{{item.name}}</span>
-              <i class="iconCancle" @click="deleteBlast(item.id)">x</i>
             </div>
           </div>
         </div>
@@ -51,6 +41,25 @@
             <div class="btnCtn" v-for="item in typeArr" :key="item.id">
               <span>{{item.name}}</span>
               <i class="iconCancle" @click="deleteType(item.id)">x</i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="lineCtn" :style="{'max-height':flagObj.color?'300px':'64px'}">
+        <div class="inputCtn">
+          <span class="label">纱线颜色:</span>
+          <el-input class="elInput" v-model="color" placeholder="请输入颜色"></el-input>
+          <el-color-picker style="margin-left:15px;" v-model="colorVal"></el-color-picker>
+          <div class="okBtn" @click="saveColor">添加</div>
+          <div class="showAll" @click="flagObj.color=!flagObj.color">{{!flagObj.color?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flagObj.color?'showIcon':'hideIcon'"></i></div>
+        </div>
+        <div class="allInfo">
+          <div class="bgWhite"></div>
+           <div class="list">
+            <div class="btnCtn" v-for="item in colorArr" :key="item.id">
+              <div class="colorBlock" :style="{'background':item.color_code}"></div>
+              <span>{{item.name}}</span>
+              <i class="iconCancle" @click="deleteColor(item.id)">x</i>
             </div>
           </div>
         </div>
@@ -128,117 +137,112 @@
 </template>
 
 <script>
+import { YarnList, editList, saveProductionType, saveProductionProcess, saveProductionMethod, saveProductionSide, saveYarnCount, saveYarnType, saveYarnColor } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      id: 1000, // 一个假的自增Id
+      company_id: window.sessionStorage.getItem('company_id'),
       flagObj: {
-        blast: false,
         piece: false,
         type: false,
         ruffled: false,
         model: false,
         organization: false,
-        process: false
+        process: false,
+        color: false
       },
-      blast: '',
-      blastArr: [{
-        name: '单股',
-        id: 1
-      }, {
-        name: '双股',
-        id: 2
-      }, {
-        name: '多股',
-        id: 3
-      }],
+      colorVal: '',
+      color: '',
+      colorArr: [],
+      pieceUnit: '0',
       piece: '',
-      pieceArr: [{
-        name: '36支',
-        id: 1
-      }, {
-        name: '52支',
-        id: 2
-      }, {
-        name: '86支',
-        id: 3
-      }],
+      pieceArr: [],
       type: '',
-      typeArr: [{
-        name: '晴纶',
-        id: 1
-      }, {
-        name: '涤纶',
-        id: 2
-      }, {
-        name: '羊毛',
-        id: 3
-      }],
+      typeArr: [],
       ruffled: '',
-      ruffledArr: [{
-        name: '一边',
-        id: 1
-      }, {
-        name: '两边',
-        id: 2
-      }, {
-        name: '三边',
-        id: 3
-      }],
+      ruffledArr: [],
       model: '',
-      modelArr: [{
-        name: '飞机',
-        id: 1
-      }, {
-        name: '火车',
-        id: 2
-      }, {
-        name: '发动机',
-        id: 3
-      }],
+      modelArr: [],
       organization: '',
-      organizationArr: [{
-        name: '组织1',
-        id: 1
-      }, {
-        name: '组织2',
-        id: 2
-      }, {
-        name: '组织3',
-        id: 3
-      }],
+      organizationArr: [],
       process: '',
-      processArr: [{
-        name: '流程1',
-        id: 1
-      }, {
-        name: '流程2',
-        id: 2
-      }, {
-        name: '流程3',
-        id: 3
-      }]
+      processArr: []
     }
+  },
+  created () {
+    Promise.all([
+      YarnList({
+        company_id: this.company_id
+      }),
+      editList({
+        company_id: this.company_id
+      })
+    ]).then((res) => {
+      console.log(res)
+      this.pieceArr = res[0].data.data.count
+      this.typeArr = res[0].data.data.type
+      this.colorArr = res[0].data.data.color
+      this.ruffledArr = res[1].data.data.side
+      this.processArr = res[1].data.data.process
+      this.organizationArr = res[1].data.data.method
+      this.modelArr = res[1].data.data.type
+    })
   },
   methods: {
     // 添加纱线支数
     savePiece () {
-
+      if (this.piece) {
+        saveYarnCount({
+          unit: this.pieceUnit,
+          name: this.piece,
+          company_id: this.company_id
+        }).then((res) => {
+          if (res.data.status) {
+            this.$message.success({
+              message: '添加成功'
+            })
+            this.pieceArr.push({
+              'id': this.id++,
+              'name': this.piece,
+              'unit': this.pieceUnit
+            })
+            this.piece = ''
+          }
+        })
+      } else {
+        this.$message.error({
+          message: '请填写纱线支数'
+        })
+      }
     },
     // 删除纱线支数
     deletePiece () {
 
     },
-    // 添加纱线股数
-    saveBlast () {
-
-    },
-    // 删除纱线股数
-    deleteBlast () {
-
-    },
     // 添加纱线类型
     saveType () {
-
+      if (this.type) {
+        saveYarnType({
+          name: this.type,
+          company_id: this.company_id
+        }).then((res) => {
+          if (res.data.status) {
+            this.$message.success({
+              message: '添加成功'
+            })
+            this.typeArr.push({
+              'id': this.id++,
+              'name': this.type
+            })
+            this.type = ''
+          }
+        })
+      } else {
+        this.$message.error({
+          message: '请填写纱线类型'
+        })
+      }
     },
     // 删除纱线类型
     deleteType () {
@@ -246,7 +250,27 @@ export default {
     },
     // 添加边型
     saveRuffled () {
-
+      if (this.ruffled) {
+        saveProductionSide({
+          name: this.ruffled,
+          company_id: this.company_id
+        }).then((res) => {
+          if (res.data.status) {
+            this.$message.success({
+              message: '添加成功'
+            })
+            this.ruffledArr.push({
+              'id': this.id++,
+              'name': this.ruffled
+            })
+            this.ruffled = ''
+          }
+        })
+      } else {
+        this.$message.error({
+          message: '请填写边型'
+        })
+      }
     },
     // 删除边型
     deleteRuffled () {
@@ -254,7 +278,27 @@ export default {
     },
     // 添加机型
     saveModel () {
-
+      if (this.model) {
+        saveProductionType({
+          name: this.model,
+          company_id: this.company_id
+        }).then((res) => {
+          if (res.data.status) {
+            this.$message.success({
+              message: '添加成功'
+            })
+            this.modelArr.push({
+              'id': this.id++,
+              'name': this.model
+            })
+            this.model = ''
+          }
+        })
+      } else {
+        this.$message.error({
+          message: '请填写机型'
+        })
+      }
     },
     // 删除机型
     deleteModel () {
@@ -262,7 +306,27 @@ export default {
     },
     // 添加组织法
     saveOrganization () {
-
+      if (this.organization) {
+        saveProductionMethod({
+          name: this.organization,
+          company_id: this.company_id
+        }).then((res) => {
+          if (res.data.status) {
+            this.$message.success({
+              message: '添加成功'
+            })
+            this.organizationArr.push({
+              'id': this.id++,
+              'name': this.organization
+            })
+            this.organization = ''
+          }
+        })
+      } else {
+        this.$message.error({
+          message: '请填写组织法'
+        })
+      }
     },
     // 删除组织法
     deleteOrganization () {
@@ -270,10 +334,67 @@ export default {
     },
     // 添加工艺流程
     saveProcess () {
-
+      if (this.process) {
+        saveProductionProcess({
+          name: this.process,
+          company_id: this.company_id
+        }).then((res) => {
+          if (res.data.status) {
+            this.$message.success({
+              message: '添加成功'
+            })
+            this.processArr.push({
+              'id': this.id++,
+              'name': this.process
+            })
+            this.process = ''
+          }
+        })
+      } else {
+        this.$message.error({
+          message: '请填写工艺流程'
+        })
+      }
     },
     deleteProcess () {
 
+    },
+    // 添加纱线颜色
+    saveColor () {
+      if (this.color && this.colorVal) {
+        saveYarnColor({
+          company_id: this.company_id,
+          name: this.color,
+          color_code: this.colorVal
+        }).then((res) => {
+          if (res.data.status) {
+            this.$message.success({
+              message: '添加成功'
+            })
+            this.colorArr.push({
+              'id': this.id++,
+              'name': this.color,
+              'color_code': this.colorVal
+            })
+            this.color = ''
+            this.colorVal = ''
+          }
+        })
+      } else {
+        this.$message.error({
+          message: '请填写颜色名称并选择对应色块'
+        })
+      }
+    },
+    // 删除纱线颜色
+    deleteColor () {
+
+    }
+  },
+  filters: {
+    unitFilter (val) {
+      const arr = ['支', '厘米']
+      return arr[val]
     }
   }
 }
