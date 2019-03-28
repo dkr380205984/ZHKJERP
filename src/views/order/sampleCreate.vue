@@ -13,46 +13,38 @@
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">产品品类:</span>
-          <span class="content">KR-0001</span>
+          <span class="content">{{product|filterType}}</span>
         </div>
         <div class="inputCtn">
           <span class="label">产品花型:</span>
-          <span class="content">KR-0001</span>
+          <span class="content">{{product.flower_id}}</span>
         </div>
         <div class="inputCtn">
           <span class="label">产品成分:</span>
-          <span class="content">KR-0001</span>
+          <span class="content">{{product.materials|filterMaterials}}</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">克重:</span>
-          <span class="content">KR-0001</span>
+          <span class="content">还没有这个字段</span>
         </div>
         <div class="inputCtn">
           <span class="label">创建人:</span>
-          <span class="content">KR-0001</span>
+          <span class="content">{{product.user_id}}</span>
         </div>
         <div class="inputCtn">
           <span class="label">创建日期:</span>
-          <span class="content">KR-0001</span>
+          <span class="content">{{product.create_time}}</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn oneLine">
           <span class="label">产品规格:</span>
-          <span class="content contentLine">
-            <span class="size">S</span>
+          <span class="content contentLine" v-for="(item,key) in product.size" :key="key">
+            <span class="size">{{key}}</span>
             <span class="sizeDetail">
-              <span class="sizeOnce">长：20cm</span>
-              <span class="sizeOnce">长：20cm</span>
-            </span>
-          </span>
-          <span class="content contentLine">
-            <span class="size">S</span>
-            <span class="sizeDetail">
-              <span class="sizeOnce">长：20cm</span>
-              <span class="sizeOnce">长：20cm</span>
+              <span class="sizeOnce" v-for="itemChild in item" :key="itemChild.id">{{itemChild.size_name + '：' + itemChild.size_value + 'cm'}}</span>
             </span>
           </span>
         </div>
@@ -61,32 +53,37 @@
         <div class="inputCtn oneLine">
           <span class="label">产品图片:</span>
           <span class="content">
-            <img class="img" src="../../assets/image/index/noPic.jpg"/>
+            <img v-if="product.img.length === 0" class="img" src="@/assets/image/index/noPic.jpg"/>
+            <img v-for="(item,index) in product.img" :key="index" class="img" :src="item.image_url" :onerror="defaultImg" />
           </span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn oneLine">
           <span class="label">产品描述:</span>
-          <span class="content">
-            一段文本一段文本一段文本一段文本一段文本一段文本一段文本一段文本一段文本一段文本一段文本一段文本一段文本一段文本一段文本一段文本一段文本一段文本一段文本
-          </span>
+          <span class="content">{{product.description}}</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">原料信息:</span>
-          <span class="content">KR-0001</span>
+          <span class="content">
+            <span v-for="(item,index) in material_data.mainIngredient.ingredient" :key="index" style="margin-right:25px">{{item.join('')}}</span>
+          </span>
         </div>
         <div class="inputCtn">
           <span class="label">辅料信息:</span>
-          <span class="content">KR-0001</span>
+          <span class="content">
+            <span v-for="(item,index) in material_data.otherIngredient.ingredient" :key="index" style="margin-right:25px">{{item}}</span>
+          </span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn oneLine">
           <span class="label">外道加工:</span>
-          <span class="content">KR-0001</span>
+          <span class="content">
+            <span v-for="(item,index) in outside_data" :key="index" style="margin-right:25px">{{index+1}}.{{item}}</span>
+          </span>
         </div>
       </div>
       <div class="border"></div>
@@ -211,6 +208,7 @@ import { productPlanOne } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
       value: '',
       value1: 'KB12345678',
       value2: '围脖 / 针织 / 长巾 / 条纹',
@@ -250,8 +248,19 @@ export default {
         color: [],
         create_time: '',
         description: '',
-        flower_id: ''
-      }
+        flower_id: '',
+        materials: [],
+        img: []
+      },
+      material_data: {
+        mainIngredient: {
+          ingredient: []
+        },
+        otherIngredient: {
+          ingredient: []
+        }
+      },
+      outside_data: []
     }
   },
   created () {
@@ -259,7 +268,31 @@ export default {
       id: 2
     }).then((res) => {
       console.log(res)
+      if (res.data.status) {
+        this.product = res.data.data.product_info
+        this.material_data = res.data.data.material_data
+        this.outside_data = res.data.data.outside_data
+      }
     })
+  },
+  filters: {
+    // 类型合并
+    filterType (item) {
+      if (!item.type_name) {
+        return item.category_name
+      } else if (!item.style_name) {
+        return item.category_name + ' / ' + item.type_name
+      } else {
+        return item.category_name + ' / ' + item.type_name + ' / ' + item.style_name
+      }
+    },
+    filterMaterials (arr) {
+      let str = ''
+      arr.forEach((item) => {
+        str += item.ingredient_name + item.ingredient_value + '%' + ' / '
+      })
+      return str.substring(0, str.length - 2)
+    }
   }
 }
 </script>

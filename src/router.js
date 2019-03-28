@@ -95,6 +95,22 @@ export default new Router({
         path: 'orderAdd',
         name: 'orderAdd',
         component: () => import('./views/order/productList.vue')
+      }, {
+        path: 'foreignTradeCreate',
+        name: 'foreignTradeCreate',
+        component: () => import('./views/foreignTrade/foreignTradeCreate.vue')
+      }, {
+        path: 'foreignTradeDetail',
+        name: 'foreignTradeDetail',
+        component: () => import('./views/foreignTrade/foreignTradeDetail.vue')
+      }, {
+        path: 'foreignTradeList',
+        name: 'foreignTradeList',
+        component: () => import('./views/foreignTrade/foreignTradeList.vue')
+      }, {
+        path: 'foreignTradeUpdate',
+        name: 'foreignTradeUpdate',
+        component: () => import('./views/foreignTrade/foreignTradeUpdate.vue')
       }]
     }
   ]

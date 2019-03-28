@@ -138,6 +138,31 @@
           </div>
         </div>
       </div>
+      <div class="lineCtn" :style="{'max-height':flagObj.unitFlag?'300px':'64px'}">
+        <div class="inputCtn">
+          <span class="label">添加单位:</span>
+          <el-select v-model="selectTypes3" placeholder="请选择大类" class="elInput">
+            <el-option
+              v-for="item in treeData"
+              :key="item.id"
+              :label="item.label"
+              :value="item.id">
+            </el-option>
+          </el-select>
+          <el-input class="elInput" placeholder="请输入大类对应的单位" v-model="unit" @keyup.enter.native="saveUnit"></el-input>
+          <div class="okBtn" @click="saveUnit">添加</div>
+          <div class="showAll" @click="flagObj.unitFlag=!flagObj.unitFlag">{{!flagObj.unitFlag?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flagObj.unitFlag?'showIcon':'hideIcon'"></i></div>
+        </div>
+        <div class="allInfo">
+          <div class="bgWhite"></div>
+           <div class="list">
+             <div class="btnCtn" v-for="item in unitArr" :key="item.id">
+              <span>{{item.product_category}}({{item.name}})</span>
+              <i class="iconCancle" @click="deleteUnit(item.id)">x</i>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="treeCtn">
         <span class="label">添加产品:</span>
         <el-input class="elInput" v-model="newType" placeholder="请输入一级大类"></el-input>
@@ -182,7 +207,9 @@ import {
   footageSave,
   footageDelete,
   saveMaterial,
-  materialList
+  materialList,
+  unitSave,
+  unitList
 } from '@/assets/js/api.js'
 export default {
   data () {
@@ -193,11 +220,14 @@ export default {
         colorFlag: false,
         sizeFlag: false,
         sizeTFlag: false,
-        otherIngredient: false
+        otherIngredient: false,
+        unitFlag: false
       },
       id: -1,
       otherIngredient: '',
       otherIngredientArr: [],
+      unit: '',
+      unitArr: [],
       flower: '',
       flowerArr: [],
       ingredient: '',
@@ -212,6 +242,7 @@ export default {
       loading: true,
       selectTypes: '',
       selectTypes2: '',
+      selectTypes3: '',
       sizeName: '',
       sizeNameArr: [],
       sizeTname: '',
@@ -691,6 +722,39 @@ export default {
     // 删除辅料
     deleteOtherIngredient (id) {
 
+    },
+    // 添加单位
+    saveUnit () {
+      if (this.unit && this.selectTypes3) {
+        this.loading = true
+        unitSave({
+          name: this.unit,
+          category_id: this.selectTypes3,
+          company_id: window.sessionStorage.getItem('company_id')
+        }).then((res) => {
+          if (res.data.status) {
+            this.$message.success({
+              message: '添加成功'
+            })
+            this.unit = ''
+            this.selectTypes3 = ''
+            unitList({
+              company_id: window.sessionStorage.getItem('company_id')
+            }).then((res) => {
+              this.unitArr = res.data.data
+              this.loading = false
+            })
+          }
+        })
+      } else {
+        this.$message.error({
+          message: '请输入单位大类和名称'
+        })
+      }
+    },
+    // 删除单位
+    deleteUnit (id) {
+
     }
   },
   watch: {
@@ -772,6 +836,8 @@ export default {
       company_id: companyId
     }), materialList({
       company_id: companyId
+    }), unitList({
+      company_id: companyId
     })]).then((res) => {
       console.log(res)
       // 初始化花型和树形数据
@@ -809,6 +875,7 @@ export default {
       this.sizeTarr = res[4].data.data
       this.sizeArr = res[5].data.data
       this.otherIngredientArr = res[6].data.data
+      this.unitArr = res[7].data.data
       this.loading = false
     })
   }
