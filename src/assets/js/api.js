@@ -114,8 +114,27 @@ const saveMaterial = (params) => http.post(`${baseUrl}/product/material/save`, p
 const deleteMaterial = (params) => http.post(`${baseUrl}/product/material/delete`, params, 'application/json')
 // 获取辅料列表
 const materialList = (params) => http.get(`${baseUrl}/product/material/list`, params)
-
+// 外贸公司列表
+const clientList = (params) => http.get(`${baseUrl}/client/list`, params)
+// 禁用/启用联系人
+const contactsCheck = (params) => http.post(`${baseUrl}/client/contacts/check`, params, 'application/json')
+// 删除联系人
+const contactsDelete = (params) => http.post(`${baseUrl}/client/contacts/delete`, params, 'application/json')
+// 外贸公司详情
+const clientDetail = (params) => http.get(`${baseUrl}/client/one`, params)
+// 删除外贸公司
+const clientDelete = (params) => http.post(`${baseUrl}/client/delete`, params, 'application/json')
+// 添加外贸公司
+const clientAdd = (params) => http.post(`${baseUrl}/client/save`, params, 'application/json')
+// 添加样品订单
+const sampleSave = (params) => http.post(`${baseUrl}/order/sample/save`, params, 'application/json')
 export {
+  clientList,
+  contactsCheck,
+  contactsDelete,
+  clientDetail,
+  clientDelete,
+  clientAdd,
   login,
   register,
   sendCode,
@@ -172,5 +191,6 @@ export {
   materialList,
   unitList,
   unitSave,
-  unitDelete
+  unitDelete,
+  sampleSave
 }

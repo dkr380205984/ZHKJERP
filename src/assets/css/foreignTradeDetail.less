@@ -1,0 +1,85 @@
+@import './common.less';
+#foreignTradeDetail{
+  height: 100%;
+  font-family: 'systemfont';
+  font-weight: 300;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  .head{
+    min-height: 60px;
+    border-bottom: 1px solid #ECF0F1;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    h2{
+      line-height: 60px;
+      margin: 0;
+      font-size: 24px;
+      color:@fontNormal;
+      font-weight: 400;
+    }
+  }
+  .body{
+    padding: 20px 40px;
+    flex: 1;
+    .lineCtn{
+      display: flex;
+      .inputCtn{
+        flex: 1;
+        min-height: 40px;
+        margin:24px 0;
+        display: flex;
+        flex-wrap: wrap;
+        padding-left: 6em;
+        position: relative;
+        .label{
+          position: absolute;
+          width: 6em;
+          line-height: 40px;
+          text-align: right;
+          font-size: @fontBig;
+          color: @fontNormal;
+          left: 0;
+        }
+        .content{
+          line-height: 40px;
+          margin-left: 15px;
+          color:@fontNormal;
+          font-size: @fontMid;
+        }
+      }
+    }
+    .btnCtn{
+      display: flex;
+      padding-left: 6em;
+      justify-content: space-around;
+      width: 400px;
+      margin-top: 40px;
+    }
+    .specialTable{
+      width: 700px;
+      border:1px solid #ECF0F1;
+      margin-left: 15px;
+      color: @fontNormal;
+      font-size: @fontMid;
+      .tableHead{
+        line-height: 60px;
+        display: flex;
+        border-bottom: 1px solid #ECF0F1;
+        background: #FAFAFA;
+      }
+      .tableBody{
+        .line{
+          line-height: 40px;
+          display: flex;
+        }    
+      }
+      .once{
+        flex: 1;
+        text-align: center;
+      }
+    }
+  }
+}

@@ -55,6 +55,7 @@
               type="daterange"
               align="right"
               unlink-panels
+              value-format="yyyy-MM-dd"
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
@@ -71,19 +72,17 @@
           <div class="tableColumn ">花型</div>
           <div class="tableColumn flexSamll">成分(种)</div>
           <div class="tableColumn">尺码</div>
-          <div class="tableColumn">克重(克)</div>
           <div class="tableColumn flexSamll">颜色(种)</div>
           <div class="tableColumn">图片</div>
           <div class="tableColumn">创建人</div>
           <div class="tableColumn flex9">操作</div>
         </div>
-        <div class="tableRow bodyTableRow" v-for="(item,index) in list" :key="item.id">
-          <div class="tableColumn">{{(index+1)+(pages-1)*5}}</div>
+        <div class="tableRow bodyTableRow" v-for="(item) in list" :key="item.id">
+          <div class="tableColumn" style="color:#1A95FF">{{item.product_code}}</div>
           <div class="tableColumn flex9">{{item|filterType}}</div>
           <div class="tableColumn">{{item.flower_id}}</div>
           <div class="tableColumn flexSamll">{{item.materials.length}}</div>
           <div class="tableColumn">{{item.size|filterSize}}</div>
-          <div class="tableColumn">{{item.weight}}</div>
           <div class="tableColumn flexSamll">{{item.color.length}}</div>
           <div class="tableColumn">
             <div class="imgCtn">
@@ -171,7 +170,9 @@ export default {
       style: [], // 三级分类
       styleVal: '',
       flower: [],
-      flowerVal: ''
+      flowerVal: '',
+      start_time: '',
+      end_time: ''
     }
   },
   methods: {
@@ -184,10 +185,10 @@ export default {
         'style_id': this.styleVal,
         'flower_id': this.flowerVal,
         'page': this.pages,
-        'start_time': '',
-        'end_time': ''
+        'start_time': this.start_time,
+        'end_time': this.end_time,
+        'product_code': this.searchVal
       }).then((res) => {
-        console.log(res)
         this.total = res.data.meta.total
         this.list = res.data.data
       })
@@ -215,15 +216,9 @@ export default {
       }
     },
     pickTime (date) {
-      console.log(date)
-    },
-    // 修改产品
-    goUpdata (id) {
-
-    },
-    // 查看产品
-    goDetail (id) {
-
+      this.start_time = date[0]
+      this.end_time = date[1]
+      this.getProductList()
     }
   },
   watch: {
@@ -249,6 +244,9 @@ export default {
       this.getProductList()
     },
     flowerVal (newVal) {
+      this.getProductList()
+    },
+    searchVal (newVal) {
       this.getProductList()
     }
   },
@@ -286,11 +284,11 @@ export default {
     // 类型合并
     filterType (item) {
       if (!item.type_name) {
-        return item.category_name
+        return item.category_info.product_category
       } else if (!item.style_name) {
-        return item.category_name + '/' + item.type_name
+        return item.category_info.product_category + ' / ' + item.type_name
       } else {
-        return item.category_name + '/' + item.type_name + '/' + item.style_name
+        return item.category_info.product_category + ' / ' + item.type_name + ' / ' + item.style_name
       }
     },
     // 类型展示

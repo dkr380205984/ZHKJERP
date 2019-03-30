@@ -6,7 +6,7 @@
     <div class="body">
       <div class="inputCtn">
         <span class="label">产品编号:</span>
-        <span class="unInput">KB13229985</span>
+        <span class="unInput">{{product_code}}</span>
       </div>
       <div class="inputCtn">
         <span class="label">产品分类:</span>
@@ -72,6 +72,9 @@
             <template slot="prepend">{{item.name}}</template>
             <template slot="append">厘米</template>
           </el-input>
+          <el-input class="elInputAp" style="width:200px" placeholder="请输入产品克重" v-model="weight[indexf]">
+            <template slot="append">克</template>
+          </el-input>
           <div class="deleteBtn2" @click="deleteSize(itemf)"><i class="el-icon-delete"></i></div>
         </div>
         <div class="addBtn" @click="addSizeLine">
@@ -79,13 +82,7 @@
           <span>+</span>
         </div>
       </div>
-      <div class="inputCtn" style="margin-top:0">
-        <span class="label">产品克重:</span>
-        <el-input class="elInput" placeholder="请输入产品克重" v-model="weight" @keyup.native="filterNum('weight')">
-          <template slot="append">克</template>
-        </el-input>
-      </div>
-      <div class="inputCtn" style="margin-bottom:0">
+      <div class="inputCtn" style="margin-top:0;margin-bottom:0">
         <span class="label">产品颜色:</span>
         <div class="cancleCtn" v-for="item in colorNum" :key="item">
           <el-select class="elSelect" v-model="color[item-1]" placeholder="请选择颜色">
@@ -146,6 +143,7 @@ import { getToken, productTppeList, flowerList, ingredientList, colorList, saveP
 export default {
   data () {
     return {
+      product_code: '',
       postData: { token: '' },
       loading: true,
       colorNum: 1,
@@ -169,7 +167,7 @@ export default {
         name: '均码'
       }],
       child_size: [],
-      weight: '',
+      weight: [],
       showError: false
     }
   },
@@ -188,7 +186,6 @@ export default {
     porductOne({
       id: this.$route.params.id
     })]).then((res) => {
-      console.log(res[5].data.data)
       this.flowerArr = res[0].data.data
       this.treeData = res[1].data.data.map((item) => {
         return {
@@ -215,6 +212,8 @@ export default {
       this.postData.token = res[4].data.data
       // 初始化已有数据,详情数据给的都是name所以都要处理成id初始化
       const product = res[5].data.data
+      this.colorNum = product.color.length
+      this.product_code = product.product_code
       this.color = product.color.map((item) => {
         return this.colorArr.find((item2) => {
           return item2.name === item.name
@@ -223,7 +222,6 @@ export default {
       this.flower = this.flowerArr.find((item) => {
         return item.name === product.flower_id
       }).id
-      this.weight = product.weight
       this.textarea = product.description
       // 成分
       this.ingredientNum = product.materials.length
@@ -235,16 +233,22 @@ export default {
       })
       // 尺码
       this.footage = Object.keys(product.size)
+      console.log(this.footage)
       this.footage.forEach((key) => {
         this.sizeArr.push(product.size[key].map((item) => {
           return item.size_value
         }))
       })
+      this.footage.forEach((key) => {
+        this.weight.push(product.size[key][0].weight)
+      })
+      console.log(this.weight)
       this.sizeNum = this.footage.length
       // 类型
       const categoryObj = this.treeData.find((item) => {
-        return item.label === product.category_name
+        return item.label === product.category_info.product_category
       })
+      console.log(this.treeData)
       const typeObj = product.type_name ? categoryObj.children.find((item) => {
         return item.label === product.type_name
       }) : ''
@@ -385,21 +389,23 @@ export default {
           return
         }
       }
-      const imgArr = this.$refs.uploada.uploadFiles.map((item) => { return 'http://zhihui.tlkrzf.com/' + item.response.hash })
+      const imgArr = this.$refs.uploada.uploadFiles.map((item) => { return item.url })
+      console.log(this.footage, this.sizeArr, this.child_size)
       const sizeArr = this.footage.map((item, index) => {
         return this.sizeArr[index].map((item2, index2) => {
           return {
             'size_name': this.child_size[index2].name || null,
             'size_value': item2 || null,
-            'footage': this.child_footage.find((item3) => item3.id === item).name || null
+            'footage': item,
+            'weight': this.weight[index]
           }
         })
       }).flat() // ES6二维数组转一维
+      console.log(sizeArr)
       if (sizeArr.length < this.sizeNum * this.child_size.length) {
         this.$message.error({
           message: '检测到未填写的产品尺寸，请输入后保存'
         })
-        return
       }
       for (let i = 0; i < sizeArr.length; i++) {
         if (!(sizeArr[i].size_name && sizeArr[i].size_value)) {
@@ -413,22 +419,21 @@ export default {
         this.$message.error({
           message: '检测到未填写的颜色，请选择后保存'
         })
-        return
       }
       const materialsArr = this.ingredientScale.map((item, index) => {
         return {
           'ingredient_value': item,
-          'ingredient_name': this.ingredientArr.find((item2) => item2.id === this.ingredient[index]).name
+          'ingredient_name': this.ingredient[index]
         }
       })
       saveProduct({
-        product_code: null,
+        id: this.$route.params.id,
+        product_code: this.product_code,
         company_id: window.sessionStorage.getItem('company_id'),
         category_id: this.types[0],
         type_id: this.types[1],
         style_id: this.types[2] || null,
         flower_id: this.flower,
-        weight: this.weight,
         description: this.textarea,
         user_id: window.sessionStorage.getItem('user_id'),
         img: imgArr,
@@ -438,20 +443,11 @@ export default {
       }).then((res) => {
         if (res.data.status) {
           this.$message.success({
-            message: '添加成功'
+            message: '修改成功',
+            onClose: () => {
+              window.location.reload()
+            }
           })
-          this.textarea = ''
-          this.flower = ''
-          this.ingredient = []
-          this.ingredientScale = [100]
-          this.color = []
-          this.fileArr = []
-          this.footage = []
-          this.sizeArr = [[]]
-          this.weight = ''
-          this.colorNum = 1
-          this.sizeNum = 1
-          this.ingredientNum = 1
         }
       })
     },

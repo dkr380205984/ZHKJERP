@@ -90,12 +90,23 @@
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">订单公司:</span>
-          <el-select class="elSelect" v-model="value" placeholder="请选择订单公司">
+          <el-select class="elSelect" v-model="client" placeholder="可输入名称精确搜索" filterable @change="getContacts">
             <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              v-for="item in clientArr"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </div>
+        <div class="inputCtn">
+          <span class="label">联系人:</span>
+          <el-select class="elSelect" v-model="contacts" placeholder="请选择对接联系人">
+            <el-option
+              v-for="item in contactsArr"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
             </el-option>
           </el-select>
         </div>
@@ -103,31 +114,31 @@
       <div class="lineCtn" style="margin-bottom:0">
         <div class="specialCtn">
           <span class="label">订单信息:</span>
-          <div class="infoCtn" v-for="item in num" :key="item">
+          <div class="infoCtn" v-for="(item,index) in order_info.length" :key="item">
             <span class="index">{{item}}</span>
-            <el-select style="width:150px" v-model="value" placeholder="请选择尺码">
+            <el-select style="width:150px" v-model="order_info[index].size" placeholder="请选择尺码">
               <el-option
-                v-for="item in options"
+                v-for="item in sizeArr"
+                :key="item"
+                :label="item"
+                :value="item">
+              </el-option>
+            </el-select>
+            <el-select v-model="order_info[index].colour" placeholder="请选择配色" style="margin-left:15px;width:150px">
+              <el-option
+                v-for="item in colourArr"
                 :key="item.value"
-                :label="item.label"
+                :label="item.name"
                 :value="item.value">
               </el-option>
             </el-select>
-            <el-select v-model="value" placeholder="请选择颜色" style="margin-left:15px;width:150px">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-            <el-input class="elInputAp" placeholder="请输入数字" v-model="value">
-              <template slot="prepend">订单条数:</template>
-              <template slot="append">条</template>
+            <el-input class="elInputAp" placeholder="请输入数字" v-model="order_info[index].number" @blur="computedTotal">
+              <template slot="prepend">订单数:</template>
+              <template slot="append">{{unit}}</template>
             </el-input>
-            <el-icon class="el-icon-delete" @click.native="num--"></el-icon>
+            <el-icon class="el-icon-delete" @click.native="deleteOrder(index)"></el-icon>
           </div>
-          <div class="addBtn" @click="num++">
+          <div class="addBtn" @click="addOrder">
             <span>添加分类</span>
             <span>+</span>
           </div>
@@ -137,19 +148,19 @@
         <div class="specialCtn" style="width:300px">
           <span class="label">订单价格:</span>
           <div class="infoCtn" style="height:40px">
-            <el-radio-group v-model="radio2">
-              <el-radio :label="3">按单价计算</el-radio>
-              <el-radio :label="6">按款数计算</el-radio>
+            <el-radio-group v-model="price_model" @change="getPrice">
+              <el-radio :label="1">按单价计算</el-radio>
+              <el-radio :label="2">按款数计算</el-radio>
             </el-radio-group>
           </div>
           <div class="infoCtn">
-            <el-input style="margin-left:0px" class="elInputAp" placeholder="请输入数字" v-model="value">
+            <el-input style="margin-left:0px" class="elInputAp" placeholder="请输入数字" v-model="danjia" :disabled="price_model===2" @blur="computedTotal">
               <template slot="prepend">单价:</template>
-              <template slot="append">元/条</template>
+              <template slot="append">元/{{unit}}</template>
             </el-input>
           </div>
           <div class="infoCtn">
-            <el-input style="margin-left:0px" class="elInputAp" value="1000" disabled>
+            <el-input style="margin-left:0px" class="elInputAp" placeholder="请输入数字" v-model="price_total" :disabled="price_model===1">
               <template slot="prepend">总价:</template>
               <template slot="append">元</template>
             </el-input>
@@ -160,9 +171,9 @@
         <div class="specialCtn" style="width:300px">
           <span class="label">承担方:</span>
           <div class="infoCtn" style="height:40px">
-            <el-radio-group v-model="radio2">
-              <el-radio :label="3">工厂承担</el-radio>
-              <el-radio :label="6">订单公司承担</el-radio>
+            <el-radio-group v-model="assume">
+              <el-radio :label="1">工厂承担</el-radio>
+              <el-radio :label="2">订单公司承担</el-radio>
             </el-radio-group>
           </div>
         </div>
@@ -170,7 +181,7 @@
       <div class="lineCtn" style="margin-top:0">
         <div class="inputCtn">
           <span class="label">税率:</span>
-          <el-input style="margin-left:15px;" placeholder="请输入数字" v-model="value">
+          <el-input style="margin-left:15px;" placeholder="请输入数字" v-model="tax_rate">
             <template slot="append">%</template>
           </el-input>
         </div>
@@ -180,7 +191,8 @@
           <span class="label">下单日期:</span>
            <el-date-picker
             style="margin-left:15px;width:200px"
-            v-model="value1"
+            v-model="order_time"
+            value-format="yyyy-MM-dd"
             type="date"
             placeholder="选择日期">
           </el-date-picker>
@@ -188,8 +200,9 @@
         <div class="inputCtn">
           <span class="label">交货日期:</span>
            <el-date-picker
+            value-format="yyyy-MM-dd"
             style="margin-left:15px;width:200px"
-            v-model="value1"
+            v-model="consignment_time"
             type="date"
             placeholder="选择日期">
           </el-date-picker>
@@ -197,50 +210,43 @@
       </div>
       <div class="btnCtn">
         <div class="cancleBtn">清空</div>
-        <div class="okBtn">保存</div>
+        <div class="okBtn"  @click="saveAll">保存</div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { productPlanOne } from '@/assets/js/api.js'
+import { porductOne, clientList, sampleSave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
       defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
+      client: '',
+      contacts: '',
+      price_model: 1,
+      assume: 1,
+      tax_rate: '',
+      order_time: '',
+      consignment_time: '',
+      danjia: '',
+      price_total: '',
       value: '',
-      value1: 'KB12345678',
-      value2: '围脖 / 针织 / 长巾 / 条纹',
-      value3: '涤纶:10% / 毛线:90%',
-      value4: '长(40cm) * 宽(40cm) * 须头(40cm)',
-      value5: '100克',
-      value6: '2018-03-21',
-      value7: '夏东海',
-      value8: '长(40cm) * 宽(40cm) * 须头(40cm)长(40cm) * 宽(40cm) * 须头(40cm)长(40cm) * 宽(40cm) * 须头(40cm)长(40cm) * 宽(40cm) * 须头(40cm)',
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
+      unit: '',
+      clientArr: [],
+      contactsArr: [],
+      sizeArr: [],
+      colourArr: [],
+      order_info: [{
+        colour: '',
+        size: '',
+        number: ''
       }],
-      num: 1,
-      num2: 1,
-      num3: 1,
-      radio2: 3,
-      date: '',
       product: {
-        category_name: '',
+        category_info: {
+          name: '',
+          product_category: ''
+        },
         style_name: '',
         type_name: '',
         user_id: '',
@@ -254,36 +260,47 @@ export default {
       },
       material_data: {
         mainIngredient: {
-          ingredient: []
+          ingredient: [['暂无信息']]
         },
         otherIngredient: {
-          ingredient: []
+          ingredient: ['暂无信息']
         }
       },
-      outside_data: []
+      outside_data: ['暂无信息']
     }
   },
   created () {
-    productPlanOne({
-      id: 2
-    }).then((res) => {
-      console.log(res)
-      if (res.data.status) {
-        this.product = res.data.data.product_info
-        this.material_data = res.data.data.material_data
-        this.outside_data = res.data.data.outside_data
+    Promise.all([
+      porductOne({
+        id: 3
+      }), clientList({
+        company_id: window.sessionStorage.getItem('company_id'),
+        keyword: '',
+        status: 1,
+        limit: '',
+        page: ''
+      })
+    ]).then((res) => {
+      this.product = res[0].data.data
+      this.sizeArr = Object.keys(res[0].data.data.size)
+      this.colourArr = res[0].data.data.color
+      this.unit = res[0].data.data.category_info.name
+      if (res[0].data.data.product_plan) {
+        this.material_data = res[0].data.data.product_plan.material_data
+        this.outside_data = res[0].data.data.product_plan.outside_data
       }
+      this.clientArr = res[1].data.data
     })
   },
   filters: {
     // 类型合并
     filterType (item) {
       if (!item.type_name) {
-        return item.category_name
+        return item.category_info.product_category
       } else if (!item.style_name) {
-        return item.category_name + ' / ' + item.type_name
+        return item.category_info.product_category + ' / ' + item.type_name
       } else {
-        return item.category_name + ' / ' + item.type_name + ' / ' + item.style_name
+        return item.category_info.product_category + ' / ' + item.type_name + ' / ' + item.style_name
       }
     },
     filterMaterials (arr) {
@@ -292,6 +309,64 @@ export default {
         str += item.ingredient_name + item.ingredient_value + '%' + ' / '
       })
       return str.substring(0, str.length - 2)
+    }
+  },
+  methods: {
+    // 根据订单公司获取联系人
+    getContacts () {
+      this.contactsArr = this.clientArr.find((item) => {
+        return item.id === this.client
+      }).contacts
+    },
+    // 添加分类
+    addOrder () {
+      this.order_info.push({
+        colour: '',
+        size: '',
+        number: ''
+      })
+    },
+    // 删除分类
+    deleteOrder (index) {
+      if (this.order_info.length > 1) {
+        this.order_info.splice(index, 1)
+      } else {
+        this.$message.error({
+          message: '分类信息不能少于一条'
+        })
+      }
+    },
+    // 切换价格计算方式
+    getPrice (info) {
+      if (info === 2) {
+        this.danjia = ''
+      }
+    },
+    // 根据单价算总价
+    computedTotal () {
+      if (this.price_model === 1) {
+        this.price_total = this.order_info.reduce((total, currentValue) => {
+          return total + currentValue.number * this.danjia
+        }, 0)
+      }
+    },
+    // 保存
+    saveAll () {
+      sampleSave({
+        company_id: window.sessionStorage.getItem('company_id'),
+        product_id: this.product.id,
+        client_id: this.client,
+        order_info: this.order_info,
+        contacts_id: this.contacts,
+        price_model: this.price_model,
+        price_total: this.price_total,
+        assume: this.assume,
+        tax_rate: this.tax_rate,
+        order_time: this.order_time,
+        consignment_time: this.consignment_time
+      }).then((res) => {
+        console.log(res)
+      })
     }
   }
 }

@@ -1202,11 +1202,11 @@ export default {
     // 类型合并
     filterType (item) {
       if (!item.type_name) {
-        return item.category_name
+        return item.category_info.product_category
       } else if (!item.style_name) {
-        return item.category_name + '/' + item.type_name
+        return item.category_info.product_category + ' / ' + item.type_name
       } else {
-        return item.category_name + '/' + item.type_name + '/' + item.style_name
+        return item.category_info.product_category + ' / ' + item.type_name + ' / ' + item.style_name
       }
     },
     // 成分合并

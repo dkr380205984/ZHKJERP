@@ -71,19 +71,17 @@
           <div class="tableColumn ">花型</div>
           <div class="tableColumn flexSamll">成分(种)</div>
           <div class="tableColumn">尺码</div>
-          <div class="tableColumn">克重(克)</div>
           <div class="tableColumn flexSamll">颜色(种)</div>
           <div class="tableColumn">图片</div>
           <div class="tableColumn">创建人</div>
           <div class="tableColumn flex9">操作</div>
         </div>
-        <div class="tableRow bodyTableRow" v-for="(item,index) in list" :key="item.id">
-          <div class="tableColumn">{{(index+1)+(pages-1)*5}}</div>
+        <div class="tableRow bodyTableRow" v-for="(item,index) in list" :key="index">
+          <div class="tableColumn" style="color: rgb(26, 149, 255);">{{item.product_code}}</div>
           <div class="tableColumn flex9">{{item|filterType}}</div>
           <div class="tableColumn">{{item.flower_id}}</div>
           <div class="tableColumn flexSamll">{{item.materials.length}}</div>
           <div class="tableColumn">{{item.size|filterSize}}</div>
-          <div class="tableColumn">{{item.weight}}</div>
           <div class="tableColumn flexSamll">{{item.color.length}}</div>
           <div class="tableColumn">
             <div class="imgCtn">
@@ -286,11 +284,11 @@ export default {
     // 类型合并
     filterType (item) {
       if (!item.type_name) {
-        return item.category_name
+        return item.category_info.product_category
       } else if (!item.style_name) {
-        return item.category_name + '/' + item.type_name
+        return item.category_info.product_category + ' / ' + item.type_name
       } else {
-        return item.category_name + '/' + item.type_name + '/' + item.style_name
+        return item.category_info.product_category + ' / ' + item.type_name + ' / ' + item.style_name
       }
     },
     // 类型展示

@@ -6,7 +6,7 @@
     <div class="body">
       <div class="inputCtn">
         <span class="label">产品编号:</span>
-        <span class="unInput">KB13229985</span>
+        <span class="unInput">{{productCode}}</span>
       </div>
       <div class="inputCtn">
         <span class="label">产品分类:</span>
@@ -71,7 +71,7 @@
             <template slot="prepend">{{item.name}}</template>
             <template slot="append">厘米</template>
           </el-input>
-          <el-input class="elInput" style="width:200px" placeholder="请输入产品克重" v-model="weight[indexf]">
+          <el-input class="elInputAp" style="width:200px" placeholder="请输入产品克重" v-model="weight[indexf]">
             <template slot="append">克</template>
           </el-input>
           <div class="deleteBtn2" @click="deleteSize(itemf)"><i class="el-icon-delete"></i></div>
@@ -138,10 +138,12 @@
 </template>
 
 <script>
+import { letterArr } from '@/assets/js/dictionary.js'
 import { getToken, productTppeList, flowerList, ingredientList, colorList, saveProduct } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      product_code: ['00', 'X', 'X', 'X', '00'],
       postData: { token: '' },
       loading: true,
       colorNum: 1,
@@ -171,6 +173,7 @@ export default {
   },
   created () {
     let companyId = window.sessionStorage.getItem('company_id')
+    this.product_code[0] = new Date().getFullYear().toString().substring(2, 4)
     // 初始化接口
     Promise.all([flowerList({
       company_id: companyId
@@ -181,7 +184,6 @@ export default {
     }), colorList({
       company_id: companyId
     }), getToken()]).then((res) => {
-      console.log(res)
       this.flowerArr = res[0].data.data
       this.treeData = res[1].data.data.map((item) => {
         return {
@@ -203,6 +205,7 @@ export default {
           })
         }
       })
+      console.log(this.treeData)
       this.ingredientArr = res[2].data.data
       this.colorArr = res[3].data.data
       this.postData.token = res[4].data.data
@@ -211,23 +214,60 @@ export default {
   },
   watch: {
     types (newVal) {
+      this.product_code[1] = 'X'
+      this.product_code[2] = 'X'
+      this.product_code[3] = 'X'
       if (newVal.length !== 0) {
         const obj = this.treeData.find((item) => item.value === newVal[0])
         this.child_footage = obj.child_footage
         this.child_size = obj.child_size
       }
+      this.treeData.forEach((item, index) => {
+        if (item.value === newVal[0]) {
+          this.$set(this.product_code, 1, letterArr[index])
+        }
+        if (item.children) {
+          item.children.forEach((item2, index2) => {
+            if (item2.value === newVal[1]) {
+              this.$set(this.product_code, 2, letterArr[index2])
+            }
+            if (item2.children) {
+              item2.children.forEach((item3, index3) => {
+                if (item3.value === newVal[2]) {
+                  this.$set(this.product_code, 3, letterArr[index3])
+                }
+              })
+            }
+          })
+        }
+      })
     },
     ingredientScale (newVal) {
       let add = 0
       newVal.forEach((item) => {
         add += parseInt(item)
       })
-      console.log(add)
       if (add !== 100) {
         this.showError = true
       } else {
         this.showError = false
       }
+    },
+    flower (newVal) {
+      this.flowerArr.forEach((item, index) => {
+        if (item.id === newVal) {
+          let code = index + 1
+          if (code < 10) {
+            code = '0' + code
+          }
+          this.$set(this.product_code, 4, code)
+        }
+      })
+    }
+  },
+  computed: {
+    productCode () {
+      return this.product_code.join('')
     }
   },
   methods: {
@@ -368,7 +408,7 @@ export default {
           return
         }
       }
-      const imgArr = this.$refs.uploada.uploadFiles.map((item) => { return 'http://zhihui.tlkrzf.com/' + item.response.hash })
+      const imgArr = this.$refs.uploada.uploadFiles.map((item) => { return 'http://pnvu7i45q.bkt.clouddn.com/' + item.response.key })
       const sizeArr = this.footage.map((item, index) => {
         return this.sizeArr[index].map((item2, index2) => {
           return {
@@ -406,7 +446,7 @@ export default {
         }
       })
       saveProduct({
-        product_code: null,
+        product_code: this.productCode,
         company_id: window.sessionStorage.getItem('company_id'),
         category_id: this.types[0],
         type_id: this.types[1],

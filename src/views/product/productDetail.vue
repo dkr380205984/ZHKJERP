@@ -7,7 +7,7 @@
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">产品编号:</span>
-          <span class="content blue">KB13229985</span>
+          <span class="content blue">{{productDetail.product_code}}</span>
         </div>
       </div>
       <div class="lineCtn">
@@ -91,7 +91,10 @@ export default {
     return {
       defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
       productDetail: {
-        category_name: '',
+        category_info: {
+          product_category: '',
+          name: ''
+        },
         type_name: '',
         style_name: '',
         color: [],
@@ -112,11 +115,11 @@ export default {
     // 类型合并
     filterType (item) {
       if (!item.type_name) {
-        return item.category_name
+        return item.category_info.product_category
       } else if (!item.style_name) {
-        return item.category_name + ' / ' + item.type_name
+        return item.category_info.product_category + ' / ' + item.type_name
       } else {
-        return item.category_name + ' / ' + item.type_name + ' / ' + item.style_name
+        return item.category_info.product_category + ' / ' + item.type_name + ' / ' + item.style_name
       }
     },
     filterMaterials (arr) {
