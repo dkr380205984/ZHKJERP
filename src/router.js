@@ -111,6 +111,10 @@ export default new Router({
         path: 'foreignTradeUpdate',
         name: 'foreignTradeUpdate',
         component: () => import('./views/foreignTrade/foreignTradeUpdate.vue')
+      }, {
+        path: 'designFormDetail/:id',
+        name: 'designFormDetail',
+        component: () => import('./views/designForm/designFormDetail.vue')
       }]
     }
   ]

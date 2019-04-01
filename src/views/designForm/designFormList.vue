@@ -58,27 +58,26 @@
       <div class="tableCtn">
         <div class="tableRow titleTableRow">
           <div class="tableColumn">编号</div>
-          <div class="tableColumn">品类</div>
-          <div class="tableColumn ">克重(克)</div>
+          <div class="tableColumn flex5">品类</div>
           <div class="tableColumn">总根数(经/纬)</div>
-          <div class="tableColumn flex9">主料信息(经/纬)</div>
-          <div class="tableColumn flexSamll">次料信息(种)</div>
+          <div class="tableColumn flex9">主料(经/纬)</div>
+          <div class="tableColumn flexSamll">次料(种)</div>
           <div class="tableColumn flexSamll">创建人</div>
           <div class="tableColumn flexSamll">创建时间</div>
           <div class="tableColumn flex9">操作</div>
         </div>
-        <div class="tableRow bodyTableRow" v-for="(item,index) in list" :key="item.id">
-          <div class="tableColumn">{{(index+1)+(pages-1)*5}}</div>
-          <div class="tableColumn">{{item.product_info|filterType}}</div>
-          <div class="tableColumn">100g(写死)</div>
+        <div class="tableRow bodyTableRow" v-for="(item) in list" :key="item.id">
+          <div class="tableColumn" style="color: rgb(26, 149, 255);">{{item.craft_code}}</div>
+          <div class="tableColumn flex5">{{item.product_info|filterType}}</div>
           <div class="tableColumn">{{item|filterWeft}}</div>
           <div class="tableColumn flex9">{{item.material_data.warpMaterialMain}}/{{item.material_data.weftMaterialMain}}</div>
           <div class="tableColumn flexSamll">{{item.material_data.weftMaterialOther.length + item.material_data.warpMaterialOther.length}}</div>
-          <div class="tableColumn flexSamll">1</div>
-          <div class="tableColumn flexSamll">1</div>
+          <div class="tableColumn flexSamll">{{item.user}}</div>
+          <div class="tableColumn flexSamll">{{item.create_time}}</div>
           <div class="tableColumn flex9">
             <span class="btns normal">修改</span>
-            <span class="btns success">查看</span>
+            <span class="btns success" @click="$router.push('/index/designFormDetail/'+item.id)">查看</span>
+            <span class="btns warning">打印</span>
           </div>
         </div>
       </div>

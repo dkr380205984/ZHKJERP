@@ -100,6 +100,8 @@ const saveProductionSide = (params) => http.post(`${baseUrl}/production/side/sav
 const saveCraft = (params) => http.post(`${baseUrl}/product/craft/save`, params, 'application/json')
 // 工艺单列表
 const craftList = (params) => http.get(`${baseUrl}/product/craft/list`, params)
+// 获取单张工艺单
+const craftOne = (params) => http.get(`${baseUrl}/product/craft/one`, params)
 // 获取产品计划单
 const productPlanOne = (params) => http.get(`${baseUrl}/product/plan/one`, params)
 // 产品计划单列表
@@ -192,5 +194,6 @@ export {
   unitList,
   unitSave,
   unitDelete,
-  sampleSave
+  sampleSave,
+  craftOne
 }

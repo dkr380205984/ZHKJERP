@@ -169,7 +169,9 @@ export default {
       style: [], // 三级分类
       styleVal: '',
       flower: [],
-      flowerVal: ''
+      flowerVal: '',
+      start_time: '',
+      end_time: ''
     }
   },
   methods: {
@@ -182,8 +184,9 @@ export default {
         'style_id': this.styleVal,
         'flower_id': this.flowerVal,
         'page': this.pages,
-        'start_time': '',
-        'end_time': ''
+        'start_time': this.start_time,
+        'end_time': this.end_time,
+        'product_code': this.searchVal
       }).then((res) => {
         console.log(res)
         this.total = res.data.meta.total
@@ -213,15 +216,14 @@ export default {
       }
     },
     pickTime (date) {
-      console.log(date)
-    },
-    // 修改产品
-    goUpdata (id) {
-
-    },
-    // 查看产品
-    goDetail (id) {
-
+      if (date) {
+        this.start_time = date[0]
+        this.end_time = date[1]
+      } else {
+        this.start_time = ''
+        this.end_time = ''
+      }
+      this.getProductList()
     }
   },
   watch: {
@@ -247,6 +249,9 @@ export default {
       this.getProductList()
     },
     flowerVal (newVal) {
+      this.getProductList()
+    },
+    searchVal (newVal) {
       this.getProductList()
     }
   },

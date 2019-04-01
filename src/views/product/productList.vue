@@ -216,8 +216,13 @@ export default {
       }
     },
     pickTime (date) {
-      this.start_time = date[0]
-      this.end_time = date[1]
+      if (date) {
+        this.start_time = date[0]
+        this.end_time = date[1]
+      } else {
+        this.start_time = ''
+        this.end_time = ''
+      }
       this.getProductList()
     }
   },

@@ -12,50 +12,47 @@
         </div>
         <div class="lineCtn">
           <div class="inputCtn">
-            <span class="label">工艺单编号:</span>
-            <span class="content important">KR-0001</span>
+            <span class="label">产品编号:</span>
+            <span class="content important">{{product.product_code}}</span>
           </div>
           <div class="inputCtn">
-            <span class="label">产品编号:</span>
-            <span class="content">KWZ1233444</span>
-          </div>
-           <div class="inputCtn">
             <span class="label">产品名称:</span>
             <span class="content">{{product|filterType}}</span>
-          </div>
-        </div>
-        <div class="lineCtn">
-          <div class="inputCtn">
-            <span class="label">产品成分:</span>
-            <span class="content">{{product.materials|filterMaterials}}</span>
           </div>
           <div class="inputCtn">
             <span class="label">产品花型:</span>
             <span class="content">{{product.flower_id}}</span>
           </div>
+        </div>
+        <div class="lineCtn">
           <div class="inputCtn">
             <span class="label">产品配色:</span>
             <span class="content">{{product.color|filterColor}}</span>
           </div>
-        </div>
-         <div class="lineCtn">
-          <div class="inputCtn" style="align-items:flex-start">
+          <div class="inputCtn">
             <span class="label">创建日期:</span>
             <span class="content">{{product.create_time}}</span>
           </div>
-          <div class="inputCtn" style="align-items:flex-start">
+          <div class="inputCtn">
             <span class="label">创建人:</span>
             <span class="content">{{product.user_id}}</span>
           </div>
-          <div class="inputCtn">
+        </div>
+         <div class="lineCtn">
+          <div class="inputCtn" style="width:620px">
             <span class="label">产品规格:</span>
-            <span class="content contentLine" v-for="(item,key) in product.size" :key="key">
+            <span class="content contentLine"  style="width:100%" v-for="(item,key) in product.size" :key="key">
               <span style="margin-right:15px">{{key}}</span>
               <span class="sizeDetail">
                 <span class="sizeOnce" v-for="itemChild in item" :key="itemChild.id">{{itemChild.size_value + 'cm' + '(' + itemChild.size_name + ')'}}&nbsp;&nbsp;&nbsp;</span>
+                <span class="sizeOnce">{{ item[0].weight + 'g' + '(克重)'}}</span>
               </span>
               <br/>
             </span>
+          </div>
+          <div class="inputCtn" style="align-items:flex-start">
+            <span class="label">产品成分:</span>
+            <span class="content">{{product.materials|filterMaterials}}</span>
           </div>
         </div>
       </div>
@@ -185,7 +182,7 @@
         </div>
         <div class="lineCtn">
           <div class="inputCtn">
-            <span class="label">整理总头纹:</span>
+            <span class="label">整经总头纹:</span>
             <el-input class="elInput" v-model="warp_data.weft" disabled>
               <template slot="append">根</template>
             </el-input>
@@ -200,6 +197,12 @@
                   :value="item.id">
                 </el-option>
               </el-select>
+          </div>
+        </div>
+        <div class="lineCtn">
+          <div class="inputCtn">
+            <span class="label">整经门幅:</span>
+            <el-input class="elInput" placeholder="请输入数字" v-model="warp_data.width"></el-input>
           </div>
           <div class="inputCtn">
             <span class="label must">机型:</span>
@@ -222,7 +225,7 @@
           </div>
           <div class="inputCtn">
             <span class="label">穿筘法:</span>
-            <el-input class="elInput" placeholder="请输入数字" v-model="warp_data.reed_method">
+            <el-input class="elInput" placeholder="数字" v-model="warp_data.reed_method">
               <template slot="append">根/筘</template>
             </el-input>
           </div>
@@ -234,10 +237,6 @@
           </div>
         </div>
         <div class="lineCtn">
-          <div class="inputCtn">
-            <span class="label">整经门幅:</span>
-            <el-input class="elInput" placeholder="请输入数字" v-model="warp_data.width"></el-input>
-          </div>
           <div class="inputCtn">
             <span class="label">综页:</span>
             <el-input class="elInput" placeholder="请输入数字" v-model="warp_data.sum_up">
@@ -285,7 +284,7 @@
           </div>
           <div class="inputCtn">
             <span class="label must">纬密:</span>
-            <el-input class="elInput" placeholder="请输入数字" v-model="weft_data.weimi">
+            <el-input class="elInput" placeholder="数字" v-model="weimi" disabled>
               <template slot="append">梭/厘米</template>
             </el-input>
           </div>
@@ -439,6 +438,14 @@
             </div>
           </div>
         </div>
+        <div class="lineCtn">
+          <div class="inputCtn">
+            <span class="label must">产品净重:</span>
+            <el-input class="elInput" placeholder="请输入数字" v-model="weight">
+              <template slot="append">克</template>
+            </el-input>
+          </div>
+        </div>
       </div>
       <div class="btnCtn">
         <div class="cancleBtn" @click="clearAll">清空</div>
@@ -462,8 +469,12 @@ export default {
   data () {
     return {
       companyId: window.sessionStorage.getItem('company_id'),
+      weight: '',
       product: {
-        category_name: '',
+        category_info: {
+          name: '',
+          product_category: ''
+        },
         create_time: '',
         flower_id: '',
         style_name: '',
@@ -594,7 +605,6 @@ export default {
           sum += arr[0][index] * arr[1][index] * arr[2][index]
         })
         this.warp_data.weft = sum
-        console.log(arr)
       },
       deep: true
     },
@@ -1087,12 +1097,6 @@ export default {
         })
         return
       }
-      if (this.weft_data.weimi === '') {
-        this.$message.error({
-          message: '请输纬密'
-        })
-        return
-      }
       if (this.weft_data.rangwei === '' || this.weft_data.neichang === '') {
         this.$message.error({
           message: '请填写让位要求'
@@ -1173,6 +1177,7 @@ export default {
       this.warp_data.warp_rank_bottom = this.longSort
       this.weft_data.weft_rank = this.hotSettings2.data
       this.weft_data.weft_rank_bottom = this.longSort2
+      this.weft_data.weimi = this.weimi
       let json = {
         id: '',
         company_id: this.companyId,
@@ -1182,7 +1187,8 @@ export default {
         warp_data: this.warp_data,
         weft_data: this.weft_data,
         color_data: colorData,
-        material_data: materialData
+        material_data: materialData,
+        weight: this.weight
       }
       saveCraft(json).then((res) => {
         if (res.data.status) {
@@ -1195,7 +1201,7 @@ export default {
     },
     // 清空
     clearAll () {
-
+      console.log(this.hotSettings)
     }
   },
   filters: {
@@ -1225,10 +1231,30 @@ export default {
       })
       return str.substring(0, str.length - 1)
     }
+  },
+  computed: {
+    weimi () {
+      if (this.weft_data.neichang && this.weft_data.rangwei) {
+        return (this.weft_data.total / (this.weft_data.neichang + this.weft_data.rangwei)).toFixed(3)
+      } else {
+        return 0
+      }
+    }
   }
 }
 </script>
 
 <style lang="less" scoped>
   @import '~@/assets/css/designFormCreate.less';
+</style>
+<style lang="less">
+.selectOnce{
+  .el-input--suffix .el-input__inner{
+    padding:0 15px 0 5px;
+  }
+  .el-select .el-input .el-select__caret{
+    font-size:10px;
+    width:15px;
+  }
+}
 </style>

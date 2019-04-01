@@ -47,6 +47,7 @@
             <span class="size">{{key}}</span>
             <span class="sizeDetail">
               <span class="sizeOnce" v-for="itemChild in item" :key="itemChild.id">{{itemChild.size_name + '：' + itemChild.size_value + 'cm'}}</span>
+              <span class="sizeOnce">{{ item[0].weight + 'g' + '(克重)'}}</span>
             </span>
           </span>
         </div>
@@ -78,7 +79,7 @@
       </div>
       <div class="btnCtn">
         <div class="cancleBtn" @click="$router.go(-1)">返回</div>
-        <div class="okBtn">修改</div>
+        <div class="okBtn" @click="$router.push('/index/productUpdate/'+$route.params.id)">修改</div>
       </div>
     </div>
   </div>
