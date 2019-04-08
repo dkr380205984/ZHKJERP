@@ -1,0 +1,241 @@
+#designFormTable {
+  // background: #000;
+  width: 1010px;
+  height: 1754px;
+  margin: 100px 0;
+  padding: 0 20px;
+  box-sizing: border-box;
+  ul.table {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: inherit;
+    height: inherit;
+    display: flex;
+    flex-direction: column;
+    li {
+      border: 1px solid #999;
+      border-top: none;
+      width: auto;
+      height: auto;
+      &.company{
+        border-top: 1px solid #999;
+        letter-spacing: 24px;
+        text-align: center;
+        font-size: 24px;
+        padding: 7px 0px;
+      }
+      &:nth-of-type(2),
+      &:nth-of-type(3) {
+        display: flex;
+        div {
+          flex: 1;
+          display: flex;
+          height: auto;
+          border-right: 1px solid #999;
+          span{
+            display: inline-block;
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+            padding: 0 9px;
+            box-sizing: border-box;
+            &.posi {
+              position: relative;
+              &::after {
+                position: absolute;
+                top: 50%;
+                right: 20px;
+                content: 'g';
+                display: block;
+                transform: translateY(-50%);
+                color: #999;
+              }
+            }
+          }
+          span:last-of-type{
+            flex: 1;
+            font-size: 14px;
+          }
+          span:first-child{
+            border-right: 1px solid #999;
+            text-align: justify;
+            text-align-last: justify;
+          }
+          &:nth-child(1),
+          &:nth-child(3){
+            span:nth-child(1){
+              width: 100px;
+            }
+          }
+          &:nth-child(2){
+            span:nth-child(1){
+              width: 68px;
+            }
+          }
+          &:last-child{
+            border-right: none;
+          }
+        }
+      }
+      &:nth-of-type(4),
+      &:nth-of-type(5),
+      &:nth-of-type(6),
+      &:nth-of-type(7),
+      &:nth-of-type(8){
+        display: flex;
+        div {
+          display: inline-block;
+          &.title {
+            box-sizing: border-box;
+            width: 50px;
+            writing-mode: vertical-lr;
+            padding: 10px;
+            text-align: justify;
+            text-align-last: justify;
+            line-height: 30px;
+            border-right: 1px solid #999;
+            font-size: 16px;
+          }
+          &.content {
+            flex: 1;
+          }
+         }
+      }
+      &:nth-of-type(4) {
+        height: auto;
+        div {          
+          height: auto;
+        }
+      }
+      &:nth-of-type(5) {
+        height: 100px;
+        div {
+          height: 100px;
+          &.content {
+            div {
+              width: 100%;
+              height: 50px;
+              display: flex;
+              span {
+                box-sizing: border-box;
+                display: inline-block;
+                height: 50px;
+                line-height: 50px;
+                border-right: 1px solid #999;
+                text-align: center;
+                &:first-child {
+                  width: 104px;
+                }
+                &:nth-child(3) {
+                  width: 90px;
+                }
+                &:nth-child(2),
+                &:nth-child(4){
+                  flex: 1;
+                }
+                &:nth-child(4){
+                  border: none;
+                }
+              }
+              span.posi {
+                position: relative;
+                &::after {
+                  content: '根';
+                  display: block;
+                  position: absolute;
+                  top: 50%;
+                  right: 10px;
+                  transform: translateY(-50%);
+                  color: #999;
+                }
+              }
+              &:nth-child(2) {
+                border-top: 1px solid #999;
+              }
+            }
+          }
+        }
+      }
+      &:nth-of-type(6) {
+        height: 189px;
+        div {
+          height: 189px;
+          &.content {
+            div {
+              width: 100%;
+              &:first-child {
+                height: 50px;
+                display: flex;
+                span,div {
+                  display: inline-block;
+                  height: inherit;
+                  border-right: 1px solid #999;
+                }
+                div:last-child {
+                  border: none;
+                }
+                span {
+                  width: 77px;
+                  text-align: center;
+                  line-height: 50px;
+                }
+                div {
+                  box-sizing: border-box;
+                  position: relative;
+                  flex: 1;
+                  padding-left: 30px;
+                  line-height: 50px;
+                  &::after {
+                    display: block;
+                    position: absolute;
+                    top: 50%;
+                    right: 10px;
+                    transform: translateY(-50%);
+                    color: #999;
+                  }
+                  &:nth-of-type(1)::after {
+                    content: "#";
+                  }
+                  &:nth-of-type(2)::after {
+                    content: "筘/根";
+                  }
+                  &:nth-of-type(3)::after {
+                    content: "cm";
+                  }
+                  &:nth-of-type(4)::after {
+                    content: "页";
+                  }
+                }
+                
+
+              }
+              &:last-child {
+                border-top: 1px solid #999;
+                &.czfBox>div {
+                  height: 140px;
+                  &:first-child {
+                    width: 50px;
+                    height: inherit;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      &:nth-of-type(7) {
+        height: 396px;
+        div {
+          height: 396px;
+        }
+      }
+      &:nth-of-type(8) {
+        height: 297px;
+        div {
+          height: 297px;
+        }
+      }
+    }
+  }
+}
