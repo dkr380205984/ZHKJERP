@@ -388,6 +388,21 @@ export default {
       let colspan = 0
       let unNull = 0 // 遇到第一个不为null的数开始计算
       let mark = 1 // 用于标记不为null的值 用于画图xunhuan字段获取
+      let point = []
+      this.hotSettings.data[1].forEach((item, index) => {
+        if (item === '') {
+          point.push(index)
+        }
+      })
+      this.hotSettings.data[1][point[0]] = 1
+      point.forEach((item, index) => {
+        if (point[index + 1] && (point[index + 1] - item) > 1) {
+          this.hotSettings.data[1][point[index + 1]] = 1
+        }
+      })
+      this.hotSettings.data[1] = this.hotSettings.data[1].map((item) => {
+        return item === '' ? null : item
+      })
       this.hotSettings.data[1].forEach((item, index) => {
         if (item || index === this.hotSettings.data[1].length - 1) {
           // 遇到第一个不为null的数开始计算,否则初始化col
@@ -419,11 +434,26 @@ export default {
       unNull = 0
       let warpMerge3 = [] // 经向第三层数据合并 用于画图
       let mark2 = 1
+      point = []
       this.hotSettings.data[2].forEach((item, index) => {
-        if (item || index === this.hotSettings.data[2].length - 1) {
+        if (item === '') {
+          point.push(index)
+        }
+      })
+      this.hotSettings.data[2][point[0]] = 1
+      point.forEach((item, index) => {
+        if (point[index + 1] && (point[index + 1] - item) > 1) {
+          this.hotSettings.data[2][point[index + 1]] = 1
+        }
+      })
+      this.hotSettings.data[2] = this.hotSettings.data[2].map((item) => {
+        return item === '' ? null : item
+      })
+      this.hotSettings.data[2].forEach((item, index) => {
+        if (item !== null || index === this.hotSettings.data[2].length - 1) {
           // 遇到第一个不为null的数开始计算,否则初始化col
           if (unNull > 0) {
-            if (!item && index === this.hotSettings.data[2].length - 1) {
+            if (item === null && index === this.hotSettings.data[2].length - 1) {
               mergeCells.push({ row: 2, col: col, rowspan: 1, colspan: colspan + 1 })
               warpMerge3.push({ 'buchang': colspan + 1, 'xunhuan': mark2 })
             } else {
@@ -451,30 +481,39 @@ export default {
       let markBuchang = 0 // 标记步长
       let colorArr = this.color_data.warpColorData[0].color_data
       let numArr = this.hotSettings.data[0]
-      warpMerge2.forEach((item) => {
-        for (let index2 = 0; index2 < item.xunhuan; index2++) {
-          for (let index3 = markBuchang; index3 < item.buchang + markBuchang; index3++) {
-            Arr.push({
-              color: colorArr[this.longSort[index3]],
-              number: numArr[index3],
-              index: index3
-            })
-          }
-        }
-        markBuchang = item.buchang
-      })
-      markBuchang = 0 // 初始化步长
-      if (warpMerge3.length > 0) {
-        warpMerge3.forEach((item) => {
+      if (warpMerge2.length > 0) {
+        warpMerge2.forEach((item) => {
           for (let index2 = 0; index2 < item.xunhuan; index2++) {
-            for (let index3 = markBuchang; index3 < Arr.length; index3++) {
-              if (Arr[index3].index < item.buchang) {
-                ArrMain.push(Arr[index3])
-              } else {
-                markBuchang = index3
-                return
-              }
+            for (let index3 = markBuchang; index3 < item.buchang + markBuchang; index3++) {
+              Arr.push({
+                color: colorArr[this.longSort[index3]],
+                number: numArr[index3],
+                index: index3
+              })
             }
+          }
+          markBuchang = item.buchang + markBuchang
+        })
+      } else {
+        Arr = this.hotSettings.data[0].map((item, index) => {
+          return {
+            color: colorArr[this.longSort[index]],
+            number: numArr[index],
+            index: index
+          }
+        })
+      }
+      markBuchang = 0 // 初始化步长
+      if (warpMerge3.length > 0 && warpMerge3.find((item) => item.buchang !== 1)) {
+        warpMerge3.forEach((item) => {
+          let lastMarkBuchang = markBuchang
+          markBuchang = item.buchang + markBuchang
+          for (let index2 = 0; index2 < item.xunhuan; index2++) {
+            Arr.forEach((item2) => {
+              if (lastMarkBuchang <= item2.index && item2.index < markBuchang) {
+                ArrMain.push(item2)
+              }
+            })
           }
         })
       } else {
@@ -484,11 +523,26 @@ export default {
       this.hotSettings2.data = data.weft_data.weft_rank
       // 纬向单元格合并操作
       let weftMerge2 = [] // 纬向第二层数据合并 用于画图
+      mergeCells = []
       col = 0
       colspan = 0
       unNull = 0
       mark = 1
-      mergeCells = []
+      point = []
+      this.hotSettings2.data[1].forEach((item, index) => {
+        if (item === '') {
+          point.push(index)
+        }
+      })
+      this.hotSettings2.data[1][point[0]] = 1
+      point.forEach((item, index) => {
+        if (point[index + 1] && (point[index + 1] - item) > 1) {
+          this.hotSettings2.data[1][point[index + 1]] = 1
+        }
+      })
+      this.hotSettings2.data[1] = this.hotSettings2.data[1].map((item) => {
+        return item === '' ? null : item
+      })
       this.hotSettings2.data[1].forEach((item, index) => {
         if (item || index === this.hotSettings2.data[1].length - 1) {
           // 遇到第一个不为null的数开始计算,否则初始化col
@@ -520,6 +574,21 @@ export default {
       col = 0
       colspan = 0
       unNull = 0
+      point = []
+      this.hotSettings2.data[2].forEach((item, index) => {
+        if (item === '') {
+          point.push(index)
+        }
+      })
+      this.hotSettings2.data[2][point[0]] = 1
+      point.forEach((item, index) => {
+        if (point[index + 1] && (point[index + 1] - item) > 1) {
+          this.hotSettings2.data[2][point[index + 1]] = 1
+        }
+      })
+      this.hotSettings2.data[2] = this.hotSettings2.data[2].map((item) => {
+        return item === '' ? null : item
+      })
       this.hotSettings2.data[2].forEach((item, index) => {
         if (item || index === this.hotSettings2.data[2].length - 1) {
           // 遇到第一个不为null的数开始计算,否则初始化col
@@ -545,6 +614,7 @@ export default {
           mark2 = item
         }
       })
+      console.log(weftMerge3)
       this.hotSettings2.mergeCells = mergeCells
       // 纬向画图数据格式获取 将三维数组合并成二维
       let Arr2 = [] // 第一次合并数组 存放结果
@@ -552,43 +622,50 @@ export default {
       let colorArr2 = this.color_data.weftColorData[0].color_data
       let numArr2 = this.hotSettings2.data[0]
       markBuchang = 0 // 标记步长
-      weftMerge2.forEach((item) => {
-        for (let index2 = 0; index2 < item.xunhuan; index2++) {
-          for (let index3 = markBuchang; index3 < item.buchang + markBuchang; index3++) {
-            Arr2.push({
-              color: colorArr2[this.longSort2[index3]],
-              number: numArr2[index3],
-              index: index3
-            })
-          }
-        }
-        markBuchang = item.buchang
-      })
-      markBuchang = 0 // 初始化步长
-      if (warpMerge3.length > 0) {
-        weftMerge3.forEach((item) => {
+      if (weftMerge2.length > 0) {
+        weftMerge2.forEach((item) => {
           for (let index2 = 0; index2 < item.xunhuan; index2++) {
-            for (let index3 = markBuchang; index3 < Arr2.length; index3++) {
-              if (Arr2[index3].index < item.buchang) {
-                ArrMain2.push(Arr2[index3])
-              } else {
-                markBuchang = index3
-                return
-              }
+            for (let index3 = markBuchang; index3 < item.buchang + markBuchang; index3++) {
+              Arr2.push({
+                color: colorArr2[this.longSort2[index3]],
+                number: numArr2[index3],
+                index: index3
+              })
             }
+          }
+          markBuchang = item.buchang + markBuchang
+        })
+      } else {
+        Arr2 = this.hotSettings2.data[0].map((item, index) => {
+          return {
+            color: colorArr[this.longSort2[index]],
+            number: numArr2[index],
+            index: index
+          }
+        })
+      }
+      markBuchang = 0 // 初始化步长
+      if (weftMerge3.length > 0 && weftMerge3.find((item) => item.buchang !== 1)) {
+        weftMerge3.forEach((item) => {
+          let lastMarkBuchang = markBuchang
+          markBuchang = item.buchang + markBuchang
+          for (let index2 = 0; index2 < item.xunhuan; index2++) {
+            Arr2.forEach((item2) => {
+              if (lastMarkBuchang <= item2.index && item2.index < markBuchang) {
+                ArrMain2.push(item2)
+              }
+            })
           }
         })
       } else {
         ArrMain2 = Arr2
       }
-      console.log(ArrMain2)
       // 画图
       let lineWidth = 500 / this.warp_data.weft // 经向粗细
       let dom = this.$refs.myCanvas
       let ctx = dom.getContext('2d')
-      ctx.globalAlpha = 0.6
-
       ArrMain.reduce((total, current, index) => {
+        ctx.globalAlpha = 0.5
         ctx.beginPath()
         ctx.fillStyle = current.color
         ctx.rect(total, 50, current.number * lineWidth, 1100)
@@ -597,6 +674,7 @@ export default {
       }, 50)
       let lineHeight = 1100 / this.weft_data.total
       ArrMain2.reduce((total, current, index) => {
+        ctx.globalAlpha = 0.3
         ctx.beginPath()
         ctx.fillStyle = current.color
         ctx.rect(50, total, 500, current.number * lineHeight)

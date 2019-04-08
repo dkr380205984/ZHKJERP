@@ -130,6 +130,7 @@
             <span class="label must">次料列表:</span>
             <div class="list" v-for="(item,index) in otherIngredientNum" :key="index">
               <el-cascader
+                @change="updateotherIngredient($event,index)"
                 v-model="otherIngredient[index]"
                 style="margin-left:15px;width:200px"
                 :options="ingredientArr"
@@ -388,6 +389,7 @@
             <span class="label must">次料列表:</span>
             <div class="list" v-for="(item,index) in otherIngredientNum2" :key="index">
               <el-cascader
+                @change="updateotherIngredient2($event,index)"
                 v-model="otherIngredient2[index]"
                 style="margin-left:15px;width:200px"
                 :options="ingredientArr"
@@ -444,6 +446,24 @@
             <el-input class="elInput" placeholder="请输入数字" v-model="weight">
               <template slot="append">克</template>
             </el-input>
+          </div>
+        </div>
+      </div>
+      <div class="stepCtn">
+        <div class="stepTitle">纱线系数</div>
+        <div class="borderCtn">
+          <div class="cicle"></div>
+          <div class="border"></div>
+        </div>
+        <div class="lineCtn must">
+          <div class="inputCtn oneLine">
+            <span class="label must">纱线系数:</span>
+            <div class="list" v-for="(item,index) in materialList" :key="index">
+              <el-input style="width:420px" class="elInput" placeholder="数字" v-model="coefficient[index]">
+                <template slot="prepend">{{item}}</template>
+                <template slot="append">克/厘米</template>
+              </el-input>
+            </div>
           </div>
         </div>
       </div>
@@ -563,26 +583,27 @@ export default {
       method: '',
       methodArr: [],
       warp_data: {
-        weft: '', // 整理总头纹,需要计算
-        side_id: '',
-        width: '',
-        machine_id: '',
-        reed: '',
-        reed_method: '',
-        reed_width: '',
-        sum_up: '',
-        drafting_method: ''
+        weft: null, // 整理总头纹,需要计算
+        side_id: null,
+        width: null,
+        machine_id: null,
+        reed: null,
+        reed_method: null,
+        reed_width: null,
+        sum_up: null,
+        drafting_method: null
       },
       weft_data: {
-        organization_id: '',
-        peifu: '',
-        weimi: '',
-        shangchiya: '',
-        xiachiya: '',
-        neichang: '',
-        rangwei: '',
-        total: ''
-      }
+        organization_id: null,
+        peifu: null,
+        weimi: null,
+        shangchiya: null,
+        xiachiya: null,
+        neichang: null,
+        rangwei: null,
+        total: null
+      },
+      coefficient: []
     }
   },
   watch: {
@@ -791,13 +812,13 @@ export default {
     },
     // 添加次要原料
     addOtherIngredient () {
-      this.otherIngredient[this.otherIngredientNum] = []
+      this.$set(this.otherIngredient, this.otherIngredientNum, [])
       this.jiaNum.push(1)
       this.jia.push([])
       this.otherIngredientNum++
     },
     addOtherIngredient2 () {
-      this.otherIngredient2[this.otherIngredientNum2] = []
+      this.$set(this.otherIngredient2, this.otherIngredientNum2, [])
       this.jiaNum2.push(1)
       this.jia2.push([])
       this.otherIngredientNum2++
@@ -869,9 +890,16 @@ export default {
         return '夹' + index
       }
     },
+    // 更新次要原料的时候由于是改变对象内部的值，需要$set触发
+    updateotherIngredient (value, index) {
+      this.$set(this.otherIngredient, index, value)
+    },
+    updateotherIngredient2 (value, index) {
+      this.$set(this.otherIngredient2, index, value)
+    },
     // 添加
     saveAll () {
-      console.log(this.mainIngredient, this.otherIngredient)
+      console.log(this.hotSettings.data)
       // 用户体验优化,判断表单必填字段是否填写
       let flag = {
         color: true,
@@ -972,7 +1000,6 @@ export default {
         }
       })
       // 检查表格第一行
-      console.log(this.hotSettings.data[0])
       this.hotSettings.data[0].forEach((item) => {
         if (item === '') {
           flag.hotSettings = false
@@ -1103,7 +1130,13 @@ export default {
         })
         return
       }
-      // // 经向主料获取name
+      if (this.coefficient.length < this.materialList.length) {
+        this.$message.error({
+          message: '请填写纱线系数'
+        })
+        return
+      }
+      // 经向主料获取name
       const unit = ['支', '厘米']
       const obj = this.countArr.find((item) => {
         return item.id === this.mainIngredient[0]
@@ -1120,7 +1153,7 @@ export default {
         return item.id === this.mainIngredient2[1]
       })
       let weftMaterialMain = obja.name + unit[obja.unit] + obja2.name
-      // // 经向次料获取
+      // 经向次料获取
       let warpMaterialOther = []
       for (let i in this.otherIngredient) {
         const objs = this.countArr.find((item) => {
@@ -1134,6 +1167,7 @@ export default {
           value: this.jia[i]
         })
       }
+      // 纬向次料获取
       let weftMaterialOther = []
       for (let i in this.otherIngredient2) {
         const objb = this.countArr.find((item) => {
@@ -1153,26 +1187,75 @@ export default {
         'warpMaterialOther': warpMaterialOther,
         'weftMaterialOther': weftMaterialOther
       }
-      // 经向配色方案获取
-      let warpColorData = []
+      // 新版本数据格式改动 ---- 材料改动
+      let materialDataNew = []
+      // 过滤掉经向次要原料的夹
+      let warpMainArr = Array.from(Array(this.colorNum[0]), (v, k) => k)
+      materialData.warpMaterialOther.forEach((item) => {
+        materialDataNew.push({
+          material_name: item.name,
+          type: 0,
+          apply: item.value
+        })
+        item.value.forEach((item) => {
+          warpMainArr.splice(warpMainArr.findIndex(itemJia => itemJia === item), 1)
+        })
+      })
+      materialDataNew.push({
+        material_name: materialData.warpMaterialMain,
+        type: 0,
+        apply: warpMainArr
+      })
+      // 过滤纬向次要原料的夹
+      let weftMainArr = Array.from(Array(this.colorNum2[0]), (v, k) => k)
+      materialData.weftMaterialOther.forEach((item) => {
+        materialDataNew.push({
+          material_name: item.name,
+          type: 1,
+          apply: item.value
+        })
+        item.value.forEach((item) => {
+          weftMainArr.splice(weftMainArr.findIndex(itemJia => itemJia === item), 1)
+        })
+      })
+      materialDataNew.push({
+        material_name: materialData.weftMaterialMain,
+        type: 1,
+        apply: weftMainArr
+      })
+      // 新版本数据格式改动 --- 配色方案
+      let colorData = []
       this.colour.forEach((item, index) => {
-        warpColorData.push({
-          'product_color_id': item,
-          'color_data': this.color[index]
+        colorData.push({
+          'product_color': item,
+          'color_scheme': this.color[index].map((item) => {
+            return {
+              'name': this.colorArr.find((item2) => item2.color_code === item).name,
+              'value': item
+            }
+          }),
+          'type': 0
         })
       })
-      // 纬向配色获取
-      let weftColorData = []
       this.colour2.forEach((item, index) => {
-        weftColorData.push({
-          'product_color_id': item,
-          'color_data': this.color2[index]
+        colorData.push({
+          'product_color': item,
+          'color_scheme': this.color2[index].map((item) => {
+            return {
+              'name': this.colorArr.find((item2) => item2.color_code === item).name,
+              'value': item
+            }
+          }),
+          'type': 1
         })
       })
-      let colorData = {
-        'warpColorData': warpColorData,
-        'weftColorData': weftColorData
-      }
+      // 纱线系数拼接
+      let yarnCoefficient = this.materialList.map((item, index) => {
+        return {
+          name: item,
+          value: this.coefficient[index]
+        }
+      })
       this.warp_data.warp_rank = this.hotSettings.data
       this.warp_data.warp_rank_bottom = this.longSort
       this.weft_data.weft_rank = this.hotSettings2.data
@@ -1187,9 +1270,11 @@ export default {
         warp_data: this.warp_data,
         weft_data: this.weft_data,
         color_data: colorData,
-        material_data: materialData,
-        weight: this.weight
+        material_data: materialDataNew,
+        weight: this.weight,
+        yarn_coefficient: yarnCoefficient
       }
+      console.log(json)
       saveCraft(json).then((res) => {
         if (res.data.status) {
           this.$message.success({
@@ -1201,8 +1286,9 @@ export default {
     },
     // 清空
     clearAll () {
-      console.log(this.hotSettings)
+      console.log(this.colorArr)
     }
+
   },
   filters: {
     // 类型合并
@@ -1233,6 +1319,59 @@ export default {
     }
   },
   computed: {
+    materialList () {
+      // 经向主料获取name
+      const unit = ['支', '厘米']
+      let warpMaterialMain = []
+      if (this.mainIngredient.length > 0) {
+        const obj = this.countArr.find((item) => {
+          return item.id === this.mainIngredient[0]
+        })
+        const obj2 = this.typeArr.find((item) => {
+          return item.id === this.mainIngredient[1]
+        })
+        warpMaterialMain = [obj.name + unit[obj.unit] + obj2.name]
+      }
+      // 纬向主料获取name
+      let weftMaterialMain = []
+      if (this.mainIngredient2.length > 0) {
+        const obja = this.countArr.find((item) => {
+          return item.id === this.mainIngredient2[0]
+        })
+        const obja2 = this.typeArr.find((item) => {
+          return item.id === this.mainIngredient2[1]
+        })
+        weftMaterialMain = [obja.name + unit[obja.unit] + obja2.name]
+      }
+      // 经向次料获取
+      let warpMaterialOther = []
+      for (let i in this.otherIngredient) {
+        if (this.otherIngredient[i].length > 0) {
+          const objs = this.countArr.find((item) => {
+            return item.id === this.otherIngredient[i][0]
+          })
+          const objs2 = this.typeArr.find((item) => {
+            return item.id === this.otherIngredient[i][1]
+          })
+          warpMaterialOther.push(objs.name + unit[objs.unit] + objs2.name)
+        }
+      }
+      // 纬向次料获取
+      let weftMaterialOther = []
+      for (let i in this.otherIngredient2) {
+        if (this.otherIngredient2[i].length > 0) {
+          const objb = this.countArr.find((item) => {
+            return item.id === this.otherIngredient2[i][0]
+          })
+          const objb2 = this.typeArr.find((item) => {
+            return item.id === this.otherIngredient2[i][1]
+          })
+          weftMaterialOther.push(objb.name + unit[objb.unit] + objb2.name)
+        }
+      }
+      // ES6提供的数组去重方式
+      return Array.from(new Set(warpMaterialMain.concat(weftMaterialMain).concat(warpMaterialOther).concat(weftMaterialOther)))
+    },
     weimi () {
       if (this.weft_data.neichang && this.weft_data.rangwei) {
         return (this.weft_data.total / (this.weft_data.neichang + this.weft_data.rangwei)).toFixed(3)

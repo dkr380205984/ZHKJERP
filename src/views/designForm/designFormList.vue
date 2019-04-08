@@ -77,7 +77,7 @@
           <div class="tableColumn flex9">
             <span class="btns normal">修改</span>
             <span class="btns success" @click="$router.push('/index/designFormDetail/'+item.id)">查看</span>
-            <span class="btns warning">打印</span>
+            <span class="btns warning" @click="copy(item.id)">打印</span>
           </div>
         </div>
       </div>
@@ -195,6 +195,9 @@ export default {
     },
     pickTime (date) {
       console.log(date)
+    },
+    copy (id) {
+      window.open('/designFormTable/' + id)
     }
   },
   watch: {
