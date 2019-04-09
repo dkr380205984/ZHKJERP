@@ -6,10 +6,21 @@ ul {
   padding: 0;
   list-style: none
 }
+.unit {
+  position: relative;
+  &::after {
+    position: absolute;
+    top: 50%;
+    right: 34px;
+    transform: translateY(-50%);
+    font-size: 20px;
+    color: #999;
+  }
+}
 #designFormTable {
   width: 1920px;
   height: auto;
-  margin: 72px auto 0;
+  margin: 72px auto 122px;
   color: #666;
   font-size: 27px;
   p.company {
@@ -74,6 +85,9 @@ ul {
           }
           &:nth-child(3) {
             width: 132px
+          }
+          &:last-child {
+            border: none;
           }
         }
       }
@@ -212,6 +226,9 @@ ul {
               border-right: 1px solid #999;
               text-align: center;
               line-height: 93px;
+              &.unit::after {                
+                content: '根';
+              }
               &:first-child {
                 width: 210px;
               }
@@ -230,8 +247,252 @@ ul {
       }
       .drafting {
         height: 359px;
-        .title{
+        .title  {
           padding: 26px 0 57px;
+        }
+        .content {
+          .drafting-info {
+            width: 100%;
+            height: 97px;
+            border-bottom: 1px solid #999;
+            display: flex;
+            &>span {
+              display: inline-block;
+              box-sizing: border-box;
+              border-right: 1px solid #999;
+              height: inherit;
+              &:nth-child(2n-1) {
+                width: 143px;
+                text-align: center;
+                line-height: 97px;
+              }
+              &:nth-child(2n) {
+                flex: 1;
+                &:nth-child(2)::after {
+                  content: '#'
+                }
+                &:nth-child(4)::after {
+                  content: '根/筘'
+                }
+                &:nth-child(6)::after {
+                  content: 'cm'
+                }
+                &:nth-child(8)::after {
+                  content: '页'
+                }
+              }
+            } 
+          }
+          .through-methods {
+            height: 263px;
+            width: 100%;
+            display: flex;
+            .through-title {
+              width: 93px;
+              box-sizing: border-box;
+              border-right: 1px solid #999;
+              writing-mode: vertical-lr;
+              line-height: 92px;
+              text-align: justify;
+              text-align-last: justify;
+              padding: 39px 0 66px;
+            }
+            &>div:last-child{
+              box-sizing: border-box;
+              flex: 1;
+              position: relative;
+              padding: 0 50px;
+              span {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%,-50%);
+                display: inline-block;
+              }
+            }
+          }
+        }
+      }
+      .contexture {
+        height: 649px;
+        .title {
+          padding: 125px 0 73px;
+        }
+        .content {
+          .contexture-info {
+            height: 93px;
+            border-bottom: 1px solid #999;
+            display: flex;
+            &>span {
+              display: inline-block;
+              height: inherit;
+              border-right: 1px solid #999;
+              text-align: center;
+              line-height: 93px;
+              &:first-child {
+                width: 147px
+              }
+              &:last-child {
+                border: none;
+              }
+            }
+            &:nth-child(1){
+              &>span:nth-child(2n-1) {
+                width: 147px;
+              }
+              &>span:nth-child(2n) {
+                flex: 1;
+              }
+              &>span:nth-child(4)::after {
+                content: "cm"
+              }
+              &>span:nth-child(6)::after {
+                content: "梭/cm";
+                right: 20px;
+              }
+              &>span:nth-child(8)::after {
+                content: "牙"
+              }
+              &>span:last-child {
+                padding-top: 10px; 
+                span {
+                  display: block;
+                  padding-left: 38px;
+                  width: inherit;
+                  height: 35px;
+                  font-size: 24px;
+                  line-height: 35px;
+                  text-align: justify;
+                  letter-spacing: 10px;
+                }
+              }
+            }
+            &:nth-child(2){
+              &>span:nth-child(2n){
+                width: 145px;
+              }
+              &>span:nth-child(2n+3) {
+                flex: 1;
+                &::after {
+                  content: "cm"
+                }
+              }
+            }
+          }
+          .material {
+            box-sizing: border-box;
+            width: 100%;
+            height: 97px;
+            border-bottom: 1px solid #999;
+            line-height: 97px;
+            display: flex;
+            &>span {
+              display: inline-block;
+            }
+            &>span:first-child {
+              padding: 0 30px;
+              box-sizing: border-box;
+              text-align: justify;
+              text-align-last: justify;
+              border-right: 1px solid #999;
+            }
+            &>span:last-child {
+              flex: 1;
+              box-sizing: border-box;
+              padding:0 300px 0 38px;
+            }
+          }
+          .lost-raw-material {
+            height: 93px;
+            &>span:last-child {
+              display: flex;
+              justify-content: space-between;
+            }
+          }
+          .warp-wise-arrange {
+            height: 275px;
+            width: 100%;
+            display: flex;
+            .title {
+              height: inherit;
+              writing-mode: vertical-lr;
+              padding:12px 0 39px;
+              text-align: justify;
+              text-align-last: justify;
+              box-sizing: border-box;
+              width: 93px;
+              line-height: 93px;
+              border-right: 1px solid #999;
+            }
+            .content {
+              flex: 1;
+              &>div {
+                box-sizing: border-box;
+              }
+              .particulars {
+                box-sizing: border-box;
+                height: 219px;
+                border-bottom: 1px solid #999;
+                .list-box {
+                  box-sizing: border-box;
+                  display: inline-block;
+                  height: inherit;
+                  border-right: 1px solid #999;
+                  &:last-child {
+                    border: none;
+                  }
+                  .list {
+                    box-sizing: border-box;
+                    display: flex;
+                    height: 161px;
+                    border-bottom: 1px solid #999;
+                    &:last-child {
+                      border: none;
+                    }
+                    &>div {
+                      flex:  1; 
+                      display: flex;
+                      flex-direction: column;
+                      border-right: 1px solid #999;
+                      &:last-child {
+                        border: none;
+                      }
+                      &>span {
+                        display: block;
+                        width: 100%;
+                        height: 50%;
+                        text-align: center;
+                        line-height: 80px;
+                        border-bottom: 1px solid #999;
+                        &:last-child {
+                          border: none;
+                        }
+                      }
+                    }
+                  }
+                  &>div:last-child{
+                    width: 100%;
+                    height: 58px;
+                    text-align: center;
+                    line-height: 58px;
+                  }
+                }
+              }
+              &>div:last-child {
+                height: 58px;
+                text-align: center;
+                color: #707070;
+                line-height: 58px;
+              }
+            }
+          }
+        }
+      }
+      .match-colors {
+        height: 556px;
+        border-bottom: 1px solid #999;
+        .title {
+          padding: 37px 0 68px;
         }
       }
     }
