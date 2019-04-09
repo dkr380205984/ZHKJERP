@@ -61,7 +61,7 @@
           <div class="tableColumn flex5">品类</div>
           <div class="tableColumn">总根数(经/纬)</div>
           <div class="tableColumn flex9">主料(经/纬)</div>
-          <div class="tableColumn flexSamll">次料(种)</div>
+          <div class="tableColumn flexSamll">产品净重(克)</div>
           <div class="tableColumn flexSamll">创建人</div>
           <div class="tableColumn flexSamll">创建时间</div>
           <div class="tableColumn flex9">操作</div>
@@ -70,8 +70,8 @@
           <div class="tableColumn" style="color: rgb(26, 149, 255);">{{item.craft_code}}</div>
           <div class="tableColumn flex5">{{item.product_info|filterType}}</div>
           <div class="tableColumn">{{item|filterWeft}}</div>
-          <div class="tableColumn flex9">{{item.material_data.warpMaterialMain}}/{{item.material_data.weftMaterialMain}}</div>
-          <div class="tableColumn flexSamll">{{item.material_data.weftMaterialOther.length + item.material_data.warpMaterialOther.length}}</div>
+          <div class="tableColumn flex9">{{item.material_data|filterMaterial}}</div>
+          <div class="tableColumn flexSamll">{{item.weight}}</div>
           <div class="tableColumn flexSamll">{{item.user}}</div>
           <div class="tableColumn flexSamll">{{item.create_time}}</div>
           <div class="tableColumn flex9">
@@ -272,6 +272,21 @@ export default {
       } else {
         return '数据错误'
       }
+    },
+    // 原料合并
+    filterMaterial (material) {
+      let str = ''
+      material.forEach((item) => {
+        if (item.type === 0 && item.type_material === 0) {
+          str += item.material_name + '/'
+        }
+      })
+      material.forEach((item) => {
+        if (item.type === 1 && item.type_material === 0) {
+          str += item.material_name
+        }
+      })
+      return str
     }
   },
   created () {

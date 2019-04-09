@@ -102,6 +102,8 @@ const saveCraft = (params) => http.post(`${baseUrl}/product/craft/save`, params,
 const craftList = (params) => http.get(`${baseUrl}/product/craft/list`, params)
 // 获取单张工艺单
 const craftOne = (params) => http.get(`${baseUrl}/product/craft/one`, params)
+// 根据产品id获取工艺单
+const craftProduct = (params) => http.get(`${baseUrl}/craft/product/one`, params)
 // 获取产品计划单
 const productPlanOne = (params) => http.get(`${baseUrl}/product/plan/one`, params)
 // 产品计划单列表
@@ -131,6 +133,7 @@ const clientAdd = (params) => http.post(`${baseUrl}/client/save`, params, 'appli
 // 添加样品订单
 const sampleSave = (params) => http.post(`${baseUrl}/order/sample/save`, params, 'application/json')
 export {
+  craftProduct,
   clientList,
   contactsCheck,
   contactsDelete,

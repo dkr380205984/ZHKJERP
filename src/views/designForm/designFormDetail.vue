@@ -52,9 +52,9 @@
           <div class="inputCtn oneLine">
             <span class="label">配色方案:</span>
             <div class="columnCtn" v-for="(itemColour,indexColour) in color_data.warpColorData" :key="indexColour">
-              <div class="name">{{indexColour+1}}.{{itemColour.product_color_id}}：</div>
+              <div class="name">{{indexColour+1}}.{{itemColour.product_color}}：</div>
               <div class="value">
-                <div class="bgBlock" v-for="(itemColor,indexColor) in itemColour.color_data" :key="indexColor"><div :style="{'background-color':itemColor}" class="shadeBlock">{{indexColor|filterMethods}}</div></div>
+                <div class="bgBlock" v-for="(itemColor,indexColor) in itemColour.color_scheme" :key="indexColor"><div :style="{'background-color':itemColor.value}" class="shadeBlock">{{indexColor|filterMethods}}</div></div>
               </div>
             </div>
           </div>
@@ -178,9 +178,9 @@
           <div class="inputCtn oneLine">
             <span class="label">配色方案:</span>
             <div class="columnCtn" v-for="(itemColour,indexColour) in color_data.weftColorData" :key="indexColour">
-              <div class="name">{{indexColour+1}}.{{itemColour.product_color_id}}：</div>
+              <div class="name">{{indexColour+1}}.{{itemColour.product_color}}：</div>
               <div class="value">
-                <div class="bgBlock" v-for="(itemColor,indexColor) in itemColour.color_data" :key="indexColor"><div :style="{'background-color':itemColor}" class="shadeBlock">{{indexColor|filterMethods}}</div></div>
+                <div class="bgBlock" v-for="(itemColor,indexColor) in itemColour.color_scheme" :key="indexColor"><div :style="{'background-color':itemColor.value}" class="shadeBlock">{{indexColor|filterMethods}}</div></div>
               </div>
             </div>
           </div>
@@ -227,7 +227,7 @@
           <div class="border"></div>
         </div>
         <div class="canvasCtn">
-          <canvas ref="myCanvas" width="700" height="1200"></canvas>
+          <canvas ref="myCanvas" width="600" height="1200"></canvas>
         </div>
       </div>
       <div class="btnCtn">
@@ -372,11 +372,36 @@ export default {
     craftOne({
       id: this.$route.params.id
     }).then((res) => {
-      console.log(res)
+      console.log(res.data.data)
       const data = res.data.data
       this.product = data.product_info
-      this.color_data = data.color_data
-      this.material_data = data.material_data
+      data.color_data.forEach((item) => {
+        if (item.type === 0) {
+          this.color_data.warpColorData.push(item)
+        } else {
+          this.color_data.weftColorData.push(item)
+        }
+      })
+      data.material_data.forEach((item) => {
+        if (item.type === 0 && item.type_material === 0) {
+          this.material_data.warpMaterialMain = item.material_name
+        }
+        if (item.type === 1 && item.type_material === 0) {
+          this.material_data.weftMaterialMain = item.material_name
+        }
+        if (item.type === 0 && item.type_material === 1) {
+          this.material_data.warpMaterialOther.push({
+            name: item.material_name,
+            value: item.apply
+          })
+        }
+        if (item.type === 1 && item.type_material === 1) {
+          this.material_data.weftMaterialOther.push({
+            name: item.material_name,
+            value: item.apply
+          })
+        }
+      })
       this.warp_data = data.warp_data
       this.weft_data = data.weft_data
       this.hotSettings.data = data.warp_data.warp_rank
@@ -407,12 +432,15 @@ export default {
         if (item || index === this.hotSettings.data[1].length - 1) {
           // 遇到第一个不为null的数开始计算,否则初始化col
           if (unNull > 0) {
-            if (!item && index === this.hotSettings.data[1].length - 1) {
+            if (item === null && index === this.hotSettings.data[1].length - 1) {
               mergeCells.push({ row: 1, col: col, rowspan: 1, colspan: colspan + 1 })
               warpMerge2.push({ 'buchang': colspan + 1, 'xunhuan': mark })
             } else {
               mergeCells.push({ row: 1, col: col, rowspan: 1, colspan: colspan })
               warpMerge2.push({ 'buchang': colspan, 'xunhuan': mark })
+            }
+            if (item === 1 && index === this.hotSettings.data[1].length - 1) {
+              warpMerge2.push({ 'buchang': 1, 'xunhuan': 1 })
             }
             colspan = 1
             col = index
@@ -460,6 +488,9 @@ export default {
               mergeCells.push({ row: 2, col: col, rowspan: 1, colspan: colspan })
               warpMerge3.push({ 'buchang': colspan, 'xunhuan': mark2 })
             }
+            if (item === 1 && index === this.hotSettings.data[1].length - 1) {
+              warpMerge2.push({ 'buchang': 1, 'xunhuan': 1 })
+            }
             colspan = 1
             col = index
           } else {
@@ -479,14 +510,14 @@ export default {
       let Arr = [] // 第一次合并数组 存放结果
       let ArrMain = [] // 第二次合并数组
       let markBuchang = 0 // 标记步长
-      let colorArr = this.color_data.warpColorData[0].color_data
+      let colorArr = this.color_data.warpColorData[0].color_scheme
       let numArr = this.hotSettings.data[0]
       if (warpMerge2.length > 0) {
         warpMerge2.forEach((item) => {
           for (let index2 = 0; index2 < item.xunhuan; index2++) {
             for (let index3 = markBuchang; index3 < item.buchang + markBuchang; index3++) {
               Arr.push({
-                color: colorArr[this.longSort[index3]],
+                color: colorArr[this.longSort[index3]].value,
                 number: numArr[index3],
                 index: index3
               })
@@ -497,7 +528,7 @@ export default {
       } else {
         Arr = this.hotSettings.data[0].map((item, index) => {
           return {
-            color: colorArr[this.longSort[index]],
+            color: colorArr[this.longSort[index]].value,
             number: numArr[index],
             index: index
           }
@@ -554,6 +585,9 @@ export default {
               mergeCells.push({ row: 1, col: col, rowspan: 1, colspan: colspan })
               weftMerge2.push({ 'buchang': colspan, 'xunhuan': mark })
             }
+            if (item === 1 && index === this.hotSettings.data[1].length - 1) {
+              warpMerge2.push({ 'buchang': 1, 'xunhuan': 1 })
+            }
             colspan = 1
             col = index
           } else {
@@ -600,6 +634,9 @@ export default {
               mergeCells.push({ row: 2, col: col, rowspan: 1, colspan: colspan })
               weftMerge3.push({ 'buchang': colspan, 'xunhuan': mark2 })
             }
+            if (item === 1 && index === this.hotSettings.data[1].length - 1) {
+              warpMerge2.push({ 'buchang': 1, 'xunhuan': 1 })
+            }
             colspan = 1
             col = index
           } else {
@@ -614,12 +651,11 @@ export default {
           mark2 = item
         }
       })
-      console.log(weftMerge3)
       this.hotSettings2.mergeCells = mergeCells
       // 纬向画图数据格式获取 将三维数组合并成二维
       let Arr2 = [] // 第一次合并数组 存放结果
       let ArrMain2 = [] // 第二次合并数组
-      let colorArr2 = this.color_data.weftColorData[0].color_data
+      let colorArr2 = this.color_data.weftColorData[0].color_scheme
       let numArr2 = this.hotSettings2.data[0]
       markBuchang = 0 // 标记步长
       if (weftMerge2.length > 0) {
@@ -627,7 +663,7 @@ export default {
           for (let index2 = 0; index2 < item.xunhuan; index2++) {
             for (let index3 = markBuchang; index3 < item.buchang + markBuchang; index3++) {
               Arr2.push({
-                color: colorArr2[this.longSort2[index3]],
+                color: colorArr2[this.longSort2[index3]].value,
                 number: numArr2[index3],
                 index: index3
               })
@@ -638,7 +674,7 @@ export default {
       } else {
         Arr2 = this.hotSettings2.data[0].map((item, index) => {
           return {
-            color: colorArr[this.longSort2[index]],
+            color: colorArr2[this.longSort2[index]].value,
             number: numArr2[index],
             index: index
           }

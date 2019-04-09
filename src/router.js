@@ -74,10 +74,6 @@ export default new Router({
       name: 'personManage',
       component: () => import('./views/self/personManage.vue')
     }, {
-      path: 'canvas',
-      name: 'canvas',
-      component: () => import('./views/designForm/designCanvas.vue')
-    }, {
       path: 'sampleCreate',
       name: 'sampleCreate',
       component: () => import('./views/order/sampleCreate.vue')

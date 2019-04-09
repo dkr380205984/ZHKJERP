@@ -37,7 +37,7 @@ const menu = [{
     url: '/index/sampleList'
   }, {
     name: '添加新订单',
-    url: '/index/null'
+    url: '/index/orderCreate'
   }, {
     name: '订单列表',
     url: '/index/null'

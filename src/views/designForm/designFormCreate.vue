@@ -1195,6 +1195,7 @@ export default {
         materialDataNew.push({
           material_name: item.name,
           type: 0,
+          type_material: 1,
           apply: item.value
         })
         item.value.forEach((item) => {
@@ -1204,6 +1205,7 @@ export default {
       materialDataNew.push({
         material_name: materialData.warpMaterialMain,
         type: 0,
+        type_material: 0,
         apply: warpMainArr
       })
       // 过滤纬向次要原料的夹
@@ -1212,6 +1214,7 @@ export default {
         materialDataNew.push({
           material_name: item.name,
           type: 1,
+          type_material: 1,
           apply: item.value
         })
         item.value.forEach((item) => {
@@ -1221,6 +1224,7 @@ export default {
       materialDataNew.push({
         material_name: materialData.weftMaterialMain,
         type: 1,
+        type_material: 0,
         apply: weftMainArr
       })
       // 新版本数据格式改动 --- 配色方案
