@@ -44,7 +44,7 @@ ul {
     &>.table-box {
       width: 100%;
       height: auto;
-      li {
+      &>li {
         width: 100%;
         display: flex;
         border: 1px solid #999;
@@ -128,7 +128,7 @@ ul {
             }
           }
           .warp-wise-arrange {
-            height: 277px;
+            height: 273px;
             width: 100%;
             display: flex;
             .title {
@@ -281,6 +281,9 @@ ul {
                   content: '页'
                 }
               }
+              &:last-child {
+                border: none;
+              }
             } 
           }
           .through-methods {
@@ -410,7 +413,7 @@ ul {
             }
           }
           .warp-wise-arrange {
-            height: 275px;
+            height: 273px;
             width: 100%;
             display: flex;
             .title {
@@ -493,6 +496,104 @@ ul {
         border-bottom: 1px solid #999;
         .title {
           padding: 37px 0 68px;
+        }
+        .content {
+          .table-head-row {
+            // background-color: #F0F0F0;
+            display: flex;
+            height: 92px;
+            box-sizing: border-box;
+            &>div {
+              text-align: center;
+              line-height: 46px;
+              border-right: 1px solid #999;
+              box-sizing: border-box;
+              &:nth-child(n+1) {
+                flex: 1;
+              }
+              &:last-child {
+                border: none;
+              }
+              &>div {
+                border-bottom: 1px solid #999;
+                &:last-child {
+                  border: none;
+                  display: flex;
+                  &>span {
+                    flex: 1;
+                    border-right: 1px solid #999;
+                    &:last-child {
+                      border: none;
+                    }
+                  }
+                }
+              }
+            }
+            .table-head {
+              width: 214px;
+              position: relative;
+              &::before {
+                content: '';
+                display: block;
+                width: 234px;
+                height: 1px;
+                background: #999;
+                box-sizing: border-box;
+                transform-origin: left;
+                transform: rotateZ(23deg);
+              }
+              &>span {
+                position: absolute;
+                font-size: 22px;
+                line-height: 22px;
+                &:first-child {
+                  top: 54px;
+                  left:21px;
+                }
+                &:last-child {
+                  top:16px;
+                  right: 13px;
+                }
+              }
+            }
+          }
+          .list {
+            height: 464px;
+            display: flex;
+            flex-direction: column;
+            &>li {
+              flex: 1;
+              text-align: center;
+              display: flex;
+              &>div {
+                box-sizing: border-box;
+                border-right: 1px solid #999;
+                border-top: 1px solid #999;
+                line-height: 76px;
+                &:nth-child(n+2) {
+                  flex: 1;
+                  display: flex;
+                  &>span {
+                    box-sizing: border-box;
+                    flex: 1;
+                    text-align: center;
+                    &:nth-child(n+2) {
+                    border-left: 1px solid #999;
+                    }
+                  }
+                }
+                &:last-child {
+                  border-right: none;
+                }
+              }
+              .table-head-col {
+                box-sizing: border-box;
+                // background-color: #F0F0F0;
+                text-align: center;
+                width: 214px;
+              }
+            }
+          }
         }
       }
     }

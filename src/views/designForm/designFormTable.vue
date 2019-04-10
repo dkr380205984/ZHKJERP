@@ -159,7 +159,33 @@
         </li>
         <li class="match-colors">
           <div class="title">配色工艺</div>
-          <div class="content"></div>
+          <div class="content">
+            <div class="table-head-row">
+              <div class="table-head">
+                <span>颜色组</span>
+                <span>具体配色</span>
+              </div>
+              <div v-for="(item,index) in forArr(7)"
+                   :key="index">
+                <div>{{index == 0 ? "主" : "夹" + index}}</div>
+                <div>
+                  <span>经</span>
+                  <span>纬</span>
+                </div>
+              </div>
+            </div>
+            <ul class="list">
+              <li v-for="(value,index) in forArr(6)"
+                  :key="index">
+                <div class="table-head-col">颜色组</div>
+                <div v-for="(value,index) in forArr(7)"
+                     :key="index">
+                  <span>颜色</span>
+                  <span v-if="index == 3 || index == 4 || index == 6">颜色</span>
+                </div>
+              </li>
+            </ul>
+          </div>
         </li>
       </ul>
     </div>
@@ -196,7 +222,13 @@ export default {
     }
   },
   methods: {
-
+    forArr: (num) => {
+      let arr = []
+      for (let i = 0; i < num; i++) {
+        arr.push(i)
+      }
+      return arr
+    }
   }
 }
 </script>
