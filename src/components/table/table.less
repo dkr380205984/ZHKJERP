@@ -3,7 +3,7 @@ ul {
   margin: 0;
   padding: 0;
 }
-.table {
+#table {
   width: 843px;
   border: 1px solid #999;
   display: flex;
@@ -15,6 +15,19 @@ ul {
     text-align: center;
     &>span {
       flex: 1;
+      text-align: center;
+      border-right: 1px solid #999;
+      border-bottom: 1px solid #999;
+      display: flex;
+      &>span {
+        flex: 1;
+        &:first-child.haveBorder {
+          border-right: 1px solid #999;
+        }
+      }
+      &:last-child {
+        border-bottom: none;
+      }
     }
   }
 }

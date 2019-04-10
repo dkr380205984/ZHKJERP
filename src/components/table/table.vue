@@ -1,9 +1,13 @@
 <template>
-  <ul class="table">
+  <ul id="table">
     <template v-for="(item,index) in date">
       <li class="col"
           :key="index"
-          :style="{width : (typeof(item.data[index]) != 'string' ) ? (2*(843/7) + 'px') : ((843/7) + 'px')}">
+          :style="{flex: (typeof(item.data[index]) != 'string' ) ? '2' : 1,
+                    minWidth : (typeof(item.data[index]) != 'string' ) ? (2*(843/7) + 'px') : ((843/7) + 'px'),
+
+                  }">
+        <span><span :style="{color: (flag && index == 0) ? flag : 'inherit' }">{{item.name}}</span></span>
         <span v-for="(value,key) in item.data"
               :key="key">
           <template v-if="typeof(value) == 'string'">
@@ -12,8 +16,9 @@
             </span>
           </template>
           <template v-else>
-            <span v-for="(c,n) in value"
-                  :key="n">{{'黑色：' + c}}</span>
+            <span v-for="(c,n,v) in value"
+                  :key="n"
+                  :class="{haveBorder: v == 0}">{{'黑色：' + c + 'g' }}</span>
           </template>
         </span>
       </li>
@@ -25,54 +30,23 @@
 export default {
   data () {
     return {
-      date: [
-        {
-          name: 'S',
-          data: ['黑白', '蓝紫', '灰绿']
-        },
-        {
-          name: '52支单股上光晴纶',
-          data: [
-            {
-              black: 460,
-              while: 460
-            },
-            {
-              blue: 460,
-              purple: 460
-            },
-            {
-              gray: 460,
-              green: 460
-            }
-          ]
-        },
-        {
-          name: '36支上光晴纶',
-          data: [
-            {
-              black: 460,
-              while: 460
-            },
-            {
-              blue: 460,
-              purple: 460
-            },
-            {
-              gray: 460,
-              green: 460
-            }
-          ]
-        }
-      ]
+      flag: '',
     }
   },
+  props:[
+    'date'
+  ],
   methods: {
 
+  },
+  created(){
+    // console.log(this.$el.attributes.color);
+    this.flag = this.$attrs.color;
+    console.log(this.flag)
   }
 }
 </script>
 
-<style scoped>
+<style scoped lang='less'>
 @import "./table.less";
 </style>

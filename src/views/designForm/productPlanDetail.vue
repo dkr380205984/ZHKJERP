@@ -51,14 +51,22 @@
           <span class="label">主要原料:</span>
           <!-- <span class="content">8%</span> -->
           <div class="content">
-            <yl-table />
+            <yl-table color="#1A95FF" :date='productDetail.date'/>
+          </div>
+          <div class="content marT">
+            <yl-table color="#1A95FF" :date='productDetail.date'/>
           </div>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">主要辅料:</span>
-          <span class="content">8%</span>
+          <div class="content">
+            <yl-table color="#1A95FF" :date='productDetail.date'/>
+          </div>
+          <div class="content marT">
+            <yl-table color="#1A95FF" :date='productDetail.date'/>
+          </div>
         </div>
       </div>
       <div class="lineCtn">
@@ -110,7 +118,47 @@ export default {
               size_value: '100'
             }
           ]
-        }
+        },
+        date:[
+          {
+            name: 'S',
+            data: ['黑白', '蓝紫', '灰绿']
+          },
+          {
+            name: '52支单股上光晴纶',
+            data: [
+              {
+                black: 460,
+                while: 460
+              },
+              {
+                blue: 460,
+                purple: 460
+              },
+              {
+                gray: 460,
+                green: 460
+              }
+            ]
+          },
+          {
+            name: '36支上光晴纶',
+            data: [
+              {
+                black: 460,
+                while: 460
+              },
+              {
+                blue: 460,
+                purple: 460
+              },
+              {
+                gray: 460,
+                green: 460
+              }
+            ]
+          }
+        ]
         // {
         //   [], [], [],
         //   S: [{
