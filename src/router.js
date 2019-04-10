@@ -113,6 +113,14 @@ export default new Router({
       path: 'designFormDetail/:id',
       name: 'designFormDetail',
       component: () => import('./views/designForm/designFormDetail.vue')
+    }, {
+      path: 'productPlanList',
+      name: 'productPlanList',
+      component: () => import('./views/designForm/productPlanList.vue')
+    }, {
+      path: 'productPlanDetail/:id',
+      name: 'productPlanDetail',
+      component: () => import('./views/designForm/productPlanDetail.vue')
     }]
   }
   ]

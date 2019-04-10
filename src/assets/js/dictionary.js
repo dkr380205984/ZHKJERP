@@ -24,6 +24,9 @@ const menu = [{
     name: '工艺单列表',
     url: '/index/designFormList'
   }, {
+    name: '计划单列表',
+    url: '/index/productPlanList'
+  }, {
     name: '工艺单设置',
     url: '/index/designFormSetting'
   }]
