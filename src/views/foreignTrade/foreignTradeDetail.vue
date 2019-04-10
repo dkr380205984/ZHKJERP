@@ -6,47 +6,38 @@
     <div class="body">
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">公司名称:</span>
-          <span class="content">随便写点</span>
+          <span class="label">公司名称：</span>
+          <span class="content">{{companyInfo.name}}</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">公司简称:</span>
-          <span class="content">随便写点</span>
+          <span class="label">公司简称：</span>
+          <span class="content">{{companyInfo.abbreviation}}</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">合作状态:</span>
-          <span class="content">合作中</span>
+          <span class="label">合作状态：</span>
+          <span class="content">{{companyInfo.status===1?'合作中':'暂停合作'}}</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">公司人员:</span>
+          <span class="label">公司人员：</span>
           <div class="specialTable">
             <div class="tableHead">
               <div class="once">姓名</div>
               <div class="once">职务</div>
               <div class="once">联系号码</div>
-              <div class="once">登录密码</div>
               <div class="once">状态</div>
             </div>
             <div class="tableBody">
-              <div class="line">
-                <div class="once">姓名</div>
-                <div class="once">财务</div>
-                <div class="once">联系号码</div>
-                <div class="once">登录密码</div>
-                <div class="once">状态</div>
-              </div>
-              <div class="line">
-                <div class="once">姓名</div>
-                <div class="once">财务</div>
-                <div class="once">联系号码</div>
-                <div class="once">登录密码</div>
-                <div class="once">状态</div>
+              <div class="line" v-for="item in companyInfo.contacts" :key="item.id">
+                <div class="once">{{item.name}}</div>
+                <div class="once">{{item.station}}</div>
+                <div class="once">{{item.phone}}</div>
+                <div class="once">{{item.status===1?'在职':'离职'}}</div>
               </div>
             </div>
           </div>
@@ -54,26 +45,26 @@
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">联系电话:</span>
-          <span class="content">随便写点</span>
+          <span class="label">联系电话：</span>
+          <span class="content">{{companyInfo.phone}}</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">公司地址:</span>
-          <span class="content">随便写点</span>
+          <span class="label">公司地址：</span>
+          <span class="content">{{companyInfo.address}}</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">创建时间:</span>
-          <span class="content">随便写点</span>
+          <span class="label">创建时间：</span>
+          <span class="content">{{companyInfo.create_time}}</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">更新时间:</span>
-          <span class="content">随便写点</span>
+          <span class="label">更新时间：</span>
+          <span class="content">{{companyInfo.update_time}}</span>
         </div>
       </div>
       <div class="btnCtn">
@@ -85,10 +76,20 @@
 </template>
 
 <script>
+import { clientDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
-
+      companyInfo: {
+        name: '',
+        abbreviation: '',
+        address: '',
+        contacts: [],
+        status: 1,
+        phone: '',
+        create_time: '',
+        update_time: ''
+      }
     }
   },
   methods: {
@@ -98,6 +99,16 @@ export default {
     saveAll () {
 
     }
+  },
+  mounted () {
+    clientDetail({
+      id: this.$route.params.id
+    }).then((res) => {
+      console.log(res)
+      if (res.data.status) {
+        this.companyInfo = res.data.data
+      }
+    })
   }
 }
 </script>

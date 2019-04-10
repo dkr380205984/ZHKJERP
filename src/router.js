@@ -98,7 +98,7 @@ export default new Router({
       name: 'foreignTradeCreate',
       component: () => import('./views/foreignTrade/foreignTradeCreate.vue')
     }, {
-      path: 'foreignTradeDetail',
+      path: 'foreignTradeDetail/:id',
       name: 'foreignTradeDetail',
       component: () => import('./views/foreignTrade/foreignTradeDetail.vue')
     }, {
