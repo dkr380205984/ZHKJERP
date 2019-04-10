@@ -25,24 +25,89 @@
     padding: 20px 40px;
     flex: 1;
     .lineCtn{
+      width: 100%;
       display: flex;
-      flex-wrap: wrap;
+      color: @fontNormal;
+      margin: 24px 0;
       .inputCtn{
-        min-height: 40px;
-        margin:24px 0;
         display: flex;
-        flex-wrap: wrap;
-        padding-left: 7em;
+        align-items: center;
+        width: 350px;
+        box-sizing: border-box;
+        line-height: 40px;
+        margin-right: 20px;
         position: relative;
-      }
-    }
-    .btnCtn{
-      width: 1022px;
-      display: flex;
-      justify-content: center;
-      margin:40px 0;
-      .okBtn{
-        margin-left: 35px;
+        font-size: @fontBig;
+        padding-left: 7em;
+        flex-wrap: wrap;
+        min-height: 40px;
+        &.oneLine{
+          width: 100%;
+        }
+        .label{
+          font-size: @fontBig;
+          width: 7em;
+          text-align: right;
+          position: absolute;
+          line-height: 40px;
+          left: 0;
+          top: 0;
+          &.must{
+            &::before{
+              content:'*';
+              color: @error;
+            }
+          }
+        }
+        .elInput{
+          width: 200px;
+        }
+        &.product{
+          .lineSearch{
+            width: 100%;
+            max-height: 41px;
+            overflow: hidden;
+            &.show{
+              max-height: 165px;
+            }
+            .gjss{
+              color: @fontGray;
+              font-size: @fontMid;
+              line-height: 40px;
+              margin-left: 15px;
+              cursor: pointer;
+              &:hover{
+                color: @normalBlue;
+              }
+              .el-icon{
+                margin-left: 5px;
+              }
+            }
+            .hideSearch{
+              width: 100%;
+              overflow: hidden;
+              .block{
+                height: 40px;
+                margin: 15px 0;
+                .blockOnce{
+                  font-size: @fontMid;
+                  display: inline-block;
+                  width: 200px;
+                  position: relative;
+                  padding-left: 5em;
+                  height: 40px;
+                  margin-right: 15px;
+                  .name{
+                    position: absolute;
+                    width: 5em;
+                    text-align: right;
+                    left: 0;
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
