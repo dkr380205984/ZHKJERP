@@ -50,31 +50,46 @@
         <div class="inputCtn">
           <span class="label">主要原料:</span>
           <!-- <span class="content">8%</span> -->
-          <div class="content">
-            <yl-table color="#1A95FF" :date='productDetail.date'/>
-          </div>
-          <div class="content marT">
-            <yl-table color="#1A95FF" :date='productDetail.date'/>
+          <div class="content tableBox">
+            <yl-table color="#1A95FF"
+                      :date='productDetail.date1'
+                      class="table" />
+            <yl-table color="#1A95FF"
+                      :date='productDetail.date2'
+                      class="table marT" />
           </div>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">主要辅料:</span>
-          <div class="content">
-            <yl-table color="#1A95FF" :date='productDetail.date'/>
-          </div>
-          <div class="content marT">
-            <yl-table color="#1A95FF" :date='productDetail.date'/>
+          <div class="content tableBox">
+            <yl-table color="#1A95FF"
+                      :date='productDetail.date1'
+                      class="table" />
+            <yl-table color="#1A95FF"
+                      :date='productDetail.date3'
+                      class="table marT" />
           </div>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label change">外道加工流程:</span>
-          <div class="content">
-
-          </div>
+          <ul class="liucheng content">
+            <li v-for="(item,index) in productDetail.liucheng"
+                :key="index">{{item}}</li>
+          </ul>
+        </div>
+      </div>
+      <div class="lineCtn">
+        <div class="inputCtn">
+          <span class="content btn">
+            <span class="cancel"
+                  @click="cancel">取消</span>
+            <span class="save"
+                  @click='save'>保存</span>
+          </span>
         </div>
       </div>
     </div>
@@ -119,7 +134,7 @@ export default {
             }
           ]
         },
-        date:[
+        date1: [
           {
             name: 'S',
             data: ['黑白', '蓝紫', '灰绿']
@@ -158,7 +173,108 @@ export default {
               }
             ]
           }
-        ]
+        ],
+        date2: [
+          {
+            name: 'M',
+            data: ['黑白', '蓝紫', '灰绿']
+          },
+          {
+            name: '52支单股上光晴纶',
+            data: [
+              {
+                black: 460,
+                while: 460
+              },
+              {
+                blue: 460,
+                purple: 460
+              },
+              {
+                gray: 460,
+                green: 460
+              }
+            ]
+          },
+          {
+            name: '36支上光晴纶',
+            data: [
+              {
+                black: 460,
+                while: 460
+              },
+              {
+                blue: 460,
+                purple: 460
+              },
+              {
+                gray: 460,
+                green: 460
+              }
+            ]
+          },
+          {
+            name: '14支涤纶',
+            data: ['120g', '120g', '120g']
+          }
+        ],
+        date3: [
+          {
+            name: '14支涤纶',
+            data: ['120g', '120g', '120g']
+          },
+          {
+            name: '14支涤纶',
+            data: ['120g', '120g', '120g']
+          },
+          {
+            name: '52支单股上光晴纶',
+            data: [
+              {
+                black: 460,
+                while: 460
+              },
+              {
+                blue: 460,
+                purple: 460
+              },
+              {
+                gray: 460,
+                green: 460
+              }
+            ]
+          },
+          {
+            name: '14支涤纶',
+            data: ['120g', '120g', '120g']
+          },
+          {
+            name: '14支涤纶',
+            data: ['120g', '120g', '120g']
+          },
+          {
+            name: '14支涤纶',
+            data: ['120g', '120g', '120g']
+          },
+          {
+            name: '52支单股上光晴纶',
+            data: [
+              {
+                black: 460,
+                while: 460
+              },
+              {
+                blue: 460,
+                purple: 460
+              },
+              {
+                gray: 460,
+                green: 460
+              }
+            ]
+          }
+        ],
+        liucheng: ['搓须', '搓须', '搓须', '搓须', '搓须']
         // {
         //   [], [], [],
         //   S: [{
@@ -186,59 +302,16 @@ export default {
   },
   components: {
     ylTable
+  },
+  methods: {
+    cancel () {
+
+    },
+    save () {
+
+    }
   }
-  // filters: {
-  //   // 类型合并
-  //   filterType (item) {
-  //     if (!item.type_name) {
-  //       return item.category_info.product_category
-  //     } else if (!item.style_name) {
-  //       return item.category_info.product_category + ' / ' + item.type_name
-  //     } else {
-  //       return item.category_info.product_category + ' / ' + item.type_name + ' / ' + item.style_name
-  //     }
-  //   },
-  //   filterMaterials (arr) {
-  //     let str = ''
-  //     arr.forEach((item) => {
-  //       str += item.ingredient_name + item.ingredient_value + '%' + ' / '
-  //     })
-  //     return str.substring(0, str.length - 2)
-  //   }
-  // },
-  // created () {
-  //   this.loading = true
-  //   porductOne({
-  //     id: this.$route.params.id
-  //   }).then((res) => {
-  //     if (res.data.status) {
-  //       this.productDetail = res.data.data
-  //       console.log(this.productDetail.size)
-  //       this.$nextTick(() => {
-  //         this.loading = false
-  //       })
-  //     }
-  //   })
-  // }
 }
-// import { productPlanDetail } from '@/assets/js/api.js'
-// export default {
-//   data () {
-//     return {
-
-//     }
-//   },
-//   methods: {
-
-//   },
-//   created () {
-//     // productPlanDetail({
-//     //   company_id: window.sessionStorage.getItem('company_id')
-//     // }).then((res) => {
-//     //   console.log(res)
-//     // })
-//   }
-// }
 </script>
 
 <style scoped lang='less'>
