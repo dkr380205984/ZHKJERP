@@ -62,15 +62,15 @@
           </div>
         </div>
       </div>
-      <div class="tableCtn">
+      <!-- <div class="tableCtn">
         <div class="tableRow titleTableRow">
-          <div class="tableColumn">编号</div>
-          <div class="tableColumn flex5">品类</div>
-          <div class="tableColumn">总根数(经/纬)</div>
-          <div class="tableColumn flex9">主料(经/纬)</div>
-          <div class="tableColumn flexSamll">产品净重(克)</div>
+          <div class="tableColumn">计划单编号</div>
+          <div class="tableColumn flex5">产品编号</div>
+          <div class="tableColumn">产品类别</div>
+          <div class="tableColumn flex9">产品规格</div>
+          <div class="tableColumn flexSamll">主要原料</div>
+          <div class="tableColumn flexSamll">主要辅料</div>
           <div class="tableColumn flexSamll">创建人</div>
-          <div class="tableColumn flexSamll">创建时间</div>
           <div class="tableColumn flex9">操作</div>
         </div>
         <div class="tableRow bodyTableRow"
@@ -92,7 +92,8 @@
                   @click="copy(item.id)">打印</span>
           </div>
         </div>
-      </div>
+      </div> -->
+      <yl-table />
       <div class="pageCtn">
         <el-pagination background
                        :page-size="5"
@@ -124,6 +125,7 @@
 
 <script>
 import { productPlanList, craftList } from '@/assets/js/api.js'
+import ylTable from '@/components/tableList/tableList.vue'
 export default {
   data () {
     return {
@@ -170,6 +172,9 @@ export default {
       style: [], // 三级分类
       styleVal: ''
     }
+  },
+  components: {
+    ylTable
   },
   methods: {
     getCraftList () {

@@ -35,7 +35,6 @@
               <span class="sizeOnce"
                     v-for="itemChild in item"
                     :key="itemChild.id">{{itemChild.size_name + '：' + itemChild.size_value + (itemChild.size_name == '克重' ? 'g' : 'cm')}}</span>
-              <!-- <span class="sizeOnce">{{ item[0].weight + 'g' + '(克重)'}}</span> -->
             </span>
           </span>
         </div>
@@ -49,7 +48,6 @@
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">主要原料:</span>
-          <!-- <span class="content">8%</span> -->
           <div class="content tableBox">
             <yl-table color="#1A95FF"
                       :date='productDetail.date1'
@@ -102,7 +100,6 @@ import ylTable from '@/components/table/table.vue'
 export default {
   data () {
     return {
-      // defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
       productDetail: {
         size: {
           S: [
@@ -275,29 +272,7 @@ export default {
           }
         ],
         liucheng: ['搓须', '搓须', '搓须', '搓须', '搓须']
-        // {
-        //   [], [], [],
-        //   S: [{
-        //     name: '52支单股上光晴纶',
-        //     black: 460,
-        //     while: 460,
-        //     blue: 460,
-        //     purple: 460,
-        //     gray: 460,
-        //     green: 460
-        //   }, {
-        //     name: '36支上光晴纶',
-        //     black: 460,
-        //     while: 460,
-        //     blue: 460,
-        //     purple: 460,
-        //     gray: 460,
-        //     green: 460
-        //   }]
-
-        // },
       }
-      // loading: true
     }
   },
   components: {
