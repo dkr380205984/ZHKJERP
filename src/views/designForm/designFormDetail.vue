@@ -230,7 +230,7 @@
           <div class="inputCtn oneLine">
             <span class="label">选择配色方案:</span>
             <div class="colourCtn">
-              <div class="colour">绿色</div>
+              <div class="colour" @click="chooseWhichColour=index" :class="{'active':index===chooseWhichColour}" v-for="(item,index) in color_data.warpColorData" :key="index">{{item.product_color}}</div>
             </div>
           </div>
         </div>
@@ -259,6 +259,7 @@ export default {
   },
   data () {
     return {
+      chooseWhichColour: 0, // 选择哪款配色方案进行渲染
       longSort: [],
       longSort2: [],
       hotSettings: {
@@ -334,7 +335,9 @@ export default {
         neichang: '',
         rangwei: '',
         total: ''
-      }
+      },
+      warp_canvas: [], // 保存下经向绘图数据用于颜色重绘
+      werf_canvas: [] // 保存下纬向绘图数据用于颜色重绘
     }
   },
   filters: {
@@ -373,14 +376,66 @@ export default {
       }
     }
   },
-  methods: {
-
+  watch: {
+    chooseWhichColour: function (newVal, oldVal) {
+      // 处理下颜色数据
+      let ArrMain = this.warp_canvas.map((item) => {
+        let mark = -1
+        this.color_data.warpColorData[oldVal].color_scheme.forEach((oldItem, oldIndex) => {
+          if (oldItem.value === item.color) {
+            mark = oldIndex
+          }
+        })
+        return {
+          number: item.number,
+          index: item.index,
+          color: this.color_data.warpColorData[newVal].color_scheme[mark].value
+        }
+      })
+      let ArrMain2 = this.weft_canvas.map((item) => {
+        let mark = -1
+        this.color_data.weftColorData[oldVal].color_scheme.forEach((oldItem, oldIndex) => {
+          if (oldItem.value === item.color) {
+            mark = oldIndex
+          }
+        })
+        return {
+          number: item.number,
+          index: item.index,
+          color: this.color_data.weftColorData[newVal].color_scheme[mark].value
+        }
+      })
+      // 画图
+      let lineWidth = 500 / this.warp_data.weft // 经向粗细
+      let dom = this.$refs.myCanvas
+      let ctx = dom.getContext('2d')
+      ctx.clearRect(0, 0, 600, 1200)
+      ArrMain.reduce((total, current, index) => {
+        ctx.globalAlpha = 0.5
+        ctx.beginPath()
+        ctx.fillStyle = current.color
+        ctx.rect(total, 50, current.number * lineWidth, 1100)
+        ctx.fill()
+        return total + current.number * lineWidth
+      }, 50)
+      let lineHeight = 1100 / this.weft_data.total
+      ArrMain2.reduce((total, current, index) => {
+        ctx.globalAlpha = 0.3
+        ctx.beginPath()
+        ctx.fillStyle = current.color
+        ctx.rect(50, total, 500, current.number * lineHeight)
+        ctx.fill()
+        return total + current.number * lineHeight
+      }, 50)
+      // 保存下绘图的数据
+      this.warp_canvas = ArrMain
+      this.weft_canvas = ArrMain2
+    }
   },
   mounted () {
     craftOne({
       id: this.$route.params.id
     }).then((res) => {
-      console.log(res.data.data)
       const data = res.data.data
       this.product = data.product_info
       data.color_data.forEach((item) => {
@@ -518,7 +573,7 @@ export default {
       let Arr = [] // 第一次合并数组 存放结果
       let ArrMain = [] // 第二次合并数组
       let markBuchang = 0 // 标记步长
-      let colorArr = this.color_data.warpColorData[0].color_scheme
+      let colorArr = this.color_data.warpColorData[this.chooseWhichColour].color_scheme
       let numArr = this.hotSettings.data[0]
       if (warpMerge2.length > 0) {
         warpMerge2.forEach((item) => {
@@ -663,7 +718,7 @@ export default {
       // 纬向画图数据格式获取 将三维数组合并成二维
       let Arr2 = [] // 第一次合并数组 存放结果
       let ArrMain2 = [] // 第二次合并数组
-      let colorArr2 = this.color_data.weftColorData[0].color_scheme
+      let colorArr2 = this.color_data.weftColorData[this.chooseWhichColour].color_scheme
       let numArr2 = this.hotSettings2.data[0]
       markBuchang = 0 // 标记步长
       if (weftMerge2.length > 0) {
@@ -704,6 +759,9 @@ export default {
       } else {
         ArrMain2 = Arr2
       }
+      // 保存下绘图的数据
+      this.warp_canvas = ArrMain
+      this.weft_canvas = ArrMain2
       // 画图
       let lineWidth = 500 / this.warp_data.weft // 经向粗细
       let dom = this.$refs.myCanvas

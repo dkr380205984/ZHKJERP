@@ -204,10 +204,19 @@
             margin-left: 15px;
             border:1px solid #909399;
             border-radius: 2px;
+            display: flex;
             .colour{
               line-height: 38px;
               padding: 0 15px;
               cursor: pointer;
+              border-right: 1px solid #909399;
+              &:nth-last-child(1){
+                border-right: 0;
+              }
+              &.active{
+                background: @normalBlue;
+                color: #fff;
+              }
             }
           }
         }
