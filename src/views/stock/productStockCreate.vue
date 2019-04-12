@@ -111,10 +111,10 @@
             <el-radio v-model="ifBad" :label="false">无次品</el-radio>
           </div>
           <div class="block" v-for="(item,index) in inferior" :key="index">
-            <el-input class="elSelect" placeholder="请输入数量">
+            <el-input class="elSelect" placeholder="请输入数量" v-model="inferior[index].num">
               <template slot="append">{{unit}}</template>
             </el-input>
-            <el-input class="elSelect" placeholder="请输入次品原因"></el-input>
+            <el-input class="elSelect" placeholder="请输入次品原因" v-model="inferior[index].reason"></el-input>
             <i class="el-icon-delete" @click="deleteInferior(index)"></i>
           </div>
           <div class="block" v-if="ifBad">
@@ -161,6 +161,7 @@
             v-model="date"
             type="date"
             class="elSelect"
+            value-format="yyyy-MM-dd"
             placeholder="选择存放日期">
           </el-date-picker>
         </div>
@@ -180,7 +181,7 @@
 </template>
 
 <script>
-import { porductOne } from '@/assets/js/api.js'
+import { porductOne, productStockSave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -222,7 +223,6 @@ export default {
       ifBad: false,
       numbers: '',
       cost: '',
-      totalPrice: '',
       inferior: [],
       orderId: ''
     }
@@ -274,6 +274,16 @@ export default {
       }
     }
   },
+  computed: {
+    totalPrice () {
+      let danjia = this.cost ? this.cost : 1
+      let number = this.numbers
+      this.inferior.forEach((item) => {
+        number -= item.num
+      })
+      return number * danjia
+    }
+  },
   methods: {
     // 删除次品
     deleteInferior (index) {
@@ -288,7 +298,29 @@ export default {
 
     },
     saveAll () {
-
+      let json = {
+        order_code: this.orderId,
+        company_id: window.sessionStorage.getItem('company_id'),
+        product_id: this.$route.params.id,
+        size: this.size,
+        color: this.colour,
+        stock_number: this.numbers,
+        rejects_product: this.inferior,
+        cost_price: this.cost,
+        total_price: this.totalPrice,
+        store_id: 1,
+        storage_time: this.date,
+        remark: this.otherInfo
+      }
+      productStockSave(json).then((res) => {
+        console.log(res)
+        if (res.data.status) {
+          this.$message.success({
+            message: '保存成功'
+          })
+        }
+      })
+      console.log(json)
     }
   }
 }

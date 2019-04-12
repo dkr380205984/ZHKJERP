@@ -226,6 +226,14 @@
           <div class="cicle"></div>
           <div class="border"></div>
         </div>
+        <div class="lineCtn">
+          <div class="inputCtn oneLine">
+            <span class="label">选择配色方案:</span>
+            <div class="colourCtn">
+              <div class="colour">绿色</div>
+            </div>
+          </div>
+        </div>
         <div class="canvasCtn">
           <canvas ref="myCanvas" width="600" height="1200"></canvas>
         </div>
