@@ -3,39 +3,38 @@
     <p class="company">{{companyName}}有限公司工艺单</p>
     <div class="table">
       <div class="page_header">
-        <span>工艺单编号:{{designFromTable.craft_code}}</span>
-        <span>创建时间：{{designFromTable.create_time}}</span>
+        <span>工艺单编号:{{craft_code}}</span>
+        <span>创建时间：{{create_time}}</span>
       </div>
       <ul class="table-box">
         <li class="info">
           <div>产品名称</div>
-          <div>围巾/梭织/宽巾/豹纹</div>
+          <div>{{product_info|filterType}}</div>
           <div>成分</div>
-          <div>90%涤纶/10%晴纶</div>
+          <div>{{product_info.materials|filterIngredient}}</div>
           <div>产品编号</div>
-          <div>{{designFromTable.product_info.product_code}}</div>
+          <div>{{product_info.product_code}}</div>
         </li>
         <li class="info">
           <div>规格</div>
           <div>80*190=2*15</div>
           <div>克重</div>
-          <div>{{designFromTable.weight}}g</div>
+          <div>{{weight}}g</div>
           <div>备注</div>
-          <div>{{designFromTable.product_info.description}}</div>
+          <div>{{product_info.description}}</div>
         </li>
         <li class="main-arrange">
           <div class="title">主要原料及配色排列</div>
           <div class="content">
             <div class="main-raw-material material">
               <span>主要原料(经)</span>
-              <span>36支单股晴纶：主</span>
+              <span>{{this.material_data.warpMaterialMain}}：主</span>
             </div>
             <div class="lost-raw-material material">
               <span>次要原料(经)</span>
               <span>
-                <span>36支单股晴纶：主</span>
-                <span>夹3/夹4：52支双股晴纶</span>
-                <span>夹5：24支单股晴纶</span>
+                <span v-for="(itemMaterial,indexMaterial) in material_data.warpMaterialOther"
+                      :key="indexMaterial">{{itemMaterial.name}}</span>
               </span>
             </div>
             <div class="warp-wise-arrange">
@@ -47,9 +46,9 @@
                        :key="key"
                        :style="{width: (100/12) * Object.keys(value).length + '%'}">
                     <div class="list">
-                      <div v-for="(item,index) in value"
+                      <div v-for="(item,index,m) in value"
                            :key="index">
-                        <span>{{index == 'main' ? "主" : "夹" }}</span>
+                        <span>{{index == 'main' ? "主" : "夹" + m}}</span>
                         <span>{{item}}</span>
                       </div>
                     </div>
@@ -66,15 +65,15 @@
           <div class="content">
             <div>
               <span>整经总头纹</span>
-              <span class="unit">1270</span>
+              <span class="unit">{{warp_data.weft}}</span>
               <span>边型</span>
-              <span>毛边</span>
+              <span>{{warp_data.side_name}}</span>
             </div>
             <div>
               <span>整经门幅</span>
-              <span></span>
+              <span>{{warp_data.width?warp_data.width:''}}</span>
               <span>机型</span>
-              <span>剑杆机</span>
+              <span>{{warp_data.machine_name}}</span>
             </div>
           </div>
         </li>
@@ -83,17 +82,17 @@
           <div class="content">
             <div class="drafting-info">
               <span>筘号</span>
-              <span class="unit"></span>
+              <span class="unit">{{warp_data.reed?warp_data.reed:''}}</span>
               <span>穿筘法</span>
-              <span class="unit"></span>
+              <span class="unit">{{warp_data.reed_method?warp_data.reed_method:''}}</span>
               <span>筘幅</span>
-              <span class="unit"></span>
+              <span class="unit">{{warp_data.reed_width?warp_data.reed_width:''}}</span>
               <span>综页</span>
-              <span class="unit"></span>
+              <span class="unit">{{warp_data.sum_up?warp_data.sum_up:''}}</span>
             </div>
             <div class="through-methods">
               <div class="through-title">穿综法</div>
-              <div><span>咖啡机辣椒粉你</span></div>
+              <div><span>{{warp_data.drafting_method?warp_data.drafting_method:''}}</span></div>
             </div>
           </div>
         </li>
@@ -102,36 +101,35 @@
           <div class="content">
             <div class="contexture-info">
               <span>组织法</span>
-              <span>平纹</span>
+              <span>{{weft_data.organization_name}}</span>
               <span>机上坯幅</span>
-              <span class="unit"></span>
+              <span class="unit">{{weft_data.peifu}}</span>
               <span>纬密</span>
-              <span class="unit"></span>
+              <span class="unit">{{weft_data.weimi}}</span>
               <span>齿牙</span>
               <span class="unit">
-                <span>上:29</span>
-                <span>下:29</span>
+                <span>上:{{weft_data.shangchiya?weft_data.shangchiya+'牙':''}}</span>
+                <span>下:{{weft_data.xiachiya?weft_data.xiachiya+'牙':''}}</span>
               </span>
             </div>
             <div class="contexture-info">
               <span>让位要求</span>
               <span>内长</span>
-              <span class="unit"></span>
+              <span class="unit">{{weft_data.neichang}}</span>
               <span>让位</span>
-              <span class="unit"></span>
+              <span class="unit">{{weft_data.rangwei}}</span>
               <span>总计</span>
-              <span class="unit"></span>
+              <span class="unit">{{weft_data.total}}</span>
             </div>
             <div class="main-raw-material material">
               <span>主要原料(纬)</span>
-              <span>36支单股晴纶：主</span>
+              <span>{{this.material_data.weftMaterialMain}}</span>
             </div>
             <div class="lost-raw-material material">
               <span>次要原料(纬)</span>
               <span>
-                <span>36支单股晴纶：主</span>
-                <span>夹3/夹4：52支双股晴纶</span>
-                <span>夹5：24支单股晴纶</span>
+                <span v-for="(itemMaterial,indexMaterial) in material_data.weftMaterialOther"
+                      :key="indexMaterial">{{itemMaterial.name}}</span>
               </span>
             </div>
             <div class="warp-wise-arrange">
@@ -143,9 +141,9 @@
                        :key="key"
                        :style="{width: (100/12) * Object.keys(value).length + '%'}">
                     <div class="list">
-                      <div v-for="(item,index) in value"
+                      <div v-for="(item,index,m) in value"
                            :key="index">
-                        <span>{{index == 'main' ? "主" : "夹" }}</span>
+                        <span>{{index == 'main' ? "主" : "夹" + m}}</span>
                         <span>{{item}}</span>
                       </div>
                     </div>
@@ -197,7 +195,14 @@ import { craftOne } from '@/assets/js/api.js'
 export default {
   data () {
     return {
-      designFromTable: {},
+      craft_code: '',
+      create_time: '',
+      product_info: {
+        materials: [],
+        product_code: '',
+        description: ''
+      },
+      weight: '',
       date2: {
         list1: {
           main: '11',
@@ -218,9 +223,34 @@ export default {
           jia3: '52'
         }
       },
-      companyName: 'xx'
-      // designNum: 'KR-001',
-      // timer: new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate()
+      companyName: 'xx',
+      material_data: {
+        warpMaterialMain: '',
+        warpMaterialOther: [],
+        weftMaterialMain: '',
+        weftMaterialOther: []
+      },
+      warp_data: {
+        weft: '', // 整理总头纹,需要计算
+        side_id: '',
+        width: '',
+        machine_id: '',
+        reed: '',
+        reed_method: '',
+        reed_width: '',
+        sum_up: '',
+        drafting_method: ''
+      },
+      weft_data: {
+        organization_id: '',
+        peifu: '',
+        weimi: '',
+        shangchiya: '',
+        xiachiya: '',
+        neichang: '',
+        rangwei: '',
+        total: ''
+      }
     }
   },
   methods: {
@@ -232,12 +262,59 @@ export default {
       return arr
     }
   },
-  created () {
+  filters: {
+    // 成分合并
+    filterIngredient (item) {
+      let str = ''
+      item.forEach((value, index) => {
+        str += (value.ingredient_value + '%' + value.ingredient_name)
+        str += (index === (item.length - 1)) ? '' : '/'
+      })
+      return str
+    },
+    // 类型合并
+    filterType (item) {
+      if (!item.type_name) {
+        return item.category_info.product_category
+      } else if (!item.style_name) {
+        return item.category_info.product_category + ' / ' + item.type_name
+      } else {
+        return item.category_info.product_category + ' / ' + item.type_name + ' / ' + item.style_name
+      }
+    }
+  },
+  beforeCreate () {
     craftOne({
       id: this.$route.params.id
     }).then((res) => {
-      this.designFromTable = res.data.data
-      console.log(this.designFromTable)
+      const data = res.data.data
+      console.log(data)
+      this.product_info = data.product_info
+      this.craft_code = data.craft_code
+      this.create_time = data.create_time
+      this.weight = data.weight
+      this.warp_data = data.warp_data
+      this.weft_data = data.weft_data
+      data.material_data.forEach((item) => {
+        if (item.type === 0 && item.type_material === 0) {
+          this.material_data.warpMaterialMain = item.material_name
+        }
+        if (item.type === 1 && item.type_material === 0) {
+          this.material_data.weftMaterialMain = item.material_name
+        }
+        if (item.type === 0 && item.type_material === 1) {
+          this.material_data.warpMaterialOther.push({
+            name: item.material_name,
+            value: item.apply
+          })
+        }
+        if (item.type === 1 && item.type_material === 1) {
+          this.material_data.weftMaterialOther.push({
+            name: item.material_name,
+            value: item.apply
+          })
+        }
+      })
     })
   }
 }

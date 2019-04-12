@@ -6,29 +6,29 @@
     <div class="body">
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">工艺单编号:</span>
-          <span class="content">KR-0001</span>
+          <span class="label">计划单编号:</span>
+          <span class="content">{{plan_code}}</span>
         </div>
         <div class="inputCtn">
           <span class="label">产品编号:</span>
-          <span class="content">KR19011101</span>
+          <span class="content">{{product_info.product_code}}</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">产品名称:</span>
-          <span class="content">围巾/针织/长巾</span>
+          <span class="content">{{product_info|filterType}}</span>
         </div>
         <div class="inputCtn">
           <span class="label">产品花型:</span>
-          <span class="content">条纹</span>
+          <span class="content">{{product_info.flower_id}}</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">产品规格:</span>
           <span class="content contentLine"
-                v-for="(item,key) in productDetail.size"
+                v-for="(item,key) in product_info.size"
                 :key="key">
             <span class="size">{{key}}</span>
             <span class="sizeDetail">
@@ -95,9 +95,8 @@
 </template>
 
 <script>
-import { productPlanDetail } from '@/assets/js/api.js'
+import { productPlanOne } from '@/assets/js/api.js'
 import ylTable from '@/components/table/table.vue'
-// import { porductOne } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -273,11 +272,30 @@ export default {
           }
         ],
         liucheng: ['搓须', '搓须', '搓须', '搓须', '搓须']
+      },
+      plan_code: '',
+      product_info: {
+        category_info: {
+          product_category: ''
+        },
+        size: {}
       }
     }
   },
   components: {
     ylTable
+  },
+  filters: {
+    // 类型合并
+    filterType (item) {
+      if (!item.type_name) {
+        return item.category_info.product_category
+      } else if (!item.style_name) {
+        return item.category_info.product_category + ' / ' + item.type_name
+      } else {
+        return item.category_info.product_category + ' / ' + item.type_name + ' / ' + item.style_name
+      }
+    }
   },
   methods: {
     cancel () {
@@ -288,11 +306,13 @@ export default {
     }
   },
   created () {
-    console.log(this.$route.params.id)
-    productPlanDetail({
-      product_id: this.$route.params.id
+    productPlanOne({
+      id: this.$route.params.id
     }).then((res) => {
-      console.log(res)
+      const data = res.data.data
+      console.log(data)
+      this.plan_code = data.plan_code
+      this.product_info = data.product_info
     })
   }
 }
