@@ -121,6 +121,54 @@ export default new Router({
       path: 'productPlanDetail/:id',
       name: 'productPlanDetail',
       component: () => import('./views/designForm/productPlanDetail.vue')
+    }, {
+      path: 'stockMainMaterialList',
+      name: 'stockMainMaterialList',
+      component: () => import('./views/stock/mainMaterialList.vue')
+    }, {
+      path: 'mainMaterialStockCreate',
+      name: 'mainMaterialStockCreate',
+      component: () => import('./views/stock/mainMaterialStockCreate.vue')
+    }, {
+      path: 'mainMaterialStockList',
+      name: 'mainMaterialStockList',
+      component: () => import('./views/stock/mainMaterialStockList.vue')
+    }, {
+      path: 'mainMaterialStockDetail/:id',
+      name: 'mainMaterialStockDetail',
+      component: () => import('./views/stock/mainMaterialStockDetail.vue')
+    }, {
+      path: 'stockOtherMaterialList',
+      name: 'stockOtherMaterialList',
+      component: () => import('./views/stock/otherMaterialList.vue')
+    }, {
+      path: 'otherMaterialStockCreate',
+      name: 'otherMaterialStockCreate',
+      component: () => import('./views/stock/otherMaterialStockCreate.vue')
+    }, {
+      path: 'otherMaterialStockList',
+      name: 'otherMaterialStockList',
+      component: () => import('./views/stock/otherMaterialStockList.vue')
+    }, {
+      path: 'otherMaterialStockDetail/:id',
+      name: 'otherMaterialStockDetail',
+      component: () => import('./views/stock/otherMaterialStockDetail.vue')
+    }, {
+      path: 'stockProductList',
+      name: 'stockProductList',
+      component: () => import('./views/stock/productList.vue')
+    }, {
+      path: 'productStockCreate',
+      name: 'productStockCreate',
+      component: () => import('./views/stock/productStockCreate.vue')
+    }, {
+      path: 'productStockList',
+      name: 'productStockList',
+      component: () => import('./views/stock/productStockList.vue')
+    }, {
+      path: 'productStockDetail/:id',
+      name: 'productStockDetail',
+      component: () => import('./views/stock/productStockDetail.vue')
     }]
   }
   ]

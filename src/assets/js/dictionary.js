@@ -52,6 +52,27 @@ const menu = [{
     url: '/index/null'
   }]
 }, {
+  name: '库存管理',
+  children: [{
+    name: '添加产品库存',
+    url: '/index/stockProductList'
+  }, {
+    name: '产品库存列表',
+    url: '/index/productStockList'
+  }, {
+    name: '添加原料库存',
+    url: '/index/stockMainMaterialList'
+  }, {
+    name: '原料库存列表',
+    url: '/index/mainMaterialStockList'
+  }, {
+    name: '添加辅料库存',
+    url: '/index/stockOtherMaterialList'
+  }, {
+    name: '辅料库存列表',
+    url: '/index/otherMaterialStockList'
+  }]
+}, {
   name: '原料管理',
   children: [{
     name: '原料订购',
