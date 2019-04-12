@@ -95,6 +95,7 @@
 </template>
 
 <script>
+import { productPlanDetail } from '@/assets/js/api.js'
 import ylTable from '@/components/table/table.vue'
 // import { porductOne } from '@/assets/js/api.js'
 export default {
@@ -285,6 +286,14 @@ export default {
     save () {
 
     }
+  },
+  created () {
+    console.log(this.$route.params.id)
+    productPlanDetail({
+      product_id: this.$route.params.id
+    }).then((res) => {
+      console.log(res)
+    })
   }
 }
 </script>

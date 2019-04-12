@@ -62,38 +62,40 @@
           </div>
         </div>
       </div>
-      <!-- <div class="tableCtn">
+      <div class="tableCtn">
         <div class="tableRow titleTableRow">
           <div class="tableColumn">计划单编号</div>
-          <div class="tableColumn flex5">产品编号</div>
+          <div class="tableColumn">产品编号</div>
           <div class="tableColumn">产品类别</div>
-          <div class="tableColumn flex9">产品规格</div>
-          <div class="tableColumn flexSamll">主要原料</div>
-          <div class="tableColumn flexSamll">主要辅料</div>
-          <div class="tableColumn flexSamll">创建人</div>
+          <div class="tableColumn">产品规格</div>
+          <div class="tableColumn">主要原料</div>
+          <div class="tableColumn">主要辅料</div>
+          <div class="tableColumn">创建人</div>
+          <div class="tableColumn">创建日期</div>
           <div class="tableColumn flex9">操作</div>
         </div>
         <div class="tableRow bodyTableRow"
              v-for="(item) in list"
              :key="item.id">
           <div class="tableColumn"
-               style="color: rgb(26, 149, 255);">{{item.craft_code}}</div>
-          <div class="tableColumn flex5">{{item.product_info|filterType}}</div>
-          <div class="tableColumn">{{item|filterWeft}}</div>
-          <div class="tableColumn flex9">{{item.material_data|filterMaterial}}</div>
-          <div class="tableColumn flexSamll">{{item.weight}}</div>
-          <div class="tableColumn flexSamll">{{item.user}}</div>
-          <div class="tableColumn flexSamll">{{item.create_time}}</div>
+               style="color: rgb(26, 149, 255);">{{item.plan_code}}</div>
+          <div class="tableColumn">{{item.product_info.product_code}}</div>
+          <div class="tableColumn">{{item.product_info|filterType}}</div>
+          <div class="tableColumn"></div>
+          <div class="tableColumn">{{item.material_data|filterMaterial}}</div>
+          <div class="tableColumn"></div>
+          <div class="tableColumn">{{item.product_info.user_name}}</div>
+          <div class="tableColumn">{{item.product_info.create_time}}</div>
           <div class="tableColumn flex9">
             <span class="btns normal">修改</span>
             <span class="btns success"
-                  @click="$router.push('/index/designFormDetail/'+item.id)">查看</span>
+                  @click="$router.push('/index/productPlanDetail/'+item.id)">查看</span>
             <span class="btns warning"
                   @click="copy(item.id)">打印</span>
           </div>
         </div>
-      </div> -->
-      <yl-table />
+      </div>
+      <!-- <yl-table /> -->
       <div class="pageCtn">
         <el-pagination background
                        :page-size="5"
@@ -124,8 +126,8 @@
 </template>
 
 <script>
-import { productPlanList, craftList } from '@/assets/js/api.js'
-import ylTable from '@/components/tableList/tableList.vue'
+import { productPlanList } from '@/assets/js/api.js'
+// import ylTable from '@/components/tableList/tableList.vue'
 export default {
   data () {
     return {
@@ -174,11 +176,13 @@ export default {
     }
   },
   components: {
-    ylTable
+    // ylTable
   },
   methods: {
+    // 切换list
     getCraftList () {
-      craftList({
+      // console.log('1')
+      productPlanList({
         'company_id': window.sessionStorage.getItem('company_id'),
         'limit': 5,
         'category_id': this.categoryVal,
@@ -188,9 +192,10 @@ export default {
         // 'start_time': '',
         // 'end_time': ''
       }).then((res) => {
-        console.log(res)
+        // console.log(res)
         this.total = res.data.meta.total
         this.list = res.data.data
+        console.log(this.list)
       })
     },
     showImg (imgList) {
@@ -216,7 +221,7 @@ export default {
       }
     },
     pickTime (date) {
-      console.log(date)
+      // console.log(date)
     },
     copy (id) {
       window.open('/designFormTable/' + id)
@@ -299,13 +304,13 @@ export default {
     filterMaterial (material) {
       let str = ''
       material.forEach((item) => {
-        if (item.type === 0 && item.type_material === 0) {
-          str += item.material_name + '/'
+        if (item.type === 0) { // && item.type_material === 0
+          str += item.material + '/'
         }
       })
       material.forEach((item) => {
-        if (item.type === 1 && item.type_material === 0) {
-          str += item.material_name
+        if (item.type === 1) { // && item.type_material === 0
+          str += item.material
         }
       })
       return str
@@ -313,13 +318,20 @@ export default {
   },
   created () {
     this.getCraftList()
-    productPlanList({
-      company_id: window.sessionStorage.getItem('company_id')
-    }).then((res) => {
-      if (res.data.status) {
-        this.category = res.data.data
-      }
-    })
+    // productPlanList({
+    //   company_id: window.sessionStorage.getItem('company_id')
+    // }).then((res) => {
+    //   console.log(res)
+    //   console.log(res.data)
+    //   if (res.status) {
+    //     this.category = res.data.data
+    //     // console.log(res.data.data)
+    //     console.log(this.category)
+    //   }
+    // })
+  },
+  mounted () {
+    // console.log(this.category)
   }
 }
 </script>
