@@ -13,7 +13,7 @@
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label must">外贸公司：</span>
-           <el-select class="elInput" v-model="company" placeholder="请选择外贸公司">
+           <el-select class="elInput" v-model="company" placeholder="请选择外贸公司" @change="getContacts">
             <el-option
               v-for="item in companyArr"
               :key="item.id"
@@ -65,6 +65,7 @@
         <div class="inputCtn">
           <span class="label must">下单日期：</span>
           <el-date-picker
+            value-format="yyyy-MM-dd"
             class="elInput"
             v-model="date"
             type="date"
@@ -80,7 +81,8 @@
               class="elInput"
               placeholder="请输入产品编号搜索"
               suffix-icon="el-icon-search"
-              v-model="search">
+              v-model="search"
+              @keyup.enter.native="getSearchList">
             </el-input>
             <span class="gjss" @click="showSeach=!showSeach">高级搜索
               <i class="el-icon" :class="{'el-icon-arrow-up':!showSeach,'el-icon-arrow-down':showSeach}"></i>
@@ -90,15 +92,19 @@
                 <div class="blockOnce">
                   <span class="name">产品类别：</span>
                    <el-cascader
+                    expand-trigger="hover"
                     class="elInput"
                     placeholder="请选择产品类别"
                     :options="typeArr"
-                    v-model="type">
+                    v-model="type"
+                    @change="getSearchList"
+                    clearable>
                   </el-cascader>
                 </div>
                 <div class="blockOnce">
                   <span class="name">创建日期：</span>
                   <el-date-picker
+                    value-format="yyyy-MM-dd"
                     class="elInput"
                     v-model="dateSearch"
                     type="date"
@@ -109,7 +115,7 @@
               <div class="block">
                 <div class="blockOnce">
                   <span class="name">产品花型：</span>
-                  <el-select class="elInput" v-model="flower" placeholder="请选择联系人">
+                  <el-select class="elInput" v-model="flower" placeholder="请选择产品花型"  @change="getSearchList" clearable>
                     <el-option
                       v-for="item in flowerArr"
                       :key="item.id"
@@ -136,7 +142,7 @@
           <div class="lineTable">
             <div class="lineHead">
               <div class="list">
-                <div class="flex">产品编号</div>
+                <div class="flex">工艺单编号</div>
                 <div class="flex">产品类别</div>
                 <div class="flex">产品花纹</div>
                 <div class="flex">创建人</div>
@@ -145,39 +151,15 @@
               </div>
             </div>
             <div class="lineBody">
-              <div class="list">
-                <div class="flex">产品编号</div>
-                <div class="flex">产品类别</div>
-                <div class="flex">产品花纹</div>
-                <div class="flex">创建人</div>
-                <div class="flex">创建日期</div>
+              <div class="list" v-for="item in seachProduct" :key="item.id">
+                <div class="flex" style="color:#10AEF5">{{item.plan_code}}</div>
+                <div class="flex">{{item.product_info|filterType}}</div>
+                <div class="flex">{{item.product_info.flower_id}}</div>
+                <div class="flex">{{item.user_name}}</div>
+                <div class="flex">{{item.create_time}}</div>
                 <div class="flex">
-                  <el-checkbox></el-checkbox>
+                  <el-checkbox @change="getProduct($event,item.id)"></el-checkbox>
                 </div>
-              </div>
-              <div class="list">
-                <div class="flex">产品编号</div>
-                <div class="flex">产品类别</div>
-                <div class="flex">产品花纹</div>
-                <div class="flex">创建人</div>
-                <div class="flex">创建日期</div>
-                <div class="flex">操作</div>
-              </div>
-              <div class="list">
-                <div class="flex">产品编号</div>
-                <div class="flex">产品类别</div>
-                <div class="flex">产品花纹</div>
-                <div class="flex">创建人</div>
-                <div class="flex">创建日期</div>
-                <div class="flex">操作</div>
-              </div>
-              <div class="list">
-                <div class="flex">产品编号</div>
-                <div class="flex">产品类别</div>
-                <div class="flex">产品花纹</div>
-                <div class="flex">创建人</div>
-                <div class="flex">创建日期</div>
-                <div class="flex">操作</div>
               </div>
             </div>
           </div>
@@ -194,50 +176,29 @@
               </div>
             </div>
             <div class="lineBody">
-              <div class="list">
-                <div class="flex">产品编号</div>
-                <div class="flex">产品类别</div>
-                <div class="flex">产品花纹</div>
-                <div class="flex">创建人</div>
-                <div class="flex">创建日期</div>
+              <div class="list" v-for="item in productArr" :key="item.id">
+                <div class="flex" style="color:#10AEF5">{{item.product_info.product_code}}</div>
+                <div class="flex">{{item.product_info|filterType}}</div>
+                <div class="flex">{{item.product_info.flower_id}}</div>
+                <div class="flex">{{item.product_info.user_name}}</div>
+                <div class="flex">{{item.product_info.create_time}}</div>
                 <div class="flex">
-                  <el-checkbox></el-checkbox>
+                  <span class="delete" @click="deleteProduct(item.id)">删除</span>
                 </div>
-              </div>
-              <div class="list">
-                <div class="flex">产品编号</div>
-                <div class="flex">产品类别</div>
-                <div class="flex">产品花纹</div>
-                <div class="flex">创建人</div>
-                <div class="flex">创建日期</div>
-                <div class="flex">操作</div>
-              </div>
-              <div class="list">
-                <div class="flex">产品编号</div>
-                <div class="flex">产品类别</div>
-                <div class="flex">产品花纹</div>
-                <div class="flex">创建人</div>
-                <div class="flex">创建日期</div>
-                <div class="flex">操作</div>
-              </div>
-              <div class="list">
-                <div class="flex">产品编号</div>
-                <div class="flex">产品类别</div>
-                <div class="flex">产品花纹</div>
-                <div class="flex">创建人</div>
-                <div class="flex">创建日期</div>
-                <div class="flex">操作</div>
               </div>
             </div>
           </div>
-          <div class="specialCtn">
-            <div class="lineTitle">第一批</div>
+          <div class="specialCtn" v-for="(itemOrder,indexOrder) in orderArr" :key="indexOrder">
+            <div class="lineTitle">第 {{indexOrder+1}} 批
+              <div class="deleteIcon" @click="deleteBatch(indexOrder)"><i class="el-icon-close"></i></div>
+            </div>
             <div class="mainCtn">
               <div class="mainOnce">
                 <span class="label">交货日期：</span>
                 <el-date-picker
+                  value-format="yyyy-MM-dd"
                   class="elInput"
-                  v-model="addDate[0]"
+                  v-model="orderArr[indexOrder].date"
                   type="date"
                   placeholder="选择日期">
                 </el-date-picker>
@@ -245,229 +206,56 @@
               <div class="mainOnce">
                 <span class="label">产品信息：</span>
                 <div class="btnCtn">
-                  <div class="addBtn">
+                  <div class="addBtn" @click="addProductOne(indexOrder)">
                     <span>添加产品</span>
                     <span>+</span>
                   </div>
                 </div>
-                <div class="productCtn">
-                  <el-select class="elInput" v-model="product[0]" placeholder="请选择产品" style="margin-top:24px;">
-                    <el-option
-                      v-for="item in productArr"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item.id">
-                    </el-option>
-                  </el-select>
-                  <i class="el-icon-delete"></i>
-                  <div class="typeCtn">
-                    <el-cascader
-                      style="width:160px;margin-right:15px"
-                      class="elInput"
-                      placeholder="请选择尺码和颜色"
-                      :options="colorSizeArr"
-                      v-model="colorSize">
-                    </el-cascader>
-                    <el-input class="elInput" v-model="unitPrice[0]" placeholder="单价" style="width:150px;margin-right:15px">
-                      <template slot="append">元</template>
-                    </el-input>
-                    <el-input class="elInput" v-model="numbers[0]" placeholder="数量" style="width:150px;">
-                      <template slot="append">个</template>
-                    </el-input>
-                    <i class="el-icon-delete"></i>
+                <div class="productCtn" v-for="(itemProduct,indexProduct) in orderArr[indexOrder].product" :key="indexProduct">
+                  <div class="product">
+                    <div class="index">产品 {{indexProduct+1}}：</div>
+                    <el-select class="elInput" v-model="orderArr[indexOrder].product[indexProduct].name" placeholder="请选择产品编号" style="margin-top:24px;" @change="getColorSize($event,indexOrder,indexProduct)">
+                      <el-option
+                        v-for="item in productArr"
+                        :key="item.product_info.product_code"
+                        :label="item.product_info.product_code"
+                        :value="item.product_info.product_code">
+                        <span style="font-size:12px">{{item.product_info.product_code}}({{item.product_info.category_info.product_category}}/{{item.product_info.type_name}}/{{item.product_info.style_name}})</span>
+                      </el-option>
+                    </el-select>
+                    <i class="el-icon-delete" @click="deleteProductOne (indexOrder, indexProduct)"></i>
                   </div>
-                  <div class="typeCtn">
+                  <div class="typeCtn" v-for="(itemType,indexType) in orderArr[indexOrder].product[indexProduct].size" :key="indexType">
+                    <div class="index">{{indexType+1}}</div>
                     <el-cascader
                       style="width:160px;margin-right:15px"
                       class="elInput"
                       placeholder="请选择尺码和颜色"
-                      :options="colorSizeArr"
-                      v-model="colorSize">
+                      :options="orderArr[indexOrder].product[indexProduct].colorSizeArr"
+                      v-model="orderArr[indexOrder].product[indexProduct].size[indexType].name">
                     </el-cascader>
-                    <el-input class="elInput" v-model="unitPrice[0]" placeholder="单价" style="width:150px;margin-right:15px">
+                    <el-input class="elInput" v-model="orderArr[indexOrder].product[indexProduct].size[indexType].unitPrice" placeholder="单价" style="width:150px;margin-right:15px">
                       <template slot="append">元</template>
                     </el-input>
-                    <el-input class="elInput" v-model="numbers[0]" placeholder="数量" style="width:150px;">
+                    <el-input class="elInput" v-model="orderArr[indexOrder].product[indexProduct].size[indexType].numbers" placeholder="数量" style="width:150px;">
                       <template slot="append">个</template>
                     </el-input>
-                    <i class="el-icon-delete"></i>
+                    <i class="el-icon-delete" @click="deleteSize(indexOrder,indexProduct,indexType)"></i>
                   </div>
                   <div style="margin-top:24px;">
-                    <div class="addBtn">
-                      <span>产品尺码</span>
-                      <span>+</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="productCtn">
-                  <el-select class="elInput" v-model="product[0]" placeholder="请选择产品" style="margin-top:24px;">
-                    <el-option
-                      v-for="item in productArr"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item.id">
-                    </el-option>
-                  </el-select>
-                  <i class="el-icon-delete"></i>
-                  <div class="typeCtn">
-                    <el-cascader
-                      style="width:160px;margin-right:15px"
-                      class="elInput"
-                      placeholder="请选择尺码和颜色"
-                      :options="colorSizeArr"
-                      v-model="colorSize">
-                    </el-cascader>
-                    <el-input class="elInput" v-model="unitPrice[0]" placeholder="单价" style="width:150px;margin-right:15px">
-                      <template slot="append">元</template>
-                    </el-input>
-                    <el-input class="elInput" v-model="numbers[0]" placeholder="数量" style="width:150px;">
-                      <template slot="append">个</template>
-                    </el-input>
-                    <i class="el-icon-delete"></i>
-                  </div>
-                  <div class="typeCtn">
-                    <el-cascader
-                      style="width:160px;margin-right:15px"
-                      class="elInput"
-                      placeholder="请选择尺码和颜色"
-                      :options="colorSizeArr"
-                      v-model="colorSize">
-                    </el-cascader>
-                    <el-input class="elInput" v-model="unitPrice[0]" placeholder="单价" style="width:150px;margin-right:15px">
-                      <template slot="append">元</template>
-                    </el-input>
-                    <el-input class="elInput" v-model="numbers[0]" placeholder="数量" style="width:150px;">
-                      <template slot="append">个</template>
-                    </el-input>
-                    <i class="el-icon-delete"></i>
-                  </div>
-                  <div style="margin-top:24px;">
-                    <div class="addBtn">
-                      <span>产品尺码</span>
+                    <div class="addBtn" @click="addSize(indexOrder,indexProduct)">
+                      <span>添加尺码</span>
                       <span>+</span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="lineTitle">第二批</div>
-            <div class="mainCtn">
-              <div class="mainOnce">
-                <span class="label">交货日期：</span>
-                <el-date-picker
-                  class="elInput"
-                  v-model="addDate[0]"
-                  type="date"
-                  placeholder="选择日期">
-                </el-date-picker>
-              </div>
-              <div class="mainOnce">
-                <span class="label">产品信息：</span>
-                <div class="btnCtn">
-                  <div class="addBtn">
-                    <span>添加产品</span>
-                    <span>+</span>
-                  </div>
-                </div>
-                <div class="productCtn">
-                  <el-select class="elInput" v-model="product[0]" placeholder="请选择产品" style="margin-top:24px;">
-                    <el-option
-                      v-for="item in productArr"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item.id">
-                    </el-option>
-                  </el-select>
-                  <i class="el-icon-delete"></i>
-                  <div class="typeCtn">
-                    <el-cascader
-                      style="width:160px;margin-right:15px"
-                      class="elInput"
-                      placeholder="请选择尺码和颜色"
-                      :options="colorSizeArr"
-                      v-model="colorSize">
-                    </el-cascader>
-                    <el-input class="elInput" v-model="unitPrice[0]" placeholder="单价" style="width:150px;margin-right:15px">
-                      <template slot="append">元</template>
-                    </el-input>
-                    <el-input class="elInput" v-model="numbers[0]" placeholder="数量" style="width:150px;">
-                      <template slot="append">个</template>
-                    </el-input>
-                    <i class="el-icon-delete"></i>
-                  </div>
-                  <div class="typeCtn">
-                    <el-cascader
-                      style="width:160px;margin-right:15px"
-                      class="elInput"
-                      placeholder="请选择尺码和颜色"
-                      :options="colorSizeArr"
-                      v-model="colorSize">
-                    </el-cascader>
-                    <el-input class="elInput" v-model="unitPrice[0]" placeholder="单价" style="width:150px;margin-right:15px">
-                      <template slot="append">元</template>
-                    </el-input>
-                    <el-input class="elInput" v-model="numbers[0]" placeholder="数量" style="width:150px;">
-                      <template slot="append">个</template>
-                    </el-input>
-                    <i class="el-icon-delete"></i>
-                  </div>
-                  <div style="margin-top:24px;">
-                    <div class="addBtn">
-                      <span>产品尺码</span>
-                      <span>+</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="productCtn">
-                  <el-select class="elInput" v-model="product[0]" placeholder="请选择产品" style="margin-top:24px;">
-                    <el-option
-                      v-for="item in productArr"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item.id">
-                    </el-option>
-                  </el-select>
-                  <i class="el-icon-delete"></i>
-                  <div class="typeCtn">
-                    <el-cascader
-                      style="width:160px;margin-right:15px"
-                      class="elInput"
-                      placeholder="请选择尺码和颜色"
-                      :options="colorSizeArr"
-                      v-model="colorSize">
-                    </el-cascader>
-                    <el-input class="elInput" v-model="unitPrice[0]" placeholder="单价" style="width:150px;margin-right:15px">
-                      <template slot="append">元</template>
-                    </el-input>
-                    <el-input class="elInput" v-model="numbers[0]" placeholder="数量" style="width:150px;">
-                      <template slot="append">个</template>
-                    </el-input>
-                    <i class="el-icon-delete"></i>
-                  </div>
-                  <div class="typeCtn">
-                    <el-cascader
-                      style="width:160px;margin-right:15px"
-                      class="elInput"
-                      placeholder="请选择尺码和颜色"
-                      :options="colorSizeArr"
-                      v-model="colorSize">
-                    </el-cascader>
-                    <el-input class="elInput" v-model="unitPrice[0]" placeholder="单价" style="width:150px;margin-right:15px">
-                      <template slot="append">元</template>
-                    </el-input>
-                    <el-input class="elInput" v-model="numbers[0]" placeholder="数量" style="width:150px;">
-                      <template slot="append">个</template>
-                    </el-input>
-                    <i class="el-icon-delete"></i>
-                  </div>
-                  <div style="margin-top:24px;">
-                    <div class="addBtn">
-                      <span>产品尺码</span>
-                      <span>+</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+          </div>
+          <div class="btnCtn" style="margin-top:24px;">
+            <div class="addBtn" @click="addBatch">
+              <span>添加批次</span>
+              <span>+</span>
             </div>
           </div>
         </div>
@@ -484,12 +272,16 @@
           <el-input style="width:670px" type="textarea" :rows="6" class="elInput" v-model="otherInfo" placeholder="其他信息填写"></el-input>
         </div>
       </div>
+      <div class="bottom">
+        <div class="cancleBtn" @click="clearAll">清空</div>
+        <div class="okBtn" @click="saveAll">保存</div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { clientList } from '@/assets/js/api.js'
+import { clientList, productPlanList, productTppeList, flowerList, orderSave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -513,24 +305,280 @@ export default {
       peopleArr: [],
       people: '',
       showSeach: false,
-      totalMoney: '',
       otherInfo: '',
       addDate: [''],
+      seachProduct: [],
       product: [],
       productArr: [],
-      colorSizeArr: [],
-      colorSize: [],
-      unitPrice: [],
-      numbers: []
+      orderArr: [{
+        date: '',
+        product: [{
+          name: '',
+          colorSizeArr: [],
+          size: [{
+            name: [],
+            unitPrice: '',
+            numbers: ''
+          }]
+        }]
+      }]
+    }
+  },
+  methods: {
+    // 根据选取的外贸公司获取联系人
+    getContacts (id) {
+      this.contactsArr = this.companyArr.find((item) => item.id === id).contacts
+    },
+    // 根据选中的产品信息，添加到产品列表里
+    getProduct (ev, id) {
+      if (ev) {
+        if (!this.productArr.find((item, index) => item.id === id)) {
+          this.productArr.push(this.seachProduct.find((item) => item.id === id))
+        }
+      } else {
+        let mark = -1
+        this.productArr.forEach((item, index) => {
+          if (item.id === id) {
+            mark = index
+          }
+        })
+        if (mark > -1) {
+          this.productArr.splice(mark, 1)
+        }
+      }
+    },
+    // 使用删除操作删除产品列表里的信息
+    deleteProduct (id) {
+      let mark = -1
+      this.productArr.forEach((item, index) => {
+        if (item.id === id) {
+          mark = index
+        }
+      })
+      if (mark > -1) {
+        this.productArr.splice(mark, 1)
+      }
+    },
+    // 获取产品加入搜索条件后的列表
+    getSearchList () {
+      productPlanList({
+        company_id: this.companyId,
+        limit: null,
+        category_id: this.type[0] || null,
+        style_id: this.type[2] || null,
+        type_id: this.type[1] || null,
+        flower_id: this.flower || null,
+        start_time: null,
+        end_time: null,
+        plan_code: this.search || null
+      }).then((res) => {
+        this.seachProduct = res.data.data
+      })
+    },
+    // 删除批次
+    deleteBatch (index) {
+      this.$confirm('是否删除该批次?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        if (this.orderArr.length > 1) {
+          this.orderArr.splice(index, 1)
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        } else {
+          this.$message({
+            type: 'error',
+            message: '至少有一个批次!'
+          })
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    // 添加批次
+    addBatch () {
+      this.orderArr.push({
+        date: '',
+        product: [{
+          name: '',
+          colorSizeArr: [],
+          size: [{
+            name: [],
+            unitPrice: '',
+            numbers: ''
+          }]
+        }]
+      })
+    },
+    // 添加产品
+    addProductOne (indexOrder) {
+      this.orderArr[indexOrder].product.push({
+        name: '',
+        colorSizeArr: [],
+        size: [{
+          name: [],
+          unitPrice: '',
+          numbers: ''
+        }]
+      })
+    },
+    // 删除产品
+    deleteProductOne (indexOrder, indexProduct) {
+      if (this.orderArr[indexOrder].product.length > 1) {
+        this.orderArr[indexOrder].product.splice(indexProduct, 1)
+      } else {
+        this.$message({
+          type: 'error',
+          message: '每个批次至少包含一个产品!'
+        })
+      }
+    },
+    // 添加尺码
+    addSize (indexOrder, indexProduct) {
+      this.orderArr[indexOrder].product[indexProduct].size.push({
+        name: [],
+        unitPrice: '',
+        numbers: ''
+      })
+    },
+    // 删除尺码
+    deleteSize (indexOrder, indexProduct, indexType) {
+      if (this.orderArr[indexOrder].product[indexProduct].size.length > 1) {
+        this.orderArr[indexOrder].product[indexProduct].size.splice(indexType, 1)
+      } else {
+        this.$message({
+          type: 'error',
+          message: '每个产品至少包含一个尺码!'
+        })
+      }
+    },
+    // 选取产品后,把相应的尺码和颜色信息更新到级联选择器里
+    getColorSize (id, indexOrder, indexProduct) {
+      let arr = []
+      let obj = this.productArr.find((item) => item.product_info.product_code === id)
+      console.log(obj)
+      for (let key in obj.product_info.size) {
+        arr.push({
+          value: key,
+          label: key,
+          children: obj.product_info.color.map((item) => {
+            return {
+              value: item.name,
+              label: item.name
+            }
+          })
+        })
+      }
+      this.orderArr[indexOrder].product[indexProduct].colorSizeArr = arr
+    },
+    // 清空
+    clearAll () {
+
+    },
+    // 保存
+    saveAll () {
+      let obj = {
+        company_id: this.companyId,
+        user_id: window.sessionStorage.getItem('user_id'),
+        order_code: this.orderId,
+        client_id: this.company,
+        contacts: this.contacts,
+        account_unit: '人民币',
+        exchange_rate: this.exchangeRate,
+        tax_rate: this.taxRate,
+        order_time: this.date,
+        order_info: this.orderArr.map((item) => {
+          return {
+            batch_info: item.product.map((item) => {
+              return {
+                productCode: item.name,
+                size: item.size
+              }
+            }),
+            delivery_time: item.date
+          }
+        }),
+        total_price: this.totalMoney,
+        remark: this.otherInfo
+      }
+      console.log(obj)
+      orderSave(obj).then((res) => {
+        console.log(res)
+      })
+    }
+  },
+  computed: {
+    totalMoney () {
+      return this.orderArr.reduce((totalOrder, itemOrder) => {
+        return totalOrder + itemOrder.product.reduce((totalProduct, itemProduct) => {
+          return totalProduct + itemProduct.size.reduce((totalSize, itemSize) => {
+            return totalSize + itemSize.numbers * itemSize.unitPrice
+          }, 0)
+        }, 0)
+      }, 0)
+    }
+  },
+  filters: {
+    // 类型合并
+    filterType (item) {
+      if (!item.type_name) {
+        return item.category_info.product_category
+      } else if (!item.style_name) {
+        return item.category_info.product_category + ' / ' + item.type_name
+      } else {
+        return item.category_info.product_category + ' / ' + item.type_name + ' / ' + item.style_name
+      }
     }
   },
   mounted () {
-    clientList({
+    Promise.all([clientList({
       company_id: this.companyId,
       keyword: '',
       status: ''
-    }).then((res) => {
-      console.log(res)
+    }), productPlanList({
+      company_id: this.companyId,
+      limit: null,
+      category_id: null,
+      style_id: null,
+      type_id: null,
+      flower_id: null,
+      start_time: null,
+      end_time: null,
+      plan_code: null
+    }), productTppeList({
+      company_id: this.companyId
+    }), flowerList({
+      company_id: this.companyId
+    })]).then((res) => {
+      this.companyArr = res[0].data.data
+      this.seachProduct = res[1].data.data
+      this.typeArr = res[2].data.data.map((item) => {
+        return {
+          value: item.id,
+          label: item.name,
+          child_footage: item.child_footage,
+          child_size: item.child_size,
+          children: item.child.length === 0 ? null : item.child.map((item) => {
+            return {
+              value: item.id,
+              label: item.name,
+              children: item.child.length === 0 ? null : item.child.map((item) => {
+                return {
+                  value: item.id,
+                  label: item.name
+                }
+              })
+            }
+          })
+        }
+      })
+      this.flowerArr = res[3].data.data
     })
   }
 }
