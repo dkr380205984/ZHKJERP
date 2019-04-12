@@ -3,8 +3,8 @@
     <p class="company">{{companyName}}有限公司工艺单</p>
     <div class="table">
       <div class="page_header">
-        <span>工艺单编号:{{designNum}}</span>
-        <span>创建时间：{{timer}}</span>
+        <span>工艺单编号:{{designFromTable.craft_code}}</span>
+        <span>创建时间：{{designFromTable.create_time}}</span>
       </div>
       <ul class="table-box">
         <li class="info">
@@ -13,15 +13,15 @@
           <div>成分</div>
           <div>90%涤纶/10%晴纶</div>
           <div>产品编号</div>
-          <div>KR19011101</div>
+          <div>{{designFromTable.product_info.product_code}}</div>
         </li>
         <li class="info">
           <div>规格</div>
           <div>80*190=2*15</div>
           <div>克重</div>
-          <div>100g</div>
+          <div>{{designFromTable.weight}}g</div>
           <div>备注</div>
-          <div></div>
+          <div>{{designFromTable.product_info.description}}</div>
         </li>
         <li class="main-arrange">
           <div class="title">主要原料及配色排列</div>
@@ -193,9 +193,11 @@
 </template>
 
 <script>
+import { craftOne } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      designFromTable: {},
       date2: {
         list1: {
           main: '11',
@@ -216,9 +218,9 @@ export default {
           jia3: '52'
         }
       },
-      companyName: 'xx',
-      designNum: 'KR-001',
-      timer: new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate()
+      companyName: 'xx'
+      // designNum: 'KR-001',
+      // timer: new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate()
     }
   },
   methods: {
@@ -229,6 +231,14 @@ export default {
       }
       return arr
     }
+  },
+  created () {
+    craftOne({
+      id: this.$route.params.id
+    }).then((res) => {
+      this.designFromTable = res.data.data
+      console.log(this.designFromTable)
+    })
   }
 }
 </script>

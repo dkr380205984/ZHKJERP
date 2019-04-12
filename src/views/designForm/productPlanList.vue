@@ -81,7 +81,7 @@
                style="color: rgb(26, 149, 255);">{{item.plan_code}}</div>
           <div class="tableColumn">{{item.product_info.product_code}}</div>
           <div class="tableColumn">{{item.product_info|filterType}}</div>
-          <div class="tableColumn"></div>
+          <div class="tableColumn">{{item.product_info.size|filterSize}}</div>
           <div class="tableColumn">{{item.material_data|filterMaterial}}</div>
           <div class="tableColumn"></div>
           <div class="tableColumn">{{item.product_info.user_name}}</div>
@@ -95,7 +95,6 @@
           </div>
         </div>
       </div>
-      <!-- <yl-table /> -->
       <div class="pageCtn">
         <el-pagination background
                        :page-size="5"
@@ -127,7 +126,6 @@
 
 <script>
 import { productPlanList } from '@/assets/js/api.js'
-// import ylTable from '@/components/tableList/tableList.vue'
 export default {
   data () {
     return {
@@ -176,12 +174,9 @@ export default {
     }
   },
   components: {
-    // ylTable
   },
   methods: {
-    // 切换list
     getCraftList () {
-      // console.log('1')
       productPlanList({
         'company_id': window.sessionStorage.getItem('company_id'),
         'limit': 5,
@@ -192,7 +187,6 @@ export default {
         // 'start_time': '',
         // 'end_time': ''
       }).then((res) => {
-        // console.log(res)
         this.total = res.data.meta.total
         this.list = res.data.data
         console.log(this.list)
@@ -329,9 +323,6 @@ export default {
     //     console.log(this.category)
     //   }
     // })
-  },
-  mounted () {
-    // console.log(this.category)
   }
 }
 </script>
