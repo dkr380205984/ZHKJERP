@@ -126,7 +126,7 @@ export default new Router({
       name: 'stockMainMaterialList',
       component: () => import('./views/stock/mainMaterialList.vue')
     }, {
-      path: 'mainMaterialStockCreate',
+      path: 'mainMaterialStockCreate/:id',
       name: 'mainMaterialStockCreate',
       component: () => import('./views/stock/mainMaterialStockCreate.vue')
     }, {
@@ -142,7 +142,7 @@ export default new Router({
       name: 'stockOtherMaterialList',
       component: () => import('./views/stock/otherMaterialList.vue')
     }, {
-      path: 'otherMaterialStockCreate',
+      path: 'otherMaterialStockCreate/:id',
       name: 'otherMaterialStockCreate',
       component: () => import('./views/stock/otherMaterialStockCreate.vue')
     }, {
@@ -158,7 +158,7 @@ export default new Router({
       name: 'stockProductList',
       component: () => import('./views/stock/productList.vue')
     }, {
-      path: 'productStockCreate',
+      path: 'productStockCreate/:id',
       name: 'productStockCreate',
       component: () => import('./views/stock/productStockCreate.vue')
     }, {

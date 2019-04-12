@@ -268,7 +268,7 @@
       </div>
       <div class="lineCtn">
         <div class="inputCtn oneLine product">
-          <span class="label must">备注：</span>
+          <span class="label">备注：</span>
           <el-input style="width:670px" type="textarea" :rows="6" class="elInput" v-model="otherInfo" placeholder="其他信息填写"></el-input>
         </div>
       </div>
