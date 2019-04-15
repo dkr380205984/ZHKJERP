@@ -82,7 +82,7 @@
           <div class="tableColumn">{{item|filterWeft}}</div>
           <div class="tableColumn flex9">{{item.material_data|filterMaterial}}</div>
           <div class="tableColumn flexSamll">{{item.weight}}</div>
-          <div class="tableColumn flexSamll">{{item.user}}</div>
+          <div class="tableColumn flexSamll">{{item.user_name}}</div>
           <div class="tableColumn flexSamll">{{item.create_time}}</div>
           <div class="tableColumn flex9">
             <span class="btns normal">修改</span>

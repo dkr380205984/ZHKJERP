@@ -53,7 +53,7 @@
           <div class="tableColumn">{{item.update_time}}</div>
           <div class="tableColumn flex9">
             <div class="once">
-              <span class="btns normal">查看</span>
+              <span class="btns normal" @click="$router.push('/index/foreignTradeDetail/'+item.id)">查看</span>
               <span class="btns warning">修改</span>
               <span class="btns error">删除</span>
             </div>

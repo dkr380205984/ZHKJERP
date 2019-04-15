@@ -132,7 +132,22 @@ const clientDelete = (params) => http.post(`${baseUrl}/client/delete`, params, '
 const clientAdd = (params) => http.post(`${baseUrl}/client/save`, params, 'application/json')
 // 添加样品订单
 const sampleSave = (params) => http.post(`${baseUrl}/order/sample/save`, params, 'application/json')
+// 创建订单
+const orderSave = (params) => http.post(`${baseUrl}/order/save`, params, 'application/json')
+// 订单详情
+const orderDetail = (params) => http.get(`${baseUrl}/order/one`, params)
+// 订单列表
+const orderList = (params) => http.get(`${baseUrl}/order/list`, params)
+// 订单批次信息
+const orderBatchList = (params) => http.get(`${baseUrl}/order/batch/list`, params)
+// 添加产品库存
+const productStockSave = (params) => http.post(`${baseUrl}/product/stock/save`, params, 'application/json')
 export {
+  productStockSave,
+  orderSave,
+  orderDetail,
+  orderList,
+  orderBatchList,
   craftProduct,
   clientList,
   contactsCheck,

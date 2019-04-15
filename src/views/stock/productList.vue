@@ -1,5 +1,5 @@
 <template>
-  <div id="productList">
+  <div id="stockProductList">
     <div class="head">
       <h2>产品列表</h2>
       <el-input placeholder="输入产品编号精确搜索" suffix-icon="el-icon-search" v-model="searchVal"></el-input>
@@ -93,8 +93,7 @@
           </div>
           <div class="tableColumn">{{item.user_name}}</div>
           <div class="tableColumn flex9">
-            <span class="btns normal" @click="$router.push('/index/productUpdate/'+item.id)">修改</span>
-            <span class="btns success" @click="$router.push('/index/productDetail/'+item.id)">查看</span>
+            <span class="btns normal" @click="$router.push('/index/productStockCreate/'+item.id)">添加库存</span>
           </div>
         </div>
       </div>
@@ -327,10 +326,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/productList.less';
+  @import '~@/assets/css/stockProductList.less';
 </style>
 <style lang="less">
-#productList{
+#stockProductList{
   .el-carousel__arrow{
     color:#fff;
     background: #1A95FF;
@@ -339,5 +338,4 @@ export default {
     }
   }
 }
-
 </style>
