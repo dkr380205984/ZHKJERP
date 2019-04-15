@@ -44,21 +44,24 @@
               <div class="content">
                 <div class="particulars">
                   <div>
-                    <span v-for="(item,key,n) in warp_data.warp_rank_bottom"
-                          :style="{minWidth : 100/12 + '%',borderRight : n < 12 ? '1px solid #999' : 'none'}"
+                    <span v-for="(item,key) in warp_data.warp_rank_bottom"
+                          :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
                           :key="key">{{item === 0 ? '主' : '夹' + item}}</span>
                   </div>
                   <div>
-                    <span v-for="(item,key,n) in warp_data.warp_rank[0]"
-                          :style="{minWidth : (100/12) + '%',borderRight : n < 12 ? '1px solid #999' : 'none'}"
+                    <span v-for="(item,key) in warp_data.warp_rank[0]"
+                          :style="{minWidth : (100/12) + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
                           :key="key">{{key}}</span>
                   </div>
                   <div>
-                    <span v-for="(item,key) in changeArr(warp_data.warp_rank[1])"
+                    <span class="heig65"
+                          v-for="(item,key) in changeArr(warp_data.warp_rank[1])"
                           :key="key"
-                          :style="{minWidth : (100/12) * (key > 12 ? 12 : key) + '%'}"></span>
+                          :style="{minWidth : (100/12) * (item > 12 ? 12 : item) + '%'}">{{key}}</span>
                   </div>
-                  <div></div>
+                  <div>
+                    <span class="heig58"></span>
+                  </div>
                   <!-- <div class="list-box"
                        v-for="(value,key) in date2"
                        :key="key"
