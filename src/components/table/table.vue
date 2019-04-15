@@ -4,7 +4,9 @@
         v-for="(item,index) in date"
         :key="index"
         :style="{minWidth : (typeof(item.data[0]) == 'object' ) ? (2*(100/7) + '%') : ((100/7) + '%')}">
-      <span :style="{borderRight: index == date.length-1  ? 'none' : '1px solid #999'}"><span :style="{color: (flag && index == 0) ? flag : 'inherit'}">{{item.name}}</span></span>
+      <span :style="{borderRight: index == date.length-1  ? 'none' : '1px solid #999'}">
+        <span :style="{color: (flag && index == 0) ? flag : 'inherit'}">{{item.name}}</span>
+      </span>
       <span v-for="(value,key) in item.data"
             :key="key"
             :style="{borderRight: index == date.length-1  ? 'none' : '1px solid #999'}">
