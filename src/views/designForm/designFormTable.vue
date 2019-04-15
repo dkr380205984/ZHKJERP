@@ -17,7 +17,9 @@
         </li>
         <li class="info">
           <div>规格</div>
-          <div>80*190=2*15</div>
+          <div>
+            {{product_info.size|filterSize}}
+          </div>
           <div>克重</div>
           <div>{{weight}}g</div>
           <div>备注</div>
@@ -41,21 +43,35 @@
               <div class="title">经向排列</div>
               <div class="content">
                 <div class="particulars">
-                  <div class="list-box"
+                  <div>
+                    <span v-for="(item,key,n) in warp_data.warp_rank_bottom"
+                          :style="{minWidth : 100/12 + '%',borderRight : n < 12 ? '1px solid #999' : 'none'}"
+                          :key="key">{{item === 0 ? '主' : '夹' + item}}</span>
+                  </div>
+                  <div>
+                    <span v-for="(item,key,n) in warp_data.warp_rank[0]"
+                          :style="{minWidth : (100/12) + '%',borderRight : n < 12 ? '1px solid #999' : 'none'}"
+                          :key="key">{{key}}</span>
+                  </div>
+                  <div>
+                    <span v-for="(item,key) in changeArr(warp_data.warp_rank[1])"
+                          :key="key"
+                          :style="{minWidth : (100/12) * (key > 12 ? 12 : key) + '%'}"></span>
+                  </div>
+                  <div></div>
+                  <!-- <div class="list-box"
                        v-for="(value,key) in date2"
                        :key="key"
                        :style="{width: (100/12) * Object.keys(value).length + '%'}">
                     <div class="list">
-                      <div v-for="(item,index,m) in value"
-                           :key="index">
-                        <span>{{index == 'main' ? "主" : "夹" + m}}</span>
-                        <span>{{item}}</span>
-                      </div>
+                      <span v-for="(item,key) in warp_data.warp_rank_bottom"
+                            :key="key">{{item === 0 ? '主' : '夹' + item}}</span>
+                      <span v-for="(item,key) in warp_data.warp_rank"
+                            :key="key">{{item}}</span>
                     </div>
                     <div>{{Object.keys(value).length * 1.5}}</div>
-                  </div>
+                  </div> -->
                 </div>
-                <div>正序6遍</div>
               </div>
             </div>
           </div>
@@ -200,9 +216,14 @@ export default {
       product_info: {
         materials: [],
         product_code: '',
-        description: ''
+        description: '',
+        category_info: {
+          product_category: ''
+        },
+        size: {}
       },
       weight: '',
+      size: {},
       date2: {
         list1: {
           main: '11',
@@ -260,6 +281,28 @@ export default {
         arr.push(i)
       }
       return arr
+    },
+    // 处理数组
+    changeArr (item) {
+      let obj = {}
+      let n = 0
+      let firstVal = ''
+      let len = item.length
+      for (let index in item) {
+        console.log(firstVal, index, obj)
+        if (index - 0 === len - 1) {
+          obj[firstVal] = obj[firstVal] ? n : ''
+          console.log(obj)
+        } else if (item[index] === null || item[index] === '') {
+          n++
+          continue
+        } else {
+          firstVal = item[index] ? item[index] : 1
+          n = 1
+          obj[firstVal] = obj[firstVal] ? '' : n
+        }
+      }
+      return obj
     }
   },
   filters: {
@@ -281,6 +324,16 @@ export default {
       } else {
         return item.category_info.product_category + ' / ' + item.type_name + ' / ' + item.style_name
       }
+    },
+    // 规格合并
+    filterSize (item) {
+      let str = ''
+      for (let prop in item) {
+        item[prop].forEach((value, index) => {
+          str += (index === 0 ? '' : '*') + value.size_value
+        })
+      }
+      return str
     }
   },
   beforeCreate () {

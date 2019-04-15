@@ -104,7 +104,7 @@
         </el-pagination>
       </div>
     </div>
-    <div class="shade"
+    <!-- <div class="shade"
          v-show="showShade">
       <div class="main">
         <div class="closeBtn"
@@ -119,7 +119,7 @@
           </el-carousel-item>
         </el-carousel>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -162,8 +162,8 @@ export default {
       total: 0,
       pages: 1,
       list: [],
-      imgList: [],
-      showShade: false,
+      // imgList: [],
+      // showShade: false,
       category: [], // 大类
       categoryVal: '',
       types: [], // 二级分类

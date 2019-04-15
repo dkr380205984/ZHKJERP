@@ -314,7 +314,6 @@ export default {
       this.plan_code = data.plan_code
       this.product_info = data.product_info
       this.productDetail.liucheng = data.outside_precess
-      console.log(this.productDetail.liucheng)
     })
   }
 }
