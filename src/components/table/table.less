@@ -6,7 +6,7 @@ ul {
 #table {
   position: relative;
   width: 100%;
-  border: 1px solid #999;
+  // border: 1px solid #999;
   display: flex;
   height: 100%;
   overflow: auto;
@@ -15,20 +15,28 @@ ul {
     display: flex;
     flex-direction: column;
     text-align: center;
+    border-top: 1px solid #999;
+    box-sizing: border-box;
+    &:first-child {
+      border-left: 1px solid #999;
+    }
+    &:last-child {
+      border-right: 1px solid #999;
+    }
     &>span {
       flex: 1;
       text-align: center;
       border-right: 1px solid #999;
       border-bottom: 1px solid #999;
       display: flex;
+      &:first-child {
+        background-color: #EEE; 
+      }
       &>span {
         flex: 1;
         &:first-child.haveBorder {
           border-right: 1px solid #999;
         }
-      }
-      &:last-child {
-        border-bottom: none;
       }
     }
   }

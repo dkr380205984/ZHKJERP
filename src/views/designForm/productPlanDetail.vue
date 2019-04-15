@@ -271,7 +271,7 @@ export default {
             ]
           }
         ],
-        liucheng: ['搓须', '搓须', '搓须', '搓须', '搓须']
+        liucheng: []
       },
       plan_code: '',
       product_info: {
@@ -313,6 +313,8 @@ export default {
       console.log(data)
       this.plan_code = data.plan_code
       this.product_info = data.product_info
+      this.productDetail.liucheng = data.outside_precess
+      console.log(this.productDetail.liucheng)
     })
   }
 }

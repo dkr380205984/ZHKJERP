@@ -9,7 +9,7 @@
       </span>
       <span v-for="(value,key) in item.data"
             :key="key"
-            :style="{borderRight: index == date.length-1  ? 'none' : '1px solid #999'}">
+            :style="{borderRight: index === date.length-1  ? 'none' : '1px solid #999',background : index === 0 ? '#EEE' : 'none' }">
         <template v-if="typeof(value) == 'string'">
           <span>
             {{value}}

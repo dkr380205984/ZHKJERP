@@ -1,0 +1,190 @@
+@import './common.less';
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #666;
+  font-weight: 400;
+}
+.bold12 {
+  font-size: 12px;
+  font-weight: bold;
+}
+#productDesignTable {
+  width: 595px;
+  height: auto;
+  margin: 100px auto 0;
+  font-family: 'systemfont';
+  font-size: 10px;
+  color: #666;
+  .tableBox {
+    border: 1px solid #999;
+    width: 100%;
+    &>li {
+      border-bottom: 1px solid #999;
+      overflow: hidden;
+      width: 100%;
+      &:last-child {
+        border: none;
+      }
+    }
+    .title-info {
+      height: 92px;
+      padding: 0 12px 0 18px;
+      box-sizing: border-box;
+      .title {
+        margin-top: 30px;
+        text-align: center;
+      }
+      .info {
+        margin-top: 14px;
+        display: flex;
+        justify-content: space-between;
+        em {
+          font-style: normal;
+        }
+      }
+    }
+    .information {
+      height: 30px;
+      &>span {
+        border-right: 1px solid #999;
+        line-height: 30px;
+        box-sizing: border-box;
+        text-align: center;
+        display: inline-block;
+        height: 100%;
+        &:last-child {
+          border: none;
+        }
+        &:nth-child(2n+1) {
+          font-size: 12px;
+        } 
+        &:nth-child(1) {
+          width: 108px;
+        }
+        &:nth-child(2) {
+          width: 224px;
+          text-align: justify;
+          padding-left: 22px;
+        }
+        &:nth-child(3) {
+          width: 87px;
+        }
+        &:nth-child(4) {
+          width: 174px;
+        }
+      }
+    }
+    .size-info {
+      display: flex;
+      width: 100%;
+      .title {
+        width: 108px;
+        height: 78px;
+        text-align: center;
+        line-height: 78px;
+        border-right: 1px solid #999;
+        box-sizing: border-box;
+        font-size: 12px;
+      }
+      .content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        &>div {
+          flex: 1;
+          line-height: 26px;
+          border-bottom: 1px solid #999;
+          padding-left: 22px;
+          box-sizing: border-box;
+          height: 26px;
+          &:last-child {
+            border: none;
+          }
+          &>span{
+            margin-left: 30px;
+            text-align: center;
+          }          
+        }
+      }
+    }
+    .size-tables {
+      min-height: 543px;
+      overflow: hidden;
+      .size-table {
+        margin-top: 10px;
+        border-top: 1px solid #999; 
+        border-bottom: 1px solid #999;
+        display: flex;
+        .title {
+          width: 108px;
+          border-right: 1px solid #999;
+          height: auto;
+          &>span {
+            display: block;
+            width: 100%;
+            height: 36px;
+            border-bottom: 1px solid #999;
+            text-align: center;
+            line-height: 36px;
+            box-sizing: border-box;
+            &.center {
+              padding: 0 16px 0 24px;
+              display: flex;
+              justify-content: space-between;
+            }
+            &:last-child {
+              border: none;
+            }
+          }
+        }
+        .content {
+          flex: 1;
+          display: flex;
+          &>div {
+            border-right: 1px solid #999;
+            box-sizing: border-box;
+            &:first-child {
+              width: 194px;
+            }
+            &:nth-child(n+2) {
+              flex: 1;
+            }
+            &:last-child {
+              border: none;
+            }
+            &>span {
+              display: block;
+              width: 100%;
+              text-align: center;
+              height: 36px;
+              border-bottom: 1px solid #999;
+              line-height: 36px;
+              box-sizing: border-box;
+              &>span {
+                display: inline-block;
+                width: 50%;
+                border-right: 1px solid #999;
+                box-sizing: border-box;
+                &:last-child {
+                  border: none;
+                }
+              }
+              &:last-child {
+                border: none;
+              }
+            }
+          }
+        }
+      }
+    }
+    .beizhu {
+      padding: 12px 20px;
+    }
+  }
+}

@@ -56,8 +56,7 @@
                             range-separator="至"
                             start-placeholder="开始日期"
                             end-placeholder="结束日期"
-                            :picker-options="pickerOptions"
-                            @change="pickTime">
+                            :picker-options="pickerOptions">
             </el-date-picker>
           </div>
         </div>
@@ -83,7 +82,7 @@
           <div class="tableColumn">{{item.product_info|filterType}}</div>
           <div class="tableColumn">{{item.product_info.size|filterSize}}</div>
           <div class="tableColumn">{{item.material_data|filterMaterial}}</div>
-          <div class="tableColumn"></div>
+          <div class="tableColumn">{{item.material_data|filterOtherMaterial}}</div>
           <div class="tableColumn">{{item.product_info.user_name}}</div>
           <div class="tableColumn">{{item.product_info.create_time}}</div>
           <div class="tableColumn flex9">
@@ -192,10 +191,6 @@ export default {
         console.log(this.list)
       })
     },
-    showImg (imgList) {
-      this.imgList = imgList
-      this.showShade = true
-    },
     // 删除条件
     clear (item) {
       if (item === 'categoryVal') {
@@ -213,9 +208,6 @@ export default {
       } else if (item === 'flowerVal') {
         this.flowerVal = ''
       }
-    },
-    pickTime (date) {
-      // console.log(date)
     },
     copy (id) {
       window.open('/designFormTable/' + id)
@@ -286,24 +278,25 @@ export default {
       }
       return str.substring(0, str.length - 1)
     },
-    // 经纬合并
-    filterWeft (item) {
-      if (item.warp_data && item.weft_data) {
-        return item.warp_data.weft + '/' + item.weft_data.total
-      } else {
-        return '数据错误'
-      }
-    },
     // 原料合并
     filterMaterial (material) {
       let str = ''
       material.forEach((item) => {
-        if (item.type === 0) { // && item.type_material === 0
-          str += item.material + '/'
+        if (item.type === 0 && str !== '') { // && item.type_material === 0
+          str += '/' + item.material
+        } else if (str === '' && item.type === 0) {
+          str += item.material
         }
       })
+      return str
+    },
+    // 辅料合并
+    filterOtherMaterial (material) {
+      let str = ''
       material.forEach((item) => {
-        if (item.type === 1) { // && item.type_material === 0
+        if (item.type === 1 && str === '') { // && item.type_material === 0
+          str += item.material
+        } else if (str === '' && item.type === 1) {
           str += item.material
         }
       })
