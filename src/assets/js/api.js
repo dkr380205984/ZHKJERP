@@ -142,7 +142,13 @@ const orderList = (params) => http.get(`${baseUrl}/order/list`, params)
 const orderBatchList = (params) => http.get(`${baseUrl}/order/batch/list`, params)
 // 添加产品库存
 const productStockSave = (params) => http.post(`${baseUrl}/product/stock/save`, params, 'application/json')
+// 产品库存列表
+const productStockList = (params) => http.get(`${baseUrl}/product/stock/list`, params)
+// 产品库存详情
+const productStockDetail = (params) => http.get(`${baseUrl}/product/stock/one`, params)
 export {
+  productStockDetail,
+  productStockList,
   productStockSave,
   orderSave,
   orderDetail,
