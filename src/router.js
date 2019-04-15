@@ -14,6 +14,10 @@ export default new Router({
     name: 'designFormTable',
     component: () => import('./views/designForm/designFormTable.vue')
   }, {
+    path: '/productDesignTable/:id',
+    name: 'productDesignTable',
+    component: () => import('./views/productDesign/productDesignTable.vue')
+  }, {
     path: '/login',
     name: 'login',
     component: () => import('./views/login.vue')
@@ -169,6 +173,22 @@ export default new Router({
       path: 'productStockDetail/:id',
       name: 'productStockDetail',
       component: () => import('./views/stock/productStockDetail.vue')
+    }, {
+      path: 'productDesignCreate/:id',
+      name: 'productDesignCreate',
+      component: () => import('./views/productDesign/productDesignCreate.vue')
+    }, {
+      path: 'productDesignDetail/:id',
+      name: 'productDesignDetail',
+      component: () => import('./views/productDesign/productDesignDetail.vue')
+    }, {
+      path: 'productDesignList',
+      name: 'productDesignList',
+      component: () => import('./views/productDesign/productDesignList.vue')
+    }, {
+      path: 'productDesignCreateList',
+      name: 'productDesignCreateList',
+      component: () => import('./views/productDesign/productDesignCreateList.vue')
     }]
   }
   ]

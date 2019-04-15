@@ -142,13 +142,10 @@ const menu = [{
   name: '生产管理',
   children: [{
     name: '新建生产计划单',
-    url: '/index/null'
+    url: '/index/productDesignCreateList'
   }, {
     name: '生产计划列表',
-    url: '/index/null'
-  }, {
-    name: '更新生产计划单',
-    url: '/index/null'
+    url: '/index/productDesignList'
   }, {
     name: '生产补纱',
     url: '/index/null'
