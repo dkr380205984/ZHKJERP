@@ -30,13 +30,18 @@
           <div class="content">
             <div class="main-raw-material material">
               <span>主要原料(经)</span>
-              <span>{{this.material_data.warpMaterialMain}}：主</span>
+              <span>{{this.material_data.warpMaterialMain}}</span>
             </div>
             <div class="lost-raw-material material">
               <span>次要原料(经)</span>
               <span>
                 <span v-for="(itemMaterial,indexMaterial) in material_data.warpMaterialOther"
-                      :key="indexMaterial">{{itemMaterial.name}}</span>
+                      :key="indexMaterial">
+                  {{itemMaterial.name}}:
+                  <template v-for="(item,index) in itemMaterial.value">
+                    {{item === 0 ? '主' : '夹' + item}}{{index+1 !== itemMaterial.value.length ? '/' : ''}}
+                  </template>
+                </span>
               </span>
             </div>
             <div class="warp-wise-arrange">
@@ -44,36 +49,27 @@
               <div class="content">
                 <div class="particulars">
                   <div>
-                    <span v-for="(item,key) in warp_data.warp_rank_bottom"
+                    <span v-for="(item,key) in add(warp_data.warp_rank_bottom)"
                           :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
-                          :key="key">{{item === 0 ? '主' : '夹' + item}}</span>
+                          :key="key">{{item === 'no' ? '' : (item === 0 ? '主' : '夹' + item)}}</span>
                   </div>
-                  <div>
-                    <span v-for="(item,key) in warp_data.warp_rank[0]"
-                          :style="{minWidth : (100/12) + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
-                          :key="key">{{key}}</span>
+                  <div v-for="(item,key) in warp_data.warp_rank"
+                       :key="key">
+                    <template v-if="key === 0">
+                      <span v-for="(item,key) in add(item)"
+                            :style="{minWidth : (100/12) + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
+                            :key="key">
+                        {{item === 'no' ? '' : item}}
+                      </span>
+                    </template>
+                    <template v-else>
+                      <span v-for="(value,index) in changeArr(add(item))"
+                            :key="index"
+                            :style="{minWidth : (100/12) * (item.length > 12 ? 12 : value.key) + '%',borderRight :'1px solid #999'}">
+                        {{value.value === 'no' ? '' : value.value}}
+                      </span>
+                    </template>
                   </div>
-                  <div>
-                    <span class="heig65"
-                          v-for="(item,key) in changeArr(warp_data.warp_rank[1])"
-                          :key="key"
-                          :style="{minWidth : (100/12) * (item > 12 ? 12 : item) + '%'}">{{key}}</span>
-                  </div>
-                  <div>
-                    <span class="heig58"></span>
-                  </div>
-                  <!-- <div class="list-box"
-                       v-for="(value,key) in date2"
-                       :key="key"
-                       :style="{width: (100/12) * Object.keys(value).length + '%'}">
-                    <div class="list">
-                      <span v-for="(item,key) in warp_data.warp_rank_bottom"
-                            :key="key">{{item === 0 ? '主' : '夹' + item}}</span>
-                      <span v-for="(item,key) in warp_data.warp_rank"
-                            :key="key">{{item}}</span>
-                    </div>
-                    <div>{{Object.keys(value).length * 1.5}}</div>
-                  </div> -->
                 </div>
               </div>
             </div>
@@ -148,28 +144,40 @@
               <span>次要原料(纬)</span>
               <span>
                 <span v-for="(itemMaterial,indexMaterial) in material_data.weftMaterialOther"
-                      :key="indexMaterial">{{itemMaterial.name}}</span>
+                      :key="indexMaterial">
+                  <template v-for="(item,index) in itemMaterial.value">
+                    {{item === 0 ? '主' : '夹' + item}}{{index+1 !== itemMaterial.value.length ? '/' : ''}}
+                  </template>
+                  :{{itemMaterial.name}}</span>
               </span>
             </div>
             <div class="warp-wise-arrange">
               <div class="title">纬向排列</div>
               <div class="content">
                 <div class="particulars">
-                  <div class="list-box"
-                       v-for="(value,key) in date2"
-                       :key="key"
-                       :style="{width: (100/12) * Object.keys(value).length + '%'}">
-                    <div class="list">
-                      <div v-for="(item,index,m) in value"
-                           :key="index">
-                        <span>{{index == 'main' ? "主" : "夹" + m}}</span>
-                        <span>{{item}}</span>
-                      </div>
-                    </div>
-                    <div>{{Object.keys(value).length * 1.5}}</div>
+                  <div>
+                    <span v-for="(item,key) in add(weft_data.weft_rank_bottom)"
+                          :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
+                          :key="key">{{item === 'no' ? '' : (item === 0 ? '主' : '夹' + item)}}</span>
+                  </div>
+                  <div v-for="(item,key) in weft_data.weft_rank"
+                       :key="key">
+                    <template v-if="key === 0">
+                      <span v-for="(item,key) in add(item)"
+                            :style="{minWidth : (100/12) + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
+                            :key="key">
+                        {{item === 'no' ? '' : item}}
+                      </span>
+                    </template>
+                    <template v-else>
+                      <span v-for="(value,index) in changeArr(add(item))"
+                            :key="index"
+                            :style="{minWidth : (100/12) * (item.length > 12 ? 12 : value.key) + '%',borderRight :'1px solid #999'}">
+                        {{value.value === 'no' ? '' : value.value}}
+                      </span>
+                    </template>
                   </div>
                 </div>
-                <div>倒序1遍</div>
               </div>
             </div>
           </div>
@@ -227,26 +235,6 @@ export default {
       },
       weight: '',
       size: {},
-      date2: {
-        list1: {
-          main: '11',
-          jia1: '22',
-          jia2: '653',
-          jia3: '74'
-        },
-        list2: {
-          main: '333',
-          jia1: 'fajk',
-          jia2: 'faf',
-          jia3: 'gfd'
-        },
-        list3: {
-          main: '333',
-          jia1: '324',
-          jia2: '524',
-          jia3: '52'
-        }
-      },
       companyName: 'xx',
       material_data: {
         warpMaterialMain: '',
@@ -285,27 +273,76 @@ export default {
       }
       return arr
     },
-    // 处理数组
-    changeArr (item) {
-      let obj = {}
-      let n = 0
-      let firstVal = ''
-      let len = item.length
-      for (let index in item) {
-        console.log(firstVal, index, obj)
-        if (index - 0 === len - 1) {
-          obj[firstVal] = obj[firstVal] ? n : ''
-          console.log(obj)
-        } else if (item[index] === null || item[index] === '') {
-          n++
-          continue
-        } else {
-          firstVal = item[index] ? item[index] : 1
-          n = 1
-          obj[firstVal] = obj[firstVal] ? '' : n
+    // 如果数据少于12条
+    add (item) {
+      let arr = []
+      for (let prop in item) {
+        arr.push(item[prop])
+      }
+      let len = arr.length
+      if (len < 12) {
+        for (len; len < 12; len++) {
+          arr.push('no')
         }
       }
-      return obj
+      return arr
+    },
+    // 处理数组
+    changeArr (item) {
+      let arr = []
+      let obj = {}
+      let n = 1
+      let firstVal = ''
+      item.forEach((value) => {
+        if (value === '') {
+          arr.push(1)
+        } else {
+          arr.push(value)
+        }
+      })
+      let len = arr.length
+      let arr2 = []
+      let flag = true
+      arr.forEach((value, index) => {
+        if (value === 'no') {
+          if (flag) {
+            flag = false
+            obj.value = firstVal
+            obj.key = n
+            arr2.push(obj)
+          }
+          arr2.push({ value: 'no', key: 1 })
+        } else if (index === len - 1) {
+          if (firstVal === value || value === null) {
+            n++
+          }
+          obj.value = firstVal
+          obj.key = n
+          arr2.push(obj)
+          if (firstVal !== value && value !== null) {
+            obj = {}
+            obj.value = value
+            obj.key = 1
+            arr2.push(obj)
+          }
+        } else if (value === null) {
+          n++
+        } else {
+          if (value === firstVal) {
+            n++
+          } else {
+            if (index !== 0) {
+              obj.value = firstVal
+              obj.key = n
+              arr2.push(obj)
+              obj = {}
+            }
+            firstVal = value
+            n = 1
+          }
+        }
+      })
+      return arr2
     }
   },
   filters: {

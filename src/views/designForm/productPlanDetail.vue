@@ -101,36 +101,7 @@ export default {
   data () {
     return {
       productDetail: {
-        size: {
-          S: [
-            {
-              size_name: '长',
-              size_value: '20'
-            },
-            {
-              size_name: '宽',
-              size_value: '10'
-            },
-            {
-              size_name: '克重',
-              size_value: '100'
-            }
-          ],
-          M: [
-            {
-              size_name: '长',
-              size_value: '20'
-            },
-            {
-              size_name: '宽',
-              size_value: '10'
-            },
-            {
-              size_name: '克重',
-              size_value: '100'
-            }
-          ]
-        },
+        size: {},
         date1: [
           {
             name: 'S',
@@ -279,7 +250,9 @@ export default {
           product_category: ''
         },
         size: {}
-      }
+      },
+      color: [],
+      material_data: []
     }
   },
   components: {
@@ -314,7 +287,13 @@ export default {
       this.plan_code = data.plan_code
       this.product_info = data.product_info
       this.productDetail.liucheng = data.outside_precess
+      this.material_data = data.material_data
+      this.color = data.product_info.color
     })
+  },
+  beforeMount () {
+    console.log(this.color)
+    console.log(this.material_data)
   }
 }
 </script>

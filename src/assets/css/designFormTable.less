@@ -20,6 +20,40 @@ ul {
     color: #999;
   }
 }
+.particulars {
+  box-sizing: border-box;
+  height: 281px;
+  overflow: hidden;
+  &>div {
+    width: 100%;
+    display: flex;
+    border-bottom: 1px solid #999;
+    height: 78px;
+    line-height: 78px;
+    &>span {
+      text-align: center;
+      box-sizing: border-box;
+      &:last-child {
+        border-right: none!important;
+      }
+    }
+    &:nth-child(3) {
+      height: 65px;
+      line-height: 65px;
+    }
+    &:nth-child(4) {
+      height: 58px;
+      line-height: 58px;
+    }
+  }
+  &>div:last-child {
+    height: 58px;
+    text-align: center;
+    color: #707070;
+    line-height: 58px;
+    border-bottom: none;
+  }
+}
 #designFormTable {
   width: 1920px;
   height: auto;
@@ -96,7 +130,7 @@ ul {
         }
       }
       .main-arrange {
-        height: 471px;
+        height: 475px;
         &>.title {
           padding:18px 0 98px;
         }
@@ -132,7 +166,7 @@ ul {
             }
           }
           .warp-wise-arrange {
-            height: 277px;
+            height: 281px;
             width: 100%;
             display: flex;
             .title {
@@ -150,45 +184,6 @@ ul {
               flex: 1;
               &>div {
                 box-sizing: border-box;
-              }
-              .particulars {
-                box-sizing: border-box;
-                height: 277px;
-                overflow: hidden;
-                &>div {
-                  width: 100%;
-                  display: flex;
-                  &>span {
-                    text-align: center;
-                    box-sizing: border-box;
-                    border-bottom: 1px solid #999;
-                    height: 79px;
-                    line-height: 79px;
-                    &.heig65 {
-                      height: 65px;
-                      line-height: 65px
-                    }
-                    &.heig58 {
-                      height: 58px;
-                      line-height: 58px;
-                    }
-                    &:last-child {
-                      border-right: none!important;
-                    }
-                  }
-                  // &:nth-child(2-n) {
-                  //   &>span {
-                  //   height: 79px;
-                  //   line-height: 79px;
-                  //   }
-                  // }
-                }
-                &>div:last-child {
-                  height: 58px;
-                  text-align: center;
-                  color: #707070;
-                  line-height: 58px;
-                }
               }
             }
           }
@@ -307,7 +302,7 @@ ul {
         }
       }
       .contexture {
-        height: 649px;
+        height: 657px;
         .title {
           padding: 125px 0 73px;
         }
@@ -403,7 +398,7 @@ ul {
             }
           }
           .warp-wise-arrange {
-            height: 273px;
+            height: 281px;
             width: 100%;
             display: flex;
             .title {
@@ -421,61 +416,6 @@ ul {
               flex: 1;
               &>div {
                 box-sizing: border-box;
-              }
-              .particulars {
-                box-sizing: border-box;
-                height: 219px;
-                border-bottom: 1px solid #999;
-                .list-box {
-                  box-sizing: border-box;
-                  display: inline-block;
-                  height: inherit;
-                  border-right: 1px solid #999;
-                  &:last-child {
-                    border: none;
-                  }
-                  .list {
-                    box-sizing: border-box;
-                    display: flex;
-                    height: 161px;
-                    border-bottom: 1px solid #999;
-                    &:last-child {
-                      border: none;
-                    }
-                    &>div {
-                      flex:  1; 
-                      display: flex;
-                      flex-direction: column;
-                      border-right: 1px solid #999;
-                      &:last-child {
-                        border: none;
-                      }
-                      &>span {
-                        display: block;
-                        width: 100%;
-                        height: 50%;
-                        text-align: center;
-                        line-height: 80px;
-                        border-bottom: 1px solid #999;
-                        &:last-child {
-                          border: none;
-                        }
-                      }
-                    }
-                  }
-                  &>div:last-child{
-                    width: 100%;
-                    height: 58px;
-                    text-align: center;
-                    line-height: 58px;
-                  }
-                }
-              }
-              &>div:last-child {
-                height: 58px;
-                text-align: center;
-                color: #707070;
-                line-height: 58px;
               }
             }
           }
