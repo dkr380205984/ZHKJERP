@@ -60,23 +60,34 @@
         <div class="inputCtn oneLine">
           <span class="label">生产数量：</span>
           <div class="specialTable">
-            <div class="tableRow titleTableRow">
-              <div class="tableColumn flex3">订单信息</div>
-              <div class="tableColumn">库存数量</div>
-              <div class="tableColumn">库存调取</div>
-              <div class="tableColumn">工厂生产</div>
-              <div class="tableColumn">总计</div>
+            <div class="left">
+              <div class="firstLine">产品品类</div>
+              <div class="mergeLine" v-for="(item,index) in product" :style="{height:(index!==product.length-1)?(61*item.num)+'px':(61*item.num)-1+'px'}" :key="item.product_code">
+                <span>{{item.product_code}}</span>
+                <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
+              </div>
             </div>
-            <div class="tableRow bodyTableRow" v-for="(item) in order.order_batch" :key="item.id">
-              <div class="tableColumn flex3">随便输点</div>
-              <div class="tableColumn">暂时没有</div>
-              <div class="tableColumn">
-                <input class="inputs" placeholder="库存调取数量" />
+            <div class="right">
+              <div class="tableRow titleTableRow">
+                <div class="tableColumn">尺寸/颜色</div>
+                <div class="tableColumn ">下单数</div>
+                <div class="tableColumn">库存数量</div>
+                <div class="tableColumn">库存调取</div>
+                <div class="tableColumn">工厂生产</div>
+                <div class="tableColumn">总计</div>
               </div>
-              <div class="tableColumn">
-                <input class="inputs" placeholder="工厂生产数量" />
+              <div class="tableRow bodyTableRow" v-for="(item) in productInfo" :key="item.id">
+                <div class="tableColumn">{{item.size}}/{{item.color}}</div>
+                <div class="tableColumn">{{item.numbers}}{{item.unit_name}}</div>
+                <div class="tableColumn">{{item.stock_num}}{{item.unit_name}}</div>
+                <div class="tableColumn">
+                  <input class="inputs" placeholder="输入数字"/>
+                </div>
+                <div class="tableColumn">
+                  <input class="inputs" placeholder="输入数字"/>
+                </div>
+                <div class="tableColumn">统计值</div>
               </div>
-              <div class="tableColumn">统计值</div>
             </div>
           </div>
         </div>
@@ -90,7 +101,7 @@
 </template>
 
 <script>
-import { orderDetail } from '@/assets/js/api.js'
+import { orderStockDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -107,7 +118,9 @@ export default {
         tax_rate: '',
         total_price: '',
         user_name: ''
-      }
+      },
+      productInfo: [],
+      product: []
     }
   },
   methods: {
@@ -119,11 +132,56 @@ export default {
     }
   },
   mounted () {
-    orderDetail({
-      id: this.$route.params.id
+    orderStockDetail({
+      order_id: this.$route.params.id,
+      company_id: window.sessionStorage.getItem('company_id')
     }).then((res) => {
       console.log(res)
-      this.order = res.data.data
+      this.order = res.data.order
+      let obj = res.data.stock
+      Object.keys(obj).forEach((key) => {
+        obj[key].forEach((item) => {
+          this.productInfo.push({
+            product_code: key,
+            category_name: item.category_name,
+            type_name: item.type_name,
+            style_name: item.style_name,
+            stock_num: item.stock_num,
+            size: item.size,
+            color: item.color,
+            numbers: item.numbers,
+            unit_name: item.unit_name
+          })
+        })
+      })
+      // 合并相同编号的产品数据
+      this.productInfo.forEach((item) => {
+        let finded = this.product.find((itemFind, index) => itemFind.product_code === item.product_code)
+        if (!finded) {
+          this.product.push({
+            product_code: item.product_code,
+            category_name: item.category_name,
+            type_name: item.type_name,
+            style_name: item.style_name,
+            num: 1
+          })
+        } else {
+          this.product = this.product.map((item) => {
+            if (item.product_code === finded.product_code) {
+              return {
+                product_code: item.product_code,
+                category_name: item.category_name,
+                type_name: item.type_name,
+                style_name: item.style_name,
+                num: (item.num + 1)
+              }
+            } else {
+              return item
+            }
+          })
+        }
+      })
+      console.log(this.product)
     })
   }
 }

@@ -146,7 +146,11 @@ const productStockSave = (params) => http.post(`${baseUrl}/product/stock/save`, 
 const productStockList = (params) => http.get(`${baseUrl}/product/stock/list`, params)
 // 产品库存详情
 const productStockDetail = (params) => http.get(`${baseUrl}/product/stock/one`, params)
+// 订单库存详情
+const orderStockDetail = (params) => http.get(`${baseUrl}/product/stock/order`, params)
+// 添加生产计划单
 export {
+  orderStockDetail,
   productStockDetail,
   productStockList,
   productStockSave,

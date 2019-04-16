@@ -91,8 +91,41 @@
       box-shadow: 0 0 5px #f0f0f0;
       margin-top: 10px;
       margin-left: 15px;
+      display: flex;
+      .left{
+        width: 200px;
+        .firstLine{
+          color:#666;
+          font-weight: 400;
+          font-size: @fontBig;
+          letter-spacing: 1px;
+          background: #EEEEEE!important;
+          border-bottom: 1px solid #b5b5b5;
+          height: 60px;
+          line-height: 60px;
+          text-align: center;
+        }
+        .mergeLine{
+          box-sizing: border-box;
+          width: 100%;
+          border-bottom: 1px solid #b5b5b5;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          &:nth-last-child(1){
+            border-bottom: 0;
+          }
+          span{
+            font-size: @fontMid;
+            line-height: 25px;
+          }
+        }
+      }
+      .right{
+        flex: 1;
+      }
       .tableRow{
-        display: block;
         height: 60px;
         display: flex;
         &.titleTableRow{
@@ -120,6 +153,9 @@
           text-overflow: ellipsis;
           border-right: 1px solid #b5b5b5;
           padding: 0 5px;
+          &:nth-child(1){
+            border-left: 1px solid #b5b5b5;
+          }
           &:nth-last-child(1){
             border-right: 0;
           }
@@ -132,8 +168,8 @@
               outline: none;
             }
           }
-          &.flex3{
-            flex: 3
+          &.flex2{
+            flex: 2
           } 
         }
       }
