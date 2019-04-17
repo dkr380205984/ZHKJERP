@@ -287,13 +287,28 @@ export default {
       this.plan_code = data.plan_code
       this.product_info = data.product_info
       this.productDetail.liucheng = data.outside_precess
-      this.material_data = data.material_data
-      this.color = data.product_info.color
+      data.material_data.forEach(value => {
+        let obj = {}
+        obj.main_material = []
+        if (value.type === 0) {
+          obj.type = 0
+          let material = {}
+          material.name = value.material
+          material.colorInfo = {}
+          value.colour.forEach(index => {
+            console.log(index)
+            material.colorInfo.colorClass = index.name
+          })
+          obj.main_material.push(material)
+        }
+        this.material_data.push(obj)
+      })
+      console.log(this.material_data)
     })
   },
   beforeMount () {
-    console.log(this.color)
-    console.log(this.material_data)
+    // console.log(this.color)
+    // console.log(this.material_data)
   }
 }
 </script>
