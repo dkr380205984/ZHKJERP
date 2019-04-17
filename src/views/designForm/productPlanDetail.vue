@@ -49,12 +49,19 @@
         <div class="inputCtn">
           <span class="label">主要原料:</span>
           <div class="content tableBox">
-            <yl-table color="#1A95FF"
+            <template v-for="(item,index) in material_data.main_material">
+              <yl-table color="#1A95FF"
+                        :date='item'
+                        :colorDate='color'
+                        :key="index"
+                        class="table" />
+            </template>
+            <!-- <yl-table color="#1A95FF"
                       :date='productDetail.date1'
                       class="table" />
             <yl-table color="#1A95FF"
-                      :date='productDetail.date2'
-                      class="table marT" />
+            :date='productDetail.date2'
+            class="table marT" />-->
           </div>
         </div>
       </div>
@@ -62,12 +69,20 @@
         <div class="inputCtn">
           <span class="label">主要辅料:</span>
           <div class="content tableBox">
-            <yl-table color="#1A95FF"
+            {{material_data.main_ingredients.length !== 0 ? '' : '暂无信息'}}
+            <template v-for="(item,index) in material_data.main_ingredients">
+              <yl-table color="#1A05FF"
+                        :data='item'
+                        :colorData='color'
+                        class="table"
+                        :key="index" />
+            </template>
+            <!-- <yl-table color="#1A95FF"
                       :date='productDetail.date1'
                       class="table" />
             <yl-table color="#1A95FF"
-                      :date='productDetail.date3'
-                      class="table marT" />
+            :date='productDetail.date3'
+            class="table marT" />-->
           </div>
         </div>
       </div>
@@ -84,9 +99,9 @@
         <div class="inputCtn">
           <span class="content btn">
             <span class="cancel"
-                  @click="cancel">取消</span>
+                  @click="$router.go(-1)">返回</span>
             <span class="save"
-                  @click='save'>保存</span>
+                  @click="$router.push('/index/null')">修改</span>
           </span>
         </div>
       </div>
@@ -252,7 +267,10 @@ export default {
         size: {}
       },
       color: [],
-      material_data: []
+      material_data: {
+        main_material: [],
+        main_ingredients: []
+      }
     }
   },
   components: {
@@ -270,15 +288,20 @@ export default {
       }
     }
   },
-  methods: {
-    cancel () {
-
-    },
-    save () {
-
-    }
-  },
   created () {
+    function clone (item) {
+      let obj = Object.prototype.toString.call(item) === '[object Array]' ? [] : {}
+      for (let prop in item) {
+        if (Object.prototype.toString.call(item[prop]) === '[object Array]') {
+          obj[prop] = clone(item[prop])
+        } else if (Object.prototype.toString.call(item[prop]) === '[object Object]') {
+          obj[prop] = clone(item[prop])
+        } else {
+          obj[prop] = item[prop]
+        }
+      }
+      return obj
+    }
     productPlanOne({
       id: this.$route.params.id
     }).then((res) => {
@@ -287,28 +310,78 @@ export default {
       this.plan_code = data.plan_code
       this.product_info = data.product_info
       this.productDetail.liucheng = data.outside_precess
+      this.color = data.product_info.color
+      console.log(this.color)
       data.material_data.forEach(value => {
-        let obj = {}
-        obj.main_material = []
-        if (value.type === 0) {
-          obj.type = 0
-          let material = {}
-          material.name = value.material
-          material.colorInfo = {}
-          value.colour.forEach(index => {
-            console.log(index)
-            material.colorInfo.colorClass = index.name
-          })
-          obj.main_material.push(material)
+        let obj = {
+          materialList: [],
+          size: ''
         }
-        this.material_data.push(obj)
+        let str = value.type === 0 ? this.material_data.main_material : this.material_data.main_ingredients
+        let obj1 = {
+          colorInfo: [],
+          material: value.material
+        }
+        value.colour.forEach(index => {
+          let obj2 = {
+            colorList: [],
+            name: index.name
+          }
+          index.color.forEach(key => {
+            let obj3 = {
+              name: key.name,
+              value: key.value,
+              unit: '',
+              number: null
+            }
+            key.size.forEach(item => {
+              obj3.unit = item.unit
+              obj3.number = item.number
+              if (str.length === 0) {
+                obj.size = item.size
+                obj2.colorList.push(clone(obj3))
+                obj1.colorInfo.push(clone(obj2))
+                obj.materialList.push(clone(obj1))
+                str.push(clone(obj))
+              } else {
+                str.forEach((size, l) => {
+                  if (size.size === item.size) {
+                    size.materialList.forEach((material, m) => {
+                      if (material.material === value.material) {
+                        material.colorInfo.forEach((color, n) => {
+                          if (color.name === index.name) {
+                            color.colorList.push(clone(obj3))
+                            return
+                          }
+                          if (n === material.colorInfo.length - 1 && color.name !== index.name) {
+                            obj2.colorList.push(clone(obj3))
+                            material.colorInfo.push(clone(obj2))
+                          }
+                        })
+                      }
+                      if (m === size.materialList.length - 1 && material.material !== value.material) {
+                        obj2.colorList.push(clone(obj3))
+                        obj1.colorInfo.push(clone(obj2))
+                        size.materialList.push(clone(obj1))
+                      }
+                    })
+                  }
+                  if (l === str.length - 1 && size.size !== item.size) {
+                    obj2.colorList.push(clone(obj3))
+                    obj1.colorInfo.push(clone(obj2))
+                    obj.materialList.push(clone(obj1))
+                    str.push(clone(obj))
+                  }
+                })
+              }
+            })
+          })
+        })
+        console.log(this.material_data)
       })
-      console.log(this.material_data)
     })
   },
   beforeMount () {
-    // console.log(this.color)
-    // console.log(this.material_data)
   }
 }
 </script>
