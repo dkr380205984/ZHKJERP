@@ -2,51 +2,35 @@
   <ul id="table">
     <li class="col"
         :style="{width: (100/7) + '%',backgroundColor:'#EEE'}">
-      <span>{{date.size}}</span>
-      <span v-for="(item,key) in colorDate"
-            :key="key">{{item.name}}</span>
+      <span>
+        <span>{{data.size}}</span>
+      </span>
+      <span v-for="(item,key) in colorData"
+            :key="key">
+        <span>{{item.name}}</span>
+      </span>
     </li>
     <li class="col"
-        v-for="(item,key) in date.materialList"
-        :key="key"
-        :style="{width : item.colorInfo}">
+        v-for="(item,key) in data.materialList"
+        :key="key">
       <span>
         <span>{{item.material}}</span>
       </span>
       <span v-for="(value,index) in item.colorInfo"
             :key="index">
-        <span v-for="(content,number) in value.colorList"
-              :key="number">{{content.name + ': '}}{{content.number + ((content.unit ==='克') ? 'g' : 'kg')}}</span>
+        <span v-for="(content,number) in addLen(value.colorList,key)"
+              :key="number">
+          {{content.name + ': '}}{{content.number + ((content.unit ==='克') ? 'g' : 'kg')}}
+        </span>
       </span>
-      <template v-if="item.colorInfo.length < colorDate.length">
-        <span v-for="(value,index) in addArr((colorDate.length)-(item.colorInfo.length))"
+      <template v-if="item.colorInfo.length < colorData.length">
+        <span v-for="(value,index) in addArr((colorData.length)-(item.colorInfo.length))"
               :key="index+1">
-          <span v-for="(content,number) in addArr(6,value)"
+          <span v-for="(content,number) in addArr(lenArr[key],value)"
                 :key="number+1"></span>
         </span>
       </template>
     </li>
-    <!-- v-for="(item,index) in date" :key="index" -->
-    <!-- <li class="col"
-        :style="{minWidth : (typeof(item.data[0]) == 'object' ) ? (2*(100/7) + '%') : ((100/7) + '%')}">
-      <span :style="{borderRight: index == date.length-1  ? 'none' : '1px solid #999'}">
-        <span :style="{color: (flag && index == 0) ? flag : 'inherit'}">{{item.name}}</span>
-      </span>
-      <span v-for="(value,key) in item.data"
-            :key="key"
-            :style="{borderRight: index === date.length-1  ? 'none' : '1px solid #999',background : index === 0 ? '#EEE' : 'none' }">
-        <template v-if="typeof(value) == 'string'">
-          <span>
-            {{value}}
-          </span>
-        </template>
-        <template v-else>
-          <span v-for="(c,n,v) in value"
-                :key="n"
-                :class="{haveBorder: v == 0}">{{'黑色：' + c + 'g' }}</span>
-        </template>
-      </span>
-    </li> -->
   </ul>
 </template>
 
@@ -57,7 +41,9 @@ export default {
       flag: '',
       num: '',
       left: 0,
-      lenArr: []
+      lenArr: {},
+      data: null,
+      colorData: null
     }
   },
   props: [
@@ -72,16 +58,38 @@ export default {
       for (let i = 0; i < num; i++) {
         item.push([])
       }
-      console.log(item)
+      return item
+    },
+    addLen (item, key) {
+      if (this.lenArr[key] < item.length || !this.lenArr[key]) {
+        this.lenArr[key] = item.length
+      }
       return item
     }
   },
   created () {
-    console.log(this.date)
+    function clone (item) {
+      let obj = Object.prototype.toString.call(item) === '[object Array]' ? [] : {}
+      for (let prop in item) {
+        if (Object.prototype.toString.call(item[prop]) === '[object Array]') {
+          obj[prop] = clone(item[prop])
+        } else if (Object.prototype.toString.call(item[prop]) === '[object Object]') {
+          obj[prop] = clone(item[prop])
+        } else {
+          obj[prop] = item[prop]
+        }
+      }
+      return obj
+    }
+    console.log(this.colorDate)
+    this.data = clone(this.date)
+    this.colorData = clone(this.colorDate)
     this.flag = this.$attrs.color
-    this.date.materialList.forEach(material => {
-      console.log(material)
-    })
+    if (this.colorData.length < 3 || this.colorData === undefined) {
+      for (let i = (this.colorData.length ? this.colorData.length : 0); i < 3; i++) {
+        this.colorData.push({})
+      }
+    }
   }
 }
 </script>

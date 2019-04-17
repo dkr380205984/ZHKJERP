@@ -5,41 +5,80 @@ ul {
 }
 #table {
   position: relative;
-  width: 100%;
-  // border: 1px solid #999;
+  width: 800px;
   display: flex;
-  height: 100%;
+  height: auto;
   overflow: auto;
   box-sizing: border-box;
   .col {
     display: flex;
     flex-direction: column;
-    text-align: center;
     border-top: 1px solid #999;
     box-sizing: border-box;
+    border-right: 1px solid #999;
+    border-bottom: 1px solid #999;
     &:first-child {
       border-left: 1px solid #999;
     }
-    &:last-child {
-      border-right: 1px solid #999;
-    }
     &>span {
       flex: 1;
-      text-align: center;
-      border-right: 1px solid #999;
+      width: auto;
+      // display: flex;
       border-bottom: 1px solid #999;
-      display: flex;
-      &:first-child {
-        background-color: #EEE; 
-      }
+      box-sizing: border-box;
       &>span {
-        flex: auto;
-        // width: 100% / 7;
+        // flex: 1;
+        display: inline-block;
+        min-width: 113px;
+        height: 100%;
         border-right: 1px solid #999;
-        &:first-child.haveBorder {
-          border-right: 1px solid #999;
+        box-sizing: border-box;
+        text-align: center;
+        &:last-child {
+          border-right: none;
         }
+      }
+      &:first-child>span {
+        width: 100%;
+        background-color: #eee;
+      }
+      &:last-child {
+        border-bottom: none;
       }
     }
   }
 }
+// #table {
+//   position: relative;
+//   width: 100%;
+//   // border: 1px solid #999;
+//   display: flex;
+//   height: 100%;
+//   overflow: auto;
+//   box-sizing: border-box;
+//   .col {
+//     display: flex;
+//     flex-direction: column;
+//     text-align: center;
+//     border-top: 1px solid #999;
+//     box-sizing: border-box;
+//     &>span {
+//       flex: 1;
+//       text-align: center;
+//       border-right: 1px solid #999;
+//       border-bottom: 1px solid #999;
+//       display: flex;
+//       &:first-child {
+//         background-color: #EEE; 
+//       }
+//       &>span {
+//         flex: auto;
+//         width: 113px;
+//         border-right: 1px solid #999;
+//         &:first-child.haveBorder {
+//           border-right: 1px solid #999;
+//         }
+//       }
+//     }
+//   }
+// }

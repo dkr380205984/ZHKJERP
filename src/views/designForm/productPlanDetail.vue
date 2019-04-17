@@ -56,12 +56,6 @@
                         :key="index"
                         class="table" />
             </template>
-            <!-- <yl-table color="#1A95FF"
-                      :date='productDetail.date1'
-                      class="table" />
-            <yl-table color="#1A95FF"
-            :date='productDetail.date2'
-            class="table marT" />-->
           </div>
         </div>
       </div>
@@ -77,12 +71,6 @@
                         class="table"
                         :key="index" />
             </template>
-            <!-- <yl-table color="#1A95FF"
-                      :date='productDetail.date1'
-                      class="table" />
-            <yl-table color="#1A95FF"
-            :date='productDetail.date3'
-            class="table marT" />-->
           </div>
         </div>
       </div>
@@ -90,7 +78,7 @@
         <div class="inputCtn">
           <span class="label change">外道加工流程:</span>
           <ul class="liucheng content">
-            <li v-for="(item,index) in productDetail.liucheng"
+            <li v-for="(item,index) in liucheng"
                 :key="index">{{item}}</li>
           </ul>
         </div>
@@ -115,150 +103,7 @@ import ylTable from '@/components/table/table.vue'
 export default {
   data () {
     return {
-      productDetail: {
-        size: {},
-        date1: [
-          {
-            name: 'S',
-            data: ['黑白', '蓝紫', '灰绿']
-          },
-          {
-            name: '52支单股上光晴纶',
-            data: [
-              {
-                black: 460,
-                while: 460
-              },
-              {
-                blue: 460,
-                purple: 460
-              },
-              {
-                gray: 460,
-                green: 460
-              }
-            ]
-          },
-          {
-            name: '36支上光晴纶',
-            data: [
-              {
-                black: 460,
-                while: 460
-              },
-              {
-                blue: 460,
-                purple: 460
-              },
-              {
-                gray: 460,
-                green: 460
-              }
-            ]
-          }
-        ],
-        date2: [
-          {
-            name: 'M',
-            data: ['黑白', '蓝紫', '灰绿']
-          },
-          {
-            name: '52支单股上光晴纶',
-            data: [
-              {
-                black: 460,
-                while: 460
-              },
-              {
-                blue: 460,
-                purple: 460
-              },
-              {
-                gray: 460,
-                green: 460
-              }
-            ]
-          },
-          {
-            name: '36支上光晴纶',
-            data: [
-              {
-                black: 460,
-                while: 460
-              },
-              {
-                blue: 460,
-                purple: 460
-              },
-              {
-                gray: 460,
-                green: 460
-              }
-            ]
-          },
-          {
-            name: '14支涤纶',
-            data: ['120g', '120g', '120g']
-          }
-        ],
-        date3: [
-          {
-            name: '14支涤纶',
-            data: ['120g', '120g', '120g']
-          },
-          {
-            name: '14支涤纶',
-            data: ['120g', '120g', '120g']
-          },
-          {
-            name: '52支单股上光晴纶',
-            data: [
-              {
-                black: 460,
-                while: 460
-              },
-              {
-                blue: 460,
-                purple: 460
-              },
-              {
-                gray: 460,
-                green: 460
-              }
-            ]
-          },
-          {
-            name: '14支涤纶',
-            data: ['120g', '120g', '120g']
-          },
-          {
-            name: '14支涤纶',
-            data: ['120g', '120g', '120g']
-          },
-          {
-            name: '14支涤纶',
-            data: ['120g', '120g', '120g']
-          },
-          {
-            name: '52支单股上光晴纶',
-            data: [
-              {
-                black: 460,
-                while: 460
-              },
-              {
-                blue: 460,
-                purple: 460
-              },
-              {
-                gray: 460,
-                green: 460
-              }
-            ]
-          }
-        ],
-        liucheng: []
-      },
+      liucheng: [],
       plan_code: '',
       product_info: {
         category_info: {
@@ -309,7 +154,7 @@ export default {
       console.log(data)
       this.plan_code = data.plan_code
       this.product_info = data.product_info
-      this.productDetail.liucheng = data.outside_precess
+      this.liucheng = data.outside_precess
       this.color = data.product_info.color
       console.log(this.color)
       data.material_data.forEach(value => {
