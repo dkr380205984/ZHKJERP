@@ -1,5 +1,5 @@
 <template>
-  <div id="designFormTable">
+  <div id="designFormTable" @click.right='goTop'>
     <p class="company">{{companyName}}有限公司工艺单</p>
     <div class="table">
       <div class="page_header">
@@ -343,6 +343,9 @@ export default {
         }
       })
       return arr2
+    },
+    goTop (e) {
+      console.log(e)
     }
   },
   filters: {
