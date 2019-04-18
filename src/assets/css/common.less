@@ -230,6 +230,44 @@
     }
   }
 }
+// 右下角悬浮窗
+.suspend{
+  position: fixed;
+  right: 35px;
+  bottom: 45px;
+  font-size: @fontBig;
+  color: @fontNormal;
+  color: #fff;
+  cursor: pointer;
+  .blue{
+    display: block;
+    background: @normalBlue;
+    padding: 5px 10px;
+    width: 2em;
+    border-radius: 4px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    &:hover{
+      background: @hoverBlue;
+    }
+  }
+  .border{
+    height: 1px;
+    background: #b5b5b5;
+  }
+  .red{
+    display: block;
+    background: @error;
+    padding: 5px 10px;
+    width: 2em;
+    border-radius: 4px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    &:hover{
+      background: #f8a6a6;
+    }
+  }
+}
 .pageCtn{
   margin: 50px 0;
   text-align: center;
