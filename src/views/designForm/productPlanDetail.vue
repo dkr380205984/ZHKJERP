@@ -35,6 +35,11 @@
               <span class="sizeOnce"
                     v-for="itemChild in item"
                     :key="itemChild.id">{{itemChild.size_name + '：' + itemChild.size_value + (itemChild.size_name == '克重' ? 'g' : 'cm')}}</span>
+                    <template v-for="(value,index) in weight">
+                      <span :key="index" v-if="(key === index) || index === '均码'">
+                        {{'净重：' + value + 'g'}}
+                      </span>
+                    </template>
             </span>
           </span>
         </div>
@@ -54,7 +59,7 @@
                         :date='item'
                         :colorDate='color'
                         :key="index"
-                        class="table" />
+                        :class="{'table' : true,'maT': (index !== 0)}" />
             </template>
           </div>
         </div>
@@ -68,7 +73,7 @@
               <yl-table color="#1A05FF"
                         :date='item'
                         :colorDate='color'
-                        class="table"
+                        :class="{'table' : true,'marT': (index !== 0)}"
                         :key="index" />
             </template>
           </div>
@@ -86,9 +91,9 @@
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="content btn">
-            <span class="cancel"
+            <span class="goBack"
                   @click="$router.go(-1)">返回</span>
-            <span class="save"
+            <span class="change"
                   @click="$router.push('/index/null')">修改</span>
           </span>
         </div>
@@ -115,7 +120,8 @@ export default {
       material_data: {
         main_material: [],
         main_ingredients: []
-      }
+      },
+      weight: {}
     }
   },
   components: {
@@ -156,7 +162,6 @@ export default {
       this.product_info = data.product_info
       this.liucheng = data.outside_precess
       this.color = data.product_info.color
-      console.log(this.color)
       data.material_data.forEach(value => {
         let obj = {
           materialList: [],
@@ -212,6 +217,7 @@ export default {
                     })
                   }
                   if (l === str.length - 1 && size.size !== item.size) {
+                    obj.size = item.size
                     obj2.colorList.push(clone(obj3))
                     obj1.colorInfo.push(clone(obj2))
                     obj.materialList.push(clone(obj1))
@@ -224,9 +230,21 @@ export default {
         })
         console.log(this.material_data)
       })
+      this.material_data.main_material.forEach(item => {
+        this.weight[item.size] = 0
+        item.materialList.forEach((key, n) => {
+          if (n === 0) {
+            key.colorInfo.forEach((value, m) => {
+              if (m === 0) {
+                value.colorList.forEach(index => {
+                  this.weight[item.size] += index.number
+                })
+              }
+            })
+          }
+        })
+      })
     })
-  },
-  beforeMount () {
   }
 }
 </script>

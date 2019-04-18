@@ -104,22 +104,6 @@
         </el-pagination>
       </div>
     </div>
-    <!-- <div class="shade"
-         v-show="showShade">
-      <div class="main">
-        <div class="closeBtn"
-             @click="showShade=false">点此退出预览</div>
-        <el-carousel indicator-position="outside"
-                     height="550px"
-                     arrow="always">
-          <el-carousel-item v-for="item in imgList"
-                            :key="item.image_url">
-            <img :src="item.image_url"
-                 class="imgList" />
-          </el-carousel-item>
-        </el-carousel>
-      </div>
-    </div> -->
   </div>
 </template>
 
@@ -162,8 +146,6 @@ export default {
       total: 0,
       pages: 1,
       list: [],
-      // imgList: [],
-      // showShade: false,
       category: [], // 大类
       categoryVal: '',
       types: [], // 二级分类
@@ -183,8 +165,6 @@ export default {
         'type_id': this.typesVal,
         'style_id': this.styleVal,
         'page': this.pages
-        // 'start_time': '',
-        // 'end_time': ''
       }).then((res) => {
         this.total = res.data.meta.total
         this.list = res.data.data
@@ -282,7 +262,7 @@ export default {
     filterMaterial (material) {
       let str = ''
       material.forEach((item) => {
-        if (item.type === 0 && str !== '') { // && item.type_material === 0
+        if (item.type === 0 && str !== '') {
           str += '/' + item.material
         } else if (str === '' && item.type === 0) {
           str += item.material
@@ -294,7 +274,7 @@ export default {
     filterOtherMaterial (material) {
       let str = ''
       material.forEach((item) => {
-        if (item.type === 1 && str === '') { // && item.type_material === 0
+        if (item.type === 1 && str === '') {
           str += item.material
         } else if (str === '' && item.type === 1) {
           str += item.material
@@ -305,17 +285,6 @@ export default {
   },
   created () {
     this.getCraftList()
-    // productPlanList({
-    //   company_id: window.sessionStorage.getItem('company_id')
-    // }).then((res) => {
-    //   console.log(res)
-    //   console.log(res.data)
-    //   if (res.status) {
-    //     this.category = res.data.data
-    //     // console.log(res.data.data)
-    //     console.log(this.category)
-    //   }
-    // })
   }
 }
 </script>
