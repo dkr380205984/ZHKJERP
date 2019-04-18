@@ -17,7 +17,7 @@
         </div>
         <div class="inputCtn">
           <span class="label">创建人:</span>
-          <span class="content gray">{{productDetail.user_id}}</span>
+          <span class="content gray">{{productDetail.user_name}}</span>
         </div>
       </div>
       <div class="lineCtn">

@@ -37,12 +37,16 @@
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label must">结算单位：</span>
-          <el-select class="elInput" v-model="money" placeholder="请选择联系人">
+          <el-select class="elInput" v-model="money" placeholder="请选择结算单位">
             <el-option
               v-for="item in moneyArr"
-              :key="item.id"
+              :key="item.name"
               :label="item.name"
-              :value="item.id">
+              :value="item.name"
+              style="display:flex;
+              justify-content:space-between">
+              <span style="">{{ item.name }}</span>
+              <span style="color: #8492a6; font-size: 13px">{{item.short}}</span>
             </el-option>
           </el-select>
         </div>
@@ -71,6 +75,17 @@
             type="date"
             placeholder="选择日期">
           </el-date-picker>
+        </div>
+        <div class="inputCtn">
+          <span class="label must">分配小组：</span>
+          <el-select class="elInput" v-model="group" placeholder="请选择小组">
+            <el-option
+              v-for="item in groupArr"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
         </div>
       </div>
       <div class="lineCtn">
@@ -228,16 +243,16 @@
                   <div class="typeCtn" v-for="(itemType,indexType) in orderArr[indexOrder].product[indexProduct].size" :key="indexType">
                     <div class="index">{{indexType+1}}</div>
                     <el-cascader
-                      style="width:160px;margin-right:15px"
+                      style="width:160px;margin-right:10px"
                       class="elInput"
                       placeholder="请选择尺码和颜色"
                       :options="orderArr[indexOrder].product[indexProduct].colorSizeArr"
                       v-model="orderArr[indexOrder].product[indexProduct].size[indexType].name">
                     </el-cascader>
-                    <el-input class="elInput" v-model="orderArr[indexOrder].product[indexProduct].size[indexType].unitPrice" placeholder="单价" style="width:150px;margin-right:15px">
+                    <el-input class="elInput" v-model="orderArr[indexOrder].product[indexProduct].size[indexType].unitPrice" placeholder="单价" style="width:145px;margin-right:10px">
                       <template slot="append">元</template>
                     </el-input>
-                    <el-input class="elInput" v-model="orderArr[indexOrder].product[indexProduct].size[indexType].numbers" placeholder="数量" style="width:150px;">
+                    <el-input class="elInput" v-model="orderArr[indexOrder].product[indexProduct].size[indexType].numbers" placeholder="数量" style="width:145px;">
                       <template slot="append">个</template>
                     </el-input>
                     <i class="el-icon-delete" @click="deleteSize(indexOrder,indexProduct,indexType)"></i>
@@ -281,7 +296,8 @@
 </template>
 
 <script>
-import { clientList, productPlanList, productTppeList, flowerList, orderSave } from '@/assets/js/api.js'
+import { moneyArr } from '@/assets/js/dictionary.js'
+import { clientList, productPlanList, productTppeList, flowerList, orderSave, getGroup } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -291,7 +307,7 @@ export default {
       company: '',
       contactsArr: [],
       contacts: '',
-      moneyArr: [],
+      moneyArr: moneyArr,
       money: '',
       exchangeRate: '',
       taxRate: '14',
@@ -313,6 +329,7 @@ export default {
       orderArr: [{
         date: '',
         product: [{
+          product_info: {},
           name: '',
           colorSizeArr: [],
           size: [{
@@ -321,7 +338,9 @@ export default {
             numbers: ''
           }]
         }]
-      }]
+      }],
+      group: '',
+      groupArr: []
     }
   },
   methods: {
@@ -419,6 +438,7 @@ export default {
     // 添加产品
     addProductOne (indexOrder) {
       this.orderArr[indexOrder].product.push({
+        product_info: {},
         name: '',
         colorSizeArr: [],
         size: [{
@@ -462,7 +482,6 @@ export default {
     getColorSize (id, indexOrder, indexProduct) {
       let arr = []
       let obj = this.productArr.find((item) => item.product_info.product_code === id)
-      console.log(obj)
       for (let key in obj.product_info.size) {
         arr.push({
           value: key,
@@ -476,10 +495,10 @@ export default {
         })
       }
       this.orderArr[indexOrder].product[indexProduct].colorSizeArr = arr
+      this.orderArr[indexOrder].product[indexProduct].product_info = obj.product_info
     },
     // 清空
     clearAll () {
-
     },
     // 保存
     saveAll () {
@@ -489,19 +508,22 @@ export default {
         order_code: this.orderId,
         client_id: this.company,
         contacts: this.contacts,
-        account_unit: '人民币',
+        account_unit: this.money,
         exchange_rate: this.exchangeRate,
         tax_rate: this.taxRate,
         order_time: this.date,
-        order_info: this.orderArr.map((item) => {
+        group_id: this.group,
+        order_info: this.orderArr.map((item, index) => {
           return {
             batch_info: item.product.map((item) => {
               return {
                 productCode: item.name,
-                size: item.size
+                size: item.size,
+                productInfo: item.product_info
               }
             }),
-            delivery_time: item.date
+            delivery_time: item.date,
+            batch_id: parseInt(index + 1)
           }
         }),
         total_price: this.totalMoney,
@@ -510,6 +532,9 @@ export default {
       console.log(obj)
       orderSave(obj).then((res) => {
         console.log(res)
+        this.$message.success({
+          message: '添加订单成功'
+        })
       })
     }
   },
@@ -555,6 +580,8 @@ export default {
       company_id: this.companyId
     }), flowerList({
       company_id: this.companyId
+    }), getGroup({
+      company_id: this.companyId
     })]).then((res) => {
       this.companyArr = res[0].data.data
       this.seachProduct = res[1].data.data
@@ -579,6 +606,7 @@ export default {
         }
       })
       this.flowerArr = res[3].data.data
+      this.groupArr = res[4].data.data
     })
   }
 }

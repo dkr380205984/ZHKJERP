@@ -74,7 +74,7 @@
         <div class="lineCtn" style="margin-bottom:0">
           <div class="inputCtn oneLine">
             <span class="label">方案列表:</span>
-            <div class="list" v-for="(item,index) in colourNum" :key="index">
+            <div class="list" style="margin-bottom:0" v-for="(item,index) in colourNum" :key="index">
               <el-select class="elSelect" v-model="colour[index]" placeholder="请选择配色方案">
                 <el-option
                   v-for="item in colourArr"
@@ -85,8 +85,8 @@
                   <div class="desc">{{item.name}}</div>
                 </el-option>
               </el-select>
-              <color-picker v-for="(item2,index2) in colorNum[index]" :key="index2"
-                style="margin-left:15px"
+              <color-picker v-for="(item2,index2) in colorNum[index]" :key="item2"
+                style="margin-left:15px;margin-bottom:24px"
                 v-model="color[index][index2]"
                 :content="filterMethods(index2)"
                 :colorArr="colorArr"></color-picker>
@@ -333,7 +333,7 @@
         <div class="lineCtn" style="margin-bottom:0">
           <div class="inputCtn oneLine">
             <span class="label">方案列表:</span>
-            <div class="list" v-for="(item,index) in colourNum2" :key="index">
+            <div class="list" style="margin-bottom:0" v-for="(item,index) in colourNum2" :key="index">
               <el-select class="elSelect" v-model="colour2[index]" placeholder="请选择配色方案">
                 <el-option
                   v-for="item in colourArr"
@@ -345,7 +345,7 @@
                 </el-option>
               </el-select>
               <color-picker v-for="(item2,index2) in colorNum2[index]" :key="index2"
-                style="margin-left:15px"
+                style="margin-left:15px;margin-bottom:24px"
                 v-model="color2[index][index2]"
                 :content="filterMethods(index2)"
                 :colorArr="colorArr"></color-picker>
@@ -472,6 +472,11 @@
         <div class="okBtn" @click="saveAll">添加</div>
       </div>
     </div>
+    <div class="suspend">
+      <span class="blue" @click="saveDraft">保存草稿</span>
+      <div class="border"></div>
+      <span class="red" @click="clearDraft">清空草稿</span>
+    </div>
   </div>
 </template>
 
@@ -523,6 +528,7 @@ export default {
         mergeCells: true,
         minCols: 1,
         minRows: 3,
+        afterMergeCells: this.merge,
         afterChange: this.afterChange,
         afterCreateCol: this.createCol, // 监听行添加
         afterRemoveCol: this.removeCol // 监听列删除
@@ -546,6 +552,7 @@ export default {
         mergeCells: true,
         minCols: 1,
         minRows: 3,
+        afterMergeCells: this.merge2,
         afterChange: this.afterChange2,
         afterCreateCol: this.createCol2, // 监听行添加
         afterRemoveCol: this.removeCol2 // 监听列删除
@@ -558,10 +565,8 @@ export default {
       color: [[]],
       color2: [[]],
       colorArr: [],
-      colorNum: [1],
-      colorNum2: [1],
-      process: [],
-      processArr: [],
+      colorNum: [0],
+      colorNum2: [0],
       countArr: [],
       typeArr: [],
       ingredient: [],
@@ -603,7 +608,9 @@ export default {
         rangwei: null,
         total: null
       },
-      coefficient: []
+      coefficient: [],
+      mergeCells1: [],
+      mergeCells2: []
     }
   },
   watch: {
@@ -683,9 +690,108 @@ export default {
       this.sideArr = res[2].data.data.side
       this.modeleArr = res[2].data.data.type
       this.methodArr = res[2].data.data.method
+      // 读取草稿信息
+      console.log(window.localStorage)
+      this.colour = JSON.parse(window.localStorage.getItem('colour')) || []
+      this.colour = this.colour.map((item) => { return '' })
+      this.colourNum = this.colour.length > 1 ? this.colour.length : 1
+      this.color = JSON.parse(window.localStorage.getItem('color')) || [[]]
+      this.colorNum = this.color.map((item) => item.length > 1 ? item.length : 1)
+      this.colour2 = JSON.parse(window.localStorage.getItem('colour2')) || []
+      this.colour2 = this.colour2.map((item) => { return '' })
+      this.colourNum2 = this.colour2.length > 1 ? this.colour2.length : 1
+      this.color2 = JSON.parse(window.localStorage.getItem('color2')) || [[]]
+      this.colorNum2 = this.color2.map((item) => item.length > 1 ? item.length : 1)
+      this.mainIngredient = JSON.parse(window.localStorage.getItem('mainIngredient')) || []
+      this.mainIngredient2 = JSON.parse(window.localStorage.getItem('mainIngredient2')) || []
+      this.otherIngredient = JSON.parse(window.localStorage.getItem('otherIngredient')) || []
+      this.otherIngredient2 = JSON.parse(window.localStorage.getItem('otherIngredient2')) || []
+      this.otherIngredientNum = this.otherIngredient.length
+      this.otherIngredientNum2 = this.otherIngredient2.length
+      this.jia = JSON.parse(window.localStorage.getItem('jia')) || []
+      this.jia2 = JSON.parse(window.localStorage.getItem('jia2')) || []
+      this.jiaNum = JSON.parse(window.localStorage.getItem('jiaNum')) || []
+      this.jiaNum2 = JSON.parse(window.localStorage.getItem('jiaNum2')) || []
+      this.warp_data = JSON.parse(window.localStorage.getItem('warp_data')) || {
+        weft: null, // 整理总头纹,需要计算
+        side_id: null,
+        width: null,
+        machine_id: null,
+        reed: null,
+        reed_method: null,
+        reed_width: null,
+        sum_up: null,
+        drafting_method: null
+      }
+      this.weft_data = JSON.parse(window.localStorage.getItem('weft_data')) || {
+        organization_id: null,
+        peifu: null,
+        weimi: null,
+        shangchiya: null,
+        xiachiya: null,
+        neichang: null,
+        rangwei: null,
+        total: null
+      }
+      this.hotSettings.data = JSON.parse(window.localStorage.getItem('table')) || [[''], [''], ['']]
+      this.hotSettings2.data = JSON.parse(window.localStorage.getItem('table2')) || [[''], [''], ['']]
+      // 因为单元格不会自动合并，只保留第一行的数据
+      this.hotSettings.data = this.hotSettings.data.map((item, index) => {
+        if (index > 0) {
+          return item.map((item) => '')
+        } else {
+          return item
+        }
+      })
+      this.hotSettings2.data = this.hotSettings2.data.map((item, index) => {
+        if (index > 0) {
+          return item.map((item) => '')
+        } else {
+          return item
+        }
+      })
+      this.longSort = JSON.parse(window.localStorage.getItem('longSort')) || ['']
+      this.longSort2 = JSON.parse(window.localStorage.getItem('longSort2')) || ['']
     })
   },
   methods: {
+    // 监听合并单元格 获取的数据还有问题，暂时不用
+    merge (cellRange, main) {
+      if (this.mergeCells1.length > 0) {
+        for (var k = 0; k < this.mergeCells1.length; k++) {
+          if (this.mergeCells1[k].row === main.row && this.mergeCells1[k].col === main.col) {
+            this.mergeCells1.splice(k, 1)
+            return
+          } else {
+            this.mergeCells1.push({ 'row': main.row,
+              'col': main.col,
+              'rowspan': main.rowspan,
+              'colspan': main.colspan })
+            break
+          }
+        }
+      } else {
+        this.mergeCells1.push({ 'row': main.row, 'col': main.col, 'rowspan': main.rowspan, 'colspan': main.colspan })
+      }
+    },
+    merge2 (cellRange, main) {
+      if (this.mergeCells2.length > 0) {
+        for (var k = 0; k < this.mergeCells2.length; k++) {
+          if (this.mergeCells2[k].row === main.row && this.mergeCells2[k].col === main.col) {
+            this.mergeCells2.splice(k, 1)
+            return
+          } else {
+            this.mergeCells2.push({ 'row': main.row,
+              'col': main.col,
+              'rowspan': main.rowspan,
+              'colspan': main.colspan })
+            break
+          }
+        }
+      } else {
+        this.mergeCells2.push({ 'row': main.row, 'col': main.col, 'rowspan': main.rowspan, 'colspan': main.colspan })
+      }
+    },
     afterChange (changes, source) {
       let arr = [[], [], []]
       this.hotSettings.data.forEach((item, index) => {
@@ -1291,8 +1397,55 @@ export default {
     // 清空
     clearAll () {
       console.log(this.colorArr)
+    },
+    // 保存草稿
+    saveDraft () {
+      window.localStorage.setItem('colour', JSON.stringify(this.colour))
+      window.localStorage.setItem('colour2', JSON.stringify(this.colour2))
+      window.localStorage.setItem('color', JSON.stringify(this.color))
+      window.localStorage.setItem('color2', JSON.stringify(this.color2))
+      window.localStorage.setItem('mainIngredient', JSON.stringify(this.mainIngredient))
+      window.localStorage.setItem('mainIngredient2', JSON.stringify(this.mainIngredient2))
+      window.localStorage.setItem('otherIngredient', JSON.stringify(this.otherIngredient))
+      window.localStorage.setItem('otherIngredient2', JSON.stringify(this.otherIngredient2))
+      window.localStorage.setItem('jia', JSON.stringify(this.jia))
+      window.localStorage.setItem('jia2', JSON.stringify(this.jia2))
+      window.localStorage.setItem('jiaNum', JSON.stringify(this.jiaNum))
+      window.localStorage.setItem('jiaNum2', JSON.stringify(this.jiaNum2))
+      window.localStorage.setItem('weft_data', JSON.stringify(this.weft_data))
+      window.localStorage.setItem('warp_data', JSON.stringify(this.warp_data))
+      window.localStorage.setItem('table', JSON.stringify(this.hotSettings.data))
+      window.localStorage.setItem('table2', JSON.stringify(this.hotSettings2.data))
+      window.localStorage.setItem('longSort', JSON.stringify(this.longSort))
+      window.localStorage.setItem('longSort2', JSON.stringify(this.longSort2))
+      this.$message.success({
+        message: '保存草稿成功'
+      })
+    },
+    // 清空草稿
+    clearDraft () {
+      window.localStorage.removeItem('colour')
+      window.localStorage.removeItem('colour2')
+      window.localStorage.removeItem('color')
+      window.localStorage.removeItem('color2')
+      window.localStorage.removeItem('mainIngredient')
+      window.localStorage.removeItem('mainIngredient2')
+      window.localStorage.removeItem('otherIngredient')
+      window.localStorage.removeItem('otherIngredient2')
+      window.localStorage.removeItem('jia')
+      window.localStorage.removeItem('jia2')
+      window.localStorage.removeItem('jiaNum')
+      window.localStorage.removeItem('jiaNum2')
+      window.localStorage.removeItem('weft_data')
+      window.localStorage.removeItem('warp_data')
+      window.localStorage.removeItem('table')
+      window.localStorage.removeItem('table2')
+      window.localStorage.removeItem('longSort')
+      window.localStorage.removeItem('longSort2')
+      this.$message.success({
+        message: '清空草稿成功'
+      })
     }
-
   },
   filters: {
     // 类型合并

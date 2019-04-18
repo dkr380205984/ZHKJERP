@@ -16,6 +16,12 @@
           <span class="content">{{companyInfo.abbreviation}}</span>
         </div>
       </div>
+       <div class="lineCtn">
+        <div class="inputCtn">
+          <span class="label">公司类型：</span>
+          <span class="content">{{companyInfo.type|filterType}}</span>
+        </div>
+      </div>
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">合作状态：</span>
@@ -76,6 +82,7 @@
 </template>
 
 <script>
+import { companyType } from '@/assets/js/dictionary.js'
 import { clientDetail } from '@/assets/js/api.js'
 export default {
   data () {
@@ -88,7 +95,8 @@ export default {
         status: 1,
         phone: '',
         create_time: '',
-        update_time: ''
+        update_time: '',
+        type: ''
       }
     }
   },
@@ -98,6 +106,13 @@ export default {
     },
     saveAll () {
 
+    }
+  },
+  filters: {
+    filterType (value) {
+      if (value) {
+        return companyType.find((item) => item.value === value).name
+      }
     }
   },
   mounted () {

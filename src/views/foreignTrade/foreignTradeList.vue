@@ -36,6 +36,7 @@
         <div class="tableRow titleTableRow">
           <div class="tableColumn">公司名称</div>
           <div class="tableColumn">公司简称</div>
+          <div class="tableColumn">公司类型</div>
           <div class="tableColumn">人员数量</div>
           <div class="tableColumn">联系电话</div>
           <div class="tableColumn">公司地址</div>
@@ -46,6 +47,7 @@
         <div class="tableRow bodyTableRow" v-for="(item,index) in list" :key="index">
           <div class="tableColumn">{{item.name}}</div>
           <div class="tableColumn">{{item.abbreviation}}</div>
+          <div class="tableColumn">{{item.type|filterType}}</div>
           <div class="tableColumn">{{item.contacts.length}}</div>
           <div class="tableColumn">{{item.phone}}</div>
           <div class="tableColumn">{{item.address}}</div>
@@ -75,6 +77,7 @@
 </template>
 
 <script>
+import { companyType } from '@/assets/js/dictionary.js'
 import { clientList } from '@/assets/js/api.js'
 export default {
   data () {
@@ -142,6 +145,11 @@ export default {
     },
     pickTime () {
 
+    }
+  },
+  filters: {
+    filterType (value) {
+      return companyType.find((item) => item.value === value).name
     }
   },
   created () {

@@ -1,7 +1,7 @@
 <template>
   <div id="orderList">
     <div class="head">
-      <h2>订单列表</h2>
+      <h2>订单发货列表</h2>
       <el-input placeholder="输入订单号精确搜索" suffix-icon="el-icon-search" v-model="searchVal"></el-input>
     </div>
     <div class="body">
@@ -75,39 +75,18 @@
       </div>
       <div class="mergeTable">
         <div class="mergeHeader">
+          <div class="tableColumn">发货日期</div>
           <div class="tableColumn">订单号</div>
-          <div class="tableColumn">外贸公司</div>
-          <div class="tableColumn" style="flex:2">产品信息</div>
-          <div class="tableColumn" style="flex:0.7">负责小组</div>
-          <div class="tableColumn" style="flex:0.7">下单日期</div>
-          <div class="tableColumn">交货日期</div>
-          <div class="tableColumn" style="flex:0.7">订单状态</div>
+          <div class="tableColumn">订单公司</div>
+          <div class="tableColumn" style="flex:4">产品信息</div>
           <div class="tableColumn" style="flex:2">操作</div>
         </div>
-        <div class="mergeBody" v-for="(item ,index) in list" :style="{'height':(60+(item.lineNum-1)*30)+'px'}" :key="index">
-          <div class="tableColumn">{{item.order_code}}</div>
-          <div class="tableColumn">{{item.client_name}}</div>
-          <div class="tableColumn" style="flex:2">
-            <div class="once" v-for="(itemProduct,indexProduct) in item.productList" :key="indexProduct">
-              <span style="margin:0 5px">{{itemProduct.productCode}}</span>
-              <span style="margin:0 5px">{{itemProduct.productInfo.category_info.product_category}}/{{itemProduct.productInfo.type_name}}/{{itemProduct.productInfo.style_name}}/{{itemProduct.productInfo.flower_id}}</span>
-              <span style="margin:0 5px">{{itemProduct.sum}}{{itemProduct.productInfo.category_info.name}}</span>
-            </div>
-          </div>
-          <div class="tableColumn" style="flex:0.7">{{item.group_name}}</div>
-          <div class="tableColumn" style="flex:0.7">{{item.order_time}}</div>
-          <div class="tableColumn">
-            <div class="once" v-for="(itemTime,indexTime) in item.delivery_time" :key="indexTime">
-              <span>第 {{indexTime+1}} 批：</span>
-              <span>{{itemTime}}</span>
-            </div>
-          </div>
-          <div class="tableColumn" style="flex:0.7">暂无状态</div>
-          <div class="tableColumn" style="flex-direction:row;flex:2">
-            <span class="btns normal">修改</span>
-            <span class="btns success" @click="$router.push('/index/productDesignCreate/'+item.id)">查看</span>
-            <span class="btns warning">打印</span>
-          </div>
+        <div class="mergeBody" v-for="(item ,index) in list" :key="index" :style="{'height':(item.lineNum*30)+'px'}">
+          <div class="tableColumn">{{item.date}}</div>
+          <div class="tableColumn"></div>
+          <div class="tableColumn"></div>
+          <div class="tableColumn" style="flex:4"></div>
+          <div class="tableColumn" style="flex:2"></div>
         </div>
       </div>
       <div class="sum">订单统计:暂不统计</div>
@@ -126,7 +105,7 @@
 </template>
 
 <script>
-import { orderList, productTppeList, clientList, getGroup } from '@/assets/js/api.js'
+import { orderBatchList, productTppeList, clientList, getGroup } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -177,7 +156,7 @@ export default {
   },
   methods: {
     getOrderList () {
-      orderList({
+      orderBatchList({
         'company_id': window.sessionStorage.getItem('company_id'),
         'limit': 5,
         'page': this.pages,
@@ -192,45 +171,56 @@ export default {
         // 'end_time': ''
       }).then((res) => {
         console.log(res)
-        this.total = res.data.meta.total
-        this.list = res.data.data.map((item) => {
-          let productList = []
-          item.order_batch.forEach((itemOrder) => {
-            itemOrder.batch_info.forEach((itemBatch) => {
-              if (productList.find((itemFind) => itemFind.productCode === itemBatch.productCode)) {
-                let mark = -1
-                productList.forEach((itemFind, index) => {
-                  if (itemFind.productCode === itemBatch.productCode) {
-                    mark = index
-                  }
-                })
-                productList[mark].sum = productList[mark].sum + itemBatch.size.reduce((total, current) => {
-                  return total + parseInt(current.numbers)
-                }, 0)
-              } else {
-                productList.push({
-                  productInfo: itemBatch.productInfo,
-                  productCode: itemBatch.productCode,
-                  sum: itemBatch.size.reduce((total, current) => {
-                    return total + parseInt(current.numbers)
-                  }, 0)
-                })
-              }
+        // this.total = res.data.meta.total
+        // this.list = res.data.data.map((item) => {
+        //   let productList = []
+        //   item.order_batch.forEach((itemOrder) => {
+        //     itemOrder.batch_info.forEach((itemBatch) => {
+        //       if (productList.find((itemFind) => itemFind.productCode === itemBatch.productCode)) {
+        //         let mark = -1
+        //         productList.forEach((itemFind, index) => {
+        //           if (itemFind.productCode === itemBatch.productCode) {
+        //             mark = index
+        //           }
+        //         })
+        //         productList[mark].sum = productList[mark].sum + itemBatch.size.reduce((total, current) => {
+        //           return total + parseInt(current.numbers)
+        //         }, 0)
+        //       } else {
+        //         productList.push({
+        //           productInfo: itemBatch.productInfo,
+        //           productCode: itemBatch.productCode,
+        //           sum: itemBatch.size.reduce((total, current) => {
+        //             return total + parseInt(current.numbers)
+        //           }, 0)
+        //         })
+        //       }
+        //     })
+        //   })
+        //   console.log(productList)
+        //   return {
+        //     group_name: item.group_name,
+        //     order_code: item.order_code,
+        //     order_time: item.order_time,
+        //     client_name: item.client_name,
+        //     contacts: item.contacts,
+        //     delivery_time: item.order_batch.map((item) => item.delivery_time),
+        //     productList: productList,
+        //     lineNum: Math.max(item.order_batch.length, productList.length) // 这个参数用于计算每行的高度
+        //   }
+        // })
+        // console.log(this.list)
+        // console.log(JSON.parse(res.data.data['2019-04-09'][0].batch_info))
+        let data = res.data.data
+        Object.keys(data).forEach((key) => {
+          let arr = []
+          data[key].forEach((item) => {
+            arr.push({
+              batch_info: JSON.parse(item.batch_info),
+              group_name: ''
             })
           })
-          console.log(productList)
-          return {
-            group_name: item.group_name,
-            order_code: item.order_code,
-            order_time: item.order_time,
-            client_name: item.client_name,
-            contacts: item.contacts,
-            delivery_time: item.order_batch.map((item) => item.delivery_time),
-            productList: productList,
-            lineNum: Math.max(item.order_batch.length, productList.length) // 这个参数用于计算每行的高度
-          }
         })
-        console.log(this.list)
       })
     },
     pickTime (date) {
@@ -338,25 +328,46 @@ export default {
     }
   },
   mounted () {
-    this.getOrderList()
-    productTppeList({
+    Promise.all([productTppeList({
       company_id: window.sessionStorage.getItem('company_id')
-    }).then((res) => {
-      if (res.data.status) {
-        this.category = res.data.data
-      }
-    })
-    clientList({
+    }), clientList({
       company_id: window.sessionStorage.getItem('company_id'),
       keyword: '',
       status: 1
-    }).then((res) => {
-      this.companyArr = res.data.data
-    })
-    getGroup({
+    }), getGroup({
       company_id: window.sessionStorage.getItem('company_id')
-    }).then((res) => {
-      this.groupArr = res.data.data
+    }), orderBatchList({
+      'company_id': window.sessionStorage.getItem('company_id'),
+      'limit': 5,
+      'page': this.pages,
+      'category_id': this.categoryVal,
+      'type_id': this.typesVal,
+      'style_id': this.styleVal,
+      'client_id': this.company,
+      'group_id': this.group,
+      'product_code': this.searchVal
+    })]).then((res) => {
+      this.category = res[0].data.data
+      this.companyArr = res[1].data.data
+      this.groupArr = res[2].data.data
+      let json = res[3].data.data
+      this.list = Object.keys(json).map((key) => {
+        let arr = []
+        json[key].forEach((item) => {
+          arr.push({
+            batch_info: JSON.parse(item.batch_info),
+            group_name: this.groupArr.find((itemGroup) => itemGroup.id === item.group_id).name,
+            company_name: this.companyArr.find((itemCompany) => { return parseInt(itemCompany.id) === item.client_id }).name,
+            order_code: item.order_code,
+            lineNum: JSON.parse(item.batch_info).length
+          })
+        })
+        return {
+          lineNum: arr.reduce((total, current) => total + current.lineNum, 0),
+          date: key,
+          orderInfo: arr
+        }
+      })
     })
   }
 }
