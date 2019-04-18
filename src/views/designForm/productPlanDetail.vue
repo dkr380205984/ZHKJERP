@@ -66,8 +66,8 @@
             {{material_data.main_ingredients.length !== 0 ? '' : '暂无信息'}}
             <template v-for="(item,index) in material_data.main_ingredients">
               <yl-table color="#1A05FF"
-                        :data='item'
-                        :colorData='color'
+                        :date='item'
+                        :colorDate='color'
                         class="table"
                         :key="index" />
             </template>
