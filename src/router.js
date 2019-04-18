@@ -98,6 +98,10 @@ export default new Router({
       name: 'orderAdd',
       component: () => import('./views/order/productList.vue')
     }, {
+      path: 'orderStat',
+      name: 'orderStat',
+      component: () => import('./views/order/orderStat.vue')
+    }, {
       path: 'foreignTradeCreate',
       name: 'foreignTradeCreate',
       component: () => import('./views/foreignTrade/foreignTradeCreate.vue')
@@ -126,11 +130,7 @@ export default new Router({
       name: 'productPlanDetail',
       component: () => import('./views/designForm/productPlanDetail.vue')
     }, {
-      path: 'stockMainMaterialList',
-      name: 'stockMainMaterialList',
-      component: () => import('./views/stock/mainMaterialList.vue')
-    }, {
-      path: 'mainMaterialStockCreate/:id',
+      path: 'mainMaterialStockCreate',
       name: 'mainMaterialStockCreate',
       component: () => import('./views/stock/mainMaterialStockCreate.vue')
     }, {
@@ -142,11 +142,7 @@ export default new Router({
       name: 'mainMaterialStockDetail',
       component: () => import('./views/stock/mainMaterialStockDetail.vue')
     }, {
-      path: 'stockOtherMaterialList',
-      name: 'stockOtherMaterialList',
-      component: () => import('./views/stock/otherMaterialList.vue')
-    }, {
-      path: 'otherMaterialStockCreate/:id',
+      path: 'otherMaterialStockCreate',
       name: 'otherMaterialStockCreate',
       component: () => import('./views/stock/otherMaterialStockCreate.vue')
     }, {
@@ -189,6 +185,10 @@ export default new Router({
       path: 'productDesignCreateList',
       name: 'productDesignCreateList',
       component: () => import('./views/productDesign/productDesignCreateList.vue')
+    }, {
+      path: 'rawMaterialPurchase',
+      name: 'rawMaterialPurchase',
+      component: () => import('./views/rawMaterial/rawMaterialPurchase.vue')
     }]
   }
   ]

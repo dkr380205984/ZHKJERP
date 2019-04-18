@@ -12,6 +12,12 @@
         <span class="label">公司简称:</span>
         <el-input class="elInput" placeholder="请输入外贸公司简称" v-model="abbreviation"></el-input>
       </div>
+       <div class="inputCtn">
+        <span class="label">公司类型:</span>
+        <el-select class="elInput" placeholder="请选择公司类型" v-model="type">
+          <el-option v-for="item in companyType" :key="item.value" :value="item.value" :label="item.name"></el-option>
+        </el-select>
+      </div>
       <div class="inputCtn">
         <span class="label must">人员管理:</span>
         <div class="specialTable">
@@ -63,6 +69,7 @@
 </template>
 
 <script>
+import { companyType } from '@/assets/js/dictionary.js'
 import { clientAdd } from '@/assets/js/api.js'
 export default {
   data () {
@@ -75,7 +82,9 @@ export default {
       contacts: [],
       contactsName: '',
       contactsStation: '',
-      contactsPhone: ''
+      contactsPhone: '',
+      companyType: companyType,
+      type: ''
     }
   },
   methods: {
@@ -107,9 +116,13 @@ export default {
         contacts: this.contacts,
         phone: this.phone,
         address: this.address,
-        status: parseInt(this.status)
+        status: parseInt(this.status),
+        type: this.type
       }).then((res) => {
         console.log(res)
+        this.$message.success({
+          message: '添加成功'
+        })
       })
     },
     clearAll () {

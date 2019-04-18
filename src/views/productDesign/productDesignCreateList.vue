@@ -148,7 +148,8 @@ export default {
     orderList({
       company_id: window.sessionStorage.getItem('company_id'),
       page: this.pages,
-      limit: 5
+      limit: 5,
+      has_plan: 0
     }).then((res) => {
       console.log(res)
       this.total = res.data.meta.total

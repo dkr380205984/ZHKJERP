@@ -81,12 +81,12 @@
                 <div class="tableColumn">{{item.numbers}}{{item.unit_name}}</div>
                 <div class="tableColumn">{{item.stock_num}}{{item.unit_name}}</div>
                 <div class="tableColumn">
-                  <input class="inputs" placeholder="输入数字"/>
+                  <input class="inputs" placeholder="输入数字" v-model="item.stock_pick"/>
                 </div>
                 <div class="tableColumn">
-                  <input class="inputs" placeholder="输入数字"/>
+                  <input class="inputs" placeholder="输入数字" v-model="item.production_num"/>
                 </div>
-                <div class="tableColumn">统计值</div>
+                <div class="tableColumn">{{(parseInt(item.stock_pick) + parseInt(item.production_num))?(parseInt(item.stock_pick) + parseInt(item.production_num)):'待计算'}}</div>
               </div>
             </div>
           </div>
@@ -101,7 +101,7 @@
 </template>
 
 <script>
-import { orderStockDetail } from '@/assets/js/api.js'
+import { orderStockDetail, productionSave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -117,7 +117,8 @@ export default {
         product_stock: '',
         tax_rate: '',
         total_price: '',
-        user_name: ''
+        user_name: '',
+        id: ''
       },
       productInfo: [],
       product: []
@@ -128,7 +129,26 @@ export default {
 
     },
     saveAll () {
-
+      console.log(this.productInfo)
+      let json = {
+        company_id: window.sessionStorage.getItem('company_id'),
+        order_id: this.order.id,
+        detail_info: this.productInfo.map((item) => {
+          return {
+            product_code: item.product_code,
+            size: item.size,
+            color: item.color,
+            order_num: item.numbers,
+            stock_num: item.stock_num,
+            stock_pick: item.stock_pick,
+            production_num: item.production_num,
+            total_num: parseInt(item.stock_pick) + parseInt(item.production_num)
+          }
+        })
+      }
+      productionSave(json).then((res) => {
+        console.log(res)
+      })
     }
   },
   mounted () {
@@ -150,7 +170,9 @@ export default {
             size: item.size,
             color: item.color,
             numbers: item.numbers,
-            unit_name: item.unit_name
+            unit_name: item.unit_name,
+            stock_pick: 0,
+            production_num: ''
           })
         })
       })
