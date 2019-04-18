@@ -79,14 +79,36 @@
           <div class="tableColumn">订单号</div>
           <div class="tableColumn">订单公司</div>
           <div class="tableColumn" style="flex:4">产品信息</div>
+          <div class="tableColumn">小组信息</div>
           <div class="tableColumn" style="flex:2">操作</div>
         </div>
-        <div class="mergeBody" v-for="(item ,index) in list" :key="index" :style="{'height':(item.lineNum*30)+'px'}">
+        <div class="mergeBody" v-for="(item ,index) in list" :key="index" :style="{'height':(item.lineNum*60)+'px'}">
           <div class="tableColumn">{{item.date}}</div>
-          <div class="tableColumn"></div>
-          <div class="tableColumn"></div>
-          <div class="tableColumn" style="flex:4"></div>
-          <div class="tableColumn" style="flex:2"></div>
+          <div class="tableColumn">
+            <div class="small" v-for="(itemOrder,indexOrder) in item.orderInfo" :key="indexOrder" :style="{'height':(itemOrder.lineNum*60)+'px'}"><div style="margin:auto">{{itemOrder.order_code}}</div></div>
+          </div>
+          <div class="tableColumn">
+            <div class="small" v-for="(itemOrder,indexOrder) in item.orderInfo" :key="indexOrder" :style="{'height':(itemOrder.lineNum*60)+'px'}"><div style="margin:auto">{{itemOrder.company_name}}</div></div>
+          </div>
+          <div class="tableColumn" style="flex:4">
+             <div class="small column" v-for="(itemOrder,indexOrder) in item.orderInfo" :key="indexOrder" :style="{'height':(itemOrder.lineNum*60)+'px'}">
+              <div class="smallChild" v-for="(itemProduct,indexProduct) in itemOrder.batch_info" :key="indexProduct">
+                <div style="margin:auto">
+                  <span style="margin:0 5px">{{itemProduct.productCode}}</span>
+                  <span style="margin:0 5px">{{itemProduct.productInfo.category_info.product_category}}/{{itemProduct.productInfo.type_name}}/{{itemProduct.productInfo.style_name}}/{{itemProduct.productInfo.flower_id}}</span>
+                  <span style="margin:0 5px">{{itemProduct.sum}}{{itemProduct.productInfo.category_info.name}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tableColumn">
+            <div class="small" v-for="(itemOrder,indexOrder) in item.orderInfo" :key="indexOrder" :style="{'height':(itemOrder.lineNum*60)+'px'}"><div style="margin:auto">{{itemOrder.group_name}}</div></div>
+          </div>
+          <div class="tableColumn" style="flex:2;flex-direction:row">
+            <span class="btns normal">修改</span>
+            <span class="btns success" @click="$router.push('/index/productDesignCreate/'+item.id)">查看</span>
+            <span class="btns warning">打印</span>
+          </div>
         </div>
       </div>
       <div class="sum">订单统计:暂不统计</div>
@@ -170,56 +192,45 @@ export default {
         // 'start_time': '',
         // 'end_time': ''
       }).then((res) => {
-        console.log(res)
-        // this.total = res.data.meta.total
-        // this.list = res.data.data.map((item) => {
-        //   let productList = []
-        //   item.order_batch.forEach((itemOrder) => {
-        //     itemOrder.batch_info.forEach((itemBatch) => {
-        //       if (productList.find((itemFind) => itemFind.productCode === itemBatch.productCode)) {
-        //         let mark = -1
-        //         productList.forEach((itemFind, index) => {
-        //           if (itemFind.productCode === itemBatch.productCode) {
-        //             mark = index
-        //           }
-        //         })
-        //         productList[mark].sum = productList[mark].sum + itemBatch.size.reduce((total, current) => {
-        //           return total + parseInt(current.numbers)
-        //         }, 0)
-        //       } else {
-        //         productList.push({
-        //           productInfo: itemBatch.productInfo,
-        //           productCode: itemBatch.productCode,
-        //           sum: itemBatch.size.reduce((total, current) => {
-        //             return total + parseInt(current.numbers)
-        //           }, 0)
-        //         })
-        //       }
-        //     })
-        //   })
-        //   console.log(productList)
-        //   return {
-        //     group_name: item.group_name,
-        //     order_code: item.order_code,
-        //     order_time: item.order_time,
-        //     client_name: item.client_name,
-        //     contacts: item.contacts,
-        //     delivery_time: item.order_batch.map((item) => item.delivery_time),
-        //     productList: productList,
-        //     lineNum: Math.max(item.order_batch.length, productList.length) // 这个参数用于计算每行的高度
-        //   }
-        // })
-        // console.log(this.list)
-        // console.log(JSON.parse(res.data.data['2019-04-09'][0].batch_info))
-        let data = res.data.data
-        Object.keys(data).forEach((key) => {
+        let json = res.data.data
+        this.list = Object.keys(json).map((key) => {
           let arr = []
-          data[key].forEach((item) => {
+          json[key].forEach((item) => {
+            let productList = []
+            JSON.parse(item.batch_info).forEach((itemBatch) => {
+              if (productList.find((itemFind) => itemFind.productCode === itemBatch.productCode)) {
+                let mark = -1
+                productList.forEach((itemFind, index) => {
+                  if (itemFind.productCode === itemBatch.productCode) {
+                    mark = index
+                  }
+                })
+                productList[mark].sum = productList[mark].sum + itemBatch.size.reduce((total, current) => {
+                  return total + parseInt(current.numbers)
+                }, 0)
+              } else {
+                productList.push({
+                  productInfo: itemBatch.productInfo,
+                  productCode: itemBatch.productCode,
+                  sum: itemBatch.size.reduce((total, current) => {
+                    return total + parseInt(current.numbers)
+                  }, 0)
+                })
+              }
+            })
             arr.push({
-              batch_info: JSON.parse(item.batch_info),
-              group_name: ''
+              batch_info: productList,
+              group_name: this.groupArr.find((itemGroup) => itemGroup.id === item.group_id).name,
+              company_name: this.companyArr.find((itemCompany) => { return parseInt(itemCompany.id) === item.client_id }).name,
+              order_code: item.order_code,
+              lineNum: JSON.parse(item.batch_info).length
             })
           })
+          return {
+            lineNum: arr.reduce((total, current) => total + current.lineNum, 0),
+            date: key,
+            orderInfo: arr
+          }
         })
       })
     },
@@ -354,8 +365,30 @@ export default {
       this.list = Object.keys(json).map((key) => {
         let arr = []
         json[key].forEach((item) => {
+          let productList = []
+          JSON.parse(item.batch_info).forEach((itemBatch) => {
+            if (productList.find((itemFind) => itemFind.productCode === itemBatch.productCode)) {
+              let mark = -1
+              productList.forEach((itemFind, index) => {
+                if (itemFind.productCode === itemBatch.productCode) {
+                  mark = index
+                }
+              })
+              productList[mark].sum = productList[mark].sum + itemBatch.size.reduce((total, current) => {
+                return total + parseInt(current.numbers)
+              }, 0)
+            } else {
+              productList.push({
+                productInfo: itemBatch.productInfo,
+                productCode: itemBatch.productCode,
+                sum: itemBatch.size.reduce((total, current) => {
+                  return total + parseInt(current.numbers)
+                }, 0)
+              })
+            }
+          })
           arr.push({
-            batch_info: JSON.parse(item.batch_info),
+            batch_info: productList,
             group_name: this.groupArr.find((itemGroup) => itemGroup.id === item.group_id).name,
             company_name: this.companyArr.find((itemCompany) => { return parseInt(itemCompany.id) === item.client_id }).name,
             order_code: item.order_code,
