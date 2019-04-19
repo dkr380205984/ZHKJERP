@@ -123,11 +123,15 @@ h2 {
         margin-top: 17px;
         border-top: 1px solid #999; 
         border-bottom: 1px solid #999;
+        box-sizing: border-box;
         display: flex;
+        padding-top: 1px;
         .title {
-          width: 178px;
+          width: 176px;
           border-right: 1px solid #999;
           height: auto;
+          margin-left: 1px;
+          margin-right: 1px;
           &>span {
             display: block;
             width: 100%;
@@ -152,11 +156,14 @@ h2 {
         .content {
           flex: 1;
           display: flex;
+          margin-right: 1px;
           &>div {
             border-right: 1px solid #999;
             box-sizing: border-box;
+            margin-left: 1px;
             &:first-child {
-              width: 320px;
+              width: 319px;
+              margin: 0;
             }
             &:nth-child(n+2) {
               flex: 1;

@@ -35,11 +35,12 @@
               <span class="sizeOnce"
                     v-for="itemChild in item"
                     :key="itemChild.id">{{itemChild.size_name + '：' + itemChild.size_value + (itemChild.size_name == '克重' ? 'g' : 'cm')}}</span>
-                    <template v-for="(value,index) in weight">
-                      <span :key="index" v-if="(key === index) || index === '均码'">
-                        {{'净重：' + value + 'g'}}
-                      </span>
-                    </template>
+              <template v-for="(value,index) in weight">
+                <span :key="index"
+                      v-if="(key === index) || index === '均码'">
+                  {{'净重：' + value + 'g'}}
+                </span>
+              </template>
             </span>
           </span>
         </div>
@@ -104,7 +105,6 @@
 
 <script>
 import { productPlanOne } from '@/assets/js/api.js'
-import ylTable from '@/components/table/table.vue'
 export default {
   data () {
     return {
@@ -123,9 +123,6 @@ export default {
       },
       weight: {}
     }
-  },
-  components: {
-    ylTable
   },
   filters: {
     // 类型合并

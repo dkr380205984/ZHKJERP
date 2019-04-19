@@ -1,5 +1,6 @@
 <template>
-  <div id="designFormTable" @click.right='goTop'>
+  <div id="designFormTable"
+       @click.right='goTop'>
     <p class="company">{{companyName}}有限公司工艺单</p>
     <div class="table">
       <div class="page_header">
@@ -65,7 +66,7 @@
                     <template v-else>
                       <span v-for="(value,index) in changeArr(add(item))"
                             :key="index"
-                            :style="{minWidth : (100/12) * (item.length > 12 ? 12 : value.key) + '%',borderRight :'1px solid #999'}">
+                            :style="{minWidth : (100/12) * (item.length > 12 ? 12 : value.key) + '%',borderRight :(item.length > 12) ? '' :'1px solid #999'}">
                         {{value.value === 'no' ? '' : value.value}}
                       </span>
                     </template>
@@ -172,7 +173,7 @@
                     <template v-else>
                       <span v-for="(value,index) in changeArr(add(item))"
                             :key="index"
-                            :style="{minWidth : (100/12) * (item.length > 12 ? 12 : value.key) + '%',borderRight :'1px solid #999'}">
+                            :style="{minWidth : (100/12) * (item.length > 12 ? 12 : value.key) + '%',borderRight :(item.length > 12) ? '' :'1px solid #999'}">
                         {{value.value === 'no' ? '' : value.value}}
                       </span>
                     </template>
@@ -344,8 +345,8 @@ export default {
       })
       return arr2
     },
-    goTop (e) {
-      console.log(e)
+    goTop () {
+      document.body.scrollTop = 0
     }
   },
   filters: {
