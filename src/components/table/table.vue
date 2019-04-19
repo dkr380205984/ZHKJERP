@@ -7,7 +7,7 @@
       </span>
       <span v-for="(item,key) in colorData"
             :key="key+item">
-        <span>{{item.name}}</span>
+        <span>{{item}}</span>
       </span>
     </li>
     <li class="col"
@@ -16,13 +16,18 @@
       <span>
         <span>{{item.material}}</span>
       </span>
-      <span v-for="(value,index) in item.colorInfo"
-            :key="index+value">
-        <span v-for="(content,number) in addLen(value.colorList,key)"
-              :key="number+content">
-          {{content.name + ': '}}{{content.number + ((content.unit ==='克' || content.unit === 'g') ? 'g' : 'kg')}}
+      <template v-for="(value,index) in item.colorInfo">
+        <span :key="index+value">
+          <span v-for="(content,number) in addLen(setSizeInfo(value,key,index,data.materialList.length,item.colorInfo.length),key)"
+                :key="number+content">
+            {{content.name + ': '}}{{content.number + ((content.unit ==='克' || content.unit === '千克') ? (content.unit === '克' ? 'g' : 'kg') : content.unit)}}
+          </span>
+          <template v-if="value.colorList.length === 0">
+            <span v-for="(content,number) in item.colorInfo[index-1].colorList"
+                  :key='number'></span>
+          </template>
         </span>
-      </span>
+      </template>
       <template v-if="item.colorInfo.length < colorData.length">
         <span v-for="(value,index) in addArr((colorData.length)-(item.colorInfo.length))"
               :key="index+value">
@@ -53,15 +58,29 @@ export default {
       left: 0,
       lenArr: {},
       data: null,
-      colorData: null,
-      total: 1
+      total: 1,
+      colorData: [
+
+      ]
     }
   },
   props: [
-    'date',
-    'colorDate'
+    'date'
   ],
   methods: {
+    setSizeInfo (item, nowA, nowB, lastA, lastB) {
+      if (this.colorData.indexOf(item.name) === -1) {
+        this.colorData.push(item.name)
+      }
+      if (nowA + 1 === lastA && nowB + 1 === lastB) {
+        if (this.colorData.length < 3) {
+          for (let i = (this.colorData.length ? this.colorData.length : 0); i < 3; i++) {
+            this.colorData.push('')
+          }
+        }
+      }
+      return item.colorList
+    },
     addArr (num, item) {
       if (!item) {
         item = []
@@ -96,14 +115,11 @@ export default {
       return obj
     }
     this.data = clone(this.date)
-    this.colorData = clone(this.colorDate)
+    // this.colorData = clone(this.colorDate)
+    // console.log(this.colorData)
     this.flag = this.$attrs.color
-    if (this.colorData.length < 3 || this.colorData === undefined) {
-      for (let i = (this.colorData.length ? this.colorData.length : 0); i < 3; i++) {
-        this.colorData.push({})
-      }
-    }
-    console.log(this.date)
+    // console.log(this.colorData)
+    // console.log(this.date)
   }
 }
 </script>

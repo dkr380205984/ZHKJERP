@@ -63,6 +63,28 @@
         .content{
           font-size: @fontMid;
           margin-left: 15px;
+          &>.btn {
+            &>span {
+              display: inline-block;
+              // margin-right: 15px;
+              border: 1px solid #666;
+              border-radius: 2px;
+              text-align: center;
+              width: 60px;
+              height: 24px;
+              line-height: 24px;
+              &:first-child {
+                border-right: none;
+              }
+              &:hover,
+              &.active {
+                background-color: #1A94FF; 
+                color: #FFF;
+                border-color: #1A94FF; 
+              }
+            }
+
+          }
           &.contentLine{
             width: 100%;
             .size{

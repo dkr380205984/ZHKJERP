@@ -59,13 +59,41 @@
       <div class="lineCtn">
         <div class="inputCtn oneLine">
           <span class="label">原料计划：</span>
-
+          <div class="content">
+            <div class="btn"
+                 @click="flag = !flag">
+              <span :class="{'active': index ===0 ? flag : !flag}"
+                    v-for="(item,index) in product.main_material"
+                    :key="index"
+                    @click="changeSize(item.size,'material')">{{item.size}}</span>
+            </div>
+            <template v-for="(item,key) in product.main_material">
+              <template v-if="item.size === sizeName.material">
+                <yl-table :date='item'
+                          :colorDate='colorData'
+                          :key="key" />
+              </template>
+            </template>
+          </div>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn oneLine">
           <span class="label">辅料计划：</span>
-
+          <div class="content">
+            <div class="btn">
+              <span v-for="(item,index) in product.main_ingredients"
+                    :key="index"
+                    @click="changeSize(item.size,'ingredients')">{{item.size}}</span>
+            </div>
+            <template v-for="(item,key) in product.main_ingredients">
+              <template v-if="item.size === sizeName.ingredients">
+                <yl-table :date='item'
+                          :colorDate='colorData'
+                          :key="key" />
+              </template>
+            </template>
+          </div>
         </div>
       </div>
     </div>
@@ -91,7 +119,18 @@ export default {
         total_price: '',
         user_name: '',
         id: ''
+      },
+      product: {},
+      colorData: [],
+      sizeName: {
+        material: 'M',
+        ingredients: 'S'
       }
+    }
+  },
+  methods: {
+    changeSize (item, name) {
+      this.sizeName[name] = item
     }
   },
   mounted () {
@@ -102,7 +141,7 @@ export default {
         order_id: this.$route.params.orderId
       })
     ]).then((res) => {
-      console.log(res)
+      // console.log(res)
       this.order = res[1].data.data.order_info
       // 第一步，把符合product_code的产品筛选出来
       let productByCode = []
@@ -155,7 +194,7 @@ export default {
           })
         }
       })
-      console.log(productByMaterial)
+      // console.log(productByMaterial)
       // 第四步，把根据size分类得到数据 合入 原料数据
       let product = {
         main_ingredients: [], // 主要辅料
@@ -251,12 +290,16 @@ export default {
         // })
       }
       console.log(product)
+      this.product = product
       console.log(NOTHISCOLOUR)
+      this.colorData = NOTHISCOLOUR
+      console.log(this.colorData)
     })
+    console.log(this.order)
   }
 }
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/rawMaterialPlan.less';
+@import "~@/assets/css/rawMaterialPlan.less";
 </style>
