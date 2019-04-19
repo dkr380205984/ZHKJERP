@@ -151,8 +151,11 @@ const orderStockDetail = (params) => http.get(`${baseUrl}/product/stock/order`, 
 // 添加生产计划单
 const productionSave = (params) => http.post(`${baseUrl}/production/save`, params, 'application/json')
 // 生产计划单列表
-const productionList = (params) => http.get(`${baseUrl}/production/one`, params)
+const productionList = (params) => http.get(`${baseUrl}/production/list`, params)
+// 生产计划单详情
+const productionDetail = (params) => http.get(`${baseUrl}/production/one`, params)
 export {
+  productionDetail,
   productionList,
   productionSave,
   orderStockDetail,

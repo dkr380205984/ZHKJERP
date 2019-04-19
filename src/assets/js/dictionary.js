@@ -158,7 +158,7 @@ const menu = [{
     name: '新建生产计划单',
     url: '/index/productDesignCreateList'
   }, {
-    name: '生产计划列表',
+    name: '生产计划单列表',
     url: '/index/productDesignList'
   }]
 }, {

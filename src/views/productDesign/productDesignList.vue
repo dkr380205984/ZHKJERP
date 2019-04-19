@@ -67,7 +67,7 @@
           <div class="tableColumn">{{item.order_time}}</div>
           <div class="tableColumn flex9">
             <span class="btns normal">修改</span>
-            <span class="btns success" @click="$router.push('/index/productDesignCreate/'+item.id)">查看</span>
+            <span class="btns success" @click="$router.push('/index/productDesignDetail/'+item.id)">查看</span>
             <span class="btns warning">打印</span>
           </div>
         </div>

@@ -135,6 +135,10 @@ export default {
         order_id: this.order.id,
         detail_info: this.productInfo.map((item) => {
           return {
+            category_name: item.category_name,
+            style_name: item.style_name,
+            type_name: item.type_name,
+            unit_name: item.unit_name,
             product_code: item.product_code,
             size: item.size,
             color: item.color,
@@ -148,6 +152,9 @@ export default {
       }
       productionSave(json).then((res) => {
         console.log(res)
+        this.$message.success({
+          message: '添加成功'
+        })
       })
     }
   },
@@ -157,8 +164,8 @@ export default {
       company_id: window.sessionStorage.getItem('company_id')
     }).then((res) => {
       console.log(res)
-      this.order = res.data.order
-      let obj = res.data.stock
+      this.order = res.data.data.order
+      let obj = res.data.data.stock_data
       Object.keys(obj).forEach((key) => {
         obj[key].forEach((item) => {
           this.productInfo.push({

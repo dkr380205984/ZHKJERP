@@ -189,6 +189,10 @@ export default new Router({
       path: 'rawMaterialPurchase',
       name: 'rawMaterialPurchase',
       component: () => import('./views/rawMaterial/rawMaterialPurchase.vue')
+    }, {
+      path: 'rawMaterialPlan/:orderId/:productId',
+      name: 'rawMaterialPlan',
+      component: () => import('./views/rawMaterial/rawMaterialPlan.vue')
     }]
   }
   ]

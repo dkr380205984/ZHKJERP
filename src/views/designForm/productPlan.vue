@@ -359,6 +359,7 @@ export default {
             color[index].push([])
           })
         })
+        console.log(gyd)
         for (let keyColour in gyd.peise_yarn_wight) {
           for (let keyMaterial in gyd.peise_yarn_wight[keyColour]) {
             for (let keyColor in gyd.peise_yarn_wight[keyColour][keyMaterial]) {
@@ -371,7 +372,7 @@ export default {
                         name: name,
                         colorCode: keyColor,
                         value: [{
-                          size: '均码',
+                          size: Object.keys(gyd.product_info.size)[0], // 这里的size理论上只有均码，工艺单产品只有均码，现在为了对应数据稍微改造一下
                           number: gyd.peise_yarn_wight[keyColour][keyMaterial][keyColor],
                           unit: '克'
                         }]
