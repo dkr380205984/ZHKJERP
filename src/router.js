@@ -74,9 +74,13 @@ export default new Router({
       name: 'designFormAdd',
       component: () => import('./views/designForm/productList.vue')
     }, {
-      path: 'productPlan/:id',
-      name: 'productPlan',
-      component: () => import('./views/designForm/productPlan.vue')
+      path: 'productPlanAdd',
+      name: 'productPlanAdd',
+      component: () => import('./views/productPlan/productList.vue')
+    }, {
+      path: 'productPlanCreate/:id',
+      name: 'productPlanCreate',
+      component: () => import('./views/productPlan/productPlanCreate.vue')
     }, {
       path: 'personManage',
       name: 'personManage',
@@ -128,11 +132,11 @@ export default new Router({
     }, {
       path: 'productPlanList',
       name: 'productPlanList',
-      component: () => import('./views/designForm/productPlanList.vue')
+      component: () => import('./views/productPlan/productPlanList.vue')
     }, {
       path: 'productPlanDetail/:id',
       name: 'productPlanDetail',
-      component: () => import('./views/designForm/productPlanDetail.vue')
+      component: () => import('./views/productPlan/productPlanDetail.vue')
     }, {
       path: 'mainMaterialStockCreate',
       name: 'mainMaterialStockCreate',
@@ -197,6 +201,10 @@ export default new Router({
       path: 'rawMaterialPlan/:orderId/:productId',
       name: 'rawMaterialPlan',
       component: () => import('./views/rawMaterial/rawMaterialPlan.vue')
+    }, {
+      path: 'rawMaterialStat/:id',
+      name: 'rawMaterialStat',
+      component: () => import('./views/rawMaterial/rawMaterialStat.vue')
     }]
   }
   ]

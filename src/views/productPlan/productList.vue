@@ -1,7 +1,7 @@
 <template>
   <div id="productList" v-loading="loading">
     <div class="head">
-      <h2>添加工艺单/计划单</h2>
+      <h2>添加配料单</h2>
       <el-input placeholder="输入产品编号精确搜索" suffix-icon="el-icon-search" v-model="searchVal"></el-input>
     </div>
     <div class="body">
@@ -73,6 +73,7 @@
           <div class="tableColumn">尺码</div>
           <div class="tableColumn flexSamll">颜色(种)</div>
           <div class="tableColumn">图片</div>
+          <div class="tableColumn">工艺单</div>
           <div class="tableColumn">创建人</div>
           <div class="tableColumn">操作</div>
         </div>
@@ -90,10 +91,11 @@
               <div class="toolTips" v-if="item.img.length===0"><span>没有预览图</span></div>
             </div>
           </div>
+          <div class="tableColumn" style="font-weight:500" :style="{color:item.has_craft===0?'#b5b5b5':'#1a95ff'}">{{item.has_craft===0?'无':'有'}}</div>
           <div class="tableColumn">{{item.user_name}}</div>
           <div class="tableColumn">
             <span class="btns ban" v-if="item.has_plan===1">添加</span>
-            <span class="btns normal" v-if="item.has_plan===0" @click="$router.push('/index/productPlan/'+item.id)">添加</span>
+            <span class="btns normal" v-if="item.has_plan===0" @click="$router.push('/index/productPlanCreate/'+item.id)">添加</span>
           </div>
         </div>
       </div>
