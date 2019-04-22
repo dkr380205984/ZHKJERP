@@ -23,8 +23,13 @@
             {{content.name + ': '}}{{content.number + ((content.unit ==='克' || content.unit === '千克') ? (content.unit === '克' ? 'g' : 'kg') : content.unit)}}
           </span>
           <template v-if="value.colorList.length === 0">
-            <span v-for="(content,number) in item.colorInfo[index-1].colorList"
-                  :key='number'></span>
+            <!-- {{value}} -->
+            <span v-if="index === 0"></span>
+            <template v-else>
+              <span v-for="(content,number) in item.colorInfo[index-1].colorList"
+                    :key='number'></span>
+            </template>
+
           </template>
         </span>
       </template>

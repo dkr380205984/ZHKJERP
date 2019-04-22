@@ -60,9 +60,8 @@
         <div class="inputCtn oneLine">
           <span class="label">原料计划：</span>
           <div class="content">
-            <div class="btn"
-                 @click="flag = !flag">
-              <span :class="{'active': index ===0 ? flag : !flag}"
+            <div class="btn">
+              <span :class="{'active': sizeName.material === item.size }"
                     v-for="(item,index) in product.main_material"
                     :key="index"
                     @click="changeSize(item.size,'material')">{{item.size}}</span>
@@ -74,6 +73,8 @@
                           :key="key" />
               </template>
             </template>
+            <span @click="$router.push('/productStatisticsTable/1')"
+                  class="print">去打印</span>
           </div>
         </div>
       </div>
@@ -82,7 +83,8 @@
           <span class="label">辅料计划：</span>
           <div class="content">
             <div class="btn">
-              <span v-for="(item,index) in product.main_ingredients"
+              <span :class="{'active': sizeName.ingredients === item.size }"
+                    v-for="(item,index) in product.main_ingredients"
                     :key="index"
                     @click="changeSize(item.size,'ingredients')">{{item.size}}</span>
             </div>
@@ -93,6 +95,8 @@
                           :key="key" />
               </template>
             </template>
+            <span @click="$router.push('/productStatisticsTable/1')"
+                  class="print">去打印</span>
           </div>
         </div>
       </div>
@@ -125,12 +129,15 @@ export default {
       sizeName: {
         material: 'M',
         ingredients: 'S'
-      }
+      },
+      sizeTable: 1
     }
   },
   methods: {
     changeSize (item, name) {
       this.sizeName[name] = item
+      console.log(this.sizeName)
+      this.sizeTable = item
     }
   },
   mounted () {
@@ -290,10 +297,12 @@ export default {
         // })
       }
       console.log(product)
+      this.sizeName.material = product.main_material[0].size
+      this.sizeName.ingredients = product.main_ingredients[0].size
       this.product = product
-      console.log(NOTHISCOLOUR)
+      // console.log(NOTHISCOLOUR)
       this.colorData = NOTHISCOLOUR
-      console.log(this.colorData)
+      // console.log(this.colorData)
     })
     console.log(this.order)
   }

@@ -16,7 +16,7 @@
           <span class="content">{{companyInfo.abbreviation}}</span>
         </div>
       </div>
-       <div class="lineCtn">
+      <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">公司类型：</span>
           <span class="content">{{companyInfo.type|filterType}}</span>
@@ -39,7 +39,9 @@
               <div class="once">状态</div>
             </div>
             <div class="tableBody">
-              <div class="line" v-for="item in companyInfo.contacts" :key="item.id">
+              <div class="line"
+                   v-for="item in companyInfo.contacts"
+                   :key="item.id">
                 <div class="once">{{item.name}}</div>
                 <div class="once">{{item.station}}</div>
                 <div class="once">{{item.phone}}</div>
@@ -74,8 +76,10 @@
         </div>
       </div>
       <div class="btnCtn">
-        <div class="cancleBtn" @click="$router.go(-1)">返回</div>
-        <div class="okBtn">修改</div>
+        <div class="cancleBtn"
+             @click="$router.go(-1)">返回</div>
+        <div class="okBtn"
+             @click="$router.push('/index/foreignTradeUpdate/' + $route.params.id)">修改</div>
       </div>
     </div>
   </div>
@@ -129,5 +133,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/foreignTradeDetail.less';
+@import "~@/assets/css/foreignTradeDetail.less";
 </style>

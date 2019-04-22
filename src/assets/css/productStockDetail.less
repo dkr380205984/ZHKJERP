@@ -1,0 +1,88 @@
+@import './common.less';
+#productStockDetail {
+  height: 100%;
+  font-family: 'systemfont';
+  font-weight: 300;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  .head{
+    min-height: 60px;
+    border-bottom: 1px solid #ECF0F1;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    h2{
+      line-height: 60px;
+      margin: 0;
+      font-size: 24px;
+      color:@fontNormal;
+      font-weight: 400;
+    }
+  }
+  .body {
+    padding: 20px 40px;
+    flex: 1;
+    .lineCtn{
+      display: flex;
+      margin:24px 0;
+      .inputCtn{
+        flex: 1;
+        min-height: 40px;
+        display: flex;
+        flex-wrap: wrap;
+        padding-left: 6em;
+        position: relative;
+        .label{
+          position: absolute;
+          width: 6em;
+          line-height: 40px;
+          text-align: right;
+          font-size: @fontBig;
+          color: @fontNormal;
+          left: 0;
+        }
+        .content{
+          line-height: 40px;
+          margin-left: 15px;
+          color:@fontNormal;
+          font-size: @fontMid;
+          // &.gray{
+          //   color: @placeholderColor;
+          // }
+          // &.blue{
+          //   font-weight: bold;
+          //   color:@normalBlue;
+          //   font-size: @fontBig;
+          // }
+          // &.contentLine{
+          //   width: 100%;
+          //   .size{
+          //     margin-right: 40px;
+          //   }
+          //   .sizeDetail{
+          //     .sizeOnce{
+          //       margin-right: 40px;
+          //     }
+          //   }
+          // }
+          // &.contentFlex{
+          //   display: flex;
+          //   align-items: center;
+          // }
+          // .colorBg{
+          //   display: inline-block;
+          //   width: 20px;
+          //   height: 20px;
+          //   background: red;
+          //   margin: 0 10px;
+          // }
+          // .img{
+          //   height: 200px;
+          //   margin-right: 30px
+        }
+      }
+    }
+  }
+}
