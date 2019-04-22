@@ -31,7 +31,13 @@
           <div class="content">
             <div class="main-raw-material material">
               <span>主要原料(经)</span>
-              <span>{{this.material_data.warpMaterialMain}}</span>
+              <span>
+                {{material_data.warpMaterialMain.name + ':'}}
+                <template v-for="(item,index) in material_data.warpMaterialMain.value">
+                  {{item === 0 ? '主' : '夹' + item}}{{index+1 !== material_data.warpMaterialMain.value.length ? '/' : ''}}
+                </template>
+              </span>
+
             </div>
             <div class="lost-raw-material material">
               <span>次要原料(经)</span>
@@ -139,7 +145,12 @@
             </div>
             <div class="main-raw-material material">
               <span>主要原料(纬)</span>
-              <span>{{this.material_data.weftMaterialMain}}</span>
+              <span>
+                {{this.material_data.weftMaterialMain.name}}
+                <template v-for="(item,index) in material_data.weftMaterialMain.value">
+                  {{item === 0 ? '主' : '夹' + item}}{{index+1 !== material_data.weftMaterialMain.value.length ? '/' : ''}}
+                </template>
+              </span>
             </div>
             <div class="lost-raw-material material">
               <span>次要原料(纬)</span>
@@ -171,12 +182,12 @@
                       </span>
                     </template>
                     <template v-else>
-                      <span v-for="(value,index) in changeArr(add(item))"
-                            :key="index"
-                            :style="{minWidth : (100/12) * (item.length > 12 ? 12 : value.key) + '%',borderRight :(item.length > 12) ? '' :'1px solid #999'}">
-                        {{value.value === 'no' ? '' : value.value}}
-                      </span>
-                    </template>
+  <span v-for="(value,index) in changeArr(add(item))"
+        :key="index"
+        :style="{minWidth : (100/12) * (item.length > 12 ? 12 : value.key) + '%',borderRight :(item.length > 12) ? '' :'1px solid #999'}">
+    {{value.value === 'no' ? '' : value.value}}
+  </span>
+</template>
                   </div>
                 </div>
               </div>
@@ -238,9 +249,12 @@ export default {
       size: {},
       companyName: 'xx',
       material_data: {
-        warpMaterialMain: '',
+        warpMaterialMain: {
+          name: '',
+          value: []
+        },
         warpMaterialOther: [],
-        weftMaterialMain: '',
+        weftMaterialMain: {},
         weftMaterialOther: []
       },
       warp_data: {
@@ -380,7 +394,7 @@ export default {
       return str
     }
   },
-  beforeCreate () {
+  created () {
     craftOne({
       id: this.$route.params.id
     }).then((res) => {
@@ -394,10 +408,12 @@ export default {
       this.weft_data = data.weft_data
       data.material_data.forEach((item) => {
         if (item.type === 0 && item.type_material === 0) {
-          this.material_data.warpMaterialMain = item.material_name
+          this.material_data.warpMaterialMain.name = item.material_name
+          this.material_data.warpMaterialMain.value = item.apply
         }
         if (item.type === 1 && item.type_material === 0) {
-          this.material_data.weftMaterialMain = item.material_name
+          this.material_data.weftMaterialMain.name = item.material_name
+          this.material_data.weftMaterialMain.value = item.apply
         }
         if (item.type === 0 && item.type_material === 1) {
           this.material_data.warpMaterialOther.push({
@@ -413,6 +429,7 @@ export default {
         }
       })
     })
+    console.log(this.material_data)
   }
 }
 </script>
