@@ -1,7 +1,7 @@
 <template>
   <div id="productList">
     <div class="head">
-      <h2>添加工艺单</h2>
+      <h2>添加工艺单/计划单</h2>
       <el-input placeholder="输入产品编号精确搜索" suffix-icon="el-icon-search" v-model="searchVal"></el-input>
     </div>
     <div class="body">
@@ -92,8 +92,10 @@
           </div>
           <div class="tableColumn">{{item.user_name}}</div>
           <div class="tableColumn flex9">
-            <span class="btns normal" @click="$router.push('/index/designFormCreate/'+item.id)">工艺单</span>
-            <span class="btns normal" @click="$router.push('/index/productPlan/'+item.id)">计划单</span>
+            <span class="btns ban" v-if="item.has_plan===1||item.has_craft===1">工艺单</span>
+            <span class="btns normal" v-if="item.has_plan===0&&item.has_craft===0" @click="$router.push('/index/designFormCreate/'+item.id)">工艺单</span>
+            <span class="btns ban" v-if="item.has_plan===1">计划单</span>
+            <span class="btns normal" v-if="item.has_plan===0" @click="$router.push('/index/productPlan/'+item.id)">计划单</span>
           </div>
         </div>
       </div>

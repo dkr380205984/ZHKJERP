@@ -93,8 +93,9 @@
           </div>
           <div class="tableColumn">{{item.user_name}}</div>
           <div class="tableColumn flex9">
-            <span class="btns normal" @click="$router.push('/index/productUpdate/'+item.id)">修改</span>
-            <span class="btns success" @click="$router.push('/index/productDetail/'+item.id)">查看</span>
+            <span class="btns ban" v-if="item.has_craft===1||item.in_order===1||item.has_plan===1">修改</span>
+            <span class="btns warning" v-if="item.has_craft===0&&item.in_order===0&&item.has_plan===0" @click="$router.push('/index/productUpdate/'+item.id)">修改</span>
+            <span class="btns success" @click="$router.push('/index/productDetail/'+item.id)">详情</span>
           </div>
         </div>
       </div>

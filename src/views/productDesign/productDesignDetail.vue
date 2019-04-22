@@ -101,7 +101,7 @@
               <div class="firstLine">操作</div>
               <div class="mergeLine" style="height:calc(100% - 61px)">
                 <div class="btnCtns">
-                  <span class="btns normal">查看统计单</span>
+                  <span class="btns normal" @click="$router.push('/index/rawMaterialStat/'+$route.params.id)">查看统计单</span>
                 </div>
               </div>
             </div>
