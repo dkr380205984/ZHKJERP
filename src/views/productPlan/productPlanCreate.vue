@@ -1,7 +1,7 @@
 <template>
   <div id="productPlan">
      <div class="head">
-      <h2>产品计划单</h2>
+      <h2>添加配料单</h2>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -11,10 +11,6 @@
           <div class="border"></div>
         </div>
         <div class="lineCtn">
-          <!-- <div class="inputCtn">
-            <span class="label">工艺单编号:</span>
-            <span class="content important">KR-0001</span>
-          </div> -->
           <div class="inputCtn">
             <span class="label">产品编号:</span>
             <span class="content important">{{product.product_code}}</span>

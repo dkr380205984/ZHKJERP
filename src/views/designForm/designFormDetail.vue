@@ -1,5 +1,5 @@
 <template>
- <div id="designFormDetail">
+ <div id="designFormDetail" v-loading="loading">
     <div class="head">
       <h2>工艺单详情页</h2>
     </div>
@@ -240,7 +240,7 @@
       </div>
       <div class="btnCtn">
         <div class="cancleBtn" @click="$router.go(-1)">返回</div>
-        <div class="okBtn">打印</div>
+        <div class="okBtn"  @click="copy($route.params.id)">打印</div>
       </div>
     </div>
  </div>
@@ -259,6 +259,7 @@ export default {
   },
   data () {
     return {
+      loading: true,
       chooseWhichColour: 0, // 选择哪款配色方案进行渲染
       longSort: [],
       longSort2: [],
@@ -338,6 +339,11 @@ export default {
       },
       warp_canvas: [], // 保存下经向绘图数据用于颜色重绘
       werf_canvas: [] // 保存下纬向绘图数据用于颜色重绘
+    }
+  },
+  methods: {
+    copy (id) {
+      window.open('/designFormTable/' + id)
     }
   },
   filters: {
@@ -784,6 +790,7 @@ export default {
         return total + current.number * lineHeight
       }, 50)
     })
+    this.loading = false
   }
 }
 </script>

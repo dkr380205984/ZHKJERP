@@ -1,7 +1,7 @@
 <template>
   <div id="productPlanDetail">
     <div class="head">
-      <h2>产品计划单详情</h2>
+      <h2>配料单详情</h2>
     </div>
     <div class="body">
       <div class="lineCtn">
