@@ -154,7 +154,10 @@ const productionSave = (params) => http.post(`${baseUrl}/production/save`, param
 const productionList = (params) => http.get(`${baseUrl}/production/list`, params)
 // 生产计划单详情
 const productionDetail = (params) => http.get(`${baseUrl}/production/one`, params)
+// 生产统计单详情
+const productionStat = (params) => http.get(`${baseUrl}/product/plan/order`, params)
 export {
+  productionStat,
   productionDetail,
   productionList,
   productionSave,

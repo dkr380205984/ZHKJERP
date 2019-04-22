@@ -112,7 +112,7 @@
           :on-success="handleSuccess"
           :before-upload="beforeAvatarUpload"
           :file-list="fileArr"
-          :data = postData
+          :data = "postData"
           ref="uploada"
           list-type="picture">
           <el-button size="small" type="primary">点击上传</el-button>

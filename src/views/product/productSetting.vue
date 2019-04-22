@@ -450,12 +450,12 @@ export default {
         this.treeData.push(nodeObj)
         proproductTppeSave({
           company_id: window.sessionStorage.getItem('company_id'),
-          items: [{
-            pid: '0',
-            name: this.newType
-          }]
+          pid: '0',
+          name: this.newType
         }).then((res) => {
-          console.log(res)
+          this.$message.success({
+            message: '添加成功'
+          })
         })
       } else {
         this.$message.error({

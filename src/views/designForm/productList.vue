@@ -1,7 +1,7 @@
 <template>
-  <div id="productList">
+  <div id="productList" v-loading="loading">
     <div class="head">
-      <h2>添加工艺单</h2>
+      <h2>添加工艺单/计划单</h2>
       <el-input placeholder="输入产品编号精确搜索" suffix-icon="el-icon-search" v-model="searchVal"></el-input>
     </div>
     <div class="body">
@@ -74,7 +74,7 @@
           <div class="tableColumn flexSamll">颜色(种)</div>
           <div class="tableColumn">图片</div>
           <div class="tableColumn">创建人</div>
-          <div class="tableColumn flex9">操作</div>
+          <div class="tableColumn">操作</div>
         </div>
         <div class="tableRow bodyTableRow" v-for="(item,index) in list" :key="index">
           <div class="tableColumn" style="color: rgb(26, 149, 255);">{{item.product_code}}</div>
@@ -91,9 +91,9 @@
             </div>
           </div>
           <div class="tableColumn">{{item.user_name}}</div>
-          <div class="tableColumn flex9">
-            <span class="btns normal" @click="$router.push('/index/designFormCreate/'+item.id)">工艺单</span>
-            <span class="btns normal" @click="$router.push('/index/productPlan/'+item.id)">计划单</span>
+          <div class="tableColumn">
+            <span class="btns ban" v-if="item.has_plan===1">添加</span>
+            <span class="btns normal" v-if="item.has_plan===0" @click="$router.push('/index/productPlan/'+item.id)">添加</span>
           </div>
         </div>
       </div>
@@ -126,6 +126,7 @@ import { productList, productTppeList, flowerList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      loading: true,
       defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
       searchVal: '',
       value: '',
@@ -176,6 +177,7 @@ export default {
   },
   methods: {
     getProductList () {
+      this.loading = true
       productList({
         'company_id': window.sessionStorage.getItem('company_id'),
         'limit': 5,
@@ -188,7 +190,7 @@ export default {
         'end_time': this.end_time,
         'product_code': this.searchVal
       }).then((res) => {
-        console.log(res)
+        this.loading = false
         this.total = res.data.meta.total
         this.list = res.data.data
       })

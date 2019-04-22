@@ -101,11 +101,17 @@ const menu = [{
     name: '工艺单列表',
     url: '/index/designFormList'
   }, {
-    name: '计划单列表',
-    url: '/index/productPlanList'
-  }, {
     name: '工艺单设置',
     url: '/index/designFormSetting'
+  }]
+}, {
+  name: '配料单管理',
+  children: [{
+    name: '添加配料单',
+    url: '/index/productPlanAdd'
+  }, {
+    name: '配料单列表',
+    url: '/index/productPlanList'
   }]
 }, {
   name: '订单管理',
