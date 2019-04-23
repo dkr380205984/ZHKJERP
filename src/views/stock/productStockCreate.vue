@@ -1,13 +1,13 @@
 <template>
   <div id="productStockCreate">
     <div class="head">
-      <h2>产品库存录入</h2>
+      <h2>产品库存录入（暂时不用）</h2>
     </div>
     <div class="body">
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">产品编号:</span>
-          <span class="content important">KR-0001</span>
+          <span class="content important">{{product.product_code}}</span>
         </div>
       </div>
       <div class="lineCtn">
@@ -82,8 +82,8 @@
       </div>
       <div class="lineCtn">
         <div class="inputCtn oneLine">
-          <span class="label">选择颜色:</span>
-          <el-select class="elSelect" v-model="colour" placeholder="请选择颜色" >
+          <span class="label">选择配色:</span>
+          <el-select class="elSelect" v-model="colour" placeholder="请选择配色" >
             <el-option
               v-for="item in colourArr"
               :key="item.name"
@@ -143,19 +143,6 @@
       </div>
       <div class="lineCtn">
         <div class="inputCtn oneLine">
-          <span class="label">存放仓库:</span>
-          <el-select class="elSelect" v-model="store" placeholder="请选择仓库" >
-            <el-option
-              v-for="item in storeArr"
-              :key="item.name"
-              :label="item.name"
-              :value="item.name">
-            </el-option>
-          </el-select>
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn oneLine">
           <span class="label">存放时间:</span>
           <el-date-picker
             v-model="date"
@@ -207,17 +194,6 @@ export default {
       unit: '',
       size: '',
       colour: '',
-      storeArr: [{
-        name: 'A仓库',
-        id: '1'
-      }, {
-        name: 'B仓库',
-        id: '2'
-      }, {
-        name: 'C仓库',
-        id: '3'
-      }],
-      store: '',
       date: '',
       otherInfo: '',
       ifBad: false,
@@ -298,6 +274,18 @@ export default {
 
     },
     saveAll () {
+      if (!this.size) {
+        this.$message.error({
+          message: '检测到未选择产品尺码'
+        })
+        return
+      }
+      if (!this.colour) {
+        this.$message.error({
+          message: '检测到未选择产品颜色'
+        })
+        return
+      }
       let json = {
         order_code: this.orderId,
         company_id: window.sessionStorage.getItem('company_id'),
@@ -308,7 +296,6 @@ export default {
         rejects_product: this.inferior,
         cost_price: this.cost,
         total_price: this.totalPrice,
-        store_id: 1,
         storage_time: this.date,
         remark: this.otherInfo
       }
