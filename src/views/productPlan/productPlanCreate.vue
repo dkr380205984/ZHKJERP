@@ -41,7 +41,7 @@
           </div>
           <div class="inputCtn" style="align-items:flex-start">
             <span class="label">创建人:</span>
-            <span class="content">{{product.user_id}}</span>
+            <span class="content">{{product.user_name}}</span>
           </div>
           <div class="inputCtn">
             <span class="label">产品规格:</span>
@@ -55,7 +55,7 @@
         </div>
       </div>
       <div class="stepCtn">
-        <div class="stepTitle">原料辅料信息</div>
+        <div class="stepTitle">原料信息</div>
         <div class="borderCtn">
           <div class="cicle"></div>
           <div class="border"></div>
@@ -106,7 +106,8 @@
                 <div class="deleteCtn" @click="deleteColour(index,index2)"><i class="el-icon-delete"></i></div>
                 <div class="colorsCtn">
                   <div class="colorOnce" v-for="(item3,index3) in mainIngredient.color[index][index2].length" :key="index3">
-                    <color-picker :key="mainIngredient.color[index][index2][index3].colorCode" :content="mainIngredient.color[index][index2][index3].name.substr(0,1)" :colorArr="colorArr" v-model="mainIngredient.color[index][index2][index3].colorCode" @colorChange="(json)=>{getColor(json,index,index2,index3)}"></color-picker>
+                    <!-- v-if是为了解决第一次渲染的时候colorArr数据没过来的bug -->
+                    <color-picker v-if="colorArr.length>0" :key="mainIngredient.color[index][index2][index3].colorCode" :content="mainIngredient.color[index][index2][index3].name.substr(0,1)" :colorArr="colorArr" v-model="mainIngredient.color[index][index2][index3].colorCode" @colorChange="(json)=>{getColor(json,index,index2,index3)}"></color-picker>
                     <div class="allInputs" v-for="(item4,index4) in mainIngredient.color[index][index2][index3].value.length" :key="index4">
                       <span class="labeled">{{mainIngredient.color[index][index2][index3].value[index4].size}}</span>
                       <input class="input1" placeholder="数字" v-model="mainIngredient.color[index][index2][index3].value[index4].number"/>
@@ -141,6 +142,13 @@
               <template slot="append">克/厘米</template>
             </el-input>
           </div>
+        </div>
+      </div>
+      <div class="stepCtn">
+        <div class="stepTitle">辅料信息</div>
+        <div class="borderCtn">
+          <div class="cicle"></div>
+          <div class="border"></div>
         </div>
         <div class="lineCtn">
           <div class="inputCtn oneLine">
@@ -252,7 +260,7 @@ export default {
         flower_id: '',
         style_name: '',
         type_name: '',
-        user_id: '',
+        user_name: '',
         materials: [],
         color: [],
         size: []
@@ -355,7 +363,6 @@ export default {
             color[index].push([])
           })
         })
-        console.log(gyd)
         for (let keyColour in gyd.peise_yarn_wight) {
           for (let keyMaterial in gyd.peise_yarn_wight[keyColour]) {
             for (let keyColor in gyd.peise_yarn_wight[keyColour][keyMaterial]) {
@@ -636,9 +643,113 @@ export default {
     },
     // 添加
     saveAll () {
-      console.log(this.mainIngredient)
-      console.log(this.otherIngredient)
-      console.log(this.process)
+      let state = false
+      this.mainIngredient.ingredient.forEach((itemMaterial) => {
+        if (itemMaterial.length === 0) {
+          state = true
+        }
+      })
+      if (state) {
+        this.$message.error({
+          message: '检测到有未填写的原料信息，请完善信息'
+        })
+        return
+      }
+      this.mainIngredient.colour.forEach((itemColour) => {
+        itemColour.forEach((item) => {
+          if (!item) {
+            state = true
+          }
+        })
+      })
+      if (state) {
+        this.$message.error({
+          message: '检测到有未填写的原料配色信息，请完善信息'
+        })
+        return
+      }
+      this.mainIngredient.color.forEach((itemColor) => {
+        itemColor.forEach((item) => {
+          item.forEach((item2) => {
+            if (!item2.colorCode) {
+              state = true
+            }
+          })
+        })
+      })
+      if (state) {
+        this.$message.error({
+          message: '检测到有未填写的原料纱线颜色信息，请完善信息'
+        })
+        return
+      }
+      this.otherIngredient.ingredient.forEach((itemMaterial) => {
+        if (!itemMaterial) {
+          state = true
+        }
+      })
+      if (state) {
+        this.$message.error({
+          message: '检测到有未填写的辅料信息，请完善信息'
+        })
+        return
+      }
+      this.otherIngredient.colour.forEach((itemColour) => {
+        itemColour.forEach((item) => {
+          if (!item) {
+            state = true
+          }
+        })
+      })
+      if (state) {
+        this.$message.error({
+          message: '检测到有未填写的辅料配色方案信息，请完善信息'
+        })
+        return
+      }
+      this.otherIngredient.color.forEach((itemColor) => {
+        itemColor.forEach((item) => {
+          item.forEach((item2) => {
+            if (!item2.name) {
+              state = true
+            }
+          })
+        })
+      })
+      if (state) {
+        this.$message.error({
+          message: '检测到有未填写的辅料颜色信息，请完善信息'
+        })
+        return
+      }
+      this.weight.forEach((item) => {
+        if (!item) {
+          state = true
+        }
+      })
+      if (state || this.weight.length === 0) {
+        this.$message.error({
+          message: '检测到有未填写的净重信息，请完善信息'
+        })
+        return
+      }
+      if (this.xishu.length < this.ingredientCmp.length) {
+        this.$message.error({
+          message: '检测到有未填写的纱线系数，请完善信息'
+        })
+        return
+      }
+      this.process.forEach((item) => {
+        if (!item) {
+          state = true
+        }
+      })
+      if (state) {
+        this.$message.error({
+          message: '检测到有未填写的工序信息，请完善信息'
+        })
+        return
+      }
       let materialData = []
       this.mainIngredient.ingredient.forEach((itemMaterial, indexMaterial) => {
         materialData.push({
@@ -676,7 +787,12 @@ export default {
           type: 1
         })
       })
-      console.log(materialData)
+      let xishu = this.xishu.map((item, index) => {
+        return {
+          name: this.ingredientCmp[index],
+          value: item
+        }
+      })
       saveProductPlan({
         'id': '',
         'company_id': this.companyId,
@@ -684,7 +800,8 @@ export default {
         'user_id': window.sessionStorage.getItem('user_id'),
         'material_data': materialData,
         'outside_process': this.process,
-        'weight_group': this.weight
+        'weight_group': this.weight,
+        'yarn_coefficient': xishu
       }).then((res) => {
         if (res.data.status) {
           this.$message.success({

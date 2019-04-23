@@ -82,6 +82,10 @@ export default new Router({
       name: 'productPlanAdd',
       component: () => import('./views/productPlan/productList.vue')
     }, {
+      path: 'productPlanUpdate/:productId/:planId',
+      name: 'productPlanUpdate',
+      component: () => import('./views/productPlan/productPlanUpdate.vue')
+    }, {
       path: 'productPlanCreate/:id',
       name: 'productPlanCreate',
       component: () => import('./views/productPlan/productPlanCreate.vue')
