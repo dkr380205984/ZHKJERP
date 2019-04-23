@@ -1,4 +1,11 @@
 @import './common.less';
+.el-input,
+.el-select{
+  width: 300px;
+}
+.el-textarea {
+  width: 625px;
+}
 #rawMaterialPurchase{
   height: 100%;
   font-family: 'systemfont';
@@ -29,10 +36,11 @@
       display: flex;
       color: @fontNormal;
       margin: 24px 0;
+      flex-direction: column;
       .inputCtn{
         display: flex;
         align-items: center;
-        width: 450px;
+        width: 800px;
         box-sizing: border-box;
         line-height: 40px;
         margin-right: 20px;
@@ -52,199 +60,272 @@
           line-height: 40px;
           left: 0;
           top: 0;
-          &.must{
-            &::before{
-              content:'*';
-              color: @error;
-            }
-          }
+          // &.must{
+          //   &::before{
+          //     content:'*';
+          //     color: @error;
+          //   }
+          // }
         }
-        .elInput{
-          width: 200px;
-        }
-        &.product{
-          display: block;
-          .lineSearch{
+        .content {
+          line-height: 40px;
+          margin-left: 15px;
+          color:@fontNormal;
+          font-size: @fontMid;
+          display: flex;
+          flex-wrap: wrap;
+          &.btn{
             width: 100%;
-            max-height: 41px;
-            overflow: hidden;
-            transition: 0.2s linear;
-            &.show{
-              max-height: 165px;
-            }
-            .gjss{
-              color: @fontGray;
-              font-size: @fontMid;
-              line-height: 40px;
-              margin-left: 15px;
-              cursor: pointer;
-              &:hover{
-                color: @normalBlue;
-              }
-              .el-icon{
-                margin-left: 5px;
-              }
-            }
-            .hideSearch{
-              width: 100%;
-              overflow: hidden;
-              .block{
-                height: 40px;
-                margin: 15px 0;
-                .blockOnce{
-                  font-size: @fontMid;
-                  display: inline-block;
-                  box-sizing: border-box;
-                  width: 400px;
-                  position: relative;
-                  padding-left: 5em;
-                  height: 40px;
-                  vertical-align: middle;
-                  .name{
-                    position: absolute;
-                    width: 5em;
-                    text-align: right;
-                    left: 0;
-                  }
-                }
-              }
-            }
-          }
-          .lineTitle{
-            display: block;
-            margin-top: 24px;
-            width: 670px;
-            background: #FAFAFA;
-            text-align: center;
-            font-size: @fontBig;
-            position: relative;
-            .deleteIcon{
-              position: absolute;
-              right: 5px;
-              top: 5px;
-              line-height: 22px;
-              width: 22px;
-              height: 22px;
+            &>span {
+              display: inline-block;
+              width: 100px;
+              height: 35px;
+              line-height: 35px;
               text-align: center;
-              border-radius: 50%;
+              margin-right: 84px;
               cursor: pointer;
-              color: @fontNormal;
-              font-weight: bold;
-              font-size: 18px;
-              &:hover{
-                background: @normalBlue;
-                color: #fff;
-              }
+            }
+            .clean {
+              border: 1px solid #AAA;
+            }
+            .save {
+              background-color: @normalBlue;
+              color: #fff;
             }
           }
-          .lineTable{
-            display: block;
-            font-size: @fontMid;
-            width: 670px;
-            height: 163px;
-            border:1px solid #F0F0F0;
+          .material {
+            position: relative;
+            width: 300px;
+            height: 250px;
+            background: #FAFAFA;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 0 25px;
             box-sizing: border-box;
-            .lineHead{
-              font-size: @fontBig;
-              padding-right: 5px;
-              border-bottom: 1px solid #F0F0F0;
+            margin-right: 30px; 
+            margin-bottom: 30px;
+            h4 {
+              padding: 0;
+              margin: 0;
+              text-align: center;
+              font-size: 14px;
+              color: #999;
+              font-weight: 400;
+              line-height: 40px;
             }
-            .lineBody{
-              overflow-y: scroll;
-              height: 120px;
-            }
-            .list{
+            div.inputBox {
+              flex: 1;
               display: flex;
-              .flex{
-                flex: 1;
-                text-align: center;
-                height: 40px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                .delete{
-                  color: @error;
-                  cursor: pointer;
+              flex-direction: column;
+              justify-content: space-around;
+              &>* {
+                width: 100%;
+                .small {
+                  font-size: 12px;
                 }
               }
             }
-          }
-          .specialCtn{
-            width: 670px;
-            .mainCtn{
+            .delet {
+              position: absolute;
+              top: 10px;
+              right: 10px;
               display: block;
-              border-top: 1px solid #ECF0F1;
-              background: #FAFAFA;
-              padding: 20px 0;
-              .mainOnce{
-                min-height: 40px;
-                position: relative;
-                padding-left: 7em;
-                margin:24px 0;
-                .productCtn{
-                  .product{
-                    position: relative;
-                    .index{
-                      position: absolute;
-                      left: -4em;
-                      top: 31px;
-                      text-align: center;
-                      line-height: 26px;
-                      font-size: @fontMid;
-                      color: @fontGray;
-                    }
-                  }
-                  .el-icon-delete{
-                    color: @fontNormal;
-                    margin-left: 15px;
-                    cursor: pointer;
-                    &:hover{
-                      color: @normalBlue;
-                    }
-                  }
-                  .typeCtn{
-                    margin-top: 24px;
-                    position: relative;
-                    .index{
-                      position: absolute;
-                      left: -35px;
-                      top: 9px;
-                      line-height: 26px;
-                      font-size: @fontMid;
-                      color: #cccccc;
-                      text-align: center;
-                      width: 26px;
-                      border-radius: 50%;
-                      background: #ECF0F1;
-                    }
-                  }
-                }
-              }
-            }
-          }
-          .addBtn{
-            padding: 0 18px;
-            height: 38px;
-            line-height: 38px;
-            border-radius: 2px;
-            cursor: pointer;
-            color: #909399;
-            border:1px solid #E6E6E6;
-            display: inline-block;
-            &:hover{
-              color: #10AEF5;
-              border-color: #10AEF5;
-            }
-            span{
-              font-size: 16px;
-              &:nth-child(2){
-                margin-left: 5px;
-                font-size: 20px;
-                vertical-align: -1px;;
+              box-sizing: border-box;
+              width: 20px;
+              height: 20px;
+              border: 1px solid transparent;
+              text-align: center;
+              line-height: 20px;
+              transition: all 0.2s linear;
+              cursor: pointer;
+              &:hover {
+                border: 1px solid rgb(230,230,230);
+                color: @normalBlue
               }
             }
           }
         }
+        .addBtn{
+          // display: block;
+          padding: 0 18px;
+          height: 38px;
+          line-height: 38px;
+          border-radius: 2px;
+          margin-left: 15px;
+          // width: 100%;
+          cursor: pointer;
+          color: #909399;
+          border:1px solid #E6E6E6;
+          display: inline-block;
+          &:hover{
+            color: #10AEF5;
+            border-color: #10AEF5;
+          }
+          span{
+            font-size: 16px;
+            &:nth-child(2){
+              margin-left: 5px;
+              font-size: 20px;
+              vertical-align: -1px;;
+            }
+          }
+        }
+        // &.product{
+        //   display: block;
+        //   .lineSearch{
+        //     width: 100%;
+        //     max-height: 41px;
+        //     overflow: hidden;
+        //     transition: 0.2s linear;
+        //     &.show{
+        //       max-height: 165px;
+        //     }
+        //     .gjss{
+        //       color: @fontGray;
+        //       font-size: @fontMid;
+        //       line-height: 40px;
+        //       margin-left: 15px;
+        //       cursor: pointer;
+        //       &:hover{
+        //         color: @normalBlue;
+        //       }
+        //       .el-icon{
+        //         margin-left: 5px;
+        //       }
+        //     }
+        //     .hideSearch{
+        //       width: 100%;
+        //       overflow: hidden;
+        //       .block{
+        //         height: 40px;
+        //         margin: 15px 0;
+        //         .blockOnce{
+        //           font-size: @fontMid;
+        //           display: inline-block;
+        //           box-sizing: border-box;
+        //           width: 400px;
+        //           position: relative;
+        //           padding-left: 5em;
+        //           height: 40px;
+        //           vertical-align: middle;
+        //           .name{
+        //             position: absolute;
+        //             width: 5em;
+        //             text-align: right;
+        //             left: 0;
+        //           }
+        //         }
+        //       }
+        //     }
+        //   }
+        //   .lineTitle{
+        //     display: block;
+        //     margin-top: 24px;
+        //     width: 670px;
+        //     background: #FAFAFA;
+        //     text-align: center;
+        //     font-size: @fontBig;
+        //     position: relative;
+        //     .deleteIcon{
+        //       position: absolute;
+        //       right: 5px;
+        //       top: 5px;
+        //       line-height: 22px;
+        //       width: 22px;
+        //       height: 22px;
+        //       text-align: center;
+        //       border-radius: 50%;
+        //       cursor: pointer;
+        //       color: @fontNormal;
+        //       font-weight: bold;
+        //       font-size: 18px;
+        //       &:hover{
+        //         background: @normalBlue;
+        //         color: #fff;
+        //       }
+        //     }
+        //   }
+        //   .lineTable{
+        //     display: block;
+        //     font-size: @fontMid;
+        //     width: 670px;
+        //     height: 163px;
+        //     border:1px solid #F0F0F0;
+        //     box-sizing: border-box;
+        //     .lineHead{
+        //       font-size: @fontBig;
+        //       padding-right: 5px;
+        //       border-bottom: 1px solid #F0F0F0;
+        //     }
+        //     .lineBody{
+        //       overflow-y: scroll;
+        //       height: 120px;
+        //     }
+        //     .list{
+        //       display: flex;
+        //       .flex{
+        //         flex: 1;
+        //         text-align: center;
+        //         height: 40px;
+        //         white-space: nowrap;
+        //         overflow: hidden;
+        //         text-overflow: ellipsis;
+        //         .delete{
+        //           color: @error;
+        //           cursor: pointer;
+        //         }
+        //       }
+        //     }
+        //   }
+        //   .specialCtn{
+        //     width: 670px;
+        //     .mainCtn{
+        //       display: block;
+        //       border-top: 1px solid #ECF0F1;
+        //       background: #FAFAFA;
+        //       padding: 20px 0;
+        //       .mainOnce{
+        //         min-height: 40px;
+        //         position: relative;
+        //         padding-left: 7em;
+        //         margin:24px 0;
+        //         .productCtn{
+        //           .product{
+        //             position: relative;
+        //             .index{
+        //               position: absolute;
+        //               left: -4em;
+        //               top: 31px;
+        //               text-align: center;
+        //               line-height: 26px;
+        //               font-size: @fontMid;
+        //               color: @fontGray;
+        //             }
+        //           }
+        //           
+        //           .typeCtn{
+        //             margin-top: 24px;
+        //             position: relative;
+        //             .index{
+        //               position: absolute;
+        //               left: -35px;
+        //               top: 9px;
+        //               line-height: 26px;
+        //               font-size: @fontMid;
+        //               color: #cccccc;
+        //               text-align: center;
+        //               width: 26px;
+        //               border-radius: 50%;
+        //               background: #ECF0F1;
+        //             }
+        //           }
+        //         }
+        //       }
+        //     }
+        //   }
+          
+        // }
       }
     }
     .bottom{

@@ -13,16 +13,15 @@
           <div class="leftFilter">
           </div>
           <div class="rightFilter">
-            <el-date-picker
-              v-model="date"
-              type="daterange"
-              align="right"
-              unlink-panels
-              value-format="yyyy-MM-dd"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              :picker-options="pickerOptions">
+            <el-date-picker v-model="date"
+                            type="daterange"
+                            align="right"
+                            unlink-panels
+                            value-format="yyyy-MM-dd"
+                            range-separator="至"
+                            start-placeholder="开始日期"
+                            end-placeholder="结束日期"
+                            :picker-options="pickerOptions">
             </el-date-picker>
           </div>
         </div>
@@ -48,18 +47,18 @@
           <div class="tableColumn">更新时间</div>
           <div class="tableColumn flex9">
             <span class="btns normal">修改</span>
-            <span class="btns success">查看</span>
+            <span class="btns success"
+                  @click="$router.push('./mainMaterialStockDetail/1')">查看</span>
           </div>
         </div>
       </div>
       <div class="pageCtn">
-        <el-pagination
-          background
-          :page-size="5"
-          layout="prev, pager, next"
-          :total="total"
-          :current-page.sync="pages"
-          @current-change="getOrderList">
+        <el-pagination background
+                       :page-size="5"
+                       layout="prev, pager, next"
+                       :total="total"
+                       :current-page.sync="pages"
+                       @current-change="getOrderList">
         </el-pagination>
       </div>
     </div>
@@ -120,5 +119,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/mainMaterialStockList.less';
+@import "~@/assets/css/mainMaterialStockList.less";
 </style>

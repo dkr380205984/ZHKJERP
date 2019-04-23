@@ -6,19 +6,6 @@
     <div class="body">
       <div class="lineCtn">
         <div class="inputCtn oneLine">
-          <span class="label">原料名称</span>
-          <el-select class="elInput"
-                     v-model="value"
-                     placeholder="请选择原料名称">
-            <el-option v-for="(item,index) in arr"
-                       :key="index"
-                       :value="item"
-                       :label="item"></el-option>
-          </el-select>
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn oneLine">
           <span class="label">原料名称:</span>
           <el-select class="elInput"
                      v-model="value"
@@ -95,7 +82,8 @@
         </div>
       </div>
       <div class="btnCtn">
-        <div class="cancleBtn">清空</div>
+        <div class="cancleBtn"
+             @click="$router.go(-1)">返回</div>
         <div class="okBtn">保存</div>
       </div>
     </div>

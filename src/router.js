@@ -146,6 +146,10 @@ export default new Router({
       name: 'mainMaterialStockList',
       component: () => import('./views/stock/mainMaterialStockList.vue')
     }, {
+      path: 'mainMaterialStockChange/:id',
+      name: 'mainMaterialStockChange',
+      component: () => import('./views/stock/mainMaterialStockChange.vue')
+    }, {
       path: 'mainMaterialStockDetail/:id',
       name: 'mainMaterialStockDetail',
       component: () => import('./views/stock/mainMaterialStockDetail.vue')
