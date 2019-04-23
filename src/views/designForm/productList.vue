@@ -93,7 +93,7 @@
           <div class="tableColumn">{{item.user_name}}</div>
           <div class="tableColumn">
             <span class="btns ban" v-if="item.has_plan===1">添加</span>
-            <span class="btns normal" v-if="item.has_plan===0" @click="$router.push('/index/productPlan/'+item.id)">添加</span>
+            <span class="btns normal" v-if="item.has_plan===0" @click="$router.push('/index/designFormCreate/'+item.id)">添加</span>
           </div>
         </div>
       </div>

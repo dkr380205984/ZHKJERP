@@ -58,7 +58,7 @@
           <div class="tableColumn flexSamll">{{item.user_name}}</div>
           <div class="tableColumn flexSamll">{{item.create_time}}</div>
           <div class="tableColumn flex9">
-            <span class="btns warning" v-if="item.product_info.has_plan===0">修改</span>
+            <span class="btns warning" v-if="item.product_info.has_plan===0" @click="$router.push('/index/designFormUpdate/'+item.id)">修改</span>
             <span class="btns ban" v-if="item.product_info.has_plan===1">修改</span>
             <span class="btns success" @click="$router.push('/index/designFormDetail/'+item.id)">查看</span>
             <span class="btns copy" @click="copy(item.id)">打印</span>

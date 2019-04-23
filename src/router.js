@@ -62,6 +62,10 @@ export default new Router({
       name: 'designFormCreate',
       component: () => import('./views/designForm/designFormCreate.vue')
     }, {
+      path: 'designFormUpdate/:id',
+      name: 'designFormUpdate',
+      component: () => import('./views/designForm/designFormUpdate.vue')
+    }, {
       path: 'designFormSetting',
       name: 'designFormSetting',
       component: () => import('./views/designForm/designFormSetting.vue')
