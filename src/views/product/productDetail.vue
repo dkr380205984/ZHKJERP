@@ -79,7 +79,10 @@
       </div>
       <div class="btnCtn">
         <div class="cancleBtn" @click="$router.go(-1)">返回</div>
-        <div class="okBtn" @click="$router.push('/index/productUpdate/'+$route.params.id)">修改</div>
+        <div class="okBtn" v-if="productDetail.has_craft===0&&productDetail.in_order===0&&productDetail.has_plan===0" @click="$router.push('/index/productUpdate/'+productDetail.id)">修改</div>
+        <el-tooltip v-if="productDetail.has_craft===1||productDetail.in_order===1||productDetail.has_plan===1" class="item" effect="dark" :content="toolTips(productDetail)" placement="top-start">
+          <div class="banBtn" >修改</div>
+        </el-tooltip>
       </div>
     </div>
   </div>
@@ -107,7 +110,10 @@ export default {
         product_code: '',
         size: {},
         user_id: '',
-        weight: ''
+        weight: '',
+        has_craft: 0,
+        has_plan: 0,
+        in_order: 0
       },
       loading: true
     }
@@ -131,7 +137,21 @@ export default {
       return str.substring(0, str.length - 2)
     }
   },
-  created () {
+  methods: {
+    // 判断提示信息
+    toolTips (product) {
+      if (product.has_craft === 1) {
+        return '该产品已有工艺单信息，不能进行修改'
+      }
+      if (product.has_plan === 1) {
+        return '该产品已有配料单信息，不能进行修改'
+      }
+      if (product.in_order === 1) {
+        return '该产品已有订单信息，不能进行修改'
+      }
+    }
+  },
+  mounted () {
     this.loading = true
     porductOne({
       id: this.$route.params.id

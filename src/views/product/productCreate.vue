@@ -31,18 +31,19 @@
           </el-option>
         </el-select>
       </div>
-      <div class="inputCtn" style="margin-top:0;margin-bottom:0">
+      <div class="inputCtn" style="margin-top:0;margin-bottom:0;">
         <span class="label must">产品成分:</span>
-        <div class="cancleCtn" v-for="item in ingredientNum" :key="item">
-          <el-input style="width:300px;margin-left:15px;margin-bottom:24px" placeholder="请输入比例" v-model="ingredientScale[item-1]" class="input-with-select">
-            <el-select slot="prepend" class="specialSel" v-model="ingredient[item-1]" placeholder="请选择成分">
-              <el-option
-                v-for="item in ingredientArr"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id">
-              </el-option>
-            </el-select>
+        <div class="cancleCtn" style="margin-left:15px" v-for="item in ingredientNum" :key="item">
+          <div class="index">{{item}}</div>
+          <el-select class="specialSel" v-model="ingredient[item-1]" placeholder="请选择成分">
+            <el-option
+              v-for="item in ingredientArr"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
+          <el-input style="width:160px;margin-left:15px;margin-bottom:24px" placeholder="请输入比例" v-model="ingredientScale[item-1]" class="input-with-select">
             <template slot="append">%</template>
           </el-input>
           <div class="deleteBtn" @click="deleteIngredient(item)"><i class="el-icon-delete"></i></div>
@@ -84,7 +85,7 @@
       <div class="inputCtn" style="margin-top:0;margin-bottom:0">
         <span class="label must">产品配色:</span>
         <div class="cancleCtn" v-for="item in colorNum" :key="item">
-          <el-select clearable class="elSelect" v-model="color[item-1]" placeholder="请选择配色">
+          <el-select clearable filterable class="elSelect" v-model="color[item-1]" placeholder="请选择配色">
             <el-option
               v-for="item in colorArr"
               :key="item.id"

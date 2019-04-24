@@ -191,8 +191,8 @@ export default {
         this.style = this.types.find((item) => item.id === newVal).child
         this.styleVal = ''
         this.pages = 1
-        this.getCraftList()
       }
+      this.getCraftList()
     },
     styleVal (newVal) {
       this.getCraftList()

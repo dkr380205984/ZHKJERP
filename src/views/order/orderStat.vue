@@ -1,5 +1,5 @@
 <template>
-  <div id="orderList">
+  <div id="orderList" v-loading="loading">
     <div class="head">
       <h2>订单发货列表</h2>
       <el-input placeholder="输入订单号精确搜索" suffix-icon="el-icon-search" v-model="searchVal"></el-input>
@@ -105,9 +105,7 @@
             <div class="small" v-for="(itemOrder,indexOrder) in item.orderInfo" :key="indexOrder" :style="{'height':(itemOrder.lineNum*60)+'px'}"><div style="margin:auto">{{itemOrder.group_name}}</div></div>
           </div>
           <div class="tableColumn" style="flex:2;flex-direction:row">
-            <span class="btns normal">修改</span>
-            <span class="btns success" @click="$router.push('/index/productDesignCreate/'+item.id)">查看</span>
-            <span class="btns warning">打印</span>
+            <span class="btns normal">暂时没有</span>
           </div>
         </div>
       </div>
@@ -131,6 +129,7 @@ import { orderBatchList, productTppeList, clientList, getGroup } from '@/assets/
 export default {
   data () {
     return {
+      loading: true,
       searchVal: '',
       date: '',
       pickerOptions: {
@@ -173,11 +172,14 @@ export default {
       company: '',
       group: '',
       groupArr: [],
-      timer: ''
+      timer: '',
+      start_time: '',
+      end_time: ''
     }
   },
   methods: {
     getOrderList () {
+      this.loading = true
       orderBatchList({
         'company_id': window.sessionStorage.getItem('company_id'),
         'limit': 5,
@@ -188,9 +190,9 @@ export default {
         'style_id': this.styleVal,
         'client_id': this.company,
         'group_id': this.group,
-        'product_code': this.searchVal
-        // 'start_time': '',
-        // 'end_time': ''
+        'product_code': this.searchVal,
+        'start_time': this.start_time,
+        'end_time': this.end_time
       }).then((res) => {
         let json = res.data.data
         this.list = Object.keys(json).map((key) => {
@@ -232,10 +234,18 @@ export default {
             orderInfo: arr
           }
         })
+        this.loading = false
       })
     },
     pickTime (date) {
-      console.log(date)
+      if (date) {
+        this.start_time = date[0]
+        this.end_time = date[1]
+      } else {
+        this.start_time = ''
+        this.end_time = ''
+      }
+      this.getOrderList()
     },
     // 删除条件
     clear (item) {
@@ -401,6 +411,7 @@ export default {
           orderInfo: arr
         }
       })
+      this.loading = false
     })
   }
 }

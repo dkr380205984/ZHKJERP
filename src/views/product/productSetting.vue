@@ -175,7 +175,7 @@
             node-key="id"
             :render-content="renderContent"
             :expand-on-click-node="false"
-            :default-expand-all="true"
+            :default-expand-all="false"
             :default-expanded-keys="defaultExpand">
           </el-tree>
         </div>

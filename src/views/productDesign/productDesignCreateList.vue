@@ -66,7 +66,7 @@
           <div class="tableColumn">{{item.total_price}}</div>
           <div class="tableColumn">{{item.order_time}}</div>
           <div class="tableColumn">
-            <span class="btns normal" @click="$router.push('/index/productDesignCreate/'+item.id)">生产计划单</span>
+            <span class="btns normal" @click="$router.push('/index/productDesignCreate/'+item.id)">添加</span>
           </div>
         </div>
       </div>

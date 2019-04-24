@@ -1,5 +1,5 @@
 <template>
-  <div id="orderList">
+  <div id="orderList" v-loading="loading">
     <div class="head">
       <h2>订单列表</h2>
       <el-input placeholder="输入订单号精确搜索" suffix-icon="el-icon-search" v-model="searchVal"></el-input>
@@ -104,9 +104,7 @@
           </div>
           <div class="tableColumn" style="flex:0.7">暂无状态</div>
           <div class="tableColumn" style="flex-direction:row;flex:2">
-            <span class="btns normal">修改</span>
-            <span class="btns success" @click="$router.push('/index/productDesignCreate/'+item.id)">查看</span>
-            <span class="btns warning">打印</span>
+            <span class="btns normal">暂时没有</span>
           </div>
         </div>
       </div>
@@ -130,6 +128,7 @@ import { orderList, productTppeList, clientList, getGroup } from '@/assets/js/ap
 export default {
   data () {
     return {
+      loading: true,
       searchVal: '',
       date: '',
       pickerOptions: {
@@ -172,11 +171,14 @@ export default {
       company: '',
       group: '',
       groupArr: [],
-      timer: ''
+      timer: '',
+      start_time: '',
+      end_time: ''
     }
   },
   methods: {
     getOrderList () {
+      this.loading = true
       orderList({
         'company_id': window.sessionStorage.getItem('company_id'),
         'limit': 5,
@@ -187,11 +189,11 @@ export default {
         'style_id': this.styleVal,
         'client_id': this.company,
         'group_id': this.group,
-        'product_code': this.searchVal
-        // 'start_time': '',
-        // 'end_time': ''
+        'product_code': this.searchVal,
+        'start_time': this.start_time,
+        'end_time': this.end_time
       }).then((res) => {
-        console.log(res)
+        this.loading = false
         this.total = res.data.meta.total
         this.list = res.data.data.map((item) => {
           let productList = []
@@ -234,7 +236,14 @@ export default {
       })
     },
     pickTime (date) {
-      console.log(date)
+      if (date) {
+        this.start_time = date[0]
+        this.end_time = date[1]
+      } else {
+        this.start_time = ''
+        this.end_time = ''
+      }
+      this.getOrderList()
     },
     // 删除条件
     clear (item) {
@@ -281,8 +290,8 @@ export default {
         this.style = this.types.find((item) => item.id === newVal).child
         this.styleVal = ''
         this.pages = 1
-        this.getOrderList()
       }
+      this.getOrderList()
     },
     styleVal (newVal) {
       this.getOrderList()

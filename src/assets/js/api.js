@@ -78,6 +78,8 @@ const saveProduct = (params) => http.post(`${baseUrl}/product/save`, params, 'ap
 const productList = (params) => http.get(`${baseUrl}/product/list`, params)
 // 单个产品获取
 const porductOne = (params) => http.get(`${baseUrl}/product/one`, params)
+// 删除产品
+const productDelete = (params) => http.post(`${baseUrl}/product/delete`, params)
 // 获取纱线类型+数量
 const YarnList = (params) => http.get(`${baseUrl}/yarn/list`, params)
 // 添加纱线支数
@@ -157,6 +159,7 @@ const productionDetail = (params) => http.get(`${baseUrl}/production/one`, param
 // 生产统计单详情
 const productionStat = (params) => http.get(`${baseUrl}/product/plan/order`, params)
 export {
+  productDelete,
   productionStat,
   productionDetail,
   productionList,
