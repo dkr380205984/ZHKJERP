@@ -1,5 +1,5 @@
 <template>
-  <div id="productList">
+  <div id="productList" v-loading="loading">
     <div class="head">
       <h2>产品列表</h2>
       <el-input placeholder="输入产品编号精确搜索" suffix-icon="el-icon-search" v-model="searchVal"></el-input>
@@ -70,18 +70,17 @@
           <div class="tableColumn">编号</div>
           <div class="tableColumn flex9">品类</div>
           <div class="tableColumn ">花型</div>
-          <div class="tableColumn flexSamll">成分(种)</div>
           <div class="tableColumn">尺码</div>
-          <div class="tableColumn flexSamll">颜色(种)</div>
+          <div class="tableColumn flexSamll">配色(种)</div>
           <div class="tableColumn">图片</div>
           <div class="tableColumn">创建人</div>
+          <div class="tableColumn">创建时间</div>
           <div class="tableColumn flex9">操作</div>
         </div>
         <div class="tableRow bodyTableRow" v-for="(item) in list" :key="item.id">
           <div class="tableColumn" style="color:#1A95FF">{{item.product_code}}</div>
           <div class="tableColumn flex9">{{item|filterType}}</div>
           <div class="tableColumn">{{item.flower_id}}</div>
-          <div class="tableColumn flexSamll">{{item.materials.length}}</div>
           <div class="tableColumn">{{item.size|filterSize}}</div>
           <div class="tableColumn flexSamll">{{item.color.length}}</div>
           <div class="tableColumn">
@@ -92,10 +91,17 @@
             </div>
           </div>
           <div class="tableColumn">{{item.user_name}}</div>
+          <div class="tableColumn">{{item.create_time}}</div>
           <div class="tableColumn flex9">
-            <span class="btns ban" v-if="item.has_craft===1||item.in_order===1||item.has_plan===1">修改</span>
+            <el-tooltip class="item" effect="dark" :content="toolTips(item)" placement="top-start">
+              <span class="btns ban" v-if="item.has_craft===1||item.in_order===1||item.has_plan===1">修改</span>
+            </el-tooltip>
             <span class="btns warning" v-if="item.has_craft===0&&item.in_order===0&&item.has_plan===0" @click="$router.push('/index/productUpdate/'+item.id)">修改</span>
             <span class="btns success" @click="$router.push('/index/productDetail/'+item.id)">详情</span>
+            <span class="btns error"  v-if="item.has_plan===0"  @click="deleteProduct(item.id)">删除</span>
+            <el-tooltip class="item" effect="dark" content="该产品已有订单信息，不能删除" placement="top-start">
+              <span class="btns ban" v-if="item.has_plan===1">删除</span>
+            </el-tooltip>
           </div>
         </div>
       </div>
@@ -124,10 +130,11 @@
 </template>
 
 <script>
-import { productList, productTppeList, flowerList } from '@/assets/js/api.js'
+import { productList, productTppeList, flowerList, productDelete } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      loading: true,
       defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
       searchVal: '',
       value: '',
@@ -178,6 +185,7 @@ export default {
   },
   methods: {
     getProductList () {
+      this.loading = true
       productList({
         'company_id': window.sessionStorage.getItem('company_id'),
         'limit': 5,
@@ -192,6 +200,7 @@ export default {
       }).then((res) => {
         this.total = res.data.meta.total
         this.list = res.data.data
+        this.loading = false
       })
     },
     showImg (imgList) {
@@ -225,6 +234,43 @@ export default {
         this.end_time = ''
       }
       this.getProductList()
+    },
+    // 判断提示信息
+    toolTips (product) {
+      if (product.has_craft === 1) {
+        return '该产品已有工艺单信息，不能进行修改'
+      }
+      if (product.has_plan === 1) {
+        return '该产品已有配料单信息，不能进行修改'
+      }
+      if (product.in_order === 1) {
+        return '该产品已有订单信息，不能进行修改'
+      }
+    },
+    // 删除产品
+    deleteProduct (id) {
+      this.$confirm('此操作将永久删除该产品, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.loading = true
+        productDelete({
+          id: id
+        }).then((res) => {
+          console.log(res)
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          this.getProductList()
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
   },
   watch: {
@@ -243,8 +289,8 @@ export default {
         this.style = this.types.find((item) => item.id === newVal).child
         this.styleVal = ''
         this.pages = 1
-        this.getProductList()
       }
+      this.getProductList()
     },
     styleVal (newVal) {
       this.getProductList()
@@ -305,9 +351,8 @@ export default {
       }
       return str.substring(0, str.length - 1)
     }
-
   },
-  created () {
+  mounted () {
     this.getProductList()
     productTppeList({
       company_id: window.sessionStorage.getItem('company_id')

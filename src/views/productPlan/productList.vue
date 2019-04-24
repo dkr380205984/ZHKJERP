@@ -71,7 +71,7 @@
           <div class="tableColumn ">花型</div>
           <div class="tableColumn flexSamll">成分(种)</div>
           <div class="tableColumn">尺码</div>
-          <div class="tableColumn flexSamll">颜色(种)</div>
+          <div class="tableColumn flexSamll">配色(种)</div>
           <div class="tableColumn">图片</div>
           <div class="tableColumn">工艺单</div>
           <div class="tableColumn">创建人</div>
@@ -190,7 +190,8 @@ export default {
         'page': this.pages,
         'start_time': this.start_time,
         'end_time': this.end_time,
-        'product_code': this.searchVal
+        'product_code': this.searchVal,
+        'has_plan': 0
       }).then((res) => {
         this.loading = false
         this.total = res.data.meta.total
@@ -246,8 +247,8 @@ export default {
         this.style = this.types.find((item) => item.id === newVal).child
         this.styleVal = ''
         this.pages = 1
-        this.getProductList()
       }
+      this.getProductList()
     },
     styleVal (newVal) {
       this.getProductList()

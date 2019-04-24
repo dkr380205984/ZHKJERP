@@ -1,5 +1,5 @@
 <template>
-  <div id="orderCreate">
+  <div id="orderCreate" v-loading="loading">
     <div class="head">
       <h2>添加订单</h2>
     </div>
@@ -52,9 +52,8 @@
         </div>
         <div class="inputCtn">
           <span class="label must">汇率：</span>
-          <el-input class="elInput" v-model="exchangeRate" placeholder="请输入汇率">
-            <template slot="append">人民币</template>
-          </el-input>
+          <el-input class="elInput" v-model="exchangeRate" placeholder="请输入汇率" @focus="showTips=true" @blur="showTips=false"></el-input>
+          <div v-show="showTips" class="tips" @mousedown="goBaidu">点击查询实时汇率</div>
         </div>
       </div>
       <div class="lineCtn">
@@ -119,6 +118,7 @@
                 <div class="blockOnce">
                   <span class="name">创建日期：</span>
                   <el-date-picker
+                    @change="getSearchList"
                     value-format="yyyy-MM-dd"
                     class="elInput"
                     v-model="dateSearch"
@@ -132,6 +132,7 @@
                   <span class="name">产品花型：</span>
                   <el-select class="elInput" v-model="flower" placeholder="请选择产品花型"  @change="getSearchList" clearable>
                     <el-option
+                      @change="getSearchList"
                       v-for="item in flowerArr"
                       :key="item.id"
                       :label="item.name"
@@ -143,6 +144,7 @@
                   <span class="name">创建人：</span>
                   <el-select class="elInput" v-model="people" placeholder="请选择联系人">
                     <el-option
+                      @change="getSearchList"
                       v-for="item in peopleArr"
                       :key="item.id"
                       :label="item.name"
@@ -151,13 +153,23 @@
                   </el-select>
                 </div>
               </div>
+              <div class="block">
+                <div class="blockOnce">
+                  <span class="name">计划单：</span>
+                  <el-radio-group v-model="hasJHD"  @change="getSearchList">
+                    <el-radio :label="null">全部</el-radio>
+                    <el-radio :label="1">有</el-radio>
+                    <el-radio :label="0">无</el-radio>
+                  </el-radio-group>
+                </div>
+              </div>
             </div>
           </div>
           <div class="lineTitle">产品列表</div>
           <div class="lineTable">
             <div class="lineHead">
               <div class="list">
-                <div class="flex">工艺单编号</div>
+                <div class="flex">产品编号</div>
                 <div class="flex">产品类别</div>
                 <div class="flex">产品花纹</div>
                 <div class="flex">创建人</div>
@@ -167,9 +179,9 @@
             </div>
             <div class="lineBody">
               <div class="list" v-for="item in seachProduct" :key="item.id">
-                <div class="flex" style="color:#10AEF5">{{item.plan_code}}</div>
-                <div class="flex">{{item.product_info|filterType}}</div>
-                <div class="flex">{{item.product_info.flower_id}}</div>
+                <div class="flex" style="color:#10AEF5">{{item.product_code}}</div>
+                <div class="flex">{{item|filterType}}</div>
+                <div class="flex">{{item.flower_id}}</div>
                 <div class="flex">{{item.user_name}}</div>
                 <div class="flex">{{item.create_time}}</div>
                 <div class="flex">
@@ -192,11 +204,11 @@
             </div>
             <div class="lineBody">
               <div class="list" v-for="item in productArr" :key="item.id">
-                <div class="flex" style="color:#10AEF5">{{item.product_info.product_code}}</div>
-                <div class="flex">{{item.product_info|filterType}}</div>
-                <div class="flex">{{item.product_info.flower_id}}</div>
-                <div class="flex">{{item.product_info.user_name}}</div>
-                <div class="flex">{{item.product_info.create_time}}</div>
+                <div class="flex" style="color:#10AEF5">{{item.product_code}}</div>
+                <div class="flex">{{item|filterType}}</div>
+                <div class="flex">{{item.flower_id}}</div>
+                <div class="flex">{{item.user_name}}</div>
+                <div class="flex">{{item.create_time}}</div>
                 <div class="flex">
                   <span class="delete" @click="deleteProduct(item.id)">删除</span>
                 </div>
@@ -232,10 +244,10 @@
                     <el-select class="elInput" v-model="orderArr[indexOrder].product[indexProduct].name" placeholder="请选择产品编号" style="margin-top:24px;" @change="getColorSize($event,indexOrder,indexProduct)">
                       <el-option
                         v-for="item in productArr"
-                        :key="item.product_info.product_code"
-                        :label="item.product_info.product_code"
-                        :value="item.product_info.product_code">
-                        <span style="font-size:12px">{{item.product_info.product_code}}({{item.product_info.category_info.product_category}}/{{item.product_info.type_name}}/{{item.product_info.style_name}})</span>
+                        :key="item.product_code"
+                        :label="item.product_code"
+                        :value="item.product_code">
+                        <span style="font-size:12px">{{item.product_code}}({{item.category_info.product_category}}/{{item.type_name}}/{{item.style_name}})</span>
                       </el-option>
                     </el-select>
                     <i class="el-icon-delete" @click="deleteProductOne (indexOrder, indexProduct)"></i>
@@ -259,7 +271,7 @@
                   </div>
                   <div style="margin-top:24px;">
                     <div class="addBtn" @click="addSize(indexOrder,indexProduct)">
-                      <span>添加尺码</span>
+                      <span>添加尺码/颜色</span>
                       <span>+</span>
                     </div>
                   </div>
@@ -297,10 +309,13 @@
 
 <script>
 import { moneyArr } from '@/assets/js/dictionary.js'
-import { clientList, productPlanList, productTppeList, flowerList, orderSave, getGroup } from '@/assets/js/api.js'
+import { clientList, productList, productTppeList, flowerList, orderSave, getGroup } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      loading: true,
+      showTips: false,
+      hasJHD: 1,
       orderId: '',
       companyId: window.sessionStorage.getItem('company_id'),
       companyArr: [],
@@ -344,6 +359,10 @@ export default {
     }
   },
   methods: {
+    // 查询汇率
+    goBaidu () {
+      window.open('http://forex.hexun.com/rmbhl/#zkRate')
+    },
     // 根据选取的外贸公司获取联系人
     getContacts (id) {
       this.contactsArr = this.companyArr.find((item) => item.id === id).contacts
@@ -365,6 +384,7 @@ export default {
           this.productArr.splice(mark, 1)
         }
       }
+      console.log(this.productArr)
     },
     // 使用删除操作删除产品列表里的信息
     deleteProduct (id) {
@@ -380,17 +400,20 @@ export default {
     },
     // 获取产品加入搜索条件后的列表
     getSearchList () {
-      productPlanList({
+      this.loading = true
+      productList({
         company_id: this.companyId,
         limit: null,
         category_id: this.type[0] || null,
         style_id: this.type[2] || null,
         type_id: this.type[1] || null,
         flower_id: this.flower || null,
-        start_time: null,
+        start_time: this.dateSearch || null,
         end_time: null,
-        plan_code: this.search || null
+        plan_code: this.search || null,
+        has_plan: this.hasJHD
       }).then((res) => {
+        this.loading = false
         this.seachProduct = res.data.data
       })
     },
@@ -481,12 +504,12 @@ export default {
     // 选取产品后,把相应的尺码和颜色信息更新到级联选择器里
     getColorSize (id, indexOrder, indexProduct) {
       let arr = []
-      let obj = this.productArr.find((item) => item.product_info.product_code === id)
-      for (let key in obj.product_info.size) {
+      let obj = this.productArr.find((item) => item.product_code === id)
+      for (let key in obj.size) {
         arr.push({
           value: key,
           label: key,
-          children: obj.product_info.color.map((item) => {
+          children: obj.color.map((item) => {
             return {
               value: item.name,
               label: item.name
@@ -495,13 +518,96 @@ export default {
         })
       }
       this.orderArr[indexOrder].product[indexProduct].colorSizeArr = arr
-      this.orderArr[indexOrder].product[indexProduct].product_info = obj.product_info
+      this.orderArr[indexOrder].product[indexProduct].product_info = obj
     },
     // 清空
     clearAll () {
     },
     // 保存
     saveAll () {
+      if (!this.orderId) {
+        this.$message.error({
+          message: '订单号未填写，请输入订单号'
+        })
+        return
+      }
+      if (!this.company) {
+        this.$message.error({
+          message: '外贸公司未选择，请选择外贸公司'
+        })
+        return
+      }
+      if (!this.contacts) {
+        this.$message.error({
+          message: '联系人未选择，请选择联系人'
+        })
+        return
+      }
+      if (!this.money) {
+        this.$message.error({
+          message: '结算单位未选择，请选择结算单位'
+        })
+        return
+      }
+      if (!this.exchangeRate) {
+        this.$message.error({
+          message: '汇率未填写，请填写汇率'
+        })
+        return
+      }
+      if (!this.taxRate) {
+        this.$message.error({
+          message: '税率未填写，请填写税率'
+        })
+        return
+      }
+      if (!this.date) {
+        this.$message.error({
+          message: '下单日期未选择，请选择下单日期'
+        })
+        return
+      }
+      if (!this.group) {
+        this.$message.error({
+          message: '分配小组未选择，请选择分配小组'
+        })
+        return
+      }
+      let timeState = true
+      let productState = true
+      this.orderArr.forEach((itemOrder) => {
+        if (!itemOrder.date) {
+          timeState = false
+        }
+        itemOrder.product.forEach((itemProduct) => {
+          if (!itemProduct.name) {
+            productState = false
+          }
+          itemProduct.size.forEach((itemSize) => {
+            if (!itemSize.numbers) {
+              productState = false
+            }
+            if (!itemSize.unitPrice) {
+              productState = false
+            }
+            if (itemSize.name.length === 0) {
+              productState = false
+            }
+          })
+        })
+      })
+      if (!timeState) {
+        this.$message.error({
+          message: '交货日期填写不完整，请检查'
+        })
+        return
+      }
+      if (!productState) {
+        this.$message.error({
+          message: '产品信息填写不完整，请检查'
+        })
+        return
+      }
       let obj = {
         company_id: this.companyId,
         user_id: window.sessionStorage.getItem('user_id'),
@@ -529,12 +635,12 @@ export default {
         total_price: this.totalMoney,
         remark: this.otherInfo
       }
-      console.log(obj)
       orderSave(obj).then((res) => {
         console.log(res)
         this.$message.success({
           message: '添加订单成功'
         })
+        this.$router.push('/index/orderList')
       })
     }
   },
@@ -566,7 +672,7 @@ export default {
       company_id: this.companyId,
       keyword: '',
       status: ''
-    }), productPlanList({
+    }), productList({
       company_id: this.companyId,
       limit: null,
       category_id: null,
@@ -575,7 +681,8 @@ export default {
       flower_id: null,
       start_time: null,
       end_time: null,
-      plan_code: null
+      plan_code: null,
+      has_plan: 1
     }), productTppeList({
       company_id: this.companyId
     }), flowerList({
@@ -583,6 +690,7 @@ export default {
     }), getGroup({
       company_id: this.companyId
     })]).then((res) => {
+      console.log(res[1])
       this.companyArr = res[0].data.data
       this.seachProduct = res[1].data.data
       this.typeArr = res[2].data.data.map((item) => {
@@ -607,6 +715,7 @@ export default {
       })
       this.flowerArr = res[3].data.data
       this.groupArr = res[4].data.data
+      this.loading = false
     })
   }
 }

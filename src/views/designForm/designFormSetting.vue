@@ -117,7 +117,7 @@
       </div>
       <div class="lineCtn" :style="{'max-height':flagObj.process?'300px':'64px'}">
         <div class="inputCtn">
-          <span class="label">工序流程:</span>
+          <span class="label">产品生产流程</span>
           <el-input class="elInput" v-model="process" placeholder="请输入工序流程"></el-input>
           <div class="okBtn" @click="saveProcess">添加</div>
           <div class="showAll" @click="flagObj.process=!flagObj.process">{{!flagObj.process?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flagObj.process?'showIcon':'hideIcon'"></i></div>
