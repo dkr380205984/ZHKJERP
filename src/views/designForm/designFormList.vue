@@ -59,7 +59,7 @@
           <div class="tableColumn flexSamll">{{item.create_time}}</div>
           <div class="tableColumn flex9">
             <span class="btns warning" v-if="item.product_info.has_plan===0" @click="$router.push('/index/designFormUpdate/'+item.id)">修改</span>
-            <span class="btns ban" v-if="item.product_info.has_plan===1">修改</span>
+            <span class="btns error" v-if="item.product_info.has_plan===1" @click="showError(item.id)">修改</span>
             <span class="btns success" @click="$router.push('/index/designFormDetail/'+item.id)">查看</span>
             <span class="btns copy" @click="copy(item.id)">打印</span>
           </div>
@@ -188,10 +188,24 @@ export default {
         this.start_time = ''
         this.end_time = ''
       }
-      this.getProductList()
+      this.getCraftList()
     },
     copy (id) {
       window.open('/designFormTable/' + id)
+    },
+    showError (id) {
+      this.$confirm('该产品已有配料单,修改工艺单会导致配料单信息删除, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$router.push('/index/designFormUpdate/' + id)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消修改'
+        })
+      })
     }
   },
   watch: {

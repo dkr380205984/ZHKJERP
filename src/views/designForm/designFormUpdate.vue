@@ -203,7 +203,9 @@
         <div class="lineCtn">
           <div class="inputCtn">
             <span class="label">整经门幅:</span>
-            <el-input class="elInput" placeholder="请输入数字" v-model="warp_data.width"></el-input>
+            <el-input class="elInput" placeholder="请输入数字" v-model="warp_data.width">
+              <template slot="append">厘米</template>
+            </el-input>
           </div>
           <div class="inputCtn">
             <span class="label must">机型:</span>
@@ -241,7 +243,7 @@
           <div class="inputCtn">
             <span class="label">综页:</span>
             <el-input class="elInput" placeholder="请输入数字" v-model="warp_data.sum_up">
-              <template slot="append">支</template>
+              <template slot="append">片</template>
             </el-input>
           </div>
         </div>
@@ -517,8 +519,8 @@ export default {
         className: 'htCenter htMiddle ',
         contextMenu: [
           'mergeCells', // 合并单元格菜单
-          'col_left',
           'col_right',
+          'col_left',
           'remove_col'
         ],
         licenseKey: 'non-commercial-and-evaluation', // 申明非商业用途
@@ -541,8 +543,8 @@ export default {
         className: 'htCenter htMiddle ',
         contextMenu: [
           'mergeCells', // 合并单元格菜单
-          'col_left',
           'col_right',
+          'col_left',
           'remove_col'
         ],
         licenseKey: 'non-commercial-and-evaluation', // 申明非商业用途

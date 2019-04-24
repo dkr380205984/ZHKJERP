@@ -1,7 +1,7 @@
 <template>
   <div id="productList" v-loading="loading">
     <div class="head">
-      <h2>添加工艺单/计划单</h2>
+      <h2>添加工艺单</h2>
       <el-input placeholder="输入产品编号精确搜索" suffix-icon="el-icon-search" v-model="searchVal"></el-input>
     </div>
     <div class="body">
@@ -69,18 +69,17 @@
           <div class="tableColumn">编号</div>
           <div class="tableColumn flex9">品类</div>
           <div class="tableColumn ">花型</div>
-          <div class="tableColumn flexSamll">成分(种)</div>
           <div class="tableColumn">尺码</div>
           <div class="tableColumn flexSamll">配色(种)</div>
           <div class="tableColumn">图片</div>
           <div class="tableColumn">创建人</div>
+          <div class="tableColumn">创建时间</div>
           <div class="tableColumn">操作</div>
         </div>
         <div class="tableRow bodyTableRow" v-for="(item,index) in list" :key="index">
           <div class="tableColumn" style="color: rgb(26, 149, 255);">{{item.product_code}}</div>
           <div class="tableColumn flex9">{{item|filterType}}</div>
           <div class="tableColumn">{{item.flower_id}}</div>
-          <div class="tableColumn flexSamll">{{item.materials.length}}</div>
           <div class="tableColumn">{{item.size|filterSize}}</div>
           <div class="tableColumn flexSamll">{{item.color.length}}</div>
           <div class="tableColumn">
@@ -91,10 +90,9 @@
             </div>
           </div>
           <div class="tableColumn">{{item.user_name}}</div>
+          <div class="tableColumn">{{item.create_time}}</div>
           <div class="tableColumn">
-            <el-tooltip class="item" effect="dark" content="该产品已有配料单信息，不能添加工艺单" placement="top-start">
-              <span class="btns ban" v-if="item.has_plan===1">添加</span>
-            </el-tooltip>
+            <span class="btns error" v-if="item.has_plan===1" @click="showError(item.id)">添加</span>
             <span class="btns normal" v-if="item.has_plan===0" @click="$router.push('/index/designFormCreate/'+item.id)">添加</span>
           </div>
         </div>
@@ -191,7 +189,7 @@ export default {
         'start_time': this.start_time,
         'end_time': this.end_time,
         'product_code': this.searchVal,
-        'has_craft': 1
+        'has_craft': 0
       }).then((res) => {
         this.loading = false
         this.total = res.data.meta.total
@@ -229,6 +227,20 @@ export default {
         this.end_time = ''
       }
       this.getProductList()
+    },
+    showError (id) {
+      this.$confirm('该产品已有配料单,添加工艺单会导致配料单信息删除, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$router.push('/index/designFormCreate/' + id)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消添加'
+        })
+      })
     }
   },
   watch: {

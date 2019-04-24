@@ -190,7 +190,8 @@ export default {
         'page': this.pages,
         'start_time': this.start_time,
         'end_time': this.end_time,
-        'product_code': this.searchVal
+        'product_code': this.searchVal,
+        'has_plan': 0
       }).then((res) => {
         this.loading = false
         this.total = res.data.meta.total
