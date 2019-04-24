@@ -1,7 +1,7 @@
 <template>
-  <div id="productPlan">
+  <div id="productPlan" v-loading="loading">
      <div class="head">
-      <h2>添加配料单</h2>
+      <h2>配料单修改</h2>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -106,8 +106,7 @@
                 <div class="deleteCtn" @click="deleteColour(index,index2)"><i class="el-icon-delete"></i></div>
                 <div class="colorsCtn">
                   <div class="colorOnce" v-for="(item3,index3) in mainIngredient.color[index][index2].length" :key="index3">
-                    <!-- v-if是为了解决第一次渲染的时候colorArr数据没过来的bug -->
-                    <color-picker v-if="colorArr.length>0" :key="mainIngredient.color[index][index2][index3].colorCode" :content="mainIngredient.color[index][index2][index3].name.substr(0,1)" :colorArr="colorArr" v-model="mainIngredient.color[index][index2][index3].colorCode" @colorChange="(json)=>{getColor(json,index,index2,index3)}"></color-picker>
+                    <color-picker :key="mainIngredient.color[index][index2][index3].colorCode" :content="mainIngredient.color[index][index2][index3].name.substr(0,1)" :colorArr="colorArr" v-model="mainIngredient.color[index][index2][index3].colorCode" @colorChange="(json)=>{getColor(json,index,index2,index3)}"></color-picker>
                     <div class="allInputs" v-for="(item4,index4) in mainIngredient.color[index][index2][index3].value.length" :key="index4">
                       <span class="labeled">{{mainIngredient.color[index][index2][index3].value[index4].size}}</span>
                       <input class="input1" placeholder="数字" v-model="mainIngredient.color[index][index2][index3].value[index4].number"/>
@@ -238,17 +237,18 @@
       </div>
       <div class="btnCtn">
         <div class="cancleBtn" @click="clearAll">清空</div>
-        <div class="okBtn" @click="saveAll">添加</div>
+        <div class="okBtn" @click="saveAll">修改</div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { porductOne, YarnList, editList, materialList, saveProductPlan, craftProduct } from '@/assets/js/api.js'
+import { porductOne, YarnList, editList, materialList, saveProductPlan, craftProduct, productPlanOne } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      loading: true,
       sizeKey: [],
       companyId: window.sessionStorage.getItem('company_id'),
       commonUnit: 'g',
@@ -294,10 +294,10 @@ export default {
       state: true // 用于标记是否为工艺单
     }
   },
-  created () {
+  mounted () {
     // 初始化接口
     Promise.all([porductOne({
-      id: this.$route.params.id
+      id: this.$route.params.productId
     }), YarnList({
       company_id: this.companyId
     }), editList({
@@ -305,7 +305,9 @@ export default {
     }), materialList({
       company_id: this.companyId
     }), craftProduct({
-      product_id: this.$route.params.id
+      product_id: this.$route.params.productId
+    }), productPlanOne({
+      id: this.$route.params.planId
     })]).then((res) => {
       console.log(res)
       this.product = res[0].data.data
@@ -408,7 +410,58 @@ export default {
         this.xishu = gyd.yarn_coefficient.map((item) => {
           return item.value
         })
+      } else {
+        // 没有工艺单的情况下，按照产品计划单接口取数据
+        let planData = res[5].data.data
+        this.weight = planData.weight_group
+        let ingredient = []
+        let colour = []
+        let color = []
+        planData.material_data.forEach((itemMaterial) => {
+          if (itemMaterial.type === 0) {
+            let arr = []
+            if (itemMaterial.material.indexOf('支') !== -1) {
+              arr = itemMaterial.material.split('支')
+              arr[0] = arr[0] + '支'
+            }
+            if (itemMaterial.material.indexOf('厘米') !== -1) {
+              arr = itemMaterial.material.split('厘米')
+              arr[0] = arr[0] + '厘米'
+            }
+            ingredient.push(arr)
+            colour.push(itemMaterial.colour.map((itemColour) => itemColour.name))
+            color.push(itemMaterial.colour.map((itemColour) => itemColour.color.map((itemColor) => {
+              return {
+                colorCode: itemColor.value,
+                name: itemColor.name,
+                value: itemColor.size
+              }
+            })))
+            this.mainIngredient = {
+              ingredient: ingredient,
+              colour: colour,
+              color: color
+            }
+            this.xishu = planData.yarn_coefficient.map((item) => item.value)
+          }
+        })
       }
+      // 不管有没有工艺单，都需要接收的数据，工序和辅料信息
+      this.process = res[5].data.data.outside_precess
+      res[5].data.data.material_data.forEach((itemMaterial) => {
+        if (itemMaterial.type === 1) {
+          this.otherIngredient.ingredient.push(itemMaterial.material)
+          this.otherIngredient.colour.push(itemMaterial.colour.map((itemColour) => itemColour.name))
+          this.otherIngredient.color.push(itemMaterial.colour.map((itemColour) => itemColour.color.map((itemColor) => {
+            return {
+              colorCode: '',
+              name: itemColor.name,
+              value: itemColor.size
+            }
+          })))
+        }
+      })
+      this.loading = false
     })
   },
   methods: {
@@ -794,7 +847,7 @@ export default {
         }
       })
       saveProductPlan({
-        'id': '',
+        'id': this.$route.params.planId,
         'company_id': this.companyId,
         'product_id': this.product.id,
         'user_id': window.sessionStorage.getItem('user_id'),
@@ -805,8 +858,9 @@ export default {
       }).then((res) => {
         if (res.data.status) {
           this.$message.success({
-            message: '添加成功'
+            message: '修改成功'
           })
+          this.$router.push('/index/productPlanDetail/' + this.$route.params.planId)
         }
       })
     },

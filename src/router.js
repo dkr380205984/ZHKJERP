@@ -62,6 +62,10 @@ export default new Router({
       name: 'designFormCreate',
       component: () => import('./views/designForm/designFormCreate.vue')
     }, {
+      path: 'designFormUpdate/:id',
+      name: 'designFormUpdate',
+      component: () => import('./views/designForm/designFormUpdate.vue')
+    }, {
       path: 'designFormSetting',
       name: 'designFormSetting',
       component: () => import('./views/designForm/designFormSetting.vue')
@@ -77,6 +81,10 @@ export default new Router({
       path: 'productPlanAdd',
       name: 'productPlanAdd',
       component: () => import('./views/productPlan/productList.vue')
+    }, {
+      path: 'productPlanUpdate/:productId/:planId',
+      name: 'productPlanUpdate',
+      component: () => import('./views/productPlan/productPlanUpdate.vue')
     }, {
       path: 'productPlanCreate/:id',
       name: 'productPlanCreate',

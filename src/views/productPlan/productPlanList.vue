@@ -72,7 +72,7 @@
           <div class="tableColumn">{{item.product_info.user_name}}</div>
           <div class="tableColumn">{{item.product_info.create_time}}</div>
           <div class="tableColumn flex9">
-            <span class="btns warning">修改</span>
+            <span class="btns warning" @click="$router.push('/index/productPlanUpdate/'+item.product_info.id+'/'+item.id)">修改</span>
             <span class="btns success" @click="$router.push('/index/productPlanDetail/'+item.id)">查看</span>
           </div>
         </div>
@@ -91,7 +91,7 @@
 </template>
 
 <script>
-import { productPlanList } from '@/assets/js/api.js'
+import { productPlanList, productTppeList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -265,8 +265,15 @@ export default {
       return str
     }
   },
-  created () {
+  mounted () {
     this.getCraftList()
+    productTppeList({
+      company_id: window.sessionStorage.getItem('company_id')
+    }).then((res) => {
+      if (res.data.status) {
+        this.category = res.data.data
+      }
+    })
   }
 }
 </script>
