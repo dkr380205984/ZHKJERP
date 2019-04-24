@@ -22,7 +22,7 @@
       </div>
       <div class="inputCtn" style="margin-bottom:0">
         <span class="label must">产品花型:</span>
-        <el-select style="width:400px" class="elSelect" v-model="flower" placeholder="请选择花型">
+        <el-select clearable style="width:400px" class="elSelect" v-model="flower" placeholder="请选择花型">
           <el-option
             v-for="item in flowerArr"
             :key="item.id"
@@ -59,7 +59,7 @@
       <div class="inputCtn" style="margin-bottom:0;margin-top:4px">
         <span class="label must">产品尺寸:</span>
         <div class="lineCtn" v-for="(itemf,indexf) in sizeNum" :key="indexf">
-          <el-select class="elInput" v-model="footage[indexf]" placeholder="请选择尺码" style="width:200px;margin-bottom: 24px;">
+          <el-select clearable class="elInput" v-model="footage[indexf]" placeholder="请选择尺码" style="width:200px;margin-bottom: 24px;">
             <el-option
               v-for="item in child_footage"
               :key="item.id"
@@ -84,7 +84,7 @@
       <div class="inputCtn" style="margin-top:0;margin-bottom:0">
         <span class="label must">产品配色:</span>
         <div class="cancleCtn" v-for="item in colorNum" :key="item">
-          <el-select class="elSelect" v-model="color[item-1]" placeholder="请选择配色">
+          <el-select clearable class="elSelect" v-model="color[item-1]" placeholder="请选择配色">
             <el-option
               v-for="item in colorArr"
               :key="item.id"
@@ -490,8 +490,9 @@ export default {
         this.ingredient.splice(index - 1, 1)
         this.ingredientNum--
       } else {
-        this.ingredientScale.splice(index - 1, 1)
-        this.ingredient.splice(index - 1, 1)
+        this.$message.error({
+          message: '至少含有一种成分'
+        })
       }
     },
     // 删除颜色
@@ -500,7 +501,9 @@ export default {
         this.color.splice(index - 1, 1)
         this.colorNum--
       } else {
-        this.color.splice(index - 1, 1)
+        this.$message.error({
+          message: '至少含有一种配色'
+        })
       }
     },
     // 删除尺寸
@@ -509,9 +512,10 @@ export default {
         this.footage.splice(index - 1, 1)
         this.sizeArr.splice(index - 1, 1)
         this.sizeNum--
-      } else {
-        this.footage.splice(index - 1, 1)
-        this.sizeArr.splice(index - 1, 1)
+      } else if (this.sizeNum === 1) {
+        this.$message.error({
+          message: '至少含有一种尺寸'
+        })
       }
     }
   }
