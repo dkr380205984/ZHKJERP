@@ -71,7 +71,7 @@
           <div class="tableColumn ">花型</div>
           <div class="tableColumn flexSamll">成分(种)</div>
           <div class="tableColumn">尺码</div>
-          <div class="tableColumn flexSamll">颜色(种)</div>
+          <div class="tableColumn flexSamll">配色(种)</div>
           <div class="tableColumn">图片</div>
           <div class="tableColumn">创建人</div>
           <div class="tableColumn">操作</div>

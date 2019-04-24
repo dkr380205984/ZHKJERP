@@ -62,7 +62,7 @@
         </div>
         <div class="lineCtn">
           <div class="inputCtn oneLine">
-            <span class="label">主要原料:</span>
+            <span class="label must">主要原料:</span>
             <div class="addBtn" @click="addMainMaterial">
               <span>添加主要原料</span>
               <span>+</span>
@@ -77,7 +77,7 @@
          -->
         <div class="lineCtn">
           <div class="inputCtn oneLine rowLine">
-            <span class="label">原料列表:</span>
+            <span class="label must">原料列表:</span>
             <div class="specialCtn" v-for="(item,index) in mainIngredient.ingredient.length" :key="index">
               <div class="blockCtn">
                 <el-cascader
@@ -126,7 +126,7 @@
         </div>
         <div class="lineCtn">
           <div class="inputCtn oneLine">
-            <span class="label">净重:</span>
+            <span class="label must">净重:</span>
             <el-input :disabled="!state" class="elInput" placeholder="原料净重" v-model="weight[index]" v-for="(item,index) in sizeKey" :key="index">
               <template slot="prepend">{{item}}</template>
               <template slot="append">克</template>
@@ -135,7 +135,7 @@
         </div>
         <div class="lineCtn">
           <div class="inputCtn oneLine">
-            <span class="label">纱线系数:</span>
+            <span class="label must">纱线系数:</span>
             <el-input :disabled="!state" style="width:300px" class="elInput" placeholder="纱线系数" v-model="xishu[index]" v-for="(item,index) in ingredientCmp" :key="index">
               <template slot="prepend">{{item}}</template>
               <template slot="append">克/厘米</template>
@@ -217,7 +217,7 @@
         </div>
         <div class="lineCtn">
           <div class="inputCtn oneLine">
-            <span class="label">外道加工流程:</span>
+            <span class="label must">外道加工流程:</span>
             <el-select v-for="(item,index) in process.length" class="elSelect" style="margin-bottom:24px" v-model="process[index]" placeholder="请选择工序" :key="index">
               <el-option
                 v-for="item in processArr"

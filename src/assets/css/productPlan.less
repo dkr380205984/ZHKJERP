@@ -197,6 +197,12 @@
             line-height: 40px;
             left: 0;
             top: 0;
+            &.must{
+              &::before{
+                content:'*';
+                color: @error;
+              }
+            }
           }
           .checkCtn{
             display: flex;

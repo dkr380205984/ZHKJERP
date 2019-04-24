@@ -95,6 +95,12 @@
         font-size: @fontBig;
         color: @fontNormal;
         left: 0;
+        &.must{
+          &::before{
+            content:'*';
+            color: @error;
+          }
+        }
       }
       .sizeInput{
         height: 40px;

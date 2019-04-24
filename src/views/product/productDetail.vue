@@ -54,7 +54,7 @@
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">产品颜色:</span>
+          <span class="label">产品配色:</span>
           <span class="content contentFlex" v-for="(item,index) in productDetail.color" :key="index">
             <span class="sort">{{index+1}}.</span>
             <div class="colorBg" :style="{'background':item.color_code}"></div>
