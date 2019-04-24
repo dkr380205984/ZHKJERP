@@ -217,6 +217,18 @@ export default new Router({
       path: 'rawMaterialStat/:id',
       name: 'rawMaterialStat',
       component: () => import('./views/rawMaterial/rawMaterialStat.vue')
+    }, {
+      path: 'rawMaterialOrderPage/:id',
+      name: 'rawMaterialOrderPage',
+      component: () => import('./views/rawMaterial/rawMaterialOrderPage.vue')
+    }, {
+      path: 'rawMaterialOrderList',
+      name: 'rawMaterialOrderList',
+      component: () => import('./views/rawMaterial/rawMaterialOrderList.vue')
+    }, {
+      path: 'rawMaterialOrderCompledList',
+      name: 'rawMaterialOrderCompledList',
+      component: () => import('./views/rawMaterial/rawMaterialOrderCompledList.vue')
     }]
   }
   ]

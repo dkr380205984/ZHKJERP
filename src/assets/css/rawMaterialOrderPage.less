@@ -1,0 +1,125 @@
+@import './common.less';
+#rawMaterialOrderPage {
+  height: 100%;
+  font-family: 'systemfont';
+  font-weight: 300;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  .head {
+    min-height: 60px;
+    border-bottom: 1px solid #ECF0F1;
+    padding: 20px 40px;
+    h2 {
+      line-height: 60px;
+      margin: 0;
+      font-size: 24px;
+      color:@fontNormal;
+      font-weight: 400;
+    }
+  }
+  .body {
+    // padding: 20px 40px;
+    flex: 1;
+    color:@fontNormal;
+    overflow: hidden;
+    &>.title {
+      margin-top: 20px;
+      padding: 0 40px;
+      width: 100%;
+      height: 40px;
+      box-sizing: border-box;
+      background-color: #FAFAFA;
+      border: 1px solid #B5B5B5;
+      .content {
+        display: flex;
+        width: 900px;
+        justify-content: space-between;
+        span {
+          font-size: 18px;
+          line-height: 40px;
+        }
+        span:nth-child(2) {
+          cursor: pointer;
+          font-size: 12px;
+          em {
+            transition: all 0.2s linear;
+          }
+        }
+      }
+    }
+    .info {
+      height: auto;
+      width: 100%;
+      padding: 0 40px;
+      overflow: hidden;
+      transition: height 0.3s ease-in-out;
+      &.close {
+        height: 0;
+      }
+      .lineCtn {
+        width: 900px;
+        display: flex;
+        margin: 24px 0;
+        .inputCtn {
+          // flex: 1;
+          // margin-right: 300px;
+          min-height: 40px;
+          display: flex;
+          flex-wrap: wrap;
+          padding-left: 6em;
+          position: relative;
+          &.twoLine {
+            width: 450px;
+          }
+          .label{
+            position: absolute;
+            width: 6em;
+            line-height: 40px;
+            text-align: right;
+            font-size: @fontBig;
+            color: @fontNormal;
+            left: 0;
+          }
+          .content {
+            line-height: 40px;
+            margin-left: 15px;
+            color:@fontNormal;
+            font-size: @fontMid;
+            .table {
+              width: 849px;
+              height:  230px;
+              display: flex;
+              flex-direction: column;
+              list-style: none;
+              padding: 0;
+              margin: 0;
+              .title {
+                height: 53px;
+                line-height: 53px;
+              }
+              &>li {
+                flex: 1;
+                display: flex;
+                border: 1px solid #B5B5B5;
+                border-top: none;
+                box-sizing: border-box;
+                line-height: 44px;
+                // &:last-child {
+                //   border-bottom: none; 
+                // }
+                &:first-child {
+                  border-top: 1px solid #B5B5B5;
+                  // border-bottom: none;
+                }
+                span:first-child {
+                  width: 368px;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
