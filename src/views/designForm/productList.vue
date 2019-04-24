@@ -92,7 +92,9 @@
           </div>
           <div class="tableColumn">{{item.user_name}}</div>
           <div class="tableColumn">
-            <span class="btns ban" v-if="item.has_plan===1">添加</span>
+            <el-tooltip class="item" effect="dark" content="该产品已有配料单信息，不能添加工艺单" placement="top-start">
+              <span class="btns ban" v-if="item.has_plan===1">添加</span>
+            </el-tooltip>
             <span class="btns normal" v-if="item.has_plan===0" @click="$router.push('/index/designFormCreate/'+item.id)">添加</span>
           </div>
         </div>
@@ -188,7 +190,8 @@ export default {
         'page': this.pages,
         'start_time': this.start_time,
         'end_time': this.end_time,
-        'product_code': this.searchVal
+        'product_code': this.searchVal,
+        'has_craft': 1
       }).then((res) => {
         this.loading = false
         this.total = res.data.meta.total

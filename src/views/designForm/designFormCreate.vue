@@ -1373,26 +1373,27 @@ export default {
             message: '添加成功'
           })
           this.clearDraft(true)
+          this.$route.push('/index/productPlanCreate/' + this.$route.params.id)
         }
       })
     },
     // 清空
     clearAll () {
-      // this.$confirm('此操作将清空所有填写信息, 是否继续?', '提示', {
-      //   confirmButtonText: '确定',
-      //   cancelButtonText: '取消',
-      //   type: 'warning'
-      // }).then(() => {
-      //   this.$message({
-      //     type: 'success',
-      //     message: '清空成功!'
-      //   })
-      // }).catch(() => {
-      //   this.$message({
-      //     type: 'info',
-      //     message: '已取消清除'
-      //   })
-      // })
+      this.$confirm('此操作将清空所有填写信息, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '暂时不支持清空功能!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消清除'
+        })
+      })
     },
     // 保存草稿
     saveDraft () {

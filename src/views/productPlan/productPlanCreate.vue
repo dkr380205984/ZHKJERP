@@ -1,5 +1,5 @@
 <template>
-  <div id="productPlan">
+  <div id="productPlan" v-loading="loading">
      <div class="head">
       <h2>添加配料单</h2>
     </div>
@@ -249,6 +249,7 @@ import { porductOne, YarnList, editList, materialList, saveProductPlan, craftPro
 export default {
   data () {
     return {
+      loading: true,
       sizeKey: [],
       companyId: window.sessionStorage.getItem('company_id'),
       commonUnit: 'g',
@@ -294,7 +295,7 @@ export default {
       state: true // 用于标记是否为工艺单
     }
   },
-  created () {
+  mounted () {
     // 初始化接口
     Promise.all([porductOne({
       id: this.$route.params.id
@@ -409,6 +410,7 @@ export default {
           return item.value
         })
       }
+      this.loading = false
     })
   },
   methods: {
