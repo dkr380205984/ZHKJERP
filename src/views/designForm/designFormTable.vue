@@ -146,7 +146,7 @@
             <div class="main-raw-material material">
               <span>主要原料(纬)</span>
               <span>
-                {{this.material_data.weftMaterialMain.name}}
+                {{this.material_data.weftMaterialMain.name}}:
                 <template v-for="(item,index) in material_data.weftMaterialMain.value">
                   {{item === 0 ? '主' : '夹' + item}}{{index+1 !== material_data.weftMaterialMain.value.length ? '/' : ''}}
                 </template>
@@ -156,7 +156,7 @@
               <span>次要原料(纬)</span>
               <span>
                 <span v-for="(itemMaterial,indexMaterial) in material_data.weftMaterialOther"
-                      :key="indexMaterial">
+                      :key="indexMaterial">:
                   <template v-for="(item,index) in itemMaterial.value">
                     {{item === 0 ? '主' : '夹' + item}}{{index+1 !== itemMaterial.value.length ? '/' : ''}}
                   </template>
