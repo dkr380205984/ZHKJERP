@@ -80,7 +80,7 @@
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">备注:</span>
-          <span class="content">{{remark}}</span>
+          <span class="content">{{remark ? remark : '暂无信息'}}</span>
         </div>
       </div>
       <div class="lineCtn">
@@ -88,6 +88,8 @@
           <span class="content btn">
             <span class="goBack"
                   @click="$router.go(-1)">返回</span>
+            <span class="change"
+                  @click="$router.go(-1)">修改</span>
           </span>
         </div>
       </div>

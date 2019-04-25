@@ -56,6 +56,7 @@
           flex-direction: column;
           &.btn{
             width: 100%;
+            display: block;
             &>span {
               display: inline-block;
               width: 100px;
@@ -64,9 +65,13 @@
               text-align: center;
               margin-right: 84px;
               cursor: pointer;
-            }
-            .goBack {
-              border: 1px solid #AAA;
+              &.goBack {
+                border: 1px solid #AAA;
+              }
+              &.change {
+                background-color: @normalBlue;
+                color: #fff;
+              }
             }
           }
           .list {
@@ -103,6 +108,9 @@
                     span {
                       flex:1;
                       text-align: center;
+                      &:first-child {
+                        text-align: left;
+                      }
                     }
                   }
                 }

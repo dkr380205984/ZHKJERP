@@ -130,8 +130,8 @@
               <span class="unit">{{weft_data.weimi}}</span>
               <span>齿牙</span>
               <span class="unit">
-                <span>上:{{weft_data.shangchiya?weft_data.shangchiya+'牙':''}}</span>
-                <span>下:{{weft_data.xiachiya?weft_data.xiachiya+'牙':''}}</span>
+                <span>上:{{weft_data.shangchiya?weft_data.shangchiya:''}}</span>
+                <span>下:{{weft_data.xiachiya?weft_data.xiachiya:''}}</span>
               </span>
             </div>
             <div class="contexture-info">
@@ -204,7 +204,7 @@
               </div>
               <div v-for="(item,index) in forArr(7)"
                    :key="index">
-                <div>{{index == 0 ? "主" : "夹" + index}}</div>
+                <div>{{index === 0 ? "主" : "夹" + index}}</div>
                 <div>
                   <span>经</span>
                   <span>纬</span>
@@ -218,7 +218,7 @@
                 <div v-for="(value,index) in forArr(7)"
                      :key="index">
                   <span>颜色</span>
-                  <span v-if="index == 3 || index == 4 || index == 6">颜色</span>
+                  <span>颜色</span>
                 </div>
               </li>
             </ul>
@@ -277,7 +277,8 @@ export default {
         neichang: '',
         rangwei: '',
         total: ''
-      }
+      },
+      color_data: []
     }
   },
   methods: {
@@ -399,13 +400,14 @@ export default {
       id: this.$route.params.id
     }).then((res) => {
       const data = res.data.data
-      console.log(data)
+      // console.log(data.color_data)
       this.product_info = data.product_info
       this.craft_code = data.craft_code
       this.create_time = data.create_time
       this.weight = data.weight
       this.warp_data = data.warp_data
       this.weft_data = data.weft_data
+      this.color_data = data.color_data
       data.material_data.forEach((item) => {
         if (item.type === 0 && item.type_material === 0) {
           this.material_data.warpMaterialMain.name = item.material_name
@@ -428,13 +430,73 @@ export default {
           })
         }
       })
+      data.color_data.forEach(item => {
+        item.color_scheme.forArr(index => {
+
+        })
+      })
+      // data.color_data.forEach(item => {
+      //   item.color_scheme.forEach((index, n) => {
+      //     if (this.color_data.length === 0) {
+      //       let obj = {}
+      //       obj.product_color = item.product_color
+      //       obj.color_scheme = []
+      //       let info = {}
+      //       info[(item.type) === 0 ? 'warp' : 'weft'] = {
+      //         name: index.name,
+      //         value: index.value
+      //       }
+      //       obj.color_scheme.push(info)
+      //       this.color_data.push(obj)
+      //     } else {
+      //       this.color_data.forEach((value, index) => {
+      //         // console.log(value)
+      //         let flag = true
+      //         if (value.product_color === item.product_color) {
+      //           flag = false
+      //           // console.log(value, n)
+      //           if (item.type === 0) {
+      //             value.color_scheme.push({
+      //               warp: {
+      //                 name: index.name,
+      //                 value: index.value
+      //               }
+      //             })
+      //           } else if (item.type === 1) {
+      //             // console.log(value, n)
+      //             let obj = value.color_scheme[n]
+      //             obj.weft = {
+      //               name: index.name,
+      //               value: index.value
+      //             }
+      //           }
+      //         } else if (index === this.color_data.length - 1 && value.product_color !== item.product_color && flag) {
+      //           // let str = item.type === 0 ? 'warp' : 'weft'
+      //           // let obj = {}
+      //           // obj.product_color = item.product_color
+      //           // obj.color_scheme = []
+      //           // let info = {}
+      //           // info[(item.type) === 0 ? 'warp' : 'weft'] = {
+      //           //   name: index.name,
+      //           //   value: index.value
+      //           // }
+      //           // obj.color_scheme.push(info)
+      //           // this.color_data.push(obj)
+      //         }
+      //       })
+      //     }
+      //   })
+      //   console.log(this.color_data)
+      //   //   // this.color_data.product_color = item.product_color
+      // })
     })
-    console.log(this.material_data)
+    // console.log(this.material_data)
   }
-  // updated () {
-  //   window.print()
-  // }
 }
+// updated () {
+//   window.print()
+// }
+// }
 </script>
 
 <style lang="less" scoped>
