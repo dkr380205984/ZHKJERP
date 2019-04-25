@@ -300,7 +300,7 @@
         </div>
       </div>
       <div class="bottom">
-        <div class="cancleBtn" @click="clearAll">清空</div>
+        <div class="cancleBtn" @click="$router.push('/index/orderList')">返回</div>
         <div class="okBtn" @click="saveAll">保存</div>
       </div>
     </div>

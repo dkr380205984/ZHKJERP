@@ -1,5 +1,5 @@
 <template>
-  <div id="productDesignDetail">
+  <div id="productDesignDetail" v-loading="loading">
     <div class="head">
       <h2>生产计划单详情</h2>
     </div>
@@ -27,7 +27,7 @@
         </div>
         <div class="inputCtn">
           <span class="label">汇率：</span>
-          <span class="content">1 = {{order.exchange_rate}}</span>
+          <span class="content">100{{order.account_unit}} = {{order.exchange_rate+'人民币'}}</span>
         </div>
       </div>
       <div class="lineCtn">
@@ -53,7 +53,7 @@
       <div class="lineCtn">
         <div class="inputCtn oneLine">
           <span class="label">备注：</span>
-          <span class="content">{{order.remark}}</span>
+          <span class="content">{{order.remark?order.remark:'暂无信息'}}</span>
         </div>
       </div>
       <div class="lineCtn" style="max-width:1200px">
@@ -109,7 +109,7 @@
         </div>
       </div>
       <div class="btnCtn">
-        <div class="cancleBtn">返回</div>
+        <div class="cancleBtn" @click="$router.go(-1)">返回</div>
         <div class="okBtn">修改</div>
       </div>
     </div>
@@ -121,6 +121,7 @@ import { productionDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      loading: true,
       order: {
         order_code: '',
         client_name: '',
@@ -176,6 +177,7 @@ export default {
           })
         }
       })
+      this.loading = false
     })
   }
 }

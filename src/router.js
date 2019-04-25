@@ -198,6 +198,10 @@ export default new Router({
       name: 'productDesignDetail',
       component: () => import('./views/productDesign/productDesignDetail.vue')
     }, {
+      path: 'productDesignUpdate/:id',
+      name: 'productDesignUpdate',
+      component: () => import('./views/productDesign/productDesignUpdate.vue')
+    }, {
       path: 'productDesignList',
       name: 'productDesignList',
       component: () => import('./views/productDesign/productDesignList.vue')

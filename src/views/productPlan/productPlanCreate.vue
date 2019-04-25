@@ -237,7 +237,7 @@
         </div>
       </div>
       <div class="btnCtn">
-        <div class="cancleBtn" @click="clearAll">清空</div>
+        <div class="cancleBtn" @click="$router.go(-1)">返回</div>
         <div class="okBtn" @click="saveAll">添加</div>
       </div>
     </div>

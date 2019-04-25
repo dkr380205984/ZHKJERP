@@ -1,19 +1,46 @@
 <template>
-  <div id="productDesignCreateList">
+  <div id="productDesignCreateList" v-loading="loading">
     <div class="head">
-      <h2>添加生产计划单</h2>
-      <el-input placeholder="输入产品编号精确搜索" suffix-icon="el-icon-search" v-model="searchVal"></el-input>
+      <h2>订单列表</h2>
+      <el-input placeholder="输入订单号精确搜索" suffix-icon="el-icon-search" v-model="searchVal"></el-input>
     </div>
     <div class="body">
       <div class="filterCtn">
         <div class="filterLine">
           <span class="label">筛选列表:</span>
+          <el-tag closable v-show="categoryValCmp" @close="clear('categoryVal')">{{categoryValCmp}}</el-tag>
+          <el-tag closable v-show="typesValCmp" @close="clear('typesVal')">{{typesValCmp}}</el-tag>
+          <el-tag closable v-show="styleValCmp" @close="clear('styleVal')">{{styleValCmp}}</el-tag>
           <el-tag closable v-show="companyCmp" @close="clear('company')">{{companyCmp}}</el-tag>
-          <el-tag closable v-show="contactsCmp" @close="clear('contacts')">{{contactsCmp}}</el-tag>
+          <el-tag closable v-show="groupCmp" @close="clear('group')">{{groupCmp}}</el-tag>
         </div>
         <div class="selectLine">
           <span class="label">筛选条件:</span>
           <div class="leftFilter">
+            <el-select v-model="categoryVal" placeholder="筛选品类">
+              <el-option
+                v-for="item in category"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
+            <el-select v-model="typesVal" placeholder="筛选类型">
+              <el-option
+                v-for="item in types"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
+            <el-select v-model="styleVal" placeholder="筛选款型">
+              <el-option
+                v-for="item in style"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
             <el-select v-model="company" placeholder="外贸公司">
               <el-option
                 v-for="item in companyArr"
@@ -22,9 +49,9 @@
                 :value="item.id">
               </el-option>
             </el-select>
-            <el-select v-model="contacts" placeholder="联系人">
+             <el-select v-model="group" placeholder="负责小组">
               <el-option
-                v-for="item in contactsArr"
+                v-for="item in groupArr"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id">
@@ -37,37 +64,51 @@
               type="daterange"
               align="right"
               unlink-panels
-              value-format="yyyy-MM-dd"
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
-              :picker-options="pickerOptions">
+              :picker-options="pickerOptions"
+              @change="pickTime">
             </el-date-picker>
           </div>
         </div>
       </div>
-      <div class="tableCtn">
-        <div class="tableRow titleTableRow">
+      <div class="mergeTable">
+        <div class="mergeHeader">
           <div class="tableColumn">订单号</div>
-          <div class="tableColumn flex9">外贸公司</div>
-          <div class="tableColumn">联系人</div>
-          <div class="tableColumn">交货批次(批)</div>
-          <div class="tableColumn">结算单位</div>
-          <div class="tableColumn">订单价</div>
-          <div class="tableColumn">下单日期</div>
+          <div class="tableColumn">外贸公司</div>
+          <div class="tableColumn" style="flex:2">产品信息</div>
+          <div class="tableColumn" style="flex:0.7">负责小组</div>
+          <div class="tableColumn" style="flex:0.7">下单日期</div>
+          <div class="tableColumn">交货日期</div>
+          <div class="tableColumn" style="flex:0.7">订单价</div>
           <div class="tableColumn">操作</div>
         </div>
-        <div class="tableRow bodyTableRow" v-for="(item) in list" :key="item.id">
-          <div class="tableColumn" style="color:#1A95FF">{{item.order_code}}</div>
-          <div class="tableColumn flex9">{{item.client_name}}</div>
-          <div class="tableColumn">{{item.contacts}}</div>
-          <div class="tableColumn">{{item.order_batch.length}}</div>
-          <div class="tableColumn">{{item.account_unit}}</div>
-          <div class="tableColumn">{{item.total_price}}</div>
-          <div class="tableColumn">{{item.order_time}}</div>
+        <div class="mergeBody" v-for="(item ,index) in list" :style="{'height':(60+(item.lineNum-1)*30)+'px'}" :key="index">
+          <div class="tableColumn">{{item.order_code}}</div>
+          <div class="tableColumn">{{item.client_name}}</div>
+          <div class="tableColumn" style="flex:2">
+            <div class="once" v-for="(itemProduct,indexProduct) in item.productList" :key="indexProduct">
+              <span style="margin:0 5px">{{itemProduct.productCode}}</span>
+              <span style="margin:0 5px">{{itemProduct.productInfo.category_info.product_category}}/{{itemProduct.productInfo.type_name}}/{{itemProduct.productInfo.style_name}}/{{itemProduct.productInfo.flower_id}}</span>
+              <span style="margin:0 5px">{{itemProduct.sum}}{{itemProduct.productInfo.category_info.name}}</span>
+            </div>
+          </div>
+          <div class="tableColumn" style="flex:0.7">{{item.group_name}}</div>
+          <div class="tableColumn" style="flex:0.7">{{item.order_time}}</div>
           <div class="tableColumn">
+            <div class="once" v-for="(itemTime,indexTime) in item.delivery_time" :key="indexTime">
+              <span>第 {{indexTime+1}} 批：</span>
+              <span>{{itemTime}}</span>
+            </div>
+          </div>
+          <div class="tableColumn" style="flex:0.7">{{item.total_price}}</div>
+          <div class="tableColumn" style="flex-direction:row;">
             <span class="btns normal" @click="$router.push('/index/productDesignCreate/'+item.id)">添加</span>
           </div>
+        </div>
+        <div class="mergeBody" v-if="list.length===0">
+          <div style="width:100%;text-align:center;line-height:59px;">暂无数据</div>
         </div>
       </div>
       <div class="pageCtn">
@@ -85,10 +126,11 @@
 </template>
 
 <script>
-import { orderList } from '@/assets/js/api.js'
+import { orderList, productTppeList, clientList, getGroup } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      loading: true,
       searchVal: '',
       date: '',
       pickerOptions: {
@@ -118,42 +160,207 @@ export default {
           }
         }]
       },
-      company: '',
-      companyArr: [],
-      contacts: '',
-      contactsArr: [],
-      list: [],
       total: 0,
-      pages: 1
-    }
-  },
-  computed: {
-    companyCmp () {
-      return false
-    },
-    contactsCmp () {
-      return false
+      pages: 1,
+      list: [],
+      category: [], // 大类
+      categoryVal: '',
+      types: [], // 二级分类
+      typesVal: '',
+      style: [], // 三级分类
+      styleVal: '',
+      companyArr: [],
+      company: '',
+      group: '',
+      groupArr: [],
+      timer: '',
+      start_time: '',
+      end_time: ''
     }
   },
   methods: {
+    getOrderList () {
+      this.loading = true
+      orderList({
+        'company_id': window.sessionStorage.getItem('company_id'),
+        'limit': 5,
+        'page': this.pages,
+        'category_id': this.categoryVal,
+        'type_id': this.typesVal,
+        'style_id': this.styleVal,
+        'client_id': this.company,
+        'group_id': this.group,
+        'product_code': this.searchVal,
+        'start_time': this.start_time,
+        'end_time': this.end_time,
+        'has_plan': 0
+      }).then((res) => {
+        this.loading = false
+        this.total = res.data.meta.total
+        this.list = res.data.data.map((item) => {
+          let productList = []
+          item.order_batch.forEach((itemOrder) => {
+            itemOrder.batch_info.forEach((itemBatch) => {
+              if (productList.find((itemFind) => itemFind.productCode === itemBatch.productCode)) {
+                let mark = -1
+                productList.forEach((itemFind, index) => {
+                  if (itemFind.productCode === itemBatch.productCode) {
+                    mark = index
+                  }
+                })
+                productList[mark].sum = productList[mark].sum + itemBatch.size.reduce((total, current) => {
+                  return total + parseInt(current.numbers)
+                }, 0)
+              } else {
+                productList.push({
+                  productInfo: itemBatch.productInfo,
+                  productCode: itemBatch.productCode,
+                  sum: itemBatch.size.reduce((total, current) => {
+                    return total + parseInt(current.numbers)
+                  }, 0)
+                })
+              }
+            })
+          })
+          return {
+            id: item.id,
+            total_price: item.total_price + item.account_unit,
+            group_name: item.group_name,
+            order_code: item.order_code,
+            order_time: item.order_time,
+            client_name: item.client_name,
+            contacts: item.contacts,
+            delivery_time: item.order_batch.map((item) => item.delivery_time),
+            productList: productList,
+            lineNum: Math.max(item.order_batch.length, productList.length) // 这个参数用于计算每行的高度
+          }
+        })
+        console.log(this.list)
+      })
+    },
+    pickTime (date) {
+      if (date) {
+        this.start_time = date[0]
+        this.end_time = date[1]
+      } else {
+        this.start_time = ''
+        this.end_time = ''
+      }
+      this.getOrderList()
+    },
     // 删除条件
     clear (item) {
-
+      if (item === 'categoryVal') {
+        this.categoryVal = ''
+        this.typesVal = ''
+        this.types = []
+        this.styleVal = ''
+        this.style = []
+      } else if (item === 'typesVal') {
+        this.typesVal = ''
+        this.styleVal = ''
+        this.style = []
+      } else if (item === 'styleVal') {
+        this.styleVal = ''
+      } else if (item === 'company') {
+        this.company = ''
+      } else if (item === 'group') {
+        this.group = ''
+      }
+    }
+  },
+  watch: {
+    categoryVal (newVal) {
+      if (newVal) {
+        this.types = this.category.find((item) => item.id === newVal).child
+        this.typesVal = ''
+        this.styleVal = ''
+        this.style = []
+        this.pages = 1
+      }
+      this.getOrderList()
     },
-    getOrderList () {
-
+    typesVal (newVal) {
+      if (newVal) {
+        this.style = this.types.find((item) => item.id === newVal).child
+        this.styleVal = ''
+        this.pages = 1
+      }
+      this.getOrderList()
+    },
+    styleVal (newVal) {
+      this.getOrderList()
+    },
+    company (newVal) {
+      this.getOrderList()
+    },
+    group (newVal) {
+      this.getOrderList()
+    },
+    searchVal (newVal) {
+      this.timer = ''
+      this.timer = setTimeout(() => {
+        this.getOrderList()
+      }, 800)
+    }
+  },
+  computed: {
+    categoryValCmp () {
+      if (this.categoryVal) {
+        return this.category.find((item) => item.id === this.categoryVal).name
+      } else {
+        return '所有分类'
+      }
+    },
+    typesValCmp () {
+      if (this.typesVal) {
+        return this.types.find((item) => item.id === this.typesVal).name
+      } else {
+        return ''
+      }
+    },
+    styleValCmp () {
+      if (this.styleVal) {
+        return this.style.find((item) => item.id === this.styleVal).name
+      } else {
+        return ''
+      }
+    },
+    companyCmp () {
+      if (this.company) {
+        return this.companyArr.find((item) => item.id === this.company).name
+      } else {
+        return ''
+      }
+    },
+    groupCmp () {
+      if (this.group) {
+        return this.groupArr.find((item) => item.id === this.group).name
+      } else {
+        return ''
+      }
     }
   },
   mounted () {
-    orderList({
-      company_id: window.sessionStorage.getItem('company_id'),
-      page: this.pages,
-      limit: 5,
-      has_plan: 0
+    this.getOrderList()
+    productTppeList({
+      company_id: window.sessionStorage.getItem('company_id')
     }).then((res) => {
-      console.log(res)
-      this.total = res.data.meta.total
-      this.list = res.data.data
+      if (res.data.status) {
+        this.category = res.data.data
+      }
+    })
+    clientList({
+      company_id: window.sessionStorage.getItem('company_id'),
+      keyword: '',
+      status: 1
+    }).then((res) => {
+      this.companyArr = res.data.data
+    })
+    getGroup({
+      company_id: window.sessionStorage.getItem('company_id')
+    }).then((res) => {
+      this.groupArr = res.data.data
     })
   }
 }
@@ -161,4 +368,16 @@ export default {
 
 <style lang="less" scoped>
   @import '~@/assets/css/productDesignCreateList.less';
+</style>
+<style lang="less">
+#productDesignCreateList{
+  .el-carousel__arrow{
+    color:#fff;
+    background: #1A95FF;
+    &:hover{
+      background:#48AAFF;
+    }
+  }
+}
+
 </style>
