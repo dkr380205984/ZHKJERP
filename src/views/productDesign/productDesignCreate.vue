@@ -1,5 +1,5 @@
 <template>
-  <div id="productDesignCreate">
+  <div id="productDesignCreate" v-loading="loading">
     <div class="head">
       <h2>添加生产计划单</h2>
     </div>
@@ -27,7 +27,7 @@
         </div>
         <div class="inputCtn">
           <span class="label">汇率：</span>
-          <span class="content">1 = {{order.exchange_rate}}</span>
+          <span class="content">100{{order.account_unit}} = {{order.exchange_rate+'人民币'}}</span>
         </div>
       </div>
       <div class="lineCtn">
@@ -53,7 +53,7 @@
       <div class="lineCtn">
         <div class="inputCtn oneLine">
           <span class="label">备注：</span>
-          <span class="content">{{order.remark}}</span>
+          <span class="content">{{order.remark?order.remark:'暂无信息'}}</span>
         </div>
       </div>
        <div class="lineCtn">
@@ -93,7 +93,7 @@
         </div>
       </div>
       <div class="btnCtn">
-        <div class="cancleBtn" @click="clearAll">清空</div>
+        <div class="cancleBtn" @click="$router.go(-1)">返回</div>
         <div class="okBtn" @click="saveAll">添加</div>
       </div>
     </div>
@@ -105,6 +105,7 @@ import { orderStockDetail, productionSave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      loading: true,
       order: {
         order_code: '',
         client_name: '',
@@ -129,7 +130,6 @@ export default {
 
     },
     saveAll () {
-      console.log(this.productInfo)
       let json = {
         company_id: window.sessionStorage.getItem('company_id'),
         order_id: this.order.id,
@@ -155,6 +155,7 @@ export default {
         this.$message.success({
           message: '添加成功'
         })
+        this.$router.push('/index/productDesignList')
       })
     }
   },
@@ -210,7 +211,7 @@ export default {
           })
         }
       })
-      console.log(this.product)
+      this.loading = false
     })
   }
 }

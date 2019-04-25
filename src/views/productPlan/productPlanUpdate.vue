@@ -109,8 +109,8 @@
                     <color-picker :key="mainIngredient.color[index][index2][index3].colorCode" :content="mainIngredient.color[index][index2][index3].name.substr(0,1)" :colorArr="colorArr" v-model="mainIngredient.color[index][index2][index3].colorCode" @colorChange="(json)=>{getColor(json,index,index2,index3)}"></color-picker>
                     <div class="allInputs" v-for="(item4,index4) in mainIngredient.color[index][index2][index3].value.length" :key="index4">
                       <span class="labeled">{{mainIngredient.color[index][index2][index3].value[index4].size}}</span>
-                      <input class="input1" placeholder="数字" v-model="mainIngredient.color[index][index2][index3].value[index4].number"/>
-                      <input class="input2" @blur="commonUnit=mainIngredient.color[index][index2][index3].value[index4].unit" placeholder="单位" v-model="mainIngredient.color[index][index2][index3].value[index4].unit"/>
+                      <input class="input1" placeholder="数量" v-model="mainIngredient.color[index][index2][index3].value[index4].number"/>
+                      <input class="input2" @blur="commonUnit1=mainIngredient.color[index][index2][index3].value[index4].unit" placeholder="单位" v-model="mainIngredient.color[index][index2][index3].value[index4].unit"/>
                     </div>
                     <i class="el-icon-delete delete" @click="deleteColor(index,index2,index3)"></i>
                   </div>
@@ -193,8 +193,8 @@
                     <el-input placeholder="请输入颜色" v-model="otherIngredient.color[index][index2][index3].name" style="width:150px"/>
                     <div class="allInputs" v-for="(item4,index4) in otherIngredient.color[index][index2][index3].value.length" :key="index4">
                       <span class="labeled">{{otherIngredient.color[index][index2][index3].value[index4].size}}</span>
-                      <input class="input1" placeholder="数字" v-model="otherIngredient.color[index][index2][index3].value[index4].number"/>
-                      <input class="input2" @blur="commonUnit=otherIngredient.color[index][index2][index3].value[index4].unit" placeholder="单位" v-model="otherIngredient.color[index][index2][index3].value[index4].unit"/>
+                      <input class="input1" placeholder="数量" v-model="otherIngredient.color[index][index2][index3].value[index4].number"/>
+                      <input class="input2" @blur="commonUnit2=otherIngredient.color[index][index2][index3].value[index4].unit" placeholder="单位" v-model="otherIngredient.color[index][index2][index3].value[index4].unit"/>
                     </div>
                     <i class="el-icon-delete delete" @click="deleteOtherColor(index,index2,index3)"></i>
                   </div>
@@ -210,14 +210,14 @@
         </div>
       </div>
       <div class="stepCtn">
-        <div class="stepTitle">外道加工信息</div>
+        <div class="stepTitle">生产流程</div>
         <div class="borderCtn">
           <div class="cicle"></div>
           <div class="border"></div>
         </div>
         <div class="lineCtn">
           <div class="inputCtn oneLine">
-            <span class="label must">外道加工流程:</span>
+            <span class="label must">生产流程:</span>
             <el-select v-for="(item,index) in process.length" class="elSelect" style="margin-bottom:24px" v-model="process[index]" placeholder="请选择工序" :key="index">
               <el-option
                 v-for="item in processArr"
@@ -236,7 +236,7 @@
         </div>
       </div>
       <div class="btnCtn">
-        <div class="cancleBtn" @click="clearAll">清空</div>
+        <div class="cancleBtn" @click="$router.go(-1)">返回</div>
         <div class="okBtn" @click="saveAll">修改</div>
       </div>
     </div>
@@ -251,7 +251,8 @@ export default {
       loading: true,
       sizeKey: [],
       companyId: window.sessionStorage.getItem('company_id'),
-      commonUnit: 'g',
+      commonUnit1: '克',
+      commonUnit2: '个',
       product: {
         category_info: {
           product_category: ''
@@ -333,7 +334,7 @@ export default {
         value.push({
           size: key,
           number: '',
-          unit: this.commonUnit
+          unit: this.commonUnit1
         })
       })
       this.mainIngredient.color[0][0][0].value = value
@@ -473,7 +474,7 @@ export default {
           value.push({
             size: key,
             number: '',
-            unit: this.commonUnit
+            unit: this.commonUnit1
           })
         })
         this.mainIngredient.ingredient.push([])
@@ -495,7 +496,7 @@ export default {
         value.push({
           size: key,
           number: '',
-          unit: this.commonUnit
+          unit: this.commonUnit2
         })
       })
       this.otherIngredient.ingredient.push('')
@@ -559,7 +560,7 @@ export default {
           value.push({
             size: key,
             number: '',
-            unit: this.commonUnit
+            unit: this.commonUnit1
           })
         })
         this.mainIngredient.colour[index].push('')
@@ -580,7 +581,7 @@ export default {
         value.push({
           size: key,
           number: '',
-          unit: this.commonUnit
+          unit: this.commonUnit2
         })
       })
       this.otherIngredient.colour[index].push('')
@@ -625,7 +626,7 @@ export default {
           value.push({
             size: key,
             number: '',
-            unit: this.commonUnit
+            unit: this.commonUnit1
           })
         })
         this.mainIngredient.color[index][index2].push({
@@ -645,7 +646,7 @@ export default {
         value.push({
           size: key,
           number: '',
-          unit: this.commonUnit
+          unit: this.commonUnit2
         })
       })
       this.otherIngredient.color[index][index2].push({

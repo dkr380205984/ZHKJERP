@@ -53,7 +53,8 @@
         <div class="inputCtn">
           <span class="label must">汇率：</span>
           <el-input class="elInput" v-model="exchangeRate" placeholder="请输入汇率" @focus="showTips=true" @blur="showTips=false"></el-input>
-          <div v-show="showTips" class="tips" @mousedown="goBaidu">点击查询实时汇率</div>
+          <div  style="color:#b5b5b5!important" class="tips" @mousedown="goBaidu">如:结算单位美元,100美元=670人民币,填写数字670</div>
+          <div  style="top:63px" v-show="showTips" class="tips" @mousedown="goBaidu">点击查询实时汇率</div>
         </div>
       </div>
       <div class="lineCtn">
@@ -76,7 +77,7 @@
           </el-date-picker>
         </div>
         <div class="inputCtn">
-          <span class="label must">分配小组：</span>
+          <span class="label must">负责小组：</span>
           <el-select class="elInput" v-model="group" placeholder="请选择小组">
             <el-option
               v-for="item in groupArr"
@@ -141,7 +142,7 @@
                   </el-select>
                 </div>
                 <div class="blockOnce">
-                  <span class="name">创建人：</span>
+                  <!-- <span class="name">创建人：</span>
                   <el-select class="elInput" v-model="people" placeholder="请选择联系人">
                     <el-option
                       @change="getSearchList"
@@ -150,12 +151,8 @@
                       :label="item.name"
                       :value="item.id">
                     </el-option>
-                  </el-select>
-                </div>
-              </div>
-              <div class="block">
-                <div class="blockOnce">
-                  <span class="name">计划单：</span>
+                  </el-select> -->
+                  <span class="name">配料单：</span>
                   <el-radio-group v-model="hasJHD"  @change="getSearchList">
                     <el-radio :label="null">全部</el-radio>
                     <el-radio :label="1">有</el-radio>
@@ -262,7 +259,7 @@
                       v-model="orderArr[indexOrder].product[indexProduct].size[indexType].name">
                     </el-cascader>
                     <el-input class="elInput" v-model="orderArr[indexOrder].product[indexProduct].size[indexType].unitPrice" placeholder="单价" style="width:145px;margin-right:10px">
-                      <template slot="append">元</template>
+                      <template slot="append">{{money}}</template>
                     </el-input>
                     <el-input class="elInput" v-model="orderArr[indexOrder].product[indexProduct].size[indexType].numbers" placeholder="数量" style="width:145px;">
                       <template slot="append">个</template>
@@ -300,7 +297,7 @@
         </div>
       </div>
       <div class="bottom">
-        <div class="cancleBtn" @click="clearAll">清空</div>
+        <div class="cancleBtn" @click="$router.push('/index/orderList')">返回</div>
         <div class="okBtn" @click="saveAll">保存</div>
       </div>
     </div>
@@ -401,6 +398,8 @@ export default {
     // 获取产品加入搜索条件后的列表
     getSearchList () {
       this.loading = true
+      let date = new Date()
+      let endTime = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate
       productList({
         company_id: this.companyId,
         limit: null,
@@ -409,7 +408,7 @@ export default {
         type_id: this.type[1] || null,
         flower_id: this.flower || null,
         start_time: this.dateSearch || null,
-        end_time: null,
+        end_time: endTime,
         plan_code: this.search || null,
         has_plan: this.hasJHD
       }).then((res) => {
@@ -569,12 +568,13 @@ export default {
       }
       if (!this.group) {
         this.$message.error({
-          message: '分配小组未选择，请选择分配小组'
+          message: '负责小组未选择，请选择负责小组'
         })
         return
       }
       let timeState = true
       let productState = true
+      let sizeState = true
       this.orderArr.forEach((itemOrder) => {
         if (!itemOrder.date) {
           timeState = false
@@ -583,7 +583,14 @@ export default {
           if (!itemProduct.name) {
             productState = false
           }
-          itemProduct.size.forEach((itemSize) => {
+          itemProduct.size.forEach((itemSize, indexSize) => {
+            itemProduct.size.forEach((item, index) => {
+              if (itemSize.name.length > 0) {
+                if (itemSize.name[0] === item.name[0] && itemSize.name[1] === item.name[1]) {
+                  sizeState = false
+                }
+              }
+            })
             if (!itemSize.numbers) {
               productState = false
             }
@@ -605,6 +612,12 @@ export default {
       if (!productState) {
         this.$message.error({
           message: '产品信息填写不完整，请检查'
+        })
+        return
+      }
+      if (!sizeState) {
+        this.$message.error({
+          message: '检测到同一批次中有相同的产品颜色和尺寸,请合并后提交'
         })
         return
       }

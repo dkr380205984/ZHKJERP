@@ -32,11 +32,12 @@
       margin-bottom: 20px;
       font-size: @fontBig;
       .filterLine{
-        height: 60px;
+        height: 40px;
         display: flex;
         align-items: center;
         padding-left: 5em;
         position: relative;
+        margin: 20px 0;
         .label{
           position: absolute;
           line-height: 60px;
@@ -49,23 +50,29 @@
         }
       }
       .selectLine{
-        height: 60px;
+        min-height: 40px;
         display: flex;
-        align-items: center;
         padding-left: 5em;
         position: relative;
+        margin:20px 0 5px 0;
         justify-content: space-between;
         .el-select{
           margin-right:25px;
           width: 130px;
+          margin-bottom: 15px;
         }
         .label{
           position: absolute;
-          line-height: 60px;
+          line-height: 40px;
           left: 0;
           font-size: 16px;
         }
       }
+    }
+    .sum{
+      margin-top: 15px;
+      font-size: @fontBig;
+      font-weight: 400;
     }
   }
 }
