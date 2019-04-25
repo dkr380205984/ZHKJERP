@@ -1,7 +1,7 @@
 <template>
   <div id="productDesignCreate" v-loading="loading">
     <div class="head">
-      <h2>添加生产计划单</h2>
+      <h2>修改生产计划单</h2>
     </div>
     <div class="body">
       <div class="lineCtn">
@@ -78,7 +78,7 @@
               </div>
               <div class="tableRow bodyTableRow" v-for="(item) in productInfo" :key="item.id">
                 <div class="tableColumn">{{item.size}}/{{item.color}}</div>
-                <div class="tableColumn">{{item.numbers}}{{item.unit_name}}</div>
+                <div class="tableColumn">{{item.order_num}}{{item.unit_name}}</div>
                 <div class="tableColumn">{{item.stock_num}}{{item.unit_name}}</div>
                 <div class="tableColumn">
                   <input class="inputs" placeholder="输入数字" v-model="item.stock_pick"/>
@@ -94,14 +94,14 @@
       </div>
       <div class="btnCtn">
         <div class="cancleBtn" @click="$router.go(-1)">返回</div>
-        <div class="okBtn" @click="saveAll">添加</div>
+        <div class="okBtn" @click="saveAll">修改</div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { orderStockDetail, productionSave } from '@/assets/js/api.js'
+import { productionDetail, productionSave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -131,6 +131,7 @@ export default {
     },
     saveAll () {
       let json = {
+        id: this.$route.params.id,
         company_id: window.sessionStorage.getItem('company_id'),
         order_id: this.order.id,
         detail_info: this.productInfo.map((item) => {
@@ -153,37 +154,19 @@ export default {
       productionSave(json).then((res) => {
         console.log(res)
         this.$message.success({
-          message: '添加成功'
+          message: '修改成功'
         })
         this.$router.push('/index/productDesignList')
       })
     }
   },
   mounted () {
-    orderStockDetail({
-      order_id: this.$route.params.id,
-      company_id: window.sessionStorage.getItem('company_id')
+    productionDetail({
+      order_id: this.$route.params.id
     }).then((res) => {
       console.log(res)
-      this.order = res.data.data.order
-      let obj = res.data.data.stock_data
-      Object.keys(obj).forEach((key) => {
-        obj[key].forEach((item) => {
-          this.productInfo.push({
-            product_code: key,
-            category_name: item.category_name,
-            type_name: item.type_name,
-            style_name: item.style_name,
-            stock_num: item.stock_num,
-            size: item.size,
-            color: item.color,
-            numbers: item.numbers,
-            unit_name: item.unit_name,
-            stock_pick: 0,
-            production_num: ''
-          })
-        })
-      })
+      this.order = res.data.data.order_info
+      this.productInfo = res.data.data.product_info
       // 合并相同编号的产品数据
       this.productInfo.forEach((item) => {
         let finded = this.product.find((itemFind, index) => itemFind.product_code === item.product_code)

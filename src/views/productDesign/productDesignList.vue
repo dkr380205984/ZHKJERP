@@ -104,7 +104,7 @@
           </div>
           <div class="tableColumn" style="flex:0.7">{{item.total_price}}</div>
           <div class="tableColumn" style="flex-direction:row;">
-            <span class="btns warning">修改</span>
+            <span class="btns warning" @click="$router.push('/index/productDesignUpdate/'+item.id)">修改</span>
             <span class="btns success" @click="$router.push('/index/productDesignDetail/'+item.id)">详情</span>
           </div>
         </div>
