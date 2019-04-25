@@ -1,0 +1,116 @@
+@import './common.less';
+#orderDetail {
+  height: 100%;
+  font-family: 'systemfont';
+  font-weight: 300;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  .head {
+    min-height: 60px;
+    border-bottom: 1px solid #ECF0F1;
+    padding: 20px 40px;
+    h2 {
+      line-height: 60px;
+      margin: 0;
+      font-size: 24px;
+      color:@fontNormal;
+      font-weight: 400;
+    }
+  }
+  .body {
+    padding: 20px 40px;
+    flex: 1;
+    color:@fontNormal;
+    // overflow: hidden;
+    .lineCtn {
+      width: 900px;
+      display: flex;
+      margin: 24px 0;
+      .inputCtn {
+        // flex: 1;
+        // margin-right: 300px;
+        min-height: 40px;
+        display: flex;
+        flex-wrap: wrap;
+        padding-left: 6em;
+        position: relative;
+        &.twoLine {
+          width: 450px;
+        }
+        .label{
+          position: absolute;
+          width: 6em;
+          line-height: 40px;
+          text-align: right;
+          font-size: @fontBig;
+          color: @fontNormal;
+          left: 0;
+        }
+        .content {
+          line-height: 40px;
+          margin-left: 15px;
+          color:@fontNormal;
+          font-size: @fontMid;
+          display: flex;
+          flex-direction: column;
+          &.btn{
+            width: 100%;
+            &>span {
+              display: inline-block;
+              width: 100px;
+              height: 35px;
+              line-height: 35px;
+              text-align: center;
+              margin-right: 84px;
+              cursor: pointer;
+            }
+            .goBack {
+              border: 1px solid #AAA;
+            }
+          }
+          .list {
+            width: 847px;
+            height: auto;
+            background: #fafafa;
+            margin-bottom: 30px;
+            .title {
+              line-height: 40px;
+              text-align: center;
+              border-bottom: 1px solid #E5E5E5;
+            }
+            .content {
+              padding: 10px 20px;
+              display: flex;
+              flex-direction: column;
+              .contentCtn {
+                position: relative;
+                padding-left: 5em;
+                display: flex;
+                // align-items: center;
+                margin: 10px 0;
+                .label {
+                  position: absolute;
+                  left: 0;
+                  width: 5em;
+                }
+                .content {
+                  padding: 0 0 0 15px;
+                  width: 80%;
+                  &>span {
+                    display: flex;
+                    justify-content: space-between;
+                    span {
+                      flex:1;
+                      text-align: center;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

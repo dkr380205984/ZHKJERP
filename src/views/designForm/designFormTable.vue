@@ -182,12 +182,12 @@
                       </span>
                     </template>
                     <template v-else>
-  <span v-for="(value,index) in changeArr(add(item))"
-        :key="index"
-        :style="{minWidth : (100/12) * (item.length > 12 ? 12 : value.key) + '%',borderRight :(item.length > 12) ? '' :'1px solid #999'}">
-    {{value.value === 'no' ? '' : value.value}}
-  </span>
-</template>
+                      <span v-for="(value,index) in changeArr(add(item))"
+                            :key="index"
+                            :style="{minWidth : (100/12) * (item.length > 12 ? 12 : value.key) + '%',borderRight :(item.length > 12) ? '' :'1px solid #999'}">
+                        {{value.value === 'no' ? '' : value.value}}
+                      </span>
+                    </template>
                   </div>
                 </div>
               </div>
@@ -431,6 +431,9 @@ export default {
     })
     console.log(this.material_data)
   }
+  // updated () {
+  //   window.print()
+  // }
 }
 </script>
 
