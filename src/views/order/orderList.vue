@@ -82,7 +82,7 @@
           <div class="tableColumn" style="flex:0.7">下单日期</div>
           <div class="tableColumn">交货日期</div>
           <div class="tableColumn" style="flex:0.7">订单状态</div>
-          <div class="tableColumn" style="flex:2">操作</div>
+          <div class="tableColumn" style="flex:1.3">操作</div>
         </div>
         <div class="mergeBody" v-for="(item ,index) in list" :style="{'height':(60+(item.lineNum-1)*30)+'px'}" :key="index">
           <div class="tableColumn">{{item.order_code}}</div>
@@ -103,8 +103,9 @@
             </div>
           </div>
           <div class="tableColumn" style="flex:0.7">暂无状态</div>
-          <div class="tableColumn" style="flex-direction:row;flex:2">
-            <span class="btns normal">暂时没有</span>
+          <div class="tableColumn" style="flex-direction:row;flex:1.3">
+            <span class="btns warning">修改</span>
+            <span class="btns success">详情</span>
           </div>
         </div>
         <div class="mergeBody" v-if="list.length===0">
