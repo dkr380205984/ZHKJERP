@@ -131,9 +131,8 @@ export default {
     },
     saveAll () {
       let json = {
-        id: this.$route.params.id,
         company_id: window.sessionStorage.getItem('company_id'),
-        order_id: this.order.id,
+        order_id: this.$route.params.id,
         detail_info: this.productInfo.map((item) => {
           return {
             category_name: item.category_name,

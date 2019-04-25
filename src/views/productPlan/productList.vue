@@ -69,19 +69,18 @@
           <div class="tableColumn">编号</div>
           <div class="tableColumn flex9">品类</div>
           <div class="tableColumn ">花型</div>
-          <div class="tableColumn flexSamll">成分(种)</div>
           <div class="tableColumn">尺码</div>
           <div class="tableColumn flexSamll">配色(种)</div>
           <div class="tableColumn">图片</div>
           <div class="tableColumn">工艺单</div>
           <div class="tableColumn">创建人</div>
+          <div class="tableColumn">创建时间</div>
           <div class="tableColumn">操作</div>
         </div>
         <div class="tableRow bodyTableRow" v-for="(item,index) in list" :key="index">
           <div class="tableColumn" style="color: rgb(26, 149, 255);">{{item.product_code}}</div>
           <div class="tableColumn flex9">{{item|filterType}}</div>
           <div class="tableColumn">{{item.flower_id}}</div>
-          <div class="tableColumn flexSamll">{{item.materials.length}}</div>
           <div class="tableColumn">{{item.size|filterSize}}</div>
           <div class="tableColumn flexSamll">{{item.color.length}}</div>
           <div class="tableColumn">
@@ -93,6 +92,7 @@
           </div>
           <div class="tableColumn" style="font-weight:500" :style="{color:item.has_craft===0?'#b5b5b5':'#1a95ff'}">{{item.has_craft===0?'无':'有'}}</div>
           <div class="tableColumn">{{item.user_name}}</div>
+          <div class="tableColumn">{{item.create_time}}</div>
           <div class="tableColumn">
             <span class="btns ban" v-if="item.has_plan===1">添加</span>
             <span class="btns normal" v-if="item.has_plan===0" @click="$router.push('/index/productPlanCreate/'+item.id)">添加</span>
