@@ -21,8 +21,8 @@ const companyType = [{
 const letterArr = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'Y', 'Z']
 // 货币
 const moneyArr = [{
-  name: '人民币',
-  short: 'CNY',
+  name: '元',
+  short: '人民币',
   id: 1
 }, {
   name: '美元',
