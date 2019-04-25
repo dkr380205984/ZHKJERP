@@ -29,7 +29,6 @@
               <span v-for="(content,number) in item.colorInfo[index-1].colorList"
                     :key='number'></span>
             </template>
-
           </template>
         </span>
       </template>

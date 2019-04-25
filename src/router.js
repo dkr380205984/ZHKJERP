@@ -106,6 +106,10 @@ export default new Router({
       name: 'orderCreate',
       component: () => import('./views/order/orderCreate.vue')
     }, {
+      path: 'orderDetail/:id',
+      name: 'orderDetail',
+      component: () => import('./views/order/orderDetail.vue')
+    }, {
       path: 'orderList',
       name: 'orderList',
       component: () => import('./views/order/orderList.vue')

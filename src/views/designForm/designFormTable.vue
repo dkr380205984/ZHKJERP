@@ -146,7 +146,7 @@
             <div class="main-raw-material material">
               <span>主要原料(纬)</span>
               <span>
-                {{this.material_data.weftMaterialMain.name}}
+                {{this.material_data.weftMaterialMain.name}}:
                 <template v-for="(item,index) in material_data.weftMaterialMain.value">
                   {{item === 0 ? '主' : '夹' + item}}{{index+1 !== material_data.weftMaterialMain.value.length ? '/' : ''}}
                 </template>
@@ -156,7 +156,7 @@
               <span>次要原料(纬)</span>
               <span>
                 <span v-for="(itemMaterial,indexMaterial) in material_data.weftMaterialOther"
-                      :key="indexMaterial">
+                      :key="indexMaterial">:
                   <template v-for="(item,index) in itemMaterial.value">
                     {{item === 0 ? '主' : '夹' + item}}{{index+1 !== itemMaterial.value.length ? '/' : ''}}
                   </template>
@@ -182,12 +182,12 @@
                       </span>
                     </template>
                     <template v-else>
-  <span v-for="(value,index) in changeArr(add(item))"
-        :key="index"
-        :style="{minWidth : (100/12) * (item.length > 12 ? 12 : value.key) + '%',borderRight :(item.length > 12) ? '' :'1px solid #999'}">
-    {{value.value === 'no' ? '' : value.value}}
-  </span>
-</template>
+                      <span v-for="(value,index) in changeArr(add(item))"
+                            :key="index"
+                            :style="{minWidth : (100/12) * (item.length > 12 ? 12 : value.key) + '%',borderRight :(item.length > 12) ? '' :'1px solid #999'}">
+                        {{value.value === 'no' ? '' : value.value}}
+                      </span>
+                    </template>
                   </div>
                 </div>
               </div>
@@ -431,6 +431,9 @@ export default {
     })
     console.log(this.material_data)
   }
+  // updated () {
+  //   window.print()
+  // }
 }
 </script>
 

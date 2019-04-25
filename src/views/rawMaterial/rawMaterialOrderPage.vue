@@ -8,7 +8,7 @@
         <div class="content">
           <span>订单信息</span>
           <span @click='close'><em class="el-icon-caret-top"
-                :style="{transform: flag ? 'rotateZ(180deg)' : 'rotateZ(0deg)'}"></em>{{flag ? '展开' : '收起'}}</span>
+                :style="{transform: flag ? 'rotateZ(0deg)' : 'rotateZ(180deg)'}"></em>{{flag ? '展开' : '收起'}}</span>
         </div>
       </div>
       <div :class="{info:true,close:flag}">
@@ -35,6 +35,18 @@
         <div class="lineCtn">
           <div class="inputCtn">
             <span class="label">产品信息:</span>
+            <span class="content">
+              <span v-for="(item,key) in product.product_info" :key='key'>
+                <span>{{item.product_code}}({{item.product_class}})</span>
+                <span>{{item.size}}/{{item.color}}</span>
+                <span>{{item.value}}条</span>
+              </span>
+            </span>
+          </div>
+        </div>
+        <div class="lineCtn">
+          <div class="inputCtn">
+            <span class="label">原料信息:</span>
             <span class="content">
               <ul class="table">
                 <li class="title">
@@ -80,7 +92,28 @@ export default {
         orderCode: 'KR-0001',
         createTime: '2019-04-10',
         companyName: '飞泰',
-        responsible: 'A组'
+        responsible: 'A组',
+        product_info: [
+          {
+            product_code: 'ES5623134',
+            product_class: '围巾/针织/长巾/豹纹',
+            size: 'S',
+            color: '深绿',
+            value: 2000
+          }, {
+            product_code: 'ES5623134',
+            product_class: '围巾/针织/长巾/豹纹',
+            size: 'M',
+            color: '深绿',
+            value: 2000
+          }, {
+            product_code: 'ES5623134',
+            product_class: '围巾/针织/长巾/豹纹',
+            size: 'L',
+            color: '深绿',
+            value: 2000
+          }
+        ]
       }
     }
   },

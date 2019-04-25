@@ -6,7 +6,7 @@
     <div class="body">
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">计划单编号:</span>
+          <span class="label">配料单编号:</span>
           <span class="content">{{plan_code}}</span>
         </div>
         <div class="inputCtn">
@@ -58,9 +58,8 @@
             <template v-for="(item,index) in material_data.main_material">
               <yl-table color="#1A95FF"
                         :date='item'
-                        :colorDate='color'
                         :key="index"
-                        :class="{'table' : true,'maT': (index !== 0)}" />
+                        :class="{'maT': (index !== 0)}" />
             </template>
           </div>
         </div>
@@ -73,8 +72,7 @@
             <template v-for="(item,index) in material_data.main_ingredients">
               <yl-table color="#1A05FF"
                         :date='item'
-                        :colorDate='color'
-                        :class="{'table' : true,'marT': (index !== 0)}"
+                        :class="{'marT': (index !== 0)}"
                         :key="index" />
             </template>
           </div>
@@ -137,19 +135,6 @@ export default {
     }
   },
   created () {
-    function clone (item) {
-      let obj = Object.prototype.toString.call(item) === '[object Array]' ? [] : {}
-      for (let prop in item) {
-        if (Object.prototype.toString.call(item[prop]) === '[object Array]') {
-          obj[prop] = clone(item[prop])
-        } else if (Object.prototype.toString.call(item[prop]) === '[object Object]') {
-          obj[prop] = clone(item[prop])
-        } else {
-          obj[prop] = item[prop]
-        }
-      }
-      return obj
-    }
     productPlanOne({
       id: this.$route.params.id
     }).then((res) => {
@@ -159,74 +144,100 @@ export default {
       this.product_info = data.product_info
       this.liucheng = data.outside_precess
       this.color = data.product_info.color
-      data.material_data.forEach(value => {
-        let obj = {
-          materialList: [],
-          size: ''
-        }
-        let str = value.type === 0 ? this.material_data.main_material : this.material_data.main_ingredients
-        let obj1 = {
-          colorInfo: [],
-          material: value.material
-        }
+      data.material_data.forEach((value, n) => {
+        let str = (value.type === 0 ? this.material_data.main_material : this.material_data.main_ingredients)
         value.colour.forEach(index => {
-          let obj2 = {
-            colorList: [],
-            name: index.name
-          }
           index.color.forEach(key => {
-            let obj3 = {
-              name: key.name,
-              value: key.value,
-              unit: '',
-              number: null
-            }
             key.size.forEach(item => {
-              obj3.unit = item.unit
-              obj3.number = item.number
               if (str.length === 0) {
+                let obj = {}
                 obj.size = item.size
-                obj2.colorList.push(clone(obj3))
-                obj1.colorInfo.push(clone(obj2))
-                obj.materialList.push(clone(obj1))
-                str.push(clone(obj))
+                obj.materialList = []
+                let materialList = {}
+                materialList.material = value.material
+                materialList.colorInfo = []
+                let colorInfo = {}
+                colorInfo.name = index.name
+                colorInfo.colorList = []
+                let colorList = {}
+                colorList.name = key.name
+                colorList.value = key.value
+                colorList.number = item.number
+                colorList.unit = item.unit
+                colorInfo.colorList.push(colorList)
+                materialList.colorInfo.push(colorInfo)
+                obj.materialList.push(materialList)
+                str.push(obj)
               } else {
-                str.forEach((size, l) => {
+                let flag3 = true
+                str.forEach((size, n) => {
+                  let flag2 = true
                   if (size.size === item.size) {
+                    flag3 = false
                     size.materialList.forEach((material, m) => {
+                      let flag1 = true
                       if (material.material === value.material) {
-                        material.colorInfo.forEach((color, n) => {
+                        flag2 = false
+                        material.colorInfo.forEach((color, b) => {
                           if (color.name === index.name) {
-                            color.colorList.push(clone(obj3))
-                            return
-                          }
-                          if (n === material.colorInfo.length - 1 && color.name !== index.name) {
-                            obj2.colorList.push(clone(obj3))
-                            material.colorInfo.push(clone(obj2))
+                            flag1 = false
+                            color.colorList.push({
+                              name: key.name,
+                              value: key.value,
+                              number: item.number,
+                              unit: item.unit
+                            })
+                          } else if (b === material.colorInfo.length - 1 && color.name !== index.name && flag1) {
+                            material.colorInfo.push({
+                              name: index.name,
+                              colorList: [{
+                                name: key.name,
+                                value: key.value,
+                                number: item.number,
+                                unit: item.unit
+                              }]
+                            })
                           }
                         })
-                      }
-                      if (m === size.materialList.length - 1 && material.material !== value.material) {
-                        obj2.colorList.push(clone(obj3))
-                        obj1.colorInfo.push(clone(obj2))
-                        size.materialList.push(clone(obj1))
+                      } else if (m === size.materialList.length - 1 && material.material !== value.material && flag2) {
+                        size.materialList.push({
+                          material: value.material,
+                          colorInfo: [{
+                            name: index.name,
+                            colorList: [{
+                              name: key.name,
+                              value: key.value,
+                              number: item.number,
+                              unit: item.unit
+                            }]
+                          }]
+                        })
                       }
                     })
-                  }
-                  if (l === str.length - 1 && size.size !== item.size) {
-                    obj.size = item.size
-                    obj2.colorList.push(clone(obj3))
-                    obj1.colorInfo.push(clone(obj2))
-                    obj.materialList.push(clone(obj1))
-                    str.push(clone(obj))
+                  } else if (n === str.length - 1 && size.size !== item.size && flag3) {
+                    str.push({
+                      size: item.size,
+                      materialList: [{
+                        material: value.material,
+                        colorInfo: [{
+                          name: index.name,
+                          colorList: [{
+                            name: key.name,
+                            value: key.value,
+                            number: item.number,
+                            unit: item.unit
+                          }]
+                        }]
+                      }]
+                    })
                   }
                 })
               }
             })
           })
         })
-        console.log(this.material_data)
       })
+      console.log(this.material_data)
       this.material_data.main_material.forEach(item => {
         this.weight[item.size] = 0
         item.materialList.forEach((key, n) => {
