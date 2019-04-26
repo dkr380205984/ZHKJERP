@@ -3,7 +3,7 @@
        @click.right='goTop'
        style="position:relative;display:table;">
     <div class="table">
-      <p class="company">{{companyName}}有限公司工艺单</p>
+      <p class="company">凯瑞针纺有限公司工艺单</p>
       <div class="page_header">
         <span>工艺单编号:{{craft_code}}</span>
         <span>创建时间：{{create_time}}</span>
@@ -213,31 +213,33 @@
               </div>
             </div>
             <ul class="list">
-              <li v-for="(value,index) in color_data"
-                  :key="index">
-                <div class="table-head-col">{{value.product_color}}</div>
-                <div v-for="(item,key) in value.color_scheme"
-                     :key="key">
-                  <span style="">{{item.warp.name}}</span>
-                  <span>{{item.weft ? item.weft.name : ''}}</span>
-                </div>
-                <template v-if="value.color_scheme.length < 6">
-                  <div v-for="(x,y) in forArr( 6 - value.color_scheme.length)"
-                       :key="y+'1'">
-                    <span></span>
-                    <span></span>
+              <template v-for="(value,index) in color_data">
+                <li v-if='index < 5'
+                    :key="index">
+                  <div class="table-head-col">{{value.product_color}}</div>
+                  <div v-for="(item,key) in value.color_scheme"
+                       :key="key">
+                    <span style="">{{item.warp.name}}</span>
+                    <span>{{item.weft ? item.weft.name : ''}}</span>
                   </div>
-                </template>
-              </li>
-              <template v-if="color_data.length < 6">
-                <li v-for="(value,index) in forArr(6 - color_data.length)"
-                    :key="index+'1'">
-                  <div class="table-head-col"></div>
-                  <div v-for="(item,key) in forArr(6)"
-                       :key="key+'1'">
-                    <span></span><span></span>
-                  </div>
+                  <template v-if="value.color_scheme.length < 6">
+                    <div v-for="(x,y) in forArr( 6 - value.color_scheme.length)"
+                         :key="y+'1'">
+                      <span></span>
+                      <span></span>
+                    </div>
+                  </template>
                 </li>
+                <template v-if="color_data.length < 6">
+                  <li v-for="(value,index) in forArr(6 - color_data.length)"
+                      :key="index+'1'">
+                    <div class="table-head-col"></div>
+                    <div v-for="(item,key) in forArr(6)"
+                         :key="key+'1'">
+                      <span></span><span></span>
+                    </div>
+                  </li>
+                </template>
               </template>
             </ul>
           </div>

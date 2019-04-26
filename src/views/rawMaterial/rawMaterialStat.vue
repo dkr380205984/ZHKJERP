@@ -83,7 +83,7 @@
                 </li>
               </template>
             </ul>
-            <span @click="$router.push('/productStatisticsTable/1')"
+            <span @click="$router.push('/productStatisticsTable/1' + '?type=0')"
                   class="print">去打印</span>
           </div>
         </div>
@@ -115,7 +115,7 @@
                 </li>
               </template>
             </ul>
-            <span @click="$router.push('/productStatisticsTable/1')"
+            <span @click="$router.push('/productStatisticsTable/1' + '?type=1')"
                   class="print">去打印</span>
           </div>
         </div>
