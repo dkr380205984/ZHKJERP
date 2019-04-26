@@ -1,8 +1,9 @@
 <template>
   <div id="designFormTable"
-       @click.right='goTop'>
-    <p class="company">{{companyName}}有限公司工艺单</p>
+       @click.right='goTop'
+       style="position:relative;display:table;">
     <div class="table">
+      <p class="company">{{companyName}}有限公司工艺单</p>
       <div class="page_header">
         <span>工艺单编号:{{craft_code}}</span>
         <span>创建时间：{{create_time}}</span>
@@ -202,7 +203,7 @@
                 <span>颜色组</span>
                 <span>具体配色</span>
               </div>
-              <div v-for="(item,index) in forArr(7)"
+              <div v-for="(item,index) in forArr(6)"
                    :key="index">
                 <div>{{index === 0 ? "主" : "夹" + index}}</div>
                 <div>
@@ -212,15 +213,32 @@
               </div>
             </div>
             <ul class="list">
-              <li v-for="(value,index) in forArr(6)"
+              <li v-for="(value,index) in color_data"
                   :key="index">
-                <div class="table-head-col">颜色组</div>
-                <div v-for="(value,index) in forArr(7)"
-                     :key="index">
-                  <span>颜色</span>
-                  <span>颜色</span>
+                <div class="table-head-col">{{value.product_color}}</div>
+                <div v-for="(item,key) in value.color_scheme"
+                     :key="key">
+                  <span style="">{{item.warp.name}}</span>
+                  <span>{{item.weft ? item.weft.name : ''}}</span>
                 </div>
+                <template v-if="value.color_scheme.length < 6">
+                  <div v-for="(x,y) in forArr( 6 - value.color_scheme.length)"
+                       :key="y+'1'">
+                    <span></span>
+                    <span></span>
+                  </div>
+                </template>
               </li>
+              <template v-if="color_data.length < 6">
+                <li v-for="(value,index) in forArr(6 - color_data.length)"
+                    :key="index+'1'">
+                  <div class="table-head-col"></div>
+                  <div v-for="(item,key) in forArr(6)"
+                       :key="key+'1'">
+                    <span></span><span></span>
+                  </div>
+                </li>
+              </template>
             </ul>
           </div>
         </li>
@@ -400,14 +418,13 @@ export default {
       id: this.$route.params.id
     }).then((res) => {
       const data = res.data.data
-      // console.log(data.color_data)
+      console.log(data.color_data)
       this.product_info = data.product_info
       this.craft_code = data.craft_code
       this.create_time = data.create_time
       this.weight = data.weight
       this.warp_data = data.warp_data
       this.weft_data = data.weft_data
-      this.color_data = data.color_data
       data.material_data.forEach((item) => {
         if (item.type === 0 && item.type_material === 0) {
           this.material_data.warpMaterialMain.name = item.material_name
@@ -431,72 +448,61 @@ export default {
         }
       })
       data.color_data.forEach(item => {
-        item.color_scheme.forArr(index => {
-
+        item.color_scheme.forEach((index, n) => {
+          if (this.color_data.length === 0) {
+            let obj = {}
+            obj.product_color = item.product_color
+            obj.color_scheme = []
+            let info = {}
+            info[(item.type) === 0 ? 'warp' : 'weft'] = {
+              name: index.name,
+              value: index.value
+            }
+            obj.color_scheme.push(info)
+            this.color_data.push(obj)
+          } else {
+            let flag = true
+            this.color_data.forEach((value, x) => {
+              if (value.product_color === item.product_color) {
+                flag = false
+                if (item.type === 0) {
+                  value.color_scheme.push({
+                    warp: {
+                      name: index.name,
+                      value: index.value
+                    }
+                  })
+                } else if (item.type === 1) {
+                  let obj = value.color_scheme[n]
+                  obj.weft = {
+                    name: index.name,
+                    value: index.value
+                  }
+                }
+              } else if (x === this.color_data.length - 1 && value.product_color !== item.product_color && flag) {
+                let obj = {}
+                obj.product_color = item.product_color
+                obj.color_scheme = []
+                let info = {}
+                info[(item.type) === 0 ? 'warp' : 'weft'] = {
+                  name: index.name,
+                  value: index.value
+                }
+                obj.color_scheme.push(info)
+                this.color_data.push(obj)
+              }
+            })
+          }
         })
       })
-      // data.color_data.forEach(item => {
-      //   item.color_scheme.forEach((index, n) => {
-      //     if (this.color_data.length === 0) {
-      //       let obj = {}
-      //       obj.product_color = item.product_color
-      //       obj.color_scheme = []
-      //       let info = {}
-      //       info[(item.type) === 0 ? 'warp' : 'weft'] = {
-      //         name: index.name,
-      //         value: index.value
-      //       }
-      //       obj.color_scheme.push(info)
-      //       this.color_data.push(obj)
-      //     } else {
-      //       this.color_data.forEach((value, index) => {
-      //         // console.log(value)
-      //         let flag = true
-      //         if (value.product_color === item.product_color) {
-      //           flag = false
-      //           // console.log(value, n)
-      //           if (item.type === 0) {
-      //             value.color_scheme.push({
-      //               warp: {
-      //                 name: index.name,
-      //                 value: index.value
-      //               }
-      //             })
-      //           } else if (item.type === 1) {
-      //             // console.log(value, n)
-      //             let obj = value.color_scheme[n]
-      //             obj.weft = {
-      //               name: index.name,
-      //               value: index.value
-      //             }
-      //           }
-      //         } else if (index === this.color_data.length - 1 && value.product_color !== item.product_color && flag) {
-      //           // let str = item.type === 0 ? 'warp' : 'weft'
-      //           // let obj = {}
-      //           // obj.product_color = item.product_color
-      //           // obj.color_scheme = []
-      //           // let info = {}
-      //           // info[(item.type) === 0 ? 'warp' : 'weft'] = {
-      //           //   name: index.name,
-      //           //   value: index.value
-      //           // }
-      //           // obj.color_scheme.push(info)
-      //           // this.color_data.push(obj)
-      //         }
-      //       })
-      //     }
-      //   })
-      //   console.log(this.color_data)
-      //   //   // this.color_data.product_color = item.product_color
-      // })
     })
+    console.log(this.color_data)
     // console.log(this.material_data)
+  },
+  updated () {
+    window.print()
   }
 }
-// updated () {
-//   window.print()
-// }
-// }
 </script>
 
 <style lang="less" scoped>

@@ -62,14 +62,21 @@ ul {
   font-size: 13px;
   font-family: 'systemfont';
   overflow: hidden;
-  p.company {
-    font-size: 22px;
-    text-align: center;
-    letter-spacing: 22px;
-  }
+  // .a4 {
+  //   // page-break-before: auto;        
+  //   page-break-after: always;
+  // }
   .table {
+    page-break-before: auto;        
+    page-break-after: always;
     width: 820px;
-    margin: 14px auto 0;
+    margin: 0 auto ;
+    p.company {
+      font-size: 22px;
+      text-align: center;
+      letter-spacing: 22px;
+      margin-bottom: 14px;
+    }
     &>.page_header {
       display: flex;
       width: inherit;
@@ -304,7 +311,7 @@ ul {
         }
       }
       .contexture {
-        height: 329px;
+        height: 331px;
         .title {
           padding: 63px 0 37px;
         }
@@ -500,12 +507,12 @@ ul {
               text-align: center;
               display: flex;
               &>div {
+                flex: 1;
                 box-sizing: border-box;
                 border-right: 1px solid #999;
                 border-top: 1px solid #999;
                 line-height: 37px;
                 &:nth-child(n+2) {
-                  flex: 1;
                   display: flex;
                   &>span {
                     box-sizing: border-box;
@@ -513,6 +520,7 @@ ul {
                     text-align: center;
                     &:nth-child(n+2) {
                     border-left: 1px solid #999;
+
                     }
                   }
                 }
