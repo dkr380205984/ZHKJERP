@@ -262,7 +262,7 @@ export default {
           str += item.material
         }
       })
-      return str
+      return str || '无'
     }
   },
   mounted () {

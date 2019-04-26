@@ -1,7 +1,7 @@
 <template>
   <div id="rawMaterialStat">
     <div class="head">
-      <h2>生产计划单详情</h2>
+      <h2>生产统计详情</h2>
     </div>
     <div class="body">
       <div class="lineCtn">

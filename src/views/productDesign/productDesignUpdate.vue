@@ -164,8 +164,8 @@ export default {
       order_id: this.$route.params.id
     }).then((res) => {
       console.log(res)
-      this.order = res.data.data.order_info
-      this.productInfo = res.data.data.product_info
+      this.order = res.data.data.production_detail.order_info
+      this.productInfo = res.data.data.production_detail.product_info
       // 合并相同编号的产品数据
       this.productInfo.forEach((item) => {
         let finded = this.product.find((itemFind, index) => itemFind.product_code === item.product_code)

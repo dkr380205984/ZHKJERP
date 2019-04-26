@@ -665,7 +665,7 @@ export default {
             return totalSize + itemSize.numbers * itemSize.unitPrice
           }, 0)
         }, 0)
-      }, 0)
+      }, 0).toFixed(2)
     }
   },
   filters: {

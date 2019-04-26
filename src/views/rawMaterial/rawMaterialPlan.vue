@@ -1,7 +1,7 @@
 <template>
-  <div id="rawMaterialPlan">
+  <div id="rawMaterialPlan" v-loading="loading">
     <div class="head">
-      <h2>生产计划单详情</h2>
+      <h2>生产计划详情</h2>
     </div>
     <div class="body">
       <div class="lineCtn">
@@ -100,6 +100,10 @@
           </div>
         </div>
       </div>
+      <div class="btnCtn">
+        <div class="cancleBtn" @click="$router.go(-1)">返回</div>
+        <div class="okBtn" @click="$router.push('/index/productDesignUpdate/'+$route.params.orderId)">修改</div>
+      </div>
     </div>
   </div>
 </template>
@@ -109,6 +113,7 @@ import { productPlanDetail, productionDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      loading: true,
       order: {
         order_code: '',
         client_name: '',
@@ -148,11 +153,11 @@ export default {
         order_id: this.$route.params.orderId
       })
     ]).then((res) => {
-      // console.log(res)
-      this.order = res[1].data.data.order_info
+      console.log(res)
+      this.order = res[1].data.data.production_detail.order_info
       // 第一步，把符合product_code的产品筛选出来
       let productByCode = []
-      res[1].data.data.product_info.forEach((item) => {
+      res[1].data.data.production_detail.product_info.forEach((item) => {
         if (item.product_code === this.$route.params.productId) {
           productByCode.push(item)
         }
@@ -233,7 +238,7 @@ export default {
                   colorList: obj ? obj.color.map((itemColor) => {
                     return {
                       name: itemColor.name,
-                      number: itemColor.size.find((item) => item.size === itemSize.size).number * itemColour.number / 1000,
+                      number: (itemColor.size.find((item) => item.size === itemSize.size).number * itemColour.number / 1000).toFixed(2),
                       unit: '千克',
                       value: itemColor.value
                     }
@@ -296,15 +301,12 @@ export default {
         // }).catch(() => {
         // })
       }
-      console.log(product)
       this.sizeName.material = product.main_material[0].size
       this.sizeName.ingredients = product.main_ingredients[0].size
       this.product = product
-      // console.log(NOTHISCOLOUR)
       this.colorData = NOTHISCOLOUR
-      // console.log(this.colorData)
+      this.loading = false
     })
-    console.log(this.order)
   }
 }
 </script>
