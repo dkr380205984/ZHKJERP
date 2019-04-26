@@ -77,8 +77,9 @@
         <div class="mergeHeader">
           <div class="tableColumn">发货日期</div>
           <div class="tableColumn">订单号</div>
-          <div class="tableColumn">订单公司</div>
-          <div class="tableColumn" style="flex:4">产品信息</div>
+          <div class="tableColumn" style="flex:1.8">订单公司</div>
+          <div class="tableColumn" style="flex:3">产品信息</div>
+          <div class="tableColumn">下单数</div>
           <div class="tableColumn">小组信息</div>
           <div class="tableColumn" style="flex:1">操作</div>
         </div>
@@ -87,15 +88,23 @@
           <div class="tableColumn">
             <div class="small" v-for="(itemOrder,indexOrder) in item.orderInfo" :key="indexOrder" :style="{'height':(itemOrder.lineNum*60)+'px'}"><div style="margin:auto">{{itemOrder.order_code}}</div></div>
           </div>
-          <div class="tableColumn">
+          <div class="tableColumn" style="flex:1.8">
             <div class="small" v-for="(itemOrder,indexOrder) in item.orderInfo" :key="indexOrder" :style="{'height':(itemOrder.lineNum*60)+'px'}"><div style="margin:auto">{{itemOrder.company_name}}</div></div>
           </div>
-          <div class="tableColumn" style="flex:4">
+          <div class="tableColumn" style="flex:3">
              <div class="small column" v-for="(itemOrder,indexOrder) in item.orderInfo" :key="indexOrder" :style="{'height':(itemOrder.lineNum*60)+'px'}">
               <div class="smallChild" v-for="(itemProduct,indexProduct) in itemOrder.batch_info" :key="indexProduct">
                 <div style="margin:auto">
                   <span style="margin:0 5px">{{itemProduct.productCode}}</span>
                   <span style="margin:0 5px">{{itemProduct.productInfo.category_info.product_category}}/{{itemProduct.productInfo.type_name}}/{{itemProduct.productInfo.style_name}}/{{itemProduct.productInfo.flower_id}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tableColumn">
+             <div class="small column" v-for="(itemOrder,indexOrder) in item.orderInfo" :key="indexOrder" :style="{'height':(itemOrder.lineNum*60)+'px'}">
+              <div class="smallChild" v-for="(itemProduct,indexProduct) in itemOrder.batch_info" :key="indexProduct">
+                <div style="margin:auto">
                   <span style="margin:0 5px">{{itemProduct.sum}}{{itemProduct.productInfo.category_info.name}}</span>
                 </div>
               </div>

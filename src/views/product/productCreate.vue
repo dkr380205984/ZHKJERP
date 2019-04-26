@@ -169,10 +169,11 @@ export default {
       }],
       child_size: [],
       weight: [],
-      showError: false
+      showError: false,
+      imageUrl: ''
     }
   },
-  created () {
+  mounted () {
     let companyId = window.sessionStorage.getItem('company_id')
     this.product_code[0] = new Date().getFullYear().toString().substring(2, 4)
     // 初始化接口
@@ -287,13 +288,16 @@ export default {
       console.log(file)
     },
     beforeAvatarUpload: function (file) {
-      this.postData.key = file.name
+      let fileName = file.name.lastIndexOf('.')// 取到文件名开始到最后一个点的长度
+      let fileNameLength = file.name.length// 取到文件名长度
+      let fileFormat = file.name.substring(fileName + 1, fileNameLength)// 截
+      this.postData.key = Date.parse(new Date()) + '.' + fileFormat
       const isJPG = file.type === 'image/jpeg'
       const isPNG = file.type === 'image/png'
       const isLt2M = file.size / 1024 / 1024 < 6
-      const isReapeat = this.fileArr.find((item) => {
-        return item.key === file.name
-      })
+      // const isReapeat = this.fileArr.find((item) => {
+      //   return item.key === file.name
+      // })
       if (!isJPG && !isPNG) {
         this.$message.error('图片只能是 JPG/PNG 格式!')
         return false
@@ -302,13 +306,13 @@ export default {
         this.$message.error('图片大小不能超过 6MB!')
         return false
       }
-      if (isReapeat) {
-        this.$message.error('不能重复上传图片')
-        return false
-      }
+      // if (isReapeat) {
+      //   this.$message.error('不能重复上传图片')
+      //   return false
+      // }
     },
-    handleSuccess (file) {
-      // this.fileArr.push(file)
+    handleSuccess (res, file) {
+      console.log(res)
     },
     // 清空操作
     clearAll () {
@@ -409,7 +413,8 @@ export default {
           return
         }
       }
-      const imgArr = this.$refs.uploada.uploadFiles.map((item) => { return 'http://pnvu7i45q.bkt.clouddn.com/' + item.response.key })
+      const imgArr = this.$refs.uploada.uploadFiles.map((item) => { return 'http://zhihui.tlkrzf.com/' + item.response.key })
+      console.log(imgArr)
       const sizeArr = this.footage.map((item, index) => {
         return this.sizeArr[index].map((item2, index2) => {
           return {
@@ -424,7 +429,6 @@ export default {
         this.$message.error({
           message: '检测到未填写的产品尺寸，请输入后保存'
         })
-        return
       }
       for (let i = 0; i < sizeArr.length; i++) {
         if (!(sizeArr[i].size_name && sizeArr[i].size_value)) {
@@ -438,7 +442,6 @@ export default {
         this.$message.error({
           message: '检测到未填写的颜色，请选择后保存'
         })
-        return
       }
       const materialsArr = this.ingredientScale.map((item, index) => {
         return {

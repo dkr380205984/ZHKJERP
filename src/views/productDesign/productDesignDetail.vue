@@ -22,26 +22,6 @@
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">结算单位：</span>
-          <span class="content">{{order.account_unit}}</span>
-        </div>
-        <div class="inputCtn">
-          <span class="label">汇率：</span>
-          <span class="content">100{{order.account_unit}} = {{order.exchange_rate+'人民币'}}</span>
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">税率：</span>
-          <span class="content">{{order.tax_rate}}%</span>
-        </div>
-        <div class="inputCtn">
-          <span class="label">订单价：</span>
-          <span class="content">{{order.total_price}}</span>
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
           <span class="label">创建人：</span>
           <span class="content">{{order.user_name}}</span>
         </div>
@@ -63,8 +43,8 @@
             <div class="left">
               <div class="firstLine">产品品类</div>
               <div class="mergeLine" v-for="(item,index) in product" :style="{height:(index!==product.length-1)?(61*item.num)+'px':(61*item.num)-1+'px'}" :key="item.product_code">
-                <span style="color:#1A95FF;cursor:pointer">{{item.product_code}}</span>
-                <span style="color:#1A95FF;cursor:pointer">{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
+                <span @click="$router.push('/index/productDetail/'+item.product_code)" style="color:#1A95FF;cursor:pointer">{{item.product_code}}</span>
+                <span @click="$router.push('/index/productDetail/'+item.product_code)" style="color:#1A95FF;cursor:pointer">{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
               </div>
             </div>
             <div class="right">
