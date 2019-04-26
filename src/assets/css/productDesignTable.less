@@ -87,13 +87,19 @@ h2 {
       display: flex;
       width: 100%;
       .title {
+        position: relative;
         width: 178px;
-        height: 128px;
+        height: auto;
         text-align: center;
-        line-height: 128px;
         border-right: 1px solid #999;
         box-sizing: border-box;
         font-size: 18px;
+        &>span {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%,-50%)
+        }
       }
       .content {
         flex: 1;
@@ -161,18 +167,20 @@ h2 {
             border-right: 1px solid #999;
             box-sizing: border-box;
             margin-left: 1px;
-            &:first-child {
-              width: 319px;
-              margin: 0;
-            }
-            &:nth-child(n+2) {
-              flex: 1;
-            }
+            display: flex;
+            flex-direction: column;
+            // &:first-child {
+            //   width: 319px;
+            //   margin: 0;
+            // }
+            // &:nth-child(n+2) {
+            //   flex: 1;
+            // }
             &:last-child {
               border: none;
             }
             &>span {
-              display: block;
+              display: flex;
               width: 100%;
               text-align: center;
               height: 59px;
@@ -180,8 +188,8 @@ h2 {
               line-height: 59px;
               box-sizing: border-box;
               &>span {
-                display: inline-block;
-                width: 50%;
+                flex: 1;
+                // width: 50%;
                 border-right: 1px solid #999;
                 box-sizing: border-box;
                 &:last-child {
@@ -202,6 +210,53 @@ h2 {
     .beizhu {
       padding: 20px 33px;
       box-sizing: border-box;
+    }
+  }
+}
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+#table {
+  position: relative;
+  width: 792px;
+  display: flex;
+  height: auto;
+  overflow-x: scroll;
+  box-sizing: border-box;
+  margin-top: 20px;
+  .col {
+    border-top: 1px solid #999;
+    box-sizing: border-box;
+    border-bottom: 1px solid #999;
+    height: auto;
+    &:last-child {
+      border-right: 1px solid #999;
+    }
+    &>span {
+      width: auto;
+      display: flex;
+      border-bottom: 1px solid #999;
+      box-sizing: border-box;
+      &>span {
+        flex: 1;
+        display: inline-block;
+        min-width: 113px;
+        height: 40px;
+        border-left: 1px solid #999;
+        box-sizing: border-box;
+        text-align: center;
+      }
+      &:first-child {
+        background-color: #eee;
+      }
+      &:first-child>span {
+        width: 100%;
+      }
+      &:last-child {
+        border-bottom: none;
+      }
     }
   }
 }

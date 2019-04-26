@@ -3,24 +3,24 @@
     <ul class="tableBox">
       <li class="title-info">
         <div class="title">
-          <h2>桐庐凯瑞针纺有限公司原料统计单</h2>
+          <h2>{{order.client_name}}{{type === '0' ? '原' : '辅'}}料统计单</h2>
         </div>
         <div class="info">
-          <span>订单编号：<em class="bold12">kr19rm00001</em></span>
-          <span>创建日期：2019-03-26</span>
+          <span>订单编号：<em class="bold12">{{order.order_code}}</em></span>
+          <span>创建日期：{{create_time}}</span>
         </div>
       </li>
       <li class="information">
         <span>订单号</span>
-        <span>ES6728392</span>
+        <span>{{$route.params.productId}}</span>
         <span>下单日期</span>
-        <span>2019-04-27</span>
+        <span>{{order.order_time}}</span>
       </li>
       <li class="information">
         <span>订单公司</span>
-        <span>飞泰</span>
+        <span>{{order.client_name}}</span>
         <span>负责组</span>
-        <span>A组</span>
+        <span>{{order.group_name}}</span>
       </li>
       <li class="size-info">
         <div class="title">产品详情</div>
@@ -153,6 +153,8 @@ export default {
           ]
         }
       ],
+      type: '',
+      create_time: '',
       order: {
         order_code: '',
         client_name: '',
@@ -184,16 +186,16 @@ export default {
         order_id: this.$route.params.orderId
       })
     ]).then((res) => {
-      // console.log(res)
-      this.order = res[1].data.data.order_info
+      console.log(res)
+      this.order = res[1].data.data.production_detail.order_info
       // 第一步，把符合product_code的产品筛选出来
       let productByCode = []
-      res[1].data.data.product_info.forEach((item) => {
+      res[1].data.data.production_detail.product_info.forEach((item) => {
         if (item.product_code === this.$route.params.productId) {
           productByCode.push(item)
         }
       })
-      console.log(productByCode)
+      // console.log(productByCode)
       // 第二步，根据Size进行分类
       let productBySize = []
       productByCode.forEach((item) => {
@@ -218,7 +220,7 @@ export default {
           })
         }
       })
-      console.log(productBySize)
+      // console.log(productBySize)
       // 第三步，先把原料分成主要原料和次要原料
       let productByMaterial = {
         main_ingredients: [], // 主要辅料
@@ -269,7 +271,7 @@ export default {
                   colorList: obj ? obj.color.map((itemColor) => {
                     return {
                       name: itemColor.name,
-                      number: itemColor.size.find((item) => item.size === itemSize.size).number * itemColour.number / 1000,
+                      number: (itemColor.size.find((item) => item.size === itemSize.size).number * itemColour.number / 1000).toFixed(2),
                       unit: '千克',
                       value: itemColor.value
                     }
@@ -332,15 +334,14 @@ export default {
         // }).catch(() => {
         // })
       }
-      console.log(product)
-      this.sizeName.material = product.main_material[0].size
-      this.sizeName.ingredients = product.main_ingredients[0].size
       this.product = product
-      // console.log(NOTHISCOLOUR)
       this.colorData = NOTHISCOLOUR
-      // console.log(this.colorData)
+      this.loading = false
+      this.create_time = res[0].data.data.create_time
+      console.log(this.product)
+      console.log(this.order)
     })
-    console.log(this.order)
+    this.type = document.location.href.split('type=')[1]
   }
 }
 </script>

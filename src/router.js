@@ -14,11 +14,11 @@ export default new Router({
     name: 'designFormTable',
     component: () => import('./views/designForm/designFormTable.vue')
   }, {
-    path: '/productStatisticsTable/:id',
+    path: '/productStatisticsTable/:orderId/:productId',
     name: 'productStatisticsTable',
     component: () => import('./views/productDesign/productStatisticsTable.vue')
   }, {
-    path: '/productDesignTable/:id',
+    path: '/productDesignTable/:orderId/:productId',
     name: 'productDesignTable',
     component: () => import('./views/productDesign/productDesignTable.vue')
   }, {
