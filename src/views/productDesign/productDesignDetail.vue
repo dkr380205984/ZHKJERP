@@ -63,8 +63,8 @@
             <div class="left">
               <div class="firstLine">产品品类</div>
               <div class="mergeLine" v-for="(item,index) in product" :style="{height:(index!==product.length-1)?(61*item.num)+'px':(61*item.num)-1+'px'}" :key="item.product_code">
-                <span>{{item.product_code}}</span>
-                <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
+                <span style="color:#1A95FF;cursor:pointer">{{item.product_code}}</span>
+                <span style="color:#1A95FF;cursor:pointer">{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
               </div>
             </div>
             <div class="right">
@@ -93,7 +93,8 @@
               <div class="firstLine">操作</div>
               <div class="mergeLine" v-for="(item,index) in product" :style="{height:(index!==product.length-1)?(61*item.num)+'px':(61*item.num)-1+'px'}" :key="item.product_code">
                 <div class="btnCtns">
-                  <span class="btns normal" @click="$router.push('/index/rawMaterialPlan/'+$route.params.id+'/'+item.product_code)">查看计划单</span>
+                  <span class="btns normal" v-if="item.state" @click="$router.push('/index/rawMaterialPlan/'+$route.params.id+'/'+item.product_code)">查看计划单</span>
+                  <span class="btns normal" v-if="!item.state" @click="$router.push('/index/productPlanCreate/'+item.product_code)">填写配料单</span>
                 </div>
               </div>
             </div>
@@ -101,7 +102,8 @@
               <div class="firstLine">操作</div>
               <div class="mergeLine" style="height:calc(100% - 61px)">
                 <div class="btnCtns">
-                  <span class="btns normal" @click="$router.push('/index/rawMaterialStat/'+$route.params.id)">查看统计单</span>
+                  <span class="btns normal" v-if="state" @click="$router.push('/index/rawMaterialStat/'+$route.params.id)">查看统计单</span>
+                  <span class="btns ban" style="color:#b5b5b5!important;cursor:not-allowed;" v-if="!state">查看统计单</span>
                 </div>
               </div>
             </div>
@@ -138,7 +140,8 @@ export default {
         id: ''
       },
       productInfo: [],
-      product: []
+      product: [],
+      state: true
     }
   },
   methods: {
@@ -148,18 +151,30 @@ export default {
       order_id: this.$route.params.id
     }).then((res) => {
       console.log(res)
-      this.order = res.data.data.order_info
-      this.productInfo = res.data.data.product_info
+      this.order = res.data.data.production_detail.order_info
+      this.productInfo = res.data.data.production_detail.product_info
+      let productPlan = res.data.data.product_plan
       // 合并相同编号的产品数据
       this.productInfo.forEach((item) => {
         let finded = this.product.find((itemFind, index) => itemFind.product_code === item.product_code)
         if (!finded) {
+          // 第一次添加产品信息的时候判断一下他的计划单是否完整
+          let state = false
+          // 检查有计划单的计划单是否完整 没有计划单的就直接false掉
+          if (productPlan[item.product_code]) {
+            productPlan[item.product_code].forEach((itemPlan) => {
+              if (itemPlan.size === item.size && itemPlan.color_match_name === item.color) {
+                state = true
+              }
+            })
+          }
           this.product.push({
             product_code: item.product_code,
             category_name: item.category_name,
             type_name: item.type_name,
             style_name: item.style_name,
-            num: 1
+            num: 1,
+            state: state
           })
         } else {
           this.product = this.product.map((item) => {
@@ -169,12 +184,19 @@ export default {
                 category_name: item.category_name,
                 type_name: item.type_name,
                 style_name: item.style_name,
-                num: (item.num + 1)
+                num: (item.num + 1),
+                state: item.state
               }
             } else {
               return item
             }
           })
+        }
+      })
+      // 将整理出来的数据统计一下是否全部有计划单
+      this.product.forEach((item) => {
+        if (!item.state) {
+          this.state = false
         }
       })
       this.loading = false

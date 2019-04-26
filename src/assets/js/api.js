@@ -11,19 +11,19 @@ const getToken = () => http.get(`${baseUrl}/upload/token`)
 // 修改密码
 const updatePsd = (params) => http.post(`${baseUrl}/auth/reset_pass`, params, 'application/json')
 // 添加岗位
-const addStation = (params) => http.post(`${baseUrl}/auth/station/add`, params, 'application/json')
+const addStation = (params) => http.post(`${baseUrl}/user/station/save`, params, 'application/json')
 // 添加分组
-const addGroup = (params) => http.post(`${baseUrl}/auth/group/add`, params, 'application/json')
+const addGroup = (params) => http.post(`${baseUrl}/user/group/save`, params, 'application/json')
 // 获取岗位
 const getStation = (params) => http.get(`${baseUrl}/user/station/list`, params)
 // 获取分组
 const getGroup = (params) => http.get(`${baseUrl}/user/group/list`, params)
 // 添加员工账号
-const addAuth = (params) => http.post(`${baseUrl}/auth/add`, params, 'application/json')
+const addAuth = (params) => http.post(`${baseUrl}/user/save`, params, 'application/json')
 // 获取员工分组
 const authList = (params) => http.get(`${baseUrl}/user/list`, params)
 // 禁用员工
-const banAuth = (params) => http.post(`${baseUrl}/auth/check_status`, params, 'application/json')
+const banAuth = (params) => http.post(`${baseUrl}/user/check_status`, params, 'application/json')
 // 删除上传图片
 const deletePic = (params) => http.post(`${baseUrl}/upload/delete`, params, 'application/json')
 // 获取类型列表

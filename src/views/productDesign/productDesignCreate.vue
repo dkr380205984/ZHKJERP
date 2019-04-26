@@ -37,7 +37,7 @@
         </div>
         <div class="inputCtn">
           <span class="label">订单价：</span>
-          <span class="content">{{order.total_price}}</span>
+          <span class="content">{{order.total_price}}{{order.account_unit}}</span>
         </div>
       </div>
       <div class="lineCtn">
@@ -130,6 +130,28 @@ export default {
 
     },
     saveAll () {
+      let stockState = true
+      let numberState = true
+      this.productInfo.forEach((item) => {
+        if (item.stock_pick > item.stock_num) {
+          stockState = false
+        }
+        if (!item.production_num) {
+          numberState = false
+        }
+      })
+      if (!stockState) {
+        this.$message.error({
+          message: '检测到库存调取数量大于库存数量,请修改后提交'
+        })
+        return
+      }
+      if (!numberState) {
+        this.$message.error({
+          message: '检测到有未填写的工厂生产数量,请输入后提交'
+        })
+        return
+      }
       let json = {
         company_id: window.sessionStorage.getItem('company_id'),
         order_id: this.order.id,
@@ -150,6 +172,7 @@ export default {
           }
         })
       }
+      console.log(json)
       productionSave(json).then((res) => {
         console.log(res)
         this.$message.success({

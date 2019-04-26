@@ -81,7 +81,6 @@
           <div class="tableColumn" style="flex:0.7">负责小组</div>
           <div class="tableColumn" style="flex:0.7">下单日期</div>
           <div class="tableColumn">交货日期</div>
-          <div class="tableColumn" style="flex:0.7">订单价</div>
           <div class="tableColumn">操作</div>
         </div>
         <div class="mergeBody" v-for="(item ,index) in list" :style="{'height':(60+(item.lineNum-1)*30)+'px'}" :key="index">
@@ -102,7 +101,6 @@
               <span>{{itemTime}}</span>
             </div>
           </div>
-          <div class="tableColumn" style="flex:0.7">{{item.total_price}}</div>
           <div class="tableColumn" style="flex-direction:row;">
             <span class="btns normal" @click="$router.push('/index/productDesignCreate/'+item.id)">添加</span>
           </div>

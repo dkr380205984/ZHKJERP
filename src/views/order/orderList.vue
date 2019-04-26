@@ -105,7 +105,7 @@
           <div class="tableColumn" style="flex:0.7">暂无状态</div>
           <div class="tableColumn" style="flex-direction:row;flex:1.3">
             <span class="btns warning">修改</span>
-            <span class="btns success">详情</span>
+            <span class="btns success" @click="$router.push('/index/orderDetail/' + item.id)">详情</span>
           </div>
         </div>
         <div class="mergeBody" v-if="list.length===0">
@@ -226,6 +226,7 @@ export default {
           })
           console.log(productList)
           return {
+            id: item.id,
             group_name: item.group_name,
             order_code: item.order_code,
             order_time: item.order_time,

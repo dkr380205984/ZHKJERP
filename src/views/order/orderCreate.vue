@@ -585,7 +585,7 @@ export default {
           }
           itemProduct.size.forEach((itemSize, indexSize) => {
             itemProduct.size.forEach((item, index) => {
-              if (itemSize.name.length > 0) {
+              if (itemSize.name.length > 0 && indexSize !== index) {
                 if (itemSize.name[0] === item.name[0] && itemSize.name[1] === item.name[1]) {
                   sizeState = false
                 }
@@ -665,7 +665,7 @@ export default {
             return totalSize + itemSize.numbers * itemSize.unitPrice
           }, 0)
         }, 0)
-      }, 0)
+      }, 0).toFixed(2)
     }
   },
   filters: {

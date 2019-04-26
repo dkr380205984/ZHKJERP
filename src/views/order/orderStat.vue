@@ -80,7 +80,7 @@
           <div class="tableColumn">订单公司</div>
           <div class="tableColumn" style="flex:4">产品信息</div>
           <div class="tableColumn">小组信息</div>
-          <div class="tableColumn" style="flex:2">操作</div>
+          <div class="tableColumn" style="flex:1">操作</div>
         </div>
         <div class="mergeBody" v-for="(item ,index) in list" :key="index" :style="{'height':(item.lineNum*60)+'px'}">
           <div class="tableColumn">{{item.date}}</div>
@@ -104,8 +104,11 @@
           <div class="tableColumn">
             <div class="small" v-for="(itemOrder,indexOrder) in item.orderInfo" :key="indexOrder" :style="{'height':(itemOrder.lineNum*60)+'px'}"><div style="margin:auto">{{itemOrder.group_name}}</div></div>
           </div>
-          <div class="tableColumn" style="flex:2;flex-direction:row">
-            <span class="btns normal">暂时没有</span>
+          <div class="tableColumn" style="flex:1;">
+             <div class="small" v-for="(itemOrder,indexOrder) in item.orderInfo" :key="indexOrder" :style="{'height':(itemOrder.lineNum*60)+'px'}">
+              <div style="margin:auto">
+                <span class="btns success" @click="$router.push('/index/orderDetail/'+itemOrder.order_id)">详情</span>
+              </div></div>
           </div>
         </div>
         <div class="mergeBody" v-if="list.length===0">
@@ -401,6 +404,7 @@ export default {
             }
           })
           arr.push({
+            order_id: item.order_id,
             batch_info: productList,
             group_name: this.groupArr.find((itemGroup) => itemGroup.id === item.group_id).name,
             company_name: this.companyArr.find((itemCompany) => { return parseInt(itemCompany.id) === item.client_id }).name,
