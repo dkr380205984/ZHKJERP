@@ -1,5 +1,6 @@
 <template>
-  <div id="rawMaterialPlan" v-loading="loading">
+  <div id="rawMaterialPlan"
+       v-loading="loading">
     <div class="head">
       <h2>生产计划详情</h2>
     </div>
@@ -18,26 +19,6 @@
         <div class="inputCtn">
           <span class="label">联系人：</span>
           <span class="content">{{order.contacts}}</span>
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">结算单位：</span>
-          <span class="content">{{order.account_unit}}</span>
-        </div>
-        <div class="inputCtn">
-          <span class="label">汇率：</span>
-          <span class="content">1 = {{order.exchange_rate}}</span>
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">税率：</span>
-          <span class="content">{{order.tax_rate}}%</span>
-        </div>
-        <div class="inputCtn">
-          <span class="label">订单价：</span>
-          <span class="content">{{order.total_price}}</span>
         </div>
       </div>
       <div class="lineCtn">
@@ -69,11 +50,10 @@
             <template v-for="(item,key) in product.main_material">
               <template v-if="item.size === sizeName.material">
                 <yl-table :date='item'
-                          :colorDate='colorData'
                           :key="key" />
               </template>
             </template>
-            <span @click="$router.push('/productStatisticsTable/1')"
+            <span @click="$router.push('/productDesignTable/' + $route.params.orderId + '/' + $route.params.productId + '?type=0')"
                   class="print">去打印</span>
           </div>
         </div>
@@ -91,18 +71,19 @@
             <template v-for="(item,key) in product.main_ingredients">
               <template v-if="item.size === sizeName.ingredients">
                 <yl-table :date='item'
-                          :colorDate='colorData'
                           :key="key" />
               </template>
             </template>
-            <span @click="$router.push('/productStatisticsTable/1')"
+            <span @click="$router.push('/productDesignTable/' + $route.params.orderId + '/' + $route.params.productId + '?type=1')"
                   class="print">去打印</span>
           </div>
         </div>
       </div>
       <div class="btnCtn">
-        <div class="cancleBtn" @click="$router.go(-1)">返回</div>
-        <div class="okBtn" @click="$router.push('/index/productDesignUpdate/'+$route.params.orderId)">修改</div>
+        <div class="cancleBtn"
+             @click="$router.go(-1)">返回</div>
+        <div class="okBtn"
+             @click="$router.push('/index/productDesignUpdate/'+$route.params.orderId)">修改</div>
       </div>
     </div>
   </div>
@@ -141,7 +122,7 @@ export default {
   methods: {
     changeSize (item, name) {
       this.sizeName[name] = item
-      console.log(this.sizeName)
+      // console.log(this.sizeName)
       this.sizeTable = item
     }
   },
@@ -153,7 +134,7 @@ export default {
         order_id: this.$route.params.orderId
       })
     ]).then((res) => {
-      console.log(res)
+      // console.log(res)
       this.order = res[1].data.data.production_detail.order_info
       // 第一步，把符合product_code的产品筛选出来
       let productByCode = []
@@ -162,7 +143,7 @@ export default {
           productByCode.push(item)
         }
       })
-      console.log(productByCode)
+      // console.log(productByCode)
       // 第二步，根据Size进行分类
       let productBySize = []
       productByCode.forEach((item) => {
@@ -187,7 +168,7 @@ export default {
           })
         }
       })
-      console.log(productBySize)
+      // console.log(productBySize)
       // 第三步，先把原料分成主要原料和次要原料
       let productByMaterial = {
         main_ingredients: [], // 主要辅料
@@ -306,6 +287,7 @@ export default {
       this.product = product
       this.colorData = NOTHISCOLOUR
       this.loading = false
+      console.log(product)
     })
   }
 }
