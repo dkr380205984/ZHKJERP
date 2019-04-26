@@ -6,13 +6,13 @@
           <h2>{{order.client_name}}{{type === '0' ? '原' : '辅'}}料统计单</h2>
         </div>
         <div class="info">
-          <span>订单编号：<em class="bold12">{{order.order_code}}</em></span>
-          <span>创建日期：{{create_time}}</span>
+          <span>订单编号：<em class="bold12">KR{{year + (type === '0' ? 'YL' : 'FL' ) + order.order_code}}</em></span>
+          <span>创建日期：{{order.order_time}}</span>
         </div>
       </li>
       <li class="information">
         <span>订单号</span>
-        <span>{{$route.params.productId}}</span>
+        <span>{{order.order_code}}</span>
         <span>下单日期</span>
         <span>{{order.order_time}}</span>
       </li>
@@ -25,32 +25,38 @@
       <li class="size-info">
         <div class="title">产品详情</div>
         <div class="content">
-          <div v-for="(item,key) in InfoList"
+          <!-- 此处接口暂时未调 -->
+          <div v-for="(item,key) in order.order_batch"
                :key="key">
-            {{key}}
-            <template v-for='value in item'>
-              <span :key='value.name'>{{value.name}}</span>
-              <span :key='value.value+value.unit'>{{value.value + value.unit}}</span>
+            <template v-for='value in item.batch_info'>
+              <span :key='value.productCode + "x"'>{{value.productCode}}</span>
+              <span :key='value.productCode + "y"'>{{value.productInfo|filterType}}</span>
+              <span :key="value.productCode + 'z'">{{value.size|filterNumber}}条</span>
             </template>
           </div>
         </div>
       </li>
       <li class="size-tables">
-        <ul class="size-table"
-            v-for="(item,key) in list"
-            :key="key">
-          <li>
-            <span>原料名称</span>
-            <span>{{item.material}}</span>
-            <span>合计</span>
-            <span>{{item.total + 'kg'}}</span>
-          </li>
-          <li v-for="(value,index) in item.colors"
-              :key="index">
-            <span>颜色重量</span>
-            <span>{{value.name + " "+value.value+value.unit}}</span>
-          </li>
-        </ul>
+        <template v-for="(item,key) in materialInfo">
+          <ul class="size-table"
+              v-if='(item.type).toString() === type'
+              :key="key">
+            <li>
+              <span>原料名称</span>
+              <span>{{key}}</span>
+              <span>合计</span>
+              <span>{{item.total_number + 'kg'}}</span>
+            </li>
+            <template v-for="(value,index) in item">
+              <li :key="index"
+                  v-if="index !== 'total_number' && index !== 'type'">
+                <span>颜色重量</span>
+                <span>{{index + " " + value + 'kg'}}</span>
+              </li>
+            </template>
+          </ul>
+        </template>
+
       </li>
       <li class="beizhu">备注：</li>
     </ul>
@@ -58,290 +64,81 @@
 </template>
 
 <script>
-import { productPlanDetail, productionDetail } from '@/assets/js/api.js'
+import { productionStat, orderDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
-      InfoList: {
-        '19ABC001': [
-          {
-            name: '围巾/针织/长巾/豹纹',
-            value: 5000,
-            unit: '条'
-          }
-        ],
-        '19BBB002': [
-          {
-            name: '手套/针织/半指/卡通',
-            value: 5000,
-            unit: '个'
-          }
-        ],
-        '19CCC003': [
-          {
-            name: '帽子/针织/吊球/卡通',
-            value: 5000,
-            unit: '顶'
-          }
-        ]
-      },
-      list: [
-        {
-          material: '52支上光晴纶',
-          total: 562.8,
-          colors: [
-            {
-              name: '深绿',
-              value: 281.4,
-              unit: 'kg'
-            },
-            {
-              name: '黑色',
-              value: 281.4,
-              unit: 'kg'
-            }
-          ]
-        }, {
-          material: '36支上光晴纶',
-          total: 562.8,
-          colors: [
-            {
-              name: '深绿',
-              value: 281.4,
-              unit: 'kg'
-            },
-            {
-              name: '黑色',
-              value: 281.4,
-              unit: 'kg'
-            }
-          ]
-        }, {
-          material: '48支上光晴纶',
-          total: 562.8,
-          colors: [
-            {
-              name: '深绿',
-              value: 281.4,
-              unit: 'kg'
-            },
-            {
-              name: '黑色',
-              value: 281.4,
-              unit: 'kg'
-            },
-            {
-              name: '黑色',
-              value: 281.4,
-              unit: 'kg'
-            },
-            {
-              name: '黑色',
-              value: 281.4,
-              unit: 'kg'
-            },
-            {
-              name: '黑色',
-              value: 281.4,
-              unit: 'kg'
-            },
-            {
-              name: '黑色',
-              value: 281.4,
-              unit: 'kg'
-            }
-          ]
-        }
-      ],
-      type: '',
-      create_time: '',
       order: {
         order_code: '',
         client_name: '',
-        remark: '',
-        account_unit: '',
-        contacts: '',
-        exchange_rate: '',
+        // remark: '',
+        // account_unit: '',
+        // contacts: '',
+        // exchange_rate: '',
         order_time: '',
         order_batch: [],
-        product_stock: '',
-        tax_rate: '',
-        total_price: '',
-        user_name: '',
-        id: ''
+        // product_stock: '',
+        // tax_rate: '',
+        // total_price: '',
+        group_name: ''
+        // id: ''
       },
-      product: {},
-      colorData: [],
-      sizeTable: 1
+      year: '',
+      type: '',
+      materialInfo: {}
+      // sizeName: {
+      //   material: '',
+      //   ingredients: ''
+      // }
+    }
+  },
+  filters: {
+    filterType (item) {
+      return (item.category_info.product_category ? item.category_info.product_category + '/' : '') + (item.type_name ? item.type_name + '/' : '') + (item.style_name ? item.style_name + '/' : '') + (item.flower_id ? item.flower_id : '')
+    },
+    filterNumber (item) {
+      let num = 0
+      item.forEach((value, index) => {
+        num += Number(value.numbers)
+      })
+      return num
     }
   },
   methods: {
 
   },
-  created () {
-    Promise.all([
-      productPlanDetail({
-        product_key: this.$route.params.productId
-      }), productionDetail({
-        order_id: this.$route.params.orderId
-      })
-    ]).then((res) => {
+  mounted () {
+    Promise.all([productionStat({
+      order_id: this.$route.params.id
+    }), orderDetail({
+      id: this.$route.params.id
+    })]).then((res) => {
       console.log(res)
-      this.order = res[1].data.data.production_detail.order_info
-      // 第一步，把符合product_code的产品筛选出来
-      let productByCode = []
-      res[1].data.data.production_detail.product_info.forEach((item) => {
-        if (item.product_code === this.$route.params.productId) {
-          productByCode.push(item)
-        }
-      })
-      // console.log(productByCode)
-      // 第二步，根据Size进行分类
-      let productBySize = []
-      productByCode.forEach((item) => {
-        if (productBySize.find((itemSize) => itemSize.size === item.size)) {
-          let mark = -1
-          productBySize.forEach((itemSize, index) => {
-            if (itemSize.size === item.size) {
-              mark = index
-            }
-          })
-          productBySize[mark].product.push({
-            color: item.color,
-            number: item.production_num
-          })
-        } else {
-          productBySize.push({
-            size: item.size,
-            product: [{
-              color: item.color,
-              number: item.production_num
-            }]
-          })
-        }
-      })
-      // console.log(productBySize)
-      // 第三步，先把原料分成主要原料和次要原料
-      let productByMaterial = {
-        main_ingredients: [], // 主要辅料
-        main_material: [] // 主要原料
-      }
-      res[0].data.data.material_data.forEach((item) => {
-        if (item.type === 0) {
-          productByMaterial.main_material.push({
-            material: item.material,
-            colour: item.colour
-          })
-        } else {
-          productByMaterial.main_ingredients.push({
-            material: item.material,
-            colour: item.colour
-          })
-        }
-      })
-      // console.log(productByMaterial)
-      // 第四步，把根据size分类得到数据 合入 原料数据
-      let product = {
-        main_ingredients: [], // 主要辅料
-        main_material: [] // 主要原料
-      }
-      // 创建一个数组，保存未填写的配色方案信息
-      let NOTHISCOLOUR = []
-      // 主要原料数据转化
-      productBySize.forEach((itemSize) => {
-        product.main_material.push({
-          size: itemSize.size,
-          materialList: productByMaterial.main_material.map((itemMaterial) => {
-            return {
-              material: itemMaterial.material,
-              colorInfo: itemSize.product.map((itemColour) => {
-                let obj = itemMaterial.colour.find((item) => item.name === itemColour.color)
-                // 查询该配色方案是否被填写，如果未填写，记录一下
-                if (!obj) {
-                  // 查重
-                  if (!(NOTHISCOLOUR.find((item) => item.size === itemSize.size) && NOTHISCOLOUR.find((item) => item.colour === itemColour.color))) {
-                    NOTHISCOLOUR.push({
-                      size: itemSize.size,
-                      colour: itemColour.color
-                    })
-                  }
-                }
-                return {
-                  name: itemColour.color,
-                  colorList: obj ? obj.color.map((itemColor) => {
-                    return {
-                      name: itemColor.name,
-                      number: (itemColor.size.find((item) => item.size === itemSize.size).number * itemColour.number / 1000).toFixed(2),
-                      unit: '千克',
-                      value: itemColor.value
-                    }
-                  }) : []
-                }
-              })
-            }
-          })
-        })
-      })
-      // 主要辅料数据转化
-      productBySize.forEach((itemSize) => {
-        product.main_ingredients.push({
-          size: itemSize.size,
-          materialList: productByMaterial.main_ingredients.map((itemMaterial) => {
-            return {
-              material: itemMaterial.material,
-              colorInfo: itemSize.product.map((itemColour) => {
-                let obj = itemMaterial.colour.find((item) => item.name === itemColour.color)
-                // 查询该配色方案是否被填写，如果未填写，记录一下
-                if (!obj) {
-                  // 查重
-                  if (!(NOTHISCOLOUR.find((item) => item.size === itemSize.size) && NOTHISCOLOUR.find((item) => item.colour === itemColour.color))) {
-                    NOTHISCOLOUR.push({
-                      size: itemSize.size,
-                      colour: itemColour.color
-                    })
-                  }
-                }
-                return {
-                  name: itemColour.color,
-                  colorList: obj ? obj.color.map((itemColor) => {
-                    return {
-                      name: itemColor.name,
-                      number: itemColor.size.find((item) => item.size === itemSize.size).number * itemColour.number,
-                      unit: itemColor.size.find((item) => item.size === itemSize.size).unit
-                    }
-                  }) : []
-                }
-              })
-            }
-          })
-        })
-      })
-      if (NOTHISCOLOUR.length > 0) {
-        let str = `系统监测到你有如下产品计划单配色方案还未完善：`
-        NOTHISCOLOUR.forEach((item, index) => {
-          if (index === 0) {
-            str = str + item.size + ' , ' + item.colour
-          } else {
-            str = str + ' / ' + item.size + ' ' + item.colour
-          }
-        })
-        str = str + '。请及时填写。'
-        // this.$confirm(str, '提示', {
-        //   confirmButtonText: '现在去填',
-        //   cancelButtonText: '取消',
-        //   type: 'warning'
-        // }).then(() => {
-        // }).catch(() => {
-        // })
-      }
-      this.product = product
-      this.colorData = NOTHISCOLOUR
-      this.loading = false
-      this.create_time = res[0].data.data.create_time
-      console.log(this.product)
-      console.log(this.order)
+      this.order.order_code = res[1].data.data.order_code
+      this.order.client_name = res[1].data.data.client_name
+      this.order.order_batch = res[1].data.data.order_batch
+      // this.order.account_unit = res[1].data.data.account_unit
+      // this.order.contacts = res[1].data.data.contacts
+      // this.order.remark = res[1].data.data.remark
+      this.order.order_time = res[1].data.data.order_time
+      // this.order.total_price = res[1].data.data.total_price
+      // this.order.user_name = res[1].data.data.user_name
+      // this.order.tax_rate = res[1].data.data.tax_rate
+      // this.order.exchange_rate = res[1].data.data.exchange_rate
+      this.materialInfo = res[0].data.data[0]
+      this.order.group_name = res[1].data.data.group_name
+      // for (let prop in this.materialInfo) {
+      //   if (this.materialInfo[prop].type === 0 && this.sizeName.material === '') {
+      //     this.sizeName.material = prop
+      //   } else if (this.materialInfo[prop].type === 1 && this.sizeName.ingredients === '') {
+      //     this.sizeName.ingredients = prop
+      //   }
+      // }
+      console.log(this.order.order_batch)
+      this.type = document.location.href.split('type=')[1]
     })
-    this.type = document.location.href.split('type=')[1]
+    this.year = new Date().getFullYear().toString().split('20')[1]
+    // console.log(this.year)
   }
 }
 </script>
