@@ -22,26 +22,6 @@
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">结算单位：</span>
-          <span class="content">{{order.account_unit}}</span>
-        </div>
-        <div class="inputCtn">
-          <span class="label">汇率：</span>
-          <span class="content">100{{order.account_unit}} = {{order.exchange_rate+'人民币'}}</span>
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">税率：</span>
-          <span class="content">{{order.tax_rate}}%</span>
-        </div>
-        <div class="inputCtn">
-          <span class="label">订单价：</span>
-          <span class="content">{{order.total_price}}{{order.account_unit}}</span>
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
           <span class="label">创建人：</span>
           <span class="content">{{order.user_name}}</span>
         </div>

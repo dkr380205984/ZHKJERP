@@ -73,8 +73,9 @@
               <div class="firstLine">操作</div>
               <div class="mergeLine" v-for="(item,index) in product" :style="{height:(index!==product.length-1)?(61*item.num)+'px':(61*item.num)-1+'px'}" :key="item.product_code">
                 <div class="btnCtns">
-                  <span class="btns normal" v-if="item.state" @click="$router.push('/index/rawMaterialPlan/'+$route.params.id+'/'+item.product_code)">查看计划单</span>
-                  <span class="btns normal" v-if="!item.state" @click="$router.push('/index/productPlanCreate/'+item.product_code)">填写配料单</span>
+                  <span class="btns normal" v-if="item.state===2" @click="$router.push('/index/rawMaterialPlan/'+$route.params.id+'/'+item.product_code)">查看计划单</span>
+                  <span class="btns normal" v-if="item.state===1" @click="$router.push('/index/productPlanUpdate/'+item.product_code)">配料单(修改)</span>
+                  <span class="btns normal" v-if="item.state===0" @click="$router.push('/index/productPlanCreate/'+item.product_code)">配料单(添加)</span>
                 </div>
               </div>
             </div>
@@ -130,7 +131,6 @@ export default {
     productionDetail({
       order_id: this.$route.params.id
     }).then((res) => {
-      console.log(res)
       this.order = res.data.data.production_detail.order_info
       this.productInfo = res.data.data.production_detail.product_info
       let productPlan = res.data.data.product_plan
@@ -138,15 +138,19 @@ export default {
       this.productInfo.forEach((item) => {
         let finded = this.product.find((itemFind, index) => itemFind.product_code === item.product_code)
         if (!finded) {
-          // 第一次添加产品信息的时候判断一下他的计划单是否完整
-          let state = false
-          // 检查有计划单的计划单是否完整 没有计划单的就直接false掉
+          let state = 0 // 0代表没有计划单,1代表不完整,2代表完整
           if (productPlan[item.product_code]) {
             productPlan[item.product_code].forEach((itemPlan) => {
-              if (itemPlan.size === item.size && itemPlan.color_match_name === item.color) {
-                state = true
+              if (itemPlan.color_match_name === item.color && itemPlan.size === item.size) {
+                state = 2
+              } else {
+                if (state !== 2) {
+                  state = 1
+                }
               }
             })
+          } else {
+            state = 0
           }
           this.product.push({
             product_code: item.product_code,
@@ -157,15 +161,30 @@ export default {
             state: state
           })
         } else {
-          this.product = this.product.map((item) => {
-            if (item.product_code === finded.product_code) {
+          this.product = this.product.map((itemPro) => {
+            if (itemPro.product_code === finded.product_code) {
+              let state = itemPro.state
+              if (state === 2) {
+                productPlan[item.product_code].forEach((itemPlan) => {
+                  if (itemPlan.color_match_name === item.color && itemPlan.size === item.size) {
+                    state = 3
+                  } else {
+                    if (state !== 3) {
+                      state = 1
+                    }
+                  }
+                })
+              }
+              if (state === 3) {
+                state = 2
+              }
               return {
-                product_code: item.product_code,
-                category_name: item.category_name,
-                type_name: item.type_name,
-                style_name: item.style_name,
-                num: (item.num + 1),
-                state: item.state
+                product_code: itemPro.product_code,
+                category_name: itemPro.category_name,
+                type_name: itemPro.type_name,
+                style_name: itemPro.style_name,
+                num: (itemPro.num + 1),
+                state: state
               }
             } else {
               return item
@@ -173,9 +192,10 @@ export default {
           })
         }
       })
+      console.log(this.product)
       // 将整理出来的数据统计一下是否全部有计划单
       this.product.forEach((item) => {
-        if (!item.state) {
+        if (item.state !== 2) {
           this.state = false
         }
       })

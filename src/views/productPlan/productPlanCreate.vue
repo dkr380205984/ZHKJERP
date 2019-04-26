@@ -797,7 +797,7 @@ export default {
         }
       })
       saveProductPlan({
-        'id': '',
+        'is_update': false,
         'company_id': this.companyId,
         'product_id': this.product.id,
         'user_id': window.sessionStorage.getItem('user_id'),

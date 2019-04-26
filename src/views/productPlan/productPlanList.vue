@@ -72,7 +72,7 @@
           <div class="tableColumn">{{item.product_info.user_name}}</div>
           <div class="tableColumn">{{item.product_info.create_time}}</div>
           <div class="tableColumn flex9">
-            <span class="btns warning" @click="$router.push('/index/productPlanUpdate/'+item.product_info.id+'/'+item.id)">修改</span>
+            <span class="btns warning" @click="$router.push('/index/productPlanUpdate/'+item.product_info.product_code)">修改</span>
             <span class="btns success" @click="$router.push('/index/productPlanDetail/'+item.id)">查看</span>
           </div>
         </div>

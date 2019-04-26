@@ -244,7 +244,7 @@
 </template>
 
 <script>
-import { porductOne, YarnList, editList, materialList, saveProductPlan, craftProduct, productPlanOne } from '@/assets/js/api.js'
+import { porductOne, YarnList, editList, materialList, saveProductPlan, craftProduct, productPlanDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -307,8 +307,8 @@ export default {
       company_id: this.companyId
     }), craftProduct({
       product_id: this.$route.params.productId
-    }), productPlanOne({
-      id: this.$route.params.planId
+    }), productPlanDetail({
+      product_key: this.$route.params.productId
     })]).then((res) => {
       console.log(res)
       this.product = res[0].data.data
@@ -848,7 +848,8 @@ export default {
         }
       })
       saveProductPlan({
-        'id': this.$route.params.planId,
+        'is_update': true,
+        'id': this.$route.params.productId,
         'company_id': this.companyId,
         'product_id': this.product.id,
         'user_id': window.sessionStorage.getItem('user_id'),
@@ -861,7 +862,7 @@ export default {
           this.$message.success({
             message: '修改成功'
           })
-          this.$router.push('/index/productPlanDetail/' + this.$route.params.planId)
+          this.$router.push('/index/productPlanList')
         }
       })
     },

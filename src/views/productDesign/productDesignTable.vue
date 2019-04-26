@@ -43,8 +43,8 @@
             <span class="center"
                   v-for="(value,index) in colorInfo"
                   :key="index">
-              <span>{{value}}</span>
-              <span>{{value.value}}条</span>
+              <span>{{index}}</span>
+              <span>{{value}}条</span>
             </span>
           </div>
           <div class="content">
@@ -95,14 +95,19 @@ export default {
       create_time: '',
       product: {},
       colorData: [],
-      colorInfo: []
+      colorInfo: {}
     }
   },
   methods: {
     setSizeInfo (item) {
-      if (this.colorInfo.indexOf(item.name) === -1) {
-        this.colorInfo.push(item.name)
-      }
+      // if (this.colorInfo.indexOf(item.name) === -1) {
+      //   this.colorInfo.push(item.name)
+      // }
+      // this.colorInfo.push({
+      //   name: item.name,
+      //   value: item.sum
+      // })
+      this.$set(this.colorInfo, item.name, item.sum)
       return item.colorList
     }
   },
@@ -114,7 +119,6 @@ export default {
         order_id: this.$route.params.orderId
       })
     ]).then((res) => {
-      console.log(res)
       this.create_time = res[0].data.data.create_time
       this.sizeInfo = res[0].data.data.product_info.size
       this.weight_group = res[0].data.data.weight_group
@@ -197,6 +201,7 @@ export default {
                   }
                 }
                 return {
+                  sum: itemColour.number,
                   name: itemColour.color,
                   colorList: obj ? obj.color.map((itemColor) => {
                     return {
@@ -232,6 +237,7 @@ export default {
                   }
                 }
                 return {
+                  sum: itemColour.number,
                   name: itemColour.color,
                   colorList: obj ? obj.color.map((itemColor) => {
                     return {
@@ -246,6 +252,7 @@ export default {
           })
         })
       })
+      console.log(product)
       if (NOTHISCOLOUR.length > 0) {
         let str = `系统监测到你有如下产品计划单配色方案还未完善：`
         NOTHISCOLOUR.forEach((item, index) => {
@@ -271,8 +278,7 @@ export default {
     this.type = document.location.href.split('type=')[1]
   },
   updated () {
-    console.log(this.colorInfo)
-    console.log(this.product)
+    console.log(this.xxx)
   }
 }
 </script>
