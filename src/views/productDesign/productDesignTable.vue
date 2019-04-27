@@ -1,5 +1,6 @@
 <template>
-  <div id="productDesignTable">
+  <div id="productDesignTable"
+       v-loading="loading">
     <ul class="tableBox">
       <li class="title-info">
         <div class="title">
@@ -41,7 +42,7 @@
           <div class="title">
             <span class="bold12">{{item.size}}</span>
             <span class="center"
-                  v-for="(value,index) in colorInfo"
+                  v-for="(value,index) in colorInfo[item.size]"
                   :key="index">
               <span>{{index}}</span>
               <span>{{value}}条</span>
@@ -54,7 +55,7 @@
               <span class='tit'><span>{{value.material}}</span></span>
               <span v-for="(c,n) in value.colorInfo"
                     :key="n">
-                <span v-for="(x,y) in setSizeInfo(c)"
+                <span v-for="(x,y) in setSizeInfo(c,item.size)"
                       :key="y">{{x.name + ' ' + x.number + x.unit}}</span>
               </span>
             </div>
@@ -99,7 +100,7 @@ export default {
     }
   },
   methods: {
-    setSizeInfo (item) {
+    setSizeInfo (item, size) {
       // if (this.colorInfo.indexOf(item.name) === -1) {
       //   this.colorInfo.push(item.name)
       // }
@@ -107,7 +108,13 @@ export default {
       //   name: item.name,
       //   value: item.sum
       // })
-      this.$set(this.colorInfo, item.name, item.sum)
+      console.log(size)
+      if (this.colorInfo[size]) {
+        this.$set(this.colorInfo[size], item.name, item.sum)
+      } else {
+        this.$set(this.colorInfo, size, { [item.name]: item.sum })
+      }
+      console.log(this.colorInfo)
       return item.colorList
     }
   },
@@ -273,12 +280,11 @@ export default {
       }
       this.product = product
       this.colorData = NOTHISCOLOUR
-      this.loading = false
     })
     this.type = document.location.href.split('type=')[1]
   },
   updated () {
-    console.log(this.xxx)
+    this.loading = false
   }
 }
 </script>

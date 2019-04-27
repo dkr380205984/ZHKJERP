@@ -1,5 +1,6 @@
 <template>
-  <div id="productDesignTable">
+  <div id="productDesignTable"
+       v-loading='loading'>
     <ul class="tableBox">
       <li class="title-info">
         <div class="title">
@@ -23,7 +24,7 @@
         <span>{{order.group_name}}</span>
       </li>
       <li class="size-info">
-        <div class="title">产品详情</div>
+        <div class="title"><span>产品详情</span></div>
         <div class="content">
           <!-- 此处接口暂时未调 -->
           <div v-for="(item,key) in order.order_batch"
@@ -68,6 +69,7 @@ import { productionStat, orderDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      loading: true,
       order: {
         order_code: '',
         client_name: '',
@@ -107,7 +109,7 @@ export default {
   methods: {
 
   },
-  mounted () {
+  created () {
     Promise.all([productionStat({
       order_id: this.$route.params.id
     }), orderDetail({
@@ -139,6 +141,9 @@ export default {
     })
     this.year = new Date().getFullYear().toString().split('20')[1]
     // console.log(this.year)
+  },
+  updated () {
+    this.loading = false
   }
 }
 </script>

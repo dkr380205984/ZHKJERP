@@ -1,5 +1,6 @@
 <template>
-  <div id="rawMaterialStat">
+  <div id="rawMaterialStat"
+       v-loading="loading">
     <div class="head">
       <h2>生产统计详情</h2>
     </div>
@@ -83,7 +84,7 @@
                 </li>
               </template>
             </ul>
-            <span @click="$router.push('/productStatisticsTable/1' + '?type=0')"
+            <span @click="$router.push('/productStatisticsTable/' + $route.params.id + '?type=0')"
                   class="print">去打印</span>
           </div>
         </div>
@@ -115,7 +116,7 @@
                 </li>
               </template>
             </ul>
-            <span @click="$router.push('/productStatisticsTable/1' + '?type=1')"
+            <span @click="$router.push('/productStatisticsTable/' + $route.params.id + '?type=1')"
                   class="print">去打印</span>
           </div>
         </div>
@@ -138,6 +139,7 @@ import { productionStat, orderDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      loading: true,
       order: {
         order_code: '',
         client_name: '',
@@ -167,7 +169,7 @@ export default {
       this.sizeTable = item
     }
   },
-  mounted () {
+  created () {
     Promise.all([productionStat({
       order_id: this.$route.params.id
     }), orderDetail({
@@ -193,6 +195,9 @@ export default {
         }
       }
     })
+  },
+  updated () {
+    this.loading = false
   }
 }
 </script>

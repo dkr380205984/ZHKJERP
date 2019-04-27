@@ -254,6 +254,7 @@ import { craftOne } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      // loading: true,
       craft_code: '',
       create_time: '',
       product_info: {
@@ -502,6 +503,7 @@ export default {
     // console.log(this.material_data)
   },
   updated () {
+    // this.loading = false
     window.print()
   }
 }

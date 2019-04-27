@@ -6,7 +6,7 @@ ul {
 }
 h2 {
   margin: 0;
-  font-size: 18px;
+  font-size: 26px;
   color: #666;
   font-weight: 400;
 }
@@ -44,7 +44,7 @@ h2 {
         text-align: center;
       }
       .info {
-        margin-top: 45px;
+        margin-top: 35px;
         display: flex;
         justify-content: space-between;
         em {
@@ -87,13 +87,20 @@ h2 {
       display: flex;
       width: 100%;
       .title {
+        position: relative;
         width: 178px;
-        height: 128px;
+        height: auto;
         text-align: center;
-        line-height: 128px;
+        // line-height: 128px;
         border-right: 1px solid #999;
         box-sizing: border-box;
         font-size: 18px;
+        &>span {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%,-50%)
+        }
       }
       .content {
         flex: 1;
