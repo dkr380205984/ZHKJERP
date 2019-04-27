@@ -1,16 +1,15 @@
 <template>
   <div id="designFormTable"
-       @click.right='goTop'
-       style="position:relative;display:table;">
+       @click.right='goTop'>
     <div class="table">
-      <p class="company">凯瑞针纺有限公司工艺单</p>
+      <p class="company">桐庐凯瑞针纺有限公司工艺单</p>
       <div class="page_header">
         <span>工艺单编号:{{craft_code}}</span>
         <span>创建时间：{{create_time}}</span>
       </div>
       <ul class="table-box">
         <li class="info">
-          <div>产品名称</div>
+          <div style="page-break-after: always;">产品名称</div>
           <div>{{product_info|filterType}}</div>
           <div>成分</div>
           <div>{{product_info.materials|filterIngredient}}</div>
@@ -246,6 +245,9 @@
         </li>
       </ul>
     </div>
+    <!-- <div style="clear:both!important;"></div> -->
+    <div style="page-break-after: always;">基克拉夫金克拉记录卡就开了房间奥克兰</div>
+    <!-- <div style="clear:both!important;"></div> -->
   </div>
 </template>
 
@@ -502,6 +504,12 @@ export default {
     console.log(this.color_data)
     // console.log(this.material_data)
   },
+  mounted () {
+    let body = document.getElementsByTagName('body')[0]
+    let html = document.getElementsByTagName('html')[0]
+    body.style.overflow = 'visible'
+    html.style.overflow = 'visible'
+  },
   updated () {
     // this.loading = false
     window.print()
@@ -510,5 +518,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+// html,
+// body {
+//   overflow: visible;
+// }
 @import "~@/assets/css/designFormTable.less";
 </style>
