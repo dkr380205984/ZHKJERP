@@ -5,7 +5,7 @@ module.exports = {
     https: false,
     proxy: {
       '/api': {
-        target: 'https://api.tlkrzf.com', // 对应自己的接口
+        target: 'http://auth.tlkrzf.com', // 对应自己的接口
         changeOrigin: true,
         ws: true
       }
