@@ -1,6 +1,7 @@
 <template>
   <div id="productDesignTable"
-       v-loading='loading'>
+       v-loading='loading'
+       @click.right="goTop">
     <ul class="tableBox">
       <li class="title-info">
         <div class="title">
@@ -73,25 +74,13 @@ export default {
       order: {
         order_code: '',
         client_name: '',
-        // remark: '',
-        // account_unit: '',
-        // contacts: '',
-        // exchange_rate: '',
         order_time: '',
         order_batch: [],
-        // product_stock: '',
-        // tax_rate: '',
-        // total_price: '',
         group_name: ''
-        // id: ''
       },
       year: '',
       type: '',
       materialInfo: {}
-      // sizeName: {
-      //   material: '',
-      //   ingredients: ''
-      // }
     }
   },
   filters: {
@@ -107,7 +96,9 @@ export default {
     }
   },
   methods: {
-
+    goTop () {
+      document.body.scrollTop = 0
+    }
   },
   created () {
     Promise.all([productionStat({
@@ -119,28 +110,12 @@ export default {
       this.order.order_code = res[1].data.data.order_code
       this.order.client_name = res[1].data.data.client_name
       this.order.order_batch = res[1].data.data.order_batch
-      // this.order.account_unit = res[1].data.data.account_unit
-      // this.order.contacts = res[1].data.data.contacts
-      // this.order.remark = res[1].data.data.remark
       this.order.order_time = res[1].data.data.order_time
-      // this.order.total_price = res[1].data.data.total_price
-      // this.order.user_name = res[1].data.data.user_name
-      // this.order.tax_rate = res[1].data.data.tax_rate
-      // this.order.exchange_rate = res[1].data.data.exchange_rate
       this.materialInfo = res[0].data.data[0]
       this.order.group_name = res[1].data.data.group_name
-      // for (let prop in this.materialInfo) {
-      //   if (this.materialInfo[prop].type === 0 && this.sizeName.material === '') {
-      //     this.sizeName.material = prop
-      //   } else if (this.materialInfo[prop].type === 1 && this.sizeName.ingredients === '') {
-      //     this.sizeName.ingredients = prop
-      //   }
-      // }
-      console.log(this.order.order_batch)
       this.type = document.location.href.split('type=')[1]
     })
     this.year = new Date().getFullYear().toString().split('20')[1]
-    // console.log(this.year)
   },
   updated () {
     this.loading = false

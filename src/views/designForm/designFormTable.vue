@@ -275,6 +275,10 @@
                       :key="index"
                       :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999'}">
                   {{value.value === 'no' ? '' : value.value}}
+                  <span v-if='item[11] === item[12] && index === changeArr(add(item)).length - 1 '
+                        class="jiantou">
+                    <span class="el-icon-back left"></span>
+                  </span>
                 </span>
               </template>
             </div>
@@ -300,6 +304,10 @@
                         :key="index"
                         :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999'}">
                     {{value.value === 'no' ? '' : value.value}}
+                    <span v-if='item[11] === item[12] && index === 0 '
+                          class="jiantou">
+                      <span class="el-icon-back right"></span>
+                    </span>
                   </span>
                 </template>
               </div>
@@ -330,6 +338,10 @@
                       :key="index"
                       :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999'}">
                   {{value.value === 'no' ? '' : value.value}}
+                  <span v-if='item[11] === item[12] && index === changeArr(add(item)).length - 1 '
+                        class="jiantou">
+                    <span class="el-icon-back left"></span>
+                  </span>
                 </span>
               </template>
             </div>
@@ -355,6 +367,10 @@
                         :key="index"
                         :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999'}">
                     {{value.value === 'no' ? '' : value.value}}
+                    <span v-if='item[11] === item[12] && index === 0 '
+                          class="jiantou">
+                      <span class="el-icon-back right"></span>
+                    </span>
                   </span>
                 </template>
               </div>
@@ -396,7 +412,7 @@
               </div>
               <template v-if="value.color_scheme.length < 6">
                 <div v-for="(x,y) in forArr( 6 - value.color_scheme.length)"
-                     :key="y+'1'">
+                     :key="y">
                   <span></span>
                   <span></span>
                 </div>
@@ -408,7 +424,8 @@
                 <div class="table-head-col"></div>
                 <div v-for="(item,key) in forArr(6)"
                      :key="key+'1'">
-                  <span></span><span></span>
+                  <span></span>
+                  <span></span>
                 </div>
               </li>
             </template>
@@ -564,13 +581,6 @@ export default {
     goTop () {
       document.body.scrollTop = 0
     }
-    // returnLen (item) {
-    //   let i = 0
-    //   for (let prop in item) {
-    //     i++
-    //   }
-    //   return i
-    // }
   },
   filters: {
     // 成分合并
@@ -667,16 +677,12 @@ export default {
                     }
                   })
                 } else if (item.type === 1) {
-                  // let obj = {}
-                  // obj.weft = {}
-                  // obj.weft.name = index.name
-                  // obj.weft.name = index.value
-                  // value.color_scheme[n] = obj
-                  value.color_scheme[n].weft = {
-                    name: index.name,
-                    value: index.value
+                  if (value.color_scheme[n]) {
+                    value.color_scheme[n].weft = {
+                      name: index.name,
+                      value: index.value
+                    }
                   }
-                  //
                 }
               } else if (x === this.color_data.length - 1 && value.product_color !== item.product_color && flag) {
                 let obj = {}
@@ -694,7 +700,7 @@ export default {
           }
         })
       })
-      console.log(this.color_data)
+      // console.log(this.color_data)
     })
   },
   mounted () {

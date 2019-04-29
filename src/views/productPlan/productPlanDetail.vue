@@ -38,7 +38,7 @@
               <template v-for="(value,index) in weight">
                 <span :key="index"
                       v-if="(key === index) || index === '均码'">
-                  {{'净重：' + value + 'g'}}
+                  {{'净重：' + value.toFixed(2) + 'g'}}
                 </span>
               </template>
             </span>
@@ -48,7 +48,12 @@
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">损耗比例:</span>
-          <span class="content">8%</span>
+          <span class="content">
+            <span v-for="(loss,size) in loss"
+                  :key="size">
+              {{size}}:{{loss}}
+            </span>
+          </span>
         </div>
       </div>
       <div class="lineCtn">
@@ -93,7 +98,7 @@
             <span class="goBack"
                   @click="$router.go(-1)">返回</span>
             <span class="change"
-                  @click="$router.push('/index/null')">修改</span>
+                  @click="$router.push('../productPlanUpdate/' + product_info.product_code)">修改</span>
           </span>
         </div>
       </div>
@@ -119,7 +124,8 @@ export default {
         main_material: [],
         main_ingredients: []
       },
-      weight: {}
+      weight: {},
+      loss: {}
     }
   },
   filters: {
@@ -144,6 +150,7 @@ export default {
       this.product_info = data.product_info
       this.liucheng = data.outside_precess
       this.color = data.product_info.color
+      this.weight_group = data.weight_group
       data.material_data.forEach((value, n) => {
         let str = (value.type === 0 ? this.material_data.main_material : this.material_data.main_ingredients)
         value.colour.forEach(index => {
@@ -241,17 +248,23 @@ export default {
       this.material_data.main_material.forEach(item => {
         this.weight[item.size] = 0
         item.materialList.forEach((key, n) => {
-          if (n === 0) {
-            key.colorInfo.forEach((value, m) => {
-              if (m === 0) {
-                value.colorList.forEach(index => {
-                  this.weight[item.size] += index.number
-                })
-              }
-            })
-          }
+          // if (n === 0) {
+          key.colorInfo.forEach((value, m) => {
+            if (m === 0) {
+              value.colorList.forEach(index => {
+                this.weight[item.size] += Number(index.number)
+              })
+            }
+          })
+          // }
         })
       })
+      let index = 0
+      for (let prop in this.weight) {
+        this.loss[prop] = ((this.weight_group[index] - this.weight[prop]) / this.weight[prop] * 100).toFixed(2) + '%'
+        index++
+      }
+      console.log(this.loss)
     })
   }
 }
