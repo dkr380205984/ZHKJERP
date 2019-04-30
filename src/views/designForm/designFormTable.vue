@@ -711,7 +711,7 @@ export default {
   },
   updated () {
     // this.loading = false
-    // window.print()
+    window.print()
   }
 }
 </script>
