@@ -140,6 +140,8 @@ const orderSave = (params) => http.post(`${baseUrl}/order/save`, params, 'applic
 const orderDetail = (params) => http.get(`${baseUrl}/order/one`, params)
 // 订单列表
 const orderList = (params) => http.get(`${baseUrl}/order/list`, params)
+// 订单删除
+const orderDelete = (params) => http.post(`${baseUrl}/order/delete`, params, 'application/json')
 // 订单批次信息
 const orderBatchList = (params) => http.get(`${baseUrl}/order/batch/list`, params)
 // 添加产品库存
@@ -161,6 +163,7 @@ const productionDetail = (params) => http.get(`${baseUrl}/production/one`, param
 // 生产统计单详情
 const productionStat = (params) => http.get(`${baseUrl}/product/plan/order`, params)
 export {
+  orderDelete,
   productStockOne,
   productDelete,
   productionStat,

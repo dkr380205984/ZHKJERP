@@ -209,7 +209,9 @@ import {
   saveMaterial,
   materialList,
   unitSave,
-  unitList
+  unitList,
+  unitDelete,
+  deleteMaterial
 } from '@/assets/js/api.js'
 export default {
   data () {
@@ -751,7 +753,28 @@ export default {
     },
     // 删除辅料
     deleteOtherIngredient (id) {
-
+      deleteMaterial({
+        id: id
+      }).then((res) => {
+        if (res.data.status) {
+          this.$message.success({
+            message: '删除成功'
+          })
+          materialList({
+            company_id: window.sessionStorage.getItem('company_id')
+          }).then((res) => {
+            if (res.data.status) {
+              this.otherIngredientArr = res.data.data
+            }
+            this.loading = false
+          })
+        } else {
+          this.$message.error({
+            message: res.data.message
+          })
+          this.loading = false
+        }
+      })
     },
     // 添加单位
     saveUnit () {
@@ -784,7 +807,26 @@ export default {
     },
     // 删除单位
     deleteUnit (id) {
-
+      unitDelete({
+        id: id
+      }).then((res) => {
+        if (res.data.status) {
+          this.$message.success({
+            message: '删除成功'
+          })
+          unitList({
+            company_id: window.sessionStorage.getItem('company_id')
+          }).then((res) => {
+            this.unitArr = res.data.data
+            this.loading = false
+          })
+        } else {
+          this.$message.error({
+            message: res.data.message
+          })
+          this.loading = false
+        }
+      })
     }
   },
   watch: {

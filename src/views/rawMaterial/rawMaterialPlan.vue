@@ -53,7 +53,7 @@
                           :key="key" />
               </template>
             </template>
-            <span @click="$router.push('/productDesignTable/' + $route.params.orderId + '/' + $route.params.productId + '?type=0')"
+            <span @click="openWin('/productDesignTable/' + $route.params.orderId + '/' + $route.params.productId + '?type=0')"
                   class="print">去打印</span>
           </div>
         </div>
@@ -74,7 +74,7 @@
                           :key="key" />
               </template>
             </template>
-            <span @click="$router.push('/productDesignTable/' + $route.params.orderId + '/' + $route.params.productId + '?type=1')"
+            <span @click="openWin('/productDesignTable/' + $route.params.orderId + '/' + $route.params.productId + '?type=1')"
                   class="print">去打印</span>
           </div>
         </div>
@@ -123,6 +123,9 @@ export default {
     changeSize (item, name) {
       this.sizeName[name] = item
       this.sizeTable = item
+    },
+    openWin (url) {
+      window.open(url)
     }
   },
   mounted () {

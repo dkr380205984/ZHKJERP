@@ -292,7 +292,7 @@ export default {
         })
         return
       }
-      if (!this.danjia) {
+      if (!this.cost) {
         this.$message.error({
           message: '检测到未填写成本价,请填写后提交'
         })

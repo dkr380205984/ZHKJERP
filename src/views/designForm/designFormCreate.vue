@@ -1533,7 +1533,7 @@ export default {
     },
     weimi () {
       if (this.weft_data.neichang && this.weft_data.rangwei) {
-        return (this.weft_data.total / (this.weft_data.neichang + this.weft_data.rangwei)).toFixed(3)
+        return ((this.weft_data.total / (this.weft_data.neichang + this.weft_data.rangwei)) * 100).toFixed(2)
       } else {
         return 0
       }
