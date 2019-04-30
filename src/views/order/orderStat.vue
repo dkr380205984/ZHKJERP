@@ -124,7 +124,7 @@
           <div style="width:100%;text-align:center;line-height:59px;">暂无数据</div>
         </div>
       </div>
-      <div class="sum">订单统计:暂不统计</div>
+      <!-- <div class="sum">订单统计:暂不统计</div> -->
       <div class="pageCtn">
         <el-pagination
           background

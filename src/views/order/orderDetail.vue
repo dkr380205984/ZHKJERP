@@ -27,13 +27,13 @@
         </div>
         <div class="inputCtn twoLine">
           <span class="label">汇率:</span>
-          <span class="content">100=787人民币</span>
+          <span class="content">100元={{exchange_rate}}{{account_unit}}</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn twoLine">
           <span class="label">税率:</span>
-          <span class="content">{{exchange_rate}}%</span>
+          <span class="content">{{tax_rate}}%</span>
         </div>
         <div class="inputCtn twoLine">
           <span class="label">总价:</span>
@@ -110,7 +110,8 @@ export default {
       contacts: '',
       remark: '',
       total_price: '',
-      list: []
+      list: [],
+      tax_rate: ''
     }
   },
   methods: {
@@ -132,6 +133,7 @@ export default {
       this.order_time = data.order_time
       this.total_price = data.total_price
       this.remark = data.remark
+      this.tax_rate = data.tax_rate
       data.order_batch.forEach((item, key) => {
         let obj = {}
         obj.delivery_time = item.delivery_time

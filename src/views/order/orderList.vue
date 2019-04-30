@@ -104,15 +104,15 @@
           </div>
           <div class="tableColumn" style="flex:0.7">暂无状态</div>
           <div class="tableColumn" style="flex-direction:row;flex:1.3">
-            <span class="btns warning">修改</span>
             <span class="btns success" @click="$router.push('/index/orderDetail/' + item.id)">详情</span>
+            <span class="btns error" @click="deleteOrder(item.id)">删除</span>
           </div>
         </div>
         <div class="mergeBody" v-if="list.length===0">
           <div style="width:100%;text-align:center;line-height:59px;">暂无数据</div>
         </div>
       </div>
-      <div class="sum">订单统计:暂不统计</div>
+      <!-- <div class="sum">订单统计:暂不统计</div> -->
       <div class="pageCtn">
         <el-pagination
           background
@@ -128,7 +128,7 @@
 </template>
 
 <script>
-import { orderList, productTppeList, clientList, getGroup } from '@/assets/js/api.js'
+import { orderList, productTppeList, clientList, getGroup, orderDelete } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -270,13 +270,36 @@ export default {
         this.group = ''
       }
     },
-    // 修改产品
-    goUpdata (id) {
 
-    },
-    // 查看产品
-    goDetail (id) {
-
+    // 删除订单
+    deleteOrder (id) {
+      this.$confirm('此操作将删除订单和相关联的生产计划单, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        orderDelete({
+          id: id
+        }).then((res) => {
+          if (res.data.status) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.getOrderList()
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.data.message
+            })
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
   },
   watch: {

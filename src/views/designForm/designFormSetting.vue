@@ -23,7 +23,7 @@
           <div class="list">
             <div class="btnCtn" v-for="item in pieceArr" :key="item.id">
               <span>{{item.name}}{{item.unit|unitFilter}}</span>
-              <i class="iconCancle" @click="deletePiece(item.id)">x</i>
+              <!-- <i class="iconCancle" @click="deletePiece(item.id)">x</i> -->
             </div>
           </div>
         </div>
@@ -40,7 +40,7 @@
           <div class="list">
             <div class="btnCtn" v-for="item in typeArr" :key="item.id">
               <span>{{item.name}}</span>
-              <i class="iconCancle" @click="deleteType(item.id)">x</i>
+              <!-- <i class="iconCancle" @click="deleteType(item.id)">x</i> -->
             </div>
           </div>
         </div>
@@ -59,7 +59,7 @@
             <div class="btnCtn" v-for="item in colorArr" :key="item.id">
               <div class="colorBlock" :style="{'background':item.color_code}"></div>
               <span>{{item.name}}</span>
-              <i class="iconCancle" @click="deleteColor(item.id)">x</i>
+              <!-- <i class="iconCancle" @click="deleteColor(item.id)">x</i> -->
             </div>
           </div>
         </div>
@@ -76,7 +76,7 @@
           <div class="list">
             <div class="btnCtn" v-for="item in ruffledArr" :key="item.id">
               <span>{{item.name}}</span>
-              <i class="iconCancle" @click="deleteRuffled(item.id)">x</i>
+              <!-- <i class="iconCancle" @click="deleteRuffled(item.id)">x</i> -->
             </div>
           </div>
         </div>
@@ -93,7 +93,7 @@
           <div class="list">
             <div class="btnCtn" v-for="item in modelArr" :key="item.id">
               <span>{{item.name}}</span>
-              <i class="iconCancle" @click="deleteModel(item.id)">x</i>
+              <!-- <i class="iconCancle" @click="deleteModel(item.id)">x</i> -->
             </div>
           </div>
         </div>
@@ -110,7 +110,7 @@
           <div class="list">
             <div class="btnCtn" v-for="item in organizationArr" :key="item.id">
               <span>{{item.name}}</span>
-              <i class="iconCancle" @click="deleteOrganization(item.id)">x</i>
+              <!-- <i class="iconCancle" @click="deleteOrganization(item.id)">x</i> -->
             </div>
           </div>
         </div>
@@ -127,7 +127,7 @@
           <div class="list">
             <div class="btnCtn" v-for="item in processArr" :key="item.id">
               <span>{{item.name}}</span>
-              <i class="iconCancle" @click="deleteProcess(item.id)">x</i>
+              <!-- <i class="iconCancle" @click="deleteProcess(item.id)">x</i> -->
             </div>
           </div>
         </div>

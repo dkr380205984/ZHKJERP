@@ -28,7 +28,7 @@
         </div>
         <div class="inputCtn">
           <span class="label">汇率：</span>
-          <span class="content">1 = {{order.exchange_rate}}</span>
+          <span class="content">100元 = {{order.exchange_rate}}{{order.account_unit}}</span>
         </div>
       </div>
       <div class="lineCtn">
@@ -74,17 +74,17 @@
                 <span>原料名称</span>
                 <span>{{sizeName.material}}</span>
                 <span>合计</span>
-                <span>{{materialInfo[sizeName.material] ? materialInfo[sizeName.material].total_number + materialInfo[sizeName.material].unit : ''}}</span>
+                <span>{{materialInfo[sizeName.material] ? (materialInfo[sizeName.material].total_number/1000).toFixed(2) + '千克' : ''}}</span>
               </li>
               <template v-for="(value,index) in materialInfo[sizeName.material]">
-                <li v-if="index !== 'total_number' && index !== 'type' && index !== 'unit'"
+                <li v-if="index !== 'total_number' && index !== 'type'&& index !== 'unit'"
                     :key="index">
                   <span>颜色重量</span>
-                  <span>{{index + ' ' + value + materialInfo[sizeName.material].unit}}</span>
+                  <span>{{index + ' ' + (value/1000).toFixed(2) + '千克'}}</span>
                 </li>
               </template>
             </ul>
-            <span @click="$router.push('/productStatisticsTable/' + $route.params.id + '?type=0')"
+            <span @click="openWin('/productStatisticsTable/' + $route.params.id + '?type=0')"
                   class="print">去打印</span>
           </div>
         </div>
@@ -111,12 +111,12 @@
               <template v-for="(value,index) in materialInfo[sizeName.ingredients]">
                 <li v-if="index !== 'total_number' && index !== 'type' && index !== 'unit'"
                     :key="index">
-                  <span>属性数量</span>
+                  <span>数量</span>
                   <span>{{index + ' ' + value + materialInfo[sizeName.ingredients].unit}}</span>
                 </li>
               </template>
             </ul>
-            <span @click="$router.push('/productStatisticsTable/' + $route.params.id + '?type=1')"
+            <span @click="openWin('/productStatisticsTable/' + $route.params.id + '?type=1')"
                   class="print">去打印</span>
           </div>
         </div>
@@ -165,8 +165,10 @@ export default {
   methods: {
     changeSize (item, name) {
       this.sizeName[name] = item
-      console.log(this.sizeName)
       this.sizeTable = item
+    },
+    openWin (url) {
+      window.open(url)
     }
   },
   created () {
@@ -187,6 +189,7 @@ export default {
       this.order.tax_rate = res[1].data.data.tax_rate
       this.order.exchange_rate = res[1].data.data.exchange_rate
       this.materialInfo = res[0].data.data[0]
+      console.log(this.materialInfo)
       for (let prop in this.materialInfo) {
         if (this.materialInfo[prop].type === 0 && this.sizeName.material === '') {
           this.sizeName.material = prop
