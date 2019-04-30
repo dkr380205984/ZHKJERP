@@ -98,7 +98,7 @@
                   {{(index === 0 ? '' : '/') + value}}
                 </template>
               </span>
-              <span>{{item.haveNum}}</span>
+              <span>{{item.needNum}}kg</span>
               <span>100kg</span>
             </div>
           </div>
@@ -147,8 +147,12 @@
                   </el-input>
                   <i>kg</i>
                 </div>
-                <em class="el-icon-plus"
+                <em v-if="index === 0"
+                    class="el-icon-plus"
                     @click="appendBuyInfo(key)"></em>
+                <em v-else
+                    class="el-icon-delete"
+                    @click="deleteBuyInfo(key,index)"></em>
               </li>
               <li>
                 <span>总价</span>:
@@ -272,8 +276,8 @@ export default {
           company: '',
           material: '',
           needColors: [],
-          haveNum: '',
-          selectNum: '',
+          needNum: 0,
+          selectNum: 0,
           buyInfo: [
             {
               color: '',
@@ -334,13 +338,58 @@ export default {
   },
   methods: {
     appendBuyInfo (key) {
-      console.log(key)
       this.list[key].buyInfo.push({
         color: '',
         price: '',
         value: ''
       })
+      console.log(this.list)
+    },
+    deleteBuyInfo (key, index) {
+      // this.list[key].buyInfo.splice(index, 1)
+      console.log(this.list[key].buyInfo.splice(index, 1))
     }
+  },
+  created () {
+    this.rawMaterialPlanList.forEach((item, key) => {
+      if (key === 0) {
+        this.list[0].material = item.material
+        this.list[0].needColors.push(item.need.name)
+        this.list[0].needNum = Number(item.need.value)
+      } else {
+        let flag = true
+        this.list.forEach((value, index) => {
+          if (value.material === item.material) {
+            flag = false
+            value.needColors.push(item.need.name)
+            value.needNum += Number(item.need.value)
+          } else if (flag && index === this.list.length - 1 && value.material !== item.material) {
+            let obj = {
+              company: '',
+              material: '',
+              needColors: [],
+              needNum: 0,
+              selectNum: 0,
+              buyInfo: [
+                {
+                  color: '',
+                  price: '',
+                  value: ''
+                }
+              ],
+              money: '',
+              orderTime: '',
+              completeTime: '',
+              remark: ''
+            }
+            obj.material = item.material
+            obj.needColors.push(item.need.name)
+            obj.needNum = Number(item.need.value)
+            this.list.push(obj)
+          }
+        })
+      }
+    })
   }
 }
 </script>
