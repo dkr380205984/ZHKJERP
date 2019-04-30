@@ -146,8 +146,10 @@ const orderBatchList = (params) => http.get(`${baseUrl}/order/batch/list`, param
 const productStockSave = (params) => http.post(`${baseUrl}/product/stock/save`, params, 'application/json')
 // 产品库存列表
 const productStockList = (params) => http.get(`${baseUrl}/product/stock/list`, params)
-// 产品库存详情
-const productStockDetail = (params) => http.get(`${baseUrl}/product/stock/one`, params)
+// 产品库存详情--添加记录
+const productStockDetail = (params) => http.get(`${baseUrl}/product/stock/detail`, params)
+// 获取单挑产品库存
+const productStockOne = (params) => http.get(`${baseUrl}/product/stock/one`, params)
 // 订单库存详情
 const orderStockDetail = (params) => http.get(`${baseUrl}/product/stock/order`, params)
 // 添加生产计划单
@@ -159,6 +161,7 @@ const productionDetail = (params) => http.get(`${baseUrl}/production/one`, param
 // 生产统计单详情
 const productionStat = (params) => http.get(`${baseUrl}/product/plan/order`, params)
 export {
+  productStockOne,
   productDelete,
   productionStat,
   productionDetail,

@@ -190,7 +190,7 @@ export default new Router({
       name: 'productStockList',
       component: () => import('./views/stock/productStockList.vue')
     }, {
-      path: 'productStockDetail/:id',
+      path: 'productStockDetail/:productId/:size/:color',
       name: 'productStockDetail',
       component: () => import('./views/stock/productStockDetail.vue')
     }, {
@@ -202,7 +202,7 @@ export default new Router({
       name: 'productDesignDetail',
       component: () => import('./views/productDesign/productDesignDetail.vue')
     }, {
-      path: 'productDesignUpdate/:id',
+      path: 'productDesignUpdate/:id/:planId',
       name: 'productDesignUpdate',
       component: () => import('./views/productDesign/productDesignUpdate.vue')
     }, {

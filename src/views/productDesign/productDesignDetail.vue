@@ -55,11 +55,12 @@
                 <div class="tableColumn">库存调取</div>
                 <div class="tableColumn">工厂生产</div>
                 <div class="tableColumn">总计</div>
+                <div class="tableColumn">生产损耗</div>
               </div>
               <div class="tableRow bodyTableRow" v-for="(item) in productInfo" :key="item.id">
                 <div class="tableColumn">{{item.size}}/{{item.color}}</div>
                 <div class="tableColumn">{{item.order_num}}{{item.unit_name}}</div>
-                <div class="tableColumn">{{item.stock_num}}{{item.unit_name}}</div>
+                <div class="tableColumn">{{item.stock_number}}{{item.unit_name}}</div>
                 <div class="tableColumn">
                   {{item.stock_pick}}{{item.unit_name}}
                 </div>
@@ -67,6 +68,9 @@
                   {{item.production_num}}{{item.unit_name}}
                 </div>
                 <div class="tableColumn">{{(parseInt(item.stock_pick) + parseInt(item.production_num))?(parseInt(item.stock_pick) + parseInt(item.production_num)):'待计算'}}{{item.unit_name}}</div>
+                <div class="tableColumn">
+                  {{item.production_sunhao}}%
+                </div>
               </div>
             </div>
             <div class="left" style="border-left:1px solid #b5b5b5;width:120px">
@@ -131,6 +135,7 @@ export default {
     productionDetail({
       order_id: this.$route.params.id
     }).then((res) => {
+      console.log(res)
       this.order = res.data.data.production_detail.order_info
       this.productInfo = res.data.data.production_detail.product_info
       let productPlan = res.data.data.product_plan
@@ -192,7 +197,6 @@ export default {
           })
         }
       })
-      console.log(this.product)
       // 将整理出来的数据统计一下是否全部有计划单
       this.product.forEach((item) => {
         if (item.state !== 2) {

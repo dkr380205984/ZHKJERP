@@ -393,7 +393,14 @@ export default {
           return
         }
       }
-      const imgArr = this.$refs.uploada.uploadFiles.map((item) => { return 'http://zhihui.tlkrzf.com/' + item.response.key })
+      console.log(this.$refs.uploada.uploadFiles)
+      const imgArr = this.$refs.uploada.uploadFiles.map((item) => {
+        if (item.response) {
+          return 'http://zhihui.tlkrzf.com/' + item.response.key
+        } else {
+          return item.url
+        }
+      })
       console.log(this.footage, this.sizeArr, this.child_size)
       const sizeArr = this.footage.map((item, index) => {
         return this.sizeArr[index].map((item2, index2) => {
@@ -449,7 +456,7 @@ export default {
           this.$message.success({
             message: '修改成功',
             onClose: () => {
-              window.location.reload()
+              this.$router.push('/index/productList')
             }
           })
         }

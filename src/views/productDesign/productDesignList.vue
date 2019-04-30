@@ -116,7 +116,7 @@
           </div>
           <div class="tableColumn" style="flex:0.5">{{item.group_name}}</div>
           <div class="tableColumn" style="flex-direction:row;">
-            <span class="btns warning" @click="$router.push('/index/productDesignUpdate/'+item.id)">修改</span>
+            <span class="btns warning" @click="$router.push('/index/productDesignUpdate/'+item.id+'/'+item.plan_id)">修改</span>
             <span class="btns success" @click="$router.push('/index/productDesignDetail/'+item.id)">详情</span>
           </div>
         </div>
@@ -257,6 +257,7 @@ export default {
             }
           })
           return {
+            plan_id: item.id,
             id: item.order_info.id,
             total_price: item.order_info.total_price + item.order_info.account_unit,
             group_name: item.order_info.group_name,
@@ -269,6 +270,7 @@ export default {
             lineNum: productList.length
           }
         })
+        console.log(this.list)
       })
     },
     pickTime (date) {

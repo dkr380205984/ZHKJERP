@@ -22,10 +22,10 @@
                    placeholder="请选择公司类型"
                    v-model="type"
                    disabled>
-          <!-- <el-option v-for="item in companyType"
+          <el-option v-for="item in companyType"
                      :key="item.value"
                      :value="item.value"
-                     :label="item.name"></el-option> -->
+                     :label="item.name"></el-option>
         </el-select>
       </div>
       <div class="inputCtn">
@@ -90,7 +90,7 @@
         <div class="cancleBtn"
              @click="$router.go(-1)">返回</div>
         <div class="okBtn"
-             @click="saveAll">确认</div>
+             @click="saveAll">修改</div>
       </div>
     </div>
   </div>
@@ -98,7 +98,7 @@
 
 <script>
 import { companyType } from '@/assets/js/dictionary.js'
-import { clientDetail } from '@/assets/js/api.js'
+import { clientDetail, clientAdd } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -111,7 +111,8 @@ export default {
       contactsName: '',
       contactsStation: '',
       contactsPhone: '',
-      type: ''
+      type: '',
+      companyType: companyType
     }
   },
   methods: {
@@ -135,22 +136,24 @@ export default {
       this.contacts.splice(index, 1)
     },
     saveAll () {
-      // clientAdd({
-      //   id: '',
-      //   company_id: window.sessionStorage.getItem('company_id'),
-      //   name: this.name,
-      //   abbreviation: this.abbreviation,
-      //   contacts: this.contacts,
-      //   phone: this.phone,
-      //   address: this.address,
-      //   status: parseInt(this.status),
-      //   type: this.type
-      // }).then((res) => {
-      //   console.log(res)
-      //   this.$message.success({
-      //     message: '添加成功'
-      //   })
-      // })
+      console.log(this.type)
+      clientAdd({
+        id: this.$route.params.id,
+        company_id: window.sessionStorage.getItem('company_id'),
+        name: this.name,
+        abbreviation: this.abbreviation,
+        contacts: this.contacts,
+        phone: this.phone,
+        address: this.address,
+        status: parseInt(this.status),
+        type: this.type
+      }).then((res) => {
+        console.log(res)
+        this.$message.success({
+          message: '修改成功'
+        })
+        this.$router.push('/index/foreignTradeList')
+      })
     },
     clearAll () {
 
@@ -169,9 +172,9 @@ export default {
         this.phone = date.phone
         this.contacts = date.contacts
         this.status = date.status.toString()
-        companyType.forEach((item) => {
+        this.companyType.forEach((item) => {
           if (item.value === date.type) {
-            this.type = item.name
+            this.type = item.value
           }
         })
       }

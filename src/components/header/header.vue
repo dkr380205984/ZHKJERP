@@ -6,8 +6,8 @@
     </div>
     <div class="menuCtn">
       <div class="menuLeft">
+        <i class="el-icon-arrow-left" @click="$router.go(-1)"></i>
         <div class="home" @click="goHome"></div>
-        <i class="el-icon-refresh"></i>
       </div>
       <div class="menuRight">
         <el-badge :value="200" :max="99" class="item">

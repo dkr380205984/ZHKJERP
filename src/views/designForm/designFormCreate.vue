@@ -1369,13 +1369,14 @@ export default {
         weight: this.weight,
         yarn_coefficient: yarnCoefficient
       }
+      console.log(json)
       saveCraft(json).then((res) => {
         if (res.data.status) {
           this.$message.success({
             message: '添加成功'
           })
           this.clearDraft(true)
-          this.$route.push('/index/productPlanCreate/' + this.$route.params.id)
+          this.$router.push('/index/productPlanCreate/' + this.$route.params.id)
         }
       })
     },

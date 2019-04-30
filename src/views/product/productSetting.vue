@@ -57,8 +57,8 @@
       </div>
       <div class="lineCtn" :style="{'max-height':flagObj.colorFlag?'300px':'64px'}">
         <div class="inputCtn">
-          <span class="label">添加颜色:</span>
-          <el-input class="elInput" v-model="colorName" placeholder="请输入颜色"></el-input>
+          <span class="label">添加配色:</span>
+          <el-input class="elInput" v-model="colorName" placeholder="请输入产品配色方案名称"></el-input>
           <el-color-picker style="margin-left:15px;" v-model="colorValue"></el-color-picker>
           <div class="okBtn" @click="saveColor">添加</div>
           <div class="showAll" @click="flagObj.colorFlag=!flagObj.colorFlag">{{!flagObj.colorFlag?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flagObj.colorFlag?'showIcon':'hideIcon'"></i></div>
@@ -76,7 +76,7 @@
       </div>
       <div class="lineCtn" :style="{'max-height':flagObj.sizeTFlag?'300px':'64px'}">
         <div class="inputCtn">
-          <span class="label">添加尺寸:</span>
+          <span class="label">添加规格:</span>
           <el-select v-model="selectTypes2" placeholder="请选择大类" class="elInput">
             <el-option
               v-for="item in treeData"
@@ -85,7 +85,7 @@
               :value="item.id">
             </el-option>
           </el-select>
-          <el-input class="elInput" placeholder="请逐个输入尺寸包含的种类" v-model="sizeTname" @keyup.enter.native="saveSizeTname"></el-input>
+          <el-input class="elInput" placeholder="请逐个输入产品规格" v-model="sizeTname" @keyup.enter.native="saveSizeTname"></el-input>
           <div class="floatDiv">
             <span class="title">{{selectTComputed}}</span>
             <span class="content">{{sizeString}}</span>
@@ -299,6 +299,11 @@ export default {
           this.getFlower().then((res) => {
             this.loading = false
           })
+        } else {
+          this.$message.error({
+            message: res.data.message
+          })
+          this.loading = false
         }
       })
     },
@@ -349,6 +354,11 @@ export default {
           this.getIngredient().then((res) => {
             this.loading = false
           })
+        } else {
+          this.$message.error({
+            message: res.data.message
+          })
+          this.loading = false
         }
       })
     },
@@ -402,6 +412,11 @@ export default {
           this.getColor().then((res) => {
             this.loading = false
           })
+        } else {
+          this.$message.error({
+            message: res.data.message
+          })
+          this.loading = false
         }
       })
     },
@@ -493,6 +508,11 @@ export default {
             const children = parent.data.children || parent.data
             const index = children.findIndex(d => d.id === data.id)
             children.splice(index, 1)
+          } else {
+            this.$message.error({
+              message: res.data.message
+            })
+            this.loading = false
           }
         })
       }).catch(() => {
@@ -668,6 +688,11 @@ export default {
             this.sizeTarr = res.data.data
             this.loading = false
           })
+        } else {
+          this.$message.error({
+            message: res.data.message
+          })
+          this.loading = false
         }
       })
     },
@@ -687,6 +712,11 @@ export default {
             this.sizeArr = res.data.data
             this.loading = false
           })
+        } else {
+          this.$message.error({
+            message: res.data.message
+          })
+          this.loading = false
         }
       })
     },

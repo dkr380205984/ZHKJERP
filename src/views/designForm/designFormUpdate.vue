@@ -658,7 +658,7 @@ export default {
       deep: true
     }
   },
-  created () {
+  mounted () {
     // 初始化接口
     Promise.all([craftOne({
       id: this.$route.params.id
@@ -667,7 +667,6 @@ export default {
     }), editList({
       company_id: this.companyId
     })]).then((res) => {
-      console.log(res[0].data.data)
       this.product = res[0].data.data.product_info
       this.colourArr = res[0].data.data.product_info.color
       this.colorArr = res[1].data.data.color
@@ -693,6 +692,7 @@ export default {
       // 整理工艺单数据
       let data = res[0].data.data
       // 处理原料数据
+      console.log(data.material_data)
       data.material_data.forEach((item) => {
         if (item.type === 0 && item.type_material === 0) {
           let arr = []
@@ -741,6 +741,7 @@ export default {
           this.otherIngredientNum2++
         }
       })
+      console.log(this.otherIngredient)
       // 处理颜色数据
       let warpColorData = []
       let weftColorData = []
@@ -1585,7 +1586,6 @@ export default {
         yarn_coefficient: yarnCoefficient
       }
       saveCraft(json).then((res) => {
-        console.log(res)
         if (res.data.status) {
           this.$message.success({
             message: '修改成功'

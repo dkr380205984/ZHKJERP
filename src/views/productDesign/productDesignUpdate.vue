@@ -56,12 +56,12 @@
           <span class="content">{{order.remark?order.remark:'暂无信息'}}</span>
         </div>
       </div>
-       <div class="lineCtn">
+       <div class="lineCtn" style="max-width:1200px">
         <div class="inputCtn oneLine">
           <span class="label">生产数量：</span>
           <div class="specialTable">
-            <div class="left">
-              <div class="firstLine">产品品类</div>
+            <div class="left" style="width:150px">
+              <div class="firstLine" style="font-size:14px;">产品品类</div>
               <div class="mergeLine" v-for="(item,index) in product" :style="{height:(index!==product.length-1)?(61*item.num)+'px':(61*item.num)-1+'px'}" :key="item.product_code">
                 <span>{{item.product_code}}</span>
                 <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
@@ -69,24 +69,30 @@
             </div>
             <div class="right">
               <div class="tableRow titleTableRow">
-                <div class="tableColumn">尺寸/颜色</div>
-                <div class="tableColumn ">下单数</div>
-                <div class="tableColumn">库存数量</div>
-                <div class="tableColumn">库存调取</div>
-                <div class="tableColumn">工厂生产</div>
-                <div class="tableColumn">总计</div>
+                <div class="tableColumn" style="font-size:14px;">尺寸/颜色</div>
+                <div class="tableColumn" style="font-size:14px;">下单数</div>
+                <div class="tableColumn" style="font-size:14px;">库存数量</div>
+                <div class="tableColumn" style="font-size:14px;">原库存调取</div>
+                <div class="tableColumn" style="font-size:14px;">现库存调取</div>
+                <div class="tableColumn" style="font-size:14px;">库存变动</div>
+                <div class="tableColumn" style="font-size:14px;">工厂生产</div>
+                <div class="tableColumn" style="font-size:14px;">总计</div>
+                <div class="tableColumn" style="font-size:14px;">生产损耗(%)</div>
               </div>
               <div class="tableRow bodyTableRow" v-for="(item) in productInfo" :key="item.id">
                 <div class="tableColumn">{{item.size}}/{{item.color}}</div>
                 <div class="tableColumn">{{item.order_num}}{{item.unit_name}}</div>
-                <div class="tableColumn">{{item.stock_num}}{{item.unit_name}}</div>
+                <div class="tableColumn">{{item.stock_number}}{{item.unit_name}}</div>
+                <div class="tableColumn">{{item.stock_pick}}{{item.unit_name}}</div>
                 <div class="tableColumn">
-                  <input class="inputs" placeholder="输入数字" v-model="item.stock_pick"/>
+                  <input class="inputs" placeholder="输入数字" v-model="item.stock_pick_now"/>
                 </div>
+                <div class="tableColumn">{{item|stockFilter}}</div>
                 <div class="tableColumn">
                   <input class="inputs" placeholder="输入数字" v-model="item.production_num"/>
                 </div>
-                <div class="tableColumn">{{(parseInt(item.stock_pick) + parseInt(item.production_num))?(parseInt(item.stock_pick) + parseInt(item.production_num)):'待计算'}}</div>
+                <div class="tableColumn">{{(parseInt(item.stock_pick_now) + parseInt(item.production_num))?(parseInt(item.stock_pick_now) + parseInt(item.production_num)):'待计算'}}</div>
+                <div class="tableColumn"><input class="inputs" placeholder="损耗比" v-model="item.production_sunhao"/></div>
               </div>
             </div>
           </div>
@@ -130,7 +136,31 @@ export default {
 
     },
     saveAll () {
+      let stockState = true
+      let numberState = true
+      this.productInfo.forEach((item) => {
+        if ((parseInt(item.stock_pick_now) - parseInt(item.stock_pick)) > parseInt(item.stock_number)) {
+          stockState = false
+        }
+        if (!item.production_num) {
+          numberState = false
+        }
+      })
+      if (!stockState) {
+        this.$message.error({
+          message: '检测到库存调取数量大于库存数量,请修改后提交'
+        })
+        return
+      }
+      if (!numberState) {
+        this.$message.error({
+          message: '检测到有未填写的工厂生产数量,请输入后提交'
+        })
+        return
+      }
       let json = {
+        id: this.$route.params.planId,
+        is_update: true,
         company_id: window.sessionStorage.getItem('company_id'),
         order_id: this.$route.params.id,
         detail_info: this.productInfo.map((item) => {
@@ -142,21 +172,37 @@ export default {
             product_code: item.product_code,
             size: item.size,
             color: item.color,
-            order_num: item.numbers,
-            stock_num: item.stock_num,
-            stock_pick: item.stock_pick,
+            order_num: item.order_num,
+            stock_pick: parseInt(item.stock_pick_now),
+            stock_pick_change: parseInt(item.stock_pick_now) - parseInt(item.stock_pick),
             production_num: item.production_num,
-            total_num: parseInt(item.stock_pick) + parseInt(item.production_num)
+            total_num: parseInt(item.stock_pick_now) + parseInt(item.production_num),
+            production_sunhao: item.production_sunhao
           }
         })
       }
       productionSave(json).then((res) => {
         console.log(res)
-        this.$message.success({
-          message: '修改成功'
-        })
-        this.$router.push('/index/productDesignList')
+        if (res.data.status) {
+          this.$message.success({
+            message: '修改成功'
+          })
+          this.$router.push('/index/productDesignList')
+        } else {
+          this.$message.error({
+            message: '库存变动,请刷新页面后重试'
+          })
+        }
       })
+    }
+  },
+  filters: {
+    stockFilter (item) {
+      if (parseInt(item.stock_pick) >= parseInt(item.stock_pick_now)) {
+        return '入库' + (item.stock_pick - item.stock_pick_now) + item.unit_name
+      } else {
+        return '出库' + (item.stock_pick_now - item.stock_pick) + item.unit_name
+      }
     }
   },
   mounted () {
@@ -165,7 +211,11 @@ export default {
     }).then((res) => {
       console.log(res)
       this.order = res.data.data.production_detail.order_info
-      this.productInfo = res.data.data.production_detail.product_info
+      this.productInfo = res.data.data.production_detail.product_info.map((item) => {
+        item.stock_pick_now = item.stock_pick
+        item.stock_pick_real = 0
+        return item
+      })
       // 合并相同编号的产品数据
       this.productInfo.forEach((item) => {
         let finded = this.product.find((itemFind, index) => itemFind.product_code === item.product_code)

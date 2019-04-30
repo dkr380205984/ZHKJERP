@@ -40,7 +40,7 @@
         <div class="inputCtn oneLine">
           <span class="label">生产数量：</span>
           <div class="specialTable">
-            <div class="left">
+            <div class="left" style="width:180px">
               <div class="firstLine">产品品类</div>
               <div class="mergeLine" v-for="(item,index) in product" :style="{height:(index!==product.length-1)?(61*item.num)+'px':(61*item.num)-1+'px'}" :key="item.product_code">
                 <span>{{item.product_code}}</span>
@@ -55,6 +55,7 @@
                 <div class="tableColumn">库存调取</div>
                 <div class="tableColumn">工厂生产</div>
                 <div class="tableColumn">总计</div>
+                <div class="tableColumn" style="flex:1.3">生产损耗(%)</div>
               </div>
               <div class="tableRow bodyTableRow" v-for="(item) in productInfo" :key="item.id">
                 <div class="tableColumn">{{item.size}}/{{item.color}}</div>
@@ -67,6 +68,9 @@
                   <input class="inputs" placeholder="输入数字" v-model="item.production_num"/>
                 </div>
                 <div class="tableColumn">{{(parseInt(item.stock_pick) + parseInt(item.production_num))?(parseInt(item.stock_pick) + parseInt(item.production_num)):'待计算'}}</div>
+                 <div class="tableColumn" style="flex:1.3">
+                  <input class="inputs" placeholder="百分比" v-model="item.production_sunhao"/>
+                </div>
               </div>
             </div>
           </div>
@@ -112,12 +116,16 @@ export default {
     saveAll () {
       let stockState = true
       let numberState = true
+      let sunhaoState = true
       this.productInfo.forEach((item) => {
         if (item.stock_pick > item.stock_num) {
           stockState = false
         }
         if (!item.production_num) {
           numberState = false
+        }
+        if (!item.production_sunhao) {
+          sunhaoState = false
         }
       })
       if (!stockState) {
@@ -132,9 +140,17 @@ export default {
         })
         return
       }
+      if (!sunhaoState) {
+        this.$message.error({
+          message: '检测到有未填写的损耗比,请输入后提交'
+        })
+        return
+      }
       let json = {
+        is_update: false,
         company_id: window.sessionStorage.getItem('company_id'),
         order_id: this.order.id,
+        id: null,
         detail_info: this.productInfo.map((item) => {
           return {
             category_name: item.category_name,
@@ -145,9 +161,11 @@ export default {
             size: item.size,
             color: item.color,
             order_num: item.numbers,
-            stock_num: item.stock_num,
+            stock_pick_change: item.stock_pick,
+            // stock_num: item.stock_num, //库存总量不存储,让后台自己算
             stock_pick: item.stock_pick,
             production_num: item.production_num,
+            production_sunhao: item.production_sunhao,
             total_num: parseInt(item.stock_pick) + parseInt(item.production_num)
           }
         })
@@ -155,10 +173,16 @@ export default {
       console.log(json)
       productionSave(json).then((res) => {
         console.log(res)
-        this.$message.success({
-          message: '添加成功'
-        })
-        this.$router.push('/index/productDesignList')
+        if (res.data.status) {
+          this.$message.success({
+            message: '添加成功'
+          })
+          this.$router.push('/index/productDesignList')
+        } else {
+          this.$message.error({
+            message: '库存变动,请刷新页面后重试'
+          })
+        }
       })
     }
   },
@@ -183,7 +207,8 @@ export default {
             numbers: item.numbers,
             unit_name: item.unit_name,
             stock_pick: 0,
-            production_num: ''
+            production_num: '',
+            production_sunhao: ''
           })
         })
       })

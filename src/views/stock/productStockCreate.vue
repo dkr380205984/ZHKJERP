@@ -57,7 +57,7 @@
       <div class="lineCtn">
         <div class="inputCtn oneLine">
           <span class="label">产品描述:</span>
-          <span class="content">{{product.description}}</span>
+          <span class="content">{{product.description?product.description:'暂无信息'}}</span>
         </div>
       </div>
       <div class="border"></div>
@@ -69,7 +69,7 @@
       </div>
       <div class="lineCtn">
         <div class="inputCtn oneLine">
-          <span class="label">选择尺码:</span>
+          <span class="label must">选择尺码:</span>
           <el-select class="elSelect" v-model="size" placeholder="请选择尺码" >
             <el-option
               v-for="item in sizeArr"
@@ -82,7 +82,7 @@
       </div>
       <div class="lineCtn">
         <div class="inputCtn oneLine">
-          <span class="label">选择配色:</span>
+          <span class="label must">选择配色:</span>
           <el-select class="elSelect" v-model="colour" placeholder="请选择配色" >
             <el-option
               v-for="item in colourArr"
@@ -97,7 +97,7 @@
       </div>
       <div class="lineCtn">
         <div class="inputCtn oneLine">
-          <span class="label">录入库存数:</span>
+          <span class="label must">录入库存数:</span>
           <el-input class="elSelect" placeholder="请输入录入数量" v-model="numbers">
             <template slot="append">{{unit}}</template>
           </el-input>
@@ -127,7 +127,7 @@
       </div>
       <div class="lineCtn">
         <div class="inputCtn oneLine">
-          <span class="label">成本价:</span>
+          <span class="label must">成本价:</span>
           <el-input class="elSelect" placeholder="请输入成本价" v-model="cost">
             <template slot="append">元/{{unit}}</template>
           </el-input>
@@ -143,7 +143,7 @@
       </div>
       <div class="lineCtn">
         <div class="inputCtn oneLine">
-          <span class="label">存放时间:</span>
+          <span class="label must">存放时间:</span>
           <el-date-picker
             v-model="date"
             type="date"
@@ -276,13 +276,25 @@ export default {
     saveAll () {
       if (!this.size) {
         this.$message.error({
-          message: '检测到未选择产品尺码'
+          message: '检测到未选择产品尺码,请选择后提交'
         })
         return
       }
       if (!this.colour) {
         this.$message.error({
-          message: '检测到未选择产品颜色'
+          message: '检测到未选择产品颜色,请选择后提交'
+        })
+        return
+      }
+      if (!this.date) {
+        this.$message.error({
+          message: '检测到未选择存放日期,请选择后提交'
+        })
+        return
+      }
+      if (!this.danjia) {
+        this.$message.error({
+          message: '检测到未填写成本价,请填写后提交'
         })
         return
       }

@@ -13,166 +13,129 @@
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">产品类别：</span>
-          <span class="content">{{product_info.product_class}}</span>
+          <span class="content">{{product_info|filterType}} / {{product_info.flower_id}}</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">产品成分：</span>
-          <span class="content">{{product_info.product_item}}</span>
+          <span class="content">{{product_info.materials|filterMaterials}}</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">产品规格：</span>
-          <span class="content">
-            <div v-for="(item,key) in product_info.product_size"
-                 :key="key">
-
-              <span v-for="(value,index) in item"
-                    :key="index">
-                <span v-if="index !== 'worn'">{{index === 'value' ? value + '条' : value}}</span>
-                <span v-else>
-                  次品：
-                  （<template v-for="(content,number) in value">
-                    {{number === 0 ? '' : "/"}}{{content.value+content.why}}
-                  </template>）
-                </span>
-              </span>
-            </div>
-          </span>
+          <span class="label">产品配色：</span>
+          <span class="content">{{color}}</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">成本价：</span>
-          <span class="content">{{product_info.price + '元/条'}}</span>
+          <span class="label">产品尺码：</span>
+          <span class="content">{{size}}</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">总价：</span>
-          <span class="content">{{0}}元(含次品)</span>
+          <span class="label">库存总量：</span>
+          <span class="content">{{total}}</span>
         </div>
       </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">总价：</span>
-          <span class="content">{{0}}元(不含次品)</span>
+       <div class="tableCtn" style="min-height:0">
+        <div class="tableRow titleTableRow">
+          <div class="tableColumn">时间</div>
+          <div class="tableColumn">订单号</div>
+          <div class="tableColumn">操作人</div>
+          <div class="tableColumn">操作</div>
+          <div class="tableColumn">存放数量</div>
+          <div class="tableColumn">次品数量</div>
+          <div class="tableColumn">备注信息</div>
         </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">存放仓库：</span>
-          <span class="content">{{product_info.wareHouse}}</span>
+         <div class="tableRow bodyTableRow" v-for="(item) in list" :key="item.id">
+          <div class="tableColumn" style="color:#1A95FF">{{item.update_time}}</div>
+          <div class="tableColumn">{{item.order_code}}</div>
+          <div class="tableColumn">{{item.user_name}}</div>
+          <div class="tableColumn">出库/入库</div>
+          <div class="tableColumn">{{item.stock_number}}</div>
+          <div class="tableColumn">{{item.rejects_product|filterReject}}
+            <!-- <span style="cursor:pointer;color:#1A95FF">(详情)</span> -->
+          </div>
+          <div class="tableColumn">{{item.remark?item.remark:'暂无信息'}}</div>
         </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">存放时间：</span>
-          <span class="content">{{product_info.store_time}}</span>
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">更新时间：</span>
-          <span class="content">{{product_info.updated_time}}</span>
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">创建人：</span>
-          <span class="content">{{product_info.create_people}}</span>
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">备注：</span>
-          <span class="content">{{product_info.note}}</span>
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="content btn">
-            <span class="goBack"
-                  @click="$router.go(-1)">返回</span>
-            <span class="change"
-                  @click="$router.push('/index/null')">修改</span>
-          </span>
-        </div>
-      </div>
+       </div>
+      <!-- <div class="btnCtn">
+        <div class="cancleBtn" @click="$router.go(-1)">返回</div>
+        <div class="okBtn">修改</div>
+      </div> -->
     </div>
   </div>
 </template>
 
 <script>
-// import { productStockDetail } from '@/assets/js/api.js'
+import { productStockDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      product_code: '',
       product_info: {
-        product_code: 'ES5623134',
-        product_class: '围巾/针织/长巾/条纹',
-        product_item: '90%晴纶 / 10%涤纶',
-        product_size: [
-          {
-            size: 'S',
-            color: '黑白',
-            value: 300,
-            worn: [
-              {
-                value: 10,
-                why: '破损'
-              },
-              {
-                value: 50,
-                why: '污渍'
-              },
-              {
-                value: 40,
-                why: '色差'
-              }
-            ]
-          },
-          {
-            size: 'M',
-            color: '黑白',
-            value: 300,
-            worn: [
-              {
-                value: 10,
-                why: '破损'
-              },
-              {
-                value: 50,
-                why: '污渍'
-              },
-              {
-                value: 40,
-                why: '色差'
-              }
-            ]
-          }
-        ],
-        price: 20,
-        wareHouse: '桐庐凯瑞针纺有限公司',
-        store_time: '3年',
-        updated_time: '2019-03-30',
-        create_people: '王锦鲤',
-        note: '备注备注备注备注备注备注备注备注'
-      }
+        category_info: {
+          name: '',
+          product_category: ''
+        },
+        style_name: '',
+        type_name: '',
+        materials: [],
+        flower_id: ''
+      },
+      color: '',
+      size: '',
+      list: [],
+      total: 0
     }
   },
   methods: {
 
+  },
+  filters: {
+    // 类型合并
+    filterType (item) {
+      if (!item.type_name) {
+        return item.category_info.product_category
+      } else if (!item.style_name) {
+        return item.category_info.product_category + ' / ' + item.type_name
+      } else {
+        return item.category_info.product_category + ' / ' + item.type_name + ' / ' + item.style_name
+      }
+    },
+    filterMaterials (arr) {
+      let str = ''
+      arr.forEach((item) => {
+        str += item.ingredient_name + item.ingredient_value + '%' + ' / '
+      })
+      return str.substring(0, str.length - 2)
+    },
+    filterReject (arr) {
+      return arr.reduce((total, current) => {
+        return total + current.num
+      }, 0)
+    }
+  },
+  mounted () {
+    productStockDetail({
+      product_id: this.$route.params.productId,
+      size: this.$route.params.size,
+      color: this.$route.params.color
+    }).then((res) => {
+      console.log(res)
+      let data = res.data.data
+      this.product_info = data[0].product_info
+      this.color = data[0].color
+      this.size = data[0].size
+      this.list = data
+      this.total = this.list.reduce((total, current) => {
+        return total + current.stock_number
+      }, 0)
+    })
   }
-  // created () {
-  //   productStockDetail({
-  //     id: this.$route.params.id
-  //   }).then((res) => {
-  //     console.log(res)
-  //   })
-  // }
 }
 </script>
 

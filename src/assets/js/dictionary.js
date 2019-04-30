@@ -124,13 +124,15 @@ const menu = [{
   }, {
     name: '订单发货列表',
     url: '/index/orderStat'
-  }, {
-    name: '添加样品订单(未完成)',
-    url: '/index/sampleCreate'
-  }, {
-    name: '样单列表(未完成)',
-    url: '/index/sampleList'
-  }]
+  }
+  // {
+  //   name: '添加样品订单(未完成)',
+  //   url: '/index/sampleCreate'
+  // }, {
+  //   name: '样单列表(未完成)',
+  //   url: '/index/sampleList'
+  // }
+  ]
 }, {
   name: '库存管理',
   children: [{
@@ -139,26 +141,31 @@ const menu = [{
   }, {
     name: '产品库存列表',
     url: '/index/productStockList'
-  }, {
-    name: '添加原料库存',
-    url: '/index/mainMaterialStockCreate'
-  }, {
-    name: '原料库存列表',
-    url: '/index/mainMaterialStockList'
-  }, {
-    name: '添加辅料库存',
-    url: '/index/otherMaterialStockCreate'
-  }, {
-    name: '辅料库存列表',
-    url: '/index/otherMaterialStockList'
-  }]
-}, {
-  name: '原料管理',
-  children: [{
-    name: '原料预订购',
-    url: '/index/rawMaterialPurchase'
-  }]
-}, {
+  }
+  // {
+  //   name: '添加原料库存',
+  //   url: '/index/mainMaterialStockCreate'
+  // }, {
+  //   name: '原料库存列表',
+  //   url: '/index/mainMaterialStockList'
+  // },
+  // {
+  //   name: '添加辅料库存',
+  //   url: '/index/otherMaterialStockCreate'
+  // }, {
+  //   name: '辅料库存列表',
+  //   url: '/index/otherMaterialStockList'
+  // }
+  ]
+},
+//  {
+//   name: '原料管理',
+//   children: [{
+//     name: '原料预订购',
+//     url: '/index/rawMaterialPurchase'
+//   }]
+// },
+{
   name: '生产管理',
   children: [{
     name: '新建生产计划单',

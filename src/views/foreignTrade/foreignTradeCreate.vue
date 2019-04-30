@@ -12,7 +12,7 @@
         <span class="label">公司简称:</span>
         <el-input class="elInput" placeholder="请输入外贸公司简称" v-model="abbreviation"></el-input>
       </div>
-       <div class="inputCtn">
+      <div class="inputCtn">
         <span class="label">公司类型:</span>
         <el-select class="elInput" placeholder="请选择公司类型" v-model="type">
           <el-option v-for="item in companyType" :key="item.value" :value="item.value" :label="item.name"></el-option>
@@ -61,7 +61,7 @@
         <el-input class="elInput" placeholder="请输入公司地址" v-model="address"></el-input>
       </div>
       <div class="btnCtn">
-        <div class="cancleBtn" @click="clearAll">清空</div>
+        <div class="cancleBtn" @click="$router.go(-1)">返回</div>
         <div class="okBtn" @click="saveAll">添加</div>
       </div>
     </div>
@@ -123,6 +123,7 @@ export default {
         this.$message.success({
           message: '添加成功'
         })
+        this.$router.push('/index/foreignTradeList')
       })
     },
     clearAll () {

@@ -84,10 +84,10 @@
           <div class="tableColumn">{{item.size }}</div>
           <div class="tableColumn">{{item.color}}</div>
           <div class="tableColumn">{{item.stock_number + item.product_info.category_info.name}}</div>
-          <div class="tableColumn">暂无信息</div>
-          <div class="tableColumn">{{item.storage_time}}</div>
+          <div class="tableColumn">{{item.create_time}}</div>
+          <div class="tableColumn">{{item.update_time}}</div>
           <div class="tableColumn">
-            <span class="btns normal" @click="$router.push('/index/productStockDetail/'+item.id)">查看详情</span>
+            <span class="btns success" @click="$router.push('/index/productStockDetail/'+item.product_info.id+'/'+item.size+'/'+item.color)">详情</span>
           </div>
         </div>
       </div>

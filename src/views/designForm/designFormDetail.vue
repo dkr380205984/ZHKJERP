@@ -234,8 +234,8 @@
             </div>
           </div>
         </div>
-        <div class="canvasCtn">
-          <canvas ref="myCanvas" width="600" height="1200"></canvas>
+        <div class="canvasCtn" :style="{height:600*chang/kuan + 'px'}">
+          <canvas ref="myCanvas" width="600" :height="600*chang/kuan"></canvas>
         </div>
       </div>
       <div class="btnCtn">
@@ -260,6 +260,8 @@ export default {
   data () {
     return {
       loading: true,
+      chang: 2, // 初始化长
+      kuan: 1, // 初始化宽
       chooseWhichColour: 0, // 选择哪款配色方案进行渲染
       longSort: [],
       longSort2: [],
@@ -412,27 +414,29 @@ export default {
         }
       })
       // 画图
-      let lineWidth = 500 / this.warp_data.weft // 经向粗细
-      let dom = this.$refs.myCanvas
-      let ctx = dom.getContext('2d')
-      ctx.clearRect(0, 0, 600, 1200)
-      ArrMain.reduce((total, current, index) => {
-        ctx.globalAlpha = 0.5
-        ctx.beginPath()
-        ctx.fillStyle = current.color
-        ctx.rect(total, 50, current.number * lineWidth, 1100)
-        ctx.fill()
-        return total + current.number * lineWidth
-      }, 50)
-      let lineHeight = 1100 / this.weft_data.total
-      ArrMain2.reduce((total, current, index) => {
-        ctx.globalAlpha = 0.3
-        ctx.beginPath()
-        ctx.fillStyle = current.color
-        ctx.rect(50, total, 500, current.number * lineHeight)
-        ctx.fill()
-        return total + current.number * lineHeight
-      }, 50)
+      this.$nextTick(() => {
+        let lineWidth = 500 / this.warp_data.weft // 经向粗细
+        let dom = this.$refs.myCanvas
+        let ctx = dom.getContext('2d')
+        ctx.clearRect(0, 0, 600, (600 * this.chang / this.kuan))
+        ArrMain.reduce((total, current, index) => {
+          ctx.globalAlpha = 0.5
+          ctx.beginPath()
+          ctx.fillStyle = current.color
+          ctx.rect(total, 50, current.number * lineWidth, (600 * this.chang / this.kuan - 100))
+          ctx.fill()
+          return total + current.number * lineWidth
+        }, 50)
+        let lineHeight = (600 * this.chang / this.kuan - 100) / this.weft_data.total
+        ArrMain2.reduce((total, current, index) => {
+          ctx.globalAlpha = 0.3
+          ctx.beginPath()
+          ctx.fillStyle = current.color
+          ctx.rect(50, total, 500, current.number * lineHeight)
+          ctx.fill()
+          return total + current.number * lineHeight
+        }, 50)
+      })
       // 保存下绘图的数据
       this.warp_canvas = ArrMain
       this.weft_canvas = ArrMain2
@@ -768,27 +772,31 @@ export default {
       // 保存下绘图的数据
       this.warp_canvas = ArrMain
       this.weft_canvas = ArrMain2
+      this.chang = res.data.data.weft_data.neichang + res.data.data.weft_data.rangwei
+      this.kuan = res.data.data.weft_data.peifu
       // 画图
-      let lineWidth = 500 / this.warp_data.weft // 经向粗细
-      let dom = this.$refs.myCanvas
-      let ctx = dom.getContext('2d')
-      ArrMain.reduce((total, current, index) => {
-        ctx.globalAlpha = 0.5
-        ctx.beginPath()
-        ctx.fillStyle = current.color
-        ctx.rect(total, 50, current.number * lineWidth, 1100)
-        ctx.fill()
-        return total + current.number * lineWidth
-      }, 50)
-      let lineHeight = 1100 / this.weft_data.total
-      ArrMain2.reduce((total, current, index) => {
-        ctx.globalAlpha = 0.3
-        ctx.beginPath()
-        ctx.fillStyle = current.color
-        ctx.rect(50, total, 500, current.number * lineHeight)
-        ctx.fill()
-        return total + current.number * lineHeight
-      }, 50)
+      this.$nextTick(() => {
+        let lineWidth = 500 / this.warp_data.weft // 经向粗细
+        let dom = this.$refs.myCanvas
+        let ctx = dom.getContext('2d')
+        ArrMain.reduce((total, current, index) => {
+          ctx.globalAlpha = 0.5
+          ctx.beginPath()
+          ctx.fillStyle = current.color
+          ctx.rect(total, 50, current.number * lineWidth, (600 * this.chang / this.kuan - 100))
+          ctx.fill()
+          return total + current.number * lineWidth
+        }, 50)
+        let lineHeight = (600 * this.chang / this.kuan - 100) / this.weft_data.total
+        ArrMain2.reduce((total, current, index) => {
+          ctx.globalAlpha = 0.3
+          ctx.beginPath()
+          ctx.fillStyle = current.color
+          ctx.rect(50, total, 500, current.number * lineHeight)
+          ctx.fill()
+          return total + current.number * lineHeight
+        }, 50)
+      })
     })
     this.loading = false
   }

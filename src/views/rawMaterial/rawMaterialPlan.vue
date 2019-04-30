@@ -122,7 +122,6 @@ export default {
   methods: {
     changeSize (item, name) {
       this.sizeName[name] = item
-      // console.log(this.sizeName)
       this.sizeTable = item
     }
   },
@@ -134,7 +133,7 @@ export default {
         order_id: this.$route.params.orderId
       })
     ]).then((res) => {
-      // console.log(res)
+      console.log(res)
       this.order = res[1].data.data.production_detail.order_info
       // 第一步，把符合product_code的产品筛选出来
       let productByCode = []
@@ -143,7 +142,7 @@ export default {
           productByCode.push(item)
         }
       })
-      // console.log(productByCode)
+      console.log(productByCode)
       // 第二步，根据Size进行分类
       let productBySize = []
       productByCode.forEach((item) => {
@@ -155,15 +154,17 @@ export default {
             }
           })
           productBySize[mark].product.push({
+            production_sunhao: item.production_sunhao,
             color: item.color,
-            number: item.production_num
+            number: item.order_num - item.stock_pick
           })
         } else {
           productBySize.push({
             size: item.size,
             product: [{
+              production_sunhao: item.production_sunhao,
               color: item.color,
-              number: item.production_num
+              number: item.order_num - item.stock_pick
             }]
           })
         }
@@ -203,6 +204,7 @@ export default {
             return {
               material: itemMaterial.material,
               colorInfo: itemSize.product.map((itemColour) => {
+                console.log(itemColour)
                 let obj = itemMaterial.colour.find((item) => item.name === itemColour.color)
                 // 查询该配色方案是否被填写，如果未填写，记录一下
                 if (!obj) {
@@ -215,11 +217,12 @@ export default {
                   }
                 }
                 return {
+                  production_sunhao: itemColour.production_sunhao,
                   name: itemColour.color,
                   colorList: obj ? obj.color.map((itemColor) => {
                     return {
                       name: itemColor.name,
-                      number: (itemColor.size.find((item) => item.size === itemSize.size).number * itemColour.number / 1000).toFixed(2),
+                      number: (itemColor.size.find((item) => item.size === itemSize.size).number * itemColour.number * (1 + itemColour.production_sunhao / 100) / 1000).toFixed(2),
                       unit: '千克',
                       value: itemColor.value
                     }
@@ -254,7 +257,7 @@ export default {
                   colorList: obj ? obj.color.map((itemColor) => {
                     return {
                       name: itemColor.name,
-                      number: itemColor.size.find((item) => item.size === itemSize.size).number * itemColour.number,
+                      number: parseInt(itemColor.size.find((item) => item.size === itemSize.size).number * itemColour.number * (1 + itemColour.production_sunhao / 100)),
                       unit: itemColor.size.find((item) => item.size === itemSize.size).unit
                     }
                   }) : []
