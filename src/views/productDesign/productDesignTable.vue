@@ -1,13 +1,14 @@
 <template>
   <div id="productDesignTable"
-       v-loading="loading">
+       v-loading="loading"
+       @click.right="goTop">
     <ul class="tableBox">
       <li class="title-info">
         <div class="title">
           <h2>桐庐凯瑞针纺有限公司{{type === '0' ? '原' : '辅'}}料计划单</h2>
         </div>
         <div class="info">
-          <span>订单编号：<em class="bold12">{{order.order_code}}</em></span>
+          <span>订单编号：<em class="bold12">KR{{year + (type === '0' ? 'YL' : 'FL' ) + order.order_code}}</em></span>
           <span>创建日期：{{order.order_time}}</span>
         </div>
       </li>
@@ -72,6 +73,7 @@ import { productPlanDetail, productionDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      year: '',
       type: '',
       len: {},
       sizeInfo: {},
@@ -101,13 +103,6 @@ export default {
   },
   methods: {
     setSizeInfo (item, size) {
-      // if (this.colorInfo.indexOf(item.name) === -1) {
-      //   this.colorInfo.push(item.name)
-      // }
-      // this.colorInfo.push({
-      //   name: item.name,
-      //   value: item.sum
-      // })
       console.log(size)
       if (this.colorInfo[size]) {
         this.$set(this.colorInfo[size], item.name, item.sum)
@@ -116,6 +111,9 @@ export default {
       }
       console.log(this.colorInfo)
       return item.colorList
+    },
+    goTop () {
+      document.body.scrollTop = 0
     }
   },
   created () {
@@ -281,6 +279,7 @@ export default {
       this.product = product
       this.colorData = NOTHISCOLOUR
     })
+    this.year = new Date().getFullYear().toString().split('20')[1]
     this.type = document.location.href.split('type=')[1]
   },
   updated () {
