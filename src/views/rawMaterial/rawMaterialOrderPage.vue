@@ -99,7 +99,7 @@
                 </template>
               </span>
               <span>{{item.needNum}}kg</span>
-              <span>100kg</span>
+              <span>{{item.selectNum}}kg</span>
             </div>
           </div>
           <div class="buyInfo">
@@ -137,7 +137,8 @@
                   <span>原料单价</span>:
                   <el-input size="small"
                             placeholder="请输入原料单价"
-                            v-model="value.price">
+                            v-model="value.price"
+                            @change="jisuan(key)">
                   </el-input>
                   <i>元/kg</i>
                 </div>
@@ -145,7 +146,8 @@
                   <span>订购数量</span>:
                   <el-input size="small"
                             placeholder="请输入订购数量"
-                            v-model="value.value">
+                            v-model="value.value"
+                            @change="jisuan(key)">
                   </el-input>
                   <i>kg</i>
                 </div>
@@ -160,7 +162,8 @@
                 <span>总价</span>:
                 <el-input size="small"
                           placeholder="总价"
-                          v-model="item.money">
+                          :disabled="true"
+                          v-model="iten.money">
                 </el-input>
                 <i>元</i>
               </li>
@@ -205,6 +208,12 @@
             <span>+</span>
           </div>
         </div>
+      </div>
+      <div class="btnCtn">
+        <div class="cancleBtn"
+             @click="$router.go(-1)">返回</div>
+        <div class="okBtn"
+             @click="saveAll">保存</div>
       </div>
     </div>
   </div>
@@ -351,6 +360,18 @@ export default {
     }
   },
   methods: {
+    jisuan (key) {
+      this.list.forEach((item, key) => {
+        item.selectNum = 0
+        item.buyInfo.forEach((value, index) => {
+          value.money = 0
+          value.buyMaterialInfo.forEach((val, ind) => {
+            item.selectNum += Number(val.value)
+            value.money += (val.price * val.value)
+          })
+        })
+      })
+    },
     appendBuyMaterialInfo (key, kay) {
       this.list[key].buyInfo[kay].buyMaterialInfo.push({
         color: '',
@@ -382,6 +403,14 @@ export default {
     },
     deleteBuyInfo (key, kay) {
       this.list[key].buyInfo.splice(kay, 1)
+    },
+    saveAll () {
+      this.$message(
+        {
+          message: '添加成功',
+          type: 'success'
+        }
+      )
     }
   },
   created () {
@@ -431,6 +460,7 @@ export default {
   }
 }
 </script>
+
 <style scoped lang='less'>
 @import "~@/assets/css/rawMaterialOrderPage.less";
 </style>
