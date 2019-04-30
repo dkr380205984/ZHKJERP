@@ -21,8 +21,8 @@
       <li class="information">
         <span>订单公司</span>
         <span>{{order.client_name}}</span>
-        <span>损耗比例</span>
-        <span>8%</span>
+        <span>负责小组</span>
+        <span>{{order.group_name}}</span>
       </li>
       <li class="size-info">
         <div class="title"><span>产品详情</span></div>
@@ -57,7 +57,10 @@
               <span v-for="(c,n) in value.colorInfo"
                     :key="n">
                 <span v-for="(x,y) in setSizeInfo(c,item.size)"
-                      :key="y">{{x.name + ' ' + x.number + x.unit}}</span>
+                      :key="y">
+                  <span>{{x.name}}</span>
+                  <span>{{x.number + x.unit}}</span>
+                </span>
               </span>
             </div>
           </div>
@@ -83,6 +86,7 @@ export default {
         order_code: '',
         client_name: '',
         remark: '',
+        group_name: '',
         account_unit: '',
         contacts: '',
         exchange_rate: '',
@@ -103,7 +107,6 @@ export default {
   },
   methods: {
     setSizeInfo (item, size) {
-      console.log(size)
       if (this.colorInfo[size]) {
         this.$set(this.colorInfo[size], item.name, item.sum)
       } else {
@@ -124,6 +127,7 @@ export default {
         order_id: this.$route.params.orderId
       })
     ]).then((res) => {
+      console.log(res)
       this.create_time = res[0].data.data.create_time
       this.sizeInfo = res[0].data.data.product_info.size
       this.weight_group = res[0].data.data.weight_group
@@ -148,15 +152,19 @@ export default {
             }
           })
           productBySize[mark].product.push({
+            production_sunhao: item.production_sunhao,
             color: item.color,
-            number: item.production_num
+            number: item.order_num - item.stock_pick,
+            production_num: item.production_num
           })
         } else {
           productBySize.push({
             size: item.size,
             product: [{
+              production_sunhao: item.production_sunhao,
               color: item.color,
-              number: item.production_num
+              production_num: item.production_num,
+              number: item.order_num - item.stock_pick // 订单数-调取数 用于计算原料实际值, 乘以损耗比就是所需纱线
             }]
           })
         }
@@ -206,12 +214,12 @@ export default {
                   }
                 }
                 return {
-                  sum: itemColour.number,
+                  sum: itemColour.production_num,
                   name: itemColour.color,
                   colorList: obj ? obj.color.map((itemColor) => {
                     return {
                       name: itemColor.name,
-                      number: (itemColor.size.find((item) => item.size === itemSize.size).number * itemColour.number / 1000).toFixed(2),
+                      number: (itemColor.size.find((item) => item.size === itemSize.size).number * itemColour.number * (1 + itemColour.production_sunhao / 100) / 1000).toFixed(2),
                       unit: '千克',
                       value: itemColor.value
                     }
@@ -242,12 +250,12 @@ export default {
                   }
                 }
                 return {
-                  sum: itemColour.number,
+                  sum: itemColour.production_num,
                   name: itemColour.color,
                   colorList: obj ? obj.color.map((itemColor) => {
                     return {
                       name: itemColor.name,
-                      number: itemColor.size.find((item) => item.size === itemSize.size).number * itemColour.number,
+                      number: parseInt(itemColor.size.find((item) => item.size === itemSize.size).number * itemColour.number * (1 + itemColour.production_sunhao / 100)),
                       unit: itemColor.size.find((item) => item.size === itemSize.size).unit
                     }
                   }) : []

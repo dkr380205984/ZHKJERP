@@ -103,10 +103,12 @@
             </div>
           </div>
           <div class="buyInfo">
-            <ul class="buyFrom">
+            <ul class="buyFrom"
+                v-for="(iten,kay) in item.buyInfo"
+                :key="kay">
               <li>
                 <span>订购公司</span>:
-                <el-select v-model="item.company"
+                <el-select v-model="iten.company"
                            placeholder="请选择订购来源"
                            size="small">
                   <el-option v-for="value in options"
@@ -116,7 +118,7 @@
                   </el-option>
                 </el-select>
               </li>
-              <li v-for="(value,index) in item.buyInfo"
+              <li v-for="(value,index) in iten.buyMaterialInfo"
                   :key="index"
                   class="col">
                 <div>
@@ -149,10 +151,10 @@
                 </div>
                 <em v-if="index === 0"
                     class="el-icon-plus"
-                    @click="appendBuyInfo(key)"></em>
+                    @click="appendBuyMaterialInfo(key,kay)"></em>
                 <em v-else
                     class="el-icon-delete"
-                    @click="deleteBuyInfo(key,index)"></em>
+                    @click="deleteBuyMaterialInfo(key,kay,index)"></em>
               </li>
               <li>
                 <span>总价</span>:
@@ -164,7 +166,7 @@
               </li>
               <li>
                 <span>订购日期</span>:
-                <el-date-picker v-model="item.orderTime"
+                <el-date-picker v-model="iten.orderTime"
                                 align="right"
                                 type="date"
                                 placeholder="选择日期"
@@ -175,7 +177,7 @@
               </li>
               <li>
                 <span>完成日期</span>:
-                <el-date-picker v-model="item.completeTime"
+                <el-date-picker v-model="iten.completeTime"
                                 align="right"
                                 type="date"
                                 placeholder="选择日期"
@@ -189,10 +191,18 @@
                 <el-input type="textarea"
                           placeholder="请输入内容"
                           style="width:238px;margin: 0 0 0 15px;height:45px;"
-                          v-model="item.remark">
+                          v-model="iten.remark">
                 </el-input>
               </li>
+              <span class="el-icon-close"
+                    v-if="kay !== 0"
+                    @click="deleteBuyInfo(key,kay)"></span>
             </ul>
+          </div>
+          <div class="addBtn"
+               @click="addBuyInfo(key)">
+            <span>添加公司</span>
+            <span>+</span>
           </div>
         </div>
       </div>
@@ -273,22 +283,26 @@ export default {
       ],
       list: [
         {
-          company: '',
           material: '',
           needColors: [],
           needNum: 0,
           selectNum: 0,
           buyInfo: [
             {
-              color: '',
-              price: '',
-              value: ''
+              company: '',
+              money: '',
+              orderTime: '',
+              completeTime: '',
+              remark: '',
+              buyMaterialInfo: [
+                {
+                  color: '',
+                  price: '',
+                  value: ''
+                }
+              ]
             }
-          ],
-          money: '',
-          orderTime: '',
-          completeTime: '',
-          remark: ''
+          ]
         }
       ],
       options: [
@@ -337,17 +351,37 @@ export default {
     }
   },
   methods: {
-    appendBuyInfo (key) {
-      this.list[key].buyInfo.push({
+    appendBuyMaterialInfo (key, kay) {
+      this.list[key].buyInfo[kay].buyMaterialInfo.push({
         color: '',
         price: '',
         value: ''
       })
       console.log(this.list)
     },
-    deleteBuyInfo (key, index) {
-      // this.list[key].buyInfo.splice(index, 1)
-      console.log(this.list[key].buyInfo.splice(index, 1))
+    deleteBuyMaterialInfo (key, kay, index) {
+      console.log(this.list[key].buyInfo[kay].buyMaterialInfo.splice(index, 1))
+    },
+    addBuyInfo (key) {
+      this.list[key].buyInfo.push(
+        {
+          company: '',
+          money: '',
+          orderTime: '',
+          completeTime: '',
+          remark: '',
+          buyMaterialInfo: [
+            {
+              color: '',
+              price: '',
+              value: ''
+            }
+          ]
+        }
+      )
+    },
+    deleteBuyInfo (key, kay) {
+      this.list[key].buyInfo.splice(kay, 1)
     }
   },
   created () {
@@ -365,22 +399,26 @@ export default {
             value.needNum += Number(item.need.value)
           } else if (flag && index === this.list.length - 1 && value.material !== item.material) {
             let obj = {
-              company: '',
               material: '',
               needColors: [],
               needNum: 0,
               selectNum: 0,
               buyInfo: [
                 {
-                  color: '',
-                  price: '',
-                  value: ''
+                  company: '',
+                  money: '',
+                  orderTime: '',
+                  completeTime: '',
+                  remark: '',
+                  buyMaterialInfo: [
+                    {
+                      color: '',
+                      price: '',
+                      value: ''
+                    }
+                  ]
                 }
-              ],
-              money: '',
-              orderTime: '',
-              completeTime: '',
-              remark: ''
+              ]
             }
             obj.material = item.material
             obj.needColors.push(item.need.name)

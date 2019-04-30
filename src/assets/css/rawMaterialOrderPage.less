@@ -66,6 +66,31 @@ ul {
         display: flex;
         color: @fontNormal;
         margin: 24px 0;
+        .addBtn{
+          width: 6em;
+          padding: 0 18px;
+          height: 38px;
+          line-height: 38px;
+          border-radius: 2px;
+          margin-left: 40px;
+          background:#fff;
+          margin-top:15px;
+          cursor: pointer;
+          color: #909399;
+          border:1px solid #E6E6E6;
+          &:hover{
+            color: #10AEF5;
+            border-color: #10AEF5;
+          }
+          span{
+            font-size: 16px;
+            &:nth-child(2){
+              margin-left: 5px;
+              font-size: 20px;
+              vertical-align: -1px;;
+            }
+          }
+        }
          &.col {
            flex-direction: column;
          }
@@ -172,8 +197,6 @@ ul {
             height: 40px;
             display: flex;
             border-bottom: 1px solid #b5b5b5;
-            // align-items: center;
-            // justify-content: center;
             &:last-child {
               border: none;
             }
@@ -191,7 +214,10 @@ ul {
           width: 900px;
           height: auto;
           margin-left: 40px;
+          display: flex;
+          flex-wrap: wrap;        
           &>.buyFrom {
+            position: relative;
             margin-top: 30px;
             background-color: #F6F6F6;
             width: 417px;
@@ -201,6 +227,20 @@ ul {
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
+            &:nth-child(2n) {
+              margin-left: 66px;
+            }
+            &>.el-icon-close {
+              position: absolute;
+              top: 10px;
+              right: 10px;
+              cursor: pointer;
+              border-radius: 50%;
+              &:hover {
+                background-color: @normalBlue;
+                color: #FFF;
+              }
+            }
             &>li {
               position: relative;
               height: auto; 
