@@ -1,9 +1,9 @@
 <template>
-  <div id="productList"
+  <div id="rawMaterialOrderCompledList"
        v-loading="loading">
     <div class="head">
-      <h2>配料单列表</h2>
-      <el-input placeholder="输入计划单编号精确搜索"
+      <h2>原料已购列表</h2>
+      <el-input placeholder="输入文字精确搜索"
                 suffix-icon="el-icon-search"
                 v-model="searchVal"></el-input>
     </div>
@@ -25,7 +25,7 @@
           <span class="label">筛选条件:</span>
           <div class="leftFilter">
             <el-select v-model="categoryVal"
-                       placeholder="筛选品类">
+                       placeholder="筛选订单公司">
               <el-option v-for="item in category"
                          :key="item.id"
                          :label="item.name"
@@ -33,7 +33,7 @@
               </el-option>
             </el-select>
             <el-select v-model="typesVal"
-                       placeholder="筛选类型">
+                       placeholder="筛选负责小组">
               <el-option v-for="item in types"
                          :key="item.id"
                          :label="item.name"
@@ -41,7 +41,15 @@
               </el-option>
             </el-select>
             <el-select v-model="styleVal"
-                       placeholder="筛选款型">
+                       placeholder="筛选订购单位">
+              <el-option v-for="item in style"
+                         :key="item.id"
+                         :label="item.name"
+                         :value="item.id">
+              </el-option>
+            </el-select>
+            <el-select v-model="styleVal"
+                       placeholder="筛选创建人">
               <el-option v-for="item in style"
                          :key="item.id"
                          :label="item.name"
@@ -62,34 +70,41 @@
           </div>
         </div>
       </div>
-      <div class="tableCtn">
-        <div class="tableRow titleTableRow">
-          <div class="tableColumn">计划单编号</div>
-          <div class="tableColumn">产品编号</div>
-          <div class="tableColumn">产品类别</div>
-          <div class="tableColumn">产品规格</div>
-          <div class="tableColumn">主要原料</div>
-          <div class="tableColumn">主要辅料</div>
-          <div class="tableColumn">创建人</div>
-          <div class="tableColumn">创建日期</div>
-          <div class="tableColumn flex9">操作</div>
-        </div>
-        <div class="tableRow bodyTableRow"
-             v-for="(item) in list"
-             :key="item.id">
+      <div class="mergeTable">
+        <div class="mergeHeader">
+          <div class="tableColumn">订单号</div>
           <div class="tableColumn"
-               style="color: rgb(26, 149, 255);">{{item.plan_code}}</div>
-          <div class="tableColumn">{{item.product_info.product_code}}</div>
-          <div class="tableColumn">{{item.product_info|filterType}}</div>
-          <div class="tableColumn">{{item.product_info.size|filterSize}}</div>
-          <div class="tableColumn">{{item.material_data|filterMaterial}}</div>
-          <div class="tableColumn">{{item.material_data|filterOtherMaterial}}</div>
-          <div class="tableColumn">{{item.product_info.user_name}}</div>
-          <div class="tableColumn">{{item.product_info.create_time}}</div>
-          <div class="tableColumn flex9">
-            <span class="btns warning">修改</span>
-            <span class="btns success"
+               style="flex:1.2">订单公司</div>
+          <div class="tableColumn">负责小组</div>
+          <div class="tableColumn"
+               style="flex:1.9">订购单位</div>
+          <div class="tableColumn">总价</div>
+          <div class="tableColumn">创建人</div>
+          <div class="tableColumn">创建时间</div>
+          <div class="tableColumn"
+               style="flex:1.5">操作</div>
+        </div>
+        <div class="mergeBody"
+             v-for="(item,key) in list"
+             :key="key">
+          <div class="tableColumn"
+               style="color: rgb(26, 149, 255);">{{item.order_code}}</div>
+          <div class="tableColumn"
+               style="flex:1.2">{{item.order_company}}</div>
+          <div class="tableColumn">{{item.ground_name}}</div>
+          <div class="tableColumn col"
+               style="flex:1.9">
+            <span v-for="(value,index) in item.order_team"
+                  :key="index">{{value}}</span>
+          </div>
+          <div class="tableColumn">{{item.total}}元</div>
+          <div class="tableColumn">{{item.create_name}}</div>
+          <div class="tableColumn">{{item.create_time}}</div>
+          <div class="tableColumn"
+               style="flex-direction:row;flex:1.5">
+            <span class="btns normal"
                   @click="$router.push('/index/productPlanDetail/'+item.id)">查看</span>
+            <span class="btns warning">修改</span>
           </div>
         </div>
       </div>
@@ -111,7 +126,7 @@ import { productPlanList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
-      loading: true,
+      loading: false,
       defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
       searchVal: '',
       value: '',
@@ -145,7 +160,35 @@ export default {
       },
       total: 0,
       pages: 1,
-      list: [],
+      list: [
+        {
+          order_code: 'KR-0001',
+          order_company: '杭州飞泰服饰有限公司',
+          ground_name: 'B组',
+          order_team: ['杭州飞泰纱线厂', '杭州力欧纱线厂', '杭州荣光纱线厂'],
+          total: 700,
+          create_name: '王锦鲤',
+          create_time: '2019-04-23'
+        },
+        {
+          order_code: 'KR-0001',
+          order_company: '杭州飞泰服饰有限公司',
+          ground_name: 'B组',
+          order_team: ['杭州飞泰纱线厂'],
+          total: 700,
+          create_name: '王锦鲤',
+          create_time: '2019-04-23'
+        },
+        {
+          order_code: 'KR-0001',
+          order_company: '杭州飞泰服饰有限公司',
+          ground_name: 'B组',
+          order_team: ['杭州飞泰纱线厂', '杭州力欧纱线厂', '杭州荣光纱线厂'],
+          total: 700,
+          create_name: '王锦鲤',
+          create_time: '2019-04-23'
+        }
+      ],
       category: [], // 大类
       categoryVal: '',
       types: [], // 二级分类
@@ -282,7 +325,7 @@ export default {
     }
   },
   created () {
-    this.getCraftList()
+    // this.getCraftList()
   }
 }
 </script>
