@@ -255,38 +255,43 @@
       <div class="warp-wise-arrange">
         <div class="title">经向排列:</div>
         <div class="content">
-          <div class="particulars">
+          <div class="particulars"
+               v-for=" (a,b) in add(warp_data.warp_rank_bottom,'all')"
+               :key="b">
             <div>
-              <span v-for="(item,key) in add(warp_data.warp_rank_bottom)"
+              <span v-for="(item,key) in add(warp_data.warp_rank_bottom,b)"
                     :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
                     :key="key">{{item === 'no' ? '' : (item === 0 ? '主' : '夹' + item)}}</span>
             </div>
             <div v-for="(item,key) in warp_data.warp_rank"
                  :key="key">
               <template v-if="key === 0">
-                <span v-for="(item,key) in add(item)"
+                <span v-for="(item,key) in add(item,b)"
                       :style="{minWidth : (100/12) + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
                       :key="key">
                   {{item === 'no' ? '' : item}}
                 </span>
               </template>
               <template v-else>
-                <span v-for="(value,index) in changeArr(add(item))"
+                <span v-for="(value,index) in changeArr(add(item,b))"
                       :key="index"
                       :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999'}">
                   {{value.value === 'no' ? '' : value.value}}
-                  <span v-if='item[11] === item[12] && index === changeArr(add(item)).length - 1 '
+                  <span v-if='item[11] === item[12] && (index === changeArr(add(item,b)).length - 1 || item[11] === item[12] && index === 0) '
                         class="jiantou">
-                    <span class="el-icon-back left"></span>
+                    <span v-if="index === changeArr(add(item,b)).length - 1 && b!==add(warp_data.warp_rank_bottom,'all').length -1"
+                          class="el-icon-back left"></span>
+                    <span v-else-if="item[11] === item[12] && index === 0 && b !== 0"
+                          class="el-icon-back right"></span>
                   </span>
                 </span>
               </template>
             </div>
           </div>
-          <template>
+          <!-- <template>
             <div class="particulars">
               <div>
-                <span v-for="(item,key) in add(warp_data.warp_rank_bottom,true)"
+                <span v-for="(item,key) in add(warp_data.warp_rank_bottom)"
                       :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
                       :key="key">{{item === 'no' ? '' : (item === 0 ? '主' : '夹' + item)}}</span>
               </div>
@@ -312,41 +317,46 @@
                 </template>
               </div>
             </div>
-          </template>
+          </template> -->
         </div>
       </div>
       <div class="warp-wise-arrange">
         <div class="title">纬向排列:</div>
         <div class="content">
-          <div class="particulars">
+          <div class="particulars"
+               v-for=" (a,b) in add(weft_data.weft_rank_bottom,'all')"
+               :key="b">
             <div>
-              <span v-for="(item,key) in add(weft_data.weft_rank_bottom)"
+              <span v-for="(item,key) in add(weft_data.weft_rank_bottom,b)"
                     :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
                     :key="key">{{item === 'no' ? '' : (item === 0 ? '主' : '夹' + item)}}</span>
             </div>
             <div v-for="(item,key) in weft_data.weft_rank"
                  :key="key">
               <template v-if="key === 0">
-                <span v-for="(item,key) in add(item)"
+                <span v-for="(item,key) in add(item,b)"
                       :style="{minWidth : (100/12) + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
                       :key="key">
                   {{item === 'no' ? '' : item}}
                 </span>
               </template>
               <template v-else>
-                <span v-for="(value,index) in changeArr(add(item))"
+                <span v-for="(value,index) in changeArr(add(item,b))"
                       :key="index"
                       :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999'}">
                   {{value.value === 'no' ? '' : value.value}}
-                  <span v-if='item[11] === item[12] && index === changeArr(add(item)).length - 1 '
+                  <span v-if='item[11] === item[12] && (index === changeArr(add(item,b)).length - 1 || item[11] === item[12] && index === 0) '
                         class="jiantou">
-                    <span class="el-icon-back left"></span>
+                    <span v-if="index === changeArr(add(item,b)).length - 1 && b!==add(weft_data.weft_rank_bottom,'all').length -1"
+                          class="el-icon-back left"></span>
+                    <span v-else-if="item[11] === item[12] && index === 0 && b !== 0"
+                          class="el-icon-back right"></span>
                   </span>
                 </span>
               </template>
             </div>
           </div>
-          <template>
+          <!-- <template>
             <div class="particulars">
               <div>
                 <span v-for="(item,key) in add(weft_data.weft_rank_bottom,true)"
@@ -375,7 +385,7 @@
                 </template>
               </div>
             </div>
-          </template>
+          </template> -->
         </div>
       </div>
     </div>
@@ -501,30 +511,42 @@ export default {
     },
     // 如果数据少于12条
     add (item, flag) {
+      let items = []
       let arr = []
       let lastKey = null
       for (let prop in item) {
         if (item[prop] === null) {
-          arr.push(arr[lastKey])
+          items.push(items[lastKey])
         } else if (item[prop] === '') {
-          arr.push(1)
+          items.push(1)
         } else {
-          arr.push(item[prop])
+          items.push(item[prop])
         }
         lastKey = prop
       }
-      if (flag) {
-        arr.splice(0, 12)
-      } else {
-        arr.splice(12)
-      }
-      let len = arr.length
-      if (len < 12) {
-        for (len; len < 12; len++) {
-          arr.push('no')
+      change(items, arr)
+      function change (items, arr) {
+        if (items.length > 12) {
+          let ar = items.splice(0, 12)
+          arr.push(ar)
+          if (items.length > 12) {
+            change(items, arr)
+          } else {
+            let len = items.length
+            for (let i = len; i < 12; i++) {
+              items.push('no')
+            }
+            arr.push(items)
+          }
         }
       }
-      return arr
+      if (flag === 'all') {
+        return arr
+      } else if (typeof flag === 'number') {
+        return arr[flag]
+      } else {
+        return arr[0]
+      }
     },
     // 处理数组
     changeArr (item, key) {
