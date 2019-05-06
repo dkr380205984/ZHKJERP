@@ -244,11 +244,9 @@ export default {
           })
         })
       })
-      console.log(this.material_data)
       this.material_data.main_material.forEach(item => {
         this.weight[item.size] = 0
         item.materialList.forEach((key, n) => {
-          // if (n === 0) {
           key.colorInfo.forEach((value, m) => {
             if (m === 0) {
               value.colorList.forEach(index => {
@@ -256,15 +254,13 @@ export default {
               })
             }
           })
-          // }
         })
       })
       let index = 0
       for (let prop in this.weight) {
-        this.loss[prop] = ((this.weight_group[index] - this.weight[prop]) / this.weight[prop] * 100).toFixed(2) + '%'
+        this.loss[prop] = ((this.weight[prop] - this.weight_group[index]) / this.weight_group[index] * 100).toFixed(2) + '%'
         index++
       }
-      console.log(this.loss)
     })
   }
 }

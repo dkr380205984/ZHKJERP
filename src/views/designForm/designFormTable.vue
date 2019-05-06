@@ -511,18 +511,20 @@ export default {
     },
     // 如果数据少于12条
     add (item, flag) {
+      // console.log(item)
       let items = []
       let arr = []
-      let lastKey = null
+      // let lastKey = null
       for (let prop in item) {
-        if (item[prop] === null) {
-          items.push(items[lastKey])
-        } else if (item[prop] === '') {
+        // if (item[prop] === null) {
+        //   items.push(items[lastKey])
+        // } else
+        if (item[prop] === '') {
           items.push(1)
         } else {
           items.push(item[prop])
         }
-        lastKey = prop
+        // lastKey = prop
       }
       change(items, arr)
       function change (items, arr) {
@@ -538,6 +540,12 @@ export default {
             }
             arr.push(items)
           }
+        } else {
+          let len = items.length
+          for (let i = len; i < 12; i++) {
+            items.push('no')
+          }
+          arr.push(items)
         }
       }
       if (flag === 'all') {
@@ -549,13 +557,14 @@ export default {
       }
     },
     // 处理数组
-    changeArr (item, key) {
+    changeArr (item) {
+      console.log(item)
       let obj = {}
       let n = 1
       let firstVal = ''
-      if (key) {
-        item.splice(0, 12)
-      }
+      // if (key) {
+      //   item.splice(0, 12)
+      // }
       let len = item.length
       let arr = []
       let flag = true
@@ -647,7 +656,6 @@ export default {
       this.weight = data.weight
       this.warp_data = data.warp_data
       this.weft_data = data.weft_data
-      // console.log(this.warp_data)
       data.material_data.forEach((item) => {
         if (item.type === 0 && item.type_material === 0) {
           this.material_data.warpMaterialMain.name = item.material_name
@@ -722,7 +730,6 @@ export default {
           }
         })
       })
-      // console.log(this.color_data)
     })
   },
   mounted () {
@@ -732,16 +739,11 @@ export default {
     html.style.overflow = 'visible'
   },
   updated () {
-    // this.loading = false
     window.print()
   }
 }
 </script>
 
 <style lang="less" scoped>
-// html,
-// body {
-//   overflow: visible;
-// }
 @import "~@/assets/css/designFormTable.less";
 </style>
