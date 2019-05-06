@@ -94,7 +94,7 @@
           <div class="lineSearch" :class="{'show':showSeach}">
             <el-input
               class="elInput"
-              placeholder="请输入产品编号搜索"
+              placeholder="输产品编号按回车搜索"
               suffix-icon="el-icon-search"
               v-model="search"
               @keyup.enter.native="getSearchList">
@@ -176,7 +176,7 @@
             </div>
             <div class="lineBody">
               <div class="list" v-for="item in seachProduct" :key="item.id">
-                <div class="flex" style="color:#10AEF5">{{item.product_code}}</div>
+                <div class="flex" style="color:#10AEF5;cursor:help" @click="openUrl('/index/productDetail/'+item.product_code)">{{item.product_code}}</div>
                 <div class="flex">{{item|filterType}}</div>
                 <div class="flex">{{item.flower_id}}</div>
                 <div class="flex">{{item.user_name}}</div>
@@ -312,7 +312,7 @@ export default {
     return {
       loading: true,
       showTips: false,
-      hasJHD: 1,
+      hasJHD: null,
       orderId: '',
       companyId: window.sessionStorage.getItem('company_id'),
       companyArr: [],
@@ -409,7 +409,7 @@ export default {
         flower_id: this.flower || null,
         start_time: this.dateSearch || null,
         end_time: endTime,
-        plan_code: this.search || null,
+        product_code: this.search || null,
         has_plan: this.hasJHD
       }).then((res) => {
         this.loading = false
@@ -655,6 +655,10 @@ export default {
         })
         this.$router.push('/index/orderList')
       })
+    },
+    // 打开新页面
+    openUrl (url) {
+      window.open(url)
     }
   },
   computed: {

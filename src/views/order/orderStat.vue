@@ -383,10 +383,11 @@ export default {
       'group_id': this.group,
       'product_code': this.searchVal
     })]).then((res) => {
+      console.log(res)
       this.category = res[0].data.data
       this.companyArr = res[1].data.data
       this.groupArr = res[2].data.data
-      let json = res[3].data.data
+      let json = res[3].data.data.data
       this.list = Object.keys(json).map((key) => {
         let arr = []
         json[key].forEach((item) => {
@@ -427,6 +428,7 @@ export default {
           orderInfo: arr
         }
       })
+      this.total = res[3].data.data.count
       this.loading = false
     })
   }
