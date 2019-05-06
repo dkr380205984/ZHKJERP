@@ -73,7 +73,8 @@ export default {
           Message.success({
             message: '登录成功'
           })
-          window.sessionStorage.setItem('user_id', res.data.data.id)
+          window.sessionStorage.setItem('token', res.data.data.token)
+          window.sessionStorage.setItem('user_id', res.data.data.user_id)
           window.sessionStorage.setItem('company_id', res.data.data.company_id)
           window.localStorage.setItem('zhUsername', _this.telephone)
           if (_this.remPsd) {

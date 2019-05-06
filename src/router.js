@@ -1,11 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import { loginCheck } from './assets/js/api.js'
 
 Vue.use(Router)
-
-export default new Router({
+let router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
+  // 路由守卫
   routes: [{
     path: '/',
     redirect: '/login'
@@ -241,3 +242,22 @@ export default new Router({
   }
   ]
 })
+
+router.beforeEach((to, from, next) => { // 全局前置守卫按照创建顺序调用
+  if (to.name !== 'login') {
+    loginCheck({
+      user_id: window.sessionStorage.getItem('user_id'),
+      token: window.sessionStorage.getItem('token')
+    }).then((res) => {
+      if (res.data.status) {
+        next()
+      } else {
+        next('/login')
+      }
+    })
+  } else {
+    next()
+  }
+})
+
+export default router

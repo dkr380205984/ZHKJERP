@@ -475,7 +475,7 @@ export default {
           this.fileArr = []
           this.footage = []
           this.sizeArr = [[]]
-          this.weight = ''
+          this.weight = []
           this.colorNum = 1
           this.sizeNum = 1
           this.ingredientNum = 1
