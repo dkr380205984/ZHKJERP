@@ -49,8 +49,8 @@
           <div class="tableColumn">{{item.abbreviation}}</div>
           <div class="tableColumn">{{item.type|filterType}}</div>
           <div class="tableColumn">{{item.contacts.length}}</div>
-          <div class="tableColumn">{{item.phone}}</div>
-          <div class="tableColumn">{{item.address}}</div>
+          <div class="tableColumn">{{item.phone?item.phone:'暂无'}}</div>
+          <div class="tableColumn">{{item.address?item.address:'暂无'}}</div>
           <div class="tableColumn">{{item.create_time}}</div>
           <div class="tableColumn">{{item.update_time}}</div>
           <div class="tableColumn flex9">
