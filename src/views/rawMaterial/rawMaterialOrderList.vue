@@ -19,12 +19,6 @@
           <el-tag closable
                   v-show="styleValCmp"
                   @close="clear('styleVal')">{{styleValCmp}}</el-tag>
-          <!-- <el-tag closable
-                  v-show="companyCmp"
-                  @close="clear('company')">{{companyCmp}}</el-tag>
-          <el-tag closable
-                  v-show="groupCmp"
-                  @close="clear('group')">{{groupCmp}}</el-tag> -->
         </div>
         <div class="selectLine">
           <span class="label">筛选条件:</span>
@@ -53,22 +47,6 @@
                          :value="item.id">
               </el-option>
             </el-select>
-            <!-- <el-select v-model="company"
-                       placeholder="外贸公司">
-              <el-option v-for="item in companyArr"
-                         :key="item.id"
-                         :label="item.name"
-                         :value="item.id">
-              </el-option>
-            </el-select>
-            <el-select v-model="group"
-                       placeholder="负责小组">
-              <el-option v-for="item in groupArr"
-                         :key="item.id"
-                         :label="item.name"
-                         :value="item.id">
-              </el-option>
-            </el-select> -->
           </div>
           <div class="rightFilter">
             <el-date-picker v-model="date"
@@ -121,18 +99,16 @@
           <div class="tableColumn"
                style="flex-direction:row;">
             <span class="btns normal"
-                  @click="$router.push('./rawMaterialOrderPage/' + item.id)">订购原料</span>
+                  @click="$router.push('./rawMaterialOrderPage/' + 1)">订购原料</span>
           </div>
         </div>
       </div>
-      <!-- <div class="sum">订单统计:暂不统计</div> -->
       <div class="pageCtn">
         <el-pagination background
                        :page-size="5"
                        layout="prev, pager, next"
                        :total="total"
                        :current-page.sync="pages">
-          <!-- @current-change="getOrderList" -->
         </el-pagination>
       </div>
     </div>
@@ -140,7 +116,7 @@
 </template>
 
 <script>
-// import { orderList, productTppeList, clientList, getGroup } from '@/assets/js/api.js'
+// import {  } from '@/assets/js/api.js'
 export default {
   data () {
     return {

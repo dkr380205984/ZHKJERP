@@ -103,7 +103,7 @@
           <div class="tableColumn"
                style="flex-direction:row;flex:1.5">
             <span class="btns normal"
-                  @click="$router.push('/index/productPlanDetail/'+item.id)">查看</span>
+                  @click="$router.push('/index/rawMaterialOrderDetail/'+1)">查看</span>
             <span class="btns warning">修改</span>
           </div>
         </div>
