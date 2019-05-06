@@ -102,7 +102,9 @@
             </div>
           </div>
           <div class="tableColumn" style="flex-direction:row;">
-            <span class="btns normal" @click="$router.push('/index/productDesignCreate/'+item.id)">添加</span>
+            <div style="margin:auto">
+              <span class="btns normal" @click="$router.push('/index/productDesignCreate/'+item.id)">添加</span>
+            </div>
           </div>
         </div>
         <div class="mergeBody" v-if="list.length===0">

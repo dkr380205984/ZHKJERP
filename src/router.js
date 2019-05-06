@@ -238,6 +238,10 @@ let router = new Router({
       path: 'rawMaterialOrderCompledList',
       name: 'rawMaterialOrderCompledList',
       component: () => import('./views/rawMaterial/rawMaterialOrderCompledList.vue')
+    }, {
+      path: 'error/:id',
+      name: 'error',
+      component: () => import('./views/error.vue')
     }]
   }
   ]

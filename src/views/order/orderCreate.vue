@@ -399,7 +399,7 @@ export default {
     getSearchList () {
       this.loading = true
       let date = new Date()
-      let endTime = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate
+      let endTime = date.getFullYear() + '-' + ((date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1)) + '-' + (date.getDate() < 10 ? '0' + date.getDate() : date.getDate())
       productList({
         company_id: this.companyId,
         limit: null,

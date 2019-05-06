@@ -104,8 +104,10 @@
           </div>
           <div class="tableColumn" style="flex:0.7">暂无状态</div>
           <div class="tableColumn" style="flex-direction:row;flex:1.3">
-            <span class="btns success" @click="$router.push('/index/orderDetail/' + item.id)">详情</span>
-            <span class="btns error" @click="deleteOrder(item.id)">删除</span>
+            <div style="margin:auto">
+              <span class="btns success" @click="$router.push('/index/orderDetail/' + item.id)">详情</span>
+              <span class="btns error" @click="deleteOrder(item.id)">删除</span>
+            </div>
           </div>
         </div>
         <div class="mergeBody" v-if="list.length===0">
