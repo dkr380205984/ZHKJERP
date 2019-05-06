@@ -54,7 +54,8 @@
             <div class="warp-wise-arrange">
               <div class="title">经向排列</div>
               <div class="content">
-                <div class="particulars">
+                <div class="particulars"
+                     v-if="warp_data.warp_rank_bottom.length < 13 || weft_data.weft_rank_bottom.length < 13">
                   <div>
                     <span v-for="(item,key) in add(warp_data.warp_rank_bottom)"
                           :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
@@ -78,6 +79,7 @@
                     </template>
                   </div>
                 </div>
+                <span v-else>见附件</span>
               </div>
             </div>
           </div>
@@ -166,7 +168,8 @@
             <div class="warp-wise-arrange">
               <div class="title">纬向排列</div>
               <div class="content">
-                <div class="particulars">
+                <div class="particulars"
+                     v-if="weft_data.weft_rank_bottom.length < 13 || warp_data.warp_rank_bottom.length < 13">
                   <div>
                     <span v-for="(item,key) in add(weft_data.weft_rank_bottom)"
                           :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
@@ -190,6 +193,7 @@
                     </template>
                   </div>
                 </div>
+                <span v-else>见附件</span>
               </div>
             </div>
           </div>
@@ -197,51 +201,58 @@
         <li class="match-colors">
           <div class="title">配色工艺</div>
           <div class="content">
-            <div class="table-head-row">
-              <div class="table-head">
-                <span>颜色组</span>
-                <span>具体配色</span>
-              </div>
-              <div v-for="(item,index) in forArr(6)"
-                   :key="index">
-                <div>{{index === 0 ? "主" : "夹" + index}}</div>
-                <div>
-                  <span>经</span>
-                  <span>纬</span>
+            <template v-if="color_data.length < 7">
+              <div class="table-head-row">
+                <div class="table-head">
+                  <span>颜色组</span>
+                  <span>具体配色</span>
+                </div>
+                <div v-for="(item,index) in forArr(6)"
+                     :key="index">
+                  <div>{{index === 0 ? "主" : "夹" + index}}</div>
+                  <div>
+                    <span>经</span>
+                    <span>纬</span>
+                  </div>
                 </div>
               </div>
-            </div>
-            <ul class="list">
-              <template v-for="(value,index) in color_data">
-                <li v-if='index < 5'
-                    :key="index">
-                  <div class="table-head-col">{{value.product_color}}</div>
-                  <div v-for="(item,key) in value.color_scheme"
-                       :key="key">
-                    <span style="">{{item.warp.name}}</span>
-                    <span>{{item.weft ? item.weft.name : ''}}</span>
-                  </div>
-                  <template v-if="value.color_scheme.length < 6">
-                    <div v-for="(x,y) in forArr( 6 - value.color_scheme.length)"
-                         :key="y+'1'">
-                      <span></span>
-                      <span></span>
+              <ul class="list">
+                <template v-for="(value,index) in color_data">
+                  <li v-if='index < 5'
+                      :key="index">
+                    <div class="table-head-col">{{value.product_color}}</div>
+                    <div v-for="(item,key) in value.color_scheme"
+                         :key="key">
+                      <span style="">{{item.warp.name}}</span>
+                      <span>{{item.weft ? item.weft.name : ''}}</span>
                     </div>
-                  </template>
-                </li>
-              </template>
+                    <template v-if="value.color_scheme.length < 6">
+                      <div v-for="(x,y) in forArr( 6 - value.color_scheme.length)"
+                           :key="y+'1'">
+                        <span></span>
+                        <span></span>
+                      </div>
+                    </template>
+                  </li>
+                </template>
 
-              <template v-if="color_data.length < 6">
-                <li v-for="(b,cdf) in forArr(6 - color_data.length)"
-                    :key="cdf+b">
-                  <div class="table-head-col"></div>
-                  <div v-for="(item,key) in forArr(6)"
-                       :key="key+item">
-                    <span></span><span></span>
-                  </div>
-                </li>
-              </template>
-            </ul>
+                <template v-if="color_data.length < 6">
+                  <li v-for="(b,cdf) in forArr(6 - color_data.length)"
+                      :key="cdf+b">
+                    <div class="table-head-col"></div>
+                    <div v-for="(item,key) in forArr(6)"
+                         :key="key+item">
+                      <span></span><span></span>
+                    </div>
+                  </li>
+                </template>
+              </ul>
+            </template>
+            <template v-else>
+              <span>
+                见附件
+              </span>
+            </template>
           </div>
         </li>
       </ul>
@@ -288,36 +299,6 @@
               </template>
             </div>
           </div>
-          <!-- <template>
-            <div class="particulars">
-              <div>
-                <span v-for="(item,key) in add(warp_data.warp_rank_bottom)"
-                      :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
-                      :key="key">{{item === 'no' ? '' : (item === 0 ? '主' : '夹' + item)}}</span>
-              </div>
-              <div v-for="(item,key) in warp_data.warp_rank"
-                   :key="key">
-                <template v-if="key === 0">
-                  <span v-for="(item,key) in add(item,true)"
-                        :style="{minWidth : (100/12) + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
-                        :key="key">
-                    {{item === 'no' ? '' : item}}
-                  </span>
-                </template>
-                <template v-else>
-                  <span v-for="(value,index) in changeArr(add(item,true))"
-                        :key="index"
-                        :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999'}">
-                    {{value.value === 'no' ? '' : value.value}}
-                    <span v-if='item[11] === item[12] && index === 0 '
-                          class="jiantou">
-                      <span class="el-icon-back right"></span>
-                    </span>
-                  </span>
-                </template>
-              </div>
-            </div>
-          </template> -->
         </div>
       </div>
       <div class="warp-wise-arrange">
@@ -356,36 +337,6 @@
               </template>
             </div>
           </div>
-          <!-- <template>
-            <div class="particulars">
-              <div>
-                <span v-for="(item,key) in add(weft_data.weft_rank_bottom,true)"
-                      :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
-                      :key="key">{{item === 'no' ? '' : (item === 0 ? '主' : '夹' + item)}}</span>
-              </div>
-              <div v-for="(item,key) in weft_data.weft_rank"
-                   :key="key">
-                <template v-if="key === 0">
-                  <span v-for="(item,key) in add(item,true)"
-                        :style="{minWidth : (100/12) + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
-                        :key="key">
-                    {{item === 'no' ? '' : item}}
-                  </span>
-                </template>
-                <template v-else>
-                  <span v-for="(value,index) in changeArr(add(item,true))"
-                        :key="index"
-                        :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999'}">
-                    {{value.value === 'no' ? '' : value.value}}
-                    <span v-if='item[11] === item[12] && index === 0 '
-                          class="jiantou">
-                      <span class="el-icon-back right"></span>
-                    </span>
-                  </span>
-                </template>
-              </div>
-            </div>
-          </template> -->
         </div>
       </div>
     </div>
