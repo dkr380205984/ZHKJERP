@@ -388,29 +388,20 @@ export default {
     chooseWhichColour: function (newVal, oldVal) {
       // 处理下颜色数据
       let ArrMain = this.warp_canvas.map((item) => {
-        let mark = -1
-        this.color_data.warpColorData[oldVal].color_scheme.forEach((oldItem, oldIndex) => {
-          if (oldItem.value === item.color) {
-            mark = oldIndex
-          }
-        })
         return {
           number: item.number,
           index: item.index,
-          color: this.color_data.warpColorData[newVal].color_scheme[mark].value
+          color: this.color_data.warpColorData[newVal].color_scheme[item.colorIndex].value,
+          colorIndex: item.colorIndex
         }
       })
+      console.log(this.color_data)
       let ArrMain2 = this.weft_canvas.map((item) => {
-        let mark = -1
-        this.color_data.weftColorData[oldVal].color_scheme.forEach((oldItem, oldIndex) => {
-          if (oldItem.value === item.color) {
-            mark = oldIndex
-          }
-        })
         return {
           number: item.number,
           index: item.index,
-          color: this.color_data.weftColorData[newVal].color_scheme[mark].value
+          color: this.color_data.weftColorData[newVal].color_scheme[item.colorIndex].value,
+          colorIndex: item.colorIndex
         }
       })
       // 画图
@@ -592,7 +583,8 @@ export default {
               Arr.push({
                 color: colorArr[this.longSort[index3]].value,
                 number: numArr[index3],
-                index: index3
+                index: index3,
+                colorIndex: this.longSort[index3]
               })
             }
           }
@@ -603,7 +595,8 @@ export default {
           return {
             color: colorArr[this.longSort[index]].value,
             number: numArr[index],
-            index: index
+            index: index,
+            colorIndex: this.longSort[index]
           }
         })
       }
@@ -738,7 +731,8 @@ export default {
               Arr2.push({
                 color: colorArr2[this.longSort2[index3]].value,
                 number: numArr2[index3],
-                index: index3
+                index: index3,
+                colorIndex: this.longSort2[index3]
               })
             }
           }
@@ -749,7 +743,8 @@ export default {
           return {
             color: colorArr2[this.longSort2[index]].value,
             number: numArr2[index],
-            index: index
+            index: index,
+            colorIndex: this.longSort2[index] // 记录下颜色所处的位置,在修改配色方案的时候有用
           }
         })
       }
