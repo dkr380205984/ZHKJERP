@@ -322,7 +322,7 @@ export default {
       moneyArr: moneyArr,
       money: '',
       exchangeRate: '',
-      taxRate: '14',
+      taxRate: '13',
       date: '',
       search: '',
       typeArr: [],
