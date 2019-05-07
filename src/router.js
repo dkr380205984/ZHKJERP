@@ -245,6 +245,11 @@ export default new Router({
       path: 'rawMaterialProcessList',
       name: 'rawMaterialProcessList',
       component: () => import('./views/rawMaterial/rawMaterialProcessList.vue')
+    },
+    {
+      path: 'rawMaterialProcess/:id',
+      name: 'rawMaterialProcess',
+      component: () => import('./views/rawMaterial/rawMaterialProcess.vue')
     }]
   }
   ]

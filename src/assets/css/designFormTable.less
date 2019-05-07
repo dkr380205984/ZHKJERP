@@ -437,8 +437,15 @@ ul {
             }
             .content {
               flex: 1;
+              position: relative;
               &>div {
                 box-sizing: border-box;
+              }
+              &>span {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%,-50%);
               }
             }
           }

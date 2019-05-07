@@ -258,7 +258,7 @@
       </ul>
     </div>
     <div class="outTable-arrangement"
-         v-if="warp_data.warp_rank_bottom.length > 11">
+         v-if="warp_data.warp_rank_bottom.length > 12">
       <div class="code">
         <div class="title">工艺单编号:</div>
         <div class="content">{{craft_code}}</div>
@@ -286,13 +286,13 @@
               <template v-else>
                 <span v-for="(value,index) in changeArr(add(item,b))"
                       :key="index"
-                      :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999'}">
+                      :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999',background: item[(b+1)*12] === item[(b+1)*12 -1] && ((index === 0 && b !== 0) || index === changeArr(add(item,b)).length - 1) && value.value !== 'no' ? 'rgb(240,240,240)' : false}">
                   {{value.value === 'no' ? '' : value.value}}
-                  <span v-if='item[11] === item[12] && (index === changeArr(add(item,b)).length - 1 || item[11] === item[12] && index === 0) '
+                  <span v-if='item[(b + 1) * 12 - 1] === item[(b + 1) *12] && (index === changeArr(add(item,b)).length - 1 || item[(b + 1) * 12 - 1] === item[(b + 1) * 12] && index === 0) '
                         class="jiantou">
-                    <span v-if="index === changeArr(add(item,b)).length - 1 && b!==add(warp_data.warp_rank_bottom,'all').length -1"
+                    <span v-if="index === changeArr(add(item,b)).length - 1  && b!==add(warp_data.warp_rank_bottom,'all').length -1 "
                           class="el-icon-back left"></span>
-                    <span v-else-if="item[11] === item[12] && index === 0 && b !== 0"
+                    <span v-else-if="item[(b + 1) * 12 - 1] === item[(b + 1) *12] && index === 0 && b !== 0"
                           class="el-icon-back right"></span>
                   </span>
                 </span>
@@ -315,22 +315,22 @@
             <div v-for="(item,key) in weft_data.weft_rank"
                  :key="key">
               <template v-if="key === 0">
-                <span v-for="(item,key) in add(item,b)"
+                <span v-for="(items,key) in add(item,b)"
                       :style="{minWidth : (100/12) + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
                       :key="key">
-                  {{item === 'no' ? '' : item}}
+                  {{items === 'no' ? '' : items}}
                 </span>
               </template>
               <template v-else>
                 <span v-for="(value,index) in changeArr(add(item,b))"
                       :key="index"
-                      :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999'}">
+                      :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999',background: item[(b+1)*12] === item[(b+1)*12 -1] && ((index === 0 && b !== 0) || index === changeArr(add(item,b)).length - 1) && value.value !== 'no' ? 'rgb(240,240,240)' : false}">
                   {{value.value === 'no' ? '' : value.value}}
-                  <span v-if='item[11] === item[12] && (index === changeArr(add(item,b)).length - 1 || item[11] === item[12] && index === 0) '
+                  <span v-if='item[(b + 1) * 12 - 1] === item[(b + 1) *12] && (index === changeArr(add(item,b)).length - 1 || item[(b + 1) * 12 - 1] === item[(b + 1) *12] && index === 0) '
                         class="jiantou">
                     <span v-if="index === changeArr(add(item,b)).length - 1 && b!==add(weft_data.weft_rank_bottom,'all').length -1"
                           class="el-icon-back left"></span>
-                    <span v-else-if="item[11] === item[12] && index === 0 && b !== 0"
+                    <span v-else-if="item[(b + 1) * 12 - 1] === item[(b + 1) *12] && index === 0 && b !== 0"
                           class="el-icon-back right"></span>
                   </span>
                 </span>
@@ -341,7 +341,7 @@
       </div>
     </div>
     <div class="outTable-color"
-         v-if='color_data.length > 5'>
+         v-if='color_data.length > 6'>
       <div class="code">
         <div class="title">工艺单编号:</div>
         <div class="content">{{craft_code}}</div>
@@ -690,7 +690,7 @@ export default {
     html.style.overflow = 'visible'
   },
   updated () {
-    window.print()
+    // window.print()
   }
 }
 </script>

@@ -111,7 +111,7 @@
           <div class="tableColumn"
                style="flex-direction:row;flex:1.2">
             <span class="btns normal"
-                  @click="$router.push('/index/rawMaterialOrderDetail/'+1)">原料加工</span>
+                  @click="$router.push('/index/rawMaterialProcess/'+1)">原料加工</span>
           </div>
         </div>
       </div>
