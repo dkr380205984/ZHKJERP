@@ -148,6 +148,7 @@ export default {
         })
         return
       }
+      console.log(this.contacts)
       if (this.contacts.length < 1) {
         this.$message.error({
           message: '合作公司至少有一个联系人'

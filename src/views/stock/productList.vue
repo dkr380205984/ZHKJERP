@@ -222,6 +222,7 @@ export default {
         this.start_time = ''
         this.end_time = ''
       }
+      this.pages = 1
       this.getProductList()
     }
   },
@@ -245,12 +246,15 @@ export default {
       this.getProductList()
     },
     styleVal (newVal) {
+      this.pages = 1
       this.getProductList()
     },
     flowerVal (newVal) {
+      this.pages = 1
       this.getProductList()
     },
     searchVal (newVal) {
+      this.pages = 1
       this.getProductList()
     }
   },

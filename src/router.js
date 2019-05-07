@@ -255,6 +255,10 @@ let router = new Router({
       path: 'error/:id',
       name: 'error',
       component: () => import('./views/error.vue')
+    }, {
+      path: 'setting',
+      name: 'setting',
+      component: () => import('./views/setting/settings.vue')
     }]
   }
   ]
@@ -262,16 +266,20 @@ let router = new Router({
 
 router.beforeEach((to, from, next) => { // 全局前置守卫按照创建顺序调用
   if (to.name !== 'login') {
-    loginCheck({
-      user_id: window.sessionStorage.getItem('user_id'),
-      token: window.sessionStorage.getItem('token')
-    }).then((res) => {
-      if (res.data.status) {
-        next()
-      } else {
-        next('/login')
-      }
-    })
+    try {
+      loginCheck({
+        user_id: window.sessionStorage.getItem('user_id'),
+        token: window.sessionStorage.getItem('token')
+      }).then((res) => {
+        if (res.data.status) {
+          next()
+        } else {
+          next('/login')
+        }
+      })
+    } catch {
+      next('/login')
+    }
   } else {
     next()
   }

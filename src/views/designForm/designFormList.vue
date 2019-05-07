@@ -190,6 +190,7 @@ export default {
         this.start_time = ''
         this.end_time = ''
       }
+      this.pages = 1
       this.getCraftList()
     },
     copy (id) {
@@ -230,9 +231,11 @@ export default {
       this.getCraftList()
     },
     styleVal (newVal) {
+      this.pages = 1
       this.getCraftList()
     },
     searchVal (newVal) {
+      this.pages = 1
       this.getCraftList()
     }
   },
