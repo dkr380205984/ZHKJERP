@@ -209,7 +209,7 @@ export default {
         'start_time': this.start_time,
         'end_time': this.end_time
       }).then((res) => {
-        let json = res.data.data
+        let json = res.data.data.data
         this.list = Object.keys(json).map((key) => {
           let arr = []
           json[key].forEach((item) => {

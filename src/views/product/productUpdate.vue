@@ -401,18 +401,36 @@ export default {
           return item.url
         }
       })
-      console.log(this.footage, this.sizeArr, this.child_size)
-      const sizeArr = this.footage.map((item, index) => {
+      // const sizeArr = this.footage.map((item, index) => {
+      //   return this.sizeArr[index].map((item2, index2) => {
+      //     return {
+      //       'size_name': this.child_size[index2].name || null,
+      //       'size_value': item2 || null,
+      //       'footage': this.child_footage.find((item3) => item3.id === item).name || null,
+      //       'weight': this.weight[index]
+      //     }
+      //   })
+      // }).flat() // ES6二维数组转一维用不了 polyfill支持不来
+      // 获取多维sizeArr
+      const sizeArrErWei = this.footage.map((item, index) => {
         return this.sizeArr[index].map((item2, index2) => {
           return {
             'size_name': this.child_size[index2].name || null,
             'size_value': item2 || null,
-            'footage': item,
+            'footage': this.child_footage.find((item3) => item3.id === item).name || null,
             'weight': this.weight[index]
           }
         })
-      }).flat() // ES6二维数组转一维
-      console.log(sizeArr)
+      })
+      let sizeArr = []
+      // 数组扁平化
+      sizeArrErWei.forEach((item) => {
+        if (Array.isArray(item)) {
+          sizeArr = sizeArr.concat(item.flat())
+        } else {
+          sizeArr.push(item)
+        }
+      })
       if (sizeArr.length < this.sizeNum * this.child_size.length) {
         this.$message.error({
           message: '检测到未填写的产品尺寸，请输入后保存'

@@ -699,7 +699,7 @@ export default {
       start_time: null,
       end_time: null,
       plan_code: null,
-      has_plan: 1
+      has_plan: null
     }), productTppeList({
       company_id: this.companyId
     }), flowerList({
