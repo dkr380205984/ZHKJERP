@@ -1590,7 +1590,7 @@ export default {
           this.$message.success({
             message: '修改成功'
           })
-          this.$router.push('/index/designFormDetail/' + res.data.data.id)
+          this.$router.push('/index/productPlanCreate/' + res.data.data.product_info.id)
         }
       })
     },

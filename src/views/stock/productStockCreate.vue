@@ -1,7 +1,7 @@
 <template>
   <div id="productStockCreate">
     <div class="head">
-      <h2>产品库存录入（暂时不用）</h2>
+      <h2>产品库存录入</h2>
     </div>
     <div class="body">
       <div class="lineCtn">
@@ -299,6 +299,7 @@ export default {
         return
       }
       let json = {
+        user_id: window.sessionStorage.getItem('user_id'),
         order_code: this.orderId,
         company_id: window.sessionStorage.getItem('company_id'),
         product_id: this.$route.params.id,

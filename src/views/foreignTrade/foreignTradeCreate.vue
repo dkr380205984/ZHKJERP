@@ -13,7 +13,7 @@
         <el-input class="elInput" placeholder="请输入外贸公司简称" v-model="abbreviation"></el-input>
       </div>
       <div class="inputCtn">
-        <span class="label">公司类型:</span>
+        <span class="label must">公司类型:</span>
         <el-select class="elInput" placeholder="请选择公司类型" v-model="type">
           <el-option v-for="item in companyType" :key="item.value" :value="item.value" :label="item.name"></el-option>
         </el-select>
@@ -53,11 +53,11 @@
         </div>
       </div>
       <div class="inputCtn">
-        <span class="label must">联系电话:</span>
+        <span class="label">联系电话:</span>
         <el-input class="elInput" placeholder="请输入联系电话" v-model="phone"></el-input>
       </div>
       <div class="inputCtn">
-        <span class="label must">公司地址:</span>
+        <span class="label">公司地址:</span>
         <el-input class="elInput" placeholder="请输入公司地址" v-model="address"></el-input>
       </div>
       <div class="btnCtn">
@@ -108,6 +108,24 @@ export default {
       this.contacts.splice(index, 1)
     },
     saveAll () {
+      if (!this.name) {
+        this.$message.error({
+          message: '请填写公司名称'
+        })
+        return
+      }
+      if (!this.type) {
+        this.$message.error({
+          message: '请选择公司公司类型'
+        })
+        return
+      }
+      if (this.contacts.length < 1) {
+        this.$message.error({
+          message: '合作公司至少有一个联系人'
+        })
+        return
+      }
       clientAdd({
         id: '',
         company_id: window.sessionStorage.getItem('company_id'),

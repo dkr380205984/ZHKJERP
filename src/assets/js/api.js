@@ -2,6 +2,8 @@ import http from './http.js'
 const baseUrl = '/api'
 // 登录
 const login = (params) => http.post(`${baseUrl}/auth/login`, params, 'application/json')
+// 登录验证
+const loginCheck = (params) => http.post(`${baseUrl}/auth/check/login`, params, 'application/json')
 // 注册
 const register = (params) => http.post(`${baseUrl}/auth/register`, params, 'application/json')
 // 发送验证码
@@ -163,6 +165,7 @@ const productionDetail = (params) => http.get(`${baseUrl}/production/one`, param
 // 生产统计单详情
 const productionStat = (params) => http.get(`${baseUrl}/product/plan/order`, params)
 export {
+  loginCheck,
   orderDelete,
   productStockOne,
   productDelete,

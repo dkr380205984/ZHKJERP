@@ -85,7 +85,7 @@
                   <div class="desc">{{item.name}}</div>
                 </el-option>
               </el-select>
-              <color-picker v-for="(item2,index2) in colorNum[index]" :key="color[index][index2]"
+              <color-picker v-for="(item2,index2) in colorNum[index]" :key="index2"
                 style="margin-left:15px;margin-bottom:24px"
                 v-model="color[index][index2]"
                 :content="filterMethods(index2)"
@@ -346,7 +346,7 @@
                   <div class="desc">{{item.name}}</div>
                 </el-option>
               </el-select>
-              <color-picker v-for="(item2,index2) in colorNum2[index]" :key="color2[index][index2]"
+              <color-picker v-for="(item2,index2) in colorNum2[index]" :key="index2"
                 style="margin-left:15px;margin-bottom:24px"
                 v-model="color2[index][index2]"
                 :content="filterMethods(index2)"

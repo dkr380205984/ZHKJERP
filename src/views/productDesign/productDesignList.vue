@@ -116,8 +116,10 @@
           </div>
           <div class="tableColumn" style="flex:0.5">{{item.group_name}}</div>
           <div class="tableColumn" style="flex-direction:row;">
-            <span class="btns warning" @click="$router.push('/index/productDesignUpdate/'+item.id+'/'+item.plan_id)">修改</span>
-            <span class="btns success" @click="$router.push('/index/productDesignDetail/'+item.id)">详情</span>
+            <div style="margin:auto">
+              <span class="btns warning" @click="$router.push('/index/productDesignUpdate/'+item.id+'/'+item.plan_id)">修改</span>
+              <span class="btns success" @click="$router.push('/index/productDesignDetail/'+item.id)">详情</span>
+            </div>
           </div>
         </div>
         <div class="mergeBody" v-if="list.length===0">

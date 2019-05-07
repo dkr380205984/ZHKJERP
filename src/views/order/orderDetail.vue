@@ -66,9 +66,9 @@
                           :key='index'>
                       <span style='flex:3;'>{{value.product_code}}({{value.product_class}})</span>
                       <span>{{value.size}}/{{value.color}}</span>
-                      <span>{{value.price}}元/条</span>
+                      <span>{{value.price}}{{account_unit}}/{{value.unit}}</span>
                       <span>{{value.number}}条</span>
-                      <span>{{value.number * value.price}}元</span>
+                      <span>{{(value.number * value.price).toFixed(2)}}{{account_unit}}</span>
                     </span>
                   </span>
                 </div>
@@ -146,15 +146,13 @@ export default {
             obj1.color = content.name[1]
             obj1.number = content.numbers
             obj1.price = content.unitPrice
+            obj1.unit = value.productInfo.category_info.name
             obj1.product_class = (value.productInfo.category_info.product_category ? value.productInfo.category_info.product_category + '/' : '') + (value.productInfo.type_name ? value.productInfo.type_name + '/' : '') + (value.productInfo.style_name ? value.productInfo.style_name : '')
             obj.product_info.push(obj1)
-            // console.log(obj)
           })
         })
         this.list.push(obj)
       })
-
-      // console.log(this.list)
     })
   }
 }

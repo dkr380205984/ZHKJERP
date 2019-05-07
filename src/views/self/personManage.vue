@@ -46,8 +46,8 @@
           <div class="tableColumn">姓名</div>
           <div class="tableColumn">电话号码</div>
           <div class="tableColumn">联系电话</div>
+          <div class="tableColumn">用户分组</div>
           <div class="tableColumn">用户岗位</div>
-          <div class="tableColumn">用户小组</div>
           <div class="tableColumn">注册时间</div>
           <div class="tableColumn flex8">操作</div>
         </div>

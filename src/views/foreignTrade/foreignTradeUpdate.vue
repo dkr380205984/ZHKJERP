@@ -136,7 +136,24 @@ export default {
       this.contacts.splice(index, 1)
     },
     saveAll () {
-      console.log(this.type)
+      if (!this.name) {
+        this.$message.error({
+          message: '请填写公司名称'
+        })
+        return
+      }
+      if (!this.type) {
+        this.$message.error({
+          message: '请选择公司公司类型'
+        })
+        return
+      }
+      if (this.contacts.length < 1) {
+        this.$message.error({
+          message: '合作公司至少有一个联系人'
+        })
+        return
+      }
       clientAdd({
         id: this.$route.params.id,
         company_id: window.sessionStorage.getItem('company_id'),
@@ -164,16 +181,22 @@ export default {
       id: this.$route.params.id
     }).then((res) => {
       if (res.data.status) {
-        let date = res.data.data
-        console.log(date)
-        this.name = date.name
-        this.address = date.address
-        this.abbreviation = date.abbreviation
-        this.phone = date.phone
-        this.contacts = date.contacts
-        this.status = date.status.toString()
+        let data = res.data.data
+        console.log(data)
+        this.name = data.name
+        this.address = data.address
+        this.abbreviation = data.abbreviation
+        this.phone = data.phone
+        this.contacts = data.contacts.map((item) => {
+          return {
+            name: item.name,
+            phone: item.phone,
+            station: item.station
+          }
+        })
+        this.status = data.status.toString()
         this.companyType.forEach((item) => {
-          if (item.value === date.type) {
+          if (item.value === data.type) {
             this.type = item.value
           }
         })

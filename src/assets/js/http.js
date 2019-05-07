@@ -1,4 +1,5 @@
 import axios from 'axios'
+import router from '../../router'
 let qs = require('qs')
 
 /*
@@ -9,6 +10,43 @@ axios.defaults.headers.get['Content-Type'] = 'application/json'
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 axios.defaults.headers.put['Content-Type'] = 'application/json'
 axios.defaults.headers.delete['Content-Type'] = 'application/json'
+
+axios.interceptors.response.use(
+  res => {
+    return res
+  },
+  error => {
+    // 下面是接口回调的satus ,因为我做了一些错误页面,所以都会指向对应的报错页面
+    if (error.response.status === 403) {
+      router.push({
+        path: '/index/error/403'
+      })
+    }
+    if (error.response.status === 500) {
+      router.push({
+        path: '/index/error/500'
+      })
+    }
+    if (error.response.status === 502) {
+      router.push({
+        path: '/index/error/502'
+      })
+    }
+    if (error.response.status === 404) {
+      router.push({
+        path: '/index/error/404'
+      })
+    }
+    if (error.response.status === 429) {
+      router.push({
+        path: '/index/error/429'
+      })
+    }
+    // 返回 response 里的错误信息
+    let errorInfo = error.data.error ? error.data.error.message : error.data
+    return Promise.reject(errorInfo)
+  }
+)
 
 // 设置请求携带session
 // axios.defaults.withCredentials = true
