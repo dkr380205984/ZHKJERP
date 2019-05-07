@@ -439,7 +439,9 @@ export default {
       // 数组扁平化
       sizeArrErWei.forEach((item) => {
         if (Array.isArray(item)) {
-          sizeArr = sizeArr.concat(item.flat())
+          item.forEach((itemChild) => {
+            sizeArr = sizeArr.concat(itemChild)
+          })
         } else {
           sizeArr.push(item)
         }
