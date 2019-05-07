@@ -1,8 +1,8 @@
 <template>
-  <div id="rawMaterialOrderDetail"
+  <div id="rawMaterialProcessDetail"
        v-loading="loading">
     <div class="head">
-      <h2>原料订购详情</h2>
+      <h2>原料加工详情</h2>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -69,7 +69,7 @@
         </div>
       </div>
       <div class="stepCtn">
-        <div class="stepTitle">订购信息</div>
+        <div class="stepTitle">加工信息</div>
         <div class="borderCtn">
           <div class="cicle"></div>
           <div class="border"></div>
@@ -79,10 +79,10 @@
           <div class="inputCtn noPadding"
                v-for="(item,key) in list"
                :key="key">
-            <div class="title">
+            <!-- <div class="title">
               <span>{{item.material}}</span>
               <span>合计：{{item.total_number}}kg</span>
-            </div>
+            </div> -->
             <div class="content">
               <ul class="table">
                 <li>
@@ -129,57 +129,6 @@ export default {
       loading: false,
       list: [
         {
-          material: '52支上光晴纶',
-          total_number: '562.4',
-          info: [
-            { company: '杭州飞泰服饰有限公司',
-              info: [
-                {
-                  color: '深绿',
-                  price: '5',
-                  value: 400
-                },
-                {
-                  color: '深绿',
-                  price: '5',
-                  value: 400
-                },
-                {
-                  color: '深绿',
-                  price: '5',
-                  value: 400
-                }
-              ],
-              total_price: 6400,
-              create_time: '2019-04-23',
-              out_time: '2019-04-23',
-              remark: '备注信息'
-            }, { company: '杭州飞泰服饰有限公司',
-              info: [
-                {
-                  color: '深绿',
-                  price: '5',
-                  value: 400
-                },
-                {
-                  color: '深绿',
-                  price: '5',
-                  value: 400
-                },
-                {
-                  color: '深绿',
-                  price: '5',
-                  value: 400
-                }
-              ],
-              total_price: 6400,
-              create_time: '2019-04-23',
-              out_time: '2019-04-23',
-              remark: '备注信息'
-            }
-          ]
-
-        }, {
           material: '52支上光晴纶',
           total_number: '562.4',
           info: [
@@ -388,5 +337,5 @@ export default {
 </script>
 
 <style scoped lang='less'>
-@import "~@/assets/css/rawMaterialOrderDetail.less";
+@import "~@/assets/css/rawMaterialProcessDetail.less";
 </style>

@@ -1,8 +1,8 @@
 <template>
-  <div id="rawMaterialProcessList"
+  <div id="rawMaterialOrderCompiledList"
        v-loading="loading">
     <div class="head">
-      <h2>原料加工列表</h2>
+      <h2>原料已购列表</h2>
       <el-input placeholder="输入文字精确搜索"
                 suffix-icon="el-icon-search"
                 v-model="searchVal"></el-input>
@@ -48,6 +48,14 @@
                          :value="item.id">
               </el-option>
             </el-select>
+            <el-select v-model="styleVal"
+                       placeholder="筛选创建人">
+              <el-option v-for="item in style"
+                         :key="item.id"
+                         :label="item.name"
+                         :value="item.id">
+              </el-option>
+            </el-select>
           </div>
           <div class="rightFilter">
             <el-date-picker v-model="date"
@@ -69,14 +77,12 @@
                style="flex:1.2">订单公司</div>
           <div class="tableColumn">负责小组</div>
           <div class="tableColumn"
-               style="flex:3.8;flex-direction:row;">
-            <span style="border-right:1px solid #DDD;flex:1; ">订购单位</span>
-            <span style="flex:1">原料信息</span>
-          </div>
+               style="flex:1.9">订购单位</div>
+          <div class="tableColumn">总价</div>
           <div class="tableColumn">创建人</div>
           <div class="tableColumn">创建时间</div>
           <div class="tableColumn"
-               style="flex:1.2">操作</div>
+               style="flex:1.5">操作</div>
         </div>
         <div class="mergeBody"
              v-for="(item,key) in list"
@@ -87,27 +93,18 @@
                style="flex:1.2">{{item.order_company}}</div>
           <div class="tableColumn">{{item.ground_name}}</div>
           <div class="tableColumn col"
-               style="flex:3.8">
+               style="flex:1.9">
             <span v-for="(value,index) in item.order_team"
-                  :key="index">
-              <span>
-                <span>{{value.company}}</span>
-              </span>
-              <span>
-                <span v-for="(content,number) in value.info"
-                      :key="number"
-                      :style="{'padding':value.info.length === 1 ? '10px 0' : false}">{{content.material}} {{content.color}} {{content.weight+content.unit}}
-                </span>
-              </span>
-            </span>
-
+                  :key="index">{{value}}</span>
           </div>
+          <div class="tableColumn">{{item.total}}元</div>
           <div class="tableColumn">{{item.create_name}}</div>
           <div class="tableColumn">{{item.create_time}}</div>
           <div class="tableColumn"
-               style="flex-direction:row;flex:1.2">
+               style="flex-direction:row;flex:1.5">
             <span class="btns normal"
-                  @click="$router.push('/index/rawMaterialProcess/'+1)">原料加工</span>
+                  @click="$router.push('/index/rawMaterialOrderDetail/'+1)">查看</span>
+            <span class="btns warning">修改</span>
           </div>
         </div>
       </div>
@@ -168,36 +165,7 @@ export default {
           order_code: 'KR-0001',
           order_company: '杭州飞泰服饰有限公司',
           ground_name: 'B组',
-          // order_team: ['杭州飞泰纱线厂', '杭州力欧纱线厂'],
-          order_team: [
-            {
-              company: '杭州飞泰纱线厂',
-              info: [
-                {
-                  material: '36支上光晴纶',
-                  color: '白胚',
-                  weight: 400,
-                  unit: 'g'
-                }
-              ]
-            }, {
-              company: '杭州力欧纱线厂',
-              info: [
-                {
-                  material: '52支上光晴纶',
-                  color: '深绿',
-                  weight: 400,
-                  unit: 'g'
-                },
-                {
-                  material: '36支上光晴纶',
-                  color: '白胚',
-                  weight: 400,
-                  unit: 'g'
-                }
-              ]
-            }
-          ],
+          order_team: ['杭州飞泰纱线厂', '杭州力欧纱线厂', '杭州荣光纱线厂'],
           total: 700,
           create_name: '王锦鲤',
           create_time: '2019-04-23'
@@ -206,19 +174,7 @@ export default {
           order_code: 'KR-0001',
           order_company: '杭州飞泰服饰有限公司',
           ground_name: 'B组',
-          order_team: [
-            {
-              company: '杭州飞泰纱线厂',
-              info: [
-                {
-                  material: '52支上光晴纶',
-                  color: '深绿',
-                  weight: 400,
-                  unit: 'g'
-                }
-              ]
-            }
-          ],
+          order_team: ['杭州飞泰纱线厂'],
           total: 700,
           create_name: '王锦鲤',
           create_time: '2019-04-23'
@@ -227,45 +183,7 @@ export default {
           order_code: 'KR-0001',
           order_company: '杭州飞泰服饰有限公司',
           ground_name: 'B组',
-          order_team: [
-            {
-              company: '杭州飞泰纱线厂',
-              info: [
-                {
-                  material: '52支上光晴纶',
-                  color: '深绿',
-                  weight: 400,
-                  unit: 'g'
-                }
-              ]
-            }, {
-              company: '杭州力欧纱线厂',
-              info: [
-                {
-                  material: '52支上光晴纶',
-                  color: '深绿',
-                  weight: 400,
-                  unit: 'g'
-                }
-              ]
-            }, {
-              company: '杭州力欧纱线厂',
-              info: [
-                {
-                  material: '52支上光晴纶',
-                  color: '深绿',
-                  weight: 400,
-                  unit: 'g'
-                },
-                {
-                  material: '36支上光晴纶',
-                  color: '白胚',
-                  weight: 400,
-                  unit: 'g'
-                }
-              ]
-            }
-          ],
+          order_team: ['杭州飞泰纱线厂', '杭州力欧纱线厂', '杭州荣光纱线厂'],
           total: 700,
           create_name: '王锦鲤',
           create_time: '2019-04-23'
@@ -413,7 +331,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@import "~@/assets/css/rawMaterialProcessList.less";
+@import "~@/assets/css/rawMaterialOrderCompiledList.less";
 </style>
 <style lang="less">
 #productList {

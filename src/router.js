@@ -235,9 +235,9 @@ let router = new Router({
       name: 'rawMaterialOrderList',
       component: () => import('./views/rawMaterial/rawMaterialOrderList.vue')
     }, {
-      path: 'rawMaterialOrderCompledList',
-      name: 'rawMaterialOrderCompledList',
-      component: () => import('./views/rawMaterial/rawMaterialOrderCompledList.vue')
+      path: 'rawMaterialOrderCompiledList',
+      name: 'rawMaterialOrderCompiledList',
+      component: () => import('./views/rawMaterial/rawMaterialOrderCompiledList.vue')
     }, {
       path: 'rawMaterialOrderDetail/:id',
       name: 'rawMaterialOrderDetail',
@@ -246,11 +246,18 @@ let router = new Router({
       path: 'rawMaterialProcessList',
       name: 'rawMaterialProcessList',
       component: () => import('./views/rawMaterial/rawMaterialProcessList.vue')
-    },
-    {
+    }, {
+      path: 'rawMaterialProcessCompiledList',
+      name: 'rawMaterialProcessCompiledList',
+      component: () => import('./views/rawMaterial/rawMaterialProcessCompiledList.vue')
+    }, {
       path: 'rawMaterialProcess/:id',
       name: 'rawMaterialProcess',
       component: () => import('./views/rawMaterial/rawMaterialProcess.vue')
+    }, {
+      path: 'rawMaterialProcessDetail/:id',
+      name: 'rawMaterialProcessDetail',
+      component: () => import('./views/rawMaterial/rawMaterialProcessDetail.vue')
     }, {
       path: 'error/:id',
       name: 'error',

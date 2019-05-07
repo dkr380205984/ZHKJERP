@@ -198,7 +198,6 @@
                 </el-input>
               </li>
               <span class="el-icon-close"
-                    v-if="kay !== 0"
                     @click="deleteBuyInfo(key,kay)"></span>
             </ul>
           </div>
@@ -297,20 +296,20 @@ export default {
           needNum: 0,
           selectNum: 0,
           buyInfo: [
-            {
-              company: '',
-              money: '',
-              orderTime: '',
-              completeTime: '',
-              remark: '',
-              buyMaterialInfo: [
-                {
-                  color: '',
-                  price: '',
-                  value: ''
-                }
-              ]
-            }
+            // {
+            //   company: '',
+            //   money: '',
+            //   orderTime: '',
+            //   completeTime: '',
+            //   remark: '',
+            //   buyMaterialInfo: [
+            //     {
+            //       color: '',
+            //       price: '',
+            //       value: ''
+            //     }
+            //   ]
+            // }
           ]
         }
       ],
@@ -400,6 +399,20 @@ export default {
           ]
         }
       )
+      // let buyFrom = document.getElementsByClassName('buyFrom')
+      // // buyFrom.
+      // console.log(buyFrom)
+      // for (let prop in buyFrom) {
+      //   if (Number(prop) !== Number('NaN')) {
+      //     console.log(buyFrom[prop])
+      //   }
+      //   // buyFrom[prop].setAttribute('style', 'height:420px;')
+      // }
+      // buyFrom.forEach(item => {
+      //   console.log(item)
+      //   item.style.height = '420px'
+      //   item.style.padding = '35px'
+      // })
     },
     deleteBuyInfo (key, kay) {
       this.list[key].buyInfo.splice(kay, 1)

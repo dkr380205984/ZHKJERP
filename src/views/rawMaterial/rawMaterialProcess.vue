@@ -2,7 +2,7 @@
   <div id="rawMaterialProcess"
        v-loading="loading">
     <div class="head">
-      <h2>原料订购</h2>
+      <h2>原料加工</h2>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -53,29 +53,38 @@
           <div class="cicle"></div>
           <div class="border"></div>
         </div>
-        <div class="lineCtn">
-          <div class="table">
-            <div class="tableTitle">
-              <span>计划原料信息</span>
-              <span>库存信息</span>
-            </div>
-            <div class="tableInfo"
-                 v-for="(item,key) in rawMaterialPlanList"
-                 :key="key">
-              <span>
-                <span>{{item.material}}</span>
-                <span>{{item.need.name + ':' + item.need.value + item.need.unit}}</span>
+        <div class="lineCtn col">
+          <div class="inputCtn maxWidth noPadding"
+               v-for="(item,key) in rawMaterialPlanList"
+               :key="key">
+            <span class="title">{{item.company + ':'}}</span>
+            <span class="processContent">
+              <span v-for="(value,index) in item.processInfo"
+                    :key="index">
+                <span class="material">{{value.material}}</span>
+                <span class="colorInfo">
+                  <span v-for="(iten,kay) in value.colorInfo"
+                        :key="kay">
+                    <span class="tit">{{iten.color}}</span>
+                    {{iten.value + iten.unit}}
+                  </span>
+                </span>
               </span>
-              <span>
-                <span>{{item.have.name + ':' + item.have.value + item.have.unit}}</span>
-                <span>{{'白胚:' + item.whiteHave}}</span>
+            </span>
+            <!-- <div class="label smallFont"
+                 style="width:10em;">{{item.company}}:</div>
+            <div class="content marginBig">
+              <span v-for="(value,index) in item.processInfo"
+                    :key="index">
+                <span class="title">{{value.material}}:</span>
+                <span class="content">{{value.value + value.unit}}</span>
               </span>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
       <div class="stepCtn">
-        <div class="stepTitle">原料订购</div>
+        <div class="stepTitle">原料加工</div>
         <div class="borderCtn">
           <div class="cicle"></div>
           <div class="border"></div>
@@ -84,32 +93,14 @@
         <div class="lineCtn col"
              v-for="(item,key) in list"
              :key="key">
-          <div class="tablePlan">
-            <div class="tableTitle">
-              <span>原料名称</span>
-              <span>原料颜色</span>
-              <span>合计重量</span>
-              <span>已选重量</span>
-            </div>
-            <div class="tableInfo">
-              <span>{{item.material}}</span>
-              <span>
-                <template v-for="(value,index) in item.needColors">
-                  {{(index === 0 ? '' : '/') + value}}
-                </template>
-              </span>
-              <span>{{item.needNum}}kg</span>
-              <span>{{item.selectNum}}kg</span>
-            </div>
-          </div>
-          <div class="buyInfo">
-            <ul class="buyFrom"
-                v-for="(iten,kay) in item.buyInfo"
+          <div class="processInfo">
+            <ul class="processFrom"
+                v-for="(iten,kay) in item.processInfo"
                 :key="kay">
               <li>
-                <span>订购公司</span>:
-                <el-select v-model="iten.company"
-                           placeholder="请选择订购来源"
+                <span>加工类型</span>:
+                <el-select v-model="iten.processClass"
+                           placeholder="请选择加工类型"
                            size="small">
                   <el-option v-for="value in options"
                              :key="value.value"
@@ -118,11 +109,35 @@
                   </el-option>
                 </el-select>
               </li>
-              <li v-for="(value,index) in iten.buyMaterialInfo"
+              <li>
+                <span>加工单位</span>:
+                <el-select v-model="iten.processCompany"
+                           placeholder="请选择加工单位"
+                           size="small">
+                  <el-option v-for="value in options"
+                             :key="value.value"
+                             :label="value.label"
+                             :value="value.label">
+                  </el-option>
+                </el-select>
+              </li>
+              <li v-for="(value,index) in iten.processMaterialInfo"
                   :key="index"
                   class="col">
                 <div>
-                  <span>原料颜色</span>:
+                  <span>选择原料</span>:
+                  <el-select v-model="value.material"
+                             placeholder="请选择加工原料"
+                             size="small">
+                    <el-option v-for="color in options"
+                               :key="color.value"
+                               :label="color.label"
+                               :value="color.label">
+                    </el-option>
+                  </el-select>
+                </div>
+                <div>
+                  <span>选择颜色</span>:
                   <el-select v-model="value.color"
                              placeholder="请选择颜色"
                              size="small">
@@ -134,18 +149,18 @@
                   </el-select>
                 </div>
                 <div>
-                  <span>原料单价</span>:
+                  <span>加工单价</span>:
                   <el-input size="small"
-                            placeholder="请输入原料单价"
+                            placeholder="请输入加工单价"
                             v-model="value.price"
                             @change="jisuan(key)">
                   </el-input>
                   <i>元/kg</i>
                 </div>
                 <div>
-                  <span>订购数量</span>:
+                  <span>加工数量</span>:
                   <el-input size="small"
-                            placeholder="请输入订购数量"
+                            placeholder="请输入加工数量"
                             v-model="value.value"
                             @change="jisuan(key)">
                   </el-input>
@@ -174,8 +189,7 @@
                                 type="date"
                                 placeholder="选择日期"
                                 size="small"
-                                style="width:238px"
-                                :picker-options="pickerOptions">
+                                style="width:238px">
                 </el-date-picker>
               </li>
               <li>
@@ -185,8 +199,7 @@
                                 type="date"
                                 placeholder="选择日期"
                                 size="small"
-                                style="width:238px"
-                                :picker-options="pickerOptions">
+                                style="width:238px">
                 </el-date-picker>
               </li>
               <li>
@@ -249,62 +262,118 @@ export default {
       ],
       rawMaterialPlanList: [
         {
-          material: '52支上光晴纶',
-          need: {
-            name: '深绿',
-            value: 281.4,
-            unit: 'kg'
-          },
-          have: {
-            name: '深绿',
-            value: 20,
-            unit: 'kg'
-          },
-          whiteHave: '300kg'
-        }, {
-          material: '52支上光晴纶',
-          need: {
-            name: '蓝色',
-            value: 281.4,
-            unit: 'kg'
-          },
-          have: {
-            name: '蓝色',
-            value: 20,
-            unit: 'kg'
-          },
-          whiteHave: '300kg'
+          company: '杭州力欧纱线有限公司',
+          processInfo: [
+            {
+              material: '52支上光晴纶',
+              colorInfo: [
+                {
+                  color: '深绿',
+                  value: 400,
+                  unit: 'kg'
+                },
+                {
+                  color: '白胚',
+                  value: 300,
+                  unit: 'kg'
+                },
+                {
+                  color: '绿色',
+                  value: 500,
+                  unit: 'kg'
+                }
+              ]
+            },
+            {
+              material: '36支上光涤纶',
+              colorInfo: [
+                {
+                  color: '深绿',
+                  value: 400,
+                  unit: 'kg'
+                },
+                {
+                  color: '白胚',
+                  value: 300,
+                  unit: 'kg'
+                },
+                {
+                  color: '绿色',
+                  value: 500,
+                  unit: 'kg'
+                }
+              ]
+            }
+          ]
         },
         {
-          material: '36支上光晴纶',
-          need: {
-            name: '卡其色',
-            value: 281.4,
-            unit: 'kg'
-          },
-          have: {
-            name: '卡其色',
-            value: 20,
-            unit: 'kg'
-          },
-          whiteHave: '300kg'
+          company: '杭州飞泰纱线有限公司',
+          processInfo: [
+            {
+              material: '52支上光晴纶',
+              colorInfo: [
+                {
+                  color: '卡其色',
+                  value: 400.23,
+                  unit: 'kg'
+                },
+                {
+                  color: '白胚',
+                  value: 300,
+                  unit: 'kg'
+                },
+                {
+                  color: '绿色',
+                  value: 500,
+                  unit: 'kg'
+                },
+                {
+                  color: '白胚',
+                  value: 300,
+                  unit: 'kg'
+                }
+              ]
+            },
+            {
+              material: '48支上光涤纶',
+              colorInfo: [
+                {
+                  color: '深绿',
+                  value: 400,
+                  unit: 'kg'
+                },
+                {
+                  color: '白胚',
+                  value: 300,
+                  unit: 'kg'
+                },
+                {
+                  color: '绿色',
+                  value: 500,
+                  unit: 'kg'
+                }
+              ]
+            }
+          ]
         }
       ],
       list: [
         {
-          material: '',
-          needColors: [],
-          needNum: 0,
-          selectNum: 0,
-          buyInfo: [
+          // material: '',
+          // needColors: [],
+          // needNum: 0,
+          // selectNum: 0,
+          processInfo: [
             {
-              company: '',
+              processClass: '',
+              processCompany: '',
               money: '',
               orderTime: '',
               completeTime: '',
               remark: '',
-              buyMaterialInfo: [
+              processMaterialInfo: [
                 {
+                  material: '',
                   color: '',
                   price: '',
                   value: ''
@@ -362,37 +431,36 @@ export default {
   methods: {
     jisuan (key) {
       this.list.forEach((item, key) => {
-        item.selectNum = 0
-        item.buyInfo.forEach((value, index) => {
+        item.processInfo.forEach((value, index) => {
           value.money = 0
-          value.buyMaterialInfo.forEach((val, ind) => {
-            item.selectNum += Number(val.value)
+          value.processMaterialInfo.forEach((val, ind) => {
             value.money += (val.price * val.value)
           })
         })
       })
     },
     appendBuyMaterialInfo (key, kay) {
-      this.list[key].buyInfo[kay].buyMaterialInfo.push({
+      this.list[key].processInfo[kay].processMaterialInfo.push({
+        material: '',
         color: '',
         price: '',
         value: ''
       })
-      console.log(this.list)
     },
     deleteBuyMaterialInfo (key, kay, index) {
-      console.log(this.list[key].buyInfo[kay].buyMaterialInfo.splice(index, 1))
+      this.list[key].processInfo[kay].processMaterialInfo.splice(index, 1)
     },
     addBuyInfo (key) {
-      this.list[key].buyInfo.push(
+      this.list[key].processInfo.push(
         {
           company: '',
           money: '',
           orderTime: '',
           completeTime: '',
           remark: '',
-          buyMaterialInfo: [
+          processMaterialInfo: [
             {
+              material: '',
               color: '',
               price: '',
               value: ''
@@ -402,7 +470,7 @@ export default {
       )
     },
     deleteBuyInfo (key, kay) {
-      this.list[key].buyInfo.splice(kay, 1)
+      this.list[key].processInfo.splice(kay, 1)
     },
     saveAll () {
       this.$message(
@@ -414,49 +482,6 @@ export default {
     }
   },
   created () {
-    this.rawMaterialPlanList.forEach((item, key) => {
-      if (key === 0) {
-        this.list[0].material = item.material
-        this.list[0].needColors.push(item.need.name)
-        this.list[0].needNum = Number(item.need.value)
-      } else {
-        let flag = true
-        this.list.forEach((value, index) => {
-          if (value.material === item.material) {
-            flag = false
-            value.needColors.push(item.need.name)
-            value.needNum += Number(item.need.value)
-          } else if (flag && index === this.list.length - 1 && value.material !== item.material) {
-            let obj = {
-              material: '',
-              needColors: [],
-              needNum: 0,
-              selectNum: 0,
-              buyInfo: [
-                {
-                  company: '',
-                  money: '',
-                  orderTime: '',
-                  completeTime: '',
-                  remark: '',
-                  buyMaterialInfo: [
-                    {
-                      color: '',
-                      price: '',
-                      value: ''
-                    }
-                  ]
-                }
-              ]
-            }
-            obj.material = item.material
-            obj.needColors.push(item.need.name)
-            obj.needNum = Number(item.need.value)
-            this.list.push(obj)
-          }
-        })
-      }
-    })
   }
 }
 </script>
