@@ -16,6 +16,10 @@ const updatePsd = (params) => http.post(`${baseUrl}/auth/reset_pass`, params, 'a
 const addStation = (params) => http.post(`${baseUrl}/user/station/save`, params, 'application/json')
 // 添加分组
 const addGroup = (params) => http.post(`${baseUrl}/user/group/save`, params, 'application/json')
+// 删除岗位
+const deleteStation = (params) => http.post(`${baseUrl}/user/station/delete`, params, 'application/json')
+// 删除分组
+const deleteGroup = (params) => http.post(`${baseUrl}/user/group/delete`, params, 'application/json')
 // 获取岗位
 const getStation = (params) => http.get(`${baseUrl}/user/station/list`, params)
 // 获取分组
@@ -165,6 +169,8 @@ const productionDetail = (params) => http.get(`${baseUrl}/production/one`, param
 // 生产统计单详情
 const productionStat = (params) => http.get(`${baseUrl}/product/plan/order`, params)
 export {
+  deleteStation,
+  deleteGroup,
   loginCheck,
   orderDelete,
   productStockOne,

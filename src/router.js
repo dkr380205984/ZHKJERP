@@ -55,10 +55,6 @@ let router = new Router({
       name: 'productList',
       component: () => import('./views/product/productList.vue')
     }, {
-      path: 'productSetting',
-      name: 'productSetting',
-      component: () => import('./views/product/productSetting.vue')
-    }, {
       path: 'designFormCreate/:id',
       name: 'designFormCreate',
       component: () => import('./views/designForm/designFormCreate.vue')
@@ -66,10 +62,6 @@ let router = new Router({
       path: 'designFormUpdate/:id',
       name: 'designFormUpdate',
       component: () => import('./views/designForm/designFormUpdate.vue')
-    }, {
-      path: 'designFormSetting',
-      name: 'designFormSetting',
-      component: () => import('./views/designForm/designFormSetting.vue')
     }, {
       path: 'designFormList',
       name: 'designFormList',
@@ -259,6 +251,18 @@ let router = new Router({
       path: 'setting',
       name: 'setting',
       component: () => import('./views/setting/settings.vue')
+    }, {
+      path: 'productSetting',
+      name: 'productSetting',
+      component: () => import('./views/setting/productSetting.vue')
+    }, {
+      path: 'designFormSetting',
+      name: 'designFormSetting',
+      component: () => import('./views/setting/designFormSetting.vue')
+    }, {
+      path: 'accountSetting',
+      name: 'accountSetting',
+      component: () => import('./views/setting/accountSetting.vue')
     }]
   }
   ]
