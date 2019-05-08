@@ -29,7 +29,7 @@ export default {
       }, {
         name: '原料设置',
         img: require('../../assets/image/setting/原料设置-蓝.png'),
-        url: '/index/error/404'
+        url: '/index/yarnSetting'
       }, {
         name: '辅料设置',
         img: require('../../assets/image/setting/辅料设置-蓝.png'),

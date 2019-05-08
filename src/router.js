@@ -263,6 +263,10 @@ let router = new Router({
       path: 'accountSetting',
       name: 'accountSetting',
       component: () => import('./views/setting/accountSetting.vue')
+    }, {
+      path: 'yarnSetting',
+      name: 'yarnSetting',
+      component: () => import('./views/setting/yarnSetting.vue')
     }]
   }
   ]
