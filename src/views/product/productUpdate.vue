@@ -36,7 +36,7 @@
         <span class="label must">产品成分:</span>
         <div class="cancleCtn" v-for="item in ingredientNum" :key="item">
           <div class="index">{{item}}</div>
-          <el-select class="specialSel" v-model="ingredient[item-1]" placeholder="请选择成分">
+          <el-select :disabled="has_next" class="specialSel" v-model="ingredient[item-1]" placeholder="请选择成分">
             <el-option
               v-for="item in ingredientArr"
               :key="item.id"
@@ -44,12 +44,12 @@
               :value="item.id">
             </el-option>
           </el-select>
-          <el-input style="width:160px;margin-left:15px;margin-bottom:24px" placeholder="请输入比例" v-model="ingredientScale[item-1]" class="input-with-select">
+          <el-input :disabled="has_next" style="width:160px;margin-left:15px;margin-bottom:24px" placeholder="请输入比例" v-model="ingredientScale[item-1]" class="input-with-select">
             <template slot="append">%</template>
           </el-input>
           <div class="deleteBtn" @click="deleteIngredient(item)"><i class="el-icon-delete"></i></div>
         </div>
-        <div class="addBtn" @click="ingredientNum++">
+        <div class="addBtn" @click="addingredientNum">
           <span>添加成分</span>
           <span>+</span>
         </div>
@@ -61,7 +61,7 @@
       <div class="inputCtn" style="margin-bottom:0;margin-top:4px">
         <span class="label must">产品尺寸:</span>
         <div class="lineCtn" v-for="(itemf,indexf) in sizeNum" :key="indexf">
-          <el-select clearable class="elInput" v-model="footage[indexf]" placeholder="请选择尺码" style="width:200px;margin-bottom: 24px;">
+          <el-select :disabled="has_next" clearable class="elInput" v-model="footage[indexf]" placeholder="请选择尺码" style="width:200px;margin-bottom: 24px;">
             <el-option
               v-for="item in child_footage"
               :key="item.id"
@@ -69,11 +69,11 @@
               :value="item.id">
             </el-option>
           </el-select>
-          <el-input v-for="(item,index) in child_size" class="elInputAp" placeholder="请输入数字" v-model="sizeArr[indexf][index]" :key="item.id">
+          <el-input :disabled="has_next" v-for="(item,index) in child_size" class="elInputAp" placeholder="请输入数字" v-model="sizeArr[indexf][index]" :key="item.id">
             <template slot="prepend">{{item.name}}</template>
             <template slot="append">厘米</template>
           </el-input>
-          <el-input class="elInputAp" style="width:200px" placeholder="请输入产品克重" v-model="weight[indexf]">
+          <el-input :disabled="has_next" class="elInputAp" style="width:200px" placeholder="请输入产品克重" v-model="weight[indexf]">
             <template slot="append">克</template>
           </el-input>
           <div class="deleteBtn2" @click="deleteSize(itemf)"><i class="el-icon-delete"></i></div>
@@ -86,7 +86,7 @@
       <div class="inputCtn" style="margin-top:0;margin-bottom:0">
         <span class="label must">产品配色:</span>
         <div class="cancleCtn" v-for="item in colorNum" :key="item">
-          <el-select clearable filterable class="elSelect" v-model="color[item-1]" placeholder="请选择配色">
+          <el-select :disabled="has_next" clearable filterable class="elSelect" v-model="color[item-1]" placeholder="请选择配色">
             <el-option
               v-for="item in colorArr"
               :key="item.id"
@@ -98,8 +98,8 @@
           </el-select>
           <div class="deleteBtn" @click="deleteColor(item)"><i class="el-icon-delete"></i></div>
         </div>
-        <div class="addBtn" @click="colorNum++">
-          <span>添加颜色</span>
+        <div class="addBtn" @click="addcolorNum">
+          <span>添加配色</span>
           <span>+</span>
         </div>
       </div>
@@ -144,6 +144,7 @@ import { getToken, productTppeList, flowerList, ingredientList, colorList, saveP
 export default {
   data () {
     return {
+      has_next: false,
       product_code: '',
       postData: { token: '' },
       loading: true,
@@ -234,7 +235,6 @@ export default {
       })
       // 尺码
       this.footage = Object.keys(product.size)
-      console.log(this.footage)
       this.footage.forEach((key) => {
         this.sizeArr.push(product.size[key].map((item) => {
           return item.size_value
@@ -243,13 +243,11 @@ export default {
       this.footage.forEach((key) => {
         this.weight.push(product.size[key][0].weight)
       })
-      console.log(this.weight)
       this.sizeNum = this.footage.length
       // 类型
       const categoryObj = this.treeData.find((item) => {
         return item.label === product.category_info.product_category
       })
-      console.log(this.treeData)
       const typeObj = product.type_name ? categoryObj.children.find((item) => {
         return item.label === product.type_name
       }) : ''
@@ -264,6 +262,11 @@ export default {
           url: item.image_url
         }
       })
+      // 如果产品有后续信息，则只能修改图片
+      if (product.has_craft !== 0 || product.has_plan !== 0 || product.in_order !== 0) {
+        this.has_next = true
+      }
+      console.log(this.has_next)
       this.loading = false
     })
   },
@@ -484,41 +487,85 @@ export default {
     },
     // 解决了vue数据类型检测的bug
     addSizeLine () {
-      this.sizeArr.push([])
-      this.sizeNum++
+      if (!this.has_next) {
+        this.sizeArr.push([])
+        this.sizeNum++
+      } else {
+        this.$message.error({
+          message: '不能添加尺寸'
+        })
+      }
+    },
+    // 添加成分
+    addingredientNum () {
+      if (!this.has_next) {
+        this.ingredientNum++
+      } else {
+        this.$message.error({
+          message: '不能添加成分'
+        })
+      }
     },
     // 删除成分
     deleteIngredient (index) {
-      if (this.ingredientNum > 1) {
-        this.ingredientScale.splice(index - 1, 1)
-        this.ingredient.splice(index - 1, 1)
-        this.ingredientNum--
+      if (!this.has_next) {
+        if (this.ingredientNum > 1) {
+          this.ingredientScale.splice(index - 1, 1)
+          this.ingredient.splice(index - 1, 1)
+          this.ingredientNum--
+        } else {
+          this.$message.error({
+            message: '至少含有一种成分'
+          })
+        }
       } else {
         this.$message.error({
-          message: '至少含有一种成分'
+          message: '不能删除成分'
+        })
+      }
+    },
+    // 添加颜色
+    addcolorNum () {
+      if (!this.has_next) {
+        this.colorNum++
+      } else {
+        this.$message.error({
+          message: '不能添加配色'
         })
       }
     },
     // 删除颜色
     deleteColor (index) {
-      if (this.colorNum > 1) {
-        this.color.splice(index - 1, 1)
-        this.colorNum--
+      if (!this.has_next) {
+        if (this.colorNum > 1) {
+          this.color.splice(index - 1, 1)
+          this.colorNum--
+        } else {
+          this.$message.error({
+            message: '至少含有一种配色'
+          })
+        }
       } else {
         this.$message.error({
-          message: '至少含有一种配色'
+          message: '不能删除配色'
         })
       }
     },
     // 删除尺寸
     deleteSize (index) {
-      if (this.sizeNum > 1) {
-        this.footage.splice(index - 1, 1)
-        this.sizeArr.splice(index - 1, 1)
-        this.sizeNum--
-      } else if (this.sizeNum === 1) {
+      if (!this.has_next) {
+        if (this.sizeNum > 1) {
+          this.footage.splice(index - 1, 1)
+          this.sizeArr.splice(index - 1, 1)
+          this.sizeNum--
+        } else if (this.sizeNum === 1) {
+          this.$message.error({
+            message: '至少含有一种尺寸'
+          })
+        }
+      } else {
         this.$message.error({
-          message: '至少含有一种尺寸'
+          message: '不能删除尺寸'
         })
       }
     }
