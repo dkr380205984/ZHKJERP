@@ -110,9 +110,9 @@
           <div class="tableColumn"
                style="flex-direction:row;flex:1.2">
             <span class="btns normal"
-                  @click="$router.push('/index/rawMaterialProcess/'+1)">查看</span>
+                  @click="$router.push('/index/rawMaterialProcessDetail/'+1)">查看</span>
             <span class="btns warning"
-                  @click="$router.push('/index/rawMaterialProcess/'+1)">修改</span>
+                  @click="$router.push('/index/null')">修改</span>
           </div>
         </div>
       </div>

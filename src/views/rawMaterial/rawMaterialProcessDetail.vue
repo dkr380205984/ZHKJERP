@@ -76,36 +76,60 @@
           <div class="cicle"></div>
         </div>
         <div class="lineCtn col">
-          <div class="inputCtn noPadding"
-               v-for="(item,key) in list"
-               :key="key">
-            <!-- <div class="title">
-              <span>{{item.material}}</span>
-              <span>合计：{{item.total_number}}kg</span>
-            </div> -->
+          <div class="inputCtn noPadding">
             <div class="content">
               <ul class="table">
                 <li>
-                  <span>订购公司</span>
-                  <span class="flex7">颜色-单价-数量</span>
-                  <span>总价</span>
-                  <span>下单日期</span>
-                  <span class="flex2">交货日期</span>
-                  <span>备注</span>
+                  <span>加工类型</span>
+                  <span class="flex104"
+                        style="flex-direction:row">
+                    <span>
+                      <span class="flex17">加工单位</span>
+                      <span class="flex27"
+                            style="flex-direction:row;">
+                        <span style="border-right:1px solid #DDD;borderBottom: none;flex:1;">原料名称</span>
+                        <span class="flex17">颜色-单价-数量</span>
+                      </span>
+                      <span>总价</span>
+                      <span>下单日期</span>
+                      <span>交货日期</span>
+                      <span>备注</span>
+                      <span>加工状态</span>
+                      <span>操作</span></span>
+                  </span>
                 </li>
-                <li v-for="(value,index) in item.info"
+                <li v-for="(value,index) in list"
                     :key="index">
-                  <span>{{value.company}}</span>
-                  <span class="flex7">
-                    <span v-for="(content,number) in value.info"
-                          :key="number">
-                      {{content.color}} {{content.price}}元/kg {{content.value}}kg
+                  <span>
+                    <span>{{value.process}}</span>
+                  </span>
+                  <span class="flex104">
+                    <span v-for="(item,key) in value.companys"
+                          :key="key">
+                      <span class="flex17">
+                        {{item.company}}
+                      </span>
+                      <span class="flex27">
+                        <span v-for="(iten,kay) in item.materials"
+                              :key="kay">
+                          <span>{{iten.material}}</span>
+                          <span class="flex17"
+                                style="borderLeft:1px solid #DDD">
+                            <span v-for="(content,number) in iten.colors"
+                                  :key="number">{{content.color + '--' + content.price + '--' + content.value}}</span>
+                          </span>
+                        </span>
+                      </span>
+                      <span>{{item.total_price}}</span>
+                      <span>{{item.create_time}}</span>
+                      <span>{{item.compiled_time}}</span>
+                      <span>
+                        <span>{{item.remark ? item.remark : '暂无备注'}}</span>
+                      </span>
+                      <span :class="{'warning': item.process_state === 0,'success': item.process_state === 1}">{{item.process_state === 0 ? '未完成' : '已完成'}}</span>
+                      <span class="blue">打印</span>
                     </span>
                   </span>
-                  <span>{{value.total_price}}</span>
-                  <span>{{value.create_time}}</span>
-                  <span class="flex2">{{value.out_time}}</span>
-                  <span>{{value.remark}}</span>
                 </li>
               </ul>
             </div>
@@ -129,68 +153,94 @@ export default {
       loading: false,
       list: [
         {
-          material: '52支上光晴纶',
-          total_number: '562.4',
-          info: [
-            { company: '杭州飞泰服饰有限公司',
-              info: [
+          process: '染色',
+          companys: [
+            {
+              company: '杭州飞泰服饰有限公司',
+              materials: [
                 {
-                  color: '深绿',
-                  price: '5',
-                  value: 400
+                  material: '52支上光晴纶',
+                  colors: [
+                    {
+                      color: '卡其',
+                      price: '5元/kg',
+                      value: '400kg'
+                    },
+                    {
+                      color: '深绿',
+                      price: '6元/kg',
+                      value: '300kg'
+                    }
+                  ]
                 },
                 {
-                  color: '深绿',
-                  price: '5',
-                  value: 400
-                },
-                {
-                  color: '深绿',
-                  price: '5',
-                  value: 400
+                  material: '36支上光晴纶',
+                  colors: [
+                    {
+                      color: '卡其',
+                      price: '5元/kg',
+                      value: '400kg'
+                    }
+                  ]
                 }
               ],
-              total_price: 6400,
+              total_price: '4000元',
               create_time: '2019-04-23',
-              out_time: '2019-04-23',
-              remark: '备注信息'
-            }, { company: '杭州飞泰服饰有限公司',
-              info: [
+              compiled_time: '2019-04-23',
+              remark: '222',
+              process_state: 0
+            },
+            {
+              company: '桐庐若泰染色有限公司',
+              materials: [
                 {
-                  color: '深绿',
-                  price: '5',
-                  value: 400
+                  material: '48支上光晴纶',
+                  colors: [
+                    {
+                      color: '卡其',
+                      price: '5元/kg',
+                      value: '400kg'
+                    },
+                    {
+                      color: '深绿',
+                      price: '6元/kg',
+                      value: '300kg'
+                    }
+                  ]
                 }
               ],
-              total_price: 6400,
+              total_price: '2400元',
               create_time: '2019-04-23',
-              out_time: '2019-04-23',
-              remark: '备注信息'
-            }, { company: '杭州飞泰服饰有限公司',
-              info: [
-                {
-                  color: '深绿',
-                  price: '5',
-                  value: 400
-                },
-                {
-                  color: '深绿',
-                  price: '5',
-                  value: 400
-                },
-                {
-                  color: '深绿',
-                  price: '5',
-                  value: 400
-                }
-              ],
-              total_price: 6400,
-              create_time: '2019-04-23',
-              out_time: '2019-04-23',
-              remark: '备注信息'
+              compiled_time: '2019-04-23',
+              remark: '',
+              process_state: 0
             }
           ]
-
+        },
+        {
+          process: '裁剪',
+          companys: [
+            {
+              company: '桐庐若泰染色有限公司',
+              materials: [
+                {
+                  material: '52支上光晴纶',
+                  colors: [
+                    {
+                      color: '卡其',
+                      price: '5元/kg',
+                      value: '400kg'
+                    }
+                  ]
+                }
+              ],
+              total_price: '2400元',
+              create_time: '2019-04-23',
+              compiled_time: '2019-04-23',
+              remark: '',
+              process_state: 1
+            }
+          ]
         }
       ],
       productList: [

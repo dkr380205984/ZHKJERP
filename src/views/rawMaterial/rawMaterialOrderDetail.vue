@@ -99,13 +99,13 @@
                   <span class="flex7">
                     <span v-for="(content,number) in value.info"
                           :key="number">
-                      {{content.color}} {{content.price}}元/kg {{content.value}}kg
+                      {{content.color}}--{{content.price}}元/kg--{{content.value}}kg
                     </span>
                   </span>
                   <span>{{value.total_price}}</span>
                   <span>{{value.create_time}}</span>
                   <span class="flex2">{{value.out_time}}</span>
-                  <span>{{value.remark}}</span>
+                  <span>{{value.remark ? value.remark : '暂无备注'}}</span>
                 </li>
               </ul>
             </div>

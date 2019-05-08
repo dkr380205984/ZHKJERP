@@ -68,8 +68,29 @@
       }
     }
   }
-  .tableRow {
+  .tableColumn {
     height: auto;
     align-items: center;
+    border-bottom: 1px solid #DDD;
+    &.flex19 {
+      flex: 1.9
+    }
+    &:nth-child(n+2):hover {
+      background-color: #D8EAFF !important;
+    }
+    &>div>span {
+      padding: 0 5px;
+      line-height: 30px;
+    }
+    // &:last-child {
+    //   border-bottom: none;
+    // }
+  }
+  .mergeBody {
+    &:last-child {
+      .tableColumn {
+        border-bottom: none;
+      }
+    }
   }
 }

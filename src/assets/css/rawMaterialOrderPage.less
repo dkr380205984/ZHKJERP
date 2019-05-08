@@ -153,8 +153,8 @@ ul {
         .table {
           margin-left: 40px;
           width: 900px;
-          border-top: 1px solid #B5B5B5;
-          border-left: 1px solid #B5B5B5;
+          border-top: 1px solid #DDD;
+          border-left: 1px solid #DDD;
           box-sizing: border-box;
           &>div {
             width: 100%;
@@ -166,11 +166,12 @@ ul {
               height: 40px;
               line-height: 40px;
               width: 50%;
-              border-right: 1px solid #B5B5B5;
-              border-bottom:1px solid #b5b5b5;
+              border-right: 1px solid #DDD;
+              border-bottom:1px solid #DDD;
               text-align: center;
             }
             &.tableInfo {
+              font-size: @fontMid;
               &>span {
                 display: flex;
                 box-sizing: content-box;
@@ -190,13 +191,16 @@ ul {
         .tablePlan {
           margin-left: 40px;
           width: 900px;
-          border: 1px solid #b5b5b5;
+          border: 1px solid #DDD;
           box-sizing: border-box;
+          &>.tableInfo {
+            font-size: @fontMid;
+          }
           &>div {
             width: 100%;
             height: 40px;
             display: flex;
-            border-bottom: 1px solid #b5b5b5;
+            border-bottom: 1px solid #DDD;
             &:last-child {
               border: none;
             }
