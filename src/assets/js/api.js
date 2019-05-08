@@ -168,7 +168,10 @@ const productionList = (params) => http.get(`${baseUrl}/production/list`, params
 const productionDetail = (params) => http.get(`${baseUrl}/production/one`, params)
 // 生产统计单详情
 const productionStat = (params) => http.get(`${baseUrl}/product/plan/order`, params)
+// 潘通色号列表
+const pantongList = (params) => http.get(`${baseUrl}/pan/color/list`, params)
 export {
+  pantongList,
   deleteStation,
   deleteGroup,
   loginCheck,
