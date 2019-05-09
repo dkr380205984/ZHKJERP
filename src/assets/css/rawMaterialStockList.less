@@ -1,5 +1,5 @@
 @import './common.less';
-#rawMaterialOrderList{
+#rawMaterialStockList{
   height: 100%;
   font-family: 'systemfont';
   font-weight: 300;
@@ -68,56 +68,31 @@
       }
     }
   }
-  .tableColumn {
-    height: auto;
-    align-items: center;
-    border-bottom: 1px solid #DDD;
-    &.flex21 {
-      flex: 2.1
-    }
-    &.flex08 {
-      flex:0.8;
-    }
-    &>.onces {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      margin: 0;
-      border-bottom: 1px solid #DDD;
-      &:last-child {
-        border-bottom: none;
-      }
-      &>span {
-        flex: 0.6;
-        line-height: 40px;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        &>span {
-          padding: 0 5px;
-        }
-        &.flex2 {
-          flex: 2;
-        }
-      }
-    }
-    // &>div>span {
-    //   padding: 0 5px;
-    //   line-height: 30px;
-    // }
-    // &:last-child {
-    //   border-bottom: none;
-    // }
-  }
   .mergeBody {
-    &:hover {
-      background-color: #D8EAFF !important;
-    }
-    &:last-child {
-      .tableColumn {
-        border-bottom: none;
+    .tableColumn.col {
+      &>span {
+        width: 100%;
+        display: flex;
+        height: auto;
+        border-bottom: 1px solid #DDD;
+        justify-content: center;
+        &:last-child {
+          border-bottom: none;
+        }
+        &>span {
+          height: auto;
+          border-right: 1px solid #DDD;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          &:last-child {
+            border-right: none;
+            flex-direction: column;
+          }
+          &>span {
+            line-height: 40px;
+          }
+        }
       }
     }
   }

@@ -259,6 +259,22 @@ let router = new Router({
       name: 'rawMaterialProcessDetail',
       component: () => import('./views/rawMaterial/rawMaterialProcessDetail.vue')
     }, {
+      path: 'rawMaterialBeforeStockList',
+      name: 'rawMaterialBeforeStockList',
+      component: () => import('./views/rawMaterial/rawMaterialBeforeStockList.vue')
+    }, {
+      path: 'rawMaterialStock/:id',
+      name: 'rawMaterialStock',
+      component: () => import('./views/rawMaterial/rawMaterialStock.vue')
+    }, {
+      path: 'rawMaterialStockDetail/:id',
+      name: 'rawMaterialStockDetail',
+      component: () => import('./views/rawMaterial/rawMaterialStockDetail.vue')
+    }, {
+      path: 'rawMaterialStockList',
+      name: 'rawMaterialStockList',
+      component: () => import('./views/rawMaterial/rawMaterialStockList.vue')
+    }, {
       path: 'error/:id',
       name: 'error',
       component: () => import('./views/error.vue')

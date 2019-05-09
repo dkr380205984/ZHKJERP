@@ -203,8 +203,8 @@
           </div>
           <div class="addBtn"
                @click="addBuyInfo(key)">
-            <span>添加公司</span>
             <span>+</span>
+            <span>添加公司</span>
           </div>
         </div>
       </div>
@@ -446,20 +446,20 @@ export default {
               needNum: 0,
               selectNum: 0,
               buyInfo: [
-                {
-                  company: '',
-                  money: '',
-                  orderTime: '',
-                  completeTime: '',
-                  remark: '',
-                  buyMaterialInfo: [
-                    {
-                      color: '',
-                      price: '',
-                      value: ''
-                    }
-                  ]
-                }
+                // {
+                //   company: '',
+                //   money: '',
+                //   orderTime: '',
+                //   completeTime: '',
+                //   remark: '',
+                //   buyMaterialInfo: [
+                //     {
+                //       color: '',
+                //       price: '',
+                //       value: ''
+                //     }
+                //   ]
+                // }
               ]
             }
             obj.material = item.material

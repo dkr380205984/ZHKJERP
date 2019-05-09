@@ -62,31 +62,38 @@
           </div>
         </div>
       </div>
-      <!-- <div class="tableCtn">
-        <div class="tableRow">
+      <div class="mergeTable">
+        <div class="mergeHeader">
           <div class="tableColumn">订单号</div>
           <div class="tableColumn">外贸公司</div>
-          <div class="tableColumn flex9">产品信息</div>
-          <div class="tableColumn">负责小组</div>
+          <div class="tableColumn flex21"
+               style="flex-direction:row;">
+            <span style="flex:2;border-right:1px solid #DDD;">产品信息</span>
+            <span style="flex:0.6">数量</span>
+          </div>
+          <div class="tableColumn flex08">负责小组</div>
           <div class="tableColumn">下单日期</div>
           <div class="tableColumn">交货日期</div>
           <div class="tableColumn">操作</div>
         </div>
-        <div class="tableRow"
-             v-for="(item ,index) in list"
-             :key="index">
+        <div class="mergeBody"
+             v-for="(item,key) in list"
+             :key="key">
           <div class="tableColumn">{{item.orderCode}}</div>
           <div class="tableColumn">{{item.companyName}}</div>
-          <div class="tableColumn flex9">
-            <div class="once"
+          <div class="tableColumn flex21">
+            <div class="once onces"
                  v-for="(itemProduct,indexProduct) in item.productInfo"
                  :key="indexProduct">
-              <span>{{itemProduct.productCode}}</span>
-              <span>{{itemProduct.productType}}</span>
+              <span class="flex2"
+                    style="border-right:1px solid #DDD;">
+                <span>{{itemProduct.productCode}}</span>
+                <span>{{itemProduct.productType}}</span>
+              </span>
               <span>{{itemProduct.number}}{{itemProduct.unit}}</span>
             </div>
           </div>
-          <div class="tableColumn">{{item.responsible}}</div>
+          <div class="tableColumn flex08">{{item.responsible}}</div>
           <div class="tableColumn">{{item.createTime}}</div>
           <div class="tableColumn">
             <div class="once"
@@ -98,69 +105,6 @@
           </div>
           <div class="tableColumn"
                style="flex-direction:row;">
-            <span class="btns normal"
-                  @click="$router.push('./rawMaterialOrderPage/' + 1)">订购原料</span>
-          </div>
-        </div>
-      </div> -->
-      <div class="mergeTable">
-        <div class="mergeHeader">
-          <div class="tableColumn">订单号</div>
-          <div class="tableColumn">外贸公司</div>
-          <div class="tableColumn flex19">产品信息</div>
-          <!-- <div class="tableColumn"
-               style="flex:3.8;flex-direction:row;">
-            <span style="border-right:1px solid #DDD;flex:1; ">订购单位</span>
-            <span style="flex:1">原料信息</span>
-          </div> -->
-          <div class="tableColumn">负责小组</div>
-          <div class="tableColumn">下单日期</div>
-          <div class="tableColumn">交货日期</div>
-          <div class="tableColumn"
-               style="flex:1.2">操作</div>
-        </div>
-        <div class="mergeBody"
-             v-for="(item,key) in list"
-             :key="key">
-          <div class="tableColumn">{{item.orderCode}}</div>
-          <div class="tableColumn">{{item.companyName}}</div>
-          <div class="tableColumn flex19">
-            <div class="once"
-                 v-for="(itemProduct,indexProduct) in item.productInfo"
-                 :key="indexProduct">
-              <span>{{itemProduct.productCode}}</span>
-              <span>{{itemProduct.productType}}</span>
-              <span>{{itemProduct.number}}{{itemProduct.unit}}</span>
-            </div>
-          </div>
-          <!-- <div class="tableColumn col"
-               style="flex:3.8">
-            <span v-for="(value,index) in item.order_team"
-                  :key="index">
-              <span>
-                <span>{{value.company}}</span>
-              </span>
-              <span>
-                <span v-for="(content,number) in value.info"
-                      :key="number"
-                      :style="{'padding':value.info.length === 1 ? '10px 0' : false}">{{content.material}} {{content.color}} {{content.weight+content.unit}}
-                </span>
-              </span>
-            </span>
-
-          </div> -->
-          <div class="tableColumn">{{item.responsible}}</div>
-          <div class="tableColumn">{{item.createTime}}</div>
-          <div class="tableColumn">
-            <div class="once"
-                 v-for="(itemTime,indexTime) in item.deliveryTime"
-                 :key="indexTime">
-              <span>第 {{itemTime.value}} 批：</span>
-              <span>{{itemTime.timer}}</span>
-            </div>
-          </div>
-          <div class="tableColumn"
-               style="flex-direction:row;flex:1.2">
             <span class="btns normal"
                   @click="$router.push('./rawMaterialOrderPage/' + 1)">订购原料</span>
           </div>
