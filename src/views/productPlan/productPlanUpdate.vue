@@ -83,7 +83,7 @@
             <span class="label must">原料列表:</span>
             <div class="specialCtn" v-for="(item,index) in mainIngredient.ingredient.length" :key="index">
               <div class="blockCtn">
-                <el-select class="elSelect" v-model="mainIngredient.ingredient[index]" style="margin-left:0;width:200px" placeholder="请选择主要原料">
+                <el-select filterable  class="elSelect" v-model="mainIngredient.ingredient[index]" style="margin-left:0;width:200px" placeholder="请选择主要原料">
                   <el-option
                     v-for="item in ingredientArr"
                     :key="item.name"
