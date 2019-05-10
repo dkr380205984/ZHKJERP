@@ -47,6 +47,15 @@
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
+          <span class="label">产品图片:</span>
+          <span class="content">
+            <img v-if="product_info.img.length === 0" class="img" src="@/assets/image/index/noPic.jpg"/>
+            <img v-for="(item,index) in product_info.img" :key="index" class="img" :src="item.image_url" :onerror="defaultImg" />
+          </span>
+        </div>
+      </div>
+      <div class="lineCtn">
+        <div class="inputCtn">
           <span class="label">损耗比例:</span>
           <span class="content">
             <span v-for="(loss,size) in loss"
@@ -111,13 +120,15 @@ import { productPlanOne } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
       liucheng: [],
       plan_code: '',
       product_info: {
         category_info: {
           product_category: ''
         },
-        size: {}
+        size: {},
+        img: []
       },
       color: [],
       material_data: {

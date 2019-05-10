@@ -64,6 +64,7 @@
               type="daterange"
               align="right"
               unlink-panels
+              value-format="yyyy-MM-dd"
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
@@ -250,6 +251,7 @@ export default {
         this.start_time = ''
         this.end_time = ''
       }
+      this.pages = 1
       this.getOrderList()
     },
     // 删除条件
@@ -324,15 +326,19 @@ export default {
       this.getOrderList()
     },
     styleVal (newVal) {
+      this.pages = 1
       this.getOrderList()
     },
     company (newVal) {
+      this.pages = 1
       this.getOrderList()
     },
     group (newVal) {
+      this.pages = 1
       this.getOrderList()
     },
     searchVal (newVal) {
+      this.pages = 1
       this.timer = ''
       this.timer = setTimeout(() => {
         this.getOrderList()

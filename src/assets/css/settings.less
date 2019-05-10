@@ -1,0 +1,59 @@
+@import './common.less';
+#settings{
+  height: 100%;
+  font-family: 'systemfont';
+  font-weight: 300;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  .head{
+    min-height: 60px;
+    border-bottom: 1px solid #ECF0F1;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    h2{
+      line-height: 60px;
+      margin: 0;
+      font-size: 24px;
+      color:@fontNormal;
+      font-weight: 400;
+    }
+  }
+  .body{
+    padding: 20px 40px;
+    flex: 1;
+    .blockCtn{
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      .blocks{
+        width:315px;
+        height: 184px; 
+        border:1px solid #DDDDDD;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        margin: 20px;
+        cursor: pointer;
+        &:hover{
+          box-shadow:0px 3px 6px rgba(0,0,0,0.16);
+          .image{
+            transform: rotateY(180deg)
+          }
+        }
+        .image{
+          transition: 0.6s cubic-bezier(0.175, 0.885, 0.36, 1.275);
+          margin: 28px auto 12px auto;
+        }
+        .description{
+          text-align: center;
+          font-size:22px;
+          font-weight:400;
+          color:@normalBlue;
+        }
+      }
+    }
+  }
+}

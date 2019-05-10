@@ -25,8 +25,8 @@
         <!-- 面包屑容器需要顶到左侧导航栏,由于左侧五像素预留给marign了,因此需要用伪类补齐五像素的留白,具体查看CSS -->
         <div class="breadCtn">
           <span class="father">主页</span>
-          <span class="break">/</span>
-          <span class="now">添加产品</span>
+          <!-- <span class="break">/</span>
+          <span class="now">添加产品</span> -->
         </div>
         <div class="mainCtn">
           <div class="mainCtnForScroll">

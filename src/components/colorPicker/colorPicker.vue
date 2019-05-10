@@ -9,7 +9,7 @@
     <div class="selectList" v-show="flag||flag2">
       <div class="selectListCtn">
         <div class="searchOpt">
-          <input ref="search" type="text" placeholder="搜索颜色名称" v-model="search" @mousedown="flag3=true" @blur="flag2=false"/>
+          <input ref="search" type="text" placeholder="可搜索潘通色号" v-model="search" @mousedown="flag3=true" @blur="flag2=false"/>
         </div>
         <div class="selectListChild" v-for="(item,index) in colorArray" :key="index" @mousedown="getColor(item.color_code,item.name)" node="colorPick">
           <div class="bgColorBlock" :style="{'background':item.color_code}"></div>
@@ -22,6 +22,7 @@
 
 <script>
 import './colorPicker.less'
+import { pantongList } from '@/assets/js/api.js'
 export default {
   props: ['value', 'colorArr', 'content'],
   data () {
@@ -29,7 +30,7 @@ export default {
       flag: false,
       flag2: false,
       flag3: false,
-      color: this.value,
+      color: this.value.color,
       oldColorArr: this.colorArr, // 原始数据
       colorArray: this.colorArr,
       search: ''
@@ -37,9 +38,19 @@ export default {
   },
   watch: {
     search (newVal) {
-      this.colorArray = this.oldColorArr.filter((item) => {
-        return item.name.indexOf(newVal) !== -1
-      })
+      if (!newVal) {
+        this.colorArray = this.oldColorArr.filter((item) => {
+          return item.name.indexOf(newVal) !== -1
+        })
+      } else {
+        pantongList({
+          keyword: newVal
+        }).then((res) => {
+          this.colorArray = this.oldColorArr.filter((item) => {
+            return item.name.indexOf(newVal) !== -1
+          }).concat(res.data.data)
+        })
+      }
     }
   },
   methods: {
@@ -55,7 +66,10 @@ export default {
     },
     getColor (color, name) {
       this.color = color
-      this.$emit('input', color)
+      this.$emit('input', {
+        color: color,
+        name: name
+      })
       this.$emit('colorChange', {
         color: color,
         name: name

@@ -55,6 +55,7 @@
               type="daterange"
               align="right"
               unlink-panels
+              value-format="yyyy-MM-dd"
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
@@ -228,6 +229,7 @@ export default {
         this.start_time = ''
         this.end_time = ''
       }
+      this.pages = 1
       this.getProductList()
     }
   },
@@ -251,12 +253,15 @@ export default {
       this.getProductList()
     },
     styleVal (newVal) {
+      this.pages = 1
       this.getProductList()
     },
     flowerVal (newVal) {
+      this.pages = 1
       this.getProductList()
     },
     searchVal (newVal) {
+      this.pages = 1
       this.getProductList()
     }
   },

@@ -133,7 +133,10 @@ export default {
       }
     },
     deleteContacts (index) {
-      this.contacts.splice(index, 1)
+      // this.contacts.splice(index, 1)
+      this.$message.error({
+        message: '暂时不支持删除，如果添加有误，请刷新页面后重试'
+      })
     },
     saveAll () {
       if (!this.name) {
@@ -148,6 +151,7 @@ export default {
         })
         return
       }
+      console.log(this.contacts)
       if (this.contacts.length < 1) {
         this.$message.error({
           message: '合作公司至少有一个联系人'

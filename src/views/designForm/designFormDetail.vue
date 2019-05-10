@@ -768,7 +768,7 @@ export default {
       this.warp_canvas = ArrMain
       this.weft_canvas = ArrMain2
       this.chang = res.data.data.weft_data.neichang + res.data.data.weft_data.rangwei
-      this.kuan = res.data.data.weft_data.peifu
+      this.kuan = res.data.data.warp_data.reed_width
       // 画图
       this.$nextTick(() => {
         let lineWidth = 500 / this.warp_data.weft // 经向粗细

@@ -85,7 +85,7 @@
                   <div class="desc">{{item.name}}</div>
                 </el-option>
               </el-select>
-              <color-picker v-for="(item2,index2) in colorNum[index]" :key="item2"
+              <color-picker v-for="(item2,index2) in colorNum[index]" :key="index2"
                 style="margin-left:15px;margin-bottom:24px"
                 v-model="color[index][index2]"
                 :content="filterMethods(index2)"
@@ -106,13 +106,14 @@
           <div class="inputCtn oneLine">
             <span class="label must">主要原料:</span>
             <div class="list">
-              <el-cascader
-                v-model="mainIngredient"
-                style="margin-left:15px;width:200px"
-                :options="ingredientArr"
-                placeholder="请选择主要原料"
-                expand-trigger="hover">
-              </el-cascader>
+              <el-select class="elSelect" v-model="mainIngredient" style="margin-left:15px;width:200px" placeholder="请选择主要原料">
+                <el-option
+                  v-for="item in ingredientArr"
+                  :key="item.name"
+                  :label="item.name"
+                  :value="item.name">
+                </el-option>
+              </el-select>
             </div>
           </div>
         </div>
@@ -129,14 +130,14 @@
           <div class="inputCtn oneLine">
             <span class="label must">次料列表:</span>
             <div class="list" v-for="(item,index) in otherIngredientNum" :key="index">
-              <el-cascader
-                @change="updateotherIngredient($event,index)"
-                v-model="otherIngredient[index]"
-                style="margin-left:15px;width:200px"
-                :options="ingredientArr"
-                placeholder="请选择次要原料"
-                expand-trigger="hover">
-              </el-cascader>
+              <el-select class="elSelect" v-model="otherIngredient[index]" style="margin-left:15px;width:200px" placeholder="请选择次要原料">
+                <el-option
+                  v-for="item in ingredientArr"
+                  :key="item.name"
+                  :label="item.name"
+                  :value="item.name">
+                </el-option>
+              </el-select>
               <el-select v-for="(item2,index2) in jiaNum[index]" :key="index2" class="elSelect" style="width:80px" v-model="jia[index][index2]" placeholder="夹">
                 <el-option
                   v-for="(item,index2) in colorNum[0]"
@@ -233,7 +234,7 @@
             </el-input>
           </div>
           <div class="inputCtn">
-            <span class="label">筘幅:</span>
+            <span class="label must">筘幅:</span>
             <el-input class="elInput" placeholder="请输入数字" v-model="warp_data.reed_width">
               <template slot="append">厘米</template>
             </el-input>
@@ -326,7 +327,7 @@
         <div class="lineCtn">
           <div class="inputCtn">
             <span class="label must">配色方案:</span>
-            <div class="addBtn" @click="addColour2">
+            <div class="addBtn" @click="addColour">
               <span>新增配色方案</span>
               <span>+</span>
             </div>
@@ -335,8 +336,8 @@
         <div class="lineCtn" style="margin-bottom:0">
           <div class="inputCtn oneLine">
             <span class="label">方案列表:</span>
-            <div class="list" style="margin-bottom:0" v-for="(item,index) in colourNum2" :key="index">
-              <el-select class="elSelect" v-model="colour2[index]" placeholder="请选择配色方案">
+            <div class="list" style="margin-bottom:0" v-for="(item,index) in colourNum" :key="index">
+              <el-select class="elSelect" v-model="colour[index]" placeholder="请选择配色方案">
                 <el-option
                   v-for="item in colourArr"
                   :key="item.name"
@@ -357,7 +358,7 @@
               <div class="addBtn" @click="deleteColor2(index)" style="width:40px;text-align:center;padding:0">
                 <i class="el-icon-minus"></i>
               </div>
-              <div class="addBtn" @click="deleteColour2(index)" style="width:40px;text-align:center;padding:0;border-color:transparent">
+              <div class="addBtn" @click="deleteColour(index)" style="width:40px;text-align:center;padding:0;border-color:transparent">
                 <i class="el-icon-delete"></i>
               </div>
             </div>
@@ -367,13 +368,14 @@
           <div class="inputCtn oneLine">
             <span class="label must">主要原料:</span>
             <div class="list">
-              <el-cascader
-                v-model="mainIngredient2"
-                style="margin-left:15px;width:200px"
-                :options="ingredientArr"
-                placeholder="请选择主要原料"
-                expand-trigger="hover">
-              </el-cascader>
+              <el-select class="elSelect" v-model="mainIngredient2" style="margin-left:15px;width:200px" placeholder="请选择主要原料">
+                <el-option
+                  v-for="item in ingredientArr"
+                  :key="item.name"
+                  :label="item.name"
+                  :value="item.name">
+                </el-option>
+              </el-select>
             </div>
           </div>
         </div>
@@ -390,14 +392,14 @@
           <div class="inputCtn oneLine">
             <span class="label must">次料列表:</span>
             <div class="list" v-for="(item,index) in otherIngredientNum2" :key="index">
-              <el-cascader
-                @change="updateotherIngredient2($event,index)"
-                v-model="otherIngredient2[index]"
-                style="margin-left:15px;width:200px"
-                :options="ingredientArr"
-                placeholder="请选择次要原料"
-                expand-trigger="hover">
-              </el-cascader>
+              <el-select class="elSelect" v-model="otherIngredient2[index]" style="margin-left:15px;width:200px" placeholder="请选择次要原料">
+                <el-option
+                  v-for="item in ingredientArr"
+                  :key="item.name"
+                  :label="item.name"
+                  :value="item.name">
+                </el-option>
+              </el-select>
               <el-select v-for="(item2,index2) in jiaNum2[index]" :key="index2" class="elSelect" style="width:80px" v-model="jia2[index][index2]" placeholder="夹">
                 <el-option
                   v-for="(item,index2) in colorNum2[0]"
@@ -471,14 +473,14 @@
       </div>
       <div class="btnCtn">
         <div class="cancleBtn" @click="$router.go(-1)">返回</div>
-        <div class="okBtn" @click="saveAll">保存</div>
+        <div class="okBtn" @click="saveAll">修改</div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { craftOne, YarnList, editList, saveCraft } from '@/assets/js/api.js'
+import { craftOne, YarnList, editList, saveCraft, YarnColorList } from '@/assets/js/api.js'
 import { HotTable } from '@handsontable/vue'
 import enCH from '@/assets/js/languages.js'
 import Handsontable from 'handsontable'
@@ -571,8 +573,8 @@ export default {
       ingredient: [],
       mainIngredient: [],
       mainIngredient2: [],
-      otherIngredient: {}, // 这里只能存对象,用数组会报错
-      otherIngredient2: {},
+      otherIngredient: [],
+      otherIngredient2: [],
       otherIngredientNum: 0,
       otherIngredientNum2: 0,
       ingredientArr: [],
@@ -666,25 +668,14 @@ export default {
       company_id: this.companyId
     }), editList({
       company_id: this.companyId
+    }), YarnColorList({
+      company_id: this.companyId
     })]).then((res) => {
+      console.log(res)
       this.product = res[0].data.data.product_info
       this.colourArr = res[0].data.data.product_info.color
-      this.colorArr = res[1].data.data.color
-      this.countArr = res[1].data.data.count
-      this.typeArr = res[1].data.data.type
-      this.ingredientArr = res[1].data.data.count.map((item) => {
-        const unit = ['支', '厘米']
-        return {
-          value: item.name,
-          label: item.name + unit[item.unit],
-          children: res[1].data.data.type.map((item2) => {
-            return {
-              value: item2.name,
-              label: item2.name
-            }
-          })
-        }
-      })
+      this.colorArr = res[3].data.data
+      this.ingredientArr = res[1].data.data
       this.sideArr = res[2].data.data.side
       this.modeleArr = res[2].data.data.type
       this.methodArr = res[2].data.data.method
@@ -695,53 +686,25 @@ export default {
       console.log(data.material_data)
       data.material_data.forEach((item) => {
         if (item.type === 0 && item.type_material === 0) {
-          let arr = []
-          if (item.material_name.indexOf('支')) {
-            arr = item.material_name.split('支')
-          }
-          if (item.material_name.indexOf('厘米') !== -1) {
-            arr = item.material_name.split('厘米')
-          }
-          this.mainIngredient = arr
+          this.mainIngredient = item.material_name
         }
         if (item.type === 1 && item.type_material === 0) {
-          let arr = []
-          if (item.material_name.indexOf('支')) {
-            arr = item.material_name.split('支')
-          }
-          if (item.material_name.indexOf('厘米') !== -1) {
-            arr = item.material_name.split('厘米')
-          }
-          this.mainIngredient2 = arr
+          this.mainIngredient2 = item.material_name
         }
         if (item.type === 0 && item.type_material === 1) {
-          let arr = []
-          if (item.material_name.indexOf('支')) {
-            arr = item.material_name.split('支')
-          }
-          if (item.material_name.indexOf('厘米') !== -1) {
-            arr = item.material_name.split('厘米')
-          }
-          this.$set(this.otherIngredient, this.otherIngredientNum, arr)
+          this.otherIngredient.push(item.material_name)
           this.jiaNum.push(item.apply.length)
           this.jia.push(item.apply)
           this.otherIngredientNum++
         }
         if (item.type === 1 && item.type_material === 1) {
-          let arr = []
-          if (item.material_name.indexOf('支')) {
-            arr = item.material_name.split('支')
-          }
-          if (item.material_name.indexOf('厘米') !== -1) {
-            arr = item.material_name.split('厘米')
-          }
-          this.$set(this.otherIngredient2, this.otherIngredientNum2, arr)
+          this.otherIngredient2.push(item.material_name)
           this.jiaNum2.push(item.apply.length)
           this.jia2.push(item.apply)
           this.otherIngredientNum2++
         }
       })
-      console.log(this.otherIngredient)
+      console.log(data.color_data)
       // 处理颜色数据
       let warpColorData = []
       let weftColorData = []
@@ -756,9 +719,9 @@ export default {
       this.colourNum = warpColorData.length
       this.colour2 = weftColorData.map((item) => item.product_color)
       this.colourNum2 = weftColorData.length
-      this.color = warpColorData.map((item) => item.color_scheme.map((itemColor) => itemColor.value))
+      this.color = warpColorData.map((item) => item.color_scheme.map((itemColor) => { return { 'name': itemColor.name, 'color': itemColor.value } }))
       this.colorNum = warpColorData.map((item) => item.color_scheme.length)
-      this.color2 = weftColorData.map((item) => item.color_scheme.map((itemColor) => itemColor.value))
+      this.color2 = weftColorData.map((item) => item.color_scheme.map((itemColor) => { return { 'name': itemColor.name, 'color': itemColor.value } }))
       this.colorNum2 = weftColorData.map((item) => item.color_scheme.length)
       // 处理纱线系数
       this.coefficient = data.yarn_coefficient.map((item) => item.value)
@@ -1052,36 +1015,25 @@ export default {
     },
     // 添加新的配色方案
     addColour () {
+      console.log(this.color)
       this.colour.push('')
       this.colorNum.push(this.colorNum[0])
       this.color.push([])
+      for (let i = 0; i < this.colorNum[0]; i++) { this.color[this.color.length - 1].push({ name: '', color: '' }) }
       this.colourNum++
-    },
-    addColour2 () {
-      this.colour2.push('')
       this.colorNum2.push(this.colorNum2[0])
       this.color2.push([])
-      this.colourNum2++
+      for (let i = 0; i < this.colorNum2[0]; i++) { this.color2[this.color2.length - 1].push({ name: '', color: '' }) }
     },
     // 删除配色方案
-    deleteColour () {
+    deleteColour (index) {
       if (this.colour.length > 1) {
-        this.colour.pop()
-        this.colorNum.pop()
-        this.color.pop()
+        this.colour.splice(index, 1)
         this.colourNum--
-      } else {
-        this.$message.error({
-          message: '至少有一种配色方案'
-        })
-      }
-    },
-    deleteColour2 () {
-      if (this.colour2.length > 1) {
-        this.colour2.pop()
-        this.colorNum2.pop()
-        this.color2.pop()
-        this.colourNum2--
+        this.color.splice(index, 1)
+        this.colorNum.splice(index, 1)
+        this.color2.splice(index, 1)
+        this.colorNum2.splice(index, 1)
       } else {
         this.$message.error({
           message: '至少有一种配色方案'
@@ -1092,11 +1044,19 @@ export default {
     addColor () {
       this.colorNum.forEach((item, index) => {
         this.$set(this.colorNum, index, (this.colorNum[index] + 1))
+        this.color[index].push({
+          name: '',
+          color: ''
+        })
       })
     },
     addColor2 () {
       this.colorNum2.forEach((item, index) => {
         this.$set(this.colorNum2, index, (this.colorNum2[index] + 1))
+        this.color2[index].push({
+          name: '',
+          color: ''
+        })
       })
     },
     // 删除颜色
@@ -1116,13 +1076,13 @@ export default {
     },
     // 添加次要原料
     addOtherIngredient () {
-      this.$set(this.otherIngredient, this.otherIngredientNum, [])
+      this.$set(this.otherIngredient, this.otherIngredientNum, '')
       this.jiaNum.push(1)
       this.jia.push([])
       this.otherIngredientNum++
     },
     addOtherIngredient2 () {
-      this.$set(this.otherIngredient2, this.otherIngredientNum2, [])
+      this.$set(this.otherIngredient2, this.otherIngredientNum2, '')
       this.jiaNum2.push(1)
       this.jia2.push([])
       this.otherIngredientNum2++
@@ -1131,29 +1091,13 @@ export default {
     deleteOtherIngredient (index) {
       this.jiaNum.splice(index, 1)
       this.jia.splice(index, 1)
-      let newVal = {}
-      let num = 0
-      for (let i in this.otherIngredient) {
-        if (parseInt(i) !== parseInt(index)) {
-          newVal[num] = this.otherIngredient[i]
-          num++
-        }
-      }
-      this.otherIngredient = newVal
+      this.otherIngredient.splice(index, 1)
       this.otherIngredientNum--
     },
     deleteOtherIngredient2 (index) {
       this.jiaNum2.splice(index, 1)
       this.jia2.splice(index, 1)
-      let newVal = {}
-      let num = 0
-      for (let i in this.otherIngredient2) {
-        if (parseInt(i) !== parseInt(index)) {
-          newVal[num] = this.otherIngredient2[i]
-          num++
-        }
-      }
-      this.otherIngredient2 = newVal
+      this.otherIngredient2.splice(index, 1)
       this.otherIngredientNum2--
     },
     // 添加次要原料的 夹
@@ -1208,7 +1152,6 @@ export default {
         color: true,
         colour: true,
         color2: true,
-        colour2: true,
         mainIngredient: true,
         mainIngredient2: true,
         otherIngredient: true,
@@ -1226,47 +1169,41 @@ export default {
           flag.colour = false
         }
       })
-      this.colour2.forEach((item) => {
+      this.colour.forEach((item) => {
         if (item === '') {
-          flag.colour2 = false
+          flag.colour = false
         }
       })
       // 检查纱线颜色
-      this.color.forEach((item) => {
-        if (item.length < this.colorNum[0]) {
-          flag.color = false
-        }
-        for (let i = 0; i < item.length; i++) {
-          if (!item[i]) {
+      this.color.forEach((item, index) => {
+        for (let i = 0; i < this.colorNum[index]; i++) {
+          if (!item[i].name) {
             flag.color = false
           }
         }
       })
-      this.color2.forEach((item) => {
-        if (item.length < this.colorNum2[0]) {
-          flag.color2 = false
-        }
-        for (let i = 0; i < item.length; i++) {
-          if (!item[i]) {
+      this.color2.forEach((item, index) => {
+        for (let i = 0; i < this.colorNum2[index]; i++) {
+          if (!item[i].name) {
             flag.color2 = false
           }
         }
       })
       // 检查主要原料
-      if (this.mainIngredient.length === 0) {
+      if (!this.mainIngredient) {
         flag.mainIngredient = false
       }
-      if (this.mainIngredient2.length === 0) {
+      if (!this.mainIngredient2) {
         flag.mainIngredient2 = false
       }
       // 检查次要原料
       for (let key in this.otherIngredient) {
-        if (this.otherIngredient[key].length === 0) {
+        if (!this.otherIngredient[key]) {
           flag.otherIngredient = false
         }
       }
       for (let key in this.otherIngredient2) {
-        if (this.otherIngredient2[key].length === 0) {
+        if (!this.otherIngredient2[key]) {
           flag.otherIngredient2 = false
         }
       }
@@ -1319,7 +1256,7 @@ export default {
         })
         return
       }
-      if (!flag.colour2) {
+      if (!flag.colour) {
         this.$message.error({
           message: '检测到有未选择的纬向配色方案,请检查配色方案是否填写完整'
         })
@@ -1409,6 +1346,12 @@ export default {
         })
         return
       }
+      if (!this.warp_data.reed_width) {
+        this.$message.error({
+          message: '请填写筘幅'
+        })
+        return
+      }
       if (this.weft_data.organization_id === '') {
         this.$message.error({
           message: '请选择组织法'
@@ -1440,50 +1383,25 @@ export default {
         return
       }
       // 经向主料获取name
-      const unit = ['支', '厘米']
-      const obj = this.countArr.find((item) => {
-        return item.name === this.mainIngredient[0]
-      })
-      const obj2 = this.typeArr.find((item) => {
-        return item.name === this.mainIngredient[1]
-      })
-      let warpMaterialMain = obj.name + unit[obj.unit] + obj2.name
+      let warpMaterialMain = this.mainIngredient
       // 纬向主料获取name
-      const obja = this.countArr.find((item) => {
-        return item.name === this.mainIngredient2[0]
-      })
-      const obja2 = this.typeArr.find((item) => {
-        return item.name === this.mainIngredient2[1]
-      })
-      let weftMaterialMain = obja.name + unit[obja.unit] + obja2.name
+      let weftMaterialMain = this.mainIngredient2
       // 经向次料获取
       let warpMaterialOther = []
-      for (let i in this.otherIngredient) {
-        const objs = this.countArr.find((item) => {
-          return item.name === this.otherIngredient[i][0]
-        })
-        const objs2 = this.typeArr.find((item) => {
-          return item.name === this.otherIngredient[i][1]
-        })
+      this.otherIngredient.forEach((item, index) => {
         warpMaterialOther.push({
-          name: objs.name + unit[objs.unit] + objs2.name,
-          value: this.jia[i]
+          name: item,
+          value: this.jia[index]
         })
-      }
+      })
       // 纬向次料获取
       let weftMaterialOther = []
-      for (let i in this.otherIngredient2) {
-        const objb = this.countArr.find((item) => {
-          return item.name === this.otherIngredient2[i][0]
-        })
-        const objb2 = this.typeArr.find((item) => {
-          return item.name === this.otherIngredient2[i][1]
-        })
+      this.otherIngredient2.forEach((item, index) => {
         weftMaterialOther.push({
-          name: objb.name + unit[objb.unit] + objb2.name,
-          value: this.jia2[i]
+          name: item,
+          value: this.jia2[index]
         })
-      }
+      })
       let materialData = {
         'warpMaterialMain': warpMaterialMain,
         'weftMaterialMain': weftMaterialMain,
@@ -1536,8 +1454,8 @@ export default {
         let colorScheme = []
         for (let i = 0; i < this.colorNum[index]; i++) {
           colorScheme.push({
-            name: this.colorArr.find((item2) => item2.color_code === this.color[index][i]).name,
-            value: this.color[index][i]
+            name: this.color[index][i].name,
+            value: this.color[index][i].color
           })
         }
         colorData.push({
@@ -1550,8 +1468,8 @@ export default {
         let colorScheme = []
         for (let i = 0; i < this.colorNum2[index]; i++) {
           colorScheme.push({
-            name: this.colorArr.find((item2) => item2.color_code === this.color2[index][i]).name,
-            value: this.color2[index][i]
+            name: this.color2[index][i].name,
+            value: this.color2[index][i].color
           })
         }
         colorData.push({
@@ -1577,7 +1495,7 @@ export default {
         company_id: this.companyId,
         product_id: this.product.id,
         user_id: window.sessionStorage.getItem('user_id'),
-        craft_code: this.craft_code,
+        craft_code: null,
         warp_data: this.warp_data,
         weft_data: this.weft_data,
         color_data: colorData,
@@ -1585,12 +1503,13 @@ export default {
         weight: this.weight,
         yarn_coefficient: yarnCoefficient
       }
+      console.log(json)
       saveCraft(json).then((res) => {
         if (res.data.status) {
           this.$message.success({
             message: '修改成功'
           })
-          this.$router.push('/index/productPlanCreate/' + res.data.data.product_info.id)
+          this.$router.push('/index/designFormList')
         }
       })
     },
@@ -1628,54 +1547,21 @@ export default {
   },
   computed: {
     materialList () {
-      // 经向主料获取name
-      const unit = ['支', '厘米']
       let warpMaterialMain = []
-      if (this.mainIngredient.length > 0) {
-        const obj = this.countArr.find((item) => {
-          return item.name === this.mainIngredient[0]
-        })
-        const obj2 = this.typeArr.find((item) => {
-          return item.name === this.mainIngredient[1]
-        })
-        warpMaterialMain = [obj.name + unit[obj.unit] + obj2.name]
-      }
-      // 纬向主料获取name
       let weftMaterialMain = []
-      if (this.mainIngredient2.length > 0) {
-        const obja = this.countArr.find((item) => {
-          return item.name === this.mainIngredient2[0]
-        })
-        const obja2 = this.typeArr.find((item) => {
-          return item.name === this.mainIngredient2[1]
-        })
-        weftMaterialMain = [obja.name + unit[obja.unit] + obja2.name]
-      }
-      // 经向次料获取
       let warpMaterialOther = []
-      for (let i in this.otherIngredient) {
-        if (this.otherIngredient[i].length > 0) {
-          const objs = this.countArr.find((item) => {
-            return item.name === this.otherIngredient[i][0]
-          })
-          const objs2 = this.typeArr.find((item) => {
-            return item.name === this.otherIngredient[i][1]
-          })
-          warpMaterialOther.push(objs.name + unit[objs.unit] + objs2.name)
-        }
-      }
-      // 纬向次料获取
       let weftMaterialOther = []
-      for (let i in this.otherIngredient2) {
-        if (this.otherIngredient2[i].length > 0) {
-          const objb = this.countArr.find((item) => {
-            return item.name === this.otherIngredient2[i][0]
-          })
-          const objb2 = this.typeArr.find((item) => {
-            return item.name === this.otherIngredient2[i][1]
-          })
-          weftMaterialOther.push(objb.name + unit[objb.unit] + objb2.name)
-        }
+      if (this.mainIngredient) {
+        warpMaterialMain = [this.mainIngredient]
+      }
+      if (this.mainIngredient2) {
+        weftMaterialMain = [this.mainIngredient2]
+      }
+      if (this.otherIngredient.length > 0) {
+        warpMaterialOther = this.otherIngredient
+      }
+      if (this.otherIngredient2.length > 0) {
+        weftMaterialOther = this.otherIngredient2
       }
       // ES6提供的数组去重方式
       return Array.from(new Set(warpMaterialMain.concat(weftMaterialMain).concat(warpMaterialOther).concat(weftMaterialOther)))
