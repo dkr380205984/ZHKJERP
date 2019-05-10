@@ -190,7 +190,7 @@ export default {
         'style_id': this.styleVal,
         'client_id': this.company,
         'group_id': this.group,
-        'product_code': this.searchVal,
+        'order_code': this.searchVal,
         'start_time': this.start_time,
         'end_time': this.end_time,
         'has_plan': 0
