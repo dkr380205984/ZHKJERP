@@ -21,7 +21,7 @@
           </div>
         </div>
       </div>
-       <div class="lineCtn" :style="{'max-height':flagObj.color?'300px':'64px'}">
+       <div class="lineCtn" :style="{'max-height':flagObj.color?'1000px':'64px'}">
         <div class="inputCtn">
           <span class="label">纱线颜色:</span>
           <el-input class="elInput" v-model="color" placeholder="请输入颜色"></el-input>
