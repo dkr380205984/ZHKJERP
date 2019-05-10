@@ -236,6 +236,7 @@ export default {
               }
             })
             arr.push({
+              order_id: item.order_id,
               batch_info: productList,
               group_name: this.groupArr.find((itemGroup) => itemGroup.id === item.group_id).name,
               company_name: this.companyArr.find((itemCompany) => { return parseInt(itemCompany.id) === item.client_id }).name,
@@ -249,6 +250,7 @@ export default {
             orderInfo: arr
           }
         })
+        this.total = res.data.data.count
         this.loading = false
       })
     },
@@ -260,6 +262,7 @@ export default {
         this.start_time = ''
         this.end_time = ''
       }
+      this.pages = 1
       this.getOrderList()
     },
     // 删除条件
@@ -311,15 +314,19 @@ export default {
       }
     },
     styleVal (newVal) {
+      this.pages = 1
       this.getOrderList()
     },
     company (newVal) {
+      this.pages = 1
       this.getOrderList()
     },
     group (newVal) {
+      this.pages = 1
       this.getOrderList()
     },
     searchVal (newVal) {
+      this.pages = 1
       this.timer = ''
       this.timer = setTimeout(() => {
         this.getOrderList()

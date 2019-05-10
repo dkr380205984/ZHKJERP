@@ -169,6 +169,7 @@ export default {
           this.product = this.product.map((itemPro) => {
             if (itemPro.product_code === finded.product_code) {
               let state = itemPro.state
+              console.log(state)
               if (state === 2) {
                 productPlan[item.product_code].forEach((itemPlan) => {
                   if (itemPlan.color_match_name === item.color && itemPlan.size === item.size) {
@@ -192,7 +193,7 @@ export default {
                 state: state
               }
             } else {
-              return item
+              return itemPro
             }
           })
         }
@@ -203,6 +204,7 @@ export default {
           this.state = false
         }
       })
+      console.log(this.product)
       this.loading = false
     })
   }

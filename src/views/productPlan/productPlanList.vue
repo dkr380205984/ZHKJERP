@@ -42,9 +42,11 @@
               type="daterange"
               align="right"
               unlink-panels
+              value-format="yyyy-MM-dd"
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
+              @change="pickTime"
               :picker-options="pickerOptions">
             </el-date-picker>
           </div>
@@ -149,7 +151,9 @@ export default {
         'category_id': this.categoryVal,
         'type_id': this.typesVal,
         'style_id': this.styleVal,
-        'page': this.pages
+        'page': this.pages,
+        'start_time': this.start_time,
+        'end_time': this.end_time
       }).then((res) => {
         this.loading = false
         this.total = res.data.meta.total
@@ -173,6 +177,17 @@ export default {
       } else if (item === 'flowerVal') {
         this.flowerVal = ''
       }
+    },
+    pickTime (date) {
+      if (date) {
+        this.start_time = date[0]
+        this.end_time = date[1]
+      } else {
+        this.start_time = ''
+        this.end_time = ''
+      }
+      this.pages = 1
+      this.getCraftList()
     }
   },
   watch: {
@@ -195,6 +210,7 @@ export default {
       this.getCraftList()
     },
     styleVal (newVal) {
+      this.pages = 1
       this.getCraftList()
     }
   },

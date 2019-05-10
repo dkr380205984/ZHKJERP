@@ -16,6 +16,10 @@ const updatePsd = (params) => http.post(`${baseUrl}/auth/reset_pass`, params, 'a
 const addStation = (params) => http.post(`${baseUrl}/user/station/save`, params, 'application/json')
 // 添加分组
 const addGroup = (params) => http.post(`${baseUrl}/user/group/save`, params, 'application/json')
+// 删除岗位
+const deleteStation = (params) => http.post(`${baseUrl}/user/station/delete`, params, 'application/json')
+// 删除分组
+const deleteGroup = (params) => http.post(`${baseUrl}/user/group/delete`, params, 'application/json')
 // 获取岗位
 const getStation = (params) => http.get(`${baseUrl}/user/station/list`, params)
 // 获取分组
@@ -82,7 +86,9 @@ const productList = (params) => http.get(`${baseUrl}/product/list`, params)
 const porductOne = (params) => http.get(`${baseUrl}/product/one`, params)
 // 删除产品
 const productDelete = (params) => http.post(`${baseUrl}/product/delete`, params)
-// 获取纱线类型+数量
+// 添加纱线名称
+const saveYarn = (params) => http.post(`${baseUrl}/yarn/save`, params, 'application/json')
+// 纱线名称列表
 const YarnList = (params) => http.get(`${baseUrl}/yarn/list`, params)
 // 添加纱线支数
 const saveYarnCount = (params) => http.post(`${baseUrl}/yarn/count/save`, params, 'application/json')
@@ -90,6 +96,8 @@ const saveYarnCount = (params) => http.post(`${baseUrl}/yarn/count/save`, params
 const saveYarnType = (params) => http.post(`${baseUrl}/yarn/type/save`, params, 'application/json')
 // 添加纱线颜色
 const saveYarnColor = (params) => http.post(`${baseUrl}/yarn/color/save`, params, 'application/json')
+// 纱线颜色列表
+const YarnColorList = (params) => http.get(`${baseUrl}/yarn/color/list`, params)
 // 获取工序+边型+织造法+机型
 const editList = (params) => http.get(`${baseUrl}/production/edit/list`, params)
 // 添加机型
@@ -164,7 +172,13 @@ const productionList = (params) => http.get(`${baseUrl}/production/list`, params
 const productionDetail = (params) => http.get(`${baseUrl}/production/one`, params)
 // 生产统计单详情
 const productionStat = (params) => http.get(`${baseUrl}/product/plan/order`, params)
+// 潘通色号列表
+const pantongList = (params) => http.get(`${baseUrl}/pan/color/list`, params)
 export {
+  YarnColorList,
+  pantongList,
+  deleteStation,
+  deleteGroup,
   loginCheck,
   orderDelete,
   productStockOne,
@@ -230,6 +244,7 @@ export {
   saveProductionProcess,
   saveProductionMethod,
   saveProductionSide,
+  saveYarn,
   saveYarnCount,
   saveYarnType,
   saveYarnColor,

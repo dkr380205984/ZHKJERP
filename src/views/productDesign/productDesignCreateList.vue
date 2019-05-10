@@ -246,6 +246,7 @@ export default {
         this.start_time = ''
         this.end_time = ''
       }
+      this.pages = 1
       this.getOrderList()
     },
     // 删除条件
@@ -289,17 +290,21 @@ export default {
       this.getOrderList()
     },
     styleVal (newVal) {
+      this.pages = 1
       this.getOrderList()
     },
     company (newVal) {
+      this.pages = 1
       this.getOrderList()
     },
     group (newVal) {
+      this.pages = 1
       this.getOrderList()
     },
     searchVal (newVal) {
       this.timer = ''
       this.timer = setTimeout(() => {
+        this.pages = 1
         this.getOrderList()
       }, 800)
     }

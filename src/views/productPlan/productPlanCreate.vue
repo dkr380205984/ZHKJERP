@@ -43,13 +43,16 @@
             <span class="label">创建人:</span>
             <span class="content">{{product.user_name}}</span>
           </div>
-          <div class="inputCtn">
+        </div>
+        <div class="lineCtn">
+          <div class="inputCtn" style="width:100%">
             <span class="label">产品规格:</span>
-            <span class="content contentLine" v-for="(item,key) in product.size" :key="key">
+            <span class="content" style="width:100%;" v-for="(item,key) in product.size" :key="key">
               <span style="margin-right:15px">{{key}}</span>
               <span class="sizeDetail">
                 <span class="sizeOnce" v-for="itemChild in item" :key="itemChild.id">{{itemChild.size_value + 'cm' + '(' + itemChild.size_name + ')'}}&nbsp;&nbsp;&nbsp;</span>
               </span>
+              <span class="size">{{item[0].weight}}g(克重)</span>
             </span>
           </div>
         </div>
@@ -80,13 +83,14 @@
             <span class="label must">原料列表:</span>
             <div class="specialCtn" v-for="(item,index) in mainIngredient.ingredient.length" :key="index">
               <div class="blockCtn">
-                <el-cascader
-                  v-model="mainIngredient.ingredient[index]"
-                  style="width:200px"
-                  :options="ingredientArr"
-                  placeholder="请选择主要原料"
-                  expand-trigger="hover">
-                </el-cascader>
+                <el-select class="elSelect" v-model="mainIngredient.ingredient[index]" style="margin-left:0;width:200px" placeholder="请选择主要原料">
+                  <el-option
+                    v-for="item in ingredientArr"
+                    :key="item.name"
+                    :label="item.name"
+                    :value="item.name">
+                  </el-option>
+                </el-select>
                 <div class="addBtn" style="background:#fff;" @click="addColour(index)">
                   <span>添加配色方案</span>
                   <span>+</span>
@@ -107,10 +111,10 @@
                 <div class="colorsCtn">
                   <div class="colorOnce" v-for="(item3,index3) in mainIngredient.color[index][index2].length" :key="index3">
                     <!-- v-if是为了解决第一次渲染的时候colorArr数据没过来的bug -->
-                    <color-picker v-if="colorArr.length>0" :key="mainIngredient.color[index][index2][index3].colorCode" :content="mainIngredient.color[index][index2][index3].name.substr(0,1)" :colorArr="colorArr" v-model="mainIngredient.color[index][index2][index3].colorCode" @colorChange="(json)=>{getColor(json,index,index2,index3)}"></color-picker>
+                    <color-picker v-if="colorArr.length>0" :key="mainIngredient.color[index][index2][index3].colorCode.color + mainIngredient.color[index][index2][index3].colorCode.name" :content="mainIngredient.color[index][index2][index3].name.substr(0,1)" :colorArr="colorArr" v-model="mainIngredient.color[index][index2][index3].colorCode" @colorChange="(json)=>{getColor(json,index,index2,index3)}"></color-picker>
                     <div class="allInputs" v-for="(item4,index4) in mainIngredient.color[index][index2][index3].value.length" :key="index4">
                       <span class="labeled">{{mainIngredient.color[index][index2][index3].value[index4].size}}</span>
-                      <input class="input1" placeholder="数量" v-model="mainIngredient.color[index][index2][index3].value[index4].number"/>
+                      <input :disabled="!state" class="input1" placeholder="数量" v-model="mainIngredient.color[index][index2][index3].value[index4].number"/>
                       <input class="input2" @blur="commonUnit1=mainIngredient.color[index][index2][index3].value[index4].unit" placeholder="单位" v-model="mainIngredient.color[index][index2][index3].value[index4].unit"/>
                     </div>
                     <i class="el-icon-delete delete" @click="deleteColor(index,index2,index3)"></i>
@@ -245,7 +249,7 @@
 </template>
 
 <script>
-import { porductOne, YarnList, editList, materialList, saveProductPlan, craftProduct } from '@/assets/js/api.js'
+import { porductOne, YarnList, editList, materialList, saveProductPlan, craftProduct, YarnColorList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -269,10 +273,10 @@ export default {
       },
       ingredientArr: [], // 原料
       mainIngredient: {
-        ingredient: [[]],
+        ingredient: [''],
         colour: [['']],
         color: [[[{
-          colorCode: '',
+          colorCode: { name: '', color: '' },
           name: '无',
           value: [{
             size: '',
@@ -308,26 +312,15 @@ export default {
       company_id: this.companyId
     }), craftProduct({
       product_id: this.$route.params.id
+    }), YarnColorList({
+      company_id: this.companyId
     })]).then((res) => {
-      console.log(res)
       this.product = res[0].data.data
       this.sizeKey = Object.keys(res[0].data.data.size)
       this.colourArr = res[0].data.data.color
-      this.colorArr = res[1].data.data.color
+      this.colorArr = res[5].data.data
       this.processArr = res[2].data.data.process
-      this.ingredientArr = res[1].data.data.count.map((item) => {
-        const unit = ['支', '厘米']
-        return {
-          value: item.name + unit[item.unit],
-          label: item.name + unit[item.unit],
-          children: res[1].data.data.type.map((item2) => {
-            return {
-              value: item2.name,
-              label: item2.name
-            }
-          })
-        }
-      })
+      this.ingredientArr = res[1].data.data
       let value = []
       Object.keys(this.product.size).forEach((key) => {
         value.push({
@@ -365,6 +358,7 @@ export default {
             color[index].push([])
           })
         })
+        console.log(gyd)
         for (let keyColour in gyd.peise_yarn_wight) {
           for (let keyMaterial in gyd.peise_yarn_wight[keyColour]) {
             for (let keyColor in gyd.peise_yarn_wight[keyColour][keyMaterial]) {
@@ -372,10 +366,10 @@ export default {
                 if (item === keyMaterial) {
                   colour[index].forEach((item, indexColour) => {
                     if (item === keyColour) {
-                      let name = this.colorArr.find((item) => item.color_code === keyColor).name
+                      let name = this.colorArr.find((item) => item.color_code === keyColor) ? this.colorArr.find((item) => item.color_code === keyColor).name : '潘'
                       color[index][indexColour].push({
                         name: name,
-                        colorCode: keyColor,
+                        colorCode: { 'color': keyColor, 'name': name },
                         value: [{
                           size: Object.keys(gyd.product_info.size)[0], // 这里的size理论上只有均码，工艺单产品只有均码，现在为了对应数据稍微改造一下
                           number: gyd.peise_yarn_wight[keyColour][keyMaterial][keyColor],
@@ -390,18 +384,7 @@ export default {
           }
         }
         this.mainIngredient = {
-          ingredient: ingredient.map((item) => {
-            if (item.indexOf('支')) {
-              let arr = item.split('支')
-              arr[0] = arr[0] + '支'
-              return arr
-            }
-            if (item.indexOf('厘米')) {
-              let arr = item.split('厘米')
-              arr[0] = arr[0] + '厘米'
-              return arr
-            }
-          }),
+          ingredient: ingredient,
           colour: colour,
           color: color
         }
@@ -429,7 +412,7 @@ export default {
         this.mainIngredient.ingredient.push([])
         this.mainIngredient.colour.push([''])
         this.mainIngredient.color.push([[{
-          colorCode: '',
+          colorCode: { name: '', color: '' },
           name: '无',
           value: value
         }]])
@@ -514,7 +497,7 @@ export default {
         })
         this.mainIngredient.colour[index].push('')
         this.mainIngredient.color[index].push([{
-          colorCode: '',
+          colorCode: { name: '', color: '' },
           name: '无',
           value: value
         }])
@@ -579,7 +562,7 @@ export default {
           })
         })
         this.mainIngredient.color[index][index2].push({
-          colorCode: '',
+          colorCode: { name: '', color: '' },
           name: '无',
           value: value
         })
@@ -648,7 +631,7 @@ export default {
     saveAll () {
       let state = false
       this.mainIngredient.ingredient.forEach((itemMaterial) => {
-        if (itemMaterial.length === 0) {
+        if (!itemMaterial) {
           state = true
         }
       })
@@ -756,14 +739,14 @@ export default {
       let materialData = []
       this.mainIngredient.ingredient.forEach((itemMaterial, indexMaterial) => {
         materialData.push({
-          material: itemMaterial.join(''),
+          material: itemMaterial,
           colour: this.mainIngredient.colour[indexMaterial].map((itemColour, indexColour) => {
             return {
               name: itemColour,
               color: this.mainIngredient.color[indexMaterial][indexColour].map((itemColor, indexColor) => {
                 return {
                   name: itemColor.name,
-                  value: itemColor.colorCode,
+                  value: itemColor.colorCode.color,
                   size: this.mainIngredient.color[indexMaterial][indexColour][indexColor].value
                 }
               })
@@ -823,8 +806,8 @@ export default {
     // 纱线系数原料合并
     ingredientCmp () {
       return this.mainIngredient.ingredient.map((item) => {
-        if (item[0] && item[1]) {
-          return item[0] + item[1]
+        if (item) {
+          return item
         } else {
           return '待选原料'
         }

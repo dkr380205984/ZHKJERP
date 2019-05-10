@@ -19,6 +19,10 @@
             placeholder="请选择产品品类">
           </el-cascader>
         </div>
+        <div class="tooltips" style="bottom:-20px" v-show="warning">
+          <i class="el-icon-warning"></i>
+          警告：系统暂时不支持没有三级分类的产品，请联系管理员完善产品信息
+        </div>
       </div>
       <div class="inputCtn" style="margin-bottom:0">
         <span class="label must">产品花型:</span>
@@ -170,7 +174,8 @@ export default {
       child_size: [],
       weight: [],
       showError: false,
-      imageUrl: ''
+      imageUrl: '',
+      warning: false
     }
   },
   mounted () {
@@ -243,6 +248,11 @@ export default {
           })
         }
       })
+      if (!newVal[1] || !newVal[2]) {
+        this.warning = true
+      } else {
+        this.warning = false
+      }
     },
     ingredientScale (newVal) {
       let add = 0
@@ -359,6 +369,12 @@ export default {
         })
         return
       }
+      if (this.warning) {
+        this.$message.error({
+          message: '产品品类信息有误，请联系管理员完善信息'
+        })
+        return
+      }
       if (!this.flower) {
         this.$message.error({
           message: '请选择产品花型'
@@ -439,7 +455,9 @@ export default {
       // 数组扁平化
       sizeArrErWei.forEach((item) => {
         if (Array.isArray(item)) {
-          sizeArr = sizeArr.concat(item.flat())
+          item.forEach((itemChild) => {
+            sizeArr = sizeArr.concat(itemChild)
+          })
         } else {
           sizeArr.push(item)
         }

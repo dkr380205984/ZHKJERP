@@ -55,10 +55,6 @@ let router = new Router({
       name: 'productList',
       component: () => import('./views/product/productList.vue')
     }, {
-      path: 'productSetting',
-      name: 'productSetting',
-      component: () => import('./views/product/productSetting.vue')
-    }, {
       path: 'designFormCreate/:id',
       name: 'designFormCreate',
       component: () => import('./views/designForm/designFormCreate.vue')
@@ -66,10 +62,6 @@ let router = new Router({
       path: 'designFormUpdate/:id',
       name: 'designFormUpdate',
       component: () => import('./views/designForm/designFormUpdate.vue')
-    }, {
-      path: 'designFormSetting',
-      name: 'designFormSetting',
-      component: () => import('./views/designForm/designFormSetting.vue')
     }, {
       path: 'designFormList',
       name: 'designFormList',
@@ -278,6 +270,26 @@ let router = new Router({
       path: 'error/:id',
       name: 'error',
       component: () => import('./views/error.vue')
+    }, {
+      path: 'setting',
+      name: 'setting',
+      component: () => import('./views/setting/settings.vue')
+    }, {
+      path: 'productSetting',
+      name: 'productSetting',
+      component: () => import('./views/setting/productSetting.vue')
+    }, {
+      path: 'designFormSetting',
+      name: 'designFormSetting',
+      component: () => import('./views/setting/designFormSetting.vue')
+    }, {
+      path: 'accountSetting',
+      name: 'accountSetting',
+      component: () => import('./views/setting/accountSetting.vue')
+    }, {
+      path: 'yarnSetting',
+      name: 'yarnSetting',
+      component: () => import('./views/setting/yarnSetting.vue')
     }]
   }
   ]
@@ -285,16 +297,20 @@ let router = new Router({
 
 router.beforeEach((to, from, next) => { // 全局前置守卫按照创建顺序调用
   if (to.name !== 'login') {
-    loginCheck({
-      user_id: window.sessionStorage.getItem('user_id'),
-      token: window.sessionStorage.getItem('token')
-    }).then((res) => {
-      if (res.data.status) {
-        next()
-      } else {
-        next('/login')
-      }
-    })
+    try {
+      loginCheck({
+        user_id: window.sessionStorage.getItem('user_id'),
+        token: window.sessionStorage.getItem('token')
+      }).then((res) => {
+        if (res.data.status) {
+          next()
+        } else {
+          next('/login')
+        }
+      })
+    } catch {
+      next('/login')
+    }
   } else {
     next()
   }

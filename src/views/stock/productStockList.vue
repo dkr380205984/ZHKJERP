@@ -73,7 +73,7 @@
           <div class="tableColumn">尺码</div>
           <div class="tableColumn">颜色</div>
           <div class="tableColumn">库存数</div>
-          <div class="tableColumn">录入时间</div>
+          <div class="tableColumn">图片</div>
           <div class="tableColumn">更新时间</div>
           <div class="tableColumn">操作</div>
         </div>
@@ -84,7 +84,15 @@
           <div class="tableColumn">{{item.size }}</div>
           <div class="tableColumn">{{item.color}}</div>
           <div class="tableColumn">{{item.stock_number + item.product_info.category_info.name}}</div>
-          <div class="tableColumn">{{item.create_time}}</div>
+          <div class="tableColumn">
+            <div class="tableColumn">
+              <div class="imgCtn">
+                <img class="img" :src="item.product_info.img.length>0?item.product_info.img[0].thumb:require('@/assets/image/index/noPic.jpg')" :onerror="defaultImg" />
+                <div class="toolTips" v-if="item.product_info.img.length>0"><span @click="showImg(item.product_info.img)">点击查看大图</span></div>
+                <div class="toolTips" v-if="item.product_info.img.length===0"><span>没有预览图</span></div>
+              </div>
+            </div>
+          </div>
           <div class="tableColumn">{{item.update_time}}</div>
           <div class="tableColumn">
             <span class="btns success" @click="$router.push('/index/productStockDetail/'+item.product_info.id+'/'+item.size+'/'+item.color)">详情</span>
@@ -101,6 +109,16 @@
           @current-change="getProductList">
         </el-pagination>
       </div>
+      <div class="shade" v-show="showShade">
+        <div class="main">
+          <div class="closeBtn" @click="showShade=false">点此退出预览</div>
+          <el-carousel indicator-position="outside" height="550px" arrow="always">
+            <el-carousel-item v-for="item in imgList" :key="item.image_url">
+              <img :src="item.image_url" class="imgList" />
+            </el-carousel-item>
+          </el-carousel>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -110,6 +128,8 @@ import { productStockList, productTppeList, flowerList } from '@/assets/js/api.j
 export default {
   data () {
     return {
+      defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
+      showShade: false,
       searchVal: '',
       value: '',
       date: '',
@@ -144,7 +164,6 @@ export default {
       pages: 1,
       list: [],
       imgList: [],
-      showShade: false,
       category: [], // 大类
       categoryVal: '',
       types: [], // 二级分类
@@ -202,7 +221,12 @@ export default {
         this.start_time = ''
         this.end_time = ''
       }
+      this.pages = 1
       this.getProductList()
+    },
+    showImg (imgList) {
+      this.imgList = imgList
+      this.showShade = true
     }
   },
   watch: {
@@ -225,12 +249,15 @@ export default {
       this.getProductList()
     },
     styleVal (newVal) {
+      this.pages = 1
       this.getProductList()
     },
     flowerVal (newVal) {
+      this.pages = 1
       this.getProductList()
     },
     searchVal (newVal) {
+      this.pages = 1
       this.getProductList()
     }
   },

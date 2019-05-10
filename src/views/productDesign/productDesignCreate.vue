@@ -42,9 +42,9 @@
           <div class="specialTable">
             <div class="left" style="width:180px">
               <div class="firstLine">产品品类</div>
-              <div class="mergeLine" v-for="(item,index) in product" :style="{height:(index!==product.length-1)?(61*item.num)+'px':(61*item.num)-1+'px'}" :key="item.product_code">
-                <span>{{item.product_code}}</span>
-                <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
+              <div style="color:#1a95ff;" class="mergeLine" v-for="(item,index) in product" :style="{height:(index!==product.length-1)?(61*item.num)+'px':(61*item.num)-1+'px'}" :key="item.product_code">
+                <span @click="$router.push('/index/productDetail/'+item.product_code)" style="cursor:help">{{item.product_code}}</span>
+                <span @click="$router.push('/index/productDetail/'+item.product_code)" style="cursor:help">{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
               </div>
             </div>
             <div class="right">

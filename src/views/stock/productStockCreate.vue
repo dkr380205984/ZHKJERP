@@ -42,6 +42,7 @@
             <span class="sizeDetail">
               <span class="sizeOnce" v-for="itemChild in item" :key="itemChild.id">{{itemChild.size_name + '：' + itemChild.size_value + 'cm'}}</span>
             </span>
+            <span class="size">{{item[0].weight}}g(克重)</span>
           </span>
         </div>
       </div>

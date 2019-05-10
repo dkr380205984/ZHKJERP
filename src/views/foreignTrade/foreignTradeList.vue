@@ -1,5 +1,5 @@
 <template>
-  <div id="foreignTradeList">
+  <div id="foreignTradeList" v-loading="loading">
     <div class="head">
       <h2>合作公司列表</h2>
       <el-input placeholder="请输入公司名称或简称" suffix-icon="el-icon-search" v-model="searchVal"></el-input>
@@ -8,7 +8,7 @@
       <div class="filterMenu">
         <div class="selectLine">
           <div class="leftFilter">
-            <el-select v-model="status" placeholder="请选择" @change="getList">
+            <el-select v-model="status" placeholder="请选择">
               <el-option
                 v-for="item in statusArr"
                 :key="item.value"
@@ -23,6 +23,7 @@
               type="daterange"
               align="right"
               unlink-panels
+              value-format="yyyy-MM-dd"
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
@@ -81,6 +82,7 @@ import { clientList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      loading: true,
       groupVal: '',
       groupArr: [],
       date: '',
@@ -125,25 +127,49 @@ export default {
       },
       total: 0,
       page: 1,
-      list: []
+      list: [],
+      start_time: '',
+      end_time: ''
     }
   },
   methods: {
     getList () {
+      this.loading = true
       clientList({
         company_id: window.sessionStorage.getItem('company_id'),
         keyword: this.searchVal,
         status: this.status,
         limit: 5,
-        page: this.page
+        page: this.page,
+        start_time: this.start_time,
+        end_time: this.end_time
       }).then((res) => {
         console.log(res)
         this.total = res.data.meta.total
         this.list = res.data.data
+        this.loading = false
       })
     },
-    pickTime () {
-
+    pickTime (date) {
+      if (date) {
+        this.start_time = date[0]
+        this.end_time = date[1]
+      } else {
+        this.start_time = ''
+        this.end_time = ''
+      }
+      this.pages = 1
+      this.getList()
+    }
+  },
+  watch: {
+    status (newVal) {
+      this.pages = 1
+      this.getList()
+    },
+    searchVal () {
+      this.pages = 1
+      this.getList()
     }
   },
   filters: {
@@ -151,7 +177,7 @@ export default {
       return companyType.find((item) => item.value === value).name
     }
   },
-  created () {
+  mounted () {
     this.getList()
   }
 }
