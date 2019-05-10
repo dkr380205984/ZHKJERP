@@ -86,13 +86,13 @@
                 <span>辅料名称</span>
                 <span>{{sizeName.ingredients}}</span>
                 <span>合计</span>
-                <span>{{materialInfo[sizeName.ingredients] ? materialInfo[sizeName.ingredients].total_number + materialInfo[sizeName.ingredients].unit : ''}}</span>
+                <span>{{materialInfo[sizeName.ingredients] ? parseInt(materialInfo[sizeName.ingredients].total_number) + materialInfo[sizeName.ingredients].unit : ''}}</span>
               </li>
               <template v-for="(value,index) in materialInfo[sizeName.ingredients]">
                 <li v-if="index !== 'total_number' && index !== 'type' && index !== 'unit'"
                     :key="index">
                   <span>数量</span>
-                  <span>{{index + ' ' + value + materialInfo[sizeName.ingredients].unit}}</span>
+                  <span>{{index + ' ' + parseInt(value) + materialInfo[sizeName.ingredients].unit}}</span>
                 </li>
               </template>
             </ul>

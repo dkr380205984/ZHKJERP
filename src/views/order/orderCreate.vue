@@ -97,7 +97,7 @@
               placeholder="输产品编号按回车搜索"
               suffix-icon="el-icon-search"
               v-model="search"
-              @keyup.enter.native="getSearchList">
+              @keyup.enter.native="getSearch">
             </el-input>
             <span class="gjss" @click="showSeach=!showSeach">高级搜索
               <i class="el-icon" :class="{'el-icon-arrow-up':!showSeach,'el-icon-arrow-down':showSeach}"></i>
@@ -112,14 +112,14 @@
                     placeholder="请选择产品类别"
                     :options="typeArr"
                     v-model="type"
-                    @change="getSearchList"
+                    @change="getSearch"
                     clearable>
                   </el-cascader>
                 </div>
                 <div class="blockOnce">
                   <span class="name">创建日期：</span>
                   <el-date-picker
-                    @change="getSearchList"
+                    @change="getSearch"
                     value-format="yyyy-MM-dd"
                     class="elInput"
                     v-model="dateSearch"
@@ -133,7 +133,7 @@
                   <span class="name">产品花型：</span>
                   <el-select class="elInput" v-model="flower" placeholder="请选择产品花型"  @change="getSearchList" clearable>
                     <el-option
-                      @change="getSearchList"
+                      @change="getSearch"
                       v-for="item in flowerArr"
                       :key="item.id"
                       :label="item.name"
@@ -153,7 +153,7 @@
                     </el-option>
                   </el-select> -->
                   <span class="name">配料单：</span>
-                  <el-radio-group v-model="hasJHD"  @change="getSearchList">
+                  <el-radio-group v-model="hasJHD"  @change="getSearch">
                     <el-radio :label="null">全部</el-radio>
                     <el-radio :label="1">有</el-radio>
                     <el-radio :label="0">无</el-radio>
@@ -174,7 +174,7 @@
                 <div class="flex">操作</div>
               </div>
             </div>
-            <div class="lineBody">
+            <div class="lineBody" ref="scrollBox">
               <div class="list" v-for="item in seachProduct" :key="item.id">
                 <div class="flex" style="color:#10AEF5;cursor:help" @click="openUrl('/index/productDetail/'+item.product_code)">{{item.product_code}}</div>
                 <div class="flex">{{item|filterType}}</div>
@@ -185,6 +185,7 @@
                   <el-checkbox @change="getProduct($event,item.id)"></el-checkbox>
                 </div>
               </div>
+              <div class="list" v-if="nomore" style="text-align:center;display:block;color:rgb(181,181,181)">没有更多产品信息</div>
             </div>
           </div>
           <div class="lineTitle">已选产品</div>
@@ -310,6 +311,10 @@ import { clientList, productList, productTppeList, flowerList, orderSave, getGro
 export default {
   data () {
     return {
+      nomore: false,
+      page: 1,
+      timer: '', // 用于订单列表优化
+      scrollTop: 0,
       loading: true,
       showTips: false,
       hasJHD: null,
@@ -402,7 +407,8 @@ export default {
       let endTime = date.getFullYear() + '-' + ((date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1)) + '-' + (date.getDate() < 10 ? '0' + date.getDate() : date.getDate())
       productList({
         company_id: this.companyId,
-        limit: null,
+        limit: 5,
+        page: this.page,
         category_id: this.type[0] || null,
         style_id: this.type[2] || null,
         type_id: this.type[1] || null,
@@ -413,8 +419,22 @@ export default {
         has_plan: this.hasJHD
       }).then((res) => {
         this.loading = false
-        this.seachProduct = res.data.data
+        if (this.page === 1) {
+          this.nomore = false
+          this.seachProduct = res.data.data
+        } else {
+          this.seachProduct = this.seachProduct.concat(res.data.data)
+          if (res.data.data.length < 5) {
+            this.nomore = true
+          }
+        }
       })
+    },
+    // 如果是选筛选条件,需要page重置
+    getSearch () {
+      this.page = 1
+      this.scrollTop = 0
+      this.getSearchList()
     },
     // 删除批次
     deleteBatch (index) {
@@ -691,7 +711,6 @@ export default {
       status: ''
     }), productList({
       company_id: this.companyId,
-      limit: null,
       category_id: null,
       style_id: null,
       type_id: null,
@@ -699,7 +718,9 @@ export default {
       start_time: null,
       end_time: null,
       plan_code: null,
-      has_plan: null
+      has_plan: null,
+      limit: 5,
+      page: 1
     }), productTppeList({
       company_id: this.companyId
     }), flowerList({
@@ -733,6 +754,19 @@ export default {
       this.flowerArr = res[3].data.data
       this.groupArr = res[4].data.data
       this.loading = false
+    })
+
+    // 给产品列表做优化
+    this.$refs.scrollBox.addEventListener('scroll', (ev) => {
+      clearTimeout(this.timer)
+      this.timer = setTimeout(() => {
+        if (ev.target.scrollTop - this.scrollTop > 60) {
+          console.log('刷新数据')
+          this.scrollTop = ev.target.scrollTop
+          this.page++
+          this.getSearchList()
+        }
+      }, 300)
     })
   }
 }

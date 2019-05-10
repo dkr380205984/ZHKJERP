@@ -30,7 +30,7 @@ export default {
       flag: false,
       flag2: false,
       flag3: false,
-      color: this.value,
+      color: this.value.color,
       oldColorArr: this.colorArr, // 原始数据
       colorArray: this.colorArr,
       search: ''
@@ -66,7 +66,10 @@ export default {
     },
     getColor (color, name) {
       this.color = color
-      this.$emit('input', color)
+      this.$emit('input', {
+        color: color,
+        name: name
+      })
       this.$emit('colorChange', {
         color: color,
         name: name
