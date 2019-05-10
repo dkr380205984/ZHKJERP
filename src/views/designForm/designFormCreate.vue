@@ -106,7 +106,7 @@
           <div class="inputCtn oneLine">
             <span class="label must">主要原料:</span>
             <div class="list">
-              <el-select class="elSelect" v-model="mainIngredient" style="margin-left:15px;width:200px" placeholder="请选择主要原料">
+              <el-select filterable class="elSelect" v-model="mainIngredient" style="margin-left:15px;width:200px" placeholder="请选择主要原料">
                 <el-option
                   v-for="item in ingredientArr"
                   :key="item.name"
@@ -130,7 +130,7 @@
           <div class="inputCtn oneLine">
             <span class="label must">次料列表:</span>
             <div class="list" v-for="(item,index) in otherIngredientNum" :key="index">
-              <el-select class="elSelect" v-model="otherIngredient[index]" style="margin-left:15px;width:200px" placeholder="请选择次要原料">
+              <el-select filterable  class="elSelect" v-model="otherIngredient[index]" style="margin-left:15px;width:200px" placeholder="请选择次要原料">
                 <el-option
                   v-for="item in ingredientArr"
                   :key="item.name"
@@ -368,7 +368,7 @@
           <div class="inputCtn oneLine">
             <span class="label must">主要原料:</span>
             <div class="list">
-              <el-select class="elSelect" v-model="mainIngredient2" style="margin-left:15px;width:200px" placeholder="请选择主要原料">
+              <el-select filterable  class="elSelect" v-model="mainIngredient2" style="margin-left:15px;width:200px" placeholder="请选择主要原料">
                 <el-option
                   v-for="item in ingredientArr"
                   :key="item.name"
@@ -392,7 +392,7 @@
           <div class="inputCtn oneLine">
             <span class="label must">次料列表:</span>
             <div class="list" v-for="(item,index) in otherIngredientNum2" :key="index">
-              <el-select class="elSelect" v-model="otherIngredient2[index]" style="margin-left:15px;width:200px" placeholder="请选择次要原料">
+              <el-select filterable  class="elSelect" v-model="otherIngredient2[index]" style="margin-left:15px;width:200px" placeholder="请选择次要原料">
                 <el-option
                   v-for="item in ingredientArr"
                   :key="item.name"
