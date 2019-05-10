@@ -118,41 +118,45 @@
         </div>
         <div class="lineCtn col">
           <div class="inputCtn  noPadding"
-               v-for="(item,key) in list"
+               v-for="(item,key) in stockInfo"
                :key="key"
                style="width:100%;margin-left:20px;">
             <div class="title2">
               <span>{{item.material}}</span>
               <span>合计：{{item.total_number}}kg</span>
-              <span>已入库：{{item.total_number}}kg</span>
-              <span>待入库：{{item.total_number}}kg</span>
+              <span>已入库：{{item.stock_number}}kg</span>
+              <span>待入库：{{item.before_stock}}kg</span>
             </div>
-            <div class="content noPadding">
-              <ul class="tables">
-                <li>
-                  <span>订购公司</span>
-                  <span class="flex7">颜色-单价-数量</span>
-                  <span>总价</span>
-                  <span>下单日期</span>
-                  <span class="flex2">交货日期</span>
-                  <span>备注</span>
-                </li>
-                <li v-for="(value,index) in item.info"
-                    :key="index">
-                  <span>{{value.company}}</span>
-                  <span class="flex7">
-                    <span v-for="(content,number) in value.info"
-                          :key="number">
-                      {{content.color}}--{{content.price}}元/kg--{{content.value}}kg
-                    </span>
-                  </span>
-                  <span>{{value.total_price}}</span>
-                  <span>{{value.create_time}}</span>
-                  <span class="flex2">{{value.out_time}}</span>
-                  <span>{{value.remark ? value.remark : '暂无备注'}}</span>
-                </li>
-              </ul>
-            </div>
+            <!-- <div class="content noPadding"> -->
+            <ul class="tables">
+              <li>
+                <span class="flex2">时间</span>
+                <span class="flex2">原料颜色</span>
+                <span>缸号</span>
+                <span>属性</span>
+                <span>入库重量</span>
+                <span class="flex2">入库仓库</span>
+                <span class="flex2">备注</span>
+                <span>操作人</span>
+                <span class="flex2">操作</span>
+              </li>
+              <li v-for="(value,index) in item.stock_info"
+                  :key="index">
+                <span class="flex2">{{value.stock_time}}</span>
+                <span class="flex2">{{value.color}}</span>
+                <span>{{value.dyelot}}</span>
+                <span>{{value.material_atr}}</span>
+                <span>{{value.stock_value}}</span>
+                <span class="flex2">{{value.stock_name}}</span>
+                <span class="flex2">{{value.remark ? value.remark : '暂无备注'}}</span>
+                <span>{{value.change_name}}</span>
+                <span class="flex2">
+                  <span class="important">修改</span>
+                  <span class="important">扣款</span>
+                </span>
+              </li>
+            </ul>
+            <!-- </div> -->
           </div>
         </div>
       </div>
@@ -179,6 +183,54 @@ export default {
       total_weight: 0,
       defaultStock: '桐庐凯瑞针纺有限公司',
       loading: false,
+      stockInfo: [
+        {
+          material: '52支上光晴纶',
+          total_number: 562.4,
+          stock_number: 562.4,
+          before_stock: 0,
+          stock_info: [
+            {
+              stock_time: '2019-03-22-16:31',
+              color: '深绿',
+              dyelot: '1',
+              material_atr: '常规纱',
+              stock_value: 200,
+              stock_name: '桐庐凯瑞针纺一号仓',
+              remark: '',
+              change_name: '隔壁老李'
+            },
+            {
+              stock_time: '2019-03-22-16:31',
+              color: '深绿',
+              dyelot: '1',
+              material_atr: '常规纱',
+              stock_value: 200,
+              stock_name: '桐庐凯瑞针纺一号仓',
+              remark: '备注信息超多的，，，，，，',
+              change_name: '隔壁老李'
+            }
+          ]
+        },
+        {
+          material: '52支上光晴纶',
+          total_number: 562.4,
+          stock_number: 200,
+          before_stock: 0,
+          stock_info: [
+            {
+              stock_time: '2019-03-22-16:31',
+              color: '深绿',
+              dyelot: '1',
+              material_atr: '常规纱',
+              stock_value: 200,
+              stock_name: '桐庐凯瑞针纺一号仓',
+              remark: '',
+              change_name: '隔壁老李'
+            }
+          ]
+        }
+      ],
       productList: [
         {
           product_code: 'ES5623134',

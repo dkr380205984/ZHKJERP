@@ -176,52 +176,49 @@ ul {
               }
             }
           }
-          .content{
-            font-size: @fontMid;
+          &>.tables {
+            width: 100%;
             margin-left: 15px;
-            &>.tables {
-              width: 900px;
-              border: 1px solid #DDD;
-              li {
+            border: 1px solid #DDD;
+            li {
+              display: flex;
+              &>span {
+                text-align: center;
+                flex: 1;
+                height: auto;
                 display: flex;
-                border-bottom: 1px solid #DDD;
-                box-sizing: border-box;
+                // flex-direction: column;
+                justify-content: center;
+                overflow: hidden;
                 &:last-child {
                   border: none;
                 }
+                &.flex2 {
+                  flex: 1.2;
+                }
+                &.flex7 {
+                  flex:1.7;
+                }
                 &>span {
-                  text-align: center;
-                  flex: 1;
-                  height: auto;
-                  box-sizing: border-box;
-                  border-right: 1px solid #DDD;
-                  display: flex;
-                  flex-direction: column;
-                  justify-content: center;
-                  &:last-child {
-                    border: none;
+                  line-height: 30px;
+                  &.important {
+                    color: #10AEF5;
+                    padding: 5px;
+                    cursor: pointer;
                   }
-                  &.flex2 {
-                    flex: 1.2;
-                  }
-                  &.flex7 {
-                    flex:1.7;
-                  }
-                  &>span {
-                    line-height: 30px;
-                  }
-                }
-                &:first-child {
-                  background-color: rgb(240,240,240)!important;
-                }
-                &:nth-child(n+2) {
-                  font-size: @fontSmall;
-                }
-                &:nth-child(2n+1) {
-                  background-color:rgb(250, 250, 250) 
                 }
               }
+              &:first-child {
+                background-color: rgb(250,250,250)!important;
+              }
+              &:nth-child(n+2) {
+                font-size: @fontSmall;
+              }
             }
+          }
+          .content{
+            font-size: @fontMid;
+            margin-left: 15px;
             &.important{
               color:@normalBlue;
             }
