@@ -88,7 +88,7 @@ const menu = [{
   }, {
     name: '产品列表',
     url: '/index/productList'
-  } ]
+  }]
 }, {
   name: '工艺单管理',
   children: [{
@@ -119,13 +119,13 @@ const menu = [{
     name: '订单发货列表',
     url: '/index/orderStat'
   }
-  // {
-  //   name: '添加样品订单(未完成)',
-  //   url: '/index/sampleCreate'
-  // }, {
-  //   name: '样单列表(未完成)',
-  //   url: '/index/sampleList'
-  // }
+    // {
+    //   name: '添加样品订单(未完成)',
+    //   url: '/index/sampleCreate'
+    // }, {
+    //   name: '样单列表(未完成)',
+    //   url: '/index/sampleList'
+    // }
   ]
 }, {
   name: '库存管理',
@@ -136,29 +136,47 @@ const menu = [{
     name: '产品库存列表',
     url: '/index/productStockList'
   }
-  // {
-  //   name: '添加原料库存',
-  //   url: '/index/mainMaterialStockCreate'
-  // }, {
-  //   name: '原料库存列表',
-  //   url: '/index/mainMaterialStockList'
-  // },
-  // {
-  //   name: '添加辅料库存',
-  //   url: '/index/otherMaterialStockCreate'
-  // }, {
-  //   name: '辅料库存列表',
-  //   url: '/index/otherMaterialStockList'
-  // }
+    // {
+    //   name: '添加原料库存',
+    //   url: '/index/mainMaterialStockCreate'
+    // }, {
+    //   name: '原料库存列表',
+    //   url: '/index/mainMaterialStockList'
+    // },
+    // {
+    //   name: '添加辅料库存',
+    //   url: '/index/otherMaterialStockCreate'
+    // }, {
+    //   name: '辅料库存列表',
+    //   url: '/index/otherMaterialStockList'
+    // }
   ]
 },
-//  {
-//   name: '原料管理',
-//   children: [{
-//     name: '原料预订购',
-//     url: '/index/rawMaterialPurchase'
-//   }]
-// },
+{
+  name: '原料管理',
+  children: [{
+    name: '原料预订购',
+    url: '/index/rawMaterialPurchase'
+  }, {
+    name: '原料订购列表',
+    url: '/index/rawMaterialOrderList'
+  }, {
+    name: '原料已订购列表',
+    url: '/index/rawMaterialOrderCompiledList'
+  }, {
+    name: '原料加工列表',
+    url: '/index/rawMaterialProcessList'
+  }, {
+    name: '原料已加工列表',
+    url: '/index/rawMaterialProcessCompiledList'
+  }, {
+    name: '原料预入库列表',
+    url: '/index/rawMaterialBeforeStockList'
+  }, {
+    name: '原料已入库列表',
+    url: '/index/rawMaterialStockList'
+  }]
+},
 {
   name: '生产管理',
   children: [{
@@ -179,7 +197,7 @@ const menu = [{
   }]
 }, {
   name: '系统设置',
-  children: [ {
+  children: [{
     name: '系统设置',
     url: '/index/setting'
   }]
@@ -196,7 +214,7 @@ const menu2 = [{
   }, {
     name: '产品设置',
     url: '/index/productSetting'
-  } ]
+  }]
 }, {
   name: '工艺单管理',
   children: [{
@@ -319,7 +337,7 @@ const menu2 = [{
   }, {
     name: '辅料统计',
     url: '/index/null'
-  } ]
+  }]
 }, {
   name: '生产管理',
   children: [{
