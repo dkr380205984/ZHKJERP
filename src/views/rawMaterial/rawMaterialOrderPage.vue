@@ -122,9 +122,9 @@
                   :key="index"
                   class="col">
                 <div>
-                  <span>原料颜色</span>:
+                  <span>原料信息</span>:
                   <el-select v-model="value.color"
-                             placeholder="请选择颜色"
+                             placeholder="颜色"
                              size="small">
                     <el-option v-for="color in options"
                                :key="color.value"
@@ -132,8 +132,20 @@
                                :value="color.label">
                     </el-option>
                   </el-select>
+                  <strong>—</strong>
+                  <el-input size="small"
+                            placeholder="单价"
+                            v-model="value.price"
+                            @change="jisuan(key)">
+                  </el-input>
+                  <strong>—</strong>
+                  <el-input size="small"
+                            placeholder="数量"
+                            v-model="value.value"
+                            @change="jisuan(key)">
+                  </el-input>
                 </div>
-                <div>
+                <!-- <div>
                   <span>原料单价</span>:
                   <el-input size="small"
                             placeholder="请输入原料单价"
@@ -141,8 +153,8 @@
                             @change="jisuan(key)">
                   </el-input>
                   <i>元/kg</i>
-                </div>
-                <div>
+                </div> -->
+                <!-- <div>
                   <span>订购数量</span>:
                   <el-input size="small"
                             placeholder="请输入订购数量"
@@ -150,7 +162,7 @@
                             @change="jisuan(key)">
                   </el-input>
                   <i>kg</i>
-                </div>
+                </div> -->
                 <em v-if="index === 0"
                     class="el-icon-plus"
                     @click="appendBuyMaterialInfo(key,kay)"></em>
@@ -174,7 +186,7 @@
                                 type="date"
                                 placeholder="选择日期"
                                 size="small"
-                                style="width:238px"
+                                style="width:243px"
                                 :picker-options="pickerOptions">
                 </el-date-picker>
               </li>
@@ -185,7 +197,7 @@
                                 type="date"
                                 placeholder="选择日期"
                                 size="small"
-                                style="width:238px"
+                                style="width:243px"
                                 :picker-options="pickerOptions">
                 </el-date-picker>
               </li>
@@ -193,7 +205,7 @@
                 <span>备注</span>:
                 <el-input type="textarea"
                           placeholder="请输入内容"
-                          style="width:238px;margin: 0 0 0 15px;height:45px;"
+                          style="width:243px;margin: 0 0 0 15px;height:45px;"
                           v-model="iten.remark">
                 </el-input>
               </li>
@@ -446,20 +458,6 @@ export default {
               needNum: 0,
               selectNum: 0,
               buyInfo: [
-                // {
-                //   company: '',
-                //   money: '',
-                //   orderTime: '',
-                //   completeTime: '',
-                //   remark: '',
-                //   buyMaterialInfo: [
-                //     {
-                //       color: '',
-                //       price: '',
-                //       value: ''
-                //     }
-                //   ]
-                // }
               ]
             }
             obj.material = item.material

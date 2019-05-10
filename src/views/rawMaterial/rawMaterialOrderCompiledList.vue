@@ -78,7 +78,7 @@
           <div class="tableColumn">负责小组</div>
           <div class="tableColumn"
                style="flex:1.9">订购单位</div>
-          <div class="tableColumn">总价</div>
+          <div class="tableColumn">总公斤数</div>
           <div class="tableColumn">创建人</div>
           <div class="tableColumn">创建时间</div>
           <div class="tableColumn"
@@ -97,7 +97,7 @@
             <span v-for="(value,index) in item.order_team"
                   :key="index">{{value}}</span>
           </div>
-          <div class="tableColumn">{{item.total}}元</div>
+          <div class="tableColumn">{{item.total_number}}kg</div>
           <div class="tableColumn">{{item.create_name}}</div>
           <div class="tableColumn">{{item.create_time}}</div>
           <div class="tableColumn"
@@ -166,7 +166,7 @@ export default {
           order_company: '杭州飞泰服饰有限公司',
           ground_name: 'B组',
           order_team: ['杭州飞泰纱线厂', '杭州力欧纱线厂', '杭州荣光纱线厂'],
-          total: 700,
+          total_number: 700,
           create_name: '王锦鲤',
           create_time: '2019-04-23'
         },
@@ -175,7 +175,7 @@ export default {
           order_company: '杭州飞泰服饰有限公司',
           ground_name: 'B组',
           order_team: ['杭州飞泰纱线厂'],
-          total: 700,
+          total_number: 700,
           create_name: '王锦鲤',
           create_time: '2019-04-23'
         },
@@ -184,7 +184,7 @@ export default {
           order_company: '杭州飞泰服饰有限公司',
           ground_name: 'B组',
           order_team: ['杭州飞泰纱线厂', '杭州力欧纱线厂', '杭州荣光纱线厂'],
-          total: 700,
+          total_number: 700,
           create_name: '王锦鲤',
           create_time: '2019-04-23'
         }
