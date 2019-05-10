@@ -2,7 +2,7 @@
   <div id="rawMaterialStockDetail"
        v-loading="loading">
     <div class="head">
-      <h2>原料订购</h2>
+      <h2>原料入库详情</h2>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -120,7 +120,7 @@
           <div class="inputCtn  noPadding"
                v-for="(item,key) in stockInfo"
                :key="key"
-               style="width:100%;margin-left:20px;">
+               style="width:1000px;;margin-left:20px;">
             <div class="title2">
               <span>{{item.material}}</span>
               <span>合计：{{item.total_number}}kg</span>
@@ -148,7 +148,16 @@
                 <span>{{value.material_atr}}</span>
                 <span>{{value.stock_value}}</span>
                 <span class="flex2">{{value.stock_name}}</span>
-                <span class="flex2">{{value.remark ? value.remark : '暂无备注'}}</span>
+                <span class="flex2">{{value.remark ? value.remark : '暂无备注'}}
+                  <el-popover placement="bottom"
+                              width="200"
+                              trigger="click"
+                              :content="value.remark"
+                              class="pop"
+                              v-if="chatCodeLength(value.remark) > 14">
+                    <el-button slot="reference">展开</el-button>
+                  </el-popover>
+                </span>
                 <span>{{value.change_name}}</span>
                 <span class="flex2">
                   <span class="important">修改</span>
@@ -164,6 +173,15 @@
         <div class="stepTitle">入库状态</div>
         <div class="borderCtn">
           <div class="cicle"></div>
+        </div>
+        <div class="lineCtn col">
+          <div class="inputCtn noPadding"
+               v-for="(item,key) in stockInfo"
+               :key="key">
+            <span>{{item.material + '：'}}</span>
+            <span :class="item.before_stock !== 0 ? 'warning' : 'success'">{{item.before_stock === 0 ? '已完成' : '未完成'}}</span>
+            <span v-if="item.before_stock !== 0">待入库重量：&nbsp;&nbsp;&nbsp; {{item.before_stock + 'kg'}}</span>
+          </div>
         </div>
       </div>
       <div class="btnCtn">
@@ -188,7 +206,7 @@ export default {
           material: '52支上光晴纶',
           total_number: 562.4,
           stock_number: 562.4,
-          before_stock: 0,
+          before_stock: 10,
           stock_info: [
             {
               stock_time: '2019-03-22-16:31',
@@ -207,13 +225,13 @@ export default {
               material_atr: '常规纱',
               stock_value: 200,
               stock_name: '桐庐凯瑞针纺一号仓',
-              remark: '备注信息超多的，，，，，，',
+              remark: '备注信息超多的啊啊啊啊啊啊',
               change_name: '隔壁老李'
             }
           ]
         },
         {
-          material: '52支上光晴纶',
+          material: '36支上光晴纶',
           total_number: 562.4,
           stock_number: 200,
           before_stock: 0,
@@ -531,49 +549,18 @@ export default {
     }
   },
   methods: {
-    // jisuan () {
-    //   this.list.forEach((item, key) => {
-    //     item.selectNum = 0
-    //     item.stockInfo.forEach((value, index) => {
-    //       value.total_weight = 0
-    //       value.stockWeightInfo.forEach((val, ind) => {
-    //         item.selectNum += Number(val.value)
-    //         value.total_weight += Number(val.weight)
-    //       })
-    //     })
-    //   })
-    // },
-    // appendStockWeightInfo (key, kay) {
-    //   this.list[key].stockInfo[kay].stockWeightInfo.push({
-    //     weight: ''
-    //   })
-    // },
-    // deleteStockWeightInfo (key, kay, index) {
-    //   this.list[key].stockInfo[kay].stockWeightInfo.splice(index, 1)
-    //   this.jisuan()
-    // },
-    // addStockInfo (key) {
-    //   this.list[key].stockInfo.push(
-    //     {
-    //       materialColor: '',
-    //       dyelot: '',
-    //       materialAtr: '',
-    //       total_weight: 0,
-    //       remark: '',
-    //       stock: this.defaultStock,
-    //       stock_time: new Date(),
-    //       stockWeightInfo: [
-    //         {
-    //           weight: ''
-    //         }
-    //       ]
-    //     }
-    //   )
-    //   console.log(this.list)
-    // },
-    // deleteStockInfo (key, kay) {
-    //   this.list[key].stockInfo.splice(kay, 1)
-    // },
+    chatCodeLength (item) {
+      let len = item.length
+      let lengths = 0
+      for (let i = 0; i < len; i++) {
+        if (item.charCodeAt(i) > 255) {
+          lengths += 2
+        } else {
+          lengths++
+        }
+      }
+      return lengths
+    },
     saveAll () {
       this.list.forEach(item => {
         item.stockInfo.forEach(value => {

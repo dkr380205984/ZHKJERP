@@ -121,6 +121,16 @@ ul {
             width: 13em;
             text-align: right;
           }
+          &>span{
+            font-size: @fontMid;
+            &.warning {
+              color: @warning;
+              margin-right: 20px;
+            }
+            &.success {
+              color: @success;
+            }
+          }
           &>.processContent {
             flex: 1;
             margin-left: 15px;
@@ -185,11 +195,35 @@ ul {
               &>span {
                 text-align: center;
                 flex: 1;
-                height: auto;
+                height: 40px;
                 display: flex;
-                // flex-direction: column;
                 justify-content: center;
+                position: relative;
                 overflow: hidden;
+                &>.pop {
+                  width: 44px;
+                  height: 12px;
+                  position: absolute;
+                  top: 0;
+                  padding-left: 20px;
+                  right: 0px;
+                  font-style: normal;
+                  color: #10AEF5;
+                  
+                  &>button {
+                    width: inherit;
+                    margin-top: 14px;
+                    height: inherit;
+                    border: none;
+                    font-size: @fontSmall;
+                    color: @fontNormal;
+                    font-weight: 300;
+                    padding: 0;
+                    padding-left: 20px;
+                    color: #10AEF5;
+                    background:linear-gradient(90deg,rgba(255,255,255,0) 0%,rgba(255,255,255,1) 50%);
+                  }
+                }
                 &:last-child {
                   border: none;
                 }
