@@ -20,7 +20,8 @@
         <span :key="index+value">
           <span v-for="(content,number) in addLen(setSizeInfo(value,key,index,data.materialList.length,item.colorInfo.length),key)"
                 :key="number+content">
-            {{content.name + ': '}}{{content.number + ((content.unit ==='克' || content.unit === '千克') ? (content.unit === '克' ? 'g' : 'kg') : content.unit)}}
+            <span>{{content.name}}</span>
+            <span>{{content.number + ((content.unit ==='克' || content.unit === '千克') ? (content.unit === '克' ? 'g' : 'kg') : content.unit)}}</span>
           </span>
           <template v-if="value.colorList.length === 0">
             <!-- {{value}} -->

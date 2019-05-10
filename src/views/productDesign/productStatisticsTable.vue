@@ -30,32 +30,34 @@
           <!-- 此处接口暂时未调 -->
           <div v-for="(item,key) in order.order_batch"
                :key="key">
-            <template v-for='value in item.batch_info'>
-              <span :key='value.productCode + "x"'>{{value.productCode}}</span>
-              <span :key='value.productCode + "y"'>{{value.productInfo|filterType}}</span>
-              <span :key="value.productCode + 'z'">{{value.size|filterNumber}}条</span>
-            </template>
+            <div v-for='value in item.batch_info'
+                 :key='value.productCode + "x"'>
+              <span>{{value.productCode}}</span>
+              <span>{{value.productInfo|filterType}}</span>
+              <span>{{value.size|filterNumber}}条</span>
+            </div>
           </div>
         </div>
       </li>
       <li class="size-tables">
         <template v-for="(item,key) in materialInfo">
           <ul class="size-table"
-              v-if='(item.type).toString() === type'
+              v-if='
+                 (item.type).toString()===type'
               :key="key">
             <li>
               <span>原料名称</span>
               <span>{{key}}</span>
               <span>合计</span>
               <span v-if="item.type===0">{{(item.total_number/1000).toFixed(2) + '千' + item.unit}}</span>
-              <span v-if="item.type===1">{{item.total_number + item.unit}}</span>
+              <span v-if="item.type===1">{{parseInt(item.total_number) + item.unit}}</span>
             </li>
             <template v-for="(value,index) in item">
               <li :key="index"
                   v-if="index !== 'total_number' && index !== 'type'&&index !== 'unit'">
                 <span>{{item.type===1?'数量':'颜色重量'}}</span>
                 <span v-if="item.type===0">{{index + " " + (value/1000).toFixed(2) + '千' + item.unit}}</span>
-                <span v-if="item.type===1">{{index + " " + value + item.unit}}</span>
+                <span v-if="item.type===1">{{index + " " + parseInt(value) + item.unit}}</span>
               </li>
             </template>
           </ul>
