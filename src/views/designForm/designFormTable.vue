@@ -223,10 +223,10 @@
                     <div class="table-head-col">{{value.product_color}}</div>
                     <div v-for="(item,key) in value.color_scheme"
                          :key="key">
-                      <span style="">{{item.warp.name}}</span>
-                      <span>{{item.weft ? item.weft.name : ''}}</span>
+                      <span :style="{fontSize:smallFont(item.warp.name) ? '10px' : false}">{{item.warp.name}}</span>
+                      <span :style="{fontSize:smallFont(item.weft.name) ? '10px' : false}">{{item.weft ? item.weft.name : ''}}</span>
                     </div>
-                    <template v-if="value.color_scheme.length < 6">
+                    <template v-if="value.color_scheme.length<6">
                       <div v-for="(x,y) in forArr( 6 - value.color_scheme.length)"
                            :key="y+'1'">
                         <span></span>
@@ -242,7 +242,8 @@
                     <div class="table-head-col"></div>
                     <div v-for="(item,key) in forArr(6)"
                          :key="key+item">
-                      <span></span><span></span>
+                      <span></span>
+                      <span></span>
                     </div>
                   </li>
                 </template>
@@ -368,8 +369,8 @@
               <div class="table-head-col">{{value.product_color}}</div>
               <div v-for="(item,key) in value.color_scheme"
                    :key="key">
-                <span style="">{{item.warp.name}}</span>
-                <span>{{item.weft ? item.weft.name : ''}}</span>
+                <span :style="{fontSize:smallFont(item.warp.name) ? '10px' : false}">{{item.warp.name}}</span>
+                <span :style="{fontSize:smallFont(item.weft.name) ? '10px' : false}">{{item.weft ? item.weft.name : ''}}</span>
               </div>
               <template v-if="value.color_scheme.length < 6">
                 <div v-for="(x,y) in forArr( 6 - value.color_scheme.length)"
@@ -416,7 +417,7 @@ export default {
       },
       weight: '',
       size: {},
-      companyName: 'xx',
+      // companyName: 'xx',
       material_data: {
         warpMaterialMain: {
           name: '',
@@ -459,6 +460,22 @@ export default {
         arr.push(Math.random())
       }
       return arr
+    },
+    smallFont (item) {
+      let len = item.length
+      let num = 0
+      for (let i = 0; i < len; i++) {
+        if (item.charCodeAt(i) > 255) {
+          num += 2
+        } else {
+          num++
+        }
+      }
+      if (num > 7) {
+        return true
+      } else {
+        return false
+      }
     },
     // 如果数据少于12条
     add (item, flag) {
@@ -529,7 +546,7 @@ export default {
           }
           arr.push({ value: 'no', key: 1 })
         } else if (index === len - 1) {
-          if (firstVal === value || value === null) {
+          if ((firstVal === value && value === 1) || value === null) {
             n++
           }
           obj.value = firstVal
@@ -544,7 +561,7 @@ export default {
         } else if (value === null) {
           n++
         } else {
-          if (value === firstVal) {
+          if (value === firstVal && value === 1) {
             n++
           } else {
             if (index !== 0) {
@@ -690,7 +707,7 @@ export default {
     html.style.overflow = 'visible'
   },
   updated () {
-    // window.print()
+    window.print()
   }
 }
 </script>

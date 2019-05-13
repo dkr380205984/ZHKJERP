@@ -5,7 +5,7 @@
       <h2>原料出库</h2>
     </div>
     <div class="body">
-      <div class="stepCtn">
+      <!-- <div class="stepCtn">
         <div class="stepTitle">订单信息</div>
         <div class="borderCtn">
           <div class="cicle"></div>
@@ -31,7 +31,7 @@
             <span class="content">A组</span>
           </div>
         </div>
-      </div>
+      </div> -->
       <div class="stepCtn">
         <div class="stepTitle">生产单位</div>
         <div class="borderCtn">
@@ -39,17 +39,65 @@
           <div class="border"></div>
         </div>
         <div class="lineCtn">
-          <ul class="inputCtn"
-              style="padding-left:40px;
-              flex-direction: column;">
-            <li v-for="(item,key) in companyList"
+          <div class="inputCtn"
+               style="width:100%;padding-left:40px;">
+            <ul class="makeTable">
+              <li>
+                <span>生产单位</span>
+                <span class="flex22">
+                  <span class="flex17">产品信息</span>
+                  <span class="flex06">尺码/颜色</span>
+                  <span class="flex06">生产数量</span>
+                </span>
+                <span class="flex20">
+                  <span class="flex12">所需原料</span>
+                  <span class="flex06">原料颜色</span>
+                  <span class="flex06">原料重量</span>
+                </span>
+              </li>
+              <li v-for="(item,key) in companyList"
+                  :key="key">
+                <span>
+                  <span>{{item.company}}</span>
+                </span>
+                <span class="flex22">
+                  <span class="flex17">
+                    <span v-for="(value,index) in item.productList"
+                          :key="index">
+                      <span class="flex17">
+                        <span>
+                          <div>
+                            <span>{{value.product_code}}</span>
+                            <span style="margin-left:20px">{{value.product_class}}</span>
+                          </div>
+                        </span>
+                      </span>
+                      <span class="flex12">
+                        <span v-for="(ite,ka) in value.makeInfo"
+                              :key="ka">
+                          <span class="flex06">{{ite.size + '/' + ite.color }}</span>
+                          <span class="flex06">{{ite.make_number + '条'}}</span>
+                        </span>
+                      </span>
+                    </span>
+                  </span>
+                </span>
+                <span class="flex20">
+                  <span class="flex12">所需原料</span>
+                  <span class="flex06">原料颜色</span>
+                  <span class="flex06">原料重量</span>
+                </span>
+
+              </li>
+            </ul>
+            <!-- <li v-for="(item,key) in companyList"
                 :key="key">
               {{item}}
-            </li>
-          </ul>
+            </li> -->
+          </div>
         </div>
       </div>
-      <div class="stepCtn">
+      <!-- <div class="stepCtn">
         <div class="stepTitle">生产计划信息</div>
         <div class="borderCtn">
           <div class="cicle"></div>
@@ -57,7 +105,7 @@
         </div>
         <div class="lineCtn">
           <div class="inputCtn"
-               style="width:1170px;
+               style="width:100%;
                padding-left:40px;">
             <ul class="planTable">
               <li>
@@ -89,8 +137,8 @@
             </ul>
           </div>
         </div>
-      </div>
-      <div class="stepCtn">
+      </div> -->
+      <!-- <div class="stepCtn">
         <div class="stepTitle">原料信息</div>
         <div class="borderCtn">
           <div class="cicle"></div>
@@ -116,8 +164,8 @@
             </span>
           </div>
         </div>
-      </div>
-      <div class="stepCtn">
+      </div> -->
+      <!-- <div class="stepCtn">
         <div class="stepTitle">原料出库</div>
         <div class="borderCtn">
           <div class="cicle"></div>
@@ -243,7 +291,7 @@
             <span>添加公司</span>
           </div>
         </div>
-      </div>
+      </div> -->
       <div class="btnCtn">
         <div class="cancleBtn"
              @click="$router.go(-1)">返回</div>
@@ -261,29 +309,6 @@ export default {
       total_weight: 0,
       defaultStock: '桐庐凯瑞针纺有限公司',
       loading: false,
-      productList: [
-        {
-          product_code: 'ES5623134',
-          product_class: '围巾/针织/长巾/豹纹',
-          size: 'S',
-          color: '深绿',
-          number: 2000
-        },
-        {
-          product_code: 'ES5623134',
-          product_class: '围巾/针织/长巾/豹纹',
-          size: 'S',
-          color: '深绿',
-          number: 2000
-        },
-        {
-          product_code: 'ES5623134',
-          product_class: '围巾/针织/长巾/豹纹',
-          size: 'S',
-          color: '深绿',
-          number: 2000
-        }
-      ],
       rawMaterialPlanList: [
         {
           company: '杭州力欧纱线有限公司',
@@ -504,10 +529,82 @@ export default {
         }
       ],
       companyList: [
-        '杭州凰顺针织有限公司',
-        '杭州泰若针纺有限公司',
-        '杭州凯瑞针纺有限公司',
-        '杭州飞泰服饰有限公司'
+        {
+          company: '杭州凰顺针织有限公司',
+          productList: [
+            {
+              product_code: 'ES5623134',
+              product_class: '围巾/针织/长巾',
+              makeInfo: [
+                {
+                  size: 'S码',
+                  color: '深绿',
+                  make_number: 2010
+                }, {
+                  size: 'M码',
+                  color: '卡其色',
+                  make_number: 1998
+                }
+              ]
+            }, {
+              product_code: 'ES5623134',
+              product_class: '围巾/针织/长巾',
+              makeInfo: [
+                {
+                  size: 'S码',
+                  color: '深绿',
+                  make_number: 2010
+                }, {
+                  size: 'M码',
+                  color: '卡其色',
+                  make_number: 1998
+                }
+              ]
+            }
+          ],
+          materialList: [
+            {
+              material: '52支上光单股晴纶',
+              colors: [
+                {
+                  color: '卡其色',
+                  number: 200,
+                  unit: 'kg'
+                }, {
+                  color: '白色',
+                  number: 20,
+                  unit: 'g'
+                }
+              ]
+            }, {
+              material: '36支上光双股晴纶',
+              colors: [
+                {
+                  color: '卡其色',
+                  number: 200,
+                  unit: 'kg'
+                }, {
+                  color: '白色',
+                  number: 20,
+                  unit: 'g'
+                }
+              ]
+            }, {
+              material: '48支上光双股晴纶',
+              colors: [
+                {
+                  color: '卡其色',
+                  number: 200,
+                  unit: 'kg'
+                }, {
+                  color: '白色',
+                  number: 20,
+                  unit: 'g'
+                }
+              ]
+            }
+          ]
+        }
       ],
       planList: [
         {
