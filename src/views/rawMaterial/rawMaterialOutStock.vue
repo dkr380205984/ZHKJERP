@@ -1,8 +1,8 @@
 <template>
-  <div id="rawMaterialStock"
+  <div id="rawMaterialOutStock"
        v-loading="loading">
     <div class="head">
-      <h2>原料入库</h2>
+      <h2>原料出库</h2>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -29,6 +29,64 @@
           <div class="inputCtn">
             <span class="label">负责小组:</span>
             <span class="content">A组</span>
+          </div>
+        </div>
+      </div>
+      <div class="stepCtn">
+        <div class="stepTitle">生产单位</div>
+        <div class="borderCtn">
+          <div class="cicle"></div>
+          <div class="border"></div>
+        </div>
+        <div class="lineCtn">
+          <ul class="inputCtn"
+              style="padding-left:40px;
+              flex-direction: column;">
+            <li v-for="(item,key) in companyList"
+                :key="key">
+              {{item}}
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="stepCtn">
+        <div class="stepTitle">生产计划信息</div>
+        <div class="borderCtn">
+          <div class="cicle"></div>
+          <div class="border"></div>
+        </div>
+        <div class="lineCtn">
+          <div class="inputCtn"
+               style="width:1170px;
+               padding-left:40px;">
+            <ul class="planTable">
+              <li>
+                <span>产品编号</span>
+                <span>产品品类</span>
+                <span class="flex06">产品克重</span>
+                <span class="flex20">产品规格</span>
+                <span>计划条数</span>
+                <span class="flex06">价格</span>
+                <span class="flex06">合计</span>
+                <span>交货日期</span>
+              </li>
+              <li v-for="(item,key) in planList"
+                  :key="key">
+                <span>{{item.product_code}}</span>
+                <span>{{item.product_class}}</span>
+                <span class="flex06">{{item.product_weight}}</span>
+                <span class="flex20">
+                  <span v-for="(value,index) in item.product_size"
+                        :key="index">
+                    {{value.name + ': ' + value.value + value.unit}}
+                  </span>
+                </span>
+                <span>{{item.plan_number + '条'}}</span>
+                <span class="flex06">{{item.price + '元/条'}}</span>
+                <span class="flex06">{{item.total + '元'}}</span>
+                <span>{{item.compiled_time}}</span>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -60,58 +118,7 @@
         </div>
       </div>
       <div class="stepCtn">
-        <div class="stepTitle">加工信息</div>
-        <div class="borderCtn">
-          <div class="cicle"></div>
-          <div class="border"></div>
-        </div>
-        <div class="lineCtn">
-          <div class="table">
-            <div class="tableTitle">
-              <span>
-                <span>加工类型</span>
-              </span>
-              <span class="flex45">
-                <span class="flex17">加工单位</span>
-                <span>原料名称</span>
-                <span class="flex12">颜色-数量</span>
-              </span>
-            </div>
-            <div class="tableInfo"
-                 v-for="(item,key) in processInfo"
-                 :key="key">
-              <span>
-                <span>{{item.process}}</span>
-              </span>
-              <span class="flex45">
-                <span v-for="(value,index) in item.processInfo"
-                      :key="index">
-                  <!-- 第二层 -->
-                  <span class="flex17">
-                    <span>{{value.company}}</span>
-                  </span>
-                  <span class="flex22">
-                    <span v-for="(val,ind) in value.materials"
-                          :key="ind">
-                      <span>
-                        <span>{{val.material}}</span>
-                      </span>
-                      <span class="flex12">
-                        <span v-for="(ite,ka) in val.colors"
-                              :key="ka">
-                          {{ite.color + '--' + ite.value + ite.unit}}
-                        </span>
-                      </span>
-                    </span>
-                  </span>
-                </span>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="stepCtn">
-        <div class="stepTitle">原料入库</div>
+        <div class="stepTitle">原料出库</div>
         <div class="borderCtn">
           <div class="cicle"></div>
           <div class="border"></div>
@@ -123,16 +130,13 @@
             <div class="tableTitle">
               <span>原料名称</span>
               <span>合计重量</span>
-              <span>已入库重量</span>
-              <span>待入库重量</span>
+              <span>已出库重量</span>
+              <span>待出库重量</span>
             </div>
             <div class="tableInfo">
               <span>{{item.material}}</span>
               <span>
                 {{item.total_number + 'kg'}}
-                <!-- <template v-for="(value,index) in item.needColors">
-                  {{(index === 0 ? '' : '/') + value}}
-                </template> -->
               </span>
               <span>{{item.stock_number + 'kg'}}</span>
               <span>{{item.before_stock + 'kg'}}</span>
@@ -161,7 +165,6 @@
                           v-model="iten.dyelot"
                           style="width:243px;">
                 </el-input>
-                <!-- <i>元</i> -->
               </li>
               <li>
                 <span>原料属性</span>:
@@ -204,7 +207,7 @@
                 <i>kg</i>
               </li>
               <li>
-                <span>入库仓库</span>:
+                <span>出库仓库</span>:
                 <el-input size="small"
                           placeholder="选择仓库"
                           v-model="iten.stock"
@@ -212,11 +215,11 @@
                 </el-input>
               </li>
               <li>
-                <span>入库时间</span>:
+                <span>出库时间</span>:
                 <el-date-picker v-model="iten.stock_time"
                                 align="right"
                                 type="date"
-                                placeholder="选择入库时间"
+                                placeholder="选择出库时间"
                                 size="small"
                                 style="width:243px"
                                 :picker-options="pickerOptions">
@@ -238,28 +241,6 @@
                @click="addStockInfo(key)">
             <span>+</span>
             <span>添加公司</span>
-          </div>
-        </div>
-      </div>
-      <div class="stepCtn"
-           style="padding-top:0;">
-        <div class="borderCtn">
-          <div class="cicle"></div>
-        </div>
-        <div class="lineCtn"
-             style="margin:0;">
-          <div class="inputCtn noPadding">
-            <span class="content"
-                  style="margin-left:40px;display:justify-content:center;">
-              <span style="width:8em">剩余入库量:</span>
-              <el-input size="small"
-                        placeholder="0"
-                        :disabled="true"
-                        v-model="total_weight"
-                        style="width:238px;margin-left:15px;">
-                <template slot="append">kg</template>
-              </el-input>
-            </span>
           </div>
         </div>
       </div>
@@ -519,22 +500,131 @@ export default {
           total_number: 0,
           stock_number: 0,
           before_stock: 0,
-          stockInfo: [
-            // {
-            //   materialColor: '',
-            //   dyelot: '',
-            //   materialAtr: '',
-            //   total_weight: 0,
-            //   remark: '',
-            //   stock: '桐庐凯瑞针纺有限公司',
-            //   stock_time: new Date(),
-            //   stockWeightInfo: [
-            //     {
-            //       weight: ''
-            //     }
-            //   ]
-            // }
-          ]
+          stockInfo: []
+        }
+      ],
+      companyList: [
+        '杭州凰顺针织有限公司',
+        '杭州泰若针纺有限公司',
+        '杭州凯瑞针纺有限公司',
+        '杭州飞泰服饰有限公司'
+      ],
+      planList: [
+        {
+          product_code: 'ES5623134',
+          product_class: '围巾/针织/长巾',
+          product_weight: '200g',
+          product_size: [
+            {
+              name: '长',
+              value: '60',
+              unit: 'cm'
+            }, {
+              name: '宽',
+              value: '50',
+              unit: 'cm'
+            }, {
+              name: '须头',
+              value: '24',
+              unit: 'cm'
+            }
+          ],
+          plan_number: 2010,
+          price: 10,
+          total: '',
+          compiled_time: '2019-05-23'
+        }, {
+          product_code: 'ES5623134',
+          product_class: '围巾/针织/长巾',
+          product_weight: '200g',
+          product_size: [
+            {
+              name: '长',
+              value: '60',
+              unit: 'cm'
+            }, {
+              name: '宽',
+              value: '50',
+              unit: 'cm'
+            }, {
+              name: '须头',
+              value: '24',
+              unit: 'cm'
+            }
+          ],
+          plan_number: '2010',
+          price: '10',
+          total: '',
+          compiled_time: '2019-05-23'
+        }, {
+          product_code: 'ES5623134',
+          product_class: '围巾/针织/长巾',
+          product_weight: '200g',
+          product_size: [
+            {
+              name: '长',
+              value: '60',
+              unit: 'cm'
+            }, {
+              name: '宽',
+              value: '50',
+              unit: 'cm'
+            }, {
+              name: '须头',
+              value: '24',
+              unit: 'cm'
+            }
+          ],
+          plan_number: '2010',
+          price: '10',
+          total: '',
+          compiled_time: '2019-05-23'
+        }, {
+          product_code: 'ES5623134',
+          product_class: '围巾/针织/长巾',
+          product_weight: '200g',
+          product_size: [
+            {
+              name: '长',
+              value: '60',
+              unit: 'cm'
+            }, {
+              name: '宽',
+              value: '50',
+              unit: 'cm'
+            }, {
+              name: '须头',
+              value: '24',
+              unit: 'cm'
+            }
+          ],
+          plan_number: '2010',
+          price: '10',
+          total: '',
+          compiled_time: '2019-05-23'
+        }, {
+          product_code: 'ES5623134',
+          product_class: '围巾/针织/长巾',
+          product_weight: '200g',
+          product_size: [
+            {
+              name: '长',
+              value: '60',
+              unit: 'cm'
+            }, {
+              name: '宽',
+              value: '50',
+              unit: 'cm'
+            }, {
+              name: '须头',
+              value: '24',
+              unit: 'cm'
+            }
+          ],
+          plan_number: '2010',
+          price: '10',
+          total: '',
+          compiled_time: '2019-05-23'
         }
       ],
       options: [
@@ -660,22 +750,7 @@ export default {
                 total_number: cont.value,
                 stock_number: 0,
                 before_stock: 0,
-                stockInfo: [
-                  // {
-                  //   materialColor: '',
-                  //   dyelot: '',
-                  //   materialAtr: '',
-                  //   total_weight: 0,
-                  //   remark: '',
-                  //   stock: this.defaultStock,
-                  //   stock_time: new Date(),
-                  //   stockWeightInfo: [
-                  //     {
-                  //       weight: ''
-                  //     }
-                  //   ]
-                  // }
-                ],
+                stockInfo: [],
                 colors: [
                   {
                     color: cont.color,
@@ -709,22 +784,7 @@ export default {
                     total_number: cont.value,
                     stock_number: 0,
                     before_stock: 0,
-                    stockInfo: [
-                      // {
-                      //   materialColor: '',
-                      //   dyelot: '',
-                      //   materialAtr: '',
-                      //   total_weight: 0,
-                      //   remark: '',
-                      //   stock: this.defaultStock,
-                      //   stock_time: new Date(),
-                      //   stockWeightInfo: [
-                      //     {
-                      //       weight: ''
-                      //     }
-                      //   ]
-                      // }
-                    ],
+                    stockInfo: [],
                     colors: [{
                       color: cont.color,
                       value: cont.value,
@@ -738,10 +798,13 @@ export default {
         })
       })
     })
+    this.planList.forEach((item, key) => {
+      item.total = item.price * item.plan_number
+    })
   }
 }
 </script>
 
 <style scoped lang='less'>
-@import "~@/assets/css/rawMaterialStock.less";
+@import "~@/assets/css/rawMaterialOutStock.less";
 </style>

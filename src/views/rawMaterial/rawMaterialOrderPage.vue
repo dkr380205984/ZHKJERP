@@ -145,24 +145,6 @@
                             @change="jisuan(key)">
                   </el-input>
                 </div>
-                <!-- <div>
-                  <span>原料单价</span>:
-                  <el-input size="small"
-                            placeholder="请输入原料单价"
-                            v-model="value.price"
-                            @change="jisuan(key)">
-                  </el-input>
-                  <i>元/kg</i>
-                </div> -->
-                <!-- <div>
-                  <span>订购数量</span>:
-                  <el-input size="small"
-                            placeholder="请输入订购数量"
-                            v-model="value.value"
-                            @change="jisuan(key)">
-                  </el-input>
-                  <i>kg</i>
-                </div> -->
                 <em v-if="index === 0"
                     class="el-icon-plus"
                     @click="appendBuyMaterialInfo(key,kay)"></em>
@@ -190,7 +172,7 @@
                                 :picker-options="pickerOptions">
                 </el-date-picker>
               </li>
-              <li>
+              <!-- <li>
                 <span>完成日期</span>:
                 <el-date-picker v-model="iten.completeTime"
                                 align="right"
@@ -200,7 +182,7 @@
                                 style="width:243px"
                                 :picker-options="pickerOptions">
                 </el-date-picker>
-              </li>
+              </li> -->
               <li>
                 <span>备注</span>:
                 <el-input type="textarea"
@@ -400,7 +382,7 @@ export default {
           company: '',
           money: '',
           orderTime: '',
-          completeTime: '',
+          // completeTime: '',
           remark: '',
           buyMaterialInfo: [
             {

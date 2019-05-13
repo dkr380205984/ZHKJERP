@@ -462,20 +462,14 @@ export default {
     },
     // 如果数据少于12条
     add (item, flag) {
-      // console.log(item)
       let items = []
       let arr = []
-      // let lastKey = null
       for (let prop in item) {
-        // if (item[prop] === null) {
-        //   items.push(items[lastKey])
-        // } else
         if (item[prop] === '') {
           items.push(1)
         } else {
           items.push(item[prop])
         }
-        // lastKey = prop
       }
       change(items, arr)
       function change (items, arr) {
@@ -502,6 +496,16 @@ export default {
       if (flag === 'all') {
         return arr
       } else if (typeof flag === 'number') {
+        if (arr[flag][0] === null) {
+          for (let i = flag - 1; i >= 0; i--) {
+            for (let j = 11; j >= 0; j--) {
+              if (arr[i][j] !== null) {
+                arr[flag][0] = arr[i][j]
+                return arr[flag]
+              }
+            }
+          }
+        }
         return arr[flag]
       } else {
         return arr[0]
@@ -509,13 +513,9 @@ export default {
     },
     // 处理数组
     changeArr (item) {
-      console.log(item)
       let obj = {}
       let n = 1
       let firstVal = ''
-      // if (key) {
-      //   item.splice(0, 12)
-      // }
       let len = item.length
       let arr = []
       let flag = true
@@ -599,7 +599,7 @@ export default {
     craftOne({
       id: this.$route.params.id
     }).then((res) => {
-      console.log(res)
+      // console.log(res)
       const data = res.data.data
       this.product_info = data.product_info
       this.craft_code = data.craft_code

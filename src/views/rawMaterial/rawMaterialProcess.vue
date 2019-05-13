@@ -142,18 +142,6 @@
               <li v-for="(value,index) in iten.processMaterialInfo"
                   :key="index"
                   class="col">
-                <!-- <div>
-                  <span>原料信息</span>:
-                  <el-select v-model="value.material"
-                             placeholder="请选择加工原料"
-                             size="small">
-                    <el-option v-for="color in options"
-                               :key="color.value"
-                               :label="color.label"
-                               :value="color.label">
-                    </el-option>
-                  </el-select>
-                </div> -->
                 <div>
                   <span>原料信息</span>:
                   <el-select v-model="value.color"
@@ -165,12 +153,12 @@
                                :value="color.label">
                     </el-option>
                   </el-select>
-                  <strong>—</strong>
+                  <!-- <strong>—</strong>
                   <el-input size="small"
                             placeholder="单价"
                             v-model="value.price"
                             @change="jisuan(key)">
-                  </el-input>
+                  </el-input> -->
                   <strong>—</strong>
                   <el-input size="small"
                             placeholder="数量"
@@ -222,7 +210,7 @@
                                 style="width:243px">
                 </el-date-picker>
               </li>
-              <li>
+              <!-- <li>
                 <span>完成日期</span>:
                 <el-date-picker v-model="iten.completeTime"
                                 align="right"
@@ -231,7 +219,7 @@
                                 size="small"
                                 style="width:243px">
                 </el-date-picker>
-              </li>
+              </li> -->
               <li>
                 <span>备注</span>:
                 <el-input type="textarea"
@@ -487,7 +475,7 @@ export default {
           company: '',
           money: '',
           orderTime: '',
-          completeTime: '',
+          // completeTime: '',
           remark: '',
           processMaterialInfo: [
             {

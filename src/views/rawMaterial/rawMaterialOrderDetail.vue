@@ -90,7 +90,7 @@
                   <span class="flex7">颜色-单价-数量</span>
                   <span>总价</span>
                   <span>下单日期</span>
-                  <span class="flex2">交货日期</span>
+                  <!-- <span class="flex2">交货日期</span> -->
                   <span>备注</span>
                 </li>
                 <li v-for="(value,index) in item.info"
@@ -104,7 +104,7 @@
                   </span>
                   <span>{{value.total_price}}</span>
                   <span>{{value.create_time}}</span>
-                  <span class="flex2">{{value.out_time}}</span>
+                  <!-- <span class="flex2">{{value.out_time}}</span> -->
                   <span>{{value.remark ? value.remark : '暂无备注'}}</span>
                 </li>
               </ul>
@@ -132,7 +132,8 @@ export default {
           material: '52支上光晴纶',
           total_number: '562.4',
           info: [
-            { company: '杭州飞泰服饰有限公司',
+            {
+              company: '杭州飞泰服饰有限公司',
               info: [
                 {
                   color: '深绿',
@@ -152,9 +153,10 @@ export default {
               ],
               total_price: 6400,
               create_time: '2019-04-23',
-              out_time: '2019-04-23',
+              // out_time: '2019-04-23',
               remark: '备注信息'
-            }, { company: '杭州飞泰服饰有限公司',
+            }, {
+              company: '杭州飞泰服饰有限公司',
               info: [
                 {
                   color: '深绿',
@@ -174,7 +176,7 @@ export default {
               ],
               total_price: 6400,
               create_time: '2019-04-23',
-              out_time: '2019-04-23',
+              // out_time: '2019-04-23',
               remark: '备注信息'
             }
           ]
@@ -183,7 +185,8 @@ export default {
           material: '52支上光晴纶',
           total_number: '562.4',
           info: [
-            { company: '杭州飞泰服饰有限公司',
+            {
+              company: '杭州飞泰服饰有限公司',
               info: [
                 {
                   color: '深绿',
@@ -203,9 +206,10 @@ export default {
               ],
               total_price: 6400,
               create_time: '2019-04-23',
-              out_time: '2019-04-23',
+              // out_time: '2019-04-23',
               remark: '备注信息'
-            }, { company: '杭州飞泰服饰有限公司',
+            }, {
+              company: '杭州飞泰服饰有限公司',
               info: [
                 {
                   color: '深绿',
@@ -215,9 +219,10 @@ export default {
               ],
               total_price: 6400,
               create_time: '2019-04-23',
-              out_time: '2019-04-23',
+              // out_time: '2019-04-23',
               remark: '备注信息'
-            }, { company: '杭州飞泰服饰有限公司',
+            }, {
+              company: '杭州飞泰服饰有限公司',
               info: [
                 {
                   color: '深绿',
@@ -237,7 +242,7 @@ export default {
               ],
               total_price: 6400,
               create_time: '2019-04-23',
-              out_time: '2019-04-23',
+              // out_time: '2019-04-23',
               remark: '备注信息'
             }
           ]
