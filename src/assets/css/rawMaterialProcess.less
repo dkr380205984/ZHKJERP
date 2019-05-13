@@ -66,6 +66,32 @@ ul {
         display: flex;
         color: @fontNormal;
         margin: 24px 0;
+        .tablePlan {
+          margin-left: 40px;
+          width: 900px;
+          border: 1px solid #DDD;
+          box-sizing: border-box;
+          &>.tableInfo {
+            font-size: @fontMid;
+          }
+          &>div {
+            width: 100%;
+            height: 40px;
+            display: flex;
+            border-bottom: 1px solid #DDD;
+            &:last-child {
+              border: none;
+            }
+            &:first-child {
+              background-color: #F6F6F6;
+            }
+            &>span {
+              flex: 1;
+              text-align: center;
+              line-height: 40px;
+            }
+          }
+        }
         .addBtn{
           width: 6em;
           padding: 0 18px;
@@ -208,7 +234,7 @@ ul {
             margin-top: 30px;
             background-color: #F6F6F6;
             width: 417px;
-            height: 593px;
+            height: 411px;
             overflow-y: scroll;
             padding: 35px 35px 35px 30px;
             box-sizing: border-box;
@@ -254,7 +280,7 @@ ul {
                 width: 243px;
               }
               &>.el-input {
-                width: 188px;
+                width: 193px;
                 margin: 0 0 0 15px;
               }
               &>div {
@@ -264,6 +290,10 @@ ul {
                 &:first-child {
                   margin: 0;
                 }
+                &>strong {
+                  color: #DDD;
+                  font-weight: 300;
+                }
                 &>span {
                   width: 5em;
                   text-align: right;
@@ -271,12 +301,12 @@ ul {
                   font-size: 14px;
                 }
                 &>.el-select {
-                  width: 243px;
+                  width: 114px;
                   margin:0 0 0 15px;
                 }
                 &>.el-input {
-                  width: 188px;
-                  margin: 0 0 0 15px;
+                  width: 114px;
+                  // margin: 0 0 0 15px;
                 }
                 &>i {
                   display: inline-block;

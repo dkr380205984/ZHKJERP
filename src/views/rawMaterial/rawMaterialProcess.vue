@@ -93,6 +93,24 @@
         <div class="lineCtn col"
              v-for="(item,key) in list"
              :key="key">
+          <div class="tablePlan">
+            <div class="tableTitle">
+              <span>原料名称</span>
+              <span>原料颜色</span>
+              <span>合计重量</span>
+              <span>已选重量</span>
+            </div>
+            <div class="tableInfo">
+              <span>{{item.material}}</span>
+              <span>
+                <template v-for="(value,index) in item.needColors">
+                  {{(index === 0 ? '' : '/') + value}}
+                </template>
+              </span>
+              <span>{{item.needNum}}kg</span>
+              <span>{{item.selectNum}}kg</span>
+            </div>
+          </div>
           <div class="processInfo">
             <ul class="processFrom"
                 v-for="(iten,kay) in item.processInfo"
@@ -125,21 +143,9 @@
                   :key="index"
                   class="col">
                 <div>
-                  <span>选择原料</span>:
-                  <el-select v-model="value.material"
-                             placeholder="请选择加工原料"
-                             size="small">
-                    <el-option v-for="color in options"
-                               :key="color.value"
-                               :label="color.label"
-                               :value="color.label">
-                    </el-option>
-                  </el-select>
-                </div>
-                <div>
-                  <span>选择颜色</span>:
+                  <span>原料信息</span>:
                   <el-select v-model="value.color"
-                             placeholder="请选择颜色"
+                             placeholder="颜色"
                              size="small">
                     <el-option v-for="color in options"
                                :key="color.value"
@@ -147,8 +153,20 @@
                                :value="color.label">
                     </el-option>
                   </el-select>
+                  <!-- <strong>—</strong>
+                  <el-input size="small"
+                            placeholder="单价"
+                            v-model="value.price"
+                            @change="jisuan(key)">
+                  </el-input> -->
+                  <strong>—</strong>
+                  <el-input size="small"
+                            placeholder="数量"
+                            v-model="value.value"
+                            @change="jisuan(key)">
+                  </el-input>
                 </div>
-                <div>
+                <!-- <div>
                   <span>加工单价</span>:
                   <el-input size="small"
                             placeholder="请输入加工单价"
@@ -165,7 +183,7 @@
                             @change="jisuan(key)">
                   </el-input>
                   <i>kg</i>
-                </div>
+                </div> -->
                 <em v-if="index === 0"
                     class="el-icon-plus"
                     @click="appendBuyMaterialInfo(key,kay)"></em>
@@ -189,29 +207,28 @@
                                 type="date"
                                 placeholder="选择日期"
                                 size="small"
-                                style="width:238px">
+                                style="width:243px">
                 </el-date-picker>
               </li>
-              <li>
+              <!-- <li>
                 <span>完成日期</span>:
                 <el-date-picker v-model="iten.completeTime"
                                 align="right"
                                 type="date"
                                 placeholder="选择日期"
                                 size="small"
-                                style="width:238px">
+                                style="width:243px">
                 </el-date-picker>
-              </li>
+              </li> -->
               <li>
                 <span>备注</span>:
                 <el-input type="textarea"
                           placeholder="请输入内容"
-                          style="width:238px;margin: 0 0 0 15px;height:45px;"
+                          style="width:243px;margin: 0 0 0 15px;height:45px;"
                           v-model="iten.remark">
                 </el-input>
               </li>
               <span class="el-icon-close"
-                    v-if="kay !== 0"
                     @click="deleteBuyInfo(key,kay)"></span>
             </ul>
           </div>
@@ -359,27 +376,27 @@ export default {
       ],
       list: [
         {
-          // material: '',
-          // needColors: [],
-          // needNum: 0,
-          // selectNum: 0,
+          material: '',
+          needColors: [],
+          needNum: 0,
+          selectNum: 0,
           processInfo: [
-            {
-              processClass: '',
-              processCompany: '',
-              money: '',
-              orderTime: '',
-              completeTime: '',
-              remark: '',
-              processMaterialInfo: [
-                {
-                  material: '',
-                  color: '',
-                  price: '',
-                  value: ''
-                }
-              ]
-            }
+            // {
+            //   processClass: '',
+            //   processCompany: '',
+            //   money: '',
+            //   orderTime: '',
+            //   completeTime: '',
+            //   remark: '',
+            //   processMaterialInfo: [
+            //     {
+            //       material: '',
+            //       color: '',
+            //       price: '',
+            //       value: ''
+            //     }
+            //   ]
+            // }
           ]
         }
       ],
@@ -431,9 +448,11 @@ export default {
   methods: {
     jisuan (key) {
       this.list.forEach((item, key) => {
+        item.selectNum = 0
         item.processInfo.forEach((value, index) => {
           value.money = 0
           value.processMaterialInfo.forEach((val, ind) => {
+            item.selectNum += Number(val.value)
             value.money += (val.price * val.value)
           })
         })
@@ -456,7 +475,7 @@ export default {
           company: '',
           money: '',
           orderTime: '',
-          completeTime: '',
+          // completeTime: '',
           remark: '',
           processMaterialInfo: [
             {
@@ -482,6 +501,47 @@ export default {
     }
   },
   created () {
+    this.rawMaterialPlanList.forEach((value, index) => {
+      value.processInfo.forEach((item, key) => {
+        item.colorInfo.forEach((val, ind) => {
+          if (ind === 0 && key === 0 && index === 0) {
+            this.list[0].material = item.material
+            this.list[0].needColors.push(val.color)
+            this.list[0].needNum = Number(val.value)
+          } else {
+            let flag = true
+            this.list.forEach((valu, inde) => {
+              if (valu.material === item.material) {
+                flag = false
+                let kay = true
+                valu.needColors.forEach((v, i) => {
+                  if (v === val.color) {
+                    kay = false
+                    valu.needNum += Number(val.value)
+                  } else if (v !== val.color && kay && i === valu.needColors.length - 1) {
+                    valu.needColors.push(val.color)
+                    valu.needNum += Number(val.value)
+                  }
+                })
+              } else if (flag && inde === this.list.length - 1 && valu.material !== item.material) {
+                let obj = {
+                  material: '',
+                  needColors: [],
+                  needNum: 0,
+                  selectNum: 0,
+                  processInfo: [
+                  ]
+                }
+                obj.material = item.material
+                obj.needColors.push(val.color)
+                obj.needNum = Number(val.value)
+                this.list.push(obj)
+              }
+            })
+          }
+        })
+      })
+    })
   }
 }
 </script>

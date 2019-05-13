@@ -92,7 +92,7 @@
                       </span>
                       <span>总价</span>
                       <span>下单日期</span>
-                      <span>交货日期</span>
+                      <!-- <span>交货日期</span> -->
                       <span>备注</span>
                       <span>加工状态</span>
                       <span>操作</span></span>
@@ -122,7 +122,7 @@
                       </span>
                       <span>{{item.total_price}}</span>
                       <span>{{item.create_time}}</span>
-                      <span>{{item.compiled_time}}</span>
+                      <!-- <span>{{item.compiled_time}}</span> -->
                       <span>
                         <span>{{item.remark ? item.remark : '暂无备注'}}</span>
                       </span>
