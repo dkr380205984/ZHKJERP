@@ -235,6 +235,7 @@ export default {
       })
       // 尺码
       this.footage = Object.keys(product.size)
+      console.log(this.footage)
       this.footage.forEach((key) => {
         this.sizeArr.push(product.size[key].map((item) => {
           return item.size_value
@@ -420,7 +421,7 @@ export default {
           return {
             'size_name': this.child_size[index2].name || null,
             'size_value': item2 || null,
-            'footage': this.child_footage.find((item3) => item3.id === item).name || null,
+            'footage': this.child_footage.find((item3) => item3.name === item).name || null,
             'weight': this.weight[index]
           }
         })

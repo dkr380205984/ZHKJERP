@@ -745,7 +745,7 @@ export default {
       })
       this.longSort = JSON.parse(window.localStorage.getItem('longSort')) || ['']
       this.longSort2 = JSON.parse(window.localStorage.getItem('longSort2')) || ['']
-      this.weight = JSON.parse(window.localStorage.getItem('weight')) || ''
+      this.weight = window.localStorage.getItem('weight') || ''
       this.coefficient = JSON.parse(window.localStorage.getItem('coefficient')) || []
       this.loading = false
     })
@@ -1344,7 +1344,7 @@ export default {
           this.$message.success({
             message: '添加成功'
           })
-          this.clearDraft(true)
+          this.clearDraft(false)
           this.$router.push('/index/productPlanCreate/' + this.$route.params.id)
         }
       })
@@ -1415,7 +1415,7 @@ export default {
       window.localStorage.removeItem('longSort2')
       window.localStorage.removeItem('coefficient')
       window.localStorage.removeItem('weight')
-      if (!noMessage) {
+      if (noMessage) {
         this.$message.success({
           message: '清空草稿成功'
         })
