@@ -95,6 +95,7 @@
           <span class="label">订购日期:</span>
           <span class="content">
             <el-date-picker v-model="order_time"
+                            value-format="yyyy-MM-dd"
                             type="date"
                             placeholder="请选择订购日期">
             </el-date-picker>
@@ -128,7 +129,6 @@
 
 <script>
 import { rawMaterialPurchase, colorList, clientList, YarnList } from '@/assets/js/api.js'
-// import { promised } from 'q'
 export default {
   data () {
     return {
@@ -186,7 +186,6 @@ export default {
     },
     delet (key) {
       this.material_info.splice(key, 1)
-      // console.log(this.material)
     },
     clean () {
       this.company = ''
@@ -222,16 +221,17 @@ export default {
             company_id: sessionStorage.company_id,
             client_id: this.company,
             material_info: [...this.material_info],
-            total_weight: Number(this.weight),
+            total_weight: Number(this.total_weight),
             total_price: Number(this.total_price),
             order_time: this.order_time,
             desc: this.remark
           })
           rawMaterialPurchase({
+            user_id: sessionStorage.user_id,
             company_id: sessionStorage.company_id,
             client_id: this.company,
             material_info: [...this.material_info],
-            total_weight: Number(this.weight),
+            total_weight: Number(this.total_weight),
             total_price: Number(this.total_price),
             order_time: this.order_time,
             desc: this.remark
