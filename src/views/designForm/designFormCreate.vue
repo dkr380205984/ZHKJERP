@@ -1479,19 +1479,19 @@ export default {
         const data = res.data.data
         data.material_data.forEach((item) => {
           if (item.type === 0 && item.type_material === 0) {
-            this.mainIngredient = ''
+            // this.mainIngredient = ''
           }
           if (item.type === 1 && item.type_material === 0) {
-            this.mainIngredient2 = ''
+            // this.mainIngredient2 = ''
           }
           if (item.type === 0 && item.type_material === 1) {
-            this.otherIngredient.push('')
+            // this.otherIngredient.push('')
             this.otherIngredientNum++
             this.jia.push(item.apply)
             this.jiaNum.push(item.apply.length)
           }
           if (item.type === 1 && item.type_material === 1) {
-            this.otherIngredient2.push('')
+            // this.otherIngredient2.push('')
             this.otherIngredientNum2++
             this.jia2.push(item.apply)
             this.jiaNum2.push(item.apply.length)
