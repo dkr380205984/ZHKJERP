@@ -174,6 +174,8 @@ const productionDetail = (params) => http.get(`${baseUrl}/production/one`, param
 const productionStat = (params) => http.get(`${baseUrl}/product/plan/order`, params)
 // 潘通色号列表
 const pantongList = (params) => http.get(`${baseUrl}/pan/color/list`, params)
+// 原料预订购
+const rawMaterialPurchase = (params) => http.post(`${baseUrl}/material/reserve/save`, params, 'application/json')
 export {
   YarnColorList,
   pantongList,
@@ -261,5 +263,6 @@ export {
   unitSave,
   unitDelete,
   sampleSave,
-  craftOne
+  craftOne,
+  rawMaterialPurchase
 }
