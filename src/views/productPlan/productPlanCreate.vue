@@ -64,6 +64,13 @@
           <div class="border"></div>
         </div>
         <div class="lineCtn">
+          <div class="inputCtn">
+            <span class="label must">是否有原料:</span>
+            <el-radio :disabled="!state" style="margin-left:15px" v-model="hasIngredient" label="0">无</el-radio>
+            <el-radio v-model="hasIngredient" label="1">有</el-radio>
+          </div>
+        </div>
+        <div class="lineCtn">
           <div class="inputCtn oneLine">
             <span class="label must">主要原料:</span>
             <div class="addBtn" @click="addMainMaterial">
@@ -114,7 +121,7 @@
                     <color-picker v-if="colorArr.length>0" :key="mainIngredient.color[index][index2][index3].colorCode.color + mainIngredient.color[index][index2][index3].colorCode.name" :content="mainIngredient.color[index][index2][index3].name.substr(0,1)" :colorArr="colorArr" v-model="mainIngredient.color[index][index2][index3].colorCode" @colorChange="(json)=>{getColor(json,index,index2,index3)}"></color-picker>
                     <div class="allInputs" v-for="(item4,index4) in mainIngredient.color[index][index2][index3].value.length" :key="index4">
                       <span class="labeled">{{mainIngredient.color[index][index2][index3].value[index4].size}}</span>
-                      <input :disabled="!state" class="input1" placeholder="数量" v-model="mainIngredient.color[index][index2][index3].value[index4].number"/>
+                      <input :disabled="!state||hasIngredient==='0'" class="input1" placeholder="数量" v-model="mainIngredient.color[index][index2][index3].value[index4].number"/>
                       <input class="input2" @blur="commonUnit1=mainIngredient.color[index][index2][index3].value[index4].unit" placeholder="单位" v-model="mainIngredient.color[index][index2][index3].value[index4].unit"/>
                     </div>
                     <i class="el-icon-delete delete" @click="deleteColor(index,index2,index3)"></i>
@@ -132,7 +139,7 @@
         <div class="lineCtn">
           <div class="inputCtn oneLine">
             <span class="label must">净重:</span>
-            <el-input :disabled="!state" class="elInput" placeholder="原料净重" v-model="weight[index]" v-for="(item,index) in sizeKey" :key="index">
+            <el-input :disabled="!state||hasIngredient==='0'" class="elInput" placeholder="原料净重" v-model="weight[index]" v-for="(item,index) in sizeKey" :key="index">
               <template slot="prepend">{{item}}</template>
               <template slot="append">克</template>
             </el-input>
@@ -141,7 +148,7 @@
         <div class="lineCtn">
           <div class="inputCtn oneLine">
             <span class="label must">纱线系数:</span>
-            <el-input :disabled="!state" style="width:300px" class="elInput" placeholder="纱线系数" v-model="xishu[index]" v-for="(item,index) in ingredientCmp" :key="index">
+            <el-input :disabled="!state||hasIngredient==='0'" style="width:300px" class="elInput" placeholder="纱线系数" v-model="xishu[index]" v-for="(item,index) in ingredientCmp" :key="index">
               <template slot="prepend">{{item}}</template>
               <template slot="append">克/厘米</template>
             </el-input>
@@ -253,6 +260,7 @@ import { porductOne, YarnList, editList, materialList, saveProductPlan, craftPro
 export default {
   data () {
     return {
+      hasIngredient: '1',
       loading: true,
       sizeKey: [],
       companyId: window.sessionStorage.getItem('company_id'),
@@ -812,6 +820,34 @@ export default {
           return '待选原料'
         }
       })
+    }
+  },
+  watch: {
+    hasIngredient (newVal) {
+      console.log(this.colorArr)
+      if (newVal === '0') {
+        this.mainIngredient.ingredient = [this.ingredientArr[0].name]
+        this.mainIngredient.colour = [this.colourArr.map((item) => item.name)]
+        this.mainIngredient.color = [this.colourArr.map((item) => {
+          return [{
+            name: '无',
+            colorCode: {
+              name: this.colorArr[0].name,
+              color: this.colorArr[0].color_code
+            },
+            value: this.mainIngredient.color[0][0][0].value.map((item2) => {
+              return {
+                size: item2.size,
+                number: 0,
+                unit: item2.unit
+              }
+            })
+          }]
+        })]
+        this.weight = [0]
+        this.xishu = [0]
+      }
+      console.log(this.mainIngredient)
     }
   },
   filters: {

@@ -54,7 +54,11 @@
             <div class="columnCtn" v-for="(itemColour,indexColour) in color_data.warpColorData" :key="indexColour">
               <div class="name">{{indexColour+1}}.{{itemColour.product_color}}：</div>
               <div class="value">
-                <div class="bgBlock" v-for="(itemColor,indexColor) in itemColour.color_scheme" :key="indexColor"><div :style="{'background-color':itemColor.value}" class="shadeBlock">{{indexColor|filterMethods}}</div></div>
+                <el-tooltip class="item" effect="dark" :content="itemColor.name" placement="top" v-for="(itemColor,indexColor) in itemColour.color_scheme" :key="indexColor">
+                  <div class="bgBlock">
+                    <div :style="{'background-color':itemColor.value}" class="shadeBlock">{{indexColor|filterMethods}}</div>
+                  </div>
+                </el-tooltip>
               </div>
             </div>
           </div>
@@ -180,7 +184,9 @@
             <div class="columnCtn" v-for="(itemColour,indexColour) in color_data.weftColorData" :key="indexColour">
               <div class="name">{{indexColour+1}}.{{itemColour.product_color}}：</div>
               <div class="value">
-                <div class="bgBlock" v-for="(itemColor,indexColor) in itemColour.color_scheme" :key="indexColor"><div :style="{'background-color':itemColor.value}" class="shadeBlock">{{indexColor|filterMethods}}</div></div>
+                <el-tooltip class="item" effect="dark" :content="itemColor.name" placement="top" v-for="(itemColor,indexColor) in itemColour.color_scheme" :key="indexColor">
+                  <div class="bgBlock" ><div :style="{'background-color':itemColor.value}" class="shadeBlock">{{indexColor|filterMethods}}</div></div>
+                </el-tooltip>
               </div>
             </div>
           </div>
