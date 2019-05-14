@@ -1,9 +1,9 @@
 <template>
-  <div id="rawMaterialBeforeStockList"
+  <div id="rawMaterialBeforeOutStockList"
        v-loading="loading">
     <div class="head">
-      <h2>原料预入库列表</h2>
-      <el-input placeholder="输入文字精确搜索"
+      <h2>原料预出库列表</h2>
+      <el-input placeholder="输出文字精确搜索"
                 suffix-icon="el-icon-search"
                 v-model="searchVal"></el-input>
     </div>
@@ -69,14 +69,12 @@
                style="flex:1.2">订单公司</div>
           <div class="tableColumn">负责小组</div>
           <div class="tableColumn"
-               style="flex:2.7;flex-direction:row;">
-            <span style="border-right:1px solid #DDD;flex:1; ">加工单位</span>
-            <span style="flex:0.7; ">加工类型</span>
+               style="flex:3.7;flex-direction:row;">
+            <span style="border-right:1px solid #DDD;flex:1; ">生产单位</span>
+            <span style="flex:1.7; ">产品详情</span>
           </div>
-          <div class="tableColumn">总价</div>
           <div class="tableColumn">创建人</div>
           <div class="tableColumn">创建时间</div>
-          <div class="tableColumn">入库状态</div>
           <div class="tableColumn"
                style="flex:1.2">操作</div>
         </div>
@@ -89,34 +87,23 @@
                style="flex:1.2">{{item.order_company}}</div>
           <div class="tableColumn">{{item.ground_name}}</div>
           <div class="tableColumn col"
-               style="flex:2.7">
+               style="flex:3.7">
             <span v-for="(value,index) in item.order_team"
                   :key="index">
               <span style="flex:1">
                 <span>{{value.company}}</span>
               </span>
-              <span style="flex:0.7">
+              <span style="flex:1.7">
                 <span>{{value.processClass}}</span>
               </span>
-              <!-- <span style="flex:1.4">
-                <span v-for="(content,number) in value.info"
-                      :key="number"
-                      :style="{'padding':value.info.length === 1 ? '10px 0' : false}">{{content.material}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{content.color}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{content.weight+content.unit}}
-                </span>
-              </span> -->
             </span>
           </div>
-          <div class="tableColumn">{{item.total_price + '元'}}</div>
           <div class="tableColumn">{{item.create_name}}</div>
           <div class="tableColumn">{{item.create_time}}</div>
           <div class="tableColumn"
-               :style="{'color':item.state === 0 ? '#E6A23C' : '#67c23a'}">{{item.state === 0 ? '未完成' : '已完成' }}</div>
-          <div class="tableColumn"
                style="flex-direction:row;flex:1.2">
             <span class="btns normal"
-                  @click="$router.push('/index/rawMaterialStock/'+1)">原料入库</span>
-            <!-- <span class="btns warning"
-                  @click="$router.push('/index/null')">修改</span> -->
+                  @click="$router.push('/index/rawMaterialOutStock/'+1)">原料出库</span>
           </div>
         </div>
       </div>
@@ -431,7 +418,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@import "~@/assets/css/rawMaterialBeforeStockList.less";
+@import "~@/assets/css/rawMaterialBeforeOutStockList.less";
 </style>
 <style lang="less">
 #rawMaterialBeforeOutStockList {

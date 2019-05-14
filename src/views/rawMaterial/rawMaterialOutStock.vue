@@ -5,7 +5,7 @@
       <h2>原料出库</h2>
     </div>
     <div class="body">
-      <!-- <div class="stepCtn">
+      <div class="stepCtn">
         <div class="stepTitle">订单信息</div>
         <div class="borderCtn">
           <div class="cicle"></div>
@@ -31,7 +31,7 @@
             <span class="content">A组</span>
           </div>
         </div>
-      </div> -->
+      </div>
       <div class="stepCtn">
         <div class="stepTitle">生产单位</div>
         <div class="borderCtn">
@@ -83,9 +83,25 @@
                   </span>
                 </span>
                 <span class="flex20">
-                  <span class="flex12">所需原料</span>
-                  <span class="flex06">原料颜色</span>
-                  <span class="flex06">原料重量</span>
+                  <span class="flex17">
+                    <span v-for="(value,index) in item.materialList"
+                          :key="index">
+                      <span class="flex12">
+                        <span>
+                          <div>
+                            <span>{{value.material}}</span>
+                          </div>
+                        </span>
+                      </span>
+                      <span class="flex12">
+                        <span v-for="(ite,ka) in value.colors"
+                              :key="ka">
+                          <span class="flex06">{{ite.color }}</span>
+                          <span class="flex06">{{ite.number + ite.unit}}</span>
+                        </span>
+                      </span>
+                    </span>
+                  </span>
                 </span>
 
               </li>
@@ -97,7 +113,7 @@
           </div>
         </div>
       </div>
-      <!-- <div class="stepCtn">
+      <div class="stepCtn">
         <div class="stepTitle">生产计划信息</div>
         <div class="borderCtn">
           <div class="cicle"></div>
@@ -137,8 +153,8 @@
             </ul>
           </div>
         </div>
-      </div> -->
-      <!-- <div class="stepCtn">
+      </div>
+      <div class="stepCtn">
         <div class="stepTitle">原料信息</div>
         <div class="borderCtn">
           <div class="cicle"></div>
@@ -164,8 +180,8 @@
             </span>
           </div>
         </div>
-      </div> -->
-      <!-- <div class="stepCtn">
+      </div>
+      <div class="stepCtn">
         <div class="stepTitle">原料出库</div>
         <div class="borderCtn">
           <div class="cicle"></div>
@@ -291,7 +307,7 @@
             <span>添加公司</span>
           </div>
         </div>
-      </div> -->
+      </div>
       <div class="btnCtn">
         <div class="cancleBtn"
              @click="$router.go(-1)">返回</div>
@@ -583,10 +599,6 @@ export default {
                   color: '卡其色',
                   number: 200,
                   unit: 'kg'
-                }, {
-                  color: '白色',
-                  number: 20,
-                  unit: 'g'
                 }
               ]
             }, {
@@ -596,10 +608,69 @@ export default {
                   color: '卡其色',
                   number: 200,
                   unit: 'kg'
+                }
+              ]
+            }
+          ]
+        }, {
+          company: '杭州凰顺针织有限公司',
+          productList: [
+            {
+              product_code: 'ES5623134',
+              product_class: '围巾/针织/长巾',
+              makeInfo: [
+                {
+                  size: 'S码',
+                  color: '深绿',
+                  make_number: 2010
+                }
+              ]
+            }, {
+              product_code: 'ES5623134',
+              product_class: '围巾/针织/长巾',
+              makeInfo: [
+                {
+                  size: 'S码',
+                  color: '深绿',
+                  make_number: 2010
+                }, {
+                  size: 'M码',
+                  color: '卡其色',
+                  make_number: 1998
+                }
+              ]
+            }
+          ],
+          materialList: [
+            {
+              material: '52支上光单股晴纶',
+              colors: [
+                {
+                  color: '卡其色',
+                  number: 200,
+                  unit: 'kg'
                 }, {
                   color: '白色',
                   number: 20,
                   unit: 'g'
+                }
+              ]
+            }, {
+              material: '36支上光双股晴纶',
+              colors: [
+                {
+                  color: '卡其色',
+                  number: 200,
+                  unit: 'kg'
+                }
+              ]
+            }, {
+              material: '48支上光双股晴纶',
+              colors: [
+                {
+                  color: '卡其色',
+                  number: 200,
+                  unit: 'kg'
                 }
               ]
             }

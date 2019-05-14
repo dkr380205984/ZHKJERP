@@ -181,6 +181,7 @@ ul {
                     flex-direction: column;
                     justify-content: center;
                     &>span {
+                      flex: 1;
                       display: flex;
                       border-bottom: 1px solid #DDD;
                       &>span {
@@ -190,13 +191,20 @@ ul {
                         // box-sizing: border-box;
                         border-right: 1px solid #DDD;
                         &>span {
+                          flex: 1;
                           display: flex;
                           justify-content: center;
                           border-bottom: 1px solid #DDD;
+                          &>div {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                          }
                           &>span {
                             display: flex;
                             justify-content: center;
                             border-right: 1px solid #DDD;
+                            align-items: center;
                             &:last-child {
                               border-right: none;
                             }
