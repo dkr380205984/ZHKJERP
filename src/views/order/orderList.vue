@@ -79,20 +79,29 @@
           <div class="tableColumn">订单号</div>
           <div class="tableColumn">外贸公司</div>
           <div class="tableColumn" style="flex:2">产品信息</div>
+          <div class="tableColumn" style="flex:0.7">下单数</div>
           <div class="tableColumn" style="flex:0.7">负责小组</div>
           <div class="tableColumn" style="flex:0.7">下单日期</div>
           <div class="tableColumn">交货日期</div>
           <div class="tableColumn" style="flex:0.7">订单状态</div>
           <div class="tableColumn" style="flex:1.3">操作</div>
         </div>
-        <div class="mergeBody" v-for="(item ,index) in list" :style="{'height':(60+(item.lineNum-1)*30)+'px'}" :key="index">
+        <div class="mergeBody" v-for="(item ,index) in list" :key="index">
           <div class="tableColumn">{{item.order_code}}</div>
           <div class="tableColumn">{{item.client_name}}</div>
           <div class="tableColumn" style="flex:2">
-            <div class="once" v-for="(itemProduct,indexProduct) in item.productList" :key="indexProduct">
-              <span style="margin:0 5px">{{itemProduct.productCode}}</span>
-              <span style="margin:0 5px">{{itemProduct.productInfo.category_info.product_category}}/{{itemProduct.productInfo.type_name}}/{{itemProduct.productInfo.style_name}}/{{itemProduct.productInfo.flower_id}}</span>
-              <span style="margin:0 5px">{{itemProduct.sum}}{{itemProduct.productInfo.category_info.name}}</span>
+            <div class="small" v-for="(itemProduct,indexProduct) in item.productList" :key="indexProduct" style="height:60px;text-align:center;justify-content:space-around">
+              <span style="display:inline-block">
+                <span style="margin:0 5px">{{itemProduct.productCode}}</span>
+                <span style="margin:0 5px">{{itemProduct.productInfo.category_info.product_category}}/{{itemProduct.productInfo.type_name}}/{{itemProduct.productInfo.style_name}}/{{itemProduct.productInfo.flower_id}}</span>
+              </span>
+            </div>
+          </div>
+          <div class="tableColumn" style="flex:0.7">
+            <div class="small" v-for="(itemProduct,indexProduct) in item.productList" :key="indexProduct" style="height:60px;text-align:center;justify-content:space-around">
+              <span style="display:inline-block">
+                <span style="margin:0 5px">{{itemProduct.sum}}{{itemProduct.productInfo.category_info.name}}</span>
+              </span>
             </div>
           </div>
           <div class="tableColumn" style="flex:0.7">{{item.group_name}}</div>
@@ -237,7 +246,7 @@ export default {
             contacts: item.contacts,
             delivery_time: item.order_batch.map((item) => item.delivery_time),
             productList: productList,
-            lineNum: Math.max(item.order_batch.length, productList.length) // 这个参数用于计算每行的高度
+            lineNum: productList.length // 这个参数用于计算每行的高度
           }
         })
         console.log(this.list)

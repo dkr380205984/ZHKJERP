@@ -54,7 +54,11 @@
             <div class="columnCtn" v-for="(itemColour,indexColour) in color_data.warpColorData" :key="indexColour">
               <div class="name">{{indexColour+1}}.{{itemColour.product_color}}：</div>
               <div class="value">
-                <div class="bgBlock" v-for="(itemColor,indexColor) in itemColour.color_scheme" :key="indexColor"><div :style="{'background-color':itemColor.value}" class="shadeBlock">{{indexColor|filterMethods}}</div></div>
+                <el-tooltip class="item" effect="dark" :content="itemColor.name" placement="top" v-for="(itemColor,indexColor) in itemColour.color_scheme" :key="indexColor">
+                  <div class="bgBlock">
+                    <div :style="{'background-color':itemColor.value}" class="shadeBlock">{{indexColor|filterMethods}}</div>
+                  </div>
+                </el-tooltip>
               </div>
             </div>
           </div>
@@ -180,7 +184,9 @@
             <div class="columnCtn" v-for="(itemColour,indexColour) in color_data.weftColorData" :key="indexColour">
               <div class="name">{{indexColour+1}}.{{itemColour.product_color}}：</div>
               <div class="value">
-                <div class="bgBlock" v-for="(itemColor,indexColor) in itemColour.color_scheme" :key="indexColor"><div :style="{'background-color':itemColor.value}" class="shadeBlock">{{indexColor|filterMethods}}</div></div>
+                <el-tooltip class="item" effect="dark" :content="itemColor.name" placement="top" v-for="(itemColor,indexColor) in itemColour.color_scheme" :key="indexColor">
+                  <div class="bgBlock" ><div :style="{'background-color':itemColor.value}" class="shadeBlock">{{indexColor|filterMethods}}</div></div>
+                </el-tooltip>
               </div>
             </div>
           </div>
@@ -217,6 +223,18 @@
                 <hot-table :settings="hotSettings2" :height="140" ref="table"></hot-table>
               </div>
             </div>
+          </div>
+        </div>
+        <div class="lineCtn">
+          <div class="inputCtn oneLine">
+            <span class="label">产品净重:</span>
+            <span class="content">{{weight}}克</span>
+          </div>
+        </div>
+         <div class="lineCtn">
+          <div class="inputCtn oneLine">
+            <span class="label">纱线系数:</span>
+            <span class="content" style="width:100%"  v-for="item in yarn" :key="item.name">{{item.name}} : {{item.value}}克</span>
           </div>
         </div>
       </div>
@@ -340,7 +358,9 @@ export default {
         total: ''
       },
       warp_canvas: [], // 保存下经向绘图数据用于颜色重绘
-      werf_canvas: [] // 保存下纬向绘图数据用于颜色重绘
+      werf_canvas: [], // 保存下纬向绘图数据用于颜色重绘
+      weight: 0,
+      yarn: []
     }
   },
   methods: {
@@ -395,7 +415,6 @@ export default {
           colorIndex: item.colorIndex
         }
       })
-      console.log(this.color_data)
       let ArrMain2 = this.weft_canvas.map((item) => {
         return {
           number: item.number,
@@ -438,6 +457,8 @@ export default {
       id: this.$route.params.id
     }).then((res) => {
       const data = res.data.data
+      this.weight = data.weight
+      this.yarn = data.yarn_coefficient
       this.product = data.product_info
       data.color_data.forEach((item) => {
         if (item.type === 0) {
@@ -503,7 +524,7 @@ export default {
               mergeCells.push({ row: 1, col: col, rowspan: 1, colspan: colspan })
               warpMerge2.push({ 'buchang': colspan, 'xunhuan': mark })
             }
-            if (item === 1 && index === this.hotSettings.data[1].length - 1) {
+            if (parseInt(item) === 1 && index === this.hotSettings.data[1].length - 1) {
               warpMerge2.push({ 'buchang': 1, 'xunhuan': 1 })
             }
             colspan = 1
@@ -541,6 +562,7 @@ export default {
       this.hotSettings.data[2] = this.hotSettings.data[2].map((item) => {
         return item === '' ? null : item
       })
+
       this.hotSettings.data[2].forEach((item, index) => {
         if (item !== null || index === this.hotSettings.data[2].length - 1) {
           // 遇到第一个不为null的数开始计算,否则初始化col
@@ -552,8 +574,8 @@ export default {
               mergeCells.push({ row: 2, col: col, rowspan: 1, colspan: colspan })
               warpMerge3.push({ 'buchang': colspan, 'xunhuan': mark2 })
             }
-            if (item === 1 && index === this.hotSettings.data[1].length - 1) {
-              warpMerge2.push({ 'buchang': 1, 'xunhuan': 1 })
+            if (parseInt(item) && index === this.hotSettings.data[1].length - 1) {
+              warpMerge3.push({ 'buchang': 1, 'xunhuan': 1 })
             }
             colspan = 1
             col = index
@@ -651,8 +673,8 @@ export default {
               mergeCells.push({ row: 1, col: col, rowspan: 1, colspan: colspan })
               weftMerge2.push({ 'buchang': colspan, 'xunhuan': mark })
             }
-            if (item === 1 && index === this.hotSettings.data[1].length - 1) {
-              warpMerge2.push({ 'buchang': 1, 'xunhuan': 1 })
+            if (parseInt(item) === 1 && index === this.hotSettings2.data[1].length - 1) {
+              weftMerge2.push({ 'buchang': 1, 'xunhuan': 1 })
             }
             colspan = 1
             col = index
@@ -700,8 +722,8 @@ export default {
               mergeCells.push({ row: 2, col: col, rowspan: 1, colspan: colspan })
               weftMerge3.push({ 'buchang': colspan, 'xunhuan': mark2 })
             }
-            if (item === 1 && index === this.hotSettings.data[1].length - 1) {
-              warpMerge2.push({ 'buchang': 1, 'xunhuan': 1 })
+            if (parseInt(item) === 1 && index === this.hotSettings2.data[1].length - 1) {
+              weftMerge3.push({ 'buchang': 1, 'xunhuan': 1 })
             }
             colspan = 1
             col = index

@@ -64,7 +64,7 @@
                   <span class="content">
                     <span v-for="(value,index) in item.product_info"
                           :key='index'>
-                      <span style='flex:3;'>{{value.product_code}}({{value.product_class}})</span>
+                      <span @click="$router.push('/index/productDetail/'+value.product_code)" style='flex:3;cursor:pointer;color:#1a95ff'>{{value.product_code}}({{value.product_class}})</span>
                       <span>{{value.size}}/{{value.color}}</span>
                       <span>{{value.price}}{{account_unit}}/{{value.unit}}</span>
                       <span>{{value.number}}条</span>

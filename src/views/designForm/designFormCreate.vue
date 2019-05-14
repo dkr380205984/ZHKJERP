@@ -2,6 +2,29 @@
   <div id="designFormCreate" v-loading="loading">
     <div class="head">
       <h2>添加工艺单</h2>
+      <div class="rigth">
+        <el-select class="elSelect"
+          filterable
+          remote
+          reserve-keyword
+          v-model="gyd"
+          :remote-method="remoteMethod"
+          :loading="loadingS"
+          clearable
+          :disabled="ifgetCraft"
+          @change="getCarft"
+          style="width:300px"
+          placeholder="输入工艺单编号导入工艺单">
+          <el-option
+            v-for="item in gydArr"
+            :key="item.craft_code"
+            :label="item.craft_code"
+            :value="item.id">
+            <span >{{ item.craft_code }}</span>
+            <span style="margin-left:10px;color: #8492a6; font-size: 13px">({{item.product_info.category_info.product_category +'/'+item.product_info.type_name+'/'+item.product_info.style_name+'/'+item.product_info.flower_id }})</span>
+          </el-option>
+        </el-select>
+      </div>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -85,7 +108,7 @@
                   <div class="desc">{{item.name}}</div>
                 </el-option>
               </el-select>
-              <color-picker v-for="(item2,index2) in colorNum[index]" :key="index2"
+              <color-picker v-for="(item2,index2) in colorNum[index]" :key="color[index][index2].color"
                 style="margin-left:15px;margin-bottom:24px"
                 v-model="color[index][index2]"
                 :content="filterMethods(index2)"
@@ -347,7 +370,7 @@
                   <div class="desc">{{item.name}}</div>
                 </el-option>
               </el-select>
-              <color-picker v-for="(item2,index2) in colorNum2[index]" :key="index2"
+              <color-picker v-for="(item2,index2) in colorNum2[index]" :key="color2[index][index2].color"
                 style="margin-left:15px;margin-bottom:24px"
                 v-model="color2[index][index2]"
                 :content="filterMethods(index2)"
@@ -485,7 +508,7 @@
 </template>
 
 <script>
-import { porductOne, YarnList, editList, saveCraft, YarnColorList } from '@/assets/js/api.js'
+import { porductOne, YarnList, editList, saveCraft, YarnColorList, craftList, craftOne } from '@/assets/js/api.js'
 import { HotTable } from '@handsontable/vue'
 import enCH from '@/assets/js/languages.js'
 import Handsontable from 'handsontable'
@@ -497,6 +520,10 @@ export default {
   },
   data () {
     return {
+      ifgetCraft: false,
+      gyd: '',
+      gydArr: [],
+      loadingS: false,
       loading: true,
       companyId: window.sessionStorage.getItem('company_id'),
       weight: '',
@@ -745,7 +772,7 @@ export default {
       })
       this.longSort = JSON.parse(window.localStorage.getItem('longSort')) || ['']
       this.longSort2 = JSON.parse(window.localStorage.getItem('longSort2')) || ['']
-      this.weight = JSON.parse(window.localStorage.getItem('weight')) || ''
+      this.weight = window.localStorage.getItem('weight') || ''
       this.coefficient = JSON.parse(window.localStorage.getItem('coefficient')) || []
       this.loading = false
     })
@@ -1344,7 +1371,7 @@ export default {
           this.$message.success({
             message: '添加成功'
           })
-          this.clearDraft(true)
+          this.clearDraft(false)
           this.$router.push('/index/productPlanCreate/' + this.$route.params.id)
         }
       })
@@ -1415,11 +1442,294 @@ export default {
       window.localStorage.removeItem('longSort2')
       window.localStorage.removeItem('coefficient')
       window.localStorage.removeItem('weight')
-      if (!noMessage) {
+      if (noMessage) {
         this.$message.success({
           message: '清空草稿成功'
         })
       }
+    },
+    // 查找工艺单
+    remoteMethod (query) {
+      if (query !== '') {
+        this.loadingS = true
+        craftList({
+          company_id: this.companyId,
+          type_id: null,
+          style_id: null,
+          category_id: null,
+          limit: 20,
+          page: 1,
+          craft_code: query
+        }).then((res) => {
+          this.gydArr = res.data.data
+          this.loadingS = false
+        })
+      } else {
+        this.gydArr = []
+      }
+    },
+    // 获取单张工艺单并渲染
+    getCarft (code) {
+      this.loading = true
+      craftOne({
+        id: code
+      }).then((res) => {
+        this.ifgetCraft = true
+        this.loading = false
+        const data = res.data.data
+        data.material_data.forEach((item) => {
+          if (item.type === 0 && item.type_material === 0) {
+            // this.mainIngredient = ''
+          }
+          if (item.type === 1 && item.type_material === 0) {
+            // this.mainIngredient2 = ''
+          }
+          if (item.type === 0 && item.type_material === 1) {
+            // this.otherIngredient.push('')
+            this.otherIngredientNum++
+            this.jia.push(item.apply)
+            this.jiaNum.push(item.apply.length)
+          }
+          if (item.type === 1 && item.type_material === 1) {
+            // this.otherIngredient2.push('')
+            this.otherIngredientNum2++
+            this.jia2.push(item.apply)
+            this.jiaNum2.push(item.apply.length)
+          }
+        })
+        this.colour = []
+        this.color = []
+        this.color2 = []
+        this.colorNum = []
+        this.colorNum2 = []
+        data.color_data.forEach((item) => {
+          if (item.type === 0) {
+            this.colour.push('')
+            this.color.push(item.color_scheme.map((item) => {
+              return {
+                name: item.name,
+                color: item.value
+              }
+            }))
+            this.colorNum.push(item.color_scheme.length)
+          } else {
+            this.color2.push(item.color_scheme.map((item) => {
+              return {
+                name: item.name,
+                color: item.value
+              }
+            }))
+            this.colorNum2.push(item.color_scheme.length)
+          }
+        })
+        this.colourNum = this.colour.length
+        this.hotSettings.data = data.warp_data.warp_rank
+        this.longSort = data.warp_data.warp_rank_bottom
+        // 经向单元格合并操作
+        let warpMerge2 = [] // 经向第二层数据合并 用于画图
+        let mergeCells = []
+        let col = 0
+        let colspan = 0
+        let unNull = 0 // 遇到第一个不为null的数开始计算
+        let mark = 1 // 用于标记不为null的值 用于画图xunhuan字段获取
+        let point = []
+        this.hotSettings.data[1].forEach((item, index) => {
+          if (item === '') {
+            point.push(index)
+          }
+        })
+        this.hotSettings.data[1][point[0]] = 1
+        point.forEach((item, index) => {
+          if (point[index + 1] && (point[index + 1] - item) > 1) {
+            this.hotSettings.data[1][point[index + 1]] = 1
+          }
+        })
+        this.hotSettings.data[1] = this.hotSettings.data[1].map((item) => {
+          return item === '' ? null : item
+        })
+        this.hotSettings.data[1].forEach((item, index) => {
+          if (item || index === this.hotSettings.data[1].length - 1) {
+          // 遇到第一个不为null的数开始计算,否则初始化col
+            if (unNull > 0) {
+              if (item === null && index === this.hotSettings.data[1].length - 1) {
+                mergeCells.push({ row: 1, col: col, rowspan: 1, colspan: colspan + 1 })
+                warpMerge2.push({ 'buchang': colspan + 1, 'xunhuan': mark })
+              } else {
+                mergeCells.push({ row: 1, col: col, rowspan: 1, colspan: colspan })
+                warpMerge2.push({ 'buchang': colspan, 'xunhuan': mark })
+              }
+              if (parseInt(item) === 1 && index === this.hotSettings.data[1].length - 1) {
+                warpMerge2.push({ 'buchang': 1, 'xunhuan': 1 })
+              }
+              colspan = 1
+              col = index
+            } else {
+              colspan = 1
+              col = index
+              unNull++
+            }
+          } else {
+            colspan++
+          }
+          if (item) {
+            mark = item
+          }
+        })
+        // 重置计算值
+        col = 0
+        colspan = 0
+        unNull = 0
+        let warpMerge3 = [] // 经向第三层数据合并 用于画图
+        let mark2 = 1
+        point = []
+        this.hotSettings.data[2].forEach((item, index) => {
+          if (item === '') {
+            point.push(index)
+          }
+        })
+        this.hotSettings.data[2][point[0]] = 1
+        point.forEach((item, index) => {
+          if (point[index + 1] && (point[index + 1] - item) > 1) {
+            this.hotSettings.data[2][point[index + 1]] = 1
+          }
+        })
+        this.hotSettings.data[2] = this.hotSettings.data[2].map((item) => {
+          return item === '' ? null : item
+        })
+
+        this.hotSettings.data[2].forEach((item, index) => {
+          if (item !== null || index === this.hotSettings.data[2].length - 1) {
+          // 遇到第一个不为null的数开始计算,否则初始化col
+            if (unNull > 0) {
+              if (item === null && index === this.hotSettings.data[2].length - 1) {
+                mergeCells.push({ row: 2, col: col, rowspan: 1, colspan: colspan + 1 })
+                warpMerge3.push({ 'buchang': colspan + 1, 'xunhuan': mark2 })
+              } else {
+                mergeCells.push({ row: 2, col: col, rowspan: 1, colspan: colspan })
+                warpMerge3.push({ 'buchang': colspan, 'xunhuan': mark2 })
+              }
+              if (parseInt(item) && index === this.hotSettings.data[1].length - 1) {
+                warpMerge3.push({ 'buchang': 1, 'xunhuan': 1 })
+              }
+              colspan = 1
+              col = index
+            } else {
+              colspan = 1
+              col = index
+              unNull++
+            }
+          } else {
+            colspan++
+          }
+          if (item) {
+            mark2 = item
+          }
+        })
+        this.hotSettings.mergeCells = mergeCells
+        this.longSort2 = data.weft_data.weft_rank_bottom
+        this.hotSettings2.data = data.weft_data.weft_rank
+        // 纬向单元格合并操作
+        let weftMerge2 = [] // 纬向第二层数据合并 用于画图
+        mergeCells = []
+        col = 0
+        colspan = 0
+        unNull = 0
+        mark = 1
+        point = []
+        this.hotSettings2.data[1].forEach((item, index) => {
+          if (item === '') {
+            point.push(index)
+          }
+        })
+        this.hotSettings2.data[1][point[0]] = 1
+        point.forEach((item, index) => {
+          if (point[index + 1] && (point[index + 1] - item) > 1) {
+            this.hotSettings2.data[1][point[index + 1]] = 1
+          }
+        })
+        this.hotSettings2.data[1] = this.hotSettings2.data[1].map((item) => {
+          return item === '' ? null : item
+        })
+        this.hotSettings2.data[1].forEach((item, index) => {
+          if (item || index === this.hotSettings2.data[1].length - 1) {
+          // 遇到第一个不为null的数开始计算,否则初始化col
+            if (unNull > 0) {
+              if (!item && index === this.hotSettings2.data[1].length - 1) {
+                mergeCells.push({ row: 1, col: col, rowspan: 1, colspan: colspan + 1 })
+                weftMerge2.push({ 'buchang': colspan + 1, 'xunhuan': mark })
+              } else {
+                mergeCells.push({ row: 1, col: col, rowspan: 1, colspan: colspan })
+                weftMerge2.push({ 'buchang': colspan, 'xunhuan': mark })
+              }
+              if (parseInt(item) === 1 && index === this.hotSettings2.data[1].length - 1) {
+                weftMerge2.push({ 'buchang': 1, 'xunhuan': 1 })
+              }
+              colspan = 1
+              col = index
+            } else {
+              colspan = 1
+              col = index
+              unNull++
+            }
+          } else {
+            colspan++
+          }
+          if (item) {
+            mark = item
+          }
+        })
+        // 重置计算值
+        let weftMerge3 = [] // 经向第三层数据合并 用于画图
+        mark2 = 1
+        col = 0
+        colspan = 0
+        unNull = 0
+        point = []
+        this.hotSettings2.data[2].forEach((item, index) => {
+          if (item === '') {
+            point.push(index)
+          }
+        })
+        this.hotSettings2.data[2][point[0]] = 1
+        point.forEach((item, index) => {
+          if (point[index + 1] && (point[index + 1] - item) > 1) {
+            this.hotSettings2.data[2][point[index + 1]] = 1
+          }
+        })
+        this.hotSettings2.data[2] = this.hotSettings2.data[2].map((item) => {
+          return item === '' ? null : item
+        })
+        this.hotSettings2.data[2].forEach((item, index) => {
+          if (item || index === this.hotSettings2.data[2].length - 1) {
+          // 遇到第一个不为null的数开始计算,否则初始化col
+            if (unNull > 0) {
+              if (!item && index === this.hotSettings2.data[2].length - 1) {
+                mergeCells.push({ row: 2, col: col, rowspan: 1, colspan: colspan + 1 })
+                weftMerge3.push({ 'buchang': colspan + 1, 'xunhuan': mark2 })
+              } else {
+                mergeCells.push({ row: 2, col: col, rowspan: 1, colspan: colspan })
+                weftMerge3.push({ 'buchang': colspan, 'xunhuan': mark2 })
+              }
+              if (parseInt(item) === 1 && index === this.hotSettings2.data[1].length - 1) {
+                weftMerge3.push({ 'buchang': 1, 'xunhuan': 1 })
+              }
+              colspan = 1
+              col = index
+            } else {
+              colspan = 1
+              col = index
+              unNull++
+            }
+          } else {
+            colspan++
+          }
+          if (item) {
+            mark2 = item
+          }
+        })
+        this.hotSettings2.mergeCells = mergeCells
+        console.log(res)
+      })
     }
   },
   filters: {
