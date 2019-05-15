@@ -227,13 +227,12 @@ ul {
             margin-top: 30px;
             background-color: #F6F6F6;
             width: 417px;
-            height: 344px;
+            height: 396px;
             overflow-y: scroll;
             padding: 35px 35px 35px 30px;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
-            // transition: height 1s ease-in-out;
             &:nth-child(2n) {
               margin-left: 66px;
             }
@@ -266,7 +265,6 @@ ul {
                 display: inline-block;
                 width: 5em;
                 text-align: right;
-                // text-align-last: justify;
                 font-size: 14px;
               }
               &>.el-select {
@@ -281,44 +279,29 @@ ul {
                 margin-top: 20px;
                 display: flex;
                 align-items: center;
-                &>strong {
-                  color: #DDD;
-                  font-weight: 300!important;
-                }
                 &:first-child {
                   margin: 0;
                 }
                 &>span {
-                  // display: inline-block;
                   width: 5em;
                   text-align: right;
-                  // text-align-last: justify;
                   font-size: 14px;
                 }
-                &>.el-select {
-                  width: 91px;
-                  margin:0 0 0 15px;
+                &>div {
+                  display: flex;
+                  width: 243px;
+                  margin: 0 0 0 15px;
+                  &>strong {
+                    color: #DDD;
+                    font-weight: 300!important;
+                  }
+                  &>.el-select {
+                    flex: 1;
+                  }
+                  &>.el-input {
+                    flex: 1;
+                  }
                 }
-                &>.el-input {
-                  width: 61px;
-                  // margin: 0 0 0 15px;
-                }
-              //   &>i {
-              //     display: inline-block;
-              //     width: 50px;
-              //     text-align: center;
-              //     font-style: normal;
-              //     border-top:1px solid rgb(230, 230, 230);
-              //     border-bottom: 1px solid rgb(230, 230, 230);
-              //     border-right: 1px solid rgb(230, 230, 230);
-              //     height: 32px;
-              //     box-sizing: border-box;
-              //     border-top-right-radius: 4px;
-              //     border-bottom-right-radius: 4px;
-              //     font-size: 14px;
-              //     line-height: 30px;
-              //     background-color: rgb(245,247,250)
-              //   }
               }
               &>i {
                 display: inline-block;

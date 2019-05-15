@@ -68,42 +68,7 @@
       }
     }
   }
-  .shade{
-    position: fixed;
-    top:0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: rgba(0,0,0,0.8);
-    .main{
-      width: 1000px;
-      height: 600px;
-      position: absolute;
-      right: 0;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      margin: auto;
-      .imgList{
-        max-height: 550px;
-        margin: auto;
-        display: block;
-      }
-      .closeBtn{
-        position: absolute;
-        right: 0;
-        top: -78px;
-        color: #fff;
-        width: 100%;
-        text-align: center;
-        font-size: 26px;
-        cursor: pointer;
-        &:hover{
-          color: @normalBlue;
-        }
-      }
-    }
-  }
+
   .mergeBody {
     .tableColumn.col {
       &>span {
@@ -126,7 +91,30 @@
             flex-direction: column;
           }
           &>span {
+            display: flex;
+            justify-content: center;
             line-height: 60px;
+            width: 100%;
+            &>span {
+              display: flex;
+              border-right: 1px solid #DDD;
+              border-bottom: 1px solid #DDD;
+              justify-content: center;
+              &:last-child {
+                border-right: none;
+              }
+              &.flex05 {
+                flex:0.5;
+              }
+              &.flex12 {
+                flex: 1.2;
+              }
+            }
+            &:last-child {
+              &>span {
+                border-bottom: none;
+              }
+            }
           }
         }
       }

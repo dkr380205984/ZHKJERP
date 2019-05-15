@@ -279,6 +279,10 @@ let router = new Router({
       name: 'rawMaterialOutStockList',
       component: () => import('./views/rawMaterial/rawMaterialOutStockList.vue')
     }, {
+      path: 'rawMaterialOutStockDetail/:id',
+      name: 'rawMaterialOutStockDetail',
+      component: () => import('./views/rawMaterial/rawMaterialOutStockDetail.vue')
+    }, {
       path: 'error/:id',
       name: 'error',
       component: () => import('./views/error.vue')
@@ -302,6 +306,14 @@ let router = new Router({
       path: 'yarnSetting',
       name: 'yarnSetting',
       component: () => import('./views/setting/yarnSetting.vue')
+    }, {
+      path: 'otherMaterialOrderList',
+      name: 'otherMaterialOrderList',
+      component: () => import('./views/rawMaterial/otherMaterialOrderList.vue')
+    }, {
+      path: 'otherMaterialOrderPage/:id',
+      name: 'otherMaterialOrderPage',
+      component: () => import('./views/rawMaterial/otherMaterialOrderPage.vue')
     }]
   }
   ]

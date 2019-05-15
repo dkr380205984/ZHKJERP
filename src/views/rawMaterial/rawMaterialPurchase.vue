@@ -43,7 +43,7 @@
                   </el-option>
                 </el-select>
                 <el-select v-model="item.attribute"
-                           placeholder="请选择属性">
+                           placeholder="请选择包装">
                   <el-option v-for="value in materialList.attr"
                              :key="value.value"
                              :value="value.name">
@@ -136,7 +136,7 @@ export default {
       companyList: [], // 公司列表
       materialList: {
         material: [{ name: '36支上光晴纶' }, { name: '48支单股涤纶' }],
-        attr: [{ name: '针织' }, { name: '毛绒' }]
+        attr: [{ name: '足斤包装' }, { name: '98包装' }, { name: '95包装' }]
       },
       company: '',
       remark: '',
@@ -203,61 +203,137 @@ export default {
       ]
     },
     save () {
-      if (this.company && this.total_weight && this.total_price && this.order_time) {
-        let flag = true
-        this.material_info.forEach(item => {
-          item.price = Number(item.price)
-          if (!item.material_name && !item.color_code && !item.attribute && !item.price) {
-            flag = false
-            this.$message({
-              showClose: true,
-              message: '请检查信息是否填写完整',
-              type: 'error'
-            })
-          }
-        })
-        if (flag) {
-          console.log({
-            company_id: sessionStorage.company_id,
-            client_id: this.company,
-            material_info: [...this.material_info],
-            total_weight: Number(this.total_weight),
-            total_price: Number(this.total_price),
-            order_time: this.order_time,
-            desc: this.remark
-          })
-          rawMaterialPurchase({
-            user_id: sessionStorage.user_id,
-            company_id: sessionStorage.company_id,
-            client_id: this.company,
-            material_info: [...this.material_info],
-            total_weight: Number(this.total_weight),
-            total_price: Number(this.total_price),
-            order_time: this.order_time,
-            desc: this.remark
-          }).then((res) => {
-            if (res.data.code === 200) {
-              this.$message({
-                showClose: true,
-                message: '提交成功',
-                type: 'success'
-              })
-            } else {
-              this.$message({
-                showClose: true,
-                message: res.data.code + '出问题了哦',
-                type: 'error'
-              })
-            }
-          })
-        }
-      } else {
+      if (!this.company) {
         this.$message({
           showClose: true,
-          message: '请检查信息是否填写完整',
+          message: '请选择订购单位',
           type: 'error'
         })
+        return
       }
+      for (let prop in this.material_info) {
+        let item = this.material_info[prop]
+        item.price = Number(item.price)
+        if (!item.material_name) {
+          this.$message({
+            showClose: true,
+            message: '请选择订购原料',
+            type: 'error'
+          })
+          return
+        }
+        if (!item.color_code) {
+          this.$message({
+            showClose: true,
+            message: '请选择原料颜色',
+            type: 'error'
+          })
+          return
+        }
+        if (!item.attribute) {
+          this.$message({
+            showClose: true,
+            message: '请选择原料属性',
+            type: 'error'
+          })
+          return
+        }
+        if (item.price === 0) {
+        } else if (item.price === '') {
+          this.$message({
+            showClose: true,
+            message: '请输入预定价格',
+            type: 'error'
+          })
+          return
+        } else if (!Number(item.price)) {
+          this.$message({
+            showClose: true,
+            message: '请检查价格格式是否正确',
+            type: 'error'
+          })
+          return
+        }
+      }
+      if (this.total_weight === '0') {
+        this.$message({
+          showClose: true,
+          message: '原料总重不可为0',
+          type: 'error'
+        })
+        return
+      } else if (this.total_weight === '') {
+        this.$message({
+          showClose: true,
+          message: '请输入原料总重',
+          type: 'error'
+        })
+        return
+      } else if (!Number(this.total_weight)) {
+        this.$message({
+          showClose: true,
+          message: '请检查原料总重格式是否正确',
+          type: 'error'
+        })
+        return
+      }
+      if (this.total_price === '0') {
+      } else if (this.total_price === '') {
+        this.$message({
+          showClose: true,
+          message: '请输入总价',
+          type: 'error'
+        })
+        return
+      } else if (!Number(this.total_price)) {
+        this.$message({
+          showClose: true,
+          message: '请检查总价格式是否正确',
+          type: 'error'
+        })
+        return
+      }
+      if (!this.order_time) {
+        this.$message({
+          showClose: true,
+          message: '请选择订购日期',
+          type: 'error'
+        })
+        return
+      }
+      // console.log({
+      //   company_id: sessionStorage.company_id,
+      //   client_id: this.company,
+      //   material_info: [...this.material_info],
+      //   total_weight: Number(this.total_weight),
+      //   total_price: Number(this.total_price),
+      //   order_time: this.order_time,
+      //   desc: this.remark
+      // })
+      rawMaterialPurchase({
+        user_id: sessionStorage.user_id,
+        company_id: sessionStorage.company_id,
+        client_id: this.company,
+        material_info: [...this.material_info],
+        total_weight: Number(this.total_weight),
+        total_price: Number(this.total_price),
+        order_time: this.order_time,
+        desc: this.remark
+      }).then((res) => {
+        if (res.data.code === 200) {
+          this.$message({
+            showClose: true,
+            message: '提交成功',
+            type: 'success'
+          })
+        } else {
+          this.$message({
+            showClose: true,
+            message: res.data.code + '出问题了哦',
+            type: 'error'
+          })
+        }
+      })
     }
   },
   created () {
@@ -274,7 +350,11 @@ export default {
     ]).then(res => {
       console.log(res)
       this.colorList = res[0].data.data
-      this.companyList = res[1].data.data
+      res[1].data.data.forEach((item, key) => {
+        if (item.type === 2) {
+          this.companyList.push(item)
+        }
+      })
       this.materialList.material = res[2].data.data
     })
   }

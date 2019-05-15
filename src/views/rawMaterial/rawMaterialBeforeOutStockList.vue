@@ -70,8 +70,9 @@
           <div class="tableColumn">负责小组</div>
           <div class="tableColumn"
                style="flex:3.7;flex-direction:row;">
-            <span style="border-right:1px solid #DDD;flex:1; ">生产单位</span>
-            <span style="flex:1.7; ">产品详情</span>
+            <span style="border-right:1px solid #DDD;flex:1;padding-right:1px">生产单位</span>
+            <span style="border-right:1px solid #DDD;flex:1.2;">产品详情</span>
+            <span style="flex:0.5">产品数量</span>
           </div>
           <div class="tableColumn">创建人</div>
           <div class="tableColumn">创建时间</div>
@@ -94,7 +95,11 @@
                 <span>{{value.company}}</span>
               </span>
               <span style="flex:1.7">
-                <span>{{value.processClass}}</span>
+                <span v-for="(val,ind) in value.product_info"
+                      :key="ind">
+                  <span class="flex12">{{val.product_code + val.product_class}}</span>
+                  <span class="flex05">{{val.number + '条'}}</span>
+                </span>
               </span>
             </span>
           </div>
@@ -168,30 +173,30 @@ export default {
           order_team: [
             {
               company: '杭州飞泰纱线厂',
-              processClass: '染色',
-              info: [
+              product_info: [
                 {
-                  material: '36支上光晴纶',
-                  color: '白胚',
-                  weight: 400,
-                  unit: 'g'
+                  product_code: 'kr-0001',
+                  product_class: '围巾/针织/长巾',
+                  number: 2000
+                },
+                {
+                  product_code: 'kr-0002',
+                  product_class: '围巾/针织/长巾',
+                  number: 200
+                },
+                {
+                  product_code: 'kr-0003',
+                  product_class: '围巾/针织/长巾',
+                  number: 1000
                 }
               ]
             }, {
               company: '杭州力欧纱线厂',
-              processClass: '染色',
-              info: [
+              product_info: [
                 {
-                  material: '52支上光晴纶',
-                  color: '深绿',
-                  weight: 400,
-                  unit: 'g'
-                },
-                {
-                  material: '36支上光晴纶',
-                  color: '白胚',
-                  weight: 400,
-                  unit: 'g'
+                  product_code: 'kr-0001',
+                  product_class: '围巾/针织/长巾',
+                  number: 2000
                 }
               ]
             }
@@ -208,13 +213,16 @@ export default {
           order_team: [
             {
               company: '杭州飞泰纱线厂',
-              processClass: '染色',
-              info: [
+              product_info: [
                 {
-                  material: '52支上光晴纶',
-                  color: '深绿',
-                  weight: 400,
-                  unit: 'g'
+                  product_code: 'kr-0001',
+                  product_class: '围巾/针织/长巾',
+                  number: 2000
+                },
+                {
+                  product_code: 'kr-0002',
+                  product_class: '围巾/针织/长巾',
+                  number: 200
                 }
               ]
             }
@@ -231,49 +239,40 @@ export default {
           order_team: [
             {
               company: '杭州飞泰纱线厂',
-              processClass: '染色',
-              info: [
+              product_info: [
                 {
-                  material: '52支上光晴纶',
-                  color: '深绿',
-                  weight: 400,
-                  unit: 'g'
-                }
-              ]
-            }, {
-              company: '杭州力欧纱线厂',
-              processClass: '染色',
-              info: [
-                {
-                  material: '52支上光晴纶',
-                  color: '深绿',
-                  weight: 400,
-                  unit: 'g'
-                }
-              ]
-            }, {
-              company: '杭州力欧纱线厂',
-              processClass: '染色',
-              info: [
-                {
-                  material: '52支上光晴纶',
-                  color: '深绿',
-                  weight: 400,
-                  unit: 'g'
+                  product_code: 'kr-0001',
+                  product_class: '围巾/针织/长巾',
+                  number: 2000
                 },
                 {
-                  material: '36支上光晴纶',
-                  color: '白胚',
-                  weight: 400,
-                  unit: 'g'
+                  product_code: 'kr-0002',
+                  product_class: '围巾/针织/长巾',
+                  number: 200
+                }
+              ]
+            }, {
+              company: '杭州力欧纱线厂',
+              product_info: [
+                {
+                  product_code: 'kr-0001',
+                  product_class: '围巾/针织/长巾',
+                  number: 2000
+                }
+              ]
+            }, {
+              company: '杭州力欧纱线厂',
+              product_info: [
+                {
+                  product_code: 'kr-0001',
+                  product_class: '围巾/针织/长巾',
+                  number: 2000
                 }
               ]
             }
           ],
-          total_price: 700,
           create_name: '王锦鲤',
-          create_time: '2019-04-23',
-          state: 1
+          create_time: '2019-04-23'
         }
       ],
       category: [], // 大类

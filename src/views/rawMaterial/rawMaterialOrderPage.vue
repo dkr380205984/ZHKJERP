@@ -14,21 +14,21 @@
         <div class="lineCtn">
           <div class="inputCtn">
             <span class="label">订单号:</span>
-            <span class="content important">KR-0001</span>
+            <span class="content important">{{order_code}}</span>
           </div>
           <div class="inputCtn">
             <span class="label">外贸公司:</span>
-            <span class="content">杭州飞泰服饰有限公司</span>
+            <span class="content">{{company_name}}</span>
           </div>
         </div>
         <div class="lineCtn">
           <div class="inputCtn">
             <span class="label">下单日期:</span>
-            <span class="content">2019-04-10</span>
+            <span class="content">{{order_time}}</span>
           </div>
           <div class="inputCtn">
             <span class="label">负责小组:</span>
-            <span class="content">A组</span>
+            <span class="content">{{group_name}}</span>
           </div>
         </div>
         <div class="lineCtn">
@@ -38,8 +38,8 @@
               <ul class="productInfo">
                 <li v-for="(item,key) in productList"
                     :key="key">
-                  <span>{{item.product_code}}({{item.product_class}})</span>
-                  <span>{{item.size+'/'+item.color}}</span>
+                  <span>{{item.product_code}}({{item.type}})</span>
+                  <span>{{item.product_size+'/'+item.product_color}}</span>
                   <span>{{item.number+'条'}}</span>
                 </li>
               </ul>
@@ -106,44 +106,46 @@
             <ul class="buyFrom"
                 v-for="(iten,kay) in item.buyInfo"
                 :key="kay">
-              <li>
-                <span>订购公司</span>:
-                <el-select v-model="iten.company"
-                           placeholder="请选择订购来源"
-                           size="small">
-                  <el-option v-for="value in options"
-                             :key="value.value"
-                             :label="value.label"
-                             :value="value.label">
-                  </el-option>
-                </el-select>
-              </li>
               <li v-for="(value,index) in iten.buyMaterialInfo"
                   :key="index"
                   class="col">
                 <div>
-                  <span>原料信息</span>:
-                  <el-select v-model="value.color"
-                             placeholder="颜色"
-                             size="small">
-                    <el-option v-for="color in options"
-                               :key="color.value"
-                               :label="color.label"
-                               :value="color.label">
-                    </el-option>
-                  </el-select>
-                  <strong>—</strong>
-                  <el-input size="small"
-                            placeholder="单价"
-                            v-model="value.price"
-                            @change="jisuan(key)">
-                  </el-input>
-                  <strong>—</strong>
-                  <el-input size="small"
-                            placeholder="数量"
-                            v-model="value.value"
-                            @change="jisuan(key)">
-                  </el-input>
+                  <span>原料信息:</span>
+                  <div>
+                    <el-select v-model="value.color"
+                               placeholder="颜色"
+                               size="small">
+                      <el-option v-for="color in item.needColors"
+                                 :key="color.value"
+                                 :value="color">
+                      </el-option>
+                    </el-select>
+                    <strong>—</strong>
+                    <el-input size="small"
+                              placeholder="数量"
+                              v-model="value.value"
+                              @change="jisuan(key)">
+                    </el-input>
+                  </div>
+                </div>
+                <div>
+                  <span></span>
+                  <div>
+                    <el-select v-model="value.attr"
+                               placeholder="包装"
+                               size="small">
+                      <el-option v-for="color in options.attr"
+                                 :key="color.value"
+                                 :value="color.name">
+                      </el-option>
+                    </el-select>
+                    <strong>—</strong>
+                    <el-input size="small"
+                              placeholder="单价"
+                              v-model="value.price"
+                              @change="jisuan(key)">
+                    </el-input>
+                  </div>
                 </div>
                 <em v-if="index === 0"
                     class="el-icon-plus"
@@ -153,7 +155,19 @@
                     @click="deleteBuyMaterialInfo(key,kay,index)"></em>
               </li>
               <li>
-                <span>总价</span>:
+                <span>订购公司:</span>
+                <el-select v-model="iten.company"
+                           placeholder="请选择订购来源"
+                           size="small">
+                  <el-option v-for="value in options.companyList"
+                             :key="value.id"
+                             :label="value.name"
+                             :value="value.id">
+                  </el-option>
+                </el-select>
+              </li>
+              <li>
+                <span>总价:</span>
                 <el-input size="small"
                           placeholder="总价"
                           :disabled="true"
@@ -162,29 +176,19 @@
                 <i>元</i>
               </li>
               <li>
-                <span>订购日期</span>:
+                <span>订购日期:</span>
                 <el-date-picker v-model="iten.orderTime"
                                 align="right"
                                 type="date"
                                 placeholder="选择日期"
+                                value-format="yyyy-MM-dd"
                                 size="small"
                                 style="width:243px"
                                 :picker-options="pickerOptions">
                 </el-date-picker>
               </li>
-              <!-- <li>
-                <span>完成日期</span>:
-                <el-date-picker v-model="iten.completeTime"
-                                align="right"
-                                type="date"
-                                placeholder="选择日期"
-                                size="small"
-                                style="width:243px"
-                                :picker-options="pickerOptions">
-                </el-date-picker>
-              </li> -->
               <li>
-                <span>备注</span>:
+                <span>备注:</span>
                 <el-input type="textarea"
                           placeholder="请输入内容"
                           style="width:243px;margin: 0 0 0 15px;height:45px;"
@@ -213,32 +217,16 @@
 </template>
 
 <script>
+import { rawMaterialOrderInit, clientList, rawMaterialOrder } from '@/assets/js/api.js'
 export default {
   data () {
     return {
       loading: false,
+      order_code: '',
+      order_time: '',
+      company_name: '',
+      group_name: '',
       productList: [
-        {
-          product_code: 'ES5623134',
-          product_class: '围巾/针织/长巾/豹纹',
-          size: 'S',
-          color: '深绿',
-          number: 2000
-        },
-        {
-          product_code: 'ES5623134',
-          product_class: '围巾/针织/长巾/豹纹',
-          size: 'S',
-          color: '深绿',
-          number: 2000
-        },
-        {
-          product_code: 'ES5623134',
-          product_class: '围巾/针织/长巾/豹纹',
-          size: 'S',
-          color: '深绿',
-          number: 2000
-        }
       ],
       rawMaterialPlanList: [
         {
@@ -290,45 +278,14 @@ export default {
           needNum: 0,
           selectNum: 0,
           buyInfo: [
-            // {
-            //   company: '',
-            //   money: '',
-            //   orderTime: '',
-            //   completeTime: '',
-            //   remark: '',
-            //   buyMaterialInfo: [
-            //     {
-            //       color: '',
-            //       price: '',
-            //       value: ''
-            //     }
-            //   ]
-            // }
           ]
         }
       ],
-      options: [
-        {
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
-        }
-      ],
+      options: {
+        attr: [{ name: '足斤包装' }, { name: '98包装' }, { name: '95包装' }],
+        companyList: []
+      },
       pickerOptions: {
-        disabledDate (time) {
-          return time.getTime() > Date.now()
-        },
         shortcuts: [{
           text: '今天',
           onClick (picker) {
@@ -369,7 +326,8 @@ export default {
       this.list[key].buyInfo[kay].buyMaterialInfo.push({
         color: '',
         price: '',
-        value: ''
+        value: '',
+        attr: ''
       })
       console.log(this.list)
     },
@@ -382,36 +340,48 @@ export default {
           company: '',
           money: '',
           orderTime: '',
-          // completeTime: '',
           remark: '',
           buyMaterialInfo: [
             {
               color: '',
               price: '',
-              value: ''
+              value: '',
+              attr: ''
             }
           ]
         }
       )
-      // let buyFrom = document.getElementsByClassName('buyFrom')
-      // // buyFrom.
-      // console.log(buyFrom)
-      // for (let prop in buyFrom) {
-      //   if (Number(prop) !== Number('NaN')) {
-      //     console.log(buyFrom[prop])
-      //   }
-      //   // buyFrom[prop].setAttribute('style', 'height:420px;')
-      // }
-      // buyFrom.forEach(item => {
-      //   console.log(item)
-      //   item.style.height = '420px'
-      //   item.style.padding = '35px'
-      // })
     },
     deleteBuyInfo (key, kay) {
       this.list[key].buyInfo.splice(kay, 1)
     },
     saveAll () {
+      let arr = []
+      this.list.forEach((item, key) => {
+        let obj = {}
+        obj.company_id = sessionStorage.company_id
+        obj.order_id = this.$route.params.id
+        obj.user_id = sessionStorage.user_id
+        obj.material_name = item.material
+        item.buyInfo.forEach(value => {
+          obj.client_id = value.company
+          obj.total_price = value.money
+          obj.desc = value.remark
+          obj.order_time = value.orderTime
+          value.buyMaterialInfo.forEach(val => {
+            obj.color_code = val.color
+            obj.price = Number(val.price)
+            obj.total_weight = Math.ceil(Number(val.value))
+            arr.push({ ...obj })
+          })
+        })
+      })
+      console.log(arr)
+      rawMaterialOrder({
+        data: arr
+      }).then(res => {
+        console.log(res)
+      })
       this.$message(
         {
           message: '添加成功',
@@ -421,6 +391,38 @@ export default {
     }
   },
   created () {
+    Promise.all([
+      rawMaterialOrderInit({
+        order_id: this.$route.params.id
+      }),
+      clientList({
+        company_id: sessionStorage.company_id
+      })
+    ]).then(res => {
+      this.order_code = res[0].data.data.order_info.order_code
+      this.order_time = res[0].data.data.order_info.order_time
+      this.group_name = res[0].data.data.order_info.group_name
+      this.company_name = res[0].data.data.order_info.client_name
+      res[1].data.data.forEach((item, key) => {
+        if (item.type === 2) {
+          this.options.companyList.push(item)
+        }
+      })
+      res[0].data.data.order_info.order_batch.forEach((item, key) => {
+        item.batch_info.forEach((value, index) => {
+          let types = value.productInfo.category_info.product_category + (value.productInfo.type_name ? '/' + value.productInfo.type_name : '') + (value.productInfo.style_name ? '/' + value.productInfo.type_name : '') + (value.productInfo.flower_id ? '/' + value.productInfo.flower_id : '')
+          value.size.forEach((val, ind) => {
+            this.productList.push({
+              type: types,
+              product_code: value.productCode,
+              product_size: val.name[0],
+              product_color: val.name[1],
+              number: val.numbers
+            })
+          })
+        })
+      })
+    })
     this.rawMaterialPlanList.forEach((item, key) => {
       if (key === 0) {
         this.list[0].material = item.material

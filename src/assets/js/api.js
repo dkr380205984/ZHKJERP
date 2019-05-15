@@ -176,7 +176,13 @@ const productionStat = (params) => http.get(`${baseUrl}/product/plan/order`, par
 const pantongList = (params) => http.get(`${baseUrl}/pan/color/list`, params)
 // 原料预订购
 const rawMaterialPurchase = (params) => http.post(`${baseUrl}/material/reserve/save`, params, 'application/json')
+// 原料订购初始化
+const rawMaterialOrderInit = (params) => http.get(`${baseUrl}/material/order/init`, params)
+// 原料订购
+const rawMaterialOrder = (params) => http.post(`${baseUrl}/material/order/save`, params, 'application/json')
 export {
+  rawMaterialOrder,
+  rawMaterialOrderInit,
   YarnColorList,
   pantongList,
   deleteStation,

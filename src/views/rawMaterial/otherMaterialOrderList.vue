@@ -1,7 +1,7 @@
 <template>
-  <div id="rawMaterialOrderList">
+  <div id="otherMaterialOrderList">
     <div class="head">
-      <h2>原料预订购列表</h2>
+      <h2>辅料预订购列表</h2>
       <el-input placeholder="输入文字精确搜索"
                 suffix-icon="el-icon-search"
                 v-model="searchVal"></el-input>
@@ -106,7 +106,7 @@
           <div class="tableColumn"
                style="flex-direction:row;">
             <span class="btns normal"
-                  @click="$router.push('./rawMaterialOrderPage/' + 1)">订购原料</span>
+                  @click="$router.push('./rawMaterialOrderPage/' + 1)">订购辅料</span>
           </div>
         </div>
       </div>
@@ -123,7 +123,6 @@
 </template>
 
 <script>
-// import {  } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -312,66 +311,6 @@ export default {
     }
   },
   methods: {
-    // getOrderList () {
-    //   orderList({
-    //     'company_id': window.sessionStorage.getItem('company_id'),
-    //     'limit': 5,
-    //     'page': this.pages,
-    //     'has_plan': '',
-    //     'category_id': this.categoryVal,
-    //     'type_id': this.typesVal,
-    //     'style_id': this.styleVal,
-    //     'client_id': this.company,
-    //     'group_id': this.group,
-    //     'product_code': this.searchVal
-    //     // 'start_time': '',
-    //     // 'end_time': ''
-    //   }).then((res) => {
-    //     console.log(res)
-    //     this.total = res.data.meta.total
-    //     this.list = res.data.data.map((item) => {
-    //       let productList = []
-    //       item.order_batch.forEach((itemOrder) => {
-    //         itemOrder.batch_info.forEach((itemBatch) => {
-    //           if (productList.find((itemFind) => itemFind.productCode === itemBatch.productCode)) {
-    //             let mark = -1
-    //             productList.forEach((itemFind, index) => {
-    //               if (itemFind.productCode === itemBatch.productCode) {
-    //                 mark = index
-    //               }
-    //             })
-    //             productList[mark].sum = productList[mark].sum + itemBatch.size.reduce((total, current) => {
-    //               return total + parseInt(current.numbers)
-    //             }, 0)
-    //           } else {
-    //             productList.push({
-    //               productInfo: itemBatch.productInfo,
-    //               productCode: itemBatch.productCode,
-    //               sum: itemBatch.size.reduce((total, current) => {
-    //                 return total + parseInt(current.numbers)
-    //               }, 0)
-    //             })
-    //           }
-    //         })
-    //       })
-    //       console.log(productList)
-    //       return {
-    //         group_name: item.group_name,
-    //         order_code: item.order_code,
-    //         order_time: item.order_time,
-    //         client_name: item.client_name,
-    //         contacts: item.contacts,
-    //         delivery_time: item.order_batch.map((item) => item.delivery_time),
-    //         productList: productList,
-    //         lineNum: Math.max(item.order_batch.length, productList.length) // 这个参数用于计算每行的高度
-    //       }
-    //     })
-    //     console.log(this.list)
-    //   })
-    // },
-    // pickTime (date) {
-    //   console.log(date)
-    // },
     // 删除条件
     clear (item) {
       if (item === 'categoryVal') {
@@ -474,35 +413,15 @@ export default {
     }
   },
   mounted () {
-    //   this.getOrderList()
-    //   productTppeList({
-    //     company_id: window.sessionStorage.getItem('company_id')
-    //   }).then((res) => {
-    //     if (res.data.status) {
-    //       this.category = res.data.data
-    //     }
-    //   })
-    //   clientList({
-    //     company_id: window.sessionStorage.getItem('company_id'),
-    //     keyword: '',
-    //     status: 1
-    //   }).then((res) => {
-    //     this.companyArr = res.data.data
-    //   })
-    //   getGroup({
-    //     company_id: window.sessionStorage.getItem('company_id')
-    //   }).then((res) => {
-    //     this.groupArr = res.data.data
-    //   })
   }
 }
 </script>
 
 <style lang="less" scoped>
-@import "~@/assets/css/rawMaterialOrderList.less";
+@import "~@/assets/css/otherMaterialOrderList.less";
 </style>
 <style lang="less">
-#orderList {
+#otherMaterialOrderList {
   .el-carousel__arrow {
     color: #fff;
     background: #1a95ff;

@@ -1,8 +1,8 @@
 <template>
-  <div id="rawMaterialOutStock"
+  <div id="rawMaterialOutStockDetail"
        v-loading="loading">
     <div class="head">
-      <h2>原料出库</h2>
+      <h2>原料出库详情</h2>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -38,7 +38,7 @@
           <div class="cicle"></div>
           <div class="border"></div>
         </div>
-        <div class="lineCtn">
+        <div class="lineCtn col">
           <div class="inputCtn"
                style="width:100%;padding-left:40px;">
             <ul class="makeTable">
@@ -103,13 +103,8 @@
                     </span>
                   </span>
                 </span>
-
               </li>
             </ul>
-            <!-- <li v-for="(item,key) in companyList"
-                :key="key">
-              {{item}}
-            </li> -->
           </div>
         </div>
       </div>
@@ -119,7 +114,7 @@
           <div class="cicle"></div>
           <div class="border"></div>
         </div>
-        <div class="lineCtn">
+        <div class="lineCtn col">
           <div class="inputCtn"
                style="width:100%;
                padding-left:40px;">
@@ -187,133 +182,98 @@
           <div class="cicle"></div>
           <div class="border"></div>
         </div>
-        <div class="lineCtn col"
-             v-for="(item,key) in list"
-             :key="key">
-          <div class="tablePlan">
-            <div class="tableTitle">
-              <span>原料名称</span>
-              <span>合计重量</span>
-              <span>已出库重量</span>
-              <span>待出库重量</span>
-            </div>
-            <div class="tableInfo">
+        <div class="lineCtn col">
+          <div class="inputCtn"
+               v-for="(item,key) in stockInfo"
+               :key="key"
+               style="width:100%;padding-left:40px;">
+            <div class="title2">
               <span>{{item.material}}</span>
-              <span>
-                {{item.total_number + 'kg'}}
-              </span>
-              <span>{{item.stock_number + 'kg'}}</span>
-              <span>{{item.before_stock + 'kg'}}</span>
+              <span>合计：{{item.total_number}}kg</span>
+              <span>已出库：{{item.stock_number}}kg</span>
+              <span>待出库：{{item.before_stock}}kg</span>
             </div>
-          </div>
-          <div class="buyInfo">
-            <ul class="buyFrom"
-                v-for="(iten,kay) in item.stockInfo"
-                :key="kay">
+            <ul class="tables">
               <li>
-                <span>原料颜色</span>:
-                <el-select v-model="iten.materialColor"
-                           placeholder="请选择订购来源"
-                           size="small">
-                  <el-option v-for="value in options"
-                             :key="value.value"
-                             :value="value.label">
-                  </el-option>
-                </el-select>
+                <span class="flex2">时间</span>
+                <span class="flex2">原料颜色</span>
+                <span>缸号</span>
+                <span>属性</span>
+                <span>出库重量</span>
+                <span class="flex2">出库仓库</span>
+                <span class="flex2">备注</span>
+                <span>操作人</span>
+                <span class="flex2">操作</span>
               </li>
-              <!-- <li>
-                <span>缸号</span>:
-                <el-input size="small"
-                          placeholder="请输入缸号"
-                          v-model="iten.dyelot"
-                          style="width:243px;">
-                </el-input>
-              </li> -->
-              <li>
-                <span>原料属性</span>:
-                <el-select v-model="iten.materialAtr"
-                           placeholder="请选择原料属性"
-                           size="small">
-                  <el-option v-for="value in options"
-                             :key="value.value"
-                             :value="value.label">
-                  </el-option>
-                </el-select>
+              <li v-for="(value,index) in item.stock_info"
+                  :key="index">
+                <span class="flex2">{{value.stock_time}}</span>
+                <span class="flex2">{{value.color}}</span>
+                <span>{{value.dyelot}}</span>
+                <span>{{value.material_atr}}</span>
+                <span>{{value.stock_value}}</span>
+                <span class="flex2">{{value.stock_name}}</span>
+                <span class="flex2">{{value.remark ? value.remark : '暂无备注'}}
+                  <el-popover placement="bottom"
+                              width="200"
+                              trigger="click"
+                              :content="value.remark"
+                              class="pop"
+                              v-if="chatCodeLength(value.remark) > 14">
+                    <el-button slot="reference">展开</el-button>
+                  </el-popover>
+                </span>
+                <span>{{value.change_name}}</span>
+                <span class="flex2">
+                  <span class="important">修改</span>
+                  <span class="important">扣款</span>
+                </span>
               </li>
-              <!-- <li v-for="(value,index) in iten.stockWeightInfo"
-                  :key="index"
-                  class="col">
-                <div>
-                  <span>第{{index+1}}包</span>:
-                  <el-input size="small"
-                            placeholder="请输入重量"
-                            v-model="value.weight"
-                            @change="jisuan">
-                  </el-input>
-                  <i>kg</i>
-                </div>
-                <em v-if="index === 0"
-                    class="el-icon-plus"
-                    @click="appendStockWeightInfo(key,kay)"></em>
-                <em v-else
-                    class="el-icon-delete"
-                    @click="deleteStockWeightInfo(key,kay,index)"></em>
-              </li> -->
-              <!-- <li>
-                <span>总重量</span>:
-                <el-input size="small"
-                          placeholder="0"
-                          :disabled="true"
-                          v-model="iten.total_weight">
-                </el-input>
-                <i>kg</i>
-              </li> -->
-              <li>
-                <span>出库总重</span>:
-                <el-input size="small"
-                          placeholder="请输入出库重量"
-                          v-model="iten.weight"
-                          style="width:243px;">
-                </el-input>
-              </li>
-              <li>
-                <span>出库仓库</span>:
-                <el-select v-model="iten.stock"
-                           placeholder="请选择仓库"
-                           size="small">
-                  <el-option v-for="value in options"
-                             :key="value.value"
-                             :value="value.label">
-                  </el-option>
-                </el-select>
-              </li>
-              <li>
-                <span>出库时间</span>:
-                <el-date-picker v-model="iten.stock_time"
-                                align="right"
-                                type="date"
-                                placeholder="选择出库时间"
-                                size="small"
-                                style="width:243px"
-                                :picker-options="pickerOptions">
-                </el-date-picker>
-              </li>
-              <li>
-                <span>备注</span>:
-                <el-input type="textarea"
-                          placeholder="请输入内容"
-                          style="width:243px;margin: 0 0 0 15px;height:45px;"
-                          v-model="iten.remark">
-                </el-input>
-              </li>
-              <span class="el-icon-close"
-                    @click="deleteStockInfo(key,kay)"></span>
             </ul>
           </div>
-          <div class="addBtn"
-               @click="addStockInfo(key)">
-            <span>+</span>
-            <span>添加出库</span>
+        </div>
+      </div>
+      <div class="stepCtn">
+        <div class="stepTitle">出库状态</div>
+        <div class="borderCtn">
+          <div class="cicle"></div>
+          <div class="border"></div>
+        </div>
+        <div class="lineCtn col">
+          <div class="inputCtn"
+               v-for="(item,key) in stockInfo"
+               :key="key"
+               style="padding-left:40px;">
+            <span>{{item.material + '：'}}</span>
+            <span :class="item.before_stock !== 0 ? 'warning' : 'success'">{{item.before_stock === 0 ? '已完成' : '未完成'}}</span>
+            <span v-if="item.before_stock !== 0">待出库重量：&nbsp;&nbsp;&nbsp; {{item.before_stock + 'kg'}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="stepCtn">
+        <div class="stepTitle">原料结余 </div>
+        <div class="borderCtn">
+          <div class="cicle"></div>
+        </div>
+        <div class="lineCtn col">
+          <div class="inputCtn"
+               style="width:100%;
+               padding-left:40px;">
+            <ul class="planTable noBorderR">
+              <li>
+                <span>原料名称</span>
+                <span>原料颜色</span>
+                <span>原料结余</span>
+                <span>操作</span>
+              </li>
+              <li v-for="(item,key) in surplusList"
+                  :key="key">
+                <span>{{item.material}}</span>
+                <span>{{item.color}}</span>
+                <span>{{item.weight + 'kg'}}</span>
+                <span class="important">存入仓库</span>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -543,17 +503,6 @@ export default {
           ]
         }
       ],
-      list: [
-        {
-          material: '',
-          colors: [],
-          total_number: 0,
-          stock_number: 0,
-          before_stock: 0,
-          stockInfo: [],
-          weight: ''
-        }
-      ],
       companyList: [
         {
           company: '杭州凰顺针织有限公司',
@@ -687,6 +636,54 @@ export default {
           ]
         }
       ],
+      stockInfo: [
+        {
+          material: '52支上光晴纶',
+          total_number: 562.4,
+          stock_number: 562.4,
+          before_stock: 10,
+          stock_info: [
+            {
+              stock_time: '2019-03-22-16:31',
+              color: '深绿',
+              dyelot: '1',
+              material_atr: '常规纱',
+              stock_value: 200,
+              stock_name: '桐庐凯瑞针纺一号仓',
+              remark: '',
+              change_name: '隔壁老李'
+            },
+            {
+              stock_time: '2019-03-22-16:31',
+              color: '深绿',
+              dyelot: '1',
+              material_atr: '常规纱',
+              stock_value: 200,
+              stock_name: '桐庐凯瑞针纺一号仓',
+              remark: '备注信息超多的啊啊啊啊啊啊',
+              change_name: '隔壁老李'
+            }
+          ]
+        },
+        {
+          material: '36支上光晴纶',
+          total_number: 562.4,
+          stock_number: 200,
+          before_stock: 0,
+          stock_info: [
+            {
+              stock_time: '2019-03-22-16:31',
+              color: '深绿',
+              dyelot: '1',
+              material_atr: '常规纱',
+              stock_value: 200,
+              stock_name: '桐庐凯瑞针纺一号仓',
+              remark: '',
+              change_name: '隔壁老李'
+            }
+          ]
+        }
+      ],
       planList: [
         {
           product_code: 'ES5623134',
@@ -805,177 +802,38 @@ export default {
           compiled_time: '2019-05-23'
         }
       ],
-      options: [
+      surplusList: [
         {
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
+          material: '52支上光晴纶',
+          color: '深绿',
+          weight: '10'
+        },
+        {
+          material: '36支上光晴纶',
+          color: '绿色',
+          weight: '10'
         }
-      ],
-      pickerOptions: {
-        shortcuts: [{
-          text: '今天',
-          onClick (picker) {
-            picker.$emit('pick', new Date())
-          }
-        }, {
-          text: '昨天',
-          onClick (picker) {
-            const date = new Date()
-            date.setTime(date.getTime() - 3600 * 1000 * 24)
-            picker.$emit('pick', date)
-          }
-        }, {
-          text: '一周前',
-          onClick (picker) {
-            const date = new Date()
-            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
-            picker.$emit('pick', date)
-          }
-        }]
-      }
+      ]
     }
   },
   methods: {
-    jisuan () {
-      this.list.forEach((item, key) => {
-        item.selectNum = 0
-        item.stockInfo.forEach((value, index) => {
-          value.total_weight = 0
-          value.stockWeightInfo.forEach((val, ind) => {
-            item.selectNum += Number(val.value)
-            value.total_weight += Number(val.weight)
-          })
-        })
-      })
-    },
-    appendStockWeightInfo (key, kay) {
-      this.list[key].stockInfo[kay].stockWeightInfo.push({
-        weight: ''
-      })
-    },
-    deleteStockWeightInfo (key, kay, index) {
-      this.list[key].stockInfo[kay].stockWeightInfo.splice(index, 1)
-      this.jisuan()
-    },
-    addStockInfo (key) {
-      this.list[key].stockInfo.push(
-        {
-          materialColor: '',
-          dyelot: '',
-          materialAtr: '',
-          total_weight: 0,
-          remark: '',
-          stock: this.defaultStock,
-          stock_time: new Date(),
-          stockWeightInfo: [
-            {
-              weight: ''
-            }
-          ]
+    chatCodeLength (item) {
+      let len = item.length
+      let lengths = 0
+      for (let i = 0; i < len; i++) {
+        if (item.charCodeAt(i) > 255) {
+          lengths += 2
+        } else {
+          lengths++
         }
-      )
-      console.log(this.list)
-    },
-    deleteStockInfo (key, kay) {
-      this.list[key].stockInfo.splice(kay, 1)
+      }
+      return lengths
     },
     saveAll () {
-      this.list.forEach(item => {
-        item.stockInfo.forEach(value => {
-          let flag = value.materialColor && value.dyelot && value.materialAtr && value.total_weight && value.stock && value.stock_time
-          if (flag) {
-            this.$message(
-              {
-                message: '添加成功',
-                type: 'success'
-              }
-            )
-          } else {
-            this.$message(
-              {
-                message: '添加失败，有必填项未填',
-                type: 'error'
-              }
-            )
-          }
-        })
-      })
     }
   },
   created () {
-    let kays = true
-    this.processInfo.forEach((item, key) => {
-      item.processInfo.forEach((value, index) => {
-        value.materials.forEach((val, ind) => {
-          val.colors.forEach((cont, num) => {
-            if (kays) {
-              kays = false
-              this.list = []
-              this.list.push({
-                material: val.material,
-                total_number: cont.value,
-                stock_number: 0,
-                before_stock: 0,
-                stockInfo: [],
-                colors: [
-                  {
-                    color: cont.color,
-                    value: cont.value,
-                    unit: cont.unit
-                  }
-                ]
-              })
-            } else {
-              let flag = true
-              this.list.forEach((ite, ka) => {
-                if (ite.material === val.material) {
-                  ite.total_number += cont.value
-                  let fleg = true
-                  ite.colors.forEach((c, l) => {
-                    if (c.color === cont.color) {
-                      fleg = false
-                      c.value += cont.value
-                    } else if (c.color !== cont.color && fleg && l === ite.colors.length - 1) {
-                      ite.colors.push({
-                        color: cont.color,
-                        value: cont.value,
-                        unit: cont.unit
-                      })
-                    }
-                  })
-                  flag = false
-                } else if (flag && ite.material !== val.material && ka === this.list.length - 1) {
-                  this.list.push({
-                    material: val.material,
-                    total_number: cont.value,
-                    stock_number: 0,
-                    before_stock: 0,
-                    stockInfo: [],
-                    colors: [{
-                      color: cont.color,
-                      value: cont.value,
-                      unit: cont.unit
-                    }]
-                  })
-                }
-              })
-            }
-          })
-        })
-      })
-    })
+    // let kays = true
     this.planList.forEach((item, key) => {
       item.total = item.price * item.plan_number
     })
@@ -984,5 +842,5 @@ export default {
 </script>
 
 <style scoped lang='less'>
-@import "~@/assets/css/rawMaterialOutStock.less";
+@import "~@/assets/css/rawMaterialOutStockDetail.less";
 </style>
