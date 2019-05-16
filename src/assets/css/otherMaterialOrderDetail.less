@@ -1,0 +1,244 @@
+@import './common.less';
+ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+#otherMaterialOrderDetail {
+  height: 100%;
+  font-family: 'systemfont';
+  font-weight: 300;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  .head {
+    min-height: 60px;
+    border-bottom: 1px solid #ECF0F1;
+    padding: 20px 40px;
+    h2 {
+      line-height: 60px;
+      margin: 0;
+      font-size: 24px;
+      color:@fontNormal;
+      font-weight: 400;
+    }
+  }
+  .body{
+    padding: 20px 40px;
+    flex: 1;
+    .stepCtn{
+      position: relative;
+      padding: 40px 0 40px 20px;
+      height: auto;
+      .stepTitle{
+        position: absolute;
+        top: -17px;
+        left: 0;
+        padding-left: 20px;
+        line-height: 50px;
+        color: @normalBlue;
+        font-size: @fontSubhead;
+        font-weight:400;
+      }
+      .borderCtn{
+        position: absolute;
+        top: 0;
+        left: -4px;
+        width: 14px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        .border{
+          flex: 1;
+          width: 4px;
+          background: @normalBlue;
+        }
+        .cicle{
+          width: 14px;
+          height: 14px;
+          border-radius: 50%;
+          background: @normalBlue;
+        }
+      }
+      .lineCtn{
+        width: 100%;
+        display: flex;
+        color: @fontNormal;
+        margin: 24px 0;
+        .addBtn{
+          width: 6em;
+          padding: 0 18px;
+          height: 38px;
+          line-height: 38px;
+          border-radius: 2px;
+          margin-left: 40px;
+          background:#fff;
+          margin-top:15px;
+          cursor: pointer;
+          color: #909399;
+          border:1px solid #E6E6E6;
+          &:hover{
+            color: #10AEF5;
+            border-color: #10AEF5;
+          }
+          span{
+            font-size: 16px;
+            &:nth-child(2){
+              margin-left: 5px;
+              font-size: 20px;
+              vertical-align: -1px;;
+            }
+          }
+        }
+         &.col {
+           flex-direction: column;
+         }
+        .inputCtn{  
+          display: flex;
+          width: 450px;
+          box-sizing: border-box;
+          line-height: 40px;
+          margin-right: 20px;
+          position: relative;
+          font-size: @fontBig;
+          padding-left: 7em;
+          flex-wrap: wrap;
+          min-height: 40px;
+          &.noPadding {
+            padding-left: 0;
+          }
+          &>.title {
+            font-weight: 500;
+            margin-left: 15px;
+            &>span {
+              margin-right: 50px;
+            }
+          }
+          &>.content {
+            &>.table {
+              width: 900px;
+              border: 1px solid #DDD;
+              li {
+                display: flex;
+                border-bottom: 1px solid #DDD;
+                box-sizing: border-box;
+                &:last-child {
+                  border: none;
+                }
+                &>span {
+                  text-align: center;
+                  flex: 1;
+                  height: auto;
+                  box-sizing: border-box;
+                  border-right: 1px solid #DDD;
+                  display: flex;
+                  flex-direction: column;
+                  justify-content: center;
+                  &:last-child {
+                    border: none;
+                  }
+                  &.flex2 {
+                    flex: 1.2;
+                  }
+                  &.flex7 {
+                    flex:1.7;
+                  }
+                  &>span {
+                    line-height: 30px;
+                  }
+                }
+                &:first-child {
+                  background-color: rgb(240,240,240)!important;
+                }
+                &:nth-child(n+2) {
+                  font-size: @fontSmall;
+                }
+                &:nth-child(2n+1) {
+                  background-color:rgb(250, 250, 250) 
+                }
+              }
+            }
+          }
+          &.maxWidth {
+            width: 752px;
+          }
+          .label{
+            font-size: @fontBig;
+            width: 7em;
+            text-align: right;
+            position: absolute;
+            line-height: 40px;
+            left: 0;
+            top: 0;
+            &.smallFont {
+              font-size: @fontMid;
+            }
+            &.must{
+              &::before{
+                content:'*';
+                color: @error;
+              }
+            }
+          }
+          &>.content{
+            font-size: @fontMid;
+            margin-left: 15px;
+            &.important{
+              color:@normalBlue;
+            }
+            &>.productInfo {
+              width: auto;
+              height: auto;
+              &>li {
+                height: 40px;
+                display: flex;
+                justify-content: space-between;
+                &>span {
+                  line-height: 40px;
+                  &:first-child {
+                    color: @normalBlue;
+                    width: 280px;
+                  }
+                  &:nth-child(2) {
+                    width: 100px;
+                  }
+                  &:nth-child(3) {
+                    width: 100px;
+                  }
+                }
+              }
+            }
+            &.marginBig {
+              margin-left: 40px;
+            }
+            &>span {
+              display: inline-block;
+              width: 100px;
+              position: relative;
+              padding-left: 50px; 
+              box-sizing: border-box;
+              margin-right: 20px;
+              color: #777;
+              &>.title {
+                width: 70px;
+                padding-right: 10px;
+                position: absolute;
+                top: 0;
+                left: -30px;
+                text-align: right;
+              }
+            }
+          }
+        }
+      }
+    }
+    .btnCtn{
+      display: flex;
+      padding-left: 60px;
+      justify-content: space-between;
+      width: 300px;
+      margin-bottom: 40px;
+    }
+  }
+}

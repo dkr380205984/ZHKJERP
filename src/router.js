@@ -11,6 +11,11 @@ let router = new Router({
     path: '/',
     redirect: '/login'
   }, {
+    path: '/rawMaterialProcessTable/:id',
+    name: 'rawMaterialProcessTable',
+    component: () => import('./views/rawMaterial/rawMaterialProcessTable.vue')
+  },
+  {
     path: '/designFormTable/:id',
     name: 'designFormTable',
     component: () => import('./views/designForm/designFormTable.vue')
@@ -314,6 +319,22 @@ let router = new Router({
       path: 'otherMaterialOrderPage/:id',
       name: 'otherMaterialOrderPage',
       component: () => import('./views/rawMaterial/otherMaterialOrderPage.vue')
+    }, {
+      path: 'otherMaterialOrderCompiledList',
+      name: 'otherMaterialOrderCompiledList',
+      component: () => import('./views/rawMaterial/otherMaterialOrderCompiledList.vue')
+    }, {
+      path: 'otherMaterialOrderDetail/:id',
+      name: 'otherMaterialOrderDetail',
+      component: () => import('./views/rawMaterial/otherMaterialOrderDetail.vue')
+    }, {
+      path: 'otherMaterialProcessList',
+      name: 'otherMaterialProcessList',
+      component: () => import('./views/rawMaterial/otherMaterialProcessList.vue')
+    }, {
+      path: 'otherMaterialProcess/:id',
+      name: 'otherMaterialProcess',
+      component: () => import('./views/rawMaterial/otherMaterialProcess.vue')
     }]
   }
   ]

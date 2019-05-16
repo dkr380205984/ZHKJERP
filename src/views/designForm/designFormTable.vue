@@ -700,12 +700,12 @@ export default {
       })
     })
   },
-  mounted () {
-    let body = document.getElementsByTagName('body')[0]
-    let html = document.getElementsByTagName('html')[0]
-    body.style.overflow = 'visible'
-    html.style.overflow = 'visible'
-  },
+  // mounted () {
+  //   let body = document.getElementsByTagName('body')[0]
+  //   let html = document.getElementsByTagName('html')[0]
+  //   body.style.overflow = 'visible'
+  //   html.style.overflow = 'visible'
+  // },
   updated () {
     window.print()
   }
@@ -714,4 +714,12 @@ export default {
 
 <style lang="less" scoped>
 @import "~@/assets/css/designFormTable.less";
+</style>
+<style lang="less">
+html {
+  overflow: visible;
+}
+body {
+  overflow: visible;
+}
 </style>

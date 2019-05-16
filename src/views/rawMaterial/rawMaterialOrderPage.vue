@@ -138,7 +138,7 @@
                     <el-input size="small"
                               placeholder="数量"
                               v-model="value.value"
-                              @change="jisuan(key)">
+                              @change="jisuan(key,true,value.value)">
                     </el-input>
                   </div>
                 </div>
@@ -274,13 +274,22 @@ export default {
     }
   },
   methods: {
-    jisuan (key) {
+    jisuan (key, flag, val) {
+      if (flag) {
+        if (val % 1 !== 0 || Number(val) < 0) {
+          this.$message({
+            message: '请输入正整数',
+            type: 'error'
+          })
+        }
+      }
       this.list.forEach((item, key) => {
         item.selectNum = 0
         item.buyInfo.forEach((value, index) => {
           value.money = 0
           value.buyMaterialInfo.forEach((val, ind) => {
-            item.selectNum += Number(val.value)
+            item.selectNum = Number(item.selectNum) + Number(val.value)
+            item.selectNum = (Math.ceil(item.selectNum * 100) / 100).toFixed(2)
             value.money += (val.price * val.value)
           })
         })
@@ -296,6 +305,7 @@ export default {
     },
     deleteBuyMaterialInfo (key, kay, index) {
       console.log(this.list[key].buyInfo[kay].buyMaterialInfo.splice(index, 1))
+      this.jisuan(key)
     },
     addBuyInfo (key) {
       if (!this.list[key].material) {
@@ -324,6 +334,7 @@ export default {
     },
     deleteBuyInfo (key, kay) {
       this.list[key].buyInfo.splice(kay, 1)
+      this.jisuan(key)
     },
     saveAll () {
       let arr = []
@@ -447,25 +458,27 @@ export default {
         company_id: sessionStorage.company_id
       })
     ]).then(res => {
-      console.log(res[0].data.data.material_info)
+      console.log('stock_info:', res[0].stock_info)
       res[0].data.data.material_info.forEach((item, key) => {
         for (let prop in item) {
           for (let val in item[prop]) {
             if (val !== 'total_number' && val !== 'type' && val !== 'unit') {
-              this.rawMaterialPlanList.push({
-                material: prop,
-                need: {
-                  name: val,
-                  value: (item[prop].unit === '克' || item[prop].unit === 'g') ? item[prop].total_number / 1000 : item[prop].total_number,
-                  unit: (item[prop].unit === '克' || item[prop].unit === 'g') ? 'kg' : item[prop].unit === '千克' ? 'kg' : item[prop].unit
-                },
-                have: {
-                  name: val,
-                  value: '',
-                  unit: ''
-                },
-                whiteHave: ''
-              })
+              if (item[prop].type === 0) {
+                this.rawMaterialPlanList.push({
+                  material: prop,
+                  need: {
+                    name: val,
+                    value: (item[prop].unit === '克' || item[prop].unit === 'g') ? (Math.ceil(item[prop][val]) / 1000).toFixed(2) : item[prop][val],
+                    unit: (item[prop].unit === '克' || item[prop].unit === 'g') ? 'kg' : item[prop].unit === '千克' ? 'kg' : item[prop].unit
+                  },
+                  have: {
+                    name: val,
+                    value: '',
+                    unit: ''
+                  },
+                  whiteHave: ''
+                })
+              }
             }
           }
         }
@@ -475,14 +488,15 @@ export default {
         if (key === 0) {
           this.list[0].material = item.material
           this.list[0].needColors.push(item.need.name)
-          this.list[0].needNum = Number(item.need.value)
+          this.list[0].needNum = (Math.ceil(item.need.value * 100) / 100).toFixed(2)
         } else {
           let flag = true
           this.list.forEach((value, index) => {
             if (value.material === item.material) {
               flag = false
               value.needColors.push(item.need.name)
-              value.needNum += Number(item.need.value)
+              value.needNum = Number(value.needNum) + Number(item.need.value)
+              value.needNum = (Math.ceil(value.needNum * 100) / 100).toFixed(2)
             } else if (flag && index === this.list.length - 1 && value.material !== item.material) {
               let obj = {
                 material: '',
@@ -494,7 +508,7 @@ export default {
               }
               obj.material = item.material
               obj.needColors.push(item.need.name)
-              obj.needNum = Number(item.need.value)
+              obj.needNum = (Math.ceil(item.need.value * 100) / 100).toFixed(2)
               this.list.push(obj)
             }
           })
