@@ -162,6 +162,10 @@ const productStockList = (params) => http.get(`${baseUrl}/product/stock/list`, p
 const productStockDetail = (params) => http.get(`${baseUrl}/product/stock/detail`, params)
 // 获取单挑产品库存
 const productStockOne = (params) => http.get(`${baseUrl}/product/stock/one`, params)
+// 原料库存列表
+const materialStockList = (params) => http.get(`${baseUrl}/material/stock/list`, params)
+// 原料库存详情
+const materialStockDetail = (params) => http.get(`${baseUrl}/material/stock/detail`, params)
 // 订单库存详情
 const orderStockDetail = (params) => http.get(`${baseUrl}/product/stock/order`, params)
 // 添加生产计划单
@@ -177,6 +181,8 @@ const pantongList = (params) => http.get(`${baseUrl}/pan/color/list`, params)
 // 原料预订购
 const rawMaterialPurchase = (params) => http.post(`${baseUrl}/material/reserve/save`, params, 'application/json')
 export {
+  materialStockDetail,
+  materialStockList,
   YarnColorList,
   pantongList,
   deleteStation,

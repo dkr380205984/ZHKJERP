@@ -135,13 +135,13 @@ const menu = [{
   }, {
     name: '产品库存列表',
     url: '/index/productStockList'
+  }, {
+    name: '原料库存列表',
+    url: '/index/mainMaterialStockList'
   }
     // {
     //   name: '添加原料库存',
     //   url: '/index/mainMaterialStockCreate'
-    // }, {
-    //   name: '原料库存列表',
-    //   url: '/index/mainMaterialStockList'
     // },
     // {
     //   name: '添加辅料库存',

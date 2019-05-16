@@ -7,55 +7,43 @@
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">原料名称:</span>
-          <span class="content">52支上光晴纶</span>
+          <span class="content">{{materialInfo.material_name}}</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">原料颜色:</span>
-          <span class="content">白胚</span>
+          <span class="content">{{materialInfo.material_color}}</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">原料属性:</span>
-          <span class="content">常规</span>
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">原料缸号:</span>
-          <span class="content">1</span>
+          <span class="content">{{materialInfo.material_attribute}}</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">原料重量:</span>
-          <span class="content">200g</span>
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">存放仓库:</span>
-          <span class="content">桐庐凯瑞针纺1号仓</span>
+          <span class="content">{{materialInfo.total_weight}}千克</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">创建时间:</span>
-          <span class="content">2018-04-22</span>
+          <span class="content">{{materialInfo.created_at}}</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">更新时间:</span>
-          <span class="content">2019-04-22</span>
+          <span class="content">{{materialInfo.updated_at}}</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">备注信息:</span>
-          <span class="content">暂无备注信息</span>
+          <span class="content">{{materialInfo.desc?materialInfo.desc:'暂无备注信息'}}</span>
         </div>
       </div>
       <div class="lineCtn">
@@ -64,18 +52,18 @@
           <span class="content">
             <ul class="tableBox">
               <li class="title">
-                <span>时间</span>
+                <span style="flex:1">时间</span>
                 <span>操作</span>
                 <span>重量</span>
-                <span>结余</span>
+                <span>操作人</span>
               </li>
               <li class="list"
                   v-for="(item,key) in list"
                   :key="key">
-                <span>{{item.time}}</span>
-                <span>{{item.type === 1 ? '存入' : '调取'}}</span>
-                <span>{{(item.type !== 1 ? '-' : '+') + item.weight + item.unit}}</span>
-                <span v-once>{{change(item.type,item.weight) + 'g'}}</span>
+                <span  style="flex:1">{{item.time}}</span>
+                <span>{{item.action}}</span>
+                <span :style="{'color':item.style}">{{item.weight + item.unit}}</span>
+                <span>{{item.user_name}}</span>
               </li>
             </ul>
           </span>
@@ -96,47 +84,43 @@
 </template>
 
 <script>
+import { materialStockDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
-      list: [
-        {
-          time: '2019-04-22-16:31',
-          type: 1,
-          weight: 200,
-          unit: 'g'
-        },
-        {
-          time: '2019-04-23-13:22',
-          type: 0,
-          weight: 200,
-          unit: 'g'
-        },
-        {
-          time: '2019-04-23-13:22',
-          type: 0,
-          weight: 200,
-          unit: 'g'
-        },
-        {
-          time: '2019-04-23-13:22',
-          type: 0,
-          weight: 200,
-          unit: 'g'
-        }
-      ],
-      weight: 5000
+      list: [],
+      weight: 5000,
+      materialInfo: {
+        created_at: '',
+        material_attribute: '',
+        material_color: '',
+        material_name: '',
+        total_weight: '',
+        updated_at: ''
+      },
+      actionArr: ['全部', '预定购入库', '加工出库', '订购入库', '生产出库']
     }
   },
   methods: {
-    change (type, key) {
-      if (type === 1) {
-        this.weight += key
-      } else {
-        this.weight -= key
-      }
-      return this.weight
-    }
+  },
+  mounted () {
+    materialStockDetail({
+      stock_id: this.$route.params.id,
+      action: null
+    }).then((res) => {
+      console.log(res)
+      this.materialInfo = res.data.data.data_stock
+      this.list = res.data.data.data_detail.map((item) => {
+        return {
+          time: item.create_time,
+          unit: '千克',
+          action: this.actionArr[item.action],
+          style: item.action === 1 || item.action === 3 ? '#67c23a' : '#F56C6C',
+          weight: item.action_weight,
+          user_name: item.user_name
+        }
+      })
+    })
   }
 }
 </script>

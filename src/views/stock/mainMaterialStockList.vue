@@ -29,26 +29,21 @@
       </div>
       <div class="tableCtn">
         <div class="tableRow titleTableRow">
-          <div class="tableColumn">原料名称</div>
+          <div class="tableColumn flex9">原料名称</div>
           <div class="tableColumn">原料颜色</div>
           <div class="tableColumn">原料属性</div>
-          <div class="tableColumn">缸号</div>
           <div class="tableColumn">库存量(千克)</div>
-          <div class="tableColumn">存放仓库</div>
           <div class="tableColumn">更新时间</div>
           <div class="tableColumn flex9">操作</div>
         </div>
-        <div class="tableRow bodyTableRow">
-          <div class="tableColumn">原料名称</div>
-          <div class="tableColumn">原料颜色</div>
-          <div class="tableColumn">原料属性</div>
-          <div class="tableColumn">缸号</div>
-          <div class="tableColumn">库存量(千克)</div>
-          <div class="tableColumn">存放仓库</div>
-          <div class="tableColumn">更新时间</div>
+        <div class="tableRow bodyTableRow" v-for="item in list" :key="item.id">
+          <div class="tableColumn flex9">{{item.material_name}}</div>
+          <div class="tableColumn">{{item.material_color}}</div>
+          <div class="tableColumn">{{item.material_attribute}}</div>
+          <div class="tableColumn">{{item.total_weight}}</div>
+          <div class="tableColumn">{{item.updated_at}}</div>
           <div class="tableColumn flex9">
-            <span class="btns normal">修改</span>
-            <span class="btns success" @click="$router.push('./mainMaterialStockDetail/1')">查看</span>
+            <span class="btns success" @click="$router.push('./mainMaterialStockDetail/' + item.id)">详情</span>
           </div>
         </div>
       </div>
@@ -59,7 +54,7 @@
           layout="prev, pager, next"
           :total="total"
           :current-page.sync="pages"
-          @current-change="getOrderList">
+          @current-change="getList">
         </el-pagination>
       </div>
     </div>
@@ -67,6 +62,7 @@
 </template>
 
 <script>
+import { materialStockList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -110,11 +106,20 @@ export default {
     clear (item) {
 
     },
-    getOrderList () {
+    getList () {
 
     }
   },
   mounted () {
+    materialStockList({
+      company_id: window.sessionStorage.getItem('company_id'),
+      page: 1,
+      limit: 5
+    }).then((res) => {
+      console.log(res)
+      this.total = res.data.data.total
+      this.list = res.data.data.data
+    })
   }
 }
 </script>
