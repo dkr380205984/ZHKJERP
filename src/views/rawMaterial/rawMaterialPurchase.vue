@@ -29,6 +29,7 @@
               <h4>第{{change(key+1)}}种原料</h4>
               <div class="inputBox">
                 <el-select v-model="item.material_name"
+                           filterable
                            placeholder="请选择原料">
                   <el-option v-for="value in materialList.material"
                              :key="value.value"

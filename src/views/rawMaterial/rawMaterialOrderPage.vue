@@ -14,7 +14,8 @@
         <div class="lineCtn">
           <div class="inputCtn">
             <span class="label">订单号:</span>
-            <span class="content important">{{order_code}}</span>
+            <span class="content important"
+                  @click="$router.push('/index/orderDetail/' + $route.params.id)">{{order_code}}</span>
           </div>
           <div class="inputCtn">
             <span class="label">外贸公司:</span>
@@ -36,12 +37,15 @@
             <span class="label">产品信息:</span>
             <span class="content">
               <ul class="productInfo">
-                <li v-for="(item,key) in productList"
-                    :key="key">
-                  <span>{{item.product_code}}({{item.type}})</span>
-                  <span>{{item.product_size+'/'+item.product_color}}</span>
-                  <span>{{item.number+'条'}}</span>
-                </li>
+                <template v-if="productList.length !== 0">
+                  <li v-for="(item,key) in productList"
+                      :key="key">
+                    <span @click="$router.push('/index/productDetail/' + item.product_code)">{{item.product_code}}({{item.type}})</span>
+                    <span>{{item.product_size+'/'+item.product_color}}</span>
+                    <span>{{item.number+'条'}}</span>
+                  </li>
+                </template>
+                <li v-else>暂无信息</li>
               </ul>
             </span>
           </div>
@@ -59,17 +63,24 @@
               <span>计划原料信息</span>
               <span>库存信息</span>
             </div>
-            <div class="tableInfo"
-                 v-for="(item,key) in rawMaterialPlanList"
-                 :key="key">
-              <span>
-                <span>{{item.material}}</span>
-                <span>{{item.need.name + ':' + item.need.value + item.need.unit}}</span>
-              </span>
-              <span>
-                <span>{{item.have.name + ':' + item.have.value + item.have.unit}}</span>
-                <span>{{'白胚:' + item.whiteHave}}</span>
-              </span>
+            <template v-if="rawMaterialPlanList.length !== 0">
+              <div class="tableInfo"
+                   v-for="(item,key) in rawMaterialPlanList"
+                   :key="key">
+                <span>
+                  <span>{{item.material}}</span>
+                  <span>{{item.need.name + ':' + item.need.value + item.need.unit}}</span>
+                </span>
+                <span>
+                  <span>{{item.have.name + ':' + (item.have.value ? item.have.value : '0') + item.need.unit}}</span>
+                  <span>{{'白胚:' + (item.whiteHave ? item.whiteHave + item.need.unit : '0' + item.need.unit)}}</span>
+                </span>
+              </div>
+            </template>
+            <div v-else
+                 class="tableInfo">
+              <span>暂无信息</span>
+              <span>暂无信息</span>
             </div>
           </div>
         </div>
@@ -92,11 +103,14 @@
               <span>已选重量</span>
             </div>
             <div class="tableInfo">
-              <span>{{item.material}}</span>
+              <span>{{item.material ? item.material : '暂无信息'}}</span>
               <span>
-                <template v-for="(value,index) in item.needColors">
-                  {{(index === 0 ? '' : '/') + value}}
+                <template v-if="item.needColors.length !== 0">
+                  <template v-for="(value,index) in item.needColors">
+                    {{(index === 0 ? '' : '/') + value}}
+                  </template>
                 </template>
+                <template v-else>暂无信息</template>
               </span>
               <span>{{item.needNum}}kg</span>
               <span>{{item.selectNum}}kg</span>
@@ -155,7 +169,7 @@
                     @click="deleteBuyMaterialInfo(key,kay,index)"></em>
               </li>
               <li>
-                <span>订购公司:</span>
+                <span cl>订购公司:</span>
                 <el-select v-model="iten.company"
                            placeholder="请选择订购来源"
                            size="small">
@@ -178,7 +192,6 @@
               <li>
                 <span>订购日期:</span>
                 <el-date-picker v-model="iten.orderTime"
-                                align="right"
                                 type="date"
                                 placeholder="选择日期"
                                 value-format="yyyy-MM-dd"
@@ -221,56 +234,14 @@ import { rawMaterialOrderInit, clientList, rawMaterialOrder } from '@/assets/js/
 export default {
   data () {
     return {
-      loading: false,
+      loading: true,
       order_code: '',
       order_time: '',
       company_name: '',
       group_name: '',
       productList: [
       ],
-      rawMaterialPlanList: [
-        {
-          material: '52支上光晴纶',
-          need: {
-            name: '深绿',
-            value: 281.4,
-            unit: 'kg'
-          },
-          have: {
-            name: '深绿',
-            value: 20,
-            unit: 'kg'
-          },
-          whiteHave: '300kg'
-        }, {
-          material: '52支上光晴纶',
-          need: {
-            name: '蓝色',
-            value: 281.4,
-            unit: 'kg'
-          },
-          have: {
-            name: '蓝色',
-            value: 20,
-            unit: 'kg'
-          },
-          whiteHave: '300kg'
-        },
-        {
-          material: '36支上光晴纶',
-          need: {
-            name: '卡其色',
-            value: 281.4,
-            unit: 'kg'
-          },
-          have: {
-            name: '卡其色',
-            value: 20,
-            unit: 'kg'
-          },
-          whiteHave: '300kg'
-        }
-      ],
+      rawMaterialPlanList: [],
       list: [
         {
           material: '',
@@ -298,13 +269,6 @@ export default {
             date.setTime(date.getTime() - 3600 * 1000 * 24)
             picker.$emit('pick', date)
           }
-        }, {
-          text: '一周前',
-          onClick (picker) {
-            const date = new Date()
-            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
-            picker.$emit('pick', date)
-          }
         }]
       }
     }
@@ -329,12 +293,18 @@ export default {
         value: '',
         attr: ''
       })
-      console.log(this.list)
     },
     deleteBuyMaterialInfo (key, kay, index) {
       console.log(this.list[key].buyInfo[kay].buyMaterialInfo.splice(index, 1))
     },
     addBuyInfo (key) {
+      if (!this.list[key].material) {
+        this.$message({
+          message: '无原料信息，不可添加订购',
+          type: 'error'
+        })
+        return
+      }
       this.list[key].buyInfo.push(
         {
           company: '',
@@ -357,37 +327,115 @@ export default {
     },
     saveAll () {
       let arr = []
+      let nums = 0
+      let flag = true
       this.list.forEach((item, key) => {
         let obj = {}
         obj.company_id = sessionStorage.company_id
         obj.order_id = this.$route.params.id
         obj.user_id = sessionStorage.user_id
         obj.material_name = item.material
+        nums += item.buyInfo.length
         item.buyInfo.forEach(value => {
+          if (!value.company) {
+            this.$message({
+              message: '请选择订购公司',
+              type: 'error'
+            })
+            flag = false
+            return
+          }
           obj.client_id = value.company
           obj.total_price = value.money
           obj.desc = value.remark
+          if (!value.orderTime) {
+            this.$message({
+              message: '请选择订购时间',
+              type: 'error'
+            })
+            flag = false
+            return
+          }
           obj.order_time = value.orderTime
           value.buyMaterialInfo.forEach(val => {
+            if (!val.color) {
+              this.$message({
+                message: '请选择颜色',
+                type: 'error'
+              })
+              flag = false
+              return
+            }
             obj.color_code = val.color
+            if (val.price === '') {
+              this.$message({
+                message: '请输入单价',
+                type: 'error'
+              })
+              flag = false
+              return
+            } else if (val.price === '0') {
+              this.$message({
+                message: '单价不可为0',
+                type: 'error'
+              })
+              flag = false
+              return
+            } else if (!Number(val.price)) {
+              this.$message({
+                message: '请检查单价格式是否正确',
+                type: 'error'
+              })
+              flag = false
+              return
+            }
             obj.price = Number(val.price)
+            if (val.value === '') {
+              this.$message({
+                message: '请输入数量',
+                type: 'error'
+              })
+              flag = false
+              return
+            } else if (val.value === '0') {
+              this.$message({
+                message: '数量不可为0',
+                type: 'error'
+              })
+              flag = false
+              return
+            } else if (!Number(val.value)) {
+              this.$message({
+                message: '请检查数量格式是否正确',
+                type: 'error'
+              })
+              flag = false
+              return
+            }
             obj.total_weight = Math.ceil(Number(val.value))
             arr.push({ ...obj })
           })
         })
       })
-      console.log(arr)
-      rawMaterialOrder({
-        data: arr
-      }).then(res => {
-        console.log(res)
-      })
-      this.$message(
-        {
-          message: '添加成功',
-          type: 'success'
-        }
-      )
+      if (nums === 0) {
+        this.$message({
+          message: '无可提交的订购信息',
+          type: 'warning'
+        })
+        return
+      }
+      if (flag) {
+        rawMaterialOrder({
+          data: arr
+        }).then(res => {
+          if (res.data.code === 200) {
+            this.$message({
+              message: '添加成功',
+              type: 'success'
+            })
+          }
+        })
+      }
     }
   },
   created () {
@@ -399,6 +447,59 @@ export default {
         company_id: sessionStorage.company_id
       })
     ]).then(res => {
+      console.log(res[0].data.data.material_info)
+      res[0].data.data.material_info.forEach((item, key) => {
+        for (let prop in item) {
+          for (let val in item[prop]) {
+            if (val !== 'total_number' && val !== 'type' && val !== 'unit') {
+              this.rawMaterialPlanList.push({
+                material: prop,
+                need: {
+                  name: val,
+                  value: (item[prop].unit === '克' || item[prop].unit === 'g') ? item[prop].total_number / 1000 : item[prop].total_number,
+                  unit: (item[prop].unit === '克' || item[prop].unit === 'g') ? 'kg' : item[prop].unit === '千克' ? 'kg' : item[prop].unit
+                },
+                have: {
+                  name: val,
+                  value: '',
+                  unit: ''
+                },
+                whiteHave: ''
+              })
+            }
+          }
+        }
+        // console.log(item)
+      })
+      this.rawMaterialPlanList.forEach((item, key) => {
+        if (key === 0) {
+          this.list[0].material = item.material
+          this.list[0].needColors.push(item.need.name)
+          this.list[0].needNum = Number(item.need.value)
+        } else {
+          let flag = true
+          this.list.forEach((value, index) => {
+            if (value.material === item.material) {
+              flag = false
+              value.needColors.push(item.need.name)
+              value.needNum += Number(item.need.value)
+            } else if (flag && index === this.list.length - 1 && value.material !== item.material) {
+              let obj = {
+                material: '',
+                needColors: [],
+                needNum: 0,
+                selectNum: 0,
+                buyInfo: [
+                ]
+              }
+              obj.material = item.material
+              obj.needColors.push(item.need.name)
+              obj.needNum = Number(item.need.value)
+              this.list.push(obj)
+            }
+          })
+        }
+      })
       this.order_code = res[0].data.data.order_info.order_code
       this.order_time = res[0].data.data.order_info.order_time
       this.group_name = res[0].data.data.order_info.group_name
@@ -423,35 +524,9 @@ export default {
         })
       })
     })
-    this.rawMaterialPlanList.forEach((item, key) => {
-      if (key === 0) {
-        this.list[0].material = item.material
-        this.list[0].needColors.push(item.need.name)
-        this.list[0].needNum = Number(item.need.value)
-      } else {
-        let flag = true
-        this.list.forEach((value, index) => {
-          if (value.material === item.material) {
-            flag = false
-            value.needColors.push(item.need.name)
-            value.needNum += Number(item.need.value)
-          } else if (flag && index === this.list.length - 1 && value.material !== item.material) {
-            let obj = {
-              material: '',
-              needColors: [],
-              needNum: 0,
-              selectNum: 0,
-              buyInfo: [
-              ]
-            }
-            obj.material = item.material
-            obj.needColors.push(item.need.name)
-            obj.needNum = Number(item.need.value)
-            this.list.push(obj)
-          }
-        })
-      }
-    })
+  },
+  updated () {
+    this.loading = false
   }
 }
 </script>

@@ -115,18 +115,13 @@ ul {
             line-height: 40px;
             left: 0;
             top: 0;
-            &.must{
-              &::before{
-                content:'*';
-                color: @error;
-              }
-            }
           }
           .content{
             font-size: @fontMid;
             margin-left: 15px;
             &.important{
               color:@normalBlue;
+              cursor: pointer;
             }
             &>.productInfo {
               width: auto;
@@ -140,6 +135,7 @@ ul {
                   &:first-child {
                     color: @normalBlue;
                     width: 280px;
+                    cursor: pointer;
                   }
                   &:nth-child(2) {
                     width: 100px;
@@ -177,6 +173,7 @@ ul {
               &>span {
                 display: flex;
                 box-sizing: content-box;
+                justify-content: center;
                 &>span {
                   flex: 1;
                   padding-left: 50px;
