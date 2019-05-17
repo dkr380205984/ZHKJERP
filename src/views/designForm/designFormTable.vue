@@ -278,22 +278,23 @@
             <div v-for="(item,key) in warp_data.warp_rank"
                  :key="key">
               <template v-if="key === 0">
-                <span v-for="(item,key) in add(item,b)"
+                <span v-for="(val,ind) in add(item,b)"
                       :style="{minWidth : (100/12) + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
-                      :key="key">
-                  {{item === 'no' ? '' : item}}
+                      :key="ind">
+                  {{val === 'no' ? '' : val}}
                 </span>
               </template>
               <template v-else>
                 <span v-for="(value,index) in changeArr(add(item,b))"
                       :key="index"
-                      :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999',background: item[(b+1)*12] === item[(b+1)*12 -1] && ((index === 0 && b !== 0) || index === changeArr(add(item,b)).length - 1) && value.value !== 'no' ? 'rgb(240,240,240)' : false}">
+                      :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999',background: consol(item,b,value,index) && value.value !== 'no' ? 'rgb(240,240,240)' : false}">
                   {{value.value === 'no' ? '' : value.value}}
-                  <span v-if='item[(b + 1) * 12 - 1] === item[(b + 1) *12] && (index === changeArr(add(item,b)).length - 1 || item[(b + 1) * 12 - 1] === item[(b + 1) * 12] && index === 0) '
+                  <span v-if="consol(item,b,value,index) && value.value !== 'no'"
                         class="jiantou">
-                    <span v-if="index === changeArr(add(item,b)).length - 1  && b!==add(warp_data.warp_rank_bottom,'all').length -1 "
+                    <span v-if="consol(item,b,value,index,true) === '' && b !== 0 && b !== add(warp_data.warp_rank_bottom,'all').length -1"></span>
+                    <span v-else-if="(((item[(b + 1) * 12] === item[(b + 1) * 12 - 1] && item[( b + 1 ) * 12 ] === '' ) || item[(b + 1) * 12] === null) && index === changeArr(add(item, b)).length - 1)"
                           class="el-icon-back left"></span>
-                    <span v-else-if="item[(b + 1) * 12 - 1] === item[(b + 1) *12] && index === 0 && b !== 0"
+                    <span v-else-if="(((item[b * 12] === item[b * 12 - 1] && item[b * 12] === '') || item[b * 12] === null) && index === 0 && b !== 0)"
                           class="el-icon-back right"></span>
                   </span>
                 </span>
@@ -325,13 +326,15 @@
               <template v-else>
                 <span v-for="(value,index) in changeArr(add(item,b))"
                       :key="index"
-                      :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999',background: item[(b+1)*12] === item[(b+1)*12 -1] && ((index === 0 && b !== 0) || index === changeArr(add(item,b)).length - 1) && value.value !== 'no' ? 'rgb(240,240,240)' : false}">
+                      :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999',background: consol(item,b,value,index) && value.value !== 'no' ? 'rgb(240,240,240)' : false}">
                   {{value.value === 'no' ? '' : value.value}}
-                  <span v-if='item[(b + 1) * 12 - 1] === item[(b + 1) *12] && (index === changeArr(add(item,b)).length - 1 || item[(b + 1) * 12 - 1] === item[(b + 1) *12] && index === 0) '
+
+                  <span v-if="consol(item,b,value,index) && value.value !== 'no' "
                         class="jiantou">
-                    <span v-if="index === changeArr(add(item,b)).length - 1 && b!==add(weft_data.weft_rank_bottom,'all').length -1"
+                    <span v-if="consol(item,b,value,index,true) === '' && b !== 0 && b !== add(weft_data.weft_rank_bottom,'all').length -1"></span>
+                    <span v-else-if="(((item[(b + 1) * 12] === item[(b + 1) * 12 - 1] && item[( b + 1 ) * 12 ] === '' ) || item[(b + 1) * 12] === null) && index === changeArr(add(item, b)).length - 1)"
                           class="el-icon-back left"></span>
-                    <span v-else-if="item[(b + 1) * 12 - 1] === item[(b + 1) *12] && index === 0 && b !== 0"
+                    <span v-else-if="(((item[b * 12] === item[b * 12 - 1] && item[b * 12] === '') || item[b * 12] === null) && index === 0 && b !== 0)"
                           class="el-icon-back right"></span>
                   </span>
                 </span>
@@ -454,6 +457,19 @@ export default {
     }
   },
   methods: {
+    consol (item, b, value, index, fleg) {
+      // console.log(item)
+      let key = (((item[b * 12] === item[b * 12 - 1] && item[b * 12] === '') || item[b * 12] === null) && index === 0 && b !== 0) && ((item[(b + 1) * 12] === item[(b + 1) * 12 - 1] || item[(b + 1) * 12] === null) && index === this.changeArr(this.add(item, b)).length - 1)
+      let flag = (((item[b * 12] === item[b * 12 - 1] && item[b * 12] === '') || item[b * 12] === null) && index === 0 && b !== 0) || ((item[(b + 1) * 12] === item[(b + 1) * 12 - 1] || item[(b + 1) * 12] === null) && index === this.changeArr(this.add(item, b)).length - 1)
+      // 判断条件1：((item[b * 12] === item[b * 12 - 1] || item[b * 12] === null) && index === 0 && b !== 0)
+      // 判断当前元素是否等于上一行的最后一个等于''或者为null 并且当前元素为第一个 当前行数不为第一个
+      // 判断条件2：((item[(b + 1) * 12] === item[(b + 1) * 12 - 1] || item[(b + 1) * 12] === null) && index === this.changeArr(this.add(item, b)).length - 1)
+      // 判断当前元素是否等于下一行的第一个等于'' 并且当前元素为最后一个
+      if (fleg) {
+        return key ? '' : flag
+      }
+      return flag
+    },
     forArr: (num) => {
       let arr = []
       for (let i = 0; i < num; i++) {
@@ -616,7 +632,7 @@ export default {
     craftOne({
       id: this.$route.params.id
     }).then((res) => {
-      // console.log(res)
+      console.log(res)
       const data = res.data.data
       this.product_info = data.product_info
       this.craft_code = data.craft_code
@@ -707,7 +723,7 @@ export default {
   //   html.style.overflow = 'visible'
   // },
   updated () {
-    window.print()
+    // window.print()
   }
 }
 </script>

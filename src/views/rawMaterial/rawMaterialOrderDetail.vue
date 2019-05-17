@@ -87,7 +87,7 @@
               <ul class="table">
                 <li>
                   <span>订购公司</span>
-                  <span class="flex7">颜色-单价-数量</span>
+                  <span class="flex7">颜色-单价-数量-包装</span>
                   <span>总价</span>
                   <span>下单日期</span>
                   <!-- <span class="flex2">交货日期</span> -->
@@ -99,7 +99,7 @@
                   <span class="flex7">
                     <span v-for="(content,number) in value.info"
                           :key="number">
-                      {{content.color}}--{{content.price}}元/kg--{{content.value}}kg
+                      {{content.color}}--{{content.price}}元/kg--{{content.value}}kg--{{content.attr}}
                     </span>
                   </span>
                   <span>{{value.total_price}}</span>
@@ -138,17 +138,20 @@ export default {
                 {
                   color: '深绿',
                   price: '5',
-                  value: 400
+                  value: 400,
+                  attr: '98包装'
                 },
                 {
                   color: '深绿',
                   price: '5',
-                  value: 400
+                  value: 400,
+                  attr: '98包装'
                 },
                 {
                   color: '深绿',
                   price: '5',
-                  value: 400
+                  value: 400,
+                  attr: '98包装'
                 }
               ],
               total_price: 6400,
@@ -161,17 +164,20 @@ export default {
                 {
                   color: '深绿',
                   price: '5',
-                  value: 400
+                  value: 400,
+                  attr: '98包装'
                 },
                 {
                   color: '深绿',
                   price: '5',
-                  value: 400
+                  value: 400,
+                  attr: '98包装'
                 },
                 {
                   color: '深绿',
                   price: '5',
-                  value: 400
+                  value: 400,
+                  attr: '98包装'
                 }
               ],
               total_price: 6400,
@@ -191,17 +197,20 @@ export default {
                 {
                   color: '深绿',
                   price: '5',
-                  value: 400
+                  value: 400,
+                  attr: '98包装'
                 },
                 {
                   color: '深绿',
                   price: '5',
-                  value: 400
+                  value: 400,
+                  attr: '98包装'
                 },
                 {
                   color: '深绿',
                   price: '5',
-                  value: 400
+                  value: 400,
+                  attr: '98包装'
                 }
               ],
               total_price: 6400,
@@ -214,7 +223,8 @@ export default {
                 {
                   color: '深绿',
                   price: '5',
-                  value: 400
+                  value: 400,
+                  attr: '98包装'
                 }
               ],
               total_price: 6400,
@@ -227,17 +237,20 @@ export default {
                 {
                   color: '深绿',
                   price: '5',
-                  value: 400
+                  value: 400,
+                  attr: '98包装'
                 },
                 {
                   color: '深绿',
                   price: '5',
-                  value: 400
+                  value: 400,
+                  attr: '98包装'
                 },
                 {
                   color: '深绿',
                   price: '5',
-                  value: 400
+                  value: 400,
+                  attr: '98包装'
                 }
               ],
               total_price: 6400,

@@ -424,6 +424,7 @@ export default {
               return
             }
             obj.total_weight = Math.ceil(Number(val.value))
+            obj.attribute = val.attr ? val.attr : ''
             arr.push({ ...obj })
           })
         })
