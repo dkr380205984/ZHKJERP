@@ -723,7 +723,7 @@ export default {
   //   html.style.overflow = 'visible'
   // },
   updated () {
-    // window.print()
+    window.print()
   }
 }
 </script>

@@ -123,6 +123,7 @@
 </template>
 
 <script>
+import { rawMaterialOrderDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -401,6 +402,13 @@ export default {
         }
       )
     }
+  },
+  created () {
+    rawMaterialOrderDetail({
+      order_id: this.$route.params.id
+    }).then(res => {
+      console.log(res)
+    })
   }
 }
 </script>

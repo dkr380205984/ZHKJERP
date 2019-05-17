@@ -91,19 +91,19 @@
                style="color: rgb(26, 149, 255);">{{item.order_code}}</div>
           <div class="tableColumn"
                style="flex:1.2">{{item.order_company}}</div>
-          <div class="tableColumn">{{item.ground_name}}</div>
+          <div class="tableColumn">{{item.group_name}}</div>
           <div class="tableColumn col"
                style="flex:1.9">
-            <span v-for="(value,index) in item.order_team"
+            <span v-for="(value,index) in item.order_list"
                   :key="index">{{value}}</span>
           </div>
-          <div class="tableColumn">{{item.total_number}}kg</div>
+          <div class="tableColumn">{{item.total_weight}}kg</div>
           <div class="tableColumn">{{item.create_name}}</div>
           <div class="tableColumn">{{item.create_time}}</div>
           <div class="tableColumn"
                style="flex-direction:row;flex:1.5">
             <span class="btns normal"
-                  @click="$router.push('/index/rawMaterialOrderDetail/'+1)">查看</span>
+                  @click="$router.push('/index/rawMaterialOrderDetail/'+item.order_id)">查看</span>
             <span class="btns warning">修改</span>
           </div>
         </div>
@@ -122,7 +122,7 @@
 </template>
 
 <script>
-import { productPlanList } from '@/assets/js/api.js'
+import { productPlanList, rawMaterialOrderList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -160,35 +160,7 @@ export default {
       },
       total: 0,
       pages: 1,
-      list: [
-        {
-          order_code: 'KR-0001',
-          order_company: '杭州飞泰服饰有限公司',
-          ground_name: 'B组',
-          order_team: ['杭州飞泰纱线厂', '杭州力欧纱线厂', '杭州荣光纱线厂'],
-          total_number: 700,
-          create_name: '王锦鲤',
-          create_time: '2019-04-23'
-        },
-        {
-          order_code: 'KR-0001',
-          order_company: '杭州飞泰服饰有限公司',
-          ground_name: 'B组',
-          order_team: ['杭州飞泰纱线厂'],
-          total_number: 700,
-          create_name: '王锦鲤',
-          create_time: '2019-04-23'
-        },
-        {
-          order_code: 'KR-0001',
-          order_company: '杭州飞泰服饰有限公司',
-          ground_name: 'B组',
-          order_team: ['杭州飞泰纱线厂', '杭州力欧纱线厂', '杭州荣光纱线厂'],
-          total_number: 700,
-          create_name: '王锦鲤',
-          create_time: '2019-04-23'
-        }
-      ],
+      list: [],
       category: [], // 大类
       categoryVal: '',
       types: [], // 二级分类
@@ -280,52 +252,63 @@ export default {
       }
     }
   },
-  filters: {
-    // 类型合并
-    filterType (item) {
-      if (!item.type_name) {
-        return item.category_info.product_category
-      } else if (!item.style_name) {
-        return item.category_info.product_category + ' / ' + item.type_name
-      } else {
-        return item.category_info.product_category + ' / ' + item.type_name + ' / ' + item.style_name
-      }
-    },
-    // 类型展示
-    filterSize (item) {
-      let str = ''
-      for (let key in item) {
-        str += key + '/'
-      }
-      return str.substring(0, str.length - 1)
-    },
-    // 原料合并
-    filterMaterial (material) {
-      let str = ''
-      material.forEach((item) => {
-        if (item.type === 0 && str !== '') {
-          str += '/' + item.material
-        } else if (str === '' && item.type === 0) {
-          str += item.material
-        }
-      })
-      return str
-    },
-    // 辅料合并
-    filterOtherMaterial (material) {
-      let str = ''
-      material.forEach((item) => {
-        if (item.type === 1 && str === '') {
-          str += item.material
-        } else if (str === '' && item.type === 1) {
-          str += item.material
-        }
-      })
-      return str
-    }
-  },
   created () {
-    // this.getCraftList()
+    rawMaterialOrderList({
+      company_id: sessionStorage.company_id
+    }).then(res => {
+      console.log(res)
+      res.data.data.forEach(item => {
+        if (this.list.length === 0) {
+          this.list.push({
+            order_code: item.order_code,
+            order_company: item.order_client,
+            total_weight: item.weight,
+            create_time: item.order_time.split(' ')[0],
+            order_list: [item.client_name],
+            group_name: item.user_group,
+            create_name: item.user_name,
+            order_id: item.order_id
+          })
+        } else {
+          let flag = true
+          this.list.forEach((val, ind) => {
+            if (val.order_code === item.order_code) {
+              flag = false
+              val.total_weight = Number(val.total_weight) + Number(item.weight)
+              let nowTime = val.create_time.split('-')
+              let testTime = item.order_time.split(' ')[0].split('-')
+              if (Number(nowTime[0]) < Number(testTime[0])) {
+                val.create_time = item.order_time.split(' ')[0]
+              } else if (Number(nowTime[0]) === Number(testTime[0])) {
+                if (Number(nowTime[1]) < Number(testTime[1])) {
+                  val.create_time = item.order_time.split(' ')[0]
+                } else if (Number(nowTime[1]) === Number(testTime[1])) {
+                  if (Number(nowTime[2]) < Number(testTime[2])) {
+                    val.create_time = item.order_time.split(' ')[0]
+                  }
+                }
+              }
+            } else if (val.order_code !== item.order_code && ind === this.list.length - 1 && flag) {
+              this.list.push({
+                order_code: item.order_code,
+                order_company: item.order_client,
+                total_weight: item.weight,
+                create_time: item.order_time.split(' ')[0],
+                order_list: [item.client_name],
+                group_name: item.user_group,
+                create_name: item.user_name,
+                order_id: item.order_id
+              })
+            }
+            let fleg = val.order_list.find(it => it === item.client_name)
+            if (!fleg) {
+              val.order_list.push(item.client_name)
+            }
+          })
+        }
+      })
+    })
+    console.log(this)
   }
 }
 </script>
