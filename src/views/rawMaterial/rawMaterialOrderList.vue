@@ -162,16 +162,12 @@ export default {
       total: 0,
       pages: 1,
       list: [],
-      client: [], // 大类
+      client: [], // 公司
       clientVal: '',
-      category: [], // 二级分类
+      category: [], // 分类
       categoryVal: '',
-      group: [], // 三级分类
+      group: [], // 小组
       groupVal: '',
-      // companyArr: [],
-      // company: '',
-      // group: '',
-      // groupArr: [],
       timer: '',
       start_time: '',
       end_time: ''
@@ -180,7 +176,6 @@ export default {
   methods: {
     getOrderList () {
       this.loading = true
-      console.log(this.categoryVal)
       orderList({
         'company_id': window.sessionStorage.getItem('company_id'),
         'limit': 5,
@@ -188,7 +183,7 @@ export default {
         'client_id': this.clientVal,
         'category_id': this.categoryVal,
         'group_id': this.groupVal,
-        // 'order_code': this.searchVal,
+        'order_code': this.searchVal,
         'start_time': this.start_time,
         'end_time': this.end_time
       }).then((res) => {
@@ -220,7 +215,6 @@ export default {
               }
             })
           })
-          // console.log(productList)
           return {
             id: item.id,
             group_name: item.group_name,
@@ -233,7 +227,6 @@ export default {
           }
         })
       })
-      // console.log()
     },
     pickTime (date) {
       if (date) {
@@ -251,7 +244,7 @@ export default {
       if (item === 'clientVal') {
         this.clientVal = ''
       } else if (item === 'category') {
-        this.category = ''
+        this.categoryVal = ''
       } else if (item === 'groupVal') {
         this.groupVal = ''
       }
@@ -309,7 +302,6 @@ export default {
     clientList({
       company_id: window.sessionStorage.getItem('company_id')
     }).then((res) => {
-      console.log(res)
       if (res.status === 200) {
         res.data.data.forEach(item => {
           if (item.type === 1) {
@@ -317,23 +309,17 @@ export default {
           }
         })
       }
-      // console.log(this.category)
     })
     productTppeList({
       company_id: window.sessionStorage.getItem('company_id')
-      // keyword: '',
-      // status: 1
     }).then((res) => {
       if (res.status === 200) {
         this.category = res.data.data
       }
-      console.log(this.category)
-      // this.companyArr = res.data.data
     })
     getGroup({
       company_id: window.sessionStorage.getItem('company_id')
     }).then((res) => {
-      console.log(res)
       this.group = res.data.data
     })
   }

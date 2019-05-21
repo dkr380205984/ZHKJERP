@@ -129,3 +129,9 @@ export default {
 <style scoped lang='less'>
 @import "~@/assets/css/productStatisticsTable.less";
 </style>
+<style lang="less">
+html,
+body {
+  overflow: visible !important;
+}
+</style>

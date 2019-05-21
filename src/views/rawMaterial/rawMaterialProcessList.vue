@@ -79,24 +79,24 @@
                style="flex:1.2">操作</div>
         </div>
         <div class="mergeBody"
-             v-for="(item,key) in list"
+             v-for="(item,key) in list[pages-1]"
              :key="key">
           <div class="tableColumn"
                style="color: rgb(26, 149, 255);">{{item.order_code}}</div>
           <div class="tableColumn"
                style="flex:1.2">{{item.order_company}}</div>
-          <div class="tableColumn">{{item.ground_name}}</div>
+          <div class="tableColumn">{{item.group_name}}</div>
           <div class="tableColumn col"
                style="flex:3.8">
-            <span v-for="(value,index) in item.order_team"
+            <span v-for="(value,index) in item.order_list"
                   :key="index">
               <span>
-                <span>{{value.company}}</span>
+                <span>{{value.company ? value.company : '仓库'}}</span>
               </span>
               <span>
                 <span v-for="(content,number) in value.info"
                       :key="number"
-                      :style="{'padding':value.info.length === 1 ? '10px 0' : false}">{{content.material}} {{content.color}} {{content.weight+content.unit}}
+                      :style="{'padding':value.info.length === 1 ? '10px 0' : false}">{{content.material}} {{content.color}} {{content.weight + 'kg'}}
                 </span>
               </span>
             </span>
@@ -107,17 +107,16 @@
           <div class="tableColumn"
                style="flex-direction:row;flex:1.2">
             <span class="btns normal"
-                  @click="$router.push('/index/rawMaterialProcess/'+1)">原料加工</span>
+                  @click="$router.push('/index/rawMaterialProcess/'+ item.order_id)">原料加工</span>
           </div>
         </div>
       </div>
       <div class="pageCtn">
         <el-pagination background
-                       :page-size="5"
+                       :page-size="1"
                        layout="prev, pager, next"
                        :total="total"
-                       :current-page.sync="pages"
-                       @current-change="getCraftList">
+                       :current-page.sync="pages">
         </el-pagination>
       </div>
     </div>
@@ -125,11 +124,11 @@
 </template>
 
 <script>
-import { productPlanList } from '@/assets/js/api.js'
+import { rawMaterialOrderList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
-      loading: false,
+      loading: true,
       defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
       searchVal: '',
       value: '',
@@ -163,114 +162,7 @@ export default {
       },
       total: 0,
       pages: 1,
-      list: [
-        {
-          order_code: 'KR-0001',
-          order_company: '杭州飞泰服饰有限公司',
-          ground_name: 'B组',
-          // order_team: ['杭州飞泰纱线厂', '杭州力欧纱线厂'],
-          order_team: [
-            {
-              company: '杭州飞泰纱线厂',
-              info: [
-                {
-                  material: '36支上光晴纶',
-                  color: '白胚',
-                  weight: 400,
-                  unit: 'g'
-                }
-              ]
-            }, {
-              company: '杭州力欧纱线厂',
-              info: [
-                {
-                  material: '52支上光晴纶',
-                  color: '深绿',
-                  weight: 400,
-                  unit: 'g'
-                },
-                {
-                  material: '36支上光晴纶',
-                  color: '白胚',
-                  weight: 400,
-                  unit: 'g'
-                }
-              ]
-            }
-          ],
-          total: 700,
-          create_name: '王锦鲤',
-          create_time: '2019-04-23'
-        },
-        {
-          order_code: 'KR-0001',
-          order_company: '杭州飞泰服饰有限公司',
-          ground_name: 'B组',
-          order_team: [
-            {
-              company: '杭州飞泰纱线厂',
-              info: [
-                {
-                  material: '52支上光晴纶',
-                  color: '深绿',
-                  weight: 400,
-                  unit: 'g'
-                }
-              ]
-            }
-          ],
-          total: 700,
-          create_name: '王锦鲤',
-          create_time: '2019-04-23'
-        },
-        {
-          order_code: 'KR-0001',
-          order_company: '杭州飞泰服饰有限公司',
-          ground_name: 'B组',
-          order_team: [
-            {
-              company: '杭州飞泰纱线厂',
-              info: [
-                {
-                  material: '52支上光晴纶',
-                  color: '深绿',
-                  weight: 400,
-                  unit: 'g'
-                }
-              ]
-            }, {
-              company: '杭州力欧纱线厂',
-              info: [
-                {
-                  material: '52支上光晴纶',
-                  color: '深绿',
-                  weight: 400,
-                  unit: 'g'
-                }
-              ]
-            }, {
-              company: '杭州力欧纱线厂',
-              info: [
-                {
-                  material: '52支上光晴纶',
-                  color: '深绿',
-                  weight: 400,
-                  unit: 'g'
-                },
-                {
-                  material: '36支上光晴纶',
-                  color: '白胚',
-                  weight: 400,
-                  unit: 'g'
-                }
-              ]
-            }
-          ],
-          total: 700,
-          create_name: '王锦鲤',
-          create_time: '2019-04-23'
-        }
-      ],
+      list: [],
       category: [], // 大类
       categoryVal: '',
       types: [], // 二级分类
@@ -282,19 +174,75 @@ export default {
   components: {
   },
   methods: {
-    getCraftList () {
+    getOrderList () {
       this.loading = true
-      productPlanList({
-        'company_id': window.sessionStorage.getItem('company_id'),
-        'limit': 5,
-        'category_id': this.categoryVal,
-        'type_id': this.typesVal,
-        'style_id': this.styleVal,
-        'page': this.pages
-      }).then((res) => {
+      rawMaterialOrderList({
+        company_id: sessionStorage.company_id
+      }).then(res => {
+        console.log(res)
+        let arr = []
+        res.data.data.forEach(item => {
+          let flag = arr.find(val => val.order_code === item.order_code)
+          if (!flag) {
+            arr.push({
+              order_code: item.order_code,
+              order_company: item.order_client,
+              create_time: item.order_time.split(' ')[0],
+              order_list: [{
+                company: item.client_name,
+                info: [{
+                  material: item.material_name,
+                  color: item.color_code,
+                  weight: item.weight
+                }]
+              }],
+              group_name: item.user_group,
+              create_name: item.user_name,
+              order_id: item.order_id
+            })
+          } else {
+            let nowTime = flag.create_time.split('-')
+            let testTime = item.order_time.split(' ')[0].split('-')
+            if (Number(nowTime[0]) < Number(testTime[0])) {
+              flag.create_time = item.order_time.split(' ')[0]
+            } else if (Number(nowTime[0]) === Number(testTime[0])) {
+              if (Number(nowTime[1]) < Number(testTime[1])) {
+                flag.create_time = item.order_time.split(' ')[0]
+              } else if (Number(nowTime[1]) === Number(testTime[1])) {
+                if (Number(nowTime[2]) < Number(testTime[2])) {
+                  flag.create_time = item.order_time.split(' ')[0]
+                }
+              }
+            }
+            let fleg = flag.order_list.find(val => val.company === item.client_name)
+            if (!fleg && fleg !== null) {
+              flag.order_list.push({
+                company: item.client_name,
+                info: [{
+                  material: item.material_name,
+                  color: item.color_code,
+                  weight: item.weight
+                }]
+              })
+            } else {
+              if (fleg.info.find(val => val.material === item.material_name) && fleg.info.find(val => val.color === item.color_code)) {
+                let val = fleg.info.find(val => val.material === item.material_name)
+                val.weight = Number(val.weight) + Number(item.weight)
+              } else {
+                fleg.info.push({
+                  material: item.material_name,
+                  color: item.color_code,
+                  weight: item.weight
+                })
+              }
+            }
+          }
+        })
+        do {
+          this.list.push(arr.splice(0, 5))
+        } while (arr.length > 0)
+        this.total = this.list.length
         this.loading = false
-        this.total = res.data.meta.total
-        this.list = res.data.data
       })
     },
     // 删除条件
@@ -325,18 +273,18 @@ export default {
         this.style = []
         this.pages = 1
       }
-      this.getCraftList()
+      this.getOrderList()
     },
     typesVal (newVal) {
       if (newVal) {
         this.style = this.types.find((item) => item.id === newVal).child
         this.styleVal = ''
         this.pages = 1
-        this.getCraftList()
+        this.getOrderList()
       }
     },
     styleVal (newVal) {
-      this.getCraftList()
+      this.getOrderList()
     }
   },
   computed: {
@@ -362,52 +310,12 @@ export default {
       }
     }
   },
-  filters: {
-    // 类型合并
-    filterType (item) {
-      if (!item.type_name) {
-        return item.category_info.product_category
-      } else if (!item.style_name) {
-        return item.category_info.product_category + ' / ' + item.type_name
-      } else {
-        return item.category_info.product_category + ' / ' + item.type_name + ' / ' + item.style_name
-      }
-    },
-    // 类型展示
-    filterSize (item) {
-      let str = ''
-      for (let key in item) {
-        str += key + '/'
-      }
-      return str.substring(0, str.length - 1)
-    },
-    // 原料合并
-    filterMaterial (material) {
-      let str = ''
-      material.forEach((item) => {
-        if (item.type === 0 && str !== '') {
-          str += '/' + item.material
-        } else if (str === '' && item.type === 0) {
-          str += item.material
-        }
-      })
-      return str
-    },
-    // 辅料合并
-    filterOtherMaterial (material) {
-      let str = ''
-      material.forEach((item) => {
-        if (item.type === 1 && str === '') {
-          str += item.material
-        } else if (str === '' && item.type === 1) {
-          str += item.material
-        }
-      })
-      return str
-    }
-  },
   created () {
-    // this.getCraftList()
+    Promise.all([
+    ]).then(res => {
+      console.log(res)
+    })
+    this.getOrderList()
   }
 }
 </script>

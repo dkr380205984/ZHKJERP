@@ -1,7 +1,7 @@
 <template>
   <ul id="table">
     <li class="col"
-        :style="{width: (100/7) + '%',backgroundColor:'#EEE'}">
+        :style="{width: (100/6) + '%',backgroundColor:'#EEE'}">
       <span>
         <span>{{data.size}}</span>
       </span>
@@ -41,9 +41,9 @@
         </span>
       </template>
     </li>
-    <template v-if="total < 7">
+    <template v-if="total < 6">
       <li class="col"
-          v-for="(item,key) in addArr(7-total)"
+          v-for="(item,key) in addArr(6-total)"
           :key="key+item">
         <span v-for="(value,index) in addArr(colorData.length+1)"
               :key="index+value">

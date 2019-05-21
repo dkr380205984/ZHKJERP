@@ -14,21 +14,21 @@
         <div class="lineCtn">
           <div class="inputCtn">
             <span class="label">订单号:</span>
-            <span class="content important">KR-0001</span>
+            <span class="content important">{{order_code}}</span>
           </div>
           <div class="inputCtn">
             <span class="label">外贸公司:</span>
-            <span class="content">杭州飞泰服饰有限公司</span>
+            <span class="content">{{client_name}}</span>
           </div>
         </div>
         <div class="lineCtn">
           <div class="inputCtn">
             <span class="label">下单日期:</span>
-            <span class="content">2019-04-10</span>
+            <span class="content">{{order_time}}</span>
           </div>
           <div class="inputCtn">
             <span class="label">负责小组:</span>
-            <span class="content">A组</span>
+            <span class="content">{{group_name}}</span>
           </div>
         </div>
         <div class="lineCtn">
@@ -38,8 +38,8 @@
               <ul class="productInfo">
                 <li v-for="(item,key) in productList"
                     :key="key">
-                  <span>{{item.product_code}}({{item.product_class}})</span>
-                  <span>{{item.size+'/'+item.color}}</span>
+                  <span>{{item.product_code}}({{item.type}})</span>
+                  <span>{{item.product_size+'/'+item.product_color}}</span>
                   <span>{{item.number+'条'}}</span>
                 </li>
               </ul>
@@ -55,9 +55,9 @@
         </div>
         <div class="lineCtn col">
           <div class="inputCtn maxWidth noPadding"
-               v-for="(item,key) in rawMaterialPlanList"
+               v-for="(item,key) in materialList"
                :key="key">
-            <span class="title">{{item.company + ':'}}</span>
+            <span class="title">{{item.company ? item.company : '仓库' + ':'}}</span>
             <span class="processContent">
               <span v-for="(value,index) in item.processInfo"
                     :key="index">
@@ -66,20 +66,11 @@
                   <span v-for="(iten,kay) in value.colorInfo"
                         :key="kay">
                     <span class="tit">{{iten.color}}</span>
-                    {{iten.value + iten.unit}}
+                    {{iten.value + 'kg'}}
                   </span>
                 </span>
               </span>
             </span>
-            <!-- <div class="label smallFont"
-                 style="width:10em;">{{item.company}}:</div>
-            <div class="content marginBig">
-              <span v-for="(value,index) in item.processInfo"
-                    :key="index">
-                <span class="title">{{value.material}}:</span>
-                <span class="content">{{value.value + value.unit}}</span>
-              </span>
-            </div> -->
           </div>
         </div>
       </div>
@@ -107,8 +98,8 @@
                   {{(index === 0 ? '' : '/') + value}}
                 </template>
               </span>
-              <span>{{item.needNum}}kg</span>
-              <span>{{item.selectNum}}kg</span>
+              <span>{{item.total_number + 'kg'}}</span>
+              <span>{{item.select_number + 'kg'}}</span>
             </div>
           </div>
           <div class="processInfo">
@@ -153,12 +144,6 @@
                                :value="color.label">
                     </el-option>
                   </el-select>
-                  <!-- <strong>—</strong>
-                  <el-input size="small"
-                            placeholder="单价"
-                            v-model="value.price"
-                            @change="jisuan(key)">
-                  </el-input> -->
                   <strong>—</strong>
                   <el-input size="small"
                             placeholder="数量"
@@ -166,24 +151,6 @@
                             @change="jisuan(key)">
                   </el-input>
                 </div>
-                <!-- <div>
-                  <span>加工单价</span>:
-                  <el-input size="small"
-                            placeholder="请输入加工单价"
-                            v-model="value.price"
-                            @change="jisuan(key)">
-                  </el-input>
-                  <i>元/kg</i>
-                </div>
-                <div>
-                  <span>加工数量</span>:
-                  <el-input size="small"
-                            placeholder="请输入加工数量"
-                            v-model="value.value"
-                            @change="jisuan(key)">
-                  </el-input>
-                  <i>kg</i>
-                </div> -->
                 <em v-if="index === 0"
                     class="el-icon-plus"
                     @click="appendBuyMaterialInfo(key,kay)"></em>
@@ -210,16 +177,6 @@
                                 style="width:243px">
                 </el-date-picker>
               </li>
-              <!-- <li>
-                <span>完成日期</span>:
-                <el-date-picker v-model="iten.completeTime"
-                                align="right"
-                                type="date"
-                                placeholder="选择日期"
-                                size="small"
-                                style="width:243px">
-                </el-date-picker>
-              </li> -->
               <li>
                 <span>备注</span>:
                 <el-input type="textarea"
@@ -250,174 +207,39 @@
 </template>
 
 <script>
+import { orderDetail, rawMaterialProcessPage, clientList, rawMaterialOrderList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
-      loading: false,
-      productList: [
-        {
-          product_code: 'ES5623134',
-          product_class: '围巾/针织/长巾/豹纹',
-          size: 'S',
-          color: '深绿',
-          number: 2000
-        },
-        {
-          product_code: 'ES5623134',
-          product_class: '围巾/针织/长巾/豹纹',
-          size: 'S',
-          color: '深绿',
-          number: 2000
-        },
-        {
-          product_code: 'ES5623134',
-          product_class: '围巾/针织/长巾/豹纹',
-          size: 'S',
-          color: '深绿',
-          number: 2000
-        }
-      ],
-      rawMaterialPlanList: [
-        {
-          company: '杭州力欧纱线有限公司',
-          processInfo: [
-            {
-              material: '52支上光晴纶',
-              colorInfo: [
-                {
-                  color: '深绿',
-                  value: 400,
-                  unit: 'kg'
-                },
-                {
-                  color: '白胚',
-                  value: 300,
-                  unit: 'kg'
-                },
-                {
-                  color: '绿色',
-                  value: 500,
-                  unit: 'kg'
-                }
-              ]
-            },
-            {
-              material: '36支上光涤纶',
-              colorInfo: [
-                {
-                  color: '深绿',
-                  value: 400,
-                  unit: 'kg'
-                },
-                {
-                  color: '白胚',
-                  value: 300,
-                  unit: 'kg'
-                },
-                {
-                  color: '绿色',
-                  value: 500,
-                  unit: 'kg'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          company: '杭州飞泰纱线有限公司',
-          processInfo: [
-            {
-              material: '52支上光晴纶',
-              colorInfo: [
-                {
-                  color: '卡其色',
-                  value: 400.23,
-                  unit: 'kg'
-                },
-                {
-                  color: '白胚',
-                  value: 300,
-                  unit: 'kg'
-                },
-                {
-                  color: '绿色',
-                  value: 500,
-                  unit: 'kg'
-                },
-                {
-                  color: '白胚',
-                  value: 300,
-                  unit: 'kg'
-                }
-              ]
-            },
-            {
-              material: '48支上光涤纶',
-              colorInfo: [
-                {
-                  color: '深绿',
-                  value: 400,
-                  unit: 'kg'
-                },
-                {
-                  color: '白胚',
-                  value: 300,
-                  unit: 'kg'
-                },
-                {
-                  color: '绿色',
-                  value: 500,
-                  unit: 'kg'
-                }
-              ]
-            }
-          ]
-        }
-      ],
-      list: [
-        {
-          material: '',
-          needColors: [],
-          needNum: 0,
-          selectNum: 0,
-          processInfo: [
-            // {
-            //   processClass: '',
-            //   processCompany: '',
-            //   money: '',
-            //   orderTime: '',
-            //   completeTime: '',
-            //   remark: '',
-            //   processMaterialInfo: [
-            //     {
-            //       material: '',
-            //       color: '',
-            //       price: '',
-            //       value: ''
-            //     }
-            //   ]
-            // }
-          ]
-        }
-      ],
-      options: [
-        {
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
-        }
-      ],
+      loading: true,
+      order_code: '',
+      order_time: '',
+      client_name: '',
+      group_name: '',
+      productList: [],
+      materialList: [],
+      list: [],
+      options: {
+        companyList: [],
+        options: [
+          {
+            value: '选项1',
+            label: '黄金糕'
+          }, {
+            value: '选项2',
+            label: '双皮奶'
+          }, {
+            value: '选项3',
+            label: '蚵仔煎'
+          }, {
+            value: '选项4',
+            label: '龙须面'
+          }, {
+            value: '选项5',
+            label: '北京烤鸭'
+          }
+        ]
+      },
       pickerOptions: {
         disabledDate (time) {
           return time.getTime() > Date.now()
@@ -475,7 +297,6 @@ export default {
           company: '',
           money: '',
           orderTime: '',
-          // completeTime: '',
           remark: '',
           processMaterialInfo: [
             {
@@ -501,46 +322,133 @@ export default {
     }
   },
   created () {
-    this.rawMaterialPlanList.forEach((value, index) => {
-      value.processInfo.forEach((item, key) => {
-        item.colorInfo.forEach((val, ind) => {
-          if (ind === 0 && key === 0 && index === 0) {
-            this.list[0].material = item.material
-            this.list[0].needColors.push(val.color)
-            this.list[0].needNum = Number(val.value)
-          } else {
-            let flag = true
-            this.list.forEach((valu, inde) => {
-              if (valu.material === item.material) {
-                flag = false
-                let kay = true
-                valu.needColors.forEach((v, i) => {
-                  if (v === val.color) {
-                    kay = false
-                    valu.needNum += Number(val.value)
-                  } else if (v !== val.color && kay && i === valu.needColors.length - 1) {
-                    valu.needColors.push(val.color)
-                    valu.needNum += Number(val.value)
-                  }
-                })
-              } else if (flag && inde === this.list.length - 1 && valu.material !== item.material) {
-                let obj = {
-                  material: '',
-                  needColors: [],
-                  needNum: 0,
-                  selectNum: 0,
-                  processInfo: [
-                  ]
-                }
-                obj.material = item.material
-                obj.needColors.push(val.color)
-                obj.needNum = Number(val.value)
-                this.list.push(obj)
-              }
+    Promise.all([
+      rawMaterialOrderList({
+        company_id: sessionStorage.company_id,
+        order_id: this.$route.params.id
+      }),
+      orderDetail({
+        id: this.$route.params.id
+      }),
+      clientList({
+        company_id: sessionStorage.company_id
+      })
+    ]).then(res => {
+      let materialInfo = res[0].data.data
+      console.log(materialInfo)
+      let orderInfo = res[1].data.data
+      // 初始化订单信息
+      this.order_code = orderInfo.order_code
+      this.order_time = orderInfo.order_time
+      this.client_name = orderInfo.client_name
+      this.group_name = orderInfo.group_name
+      // 初始化产品信息
+      orderInfo.order_batch.forEach((item, key) => {
+        item.batch_info.forEach((value, index) => {
+          let types = value.productInfo.category_info.product_category + (value.productInfo.type_name ? '/' + value.productInfo.type_name : '') + (value.productInfo.style_name ? '/' + value.productInfo.type_name : '') + (value.productInfo.flower_id ? '/' + value.productInfo.flower_id : '')
+          value.size.forEach((val, ind) => {
+            this.productList.push({
+              type: types,
+              product_code: value.productCode,
+              product_size: val.name[0],
+              product_color: val.name[1],
+              number: val.numbers
             })
-          }
+          })
         })
       })
+      // 初始化原料信息与订购信息
+      materialInfo.forEach(item => {
+        // 初始化原料信息
+        if (this.materialList.length === 0) {
+          this.materialList.push({
+            company: item.client_name,
+            processInfo: [
+              {
+                material: item.material_name,
+                colorInfo: [
+                  {
+                    color: item.color_code,
+                    value: item.weight
+                  }
+                ]
+              }
+            ]
+          })
+        } else {
+          let arr = this.materialList.find(val => val.company === item.client_name)
+          if (arr && arr !== null) {
+            let obj = arr.processInfo.find(val => val.material === item.material_name)
+            if (!obj) {
+              arr.processInfo.push({
+                material: item.material_name,
+                colorInfo: [
+                  {
+                    color: item.color_code,
+                    value: item.weight
+                  }
+                ]
+              })
+            } else {
+              let ind = obj.colorInfo.find(val => val.color === item.color_code)
+              if (!ind) {
+                obj.colorInfo.push({
+                  color: item.color_code,
+                  value: item.weight
+                })
+              } else {
+                ind.value = Number(ind.value) + Number(item.weight)
+              }
+            }
+          } else {
+            this.materialList.push({
+              company: item.client_name,
+              processInfo: [
+                {
+                  material: item.material_name,
+                  colorInfo: [
+                    {
+                      color: item.color_code,
+                      value: item.weight
+                    }
+                  ]
+                }
+              ]
+            })
+          }
+        }
+        // 初始化加工信息
+        if (this.list.length === 0) {
+          this.list.push({
+            material: item.material_name,
+            needColors: [item.color_code],
+            total_number: Number(item.weight),
+            select_number: 0,
+            processInfo: []
+          })
+        } else {
+          let arr = this.list.find(val => val.material === item.material_name)
+          if (arr) {
+            arr.total_number = Number(arr.total_number) + Number(item.weight)
+          } else {
+            this.list.push({
+              material: item.material_name,
+              needColors: [item.color_code],
+              total_number: Number(item.weight),
+              select_number: 0,
+              processInfo: []
+            })
+          }
+        }
+      })
+      console.log(this.list)
+      // 订购公司列表初始化
+      res[2].data.data.forEach((item, key) => {
+        if (item.type === 2) {
+          this.options.companyList.push(item)
+        }
+      })
+      this.loading = false
     })
   }
 }

@@ -239,8 +239,7 @@ export default {
       order_time: '',
       company_name: '',
       group_name: '',
-      productList: [
-      ],
+      productList: [],
       rawMaterialPlanList: [],
       list: [
         {
@@ -254,7 +253,7 @@ export default {
       ],
       options: {
         attr: [{ name: '足斤包装' }, { name: '98包装' }, { name: '95包装' }],
-        companyList: []
+        companyList: [{ name: '仓库', id: 0 }]
       },
       pickerOptions: {
         shortcuts: [{
@@ -274,13 +273,10 @@ export default {
     }
   },
   methods: {
-    jisuan (key, flag, val) {
+    jisuan (ke, flag, va) {
       if (flag) {
-        if (val % 1 !== 0 || Number(val) < 0) {
-          this.$message({
-            message: '请输入正整数',
-            type: 'error'
-          })
+        if (va % 1 !== 0 || Number(va) < 0) {
+
         }
       }
       this.list.forEach((item, key) => {
@@ -288,6 +284,21 @@ export default {
         item.buyInfo.forEach((value, index) => {
           value.money = 0
           value.buyMaterialInfo.forEach((val, ind) => {
+            if ((val.value % 1 !== 0 || val.value < 0) && flag) {
+              if (val.value < 0) {
+                val.value = ''
+                this.$message({
+                  message: '请重新输入,请输入0以上整数',
+                  type: 'error'
+                })
+              } else {
+                this.$message({
+                  message: '请输入正整数,已为您向上取整',
+                  type: 'error'
+                })
+                val.value = Math.ceil(val.value)
+              }
+            }
             item.selectNum = Number(item.selectNum) + Number(val.value)
             item.selectNum = (Math.ceil(item.selectNum * 100) / 100).toFixed(2)
             value.money += (val.price * val.value)
@@ -317,7 +328,7 @@ export default {
       }
       this.list[key].buyInfo.push(
         {
-          company: '',
+          company: '仓库',
           money: '',
           orderTime: '',
           remark: '',
@@ -337,18 +348,21 @@ export default {
       this.jisuan(key)
     },
     saveAll () {
+      this.loading = true
       let arr = []
       let nums = 0
       let flag = true
+      let stockArr = []
       this.list.forEach((item, key) => {
         let obj = {}
+        let stockObj = {}
         obj.company_id = sessionStorage.company_id
         obj.order_id = this.$route.params.id
         obj.user_id = sessionStorage.user_id
         obj.material_name = item.material
         nums += item.buyInfo.length
         item.buyInfo.forEach(value => {
-          if (!value.company) {
+          if (!value.company && value.company !== 0) {
             this.$message({
               message: '请选择订购公司',
               type: 'error'
@@ -356,7 +370,7 @@ export default {
             flag = false
             return
           }
-          obj.client_id = value.company
+          obj.client_id = (value.company === '仓库' ? 0 : value.company)
           obj.total_price = value.money
           obj.desc = value.remark
           if (!value.orderTime) {
@@ -426,9 +440,19 @@ export default {
             obj.total_weight = Math.ceil(Number(val.value))
             obj.attribute = val.attr ? val.attr : ''
             arr.push({ ...obj })
+            if (value.company === 0 || value.company === '仓库') {
+              stockObj.material_name = item.material
+              stockObj.color_code = val.color
+              stockObj.user_id = sessionStorage.user_id
+              stockObj.weight = Number(val.value)
+              stockObj.company_id = sessionStorage.company_id
+              console.log(stockArr)
+              stockArr.push({ ...stockObj })
+            }
           })
         })
       })
+      this.loading = false
       if (nums === 0) {
         this.$message({
           message: '无可提交的订购信息',
@@ -438,7 +462,10 @@ export default {
       }
       if (flag) {
         rawMaterialOrder({
-          data: arr
+          data: {
+            order_data: arr,
+            stock_data: stockArr
+          }
         }).then(res => {
           if (res.data.code === 200) {
             this.$message({
@@ -459,7 +486,8 @@ export default {
         company_id: sessionStorage.company_id
       })
     ]).then(res => {
-      console.log('stock_info:', res[0].stock_info)
+      console.log(res[0].data.data)
+      // 计划原料信息初始化
       res[0].data.data.material_info.forEach((item, key) => {
         for (let prop in item) {
           for (let val in item[prop]) {
@@ -483,7 +511,6 @@ export default {
             }
           }
         }
-        // console.log(item)
       })
       this.rawMaterialPlanList.forEach((item, key) => {
         if (key === 0) {
@@ -519,11 +546,13 @@ export default {
       this.order_time = res[0].data.data.order_info.order_time
       this.group_name = res[0].data.data.order_info.group_name
       this.company_name = res[0].data.data.order_info.client_name
+      // 订购公司列表初始化
       res[1].data.data.forEach((item, key) => {
         if (item.type === 2) {
           this.options.companyList.push(item)
         }
       })
+      // 产品信息初始化
       res[0].data.data.order_info.order_batch.forEach((item, key) => {
         item.batch_info.forEach((value, index) => {
           let types = value.productInfo.category_info.product_category + (value.productInfo.type_name ? '/' + value.productInfo.type_name : '') + (value.productInfo.style_name ? '/' + value.productInfo.type_name : '') + (value.productInfo.flower_id ? '/' + value.productInfo.flower_id : '')
@@ -538,6 +567,25 @@ export default {
           })
         })
       })
+      // 库存信息初始化
+      let stockInfo = res[0].data.data.stock_info
+      for (let prop in stockInfo) {
+        stockInfo[prop].forEach((item, key) => {
+          this.rawMaterialPlanList.forEach((val, ind) => {
+            if (val.material === item.material_name && item.material_color === (val.have.name)) {
+              val.have.value = val.have.value === '' ? Number(item.total_weight) : Number(val.have.value) + Number(item.total_weight)
+            } else if (val.material === item.material_name && item.material_color === '白胚') {
+              val.whiteHave = val.whiteHave === '' ? Number(item.total_weight) : Number(val.whiteHave) + Number(item.total_weight)
+            }
+          })
+        })
+      }
+      // 已选重量初始化
+      let selectWeight = res[0].data.data.total_weight
+      for (let prop in selectWeight) {
+        let flag = this.list.find(item => item.material === prop)
+        flag.selectNum = Number(selectWeight[prop])
+      }
     })
   },
   updated () {

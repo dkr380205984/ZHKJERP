@@ -138,18 +138,42 @@ ul {
                   &:last-child {
                     border: none;
                   }
-                  &.flex2 {
-                    flex: 1.2;
-                  }
-                  &.flex7 {
-                    flex:1.7;
+                  &.flex3 {
+                    flex:3;
                   }
                   &>span {
-                    line-height: 30px;
+                    line-height: 40px;
+                    display: flex;
+                    border-bottom: 1px solid #DDD;
+                    &>span {
+                      border-right: 1px solid #DDD;
+                      flex: 1;
+                      // line-height: 30px;
+                      &:last-child {
+                        border-right: none;
+                      }
+                    }
+                    &:last-child {
+                      border-bottom: none;
+                    }
                   }
                 }
                 &:first-child {
                   background-color: rgb(240,240,240)!important;
+                  &>span{
+                    display: flex;
+                    flex-direction: row;
+                    &>span {
+                      flex: 1;
+                      border-right: 1px solid #DDD;
+                      border-bottom: none;
+                      justify-content: center!important;
+                      // text-align: center;
+                      &:last-child {
+                        border-right: none;
+                      }
+                    }
+                  }
                 }
                 &:nth-child(n+2) {
                   font-size: @fontSmall;
@@ -172,7 +196,8 @@ ul {
             left: 0;
             top: 0;
             &.smallFont {
-              font-size: @fontMid;
+              font-size: @fontBig;
+              font-weight: 500;
             }
             &.must{
               &::before{
@@ -186,6 +211,7 @@ ul {
             margin-left: 15px;
             &.important{
               color:@normalBlue;
+              cursor: pointer;
             }
             &>.productInfo {
               width: auto;
@@ -199,6 +225,7 @@ ul {
                   &:first-child {
                     color: @normalBlue;
                     width: 280px;
+                    cursor: pointer;
                   }
                   &:nth-child(2) {
                     width: 100px;

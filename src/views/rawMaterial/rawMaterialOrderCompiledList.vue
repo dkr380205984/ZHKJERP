@@ -3,7 +3,7 @@
        v-loading="loading">
     <div class="head">
       <h2>原料已购列表</h2>
-      <el-input placeholder="输入文字精确搜索"
+      <el-input placeholder="输入订单号精确搜索"
                 suffix-icon="el-icon-search"
                 v-model="searchVal"></el-input>
     </div>
@@ -12,48 +12,49 @@
         <div class="filterLine">
           <span class="label">筛选列表:</span>
           <el-tag closable
-                  v-show="categoryValCmp"
-                  @close="clear('categoryVal')">{{categoryValCmp}}</el-tag>
+                  v-show="companyValCmp"
+                  @close="clear('companyVal')">{{companyValCmp}}</el-tag>
           <el-tag closable
-                  v-show="typesValCmp"
-                  @close="clear('typesVal')">{{typesValCmp}}</el-tag>
+                  v-show="groupValCmp"
+                  @close="clear('groupVal')">{{groupValCmp}}</el-tag>
           <el-tag closable
-                  v-show="styleValCmp"
-                  @close="clear('styleVal')">{{styleValCmp}}</el-tag>
+                  v-show="clientVal"
+                  @close="clear('clientVal')">{{clientVal}}</el-tag>
+          <el-tag closable
+                  v-show="userVal"
+                  @close="clear('userVal')">{{userVal}}</el-tag>
         </div>
         <div class="selectLine">
           <span class="label">筛选条件:</span>
           <div class="leftFilter">
-            <el-select v-model="categoryVal"
+            <el-select v-model="companyVal"
                        placeholder="筛选订单公司">
-              <el-option v-for="item in category"
+              <el-option v-for="item in company"
                          :key="item.id"
                          :label="item.name"
                          :value="item.id">
               </el-option>
             </el-select>
-            <el-select v-model="typesVal"
+            <el-select v-model="groupVal"
                        placeholder="筛选负责小组">
-              <el-option v-for="item in types"
+              <el-option v-for="item in group"
                          :key="item.id"
                          :label="item.name"
                          :value="item.id">
               </el-option>
             </el-select>
-            <el-select v-model="styleVal"
+            <el-select v-model="clientVal"
                        placeholder="筛选订购单位">
-              <el-option v-for="item in style"
+              <el-option v-for="item in client"
                          :key="item.id"
-                         :label="item.name"
-                         :value="item.id">
+                         :value="item.name">
               </el-option>
             </el-select>
-            <el-select v-model="styleVal"
+            <el-select v-model="userVal"
                        placeholder="筛选创建人">
-              <el-option v-for="item in style"
+              <el-option v-for="item in user"
                          :key="item.id"
-                         :label="item.name"
-                         :value="item.id">
+                         :value="item.name">
               </el-option>
             </el-select>
           </div>
@@ -65,6 +66,8 @@
                             range-separator="至"
                             start-placeholder="开始日期"
                             end-placeholder="结束日期"
+                            value-format="yyyy-MM-dd"
+                            @change="pickTime"
                             :picker-options="pickerOptions">
             </el-date-picker>
           </div>
@@ -85,7 +88,7 @@
                style="flex:1.5">操作</div>
         </div>
         <div class="mergeBody"
-             v-for="(item,key) in list"
+             v-for="(item,key) in list[pages-1]"
              :key="key">
           <div class="tableColumn"
                style="color: rgb(26, 149, 255);">{{item.order_code}}</div>
@@ -95,7 +98,7 @@
           <div class="tableColumn col"
                style="flex:1.9">
             <span v-for="(value,index) in item.order_list"
-                  :key="index">{{value}}</span>
+                  :key="index">{{value ? value : '仓库' }}</span>
           </div>
           <div class="tableColumn">{{item.total_weight}}kg</div>
           <div class="tableColumn">{{item.create_name}}</div>
@@ -110,11 +113,11 @@
       </div>
       <div class="pageCtn">
         <el-pagination background
-                       :page-size="5"
+                       :page-size="1"
                        layout="prev, pager, next"
                        :total="total"
                        :current-page.sync="pages"
-                       @current-change="getCraftList">
+                       @current-change="getOrderList">
         </el-pagination>
       </div>
     </div>
@@ -122,14 +125,12 @@
 </template>
 
 <script>
-import { productPlanList, rawMaterialOrderList } from '@/assets/js/api.js'
+import { rawMaterialOrderList, clientList, getGroup, authList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
       loading: false,
-      defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
       searchVal: '',
-      value: '',
       date: '',
       pickerOptions: {
         shortcuts: [{
@@ -161,154 +162,225 @@ export default {
       total: 0,
       pages: 1,
       list: [],
-      category: [], // 大类
-      categoryVal: '',
-      types: [], // 二级分类
-      typesVal: '',
-      style: [], // 三级分类
-      styleVal: ''
+      company: [], // 订单公司
+      companyVal: '',
+      group: [], // 小组
+      groupVal: '',
+      client: [{ name: '仓库', id: 0 }], // 订购单位
+      clientVal: '',
+      user: [], // 创建人
+      userVal: '',
+      end_time: '',
+      start_time: ''
     }
   },
   components: {
   },
   methods: {
-    getCraftList () {
+    getOrderList () {
       this.loading = true
-      productPlanList({
+      rawMaterialOrderList({
         'company_id': window.sessionStorage.getItem('company_id'),
-        'limit': 5,
-        'category_id': this.categoryVal,
-        'type_id': this.typesVal,
-        'style_id': this.styleVal,
-        'page': this.pages
+        'order_company_id': this.companyVal,
+        'group_id': this.groupVal,
+        'order_code': this.searchVal
       }).then((res) => {
+        console.log(res)
         this.loading = false
-        this.total = res.data.meta.total
-        this.list = res.data.data
+        this.list = []
+        let arr = []
+        let data = []
+        if (this.userVal || this.clientVal || this.date) {
+          let arr1 = []
+          // 筛选创建人
+          if (this.userVal) {
+            let arrs = []
+            res.data.data.forEach(item => {
+              if (item.user_name === this.userVal) {
+                arrs.push(item.order_code)
+              }
+              if (arrs.find(val => val === item.order_code)) {
+                arr1.push(item)
+              }
+            })
+          } else {
+            arr1 = res.data.data
+          }
+          let arr2 = []
+          // 筛选订购单位
+          if (this.clientVal) {
+            let arrs = []
+            arr1.forEach(item => {
+              if (item.client_name === this.clientVal || (item.client_name === null && this.clientVal === '仓库')) {
+                arrs.push(item.order_code)
+              }
+              if (arrs.find(val => val === item.order_code)) {
+                arr2.push(item)
+              }
+            })
+          } else {
+            arr2 = arr1
+          }
+          // 筛选日期范围
+          if (this.date) {
+            let startArr = this.start_time.split('-')
+            let endArr = this.end_time.split('-')
+            let arrs = []
+            arr2.forEach(item => {
+              let nowTime = item.order_time.split(' ')[0].split('-')
+              if (Number(startArr[0]) < Number(nowTime[0]) && Number(nowTime[0]) < Number(endArr[0])) {
+                arrs.push(item.order_code)
+              } else if (Number(startArr[0]) === Number(nowTime[0])) {
+                if (Number(startArr[1]) < Number(nowTime[1]) && Number(nowTime[1]) < Number(endArr[1])) {
+                  arrs.push(item.order_code)
+                } else if (Number(startArr[1]) === Number(nowTime[1])) {
+                  if (Number(startArr[2]) <= Number(nowTime[2]) && Number(nowTime[2]) <= Number(endArr[2])) {
+                    arrs.push(item.order_code)
+                  }
+                }
+              }
+              if (arrs.find(val => val === item.order_code)) {
+                data.push(item)
+              }
+            })
+          } else {
+            data = arr2
+          }
+        } else {
+          data = res.data.data
+        }
+        data.forEach(item => {
+          let flag = arr.find(val => val.order_code === item.order_code)
+          if (!flag) {
+            arr.push({
+              order_code: item.order_code,
+              order_company: item.order_client,
+              total_weight: item.weight,
+              create_time: item.order_time.split(' ')[0],
+              order_list: [item.client_name],
+              group_name: item.user_group,
+              create_name: item.user_name,
+              order_id: item.order_id
+            })
+          } else {
+            let nowTime = flag.create_time.split('-')
+            let testTime = item.order_time.split(' ')[0].split('-')
+            if (Number(nowTime[0]) < Number(testTime[0])) {
+              flag.create_time = item.order_time.split(' ')[0]
+            } else if (Number(nowTime[0]) === Number(testTime[0])) {
+              if (Number(nowTime[1]) < Number(testTime[1])) {
+                flag.create_time = item.order_time.split(' ')[0]
+              } else if (Number(nowTime[1]) === Number(testTime[1])) {
+                if (Number(nowTime[2]) < Number(testTime[2])) {
+                  flag.create_time = item.order_time.split(' ')[0]
+                }
+              }
+            }
+            flag.total_weight = Number(flag.total_weight) + Number(item.weight)
+            let fleg = flag.order_list.find(val => val === item.client_name)
+            if (!fleg && fleg !== null) {
+              flag.order_list.push(item.client_name)
+            }
+          }
+        })
+        do {
+          this.list.push(arr.splice(0, 5))
+        } while (arr.length > 0)
+        this.total = this.list.length
       })
+    },
+    pickTime (date) {
+      console.log(date)
+      if (date) {
+        this.start_time = date[0]
+        this.end_time = date[1]
+      } else {
+        this.start_time = ''
+        this.end_time = ''
+      }
+      this.pages = 1
+      this.getOrderList()
     },
     // 删除条件
     clear (item) {
-      if (item === 'categoryVal') {
-        this.categoryVal = ''
-        this.typesVal = ''
-        this.types = []
-        this.styleVal = ''
-        this.style = []
-      } else if (item === 'typesVal') {
-        this.typesVal = ''
-        this.styleVal = ''
-        this.style = []
-      } else if (item === 'styleVal') {
-        this.styleVal = ''
-      } else if (item === 'flowerVal') {
-        this.flowerVal = ''
+      if (item === 'companyVal') {
+        this.companyVal = ''
+      } else if (item === 'groupVal') {
+        this.groupVal = ''
+      } else if (item === 'clientVal') {
+        this.clientVal = ''
+      } else if (item === 'userVal') {
+        this.userVal = ''
       }
     }
   },
   watch: {
-    categoryVal (newVal) {
-      if (newVal) {
-        this.types = this.category.find((item) => item.id === newVal).child
-        this.typesVal = ''
-        this.styleVal = ''
-        this.style = []
-        this.pages = 1
-      }
-      this.getCraftList()
+    companyVal (newVal) {
+      this.pages = 1
+      this.getOrderList()
     },
-    typesVal (newVal) {
-      if (newVal) {
-        this.style = this.types.find((item) => item.id === newVal).child
-        this.styleVal = ''
-        this.pages = 1
-        this.getCraftList()
-      }
+    groupVal (newVal) {
+      this.pages = 1
+      this.getOrderList()
     },
-    styleVal (newVal) {
-      this.getCraftList()
+    clientVal (newVal) {
+      this.pages = 1
+      this.getOrderList()
+    },
+    userVal (newVal) {
+      this.pages = 1
+      this.getOrderList()
+    },
+    searchVal (newVal) {
+      this.timer = ''
+      this.timer = setTimeout(() => {
+        this.getOrderList()
+      }, 800)
     }
   },
   computed: {
-    categoryValCmp () {
-      if (this.categoryVal) {
-        return this.category.find((item) => item.id === this.categoryVal).name
+    companyValCmp () {
+      if (this.companyVal) {
+        return this.company.find((item) => item.id === this.companyVal).name
       } else {
         return '所有分类'
       }
     },
-    typesValCmp () {
-      if (this.typesVal) {
-        return this.types.find((item) => item.id === this.typesVal).name
-      } else {
-        return ''
-      }
-    },
-    styleValCmp () {
-      if (this.styleVal) {
-        return this.style.find((item) => item.id === this.styleVal).name
+    groupValCmp () {
+      if (this.groupVal) {
+        return this.group.find((item) => item.id === this.groupVal).name
       } else {
         return ''
       }
     }
   },
   created () {
-    rawMaterialOrderList({
-      company_id: sessionStorage.company_id
-    }).then(res => {
+    this.getOrderList()
+    Promise.all([
+      clientList({
+        company_id: sessionStorage.company_id
+      }),
+      getGroup({
+        company_id: sessionStorage.company_id
+      }),
+      authList({
+        company_id: sessionStorage.company_id
+      })
+    ]).then(res => {
       console.log(res)
-      res.data.data.forEach(item => {
-        if (this.list.length === 0) {
-          this.list.push({
-            order_code: item.order_code,
-            order_company: item.order_client,
-            total_weight: item.weight,
-            create_time: item.order_time.split(' ')[0],
-            order_list: [item.client_name],
-            group_name: item.user_group,
-            create_name: item.user_name,
-            order_id: item.order_id
-          })
-        } else {
-          let flag = true
-          this.list.forEach((val, ind) => {
-            if (val.order_code === item.order_code) {
-              flag = false
-              val.total_weight = Number(val.total_weight) + Number(item.weight)
-              let nowTime = val.create_time.split('-')
-              let testTime = item.order_time.split(' ')[0].split('-')
-              if (Number(nowTime[0]) < Number(testTime[0])) {
-                val.create_time = item.order_time.split(' ')[0]
-              } else if (Number(nowTime[0]) === Number(testTime[0])) {
-                if (Number(nowTime[1]) < Number(testTime[1])) {
-                  val.create_time = item.order_time.split(' ')[0]
-                } else if (Number(nowTime[1]) === Number(testTime[1])) {
-                  if (Number(nowTime[2]) < Number(testTime[2])) {
-                    val.create_time = item.order_time.split(' ')[0]
-                  }
-                }
-              }
-            } else if (val.order_code !== item.order_code && ind === this.list.length - 1 && flag) {
-              this.list.push({
-                order_code: item.order_code,
-                order_company: item.order_client,
-                total_weight: item.weight,
-                create_time: item.order_time.split(' ')[0],
-                order_list: [item.client_name],
-                group_name: item.user_group,
-                create_name: item.user_name,
-                order_id: item.order_id
-              })
-            }
-            let fleg = val.order_list.find(it => it === item.client_name)
-            if (!fleg) {
-              val.order_list.push(item.client_name)
-            }
-          })
+      // 初始化筛选订单公司与订购公司数据
+      res[0].data.data.forEach(item => {
+        if (item.type === 1) {
+          this.company.push(item)
+        }
+        if (item.type === 2) {
+          this.client.push(item)
         }
       })
+      // 初始化筛选小组数据
+      this.group = res[1].data.data
+      this.user = res[2].data.data
     })
-    console.log(this)
   }
 }
 </script>

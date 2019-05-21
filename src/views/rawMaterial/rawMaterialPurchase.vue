@@ -37,9 +37,10 @@
                   </el-option>
                 </el-select>
                 <el-select v-model="item.color_code"
+                           filterable
                            placeholder="请选择颜色">
                   <el-option v-for="value in colorList"
-                             :key="value.id"
+                             :key="value.name + value.id"
                              :value="value.name">
                   </el-option>
                 </el-select>
@@ -129,7 +130,7 @@
 </template>
 
 <script>
-import { rawMaterialPurchase, colorList, clientList, YarnList } from '@/assets/js/api.js'
+import { rawMaterialPurchase, pantongList, YarnColorList, clientList, YarnList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -147,7 +148,7 @@ export default {
       material_info: [
         {
           material_name: '',
-          color_code: '',
+          color_code: '白胚',
           attribute: '',
           price: ''
         }
@@ -158,7 +159,7 @@ export default {
     addMaterial () {
       this.material_info.push({
         material_name: '',
-        color_code: '',
+        color_code: '白胚',
         attribute: '',
         price: ''
       })
@@ -339,7 +340,10 @@ export default {
   },
   created () {
     Promise.all([
-      colorList({
+      YarnColorList({
+        company_id: sessionStorage.company_id
+      }),
+      pantongList({
         company_id: sessionStorage.company_id
       }),
       clientList({
@@ -350,13 +354,18 @@ export default {
       })
     ]).then(res => {
       console.log(res)
-      this.colorList = res[0].data.data
-      res[1].data.data.forEach((item, key) => {
+      this.colorList = [{
+        color_code: '',
+        name: '白胚'
+      },
+      ...res[0].data.data, ...res[1].data.data]
+      console.log(this.colorList)
+      res[2].data.data.forEach((item, key) => {
         if (item.type === 2) {
           this.companyList.push(item)
         }
       })
-      this.materialList.material = res[2].data.data
+      this.materialList.material = res[3].data.data
     })
   }
 }
