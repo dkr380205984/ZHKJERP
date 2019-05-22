@@ -129,7 +129,7 @@
                     <el-select v-model="value.color"
                                placeholder="颜色"
                                size="small">
-                      <el-option v-for="color in item.needColors"
+                      <el-option v-for="color in colorListVal(item.needColors)"
                                  :key="color.value"
                                  :value="color">
                       </el-option>
@@ -315,7 +315,7 @@ export default {
       })
     },
     deleteBuyMaterialInfo (key, kay, index) {
-      console.log(this.list[key].buyInfo[kay].buyMaterialInfo.splice(index, 1))
+      this.list[key].buyInfo[kay].buyMaterialInfo.splice(index, 1)
       this.jisuan(key)
     },
     addBuyInfo (key) {
@@ -346,6 +346,9 @@ export default {
     deleteBuyInfo (key, kay) {
       this.list[key].buyInfo.splice(kay, 1)
       this.jisuan(key)
+    },
+    colorListVal (list) {
+      return ['白胚', ...list]
     },
     saveAll () {
       this.loading = true

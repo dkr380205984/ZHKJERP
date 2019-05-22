@@ -65,11 +65,10 @@
       <div class="mergeTable">
         <div class="mergeHeader">
           <div class="tableColumn">订单号</div>
-          <div class="tableColumn"
-               style="flex:1.2">订单公司</div>
+          <div class="tableColumn flex12">订单公司</div>
           <div class="tableColumn">负责小组</div>
-          <div class="tableColumn"
-               style="flex:4.3;flex-direction:row;">
+          <div class="tableColumn flex43"
+               style="flex-direction:row;">
             <span style="border-right:1px solid #DDD;flex:1; ">加工单位</span>
             <span style="border-right:1px solid #DDD;flex:0.7; ">加工类型</span>
             <span style="flex:1.4">加工信息</span>
@@ -84,33 +83,37 @@
              :key="key">
           <div class="tableColumn"
                style="color: rgb(26, 149, 255);">{{item.order_code}}</div>
-          <div class="tableColumn"
-               style="flex:1.2">{{item.order_company}}</div>
-          <div class="tableColumn">{{item.ground_name}}</div>
-          <div class="tableColumn col"
-               style="flex:4.3">
-            <span v-for="(value,index) in item.order_team"
+          <div class="tableColumn flex12">{{item.order_company}}</div>
+          <div class="tableColumn">{{item.group_name}}</div>
+          <div class="tableColumn col flex43">
+            <span v-for="(value,index) in item.process_info"
                   :key="index">
-              <span style="flex:1">
+              <span class="flex1"
+                    style="box-sizing:border-box">
                 <span>{{value.company}}</span>
               </span>
-              <span style="flex:0.7">
-                <span>{{value.processClass}}</span>
-              </span>
-              <span style="flex:1.4">
-                <span v-for="(content,number) in value.info"
-                      :key="number"
-                      :style="{'padding':value.info.length === 1 ? '10px 0' : false}">{{content.material}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{content.color}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{content.weight+content.unit}}
-                </span>
+              <span class="flex21">
+                <div v-for="(val,ind) in value.types"
+                     :key="ind"
+                     class="flex1">
+                  <span class="flex07">
+                    <span>{{val.process_type}}</span>
+                  </span>
+                  <span class="flex14">
+                    <span v-for="(content,number) in val.info"
+                          :key="number">{{content.material}}-{{content.color}}-{{content.value+'kg'}}
+                    </span>
+                  </span>
+                </div>
               </span>
             </span>
           </div>
           <div class="tableColumn">{{item.create_name}}</div>
           <div class="tableColumn">{{item.create_time}}</div>
-          <div class="tableColumn"
-               style="flex-direction:row;flex:1.2">
+          <div class="tableColumn flex12"
+               style="flex-direction:row;">
             <span class="btns normal"
-                  @click="$router.push('/index/rawMaterialProcessDetail/'+1)">查看</span>
+                  @click="$router.push('/index/rawMaterialProcessDetail/' + item.order_id)">查看</span>
             <span class="btns warning"
                   @click="$router.push('/index/null')">修改</span>
           </div>
@@ -130,7 +133,7 @@
 </template>
 
 <script>
-import { productPlanList } from '@/assets/js/api.js'
+import { rawMaterialProcessList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -168,120 +171,7 @@ export default {
       },
       total: 0,
       pages: 1,
-      list: [
-        {
-          order_code: 'KR-0001',
-          order_company: '杭州飞泰服饰有限公司',
-          ground_name: 'B组',
-          // order_team: ['杭州飞泰纱线厂', '杭州力欧纱线厂'],
-          order_team: [
-            {
-              company: '杭州飞泰纱线厂',
-              processClass: '染色',
-              info: [
-                {
-                  material: '36支上光晴纶',
-                  color: '白胚',
-                  weight: 400,
-                  unit: 'g'
-                }
-              ]
-            }, {
-              company: '杭州力欧纱线厂',
-              processClass: '染色',
-              info: [
-                {
-                  material: '52支上光晴纶',
-                  color: '深绿',
-                  weight: 400,
-                  unit: 'g'
-                },
-                {
-                  material: '36支上光晴纶',
-                  color: '白胚',
-                  weight: 400,
-                  unit: 'g'
-                }
-              ]
-            }
-          ],
-          total: 700,
-          create_name: '王锦鲤',
-          create_time: '2019-04-23'
-        },
-        {
-          order_code: 'KR-0001',
-          order_company: '杭州飞泰服饰有限公司',
-          ground_name: 'B组',
-          order_team: [
-            {
-              company: '杭州飞泰纱线厂',
-              processClass: '染色',
-              info: [
-                {
-                  material: '52支上光晴纶',
-                  color: '深绿',
-                  weight: 400,
-                  unit: 'g'
-                }
-              ]
-            }
-          ],
-          total: 700,
-          create_name: '王锦鲤',
-          create_time: '2019-04-23'
-        },
-        {
-          order_code: 'KR-0001',
-          order_company: '杭州飞泰服饰有限公司',
-          ground_name: 'B组',
-          order_team: [
-            {
-              company: '杭州飞泰纱线厂',
-              processClass: '染色',
-              info: [
-                {
-                  material: '52支上光晴纶',
-                  color: '深绿',
-                  weight: 400,
-                  unit: 'g'
-                }
-              ]
-            }, {
-              company: '杭州力欧纱线厂',
-              processClass: '染色',
-              info: [
-                {
-                  material: '52支上光晴纶',
-                  color: '深绿',
-                  weight: 400,
-                  unit: 'g'
-                }
-              ]
-            }, {
-              company: '杭州力欧纱线厂',
-              processClass: '染色',
-              info: [
-                {
-                  material: '52支上光晴纶',
-                  color: '深绿',
-                  weight: 400,
-                  unit: 'g'
-                },
-                {
-                  material: '36支上光晴纶',
-                  color: '白胚',
-                  weight: 400,
-                  unit: 'g'
-                }
-              ]
-            }
-          ],
-          total: 700,
-          create_name: '王锦鲤',
-          create_time: '2019-04-23'
-        }
-      ],
+      list: [],
       category: [], // 大类
       categoryVal: '',
       types: [], // 二级分类
@@ -295,17 +185,75 @@ export default {
   methods: {
     getCraftList () {
       this.loading = true
-      productPlanList({
-        'company_id': window.sessionStorage.getItem('company_id'),
-        'limit': 5,
-        'category_id': this.categoryVal,
-        'type_id': this.typesVal,
-        'style_id': this.styleVal,
-        'page': this.pages
-      }).then((res) => {
-        this.loading = false
-        this.total = res.data.meta.total
-        this.list = res.data.data
+      rawMaterialProcessList({
+        company_id: window.sessionStorage.getItem('company_id')
+      }).then(res => {
+        if (res.status === 200) {
+          console.log(res.data.data)
+          res.data.data.forEach((item, key) => {
+            item.material_info = JSON.parse(item.material_info)
+            item.material_info.forEach((value, index) => {
+              let data = this.list.find(val => val.order_code === item.order_code)
+              if (!data) {
+                this.list.push({
+                  order_id: item.order_id,
+                  order_code: item.order_code,
+                  order_company: item.order_company,
+                  group_name: item.order_group,
+                  process_info: [{
+                    company: item.client_name,
+                    types: [{
+                      process_type: item.process_type,
+                      info: [{
+                        material: item.material_name,
+                        ...value
+                      }]
+                    }]
+                  }],
+                  create_name: item.user_name,
+                  create_time: item.order_time.split(' ')[0]
+                })
+              } else {
+                let data1 = data.process_info.find(val => val.company === item.client_name)
+                if (!data1) {
+                  data.process_info.push({
+                    company: item.client_name,
+                    types: [{
+                      process_type: item.process_type,
+                      info: [{
+                        material: item.material_name,
+                        ...value
+                      }]
+                    }]
+                  })
+                } else {
+                  let data2 = data1.types.find(val => val.process_type === item.process_type)
+                  if (!data2) {
+                    data1.types.push({
+                      process_type: item.process_type,
+                      info: [{
+                        material: item.material_name,
+                        ...value
+                      }]
+                    })
+                  } else {
+                    let data3 = data2.info.find(val => val.color === value.color)
+                    if (!data3) {
+                      data2.info.push({
+                        material: item.material_name,
+                        ...value
+                      })
+                    } else {
+                      data3.value = Number(data3.value) + Number(value.value)
+                    }
+                  }
+                }
+              }
+            })
+          })
+          console.log(this.list)
+          this.loading = false
+        }
       })
     },
     // 删除条件
@@ -373,52 +321,8 @@ export default {
       }
     }
   },
-  filters: {
-    // 类型合并
-    filterType (item) {
-      if (!item.type_name) {
-        return item.category_info.product_category
-      } else if (!item.style_name) {
-        return item.category_info.product_category + ' / ' + item.type_name
-      } else {
-        return item.category_info.product_category + ' / ' + item.type_name + ' / ' + item.style_name
-      }
-    },
-    // 类型展示
-    filterSize (item) {
-      let str = ''
-      for (let key in item) {
-        str += key + '/'
-      }
-      return str.substring(0, str.length - 1)
-    },
-    // 原料合并
-    filterMaterial (material) {
-      let str = ''
-      material.forEach((item) => {
-        if (item.type === 0 && str !== '') {
-          str += '/' + item.material
-        } else if (str === '' && item.type === 0) {
-          str += item.material
-        }
-      })
-      return str
-    },
-    // 辅料合并
-    filterOtherMaterial (material) {
-      let str = ''
-      material.forEach((item) => {
-        if (item.type === 1 && str === '') {
-          str += item.material
-        } else if (str === '' && item.type === 1) {
-          str += item.material
-        }
-      })
-      return str
-    }
-  },
   created () {
-    // this.getCraftList()
+    this.getCraftList()
   }
 }
 </script>

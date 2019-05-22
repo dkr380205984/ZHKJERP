@@ -182,10 +182,10 @@ const rawMaterialOrderInit = (params) => http.get(`${baseUrl}/material/order/ini
 const rawMaterialOrder = (params) => http.post(`${baseUrl}/material/order/save`, params, 'application/json')
 // 原料已订购列表、原料订购详情
 const rawMaterialOrderList = (params) => http.get(`${baseUrl}/material/order/list`, params)
-//  原料已加工列表
+//  原料已加工列表、原料加工详情
 const rawMaterialProcessList = (params) => http.get(`${baseUrl}/material/process/list`, params)
 // 原料加工
-const rawMaterialProcessPage = (params) => http.get(`${baseUrl}/material/process/save`, params)
+const rawMaterialProcessPage = (params) => http.post(`${baseUrl}/material/process/save`, params, 'application/json')
 export {
   rawMaterialProcessPage,
   rawMaterialProcessList,

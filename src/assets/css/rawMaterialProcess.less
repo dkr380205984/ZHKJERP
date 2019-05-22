@@ -104,16 +104,18 @@ ul {
           cursor: pointer;
           color: #909399;
           border:1px solid #E6E6E6;
+          display: flex;
+          justify-content: center;
           &:hover{
             color: #10AEF5;
             border-color: #10AEF5;
           }
           span{
-            font-size: 16px;
+            font-size: 20px;
+            vertical-align: text-top;
             &:nth-child(2){
               margin-left: 5px;
-              font-size: 20px;
-              vertical-align: -1px;;
+              font-size: 16px;
             }
           }
         }
@@ -198,6 +200,7 @@ ul {
             margin-left: 15px;
             &.important{
               color:@normalBlue;
+              cursor: pointer;
             }
             &>.productInfo {
               width: auto;
@@ -211,6 +214,7 @@ ul {
                   &:first-child {
                     color: @normalBlue;
                     width: 280px;
+                    cursor: pointer;
                   }
                   &:nth-child(2) {
                     width: 100px;

@@ -14,7 +14,8 @@
         <div class="lineCtn">
           <div class="inputCtn">
             <span class="label">订单号:</span>
-            <span class="content important">{{order_code}}</span>
+            <span class="content important"
+                  @click="$router.push('/index/orderDetail/' + $route.params.id)">{{order_code}}</span>
           </div>
           <div class="inputCtn">
             <span class="label">外贸公司:</span>
@@ -38,7 +39,7 @@
               <ul class="productInfo">
                 <li v-for="(item,key) in productList"
                     :key="key">
-                  <span>{{item.product_code}}({{item.type}})</span>
+                  <span @click="$router.push('/index/productDetail/' + item.product_code)">{{item.product_code}}({{item.type}})</span>
                   <span>{{item.product_size+'/'+item.product_color}}</span>
                   <span>{{item.number+'条'}}</span>
                 </li>
@@ -57,7 +58,7 @@
           <div class="inputCtn maxWidth noPadding"
                v-for="(item,key) in materialList"
                :key="key">
-            <span class="title">{{item.company ? item.company : '仓库' + ':'}}</span>
+            <span class="title">{{item.company ? item.company + ':' : '仓库' + ':'}}</span>
             <span class="processContent">
               <span v-for="(value,index) in item.processInfo"
                     :key="index">
@@ -108,13 +109,12 @@
                 :key="kay">
               <li>
                 <span>加工类型</span>:
-                <el-select v-model="iten.processClass"
+                <el-select v-model="iten.process_type"
                            placeholder="请选择加工类型"
                            size="small">
-                  <el-option v-for="value in options"
+                  <el-option v-for="value in options.processType"
                              :key="value.value"
-                             :label="value.label"
-                             :value="value.label">
+                             :value="value">
                   </el-option>
                 </el-select>
               </li>
@@ -123,10 +123,10 @@
                 <el-select v-model="iten.processCompany"
                            placeholder="请选择加工单位"
                            size="small">
-                  <el-option v-for="value in options"
+                  <el-option v-for="value in options.companyList"
                              :key="value.value"
-                             :label="value.label"
-                             :value="value.label">
+                             :label="value.name"
+                             :value="value.id">
                   </el-option>
                 </el-select>
               </li>
@@ -138,10 +138,9 @@
                   <el-select v-model="value.color"
                              placeholder="颜色"
                              size="small">
-                    <el-option v-for="color in options"
+                    <el-option v-for="color in item.needColors"
                                :key="color.value"
-                               :label="color.label"
-                               :value="color.label">
+                               :value="color">
                     </el-option>
                   </el-select>
                   <strong>—</strong>
@@ -153,17 +152,17 @@
                 </div>
                 <em v-if="index === 0"
                     class="el-icon-plus"
-                    @click="appendBuyMaterialInfo(key,kay)"></em>
+                    @click="appendProcessMaterialInfo(key,kay)"></em>
                 <em v-else
                     class="el-icon-delete"
-                    @click="deleteBuyMaterialInfo(key,kay,index)"></em>
+                    @click="deleteProcessMaterialInfo(key,kay,index)"></em>
               </li>
               <li>
                 <span>总价</span>:
                 <el-input size="small"
                           placeholder="总价"
-                          :disabled="true"
                           v-model="iten.money">
+                  <!-- :disabled="true" -->
                 </el-input>
                 <i>元</i>
               </li>
@@ -172,6 +171,7 @@
                 <el-date-picker v-model="iten.orderTime"
                                 align="right"
                                 type="date"
+                                value-format="yyyy-MM-dd"
                                 placeholder="选择日期"
                                 size="small"
                                 style="width:243px">
@@ -186,13 +186,13 @@
                 </el-input>
               </li>
               <span class="el-icon-close"
-                    @click="deleteBuyInfo(key,kay)"></span>
+                    @click="deleteProcessInfo(key,kay)"></span>
             </ul>
           </div>
           <div class="addBtn"
-               @click="addBuyInfo(key)">
-            <span>添加公司</span>
+               @click="addProcessInfo(key)">
             <span>+</span>
+            <span>添加公司</span>
           </div>
         </div>
       </div>
@@ -220,25 +220,8 @@ export default {
       materialList: [],
       list: [],
       options: {
-        companyList: [],
-        options: [
-          {
-            value: '选项1',
-            label: '黄金糕'
-          }, {
-            value: '选项2',
-            label: '双皮奶'
-          }, {
-            value: '选项3',
-            label: '蚵仔煎'
-          }, {
-            value: '选项4',
-            label: '龙须面'
-          }, {
-            value: '选项5',
-            label: '北京烤鸭'
-          }
-        ]
+        processType: ['倒纱', '裁剪', '染色'],
+        companyList: []
       },
       pickerOptions: {
         disabledDate (time) {
@@ -270,55 +253,142 @@ export default {
   methods: {
     jisuan (key) {
       this.list.forEach((item, key) => {
-        item.selectNum = 0
+        item.select_number = 0
         item.processInfo.forEach((value, index) => {
-          value.money = 0
           value.processMaterialInfo.forEach((val, ind) => {
-            item.selectNum += Number(val.value)
-            value.money += (val.price * val.value)
+            item.select_number += Number(val.value)
           })
         })
       })
     },
-    appendBuyMaterialInfo (key, kay) {
+    appendProcessMaterialInfo (key, kay) {
       this.list[key].processInfo[kay].processMaterialInfo.push({
-        material: '',
+        // material: '',
         color: '',
-        price: '',
+        // price: '',
         value: ''
       })
     },
-    deleteBuyMaterialInfo (key, kay, index) {
+    deleteProcessMaterialInfo (key, kay, index) {
       this.list[key].processInfo[kay].processMaterialInfo.splice(index, 1)
+      this.jisuan(key)
     },
-    addBuyInfo (key) {
+    addProcessInfo (key) {
       this.list[key].processInfo.push(
         {
-          company: '',
+          processCompany: '',
           money: '',
           orderTime: '',
           remark: '',
+          process_type: '',
           processMaterialInfo: [
             {
-              material: '',
+              // material: '',
               color: '',
-              price: '',
+              // price: '',
               value: ''
             }
           ]
         }
       )
     },
-    deleteBuyInfo (key, kay) {
+    deleteProcessInfo (key, kay) {
       this.list[key].processInfo.splice(kay, 1)
+      this.jisuan(key)
     },
     saveAll () {
-      this.$message(
-        {
-          message: '添加成功',
-          type: 'success'
-        }
-      )
+      this.loading = true
+      let arr = []
+      let nums = 0
+      let flag = true
+      this.list.forEach((item, key) => {
+        let obj = {}
+        obj.company_id = sessionStorage.company_id
+        obj.order_id = this.$route.params.id
+        obj.user_id = sessionStorage.user_id
+        nums += item.processInfo.length
+        obj.material_name = item.material
+        item.processInfo.forEach((value, index) => {
+          if (!value.process_type) {
+            this.$message({
+              message: '请选择加工类型',
+              type: 'error'
+            })
+            flag = false
+            return
+          }
+          obj.process_type = value.process_type
+          if (!value.processCompany) {
+            this.$message({
+              message: '请选择加工单位',
+              type: 'error'
+            })
+            flag = false
+            return
+          }
+          obj.client_id = value.processCompany
+          for (let prop in value.processMaterialInfo) {
+            if (!value.processMaterialInfo[prop].color) {
+              this.$message({
+                message: '请选择颜色',
+                type: 'error'
+              })
+              flag = false
+              return
+            }
+            if (!value.processMaterialInfo[prop].value) {
+              this.$message({
+                message: '请输入数量',
+                type: 'error'
+              })
+              flag = false
+              return
+            }
+          }
+          obj.material_info = JSON.stringify(value.processMaterialInfo)
+          if (!value.money) {
+            this.$message({
+              message: '请输入总价',
+              type: 'error'
+            })
+            flag = false
+            return
+          }
+          obj.total_price = value.money
+          if (!value.orderTime) {
+            this.$message({
+              message: '请选择订购日期',
+              type: 'error'
+            })
+            flag = false
+            return
+          }
+          obj.order_time = value.orderTime
+          obj.desc = value.remark
+          arr.push({ ...obj })
+        })
+      })
+      console.log(arr)
+      this.loading = false
+      if (nums === 0) {
+        this.$message({
+          message: '无可提交的订购信息',
+          type: 'warning'
+        })
+        return
+      }
+      if (flag) {
+        rawMaterialProcessPage({
+          data: arr
+        }).then(res => {
+          this.$message(
+            {
+              message: '添加成功',
+              type: 'success'
+            }
+          )
+        })
+      }
     }
   },
   created () {
@@ -335,7 +405,6 @@ export default {
       })
     ]).then(res => {
       let materialInfo = res[0].data.data
-      console.log(materialInfo)
       let orderInfo = res[1].data.data
       // 初始化订单信息
       this.order_code = orderInfo.order_code
@@ -441,10 +510,9 @@ export default {
           }
         }
       })
-      console.log(this.list)
-      // 订购公司列表初始化
+      // 加工公司列表初始化
       res[2].data.data.forEach((item, key) => {
-        if (item.type === 2) {
+        if (item.type !== 2 && item.type !== 1) {
           this.options.companyList.push(item)
         }
       })

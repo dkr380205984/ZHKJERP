@@ -196,7 +196,7 @@ export default {
                   weight: item.weight
                 }]
               }],
-              group_name: item.user_group,
+              group_name: item.order_group,
               create_name: item.user_name,
               order_id: item.order_id
             })

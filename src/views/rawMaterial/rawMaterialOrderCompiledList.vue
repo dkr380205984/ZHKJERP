@@ -258,7 +258,7 @@ export default {
               total_weight: item.weight,
               create_time: item.order_time.split(' ')[0],
               order_list: [item.client_name],
-              group_name: item.user_group,
+              group_name: item.order_group,
               create_name: item.user_name,
               order_id: item.order_id
             })
