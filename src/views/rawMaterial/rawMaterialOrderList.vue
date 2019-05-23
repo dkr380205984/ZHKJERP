@@ -268,6 +268,7 @@ export default {
       this.getOrderList()
     },
     searchVal (newVal) {
+      this.pages = 1
       this.timer = ''
       this.timer = setTimeout(() => {
         this.getOrderList()

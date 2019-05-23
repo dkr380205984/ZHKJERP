@@ -217,6 +217,21 @@
                 </div>
               </div>
               <ul class="list">
+                <li>
+                  <div class="table-head-col">克重</div>
+                  <div v-for="(val,ind) in weight_info"
+                       :key="ind + 'a'">
+                    <span :style="{fontSize:smallFont(val.data.warp ? val.data.warp.weight + 'g' : '') ? '10px' : false}">{{val.data.warp ? val.data.warp.weight + 'g' : ''}}</span>
+                    <span :style="{fontSize:smallFont(val.data.weft ? val.data.weft.weight + 'g' : '') ? '10px' : false}">{{val.data.weft ? val.data.weft.weight + 'g' : ''}}</span>
+                  </div>
+                  <template v-if="weight_info.length < 6">
+                    <div v-for="(x,y) in forArr( 6 - weight_info.length)"
+                         :key="y">
+                      <span></span>
+                      <span></span>
+                    </div>
+                  </template>
+                </li>
                 <template v-for="(value,index) in color_data">
                   <li v-if='index < 5'
                       :key="index">
@@ -366,6 +381,21 @@
           </div>
         </div>
         <ul class="list">
+          <li>
+            <div class="table-head-col">克重</div>
+            <div v-for="(val,ind) in weight_info"
+                 :key="ind">
+              <span :style="{fontSize:smallFont(item.warp.name) ? '10px' : false}">{{val.data.warp.weight + 'g'}}</span>
+              <span :style="{fontSize:smallFont(item.weft.name) ? '10px' : false}">{{val.data.weft.weight + 'g'}}</span>
+            </div>
+            <template v-if="weight_info.length < 6">
+              <div v-for="(x,y) in forArr( 6 - weight_info.length)"
+                   :key="y">
+                <span></span>
+                <span></span>
+              </div>
+            </template>
+          </li>
           <template v-for="(value,index) in color_data">
             <li v-if='index < 5'
                 :key="index">
@@ -406,7 +436,7 @@ import { craftOne } from '@/assets/js/api.js'
 export default {
   data () {
     return {
-      // loading: true,
+      weight_info: [],
       craft_code: '',
       create_time: '',
       product_info: {
@@ -478,7 +508,7 @@ export default {
       return arr
     },
     smallFont (item) {
-      let len = item.length
+      let len = item ? item.length : 0
       let num = 0
       for (let i = 0; i < len; i++) {
         if (item.charCodeAt(i) > 255) {
@@ -632,7 +662,7 @@ export default {
     craftOne({
       id: this.$route.params.id
     }).then((res) => {
-      console.log(res)
+      console.log(res.data.data)
       const data = res.data.data
       this.product_info = data.product_info
       this.craft_code = data.craft_code
@@ -714,16 +744,94 @@ export default {
           }
         })
       })
+      // 经纬向数据整理
+      this.warp_data.warp_rank.forEach((item, key) => {
+        item.forEach((val, ind) => {
+          if (val === null) {
+            item[ind] = item[ind - 1]
+          } else if (val === '') {
+            item[ind] = 1
+          }
+        })
+      })
+      this.weft_data.weft_rank.forEach((item, key) => {
+        item.forEach((val, ind) => {
+          if (val === null) {
+            item[ind] = item[ind - 1]
+          } else if (val === '') {
+            item[ind] = 1
+          }
+        })
+      })
+      // 计算经纬根数
+      this.warp_data.warp_rank_bottom.forEach((item, key) => {
+        let flag = this.weight_info.find(val => val.name === item)
+        if (!flag) {
+          this.weight_info.push({
+            name: item,
+            data: {
+              warp: {
+                value: this.warp_data.warp_rank[0][key] * this.warp_data.warp_rank[1][key] * this.warp_data.warp_rank[2][key]
+              }
+            }
+          })
+        } else {
+          if (flag.data.warp) {
+            flag.data.warp.value += (this.warp_data.warp_rank[0][key] * this.warp_data.warp_rank[1][key] * this.warp_data.warp_rank[2][key])
+          } else {
+            flag.data.warp = {
+              value: this.warp_data.warp_rank[0][key] * this.warp_data.warp_rank[1][key] * this.warp_data.warp_rank[2][key]
+            }
+          }
+        }
+      })
+      this.weft_data.weft_rank_bottom.forEach((item, key) => {
+        let flag = this.weight_info.find(val => val.name === item)
+        if (!flag) {
+          this.weight_info.push({
+            name: item,
+            data: {
+              weft: {
+                value: this.weft_data.weft_rank[0][key] * this.weft_data.weft_rank[1][key] * this.weft_data.weft_rank[2][key]
+              }
+            }
+          })
+        } else {
+          if (flag.data.weft) {
+            flag.data.weft.value += (this.weft_data.weft_rank[0][key] * this.weft_data.weft_rank[1][key] * this.weft_data.weft_rank[2][key])
+          } else {
+            flag.data.weft = {
+              value: this.weft_data.weft_rank[0][key] * this.weft_data.weft_rank[1][key] * this.weft_data.weft_rank[2][key]
+            }
+          }
+        }
+      })
+      console.log(this.weight_info)
+      // 与原料关联
+      data.material_data.forEach((item, key) => {
+        item.apply.forEach((value, index) => {
+          let flag = this.weight_info.find(val => val.name === value)
+          if (flag) {
+            if (item.type === 1) {
+              flag.data.weft.material = item.material_name
+              let flag1 = data.yarn_coefficient.find(val => val.name === item.material_name)
+              flag.data.weft.weight = (flag.data.weft.value * flag1.value).toFixed(2)
+            } else {
+              flag.data.warp.material = item.material_name
+              let flag1 = data.yarn_coefficient.find(val => val.name === item.material_name)
+              flag.data.warp.weight = (flag.data.warp.value * flag1.value).toFixed(2)
+            }
+          }
+        })
+      })
+      // 计算纱线克重
+      // data.yarn_coefficient.forEach((item, key) => {
+      //   this
+      // })
     })
   },
-  // mounted () {
-  //   let body = document.getElementsByTagName('body')[0]
-  //   let html = document.getElementsByTagName('html')[0]
-  //   body.style.overflow = 'visible'
-  //   html.style.overflow = 'visible'
-  // },
   updated () {
-    window.print()
+    // window.print()
   }
 }
 </script>
