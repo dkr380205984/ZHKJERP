@@ -116,6 +116,8 @@ const craftList = (params) => http.get(`${baseUrl}/product/craft/list`, params)
 const craftOne = (params) => http.get(`${baseUrl}/product/craft/one`, params)
 // 根据产品id获取工艺单
 const craftProduct = (params) => http.get(`${baseUrl}/craft/product/one`, params)
+// 删除工艺单
+const craftDelete = (params) => http.post(`${baseUrl}/product/craft/draft/delete`, params, 'application/json')
 // 获取产品计划单
 const productPlanOne = (params) => http.get(`${baseUrl}/product/plan/one`, params)
 // 产品计划单列表
@@ -162,6 +164,10 @@ const productStockList = (params) => http.get(`${baseUrl}/product/stock/list`, p
 const productStockDetail = (params) => http.get(`${baseUrl}/product/stock/detail`, params)
 // 获取单挑产品库存
 const productStockOne = (params) => http.get(`${baseUrl}/product/stock/one`, params)
+// 原料库存列表
+const materialStockList = (params) => http.get(`${baseUrl}/material/stock/list`, params)
+// 原料库存详情
+const materialStockDetail = (params) => http.get(`${baseUrl}/material/stock/detail`, params)
 // 订单库存详情
 const orderStockDetail = (params) => http.get(`${baseUrl}/product/stock/order`, params)
 // 添加生产计划单
@@ -192,6 +198,9 @@ export {
   rawMaterialOrderList,
   rawMaterialOrder,
   rawMaterialOrderInit,
+  craftDelete,
+  materialStockDetail,
+  materialStockList,
   YarnColorList,
   pantongList,
   deleteStation,

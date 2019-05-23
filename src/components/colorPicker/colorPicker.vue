@@ -3,7 +3,9 @@
     <!-- 占位符 -->
     <span class="placeHolder">{{content}}</span>
     <!-- input输入框,用于获取鼠标blur事件 -->
-    <input class="getFocus" @click="show" @blur="hide" :style="{'background':color}"/>
+    <el-tooltip class="item" effect="dark" :content="tips?tips:'无'" placement="top">
+      <input class="getFocus" @click="show" @blur="hide" :style="{'background':color}"/>
+    </el-tooltip>
     <!-- 实际显示的文字 设置点透-->
     <span class="realContent">{{content}}</span>
     <div class="selectList" v-show="flag||flag2">
@@ -33,7 +35,8 @@ export default {
       color: this.value.color,
       oldColorArr: this.colorArr, // 原始数据
       colorArray: this.colorArr,
-      search: ''
+      search: '',
+      tips: this.value.name
     }
   },
   watch: {

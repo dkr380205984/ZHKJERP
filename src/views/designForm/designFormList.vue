@@ -153,7 +153,8 @@ export default {
         'page': this.pages,
         'start_time': this.start_time,
         'end_time': this.end_time,
-        'craft_code': this.searchVal
+        'craft_code': this.searchVal,
+        'is_draft': 0
       }).then((res) => {
         this.loading = false
         this.total = res.data.meta.total

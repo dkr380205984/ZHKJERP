@@ -97,6 +97,12 @@ const menu = [{
   }, {
     name: '工艺单列表',
     url: '/index/designFormList'
+  }, {
+    name: '添加设计单',
+    url: '/index/designFormPlanCreate'
+  }, {
+    name: '设计单列表',
+    url: '/index/designFormPlanList'
   }]
 }, {
   name: '配料单管理',
@@ -136,12 +142,13 @@ const menu = [{
     name: '产品库存列表',
     url: '/index/productStockList'
   }
+  // , {
+  //   name: '原料库存列表',
+  //   url: '/index/mainMaterialStockList'
+  // }
     // {
     //   name: '添加原料库存',
     //   url: '/index/mainMaterialStockCreate'
-    // }, {
-    //   name: '原料库存列表',
-    //   url: '/index/mainMaterialStockList'
     // },
     // {
     //   name: '添加辅料库存',
@@ -152,31 +159,31 @@ const menu = [{
     // }
   ]
 },
-{
-  name: '原料管理',
-  children: [{
-    name: '原料预订购',
-    url: '/index/rawMaterialPurchase'
-  }, {
-    name: '原料订购列表',
-    url: '/index/rawMaterialOrderList'
-  }, {
-    name: '原料已订购列表',
-    url: '/index/rawMaterialOrderCompiledList'
-  }, {
-    name: '原料加工列表',
-    url: '/index/rawMaterialProcessList'
-  }, {
-    name: '原料已加工列表',
-    url: '/index/rawMaterialProcessCompiledList'
-  }, {
-    name: '原料预入库列表',
-    url: '/index/rawMaterialBeforeStockList'
-  }, {
-    name: '原料已入库列表',
-    url: '/index/rawMaterialStockList'
-  }]
-},
+// {
+//   name: '原料管理',
+//   children: [{
+//     name: '原料预订购',
+//     url: '/index/rawMaterialPurchase'
+//   }, {
+//     name: '原料订购列表',
+//     url: '/index/rawMaterialOrderList'
+//   }, {
+//     name: '原料已订购列表',
+//     url: '/index/rawMaterialOrderCompiledList'
+//   }, {
+//     name: '原料加工列表',
+//     url: '/index/rawMaterialProcessList'
+//   }, {
+//     name: '原料已加工列表',
+//     url: '/index/rawMaterialProcessCompiledList'
+//   }, {
+//     name: '原料预入库列表',
+//     url: '/index/rawMaterialBeforeStockList'
+//   }, {
+//     name: '原料已入库列表',
+//     url: '/index/rawMaterialStockList'
+//   }]
+// },
 {
   name: '生产管理',
   children: [{
