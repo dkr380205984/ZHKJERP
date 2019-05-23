@@ -71,6 +71,18 @@ let router = new Router({
       name: 'designFormAdd',
       component: () => import('./views/designForm/productList.vue')
     }, {
+      path: 'designFormPlanCreate',
+      name: 'designFormPlanCreate',
+      component: () => import('./views/designForm/designFormPlanCreate.vue')
+    }, {
+      path: 'designFormPlanDetail/:id',
+      name: 'designFormPlanDetail',
+      component: () => import('./views/designForm/designFormPlanDetail.vue')
+    }, {
+      path: 'designFormPlanList',
+      name: 'designFormPlanList',
+      component: () => import('./views/designForm/designFormPlanList.vue')
+    }, {
       path: 'productPlanAdd',
       name: 'productPlanAdd',
       component: () => import('./views/productPlan/productList.vue')
@@ -315,12 +327,23 @@ router.beforeEach((to, from, next) => { // 全局前置守卫按照创建顺序�
         token: window.sessionStorage.getItem('token')
       }).then((res) => {
         if (res.data.status) {
-          next()
+          if (from.name === 'designFormPlanCreate' || from.name === 'designFormCreate') {
+            const answer = window.confirm('是否要离开当前页面')
+            if (answer) {
+              next()
+            } else {
+              next(false)// 可以通过在这里写逻辑来处理用户点了物理返回之后的操作
+            }
+          } else {
+            next()
+          }
         } else {
+          alert('登录信息过期,请重新登录')
           next('/login')
         }
       })
     } catch {
+      alert('系统异常,请重新登录')
       next('/login')
     }
   } else {

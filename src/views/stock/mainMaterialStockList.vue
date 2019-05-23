@@ -39,7 +39,7 @@
         <div class="tableRow bodyTableRow" v-for="item in list" :key="item.id">
           <div class="tableColumn flex9">{{item.material_name}}</div>
           <div class="tableColumn">{{item.material_color}}</div>
-          <div class="tableColumn">{{item.material_attribute}}</div>
+          <div class="tableColumn">{{item.material_attribute?item.material_attribute:'无'}}</div>
           <div class="tableColumn">{{item.total_weight}}</div>
           <div class="tableColumn">{{item.updated_at}}</div>
           <div class="tableColumn flex9">
@@ -107,19 +107,19 @@ export default {
 
     },
     getList () {
-
+      materialStockList({
+        company_id: window.sessionStorage.getItem('company_id'),
+        page: this.pages,
+        limit: 5
+      }).then((res) => {
+        console.log(res)
+        this.total = res.data.data.total
+        this.list = res.data.data.data
+      })
     }
   },
   mounted () {
-    materialStockList({
-      company_id: window.sessionStorage.getItem('company_id'),
-      page: 1,
-      limit: 5
-    }).then((res) => {
-      console.log(res)
-      this.total = res.data.data.total
-      this.list = res.data.data.data
-    })
+    this.getList()
   }
 }
 </script>

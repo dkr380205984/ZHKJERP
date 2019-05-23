@@ -21,7 +21,7 @@
             :label="item.craft_code"
             :value="item.id">
             <span >{{ item.craft_code }}</span>
-            <span style="margin-left:10px;color: #8492a6; font-size: 13px">({{item.product_info.category_info.product_category +'/'+item.product_info.type_name+'/'+item.product_info.style_name+'/'+item.product_info.flower_id }})</span>
+            <span style="margin-left:10px;color: #8492a6; font-size: 13px">({{item.product_info?item.product_info.category_info.product_category +'/'+item.product_info.type_name+'/'+item.product_info.style_name+'/'+item.product_info.flower_id:'设计单' }})</span>
           </el-option>
         </el-select>
       </div>
@@ -108,7 +108,7 @@
                   <div class="desc">{{item.name}}</div>
                 </el-option>
               </el-select>
-              <color-picker v-for="(item2,index2) in colorNum[index]" :key="color[index][index2].color"
+              <color-picker v-for="(item2,index2) in colorNum[index]" :key="index2 + color[index][index2].color"
                 style="margin-left:15px;margin-bottom:24px"
                 v-model="color[index][index2]"
                 :content="filterMethods(index2)"
@@ -185,6 +185,13 @@
           <div class="inputCtn oneLine rowLine">
             <span class="label must">经向排列:</span>
             <div class="overflowCtn" :style="{'overflow-x':longSort.length>12?'auto':'hidden'}">
+              <div class="selectCtn" style="height:40px;line-height:40px;">
+                <div class="tableConnect">
+                  <div class="selectOnce" v-for="(item,index) in longSort" :key="index" style="text-align:center;padding:0;cursor:not-allowed">
+                    {{index+1}}
+                  </div>
+                </div>
+              </div>
               <div class="selectCtn">
                 <div class="tableConnect">
                   <div class="selectOnce" v-for="(item,index) in longSort" :key="index">
@@ -370,7 +377,7 @@
                   <div class="desc">{{item.name}}</div>
                 </el-option>
               </el-select>
-              <color-picker v-for="(item2,index2) in colorNum2[index]" :key="color2[index][index2].color"
+              <color-picker v-for="(item2,index2) in colorNum2[index]" :key="index2 + color2[index][index2].color"
                 style="margin-left:15px;margin-bottom:24px"
                 v-model="color2[index][index2]"
                 :content="filterMethods(index2)"
@@ -447,6 +454,13 @@
           <div class="inputCtn oneLine rowLine">
             <span class="label must">纬向排列</span>
             <div class="overflowCtn" :style="{'overflow-x':longSort2.length>12?'auto':'hidden'}">
+              <div class="selectCtn" style="height:40px;line-height:40px;">
+                <div class="tableConnect">
+                  <div class="selectOnce" v-for="(item,index) in longSort2" :key="index" style="text-align:center;padding:0;cursor:not-allowed">
+                    {{index+1}}
+                  </div>
+                </div>
+              </div>
               <div class="selectCtn">
                 <div class="tableConnect">
                   <div class="selectOnce" v-for="(item,index) in longSort2" :key="index">
@@ -926,6 +940,10 @@ export default {
       this.colorNum.forEach((item, index) => {
         if (this.colorNum[index] > 1) {
           this.$set(this.colorNum, index, (this.colorNum[index] - 1))
+        } else {
+          this.$message.error({
+            message: '颜色不得少于一种'
+          })
         }
       })
     },
@@ -933,6 +951,10 @@ export default {
       this.colorNum2.forEach((item, index) => {
         if (this.colorNum2[index] > 1) {
           this.$set(this.colorNum2, index, (this.colorNum2[index] - 1))
+        } else {
+          this.$message.error({
+            message: '颜色不得少于一种'
+          })
         }
       })
     },
@@ -1354,6 +1376,7 @@ export default {
       this.weft_data.weimi = this.weimi
       let json = {
         id: '',
+        is_draft: 0,
         company_id: this.companyId,
         product_id: this.$route.params.id,
         user_id: window.sessionStorage.getItem('user_id'),
@@ -1459,7 +1482,8 @@ export default {
           category_id: null,
           limit: 20,
           page: 1,
-          craft_code: query
+          craft_code: query,
+          is_draft: null
         }).then((res) => {
           this.gydArr = res.data.data
           this.loadingS = false

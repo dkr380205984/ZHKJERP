@@ -147,7 +147,7 @@
         </div>
         <div class="lineCtn">
           <div class="inputCtn oneLine">
-            <span class="label must">纱线系数:</span>
+            <span class="label">纱线系数:</span>
             <el-input :disabled="!state||hasIngredient==='0'" style="width:300px" class="elInput" placeholder="纱线系数" v-model="xishu[index]" v-for="(item,index) in ingredientCmp" :key="index">
               <template slot="prepend">{{item}}</template>
               <template slot="append">克/厘米</template>
@@ -727,12 +727,18 @@ export default {
         })
         return
       }
-      if (this.xishu.length < this.ingredientCmp.length) {
-        this.$message.error({
-          message: '检测到有未填写的纱线系数，请完善信息'
-        })
-        return
-      }
+      // if (this.xishu.length < this.ingredientCmp.length) {
+      //   this.$message.error({
+      //     message: '检测到有未填写的纱线系数，请完善信息'
+      //   })
+      //   return
+      // }
+      // 纱线系数现在非必填项
+      this.ingredientCmp.forEach((item, index) => {
+        if (!this.xishu[index]) {
+          this.xishu[index] = [0]
+        }
+      })
       this.process.forEach((item) => {
         if (!item) {
           state = true
