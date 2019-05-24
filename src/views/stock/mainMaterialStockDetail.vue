@@ -19,12 +19,18 @@
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">原料属性:</span>
-          <span class="content">{{materialInfo.material_attribute}}</span>
+          <span class="content">{{materialInfo.material_attribute?materialInfo.material_attribute:'无'}}</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">原料重量:</span>
+          <span class="label">缸号:</span>
+          <span class="content">{{materialInfo.vat_code?materialInfo.vat_code:'无'}}</span>
+        </div>
+      </div>
+      <div class="lineCtn">
+        <div class="inputCtn">
+          <span class="label">原料库存:</span>
           <span class="content">{{materialInfo.total_weight}}千克</span>
         </div>
       </div>
@@ -96,9 +102,10 @@ export default {
         material_color: '',
         material_name: '',
         total_weight: '',
-        updated_at: ''
+        updated_at: '',
+        vat_code: ''
       },
-      actionArr: ['全部', '预定购入库', '加工出库', '订购入库', '生产出库']
+      actionArr: ['全部', '预定购入库', '加工出库', '订购入库', '生产出库', '订购入库']
     }
   },
   methods: {
@@ -115,7 +122,7 @@ export default {
           time: item.create_time,
           unit: '千克',
           action: this.actionArr[item.action],
-          style: item.action === 1 || item.action === 3 ? '#67c23a' : '#F56C6C',
+          style: item.action === 1 || item.action === 3 || item.action === 5 ? '#67c23a' : '#F56C6C',
           weight: item.action_weight,
           user_name: item.user_name
         }

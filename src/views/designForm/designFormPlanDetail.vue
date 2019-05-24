@@ -29,7 +29,7 @@
             <div class="columnCtn" v-for="(itemColour,indexColour) in color_data.warpColorData" :key="indexColour">
               <div class="name">配色 {{indexColour+1}} ：</div>
               <div class="value">
-                <el-tooltip class="item" effect="dark" :content="itemColor.name" placement="top" v-for="(itemColor,indexColor) in itemColour.color_scheme" :key="indexColor">
+                <el-tooltip class="item" effect="dark" :content="itemColor.name + ' : '+ warpWeightArr[indexColor].toFixed(2) + '克'" placement="top" v-for="(itemColor,indexColor) in itemColour.color_scheme" :key="indexColor">
                   <div class="bgBlock">
                     <div :style="{'background-color':itemColor.value}" class="shadeBlock">{{indexColor|filterMethods}}</div>
                   </div>
@@ -159,7 +159,7 @@
             <div class="columnCtn" v-for="(itemColour,indexColour) in color_data.weftColorData" :key="indexColour">
               <div class="name">配色 {{indexColour+1}} ：</div>
               <div class="value">
-                <el-tooltip class="item" effect="dark" :content="itemColor.name" placement="top" v-for="(itemColor,indexColor) in itemColour.color_scheme" :key="indexColor">
+                <el-tooltip class="item" effect="dark" :content="itemColor.name +' : '+ weftWeightArr[indexColor].toFixed(2) + '克'" placement="top" v-for="(itemColor,indexColor) in itemColour.color_scheme" :key="indexColor">
                   <div class="bgBlock" ><div :style="{'background-color':itemColor.value}" class="shadeBlock">{{indexColor|filterMethods}}</div></div>
                 </el-tooltip>
               </div>
@@ -201,9 +201,17 @@
           </div>
         </div>
         <div class="lineCtn">
-          <div class="inputCtn oneLine">
+         <div class="inputCtn">
             <span class="label">产品净重:</span>
             <span class="content">{{weight}}克</span>
+          </div>
+          <div class="inputCtn">
+            <span class="label">工艺单净重:</span>
+            <span class="content">{{weigthAll}}克</span>
+          </div>
+          <div class="inputCtn">
+            <span class="label">损耗比:</span>
+            <span class="content">{{((weigthAll - weight)/weight*100).toFixed(2)}}%</span>
           </div>
         </div>
          <div class="lineCtn">
@@ -233,7 +241,7 @@
       </div>
       <div class="btnCtn">
         <div class="cancleBtn" @click="$router.go(-1)">返回</div>
-        <div class="okBtn"  @click="copy($route.params.id)">打印(暂无)</div>
+        <div class="okBtn"  @click="$router.push('/index/designFormPlanUpdate/' + $route.params.id)">修改</div>
       </div>
     </div>
  </div>
@@ -252,6 +260,8 @@ export default {
   },
   data () {
     return {
+      weftWeightArr: [],
+      warpWeightArr: [],
       code: '',
       loading: true,
       chang: 2, // 初始化长
@@ -336,7 +346,8 @@ export default {
       warp_canvas: [], // 保存下经向绘图数据用于颜色重绘
       werf_canvas: [], // 保存下纬向绘图数据用于颜色重绘
       weight: 0,
-      yarn: []
+      yarn: [],
+      weigthAll: 0
     }
   },
   methods: {
@@ -735,6 +746,73 @@ export default {
       } else {
         ArrMain2 = Arr2
       }
+      // 新需求,要把主夹克重算出来
+      // 处理下经纬向的数据,保证三行数据可以相乘
+      let newWarpData = this.hotSettings.data.map((item, index) => {
+        return item.map((item2, index2) => {
+          if (item2) {
+            return item2
+          } else {
+            for (let i = index2 - 1; i >= 0; i--) {
+              if (item[i]) {
+                return item[i]
+              }
+            }
+          }
+        })
+      })
+      let newWeftData = this.hotSettings2.data.map((item, index) => {
+        return item.map((item2, index2) => {
+          if (item2) {
+            return item2
+          } else {
+            for (let i = index2 - 1; i >= 0; i--) {
+              if (item[i]) {
+                return item[i]
+              }
+            }
+          }
+        })
+      })
+      // 取纱线系数
+      let warpWeight = []
+      let weftWeight = []
+      data.material_data.forEach((itemMaterial) => {
+        if (itemMaterial.type === 0) {
+          itemMaterial.apply.forEach((itemApply) => {
+            warpWeight[itemApply] = data.yarn_coefficient.find((itemYarn) => {
+              return itemYarn.name === itemMaterial.material_name
+            }).value
+          })
+        } else if (itemMaterial.type === 1) {
+          itemMaterial.apply.forEach((itemApply) => {
+            weftWeight[itemApply] = data.yarn_coefficient.find((itemYarn) => {
+              return itemYarn.name === itemMaterial.material_name
+            }).value
+          })
+        }
+      })
+      // 根据经纬排列的下标和前面得到的两组数据计算最终的主夹克重
+      data.warp_data.warp_rank_bottom.forEach((item, index) => {
+        if (!this.warpWeightArr[item]) {
+          this.warpWeightArr[item] = warpWeight[item] * newWarpData[0][index] * newWarpData[1][index] * newWarpData[2][index]
+        } else {
+          this.warpWeightArr[item] += warpWeight[item] * newWarpData[0][index] * newWarpData[1][index] * newWarpData[2][index]
+        }
+      })
+      data.weft_data.weft_rank_bottom.forEach((item, index) => {
+        if (!this.weftWeightArr[item]) {
+          this.weftWeightArr[item] = weftWeight[item] * newWeftData[0][index] * newWeftData[1][index] * newWeftData[2][index]
+        } else {
+          this.weftWeightArr[item] += weftWeight[item] * newWeftData[0][index] * newWeftData[1][index] * newWeftData[2][index]
+        }
+      })
+      // 计算下总重量
+      this.weigthAll = (this.weftWeightArr.reduce((total, num) => {
+        return total + num
+      }, 0) + this.warpWeightArr.reduce((total, num) => {
+        return total + num
+      }, 0)).toFixed(2)
       // 保存下绘图的数据
       this.warp_canvas = ArrMain
       this.weft_canvas = ArrMain2

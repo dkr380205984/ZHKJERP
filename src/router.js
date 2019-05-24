@@ -80,6 +80,10 @@ let router = new Router({
       name: 'designFormPlanCreate',
       component: () => import('./views/designForm/designFormPlanCreate.vue')
     }, {
+      path: 'designFormPlanUpdate/:id',
+      name: 'designFormPlanUpdate',
+      component: () => import('./views/designForm/designFormPlanUpdate.vue')
+    }, {
       path: 'designFormPlanDetail/:id',
       name: 'designFormPlanDetail',
       component: () => import('./views/designForm/designFormPlanDetail.vue')
