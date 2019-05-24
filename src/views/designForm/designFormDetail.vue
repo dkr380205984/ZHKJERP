@@ -858,6 +858,16 @@ export default {
           this.weftWeightArr[item] += weftWeight[item] * newWeftData[0][index] * newWeftData[1][index] * newWeftData[2][index]
         }
       })
+      for (let i = 0; i < this.warpWeightArr.length; i++) {
+        if (!this.warpWeightArr[i]) {
+          this.weftWeightArr[i] = 0
+        }
+      }
+      for (let i = 0; i < this.weftWeightArr.length; i++) {
+        if (!this.weftWeightArr[i]) {
+          this.weftWeightArr[i] = 0
+        }
+      }
       // 计算下总重量
       this.weigthAll = (this.weftWeightArr.reduce((total, num) => {
         return total + num
