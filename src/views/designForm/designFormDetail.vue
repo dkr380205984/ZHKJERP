@@ -843,6 +843,12 @@ export default {
           })
         }
       })
+      for (let i = 0; i < this.color_data.warpColorData[0].color_scheme.length; i++) {
+        this.warpWeightArr.push(0)
+      }
+      for (let i = 0; i < this.color_data.weftColorData[0].color_scheme.length; i++) {
+        this.weftWeightArr.push(0)
+      }
       // 根据经纬排列的下标和前面得到的两组数据计算最终的主夹克重
       data.warp_data.warp_rank_bottom.forEach((item, index) => {
         if (!this.warpWeightArr[item]) {
@@ -858,16 +864,6 @@ export default {
           this.weftWeightArr[item] += weftWeight[item] * newWeftData[0][index] * newWeftData[1][index] * newWeftData[2][index]
         }
       })
-      for (let i = 0; i < this.warpWeightArr.length; i++) {
-        if (!this.warpWeightArr[i]) {
-          this.weftWeightArr[i] = 0
-        }
-      }
-      for (let i = 0; i < this.weftWeightArr.length; i++) {
-        if (!this.weftWeightArr[i]) {
-          this.weftWeightArr[i] = 0
-        }
-      }
       // 计算下总重量
       this.weigthAll = (this.weftWeightArr.reduce((total, num) => {
         return total + num
