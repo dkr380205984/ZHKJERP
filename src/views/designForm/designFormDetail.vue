@@ -226,9 +226,17 @@
           </div>
         </div>
         <div class="lineCtn">
-          <div class="inputCtn oneLine">
+          <div class="inputCtn">
             <span class="label">产品净重:</span>
             <span class="content">{{weight}}克</span>
+          </div>
+          <div class="inputCtn">
+            <span class="label">工艺单净重:</span>
+            <span class="content">{{weigthAll}}克</span>
+          </div>
+          <div class="inputCtn">
+            <span class="label">损耗比:</span>
+            <span class="content">{{((weigthAll - weight)/weight*100).toFixed(2)}}%</span>
           </div>
         </div>
          <div class="lineCtn">
@@ -362,7 +370,8 @@ export default {
       weight: 0,
       yarn: [],
       warpWeightArr: [],
-      weftWeightArr: []
+      weftWeightArr: [],
+      weigthAll: 0
     }
   },
   methods: {
@@ -849,6 +858,12 @@ export default {
           this.weftWeightArr[item] += weftWeight[item] * newWeftData[0][index] * newWeftData[1][index] * newWeftData[2][index]
         }
       })
+      // 计算下总重量
+      this.weigthAll = (this.weftWeightArr.reduce((total, num) => {
+        return total + num
+      }, 0) + this.warpWeightArr.reduce((total, num) => {
+        return total + num
+      }, 0)).toFixed(2)
       // 保存下绘图的数据
       this.warp_canvas = ArrMain
       this.weft_canvas = ArrMain2
@@ -880,6 +895,7 @@ export default {
     })
     this.loading = false
   }
+
 }
 </script>
 
