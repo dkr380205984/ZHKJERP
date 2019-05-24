@@ -78,7 +78,7 @@
                       <span class="flex08">{{va.value + val.unit}}</span>
                     </span>
                   </span>
-                  <span>{{(val.total_weight ? val.total_weight : 0) + val.unit}}</span>
+                  <span>{{(val.total_weight ? Number(val.total_weight).toFixed(2) : 0) + val.unit}}</span>
                   <span>{{(val.order_weight ? val.order_weight : 0) + val.unit}}</span>
                 </li>
               </ul>

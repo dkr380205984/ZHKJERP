@@ -112,8 +112,8 @@
                 </template>
                 <template v-else>暂无信息</template>
               </span>
-              <span>{{item.needNum + item.unit}}</span>
-              <span>{{(Number(item.selectNum) + Number(item.selectNums)).toFixed(2) + item.unit}}</span>
+              <span>{{Number(item.needNum).toFixed(2) + item.unit}}</span>
+              <span>{{(Number(item.selectNum) + Number(item.selectNums ? item.selectNums : 0)).toFixed(2) + item.unit}}</span>
             </div>
           </div>
           <div class="buyInfo">
