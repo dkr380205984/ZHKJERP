@@ -244,30 +244,30 @@ let router = new Router({
       name: 'rawMaterialOrderList',
       component: () => import('./views/rawMaterial/rawMaterialOrderList.vue')
     }, {
-      path: 'rawMaterialOrderCompiledList',
-      name: 'rawMaterialOrderCompiledList',
-      component: () => import('./views/rawMaterial/rawMaterialOrderCompiledList.vue')
-    }, {
+      //   path: 'rawMaterialOrderCompiledList',
+      //   name: 'rawMaterialOrderCompiledList',
+      //   component: () => import('./views/rawMaterial/rawMaterialOrderCompiledList.vue')
+      // }, {
       path: 'rawMaterialOrderDetail/:id',
       name: 'rawMaterialOrderDetail',
       component: () => import('./views/rawMaterial/rawMaterialOrderDetail.vue')
     }, {
-      path: 'rawMaterialProcessList',
-      name: 'rawMaterialProcessList',
-      component: () => import('./views/rawMaterial/rawMaterialProcessList.vue')
-    }, {
-      path: 'rawMaterialProcessCompiledList',
-      name: 'rawMaterialProcessCompiledList',
-      component: () => import('./views/rawMaterial/rawMaterialProcessCompiledList.vue')
-    }, {
+      //   path: 'rawMaterialProcessList',
+      //   name: 'rawMaterialProcessList',
+      //   component: () => import('./views/rawMaterial/rawMaterialProcessList.vue')
+      // }, {
+      //   path: 'rawMaterialProcessCompiledList',
+      //   name: 'rawMaterialProcessCompiledList',
+      //   component: () => import('./views/rawMaterial/rawMaterialProcessCompiledList.vue')
+      // }, {
       path: 'rawMaterialProcess/:id',
       name: 'rawMaterialProcess',
       component: () => import('./views/rawMaterial/rawMaterialProcess.vue')
     }, {
-      path: 'rawMaterialProcessDetail/:id',
-      name: 'rawMaterialProcessDetail',
-      component: () => import('./views/rawMaterial/rawMaterialProcessDetail.vue')
-    }, {
+      //   path: 'rawMaterialProcessDetail/:id',
+      //   name: 'rawMaterialProcessDetail',
+      //   component: () => import('./views/rawMaterial/rawMaterialProcessDetail.vue')
+      // }, {
       path: 'rawMaterialBeforeStockList',
       name: 'rawMaterialBeforeStockList',
       component: () => import('./views/rawMaterial/rawMaterialBeforeStockList.vue')
@@ -323,30 +323,30 @@ let router = new Router({
       path: 'yarnSetting',
       name: 'yarnSetting',
       component: () => import('./views/setting/yarnSetting.vue')
-    }, {
-      path: 'otherMaterialOrderList',
-      name: 'otherMaterialOrderList',
-      component: () => import('./views/rawMaterial/otherMaterialOrderList.vue')
-    }, {
-      path: 'otherMaterialOrderPage/:id',
-      name: 'otherMaterialOrderPage',
-      component: () => import('./views/rawMaterial/otherMaterialOrderPage.vue')
-    }, {
-      path: 'otherMaterialOrderCompiledList',
-      name: 'otherMaterialOrderCompiledList',
-      component: () => import('./views/rawMaterial/otherMaterialOrderCompiledList.vue')
-    }, {
-      path: 'otherMaterialOrderDetail/:id',
-      name: 'otherMaterialOrderDetail',
-      component: () => import('./views/rawMaterial/otherMaterialOrderDetail.vue')
-    }, {
-      path: 'otherMaterialProcessList',
-      name: 'otherMaterialProcessList',
-      component: () => import('./views/rawMaterial/otherMaterialProcessList.vue')
-    }, {
-      path: 'otherMaterialProcess/:id',
-      name: 'otherMaterialProcess',
-      component: () => import('./views/rawMaterial/otherMaterialProcess.vue')
+      // }, {
+      //   path: 'otherMaterialOrderList',
+      //   name: 'otherMaterialOrderList',
+      //   component: () => import('./views/rawMaterial/otherMaterialOrderList.vue')
+      // }, {
+      //   path: 'otherMaterialOrderPage/:id',
+      //   name: 'otherMaterialOrderPage',
+      //   component: () => import('./views/rawMaterial/otherMaterialOrderPage.vue')
+      // }, {
+      //   path: 'otherMaterialOrderCompiledList',
+      //   name: 'otherMaterialOrderCompiledList',
+      //   component: () => import('./views/rawMaterial/otherMaterialOrderCompiledList.vue')
+      // }, {
+      //   path: 'otherMaterialOrderDetail/:id',
+      //   name: 'otherMaterialOrderDetail',
+      //   component: () => import('./views/rawMaterial/otherMaterialOrderDetail.vue')
+      // }, {
+      //   path: 'otherMaterialProcessList',
+      //   name: 'otherMaterialProcessList',
+      //   component: () => import('./views/rawMaterial/otherMaterialProcessList.vue')
+      // }, {
+      //   path: 'otherMaterialProcess/:id',
+      //   name: 'otherMaterialProcess',
+      //   component: () => import('./views/rawMaterial/otherMaterialProcess.vue')
     }]
   }
   ]

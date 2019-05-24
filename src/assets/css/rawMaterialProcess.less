@@ -197,7 +197,72 @@ ul {
           }
           &>.content{
             font-size: @fontMid;
-            margin-left: 15px;
+            margin-left: 40px;
+            &>.table {
+              width: 900px;
+              border: 1px solid #DDD;
+              li {
+                display: flex;
+                border-bottom: 1px solid #DDD;
+                box-sizing: border-box;
+                justify-content: center;
+                &:last-child {
+                  border: none;
+                }
+                &>span {
+                  flex: 1;
+                  justify-content: center;
+                  border-right: 1px solid #DDD;
+                  display: flex;
+                  &.flex2 {
+                    flex: 2;
+                  }
+                  &>span {
+                    flex: 1;
+                    display: flex;
+                    border-right: 1px solid #DDD;
+                    justify-content: center;
+                    &:last-child {
+                      border-right: none;
+                    }
+                  }
+                  &:last-child {
+                    border-right: none;
+                  }
+                }
+                &.material {
+                  &>span{
+                    flex-direction: column!important;
+                    align-items: center;
+                    &>span {
+                      border-right: none;
+                      border-bottom: 1px solid #DDD;
+                      width: 100%;
+                      &>span {
+                        text-align: center;
+                        border-right: 1px solid #DDD;
+                        flex: 1;
+                        &:last-child {
+                          border-right: none;
+                        }
+                      }
+                      &:last-child {
+                        border-bottom: none;
+                      }
+                    }
+                  }
+                }
+                &:first-child {
+                  background-color: rgb(240,240,240)!important;
+                }
+                &:nth-child(n+2) {
+                  font-size: @fontSmall;
+                }
+                &:nth-child(2n+1) {
+                  background-color:rgb(250, 250, 250) 
+                }
+              }
+            }
             &.important{
               color:@normalBlue;
               cursor: pointer;

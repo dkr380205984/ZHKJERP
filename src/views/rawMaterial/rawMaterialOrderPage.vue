@@ -2,7 +2,7 @@
   <div id="rawMaterialOrderPage"
        v-loading="loading">
     <div class="head">
-      <h2>原料订购</h2>
+      <h2>{{type === '0' ? '原': '辅'}}料订购</h2>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -52,7 +52,7 @@
         </div>
       </div>
       <div class="stepCtn">
-        <div class="stepTitle">原料信息</div>
+        <div class="stepTitle">{{type === '0' ? '原': '辅'}}料信息</div>
         <div class="borderCtn">
           <div class="cicle"></div>
           <div class="border"></div>
@@ -60,7 +60,7 @@
         <div class="lineCtn">
           <div class="table">
             <div class="tableTitle">
-              <span>计划原料信息</span>
+              <span>计划{{type === '0' ? '原': '辅'}}料信息</span>
               <span>库存信息</span>
             </div>
             <template v-if="rawMaterialPlanList.length !== 0">
@@ -73,7 +73,7 @@
                 </span>
                 <span>
                   <span>{{item.have.name + ':' + (item.have.value ? item.have.value : '0') + item.need.unit}}</span>
-                  <span>{{'白胚:' + (item.whiteHave ? item.whiteHave + item.need.unit : '0' + item.need.unit)}}</span>
+                  <span v-if="type === '0'">{{'白胚:' + (item.whiteHave ? item.whiteHave + item.need.unit : '0' + item.need.unit)}}</span>
                 </span>
               </div>
             </template>
@@ -86,7 +86,7 @@
         </div>
       </div>
       <div class="stepCtn">
-        <div class="stepTitle">原料订购</div>
+        <div class="stepTitle">{{type === '0' ? '原': '辅'}}料订购</div>
         <div class="borderCtn">
           <div class="cicle"></div>
           <div class="border"></div>
@@ -97,10 +97,10 @@
              :key="key">
           <div class="tablePlan">
             <div class="tableTitle">
-              <span>原料名称</span>
-              <span>原料颜色</span>
-              <span>合计重量</span>
-              <span>已选重量</span>
+              <span>{{type === '0' ? '原': '辅'}}料名称</span>
+              <span>{{type === '0' ? '原': '辅'}}料颜色</span>
+              <span>合计数量</span>
+              <span>已选数量</span>
             </div>
             <div class="tableInfo">
               <span>{{item.material ? item.material : '暂无信息'}}</span>
@@ -112,8 +112,8 @@
                 </template>
                 <template v-else>暂无信息</template>
               </span>
-              <span>{{item.needNum}}kg</span>
-              <span>{{item.selectNum}}kg</span>
+              <span>{{item.needNum + item.unit}}</span>
+              <span>{{(Number(item.selectNum) + Number(item.selectNums)) + item.unit}}</span>
             </div>
           </div>
           <div class="buyInfo">
@@ -124,7 +124,7 @@
                   :key="index"
                   class="col">
                 <div>
-                  <span>原料信息:</span>
+                  <span>{{type === '0' ? '原': '辅'}}料信息:</span>
                   <div>
                     <el-select v-model="value.color"
                                placeholder="颜色"
@@ -145,14 +145,10 @@
                 <div>
                   <span></span>
                   <div>
-                    <el-select v-model="value.attr"
-                               placeholder="包装"
-                               size="small">
-                      <el-option v-for="color in options.attr"
-                                 :key="color.value"
-                                 :value="color.name">
-                      </el-option>
-                    </el-select>
+                    <el-input size="small"
+                              placeholder="包装"
+                              v-model="value.attr">
+                    </el-input>
                     <strong>—</strong>
                     <el-input size="small"
                               placeholder="单价"
@@ -235,24 +231,15 @@ export default {
   data () {
     return {
       loading: true,
+      type: '',
       order_code: '',
       order_time: '',
       company_name: '',
       group_name: '',
       productList: [],
       rawMaterialPlanList: [],
-      list: [
-        {
-          material: '',
-          needColors: [],
-          needNum: 0,
-          selectNum: 0,
-          buyInfo: [
-          ]
-        }
-      ],
+      list: [],
       options: {
-        attr: [{ name: '足斤包装' }, { name: '98包装' }, { name: '95包装' }],
         companyList: [{ name: '仓库', id: 0 }]
       },
       pickerOptions: {
@@ -299,9 +286,26 @@ export default {
                 val.value = Math.ceil(val.value)
               }
             }
-            item.selectNum = Number(item.selectNum) + Number(val.value)
-            item.selectNum = (Math.ceil(item.selectNum * 100) / 100).toFixed(2)
-            value.money += (val.price * val.value)
+            if (Number(item.selectNum) + Number(val.value) + Number(item.selectNums) > Math.ceil(Number(item.needNum)) && Number(val.value) !== 0) {
+              this.$confirm('订购数量超出计划数量, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
+                item.selectNum = Number(item.selectNum) + Number(val.value)
+                item.selectNum = this.type === '0' ? (Math.ceil(item.selectNum * 100) / 100).toFixed(2) : Math.ceil(item.selectNum)
+                value.money += (val.price * val.value)
+              }).catch(() => {
+                this.$message({
+                  type: 'info',
+                  message: '已取消'
+                })
+                val.value = 0
+                item.selectNum = Number(item.selectNum) + Number(val.value)
+                item.selectNum = this.type === '0' ? (Math.ceil(item.selectNum * 100) / 100).toFixed(2) : Math.ceil(item.selectNum)
+                value.money += (val.price * val.value)
+              })
+            }
           })
         })
       })
@@ -321,7 +325,7 @@ export default {
     addBuyInfo (key) {
       if (!this.list[key].material) {
         this.$message({
-          message: '无原料信息，不可添加订购',
+          message: '无' + (this.type === '0' ? '原' : '辅') + '料信息，不可添加订购',
           type: 'error'
         })
         return
@@ -348,7 +352,7 @@ export default {
       this.jisuan(key)
     },
     colorListVal (list) {
-      return ['白胚', ...list]
+      return this.type === '0' ? ['白胚', ...list] : [...list]
     },
     saveAll () {
       this.loading = true
@@ -363,6 +367,7 @@ export default {
         obj.order_id = this.$route.params.id
         obj.user_id = sessionStorage.user_id
         obj.material_name = item.material
+        obj.type = (this.type === '0' ? 1 : 2)
         nums += item.buyInfo.length
         item.buyInfo.forEach(value => {
           if (!value.company && value.company !== 0) {
@@ -449,6 +454,7 @@ export default {
               stockObj.user_id = sessionStorage.user_id
               stockObj.weight = Number(val.value)
               stockObj.company_id = sessionStorage.company_id
+              stockObj.type = (this.type === '0' ? 1 : 2)
               console.log(stockArr)
               stockArr.push({ ...stockObj })
             }
@@ -463,6 +469,7 @@ export default {
         })
         return
       }
+      console.log(arr, stockArr)
       if (flag) {
         rawMaterialOrder({
           data: {
@@ -472,15 +479,19 @@ export default {
         }).then(res => {
           if (res.data.code === 200) {
             this.$message({
-              message: '添加成功',
+              message: '添加成功,即将跳转至详情页',
               type: 'success'
             })
+            setTimeout(() => {
+              this.$router.push('/index/rawMaterialOrderDetail/' + this.$route.params.id + '?type=' + this.type)
+            }, 800)
           }
         })
       }
     }
   },
   created () {
+    this.type = document.location.href.split('type=')[1]
     Promise.all([
       rawMaterialOrderInit({
         order_id: this.$route.params.id
@@ -489,13 +500,13 @@ export default {
         company_id: sessionStorage.company_id
       })
     ]).then(res => {
-      console.log(res[0].data.data)
-      // 计划原料信息初始化
+      console.log(res)
+      // 计划物料信息初始化
       res[0].data.data.material_info.forEach((item, key) => {
         for (let prop in item) {
           for (let val in item[prop]) {
             if (val !== 'total_number' && val !== 'type' && val !== 'unit') {
-              if (item[prop].type === 0) {
+              if (item[prop].type === Number(this.type)) {
                 this.rawMaterialPlanList.push({
                   material: prop,
                   need: {
@@ -515,34 +526,23 @@ export default {
           }
         }
       })
+      console.log(this.rawMaterialPlanList)
       this.rawMaterialPlanList.forEach((item, key) => {
-        if (key === 0) {
-          this.list[0].material = item.material
-          this.list[0].needColors.push(item.need.name)
-          this.list[0].needNum = (Math.ceil(item.need.value * 100) / 100).toFixed(2)
-        } else {
-          let flag = true
-          this.list.forEach((value, index) => {
-            if (value.material === item.material) {
-              flag = false
-              value.needColors.push(item.need.name)
-              value.needNum = Number(value.needNum) + Number(item.need.value)
-              value.needNum = (Math.ceil(value.needNum * 100) / 100).toFixed(2)
-            } else if (flag && index === this.list.length - 1 && value.material !== item.material) {
-              let obj = {
-                material: '',
-                needColors: [],
-                needNum: 0,
-                selectNum: 0,
-                buyInfo: [
-                ]
-              }
-              obj.material = item.material
-              obj.needColors.push(item.need.name)
-              obj.needNum = (Math.ceil(item.need.value * 100) / 100).toFixed(2)
-              this.list.push(obj)
-            }
+        let flag = this.list.find(val => val.material === item.material)
+        if (!flag) {
+          this.list.push({
+            material: item.material,
+            needColors: [item.need.name],
+            needNum: (this.type === '0' ? (Math.ceil(item.need.value * 100) / 100).toFixed(2) : item.need.value),
+            selectNum: 0,
+            unit: item.need.unit,
+            buyInfo: [
+            ]
           })
+        } else {
+          flag.needColors.push(item.need.name)
+          flag.needNum = Number(flag.needNum) + Number(item.need.value)
+          flag.needNum = this.type === '0' ? (Math.ceil(flag.needNum * 100) / 100).toFixed(2) : Math.ceil(flag.needNum)
         }
       })
       this.order_code = res[0].data.data.order_info.order_code
@@ -550,11 +550,17 @@ export default {
       this.group_name = res[0].data.data.order_info.group_name
       this.company_name = res[0].data.data.order_info.client_name
       // 订购公司列表初始化
-      res[1].data.data.forEach((item, key) => {
-        if (item.type === 2) {
-          this.options.companyList.push(item)
+      if (this.type === '0') {
+        let arr = res[1].data.data.find(val => val.type === 2)
+        if (arr) {
+          this.options.companyList.push(arr)
         }
-      })
+      } else {
+        let arr = res[1].data.data.find(val => val.type === 6)
+        if (arr) {
+          this.options.companyList.push(arr)
+        }
+      }
       // 产品信息初始化
       res[0].data.data.order_info.order_batch.forEach((item, key) => {
         item.batch_info.forEach((value, index) => {
@@ -587,7 +593,9 @@ export default {
       let selectWeight = res[0].data.data.total_weight
       for (let prop in selectWeight) {
         let flag = this.list.find(item => item.material === prop)
-        flag.selectNum = Number(selectWeight[prop])
+        if (flag) {
+          flag.selectNums = selectWeight[prop] ? Number(selectWeight[prop]) : 0
+        }
       }
     })
   },

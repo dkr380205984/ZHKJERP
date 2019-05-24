@@ -1,8 +1,7 @@
 <template>
-  <div id="rawMaterialStockList"
-       v-loading="loading">
+  <div id="rawMaterialOrderList">
     <div class="head">
-      <h2>原料已入库列表</h2>
+      <h2>物料出入库列表</h2>
       <el-input placeholder="输入文字精确搜索"
                 suffix-icon="el-icon-search"
                 v-model="searchVal"></el-input>
@@ -12,37 +11,37 @@
         <div class="filterLine">
           <span class="label">筛选列表:</span>
           <el-tag closable
-                  v-show="categoryValCmp"
-                  @close="clear('categoryVal')">{{categoryValCmp}}</el-tag>
+                  v-show="clientValCmp"
+                  @close="clear('clientVal')">{{clientValCmp}}</el-tag>
           <el-tag closable
-                  v-show="typesValCmp"
-                  @close="clear('typesVal')">{{typesValCmp}}</el-tag>
+                  v-show="categoryCmp"
+                  @close="clear('category')">{{categoryCmp}}</el-tag>
           <el-tag closable
-                  v-show="styleValCmp"
-                  @close="clear('styleVal')">{{styleValCmp}}</el-tag>
+                  v-show="groupValCmp"
+                  @close="clear('groupVal')">{{groupValCmp}}</el-tag>
         </div>
         <div class="selectLine">
           <span class="label">筛选条件:</span>
           <div class="leftFilter">
+            <el-select v-model="clientVal"
+                       placeholder="筛选公司">
+              <el-option v-for="item in client"
+                         :key="item.id"
+                         :label="item.name"
+                         :value="item.id">
+              </el-option>
+            </el-select>
             <el-select v-model="categoryVal"
-                       placeholder="筛选订单公司">
+                       placeholder="筛选品类">
               <el-option v-for="item in category"
                          :key="item.id"
                          :label="item.name"
                          :value="item.id">
               </el-option>
             </el-select>
-            <el-select v-model="typesVal"
-                       placeholder="筛选负责小组">
-              <el-option v-for="item in types"
-                         :key="item.id"
-                         :label="item.name"
-                         :value="item.id">
-              </el-option>
-            </el-select>
-            <el-select v-model="styleVal"
-                       placeholder="筛选原料">
-              <el-option v-for="item in style"
+            <el-select v-model="groupVal"
+                       placeholder="筛选小组">
+              <el-option v-for="item in group"
                          :key="item.id"
                          :label="item.name"
                          :value="item.id">
@@ -54,10 +53,12 @@
                             type="daterange"
                             align="right"
                             unlink-panels
+                            value-format="yyyy-MM-dd"
                             range-separator="至"
                             start-placeholder="开始日期"
                             end-placeholder="结束日期"
-                            :picker-options="pickerOptions">
+                            :picker-options="pickerOptions"
+                            @change="pickTime">
             </el-date-picker>
           </div>
         </div>
@@ -65,51 +66,51 @@
       <div class="mergeTable">
         <div class="mergeHeader">
           <div class="tableColumn">订单号</div>
-          <div class="tableColumn"
-               style="flex:1.5">订单公司</div>
-          <div class="tableColumn">负责小组</div>
-          <div class="tableColumn"
-               style="flex:3.5;flex-direction:row;">
-            <span style="border-right:1px solid #DDD;flex:1.5; ">原料名称</span>
-            <span style="border-right:1px solid #DDD;flex:1; ">计划重量</span>
-            <span style="flex:1">入库重量</span>
+          <div class="tableColumn">外贸公司</div>
+          <div class="tableColumn flex21"
+               style="flex-direction:row;">
+            <span class='flex2'
+                  style="border-right:1px solid #DDD;">产品信息</span>
+            <span class="flex06">数量</span>
           </div>
-          <div class="tableColumn">创建人</div>
-          <div class="tableColumn">更新时间</div>
-          <div class="tableColumn"
-               style="flex:1.5">操作</div>
+          <div class="tableColumn flex08">负责小组</div>
+          <div class="tableColumn">下单日期</div>
+          <div class="tableColumn">交货日期</div>
+          <div class="tableColumn flex17">操作</div>
         </div>
         <div class="mergeBody"
              v-for="(item,key) in list"
              :key="key">
-          <div class="tableColumn"
-               style="color: rgb(26, 149, 255);">{{item.order_code}}</div>
-          <div class="tableColumn"
-               style="flex:1.5">{{item.order_company}}</div>
-          <div class="tableColumn">{{item.ground_name}}</div>
-          <div class="tableColumn col"
-               style="flex:3.5">
-            <span v-for="(value,index) in item.materialsInfo"
-                  :key="index">
-              <span style="flex:1.5">
-                <span>{{value.material}}</span>
+          <div class="tableColumn">{{item.order_code}}</div>
+          <div class="tableColumn">{{item.client_name}}</div>
+          <div class="tableColumn flex21">
+            <div class="once onces"
+                 v-for="(itemProduct,indexProduct) in item.productList"
+                 :key="indexProduct">
+              <span class="flex2"
+                    style="border-right:1px solid #DDD;">
+                <span>{{itemProduct.productCode}}</span>
+                <span>{{itemProduct.productType}}</span>
               </span>
-              <span style="flex:1">
-                <span>{{value.plan_number + ' kg'}}</span>
-              </span>
-              <span style="flex:1">
-                <span>{{value.stock_number + ' kg'}}</span>
-              </span>
-            </span>
+              <span class="flex06">{{itemProduct.sum + '条'}}</span>
+            </div>
           </div>
-          <div class="tableColumn">{{item.create_name}}</div>
-          <div class="tableColumn">{{item.create_time}}</div>
-          <div class="tableColumn"
-               style="flex-direction:row;flex:1.5">
+          <div class="tableColumn flex08">{{item.group_name}}</div>
+          <div class="tableColumn">{{item.order_time}}</div>
+          <div class="tableColumn">
+            <div class="once"
+                 v-for="(itemTime,indexTime) in item.delivery_time"
+                 :key="indexTime">
+              <span>第 {{indexTime + 1}} 批：</span>
+              <span>{{itemTime}}</span>
+            </div>
+          </div>
+          <div class="tableColumn flex17"
+               style="flex-direction:row;">
             <span class="btns normal"
-                  @click="$router.push('/index/rawMaterialStockDetail/'+1)">查看</span>
-            <span class="btns warning"
-                  @click="$router.push('/index/null')">修改</span>
+                  @click="$router.push('/index/rawMaterialStockDetail/'+item.id + '?type=0')">原料详情</span>
+            <span class="btns normal"
+                  @click="$router.push('/index/rawMaterialStockDetail/' + item.id + '?type=1')">辅料详情</span>
           </div>
         </div>
       </div>
@@ -119,7 +120,7 @@
                        layout="prev, pager, next"
                        :total="total"
                        :current-page.sync="pages"
-                       @current-change="getCraftList">
+                       @current-change="getOrderList">
         </el-pagination>
       </div>
     </div>
@@ -127,14 +128,12 @@
 </template>
 
 <script>
-import { productPlanList } from '@/assets/js/api.js'
+import { productionList, productTppeList, clientList, getGroup } from '@/assets/js/api.js'
 export default {
   data () {
     return {
-      loading: false,
-      defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
+      loading: true,
       searchVal: '',
-      value: '',
       date: '',
       pickerOptions: {
         shortcuts: [{
@@ -165,219 +164,185 @@ export default {
       },
       total: 0,
       pages: 1,
-      list: [
-        {
-          order_code: 'KR-0001',
-          order_company: '杭州飞泰服饰有限公司',
-          ground_name: 'B组',
-          materialsInfo: [
-            {
-              material: '52支上光晴纶',
-              plan_number: 2001,
-              stock_number: 1010
-            },
-            {
-              material: '36支上光晴纶',
-              plan_number: 1998,
-              stock_number: 1520
-            }
-          ],
-          total: 700,
-          create_name: '王锦鲤',
-          create_time: '2019-04-23'
-        },
-        {
-          order_code: 'KR-0001',
-          order_company: '杭州飞泰服饰有限公司',
-          ground_name: 'B组',
-          materialsInfo: [
-            {
-              material: '48支上光晴纶',
-              plan_number: 2001,
-              stock_number: 1010
-            },
-            {
-              material: '36支上光晴纶',
-              plan_number: 1998,
-              stock_number: 1520
-            }
-          ],
-          total: 700,
-          create_name: '王锦鲤',
-          create_time: '2019-04-23'
-        },
-        {
-          order_code: 'KR-0001',
-          order_company: '杭州飞泰服饰有限公司',
-          ground_name: 'B组',
-          materialsInfo: [
-            {
-              material: '52支上光晴纶',
-              plan_number: 2001,
-              stock_number: 1010
-            },
-            {
-              material: '36支上光晴纶',
-              plan_number: 1998,
-              stock_number: 1520
-            },
-            {
-              material: '48支上光晴纶',
-              plan_number: 1998,
-              stock_number: 1520
-            }
-          ],
-          total: 700,
-          create_name: '王锦鲤',
-          create_time: '2019-04-23'
-        }
-      ],
-      category: [], // 大类
+      list: [],
+      client: [], // 公司
+      clientVal: '',
+      category: [], // 分类
       categoryVal: '',
-      types: [], // 二级分类
-      typesVal: '',
-      style: [], // 三级分类
-      styleVal: ''
+      group: [], // 小组
+      groupVal: '',
+      timer: '',
+      start_time: '',
+      end_time: ''
     }
   },
-  components: {
-  },
   methods: {
-    getCraftList () {
+    getOrderList () {
       this.loading = true
-      productPlanList({
+      productionList({
         'company_id': window.sessionStorage.getItem('company_id'),
         'limit': 5,
+        'page': this.pages,
+        'client_id': this.clientVal,
         'category_id': this.categoryVal,
-        'type_id': this.typesVal,
-        'style_id': this.styleVal,
-        'page': this.pages
+        'group_id': this.groupVal,
+        'order_code': this.searchVal,
+        'start_time': this.start_time,
+        'end_time': this.end_time
       }).then((res) => {
         this.loading = false
+        console.log(res.data.data)
         this.total = res.data.meta.total
-        this.list = res.data.data
+        this.list = res.data.data.map((item) => {
+          let productList = []
+          item.order_info.order_batch.forEach((itemOrder) => {
+            itemOrder.batch_info.forEach((itemBatch) => {
+              if (productList.find((itemFind) => itemFind.productCode === itemBatch.productCode)) {
+                let mark = -1
+                productList.forEach((itemFind, index) => {
+                  if (itemFind.productCode === itemBatch.productCode) {
+                    mark = index
+                  }
+                })
+                productList[mark].sum = productList[mark].sum + itemBatch.size.reduce((total, current) => {
+                  return total + parseInt(current.numbers)
+                }, 0)
+              } else {
+                productList.push({
+                  productInfo: itemBatch.productInfo,
+                  productCode: itemBatch.productCode,
+                  sum: itemBatch.size.reduce((total, current) => {
+                    return total + parseInt(current.numbers)
+                  }, 0)
+                })
+              }
+            })
+          })
+          // 统计产品库存调取数量
+          productList = productList.map((itemProduct) => {
+            return {
+              productCode: itemProduct.productCode,
+              productType: (itemProduct.productInfo.category_info.product_category ? itemProduct.productInfo.category_info.product_category + '/' : '') + (itemProduct.productInfo.type_name ? itemProduct.productInfo.type_name + '/' : '') + (itemProduct.productInfo.style_name ? itemProduct.productInfo.style_name : '') + (itemProduct.productInfo.flower_id ? '/' + itemProduct.productInfo.flower_id : ''),
+              sum: itemProduct.sum
+            }
+          })
+          return {
+            id: item.order_info.id,
+            group_name: item.order_info.group_name,
+            order_code: item.order_info.order_code,
+            order_time: item.order_info.order_time,
+            client_name: item.order_info.client_name,
+            delivery_time: item.order_info.order_batch.map((item) => item.delivery_time),
+            productList: productList
+          }
+        })
+        console.log(this.list)
       })
+    },
+    pickTime (date) {
+      if (date) {
+        this.start_time = date[0]
+        this.end_time = date[1]
+      } else {
+        this.start_time = ''
+        this.end_time = ''
+      }
+      this.pages = 1
+      this.getOrderList()
     },
     // 删除条件
     clear (item) {
-      if (item === 'categoryVal') {
+      if (item === 'clientVal') {
+        this.clientVal = ''
+      } else if (item === 'category') {
         this.categoryVal = ''
-        this.typesVal = ''
-        this.types = []
-        this.styleVal = ''
-        this.style = []
-      } else if (item === 'typesVal') {
-        this.typesVal = ''
-        this.styleVal = ''
-        this.style = []
-      } else if (item === 'styleVal') {
-        this.styleVal = ''
-      } else if (item === 'flowerVal') {
-        this.flowerVal = ''
+      } else if (item === 'groupVal') {
+        this.groupVal = ''
       }
     }
   },
   watch: {
+    clientVal (newVal) {
+      if (newVal) {
+        this.pages = 1
+      }
+      this.getOrderList()
+    },
     categoryVal (newVal) {
       if (newVal) {
-        this.types = this.category.find((item) => item.id === newVal).child
-        this.typesVal = ''
-        this.styleVal = ''
-        this.style = []
         this.pages = 1
       }
-      this.getCraftList()
+      this.getOrderList()
     },
-    typesVal (newVal) {
-      if (newVal) {
-        this.style = this.types.find((item) => item.id === newVal).child
-        this.styleVal = ''
-        this.pages = 1
-        this.getCraftList()
-      }
+    groupVal (newVal) {
+      this.pages = 1
+      this.getOrderList()
     },
-    styleVal (newVal) {
-      this.getCraftList()
+    searchVal (newVal) {
+      this.pages = 1
+      this.timer = ''
+      this.timer = setTimeout(() => {
+        this.getOrderList()
+      }, 800)
     }
   },
   computed: {
-    categoryValCmp () {
-      if (this.categoryVal) {
-        return this.category.find((item) => item.id === this.categoryVal).name
+    clientValCmp () {
+      if (this.clientVal) {
+        return this.client.find((item) => item.id === this.clientVal).name
       } else {
         return '所有分类'
       }
     },
-    typesValCmp () {
-      if (this.typesVal) {
-        return this.types.find((item) => item.id === this.typesVal).name
+    categoryCmp () {
+      if (this.categoryVal) {
+        return this.category.find((item) => item.id === this.categoryVal).name
       } else {
         return ''
       }
     },
-    styleValCmp () {
-      if (this.styleVal) {
-        return this.style.find((item) => item.id === this.styleVal).name
+    groupValCmp () {
+      if (this.groupVal) {
+        return this.group.find((item) => item.id === this.groupVal).name
       } else {
         return ''
       }
-    }
-  },
-  filters: {
-    // 类型合并
-    filterType (item) {
-      if (!item.type_name) {
-        return item.category_info.product_category
-      } else if (!item.style_name) {
-        return item.category_info.product_category + ' / ' + item.type_name
-      } else {
-        return item.category_info.product_category + ' / ' + item.type_name + ' / ' + item.style_name
-      }
-    },
-    // 类型展示
-    filterSize (item) {
-      let str = ''
-      for (let key in item) {
-        str += key + '/'
-      }
-      return str.substring(0, str.length - 1)
-    },
-    // 原料合并
-    filterMaterial (material) {
-      let str = ''
-      material.forEach((item) => {
-        if (item.type === 0 && str !== '') {
-          str += '/' + item.material
-        } else if (str === '' && item.type === 0) {
-          str += item.material
-        }
-      })
-      return str
-    },
-    // 辅料合并
-    filterOtherMaterial (material) {
-      let str = ''
-      material.forEach((item) => {
-        if (item.type === 1 && str === '') {
-          str += item.material
-        } else if (str === '' && item.type === 1) {
-          str += item.material
-        }
-      })
-      return str
     }
   },
   created () {
-    // this.getCraftList()
+    this.getOrderList()
+    clientList({
+      company_id: window.sessionStorage.getItem('company_id')
+    }).then((res) => {
+      if (res.status === 200) {
+        res.data.data.forEach(item => {
+          if (item.type === 1) {
+            this.client.push(item)
+          }
+        })
+      }
+    })
+    productTppeList({
+      company_id: window.sessionStorage.getItem('company_id')
+    }).then((res) => {
+      if (res.status === 200) {
+        this.category = res.data.data
+      }
+    })
+    getGroup({
+      company_id: window.sessionStorage.getItem('company_id')
+    }).then((res) => {
+      this.group = res.data.data
+    })
   }
 }
 </script>
 
 <style lang="less" scoped>
-@import "~@/assets/css/rawMaterialStockList.less";
+@import "~@/assets/css/rawMaterialOrderList.less";
 </style>
 <style lang="less">
-#productList {
+#orderList {
   .el-carousel__arrow {
     color: #fff;
     background: #1a95ff;

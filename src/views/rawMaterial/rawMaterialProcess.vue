@@ -2,7 +2,7 @@
   <div id="rawMaterialProcess"
        v-loading="loading">
     <div class="head">
-      <h2>原料加工</h2>
+      <h2>{{type === '0' ? '原' : '辅'}}料加工</h2>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -49,34 +49,45 @@
         </div>
       </div>
       <div class="stepCtn">
-        <div class="stepTitle">原料信息</div>
+        <div class="stepTitle">{{type === '0' ? '原' : '辅'}}料订购信息</div>
         <div class="borderCtn">
           <div class="cicle"></div>
           <div class="border"></div>
         </div>
         <div class="lineCtn col">
-          <div class="inputCtn maxWidth noPadding"
-               v-for="(item,key) in materialList"
-               :key="key">
-            <span class="title">{{item.company ? item.company + ':' : '仓库' + ':'}}</span>
-            <span class="processContent">
-              <span v-for="(value,index) in item.processInfo"
-                    :key="index">
-                <span class="material">{{value.material}}</span>
-                <span class="colorInfo">
-                  <span v-for="(iten,kay) in value.colorInfo"
-                        :key="kay">
-                    <span class="tit">{{iten.color}}</span>
-                    {{iten.value + 'kg'}}
+          <div class="inputCtn noPadding maxWidth">
+            <div class="content">
+              <ul class="table">
+                <li>
+                  <span>计划原料</span>
+                  <span class="flex2">
+                    <span>颜色</span>
+                    <span class="flex08">数量</span>
                   </span>
-                </span>
-              </span>
-            </span>
+                  <span>总计划</span>
+                  <span>已订购</span>
+                </li>
+                <li v-for="(val,ind) in materialList"
+                    :key="ind"
+                    class="material">
+                  <span>{{val.material}}</span>
+                  <span class="flex2">
+                    <span v-for="(va,inf) in val.need"
+                          :key="inf">
+                      <span>{{va.name}}</span>
+                      <span class="flex08">{{va.value + val.unit}}</span>
+                    </span>
+                  </span>
+                  <span>{{(val.total_weight ? val.total_weight : 0) + val.unit}}</span>
+                  <span>{{(val.order_weight ? val.order_weight : 0) + val.unit}}</span>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
       <div class="stepCtn">
-        <div class="stepTitle">原料加工</div>
+        <div class="stepTitle">{{type === '0' ? '原' : '辅'}}料加工</div>
         <div class="borderCtn">
           <div class="cicle"></div>
           <div class="border"></div>
@@ -87,8 +98,8 @@
              :key="key">
           <div class="tablePlan">
             <div class="tableTitle">
-              <span>原料名称</span>
-              <span>原料颜色</span>
+              <span>{{type === '0' ? '原' : '辅'}}料名称</span>
+              <span>{{type === '0' ? '原' : '辅'}}料颜色</span>
               <span>合计重量</span>
               <span>已选重量</span>
             </div>
@@ -99,8 +110,8 @@
                   {{(index === 0 ? '' : '/') + value}}
                 </template>
               </span>
-              <span>{{item.total_number + 'kg'}}</span>
-              <span>{{item.select_number + 'kg'}}</span>
+              <span>{{item.total_number + item.unit}}</span>
+              <span>{{item.select_number + item.unit}}</span>
             </div>
           </div>
           <div class="processInfo">
@@ -134,11 +145,11 @@
                   :key="index"
                   class="col">
                 <div>
-                  <span>原料信息</span>:
+                  <span>{{type === '0' ? '原' : '辅'}}料信息</span>:
                   <el-select v-model="value.color"
                              placeholder="颜色"
                              size="small">
-                    <el-option v-for="color in item.needColors"
+                    <el-option v-for="color in options.colorList[item.material]"
                                :key="color.value"
                                :value="color">
                     </el-option>
@@ -162,7 +173,6 @@
                 <el-input size="small"
                           placeholder="总价"
                           v-model="iten.money">
-                  <!-- :disabled="true" -->
                 </el-input>
                 <i>元</i>
               </li>
@@ -207,11 +217,12 @@
 </template>
 
 <script>
-import { orderDetail, rawMaterialProcessPage, clientList, rawMaterialOrderList } from '@/assets/js/api.js'
+import { orderDetail, rawMaterialProcessPage, clientList, rawMaterialOrderList, rawMaterialOrderInit } from '@/assets/js/api.js'
 export default {
   data () {
     return {
       loading: true,
+      type: '',
       order_code: '',
       order_time: '',
       client_name: '',
@@ -221,12 +232,10 @@ export default {
       list: [],
       options: {
         processType: ['倒纱', '裁剪', '染色'],
-        companyList: []
+        companyList: [],
+        colorList: {}
       },
       pickerOptions: {
-        disabledDate (time) {
-          return time.getTime() > Date.now()
-        },
         shortcuts: [{
           text: '今天',
           onClick (picker) {
@@ -256,16 +265,22 @@ export default {
         item.select_number = 0
         item.processInfo.forEach((value, index) => {
           value.processMaterialInfo.forEach((val, ind) => {
-            item.select_number += Number(val.value)
+            if (Number(item.select_number) + Number(val.value) < Number(item.order_weight)) {
+              item.select_number += Number(val.value)
+            } else {
+              val.value = 0
+              this.$message({
+                message: '加工数量超过计划数量,请重新输入！！！',
+                type: 'error'
+              })
+            }
           })
         })
       })
     },
     appendProcessMaterialInfo (key, kay) {
       this.list[key].processInfo[kay].processMaterialInfo.push({
-        // material: '',
         color: '',
-        // price: '',
         value: ''
       })
     },
@@ -283,9 +298,7 @@ export default {
           process_type: '',
           processMaterialInfo: [
             {
-              // material: '',
               color: '',
-              // price: '',
               value: ''
             }
           ]
@@ -306,6 +319,7 @@ export default {
         obj.company_id = sessionStorage.company_id
         obj.order_id = this.$route.params.id
         obj.user_id = sessionStorage.user_id
+        obj.type = (this.type === '0' ? 1 : 2)
         nums += item.processInfo.length
         obj.material_name = item.material
         item.processInfo.forEach((value, index) => {
@@ -346,14 +360,14 @@ export default {
             }
           }
           obj.material_info = JSON.stringify(value.processMaterialInfo)
-          if (!value.money) {
-            this.$message({
-              message: '请输入总价',
-              type: 'error'
-            })
-            flag = false
-            return
-          }
+          // if (!value.money) {
+          //   this.$message({
+          //     message: '请输入总价',
+          //     type: 'error'
+          //   })
+          //   flag = false
+          //   return
+          // }
           obj.total_price = value.money
           if (!value.orderTime) {
             this.$message({
@@ -381,18 +395,25 @@ export default {
         rawMaterialProcessPage({
           data: arr
         }).then(res => {
-          this.$message(
-            {
-              message: '添加成功',
+          if (res.data.code === 200) {
+            this.$message({
+              message: '添加成功,即将跳转至详情页',
               type: 'success'
-            }
-          )
+            })
+            setTimeout(() => {
+              this.$router.push('/index/rawMaterialOrderDetail/' + this.$route.params.id + '?type=' + this.type)
+            }, 800)
+          }
         })
       }
     }
   },
   created () {
+    this.type = document.location.href.split('type=')[1]
     Promise.all([
+      rawMaterialOrderInit({
+        order_id: this.$route.params.id
+      }),
       rawMaterialOrderList({
         company_id: sessionStorage.company_id,
         order_id: this.$route.params.id
@@ -404,8 +425,8 @@ export default {
         company_id: sessionStorage.company_id
       })
     ]).then(res => {
-      let materialInfo = res[0].data.data
-      let orderInfo = res[1].data.data
+      let materialInfo = res[0].data.data.material_info
+      let orderInfo = res[2].data.data
       // 初始化订单信息
       this.order_code = orderInfo.order_code
       this.order_time = orderInfo.order_time
@@ -426,76 +447,60 @@ export default {
           })
         })
       })
-      // 初始化原料信息与订购信息
-      materialInfo.forEach(item => {
-        // 初始化原料信息
-        if (this.materialList.length === 0) {
-          this.materialList.push({
-            company: item.client_name,
-            processInfo: [
-              {
-                material: item.material_name,
-                colorInfo: [
-                  {
-                    color: item.color_code,
-                    value: item.weight
+      // 初始化物料订购信息
+      console.log(materialInfo)
+      materialInfo.forEach((item, key) => {
+        for (let prop in item) {
+          for (let value in item[prop]) {
+            if (value !== 'total_number' && value !== 'type' && value !== 'unit') {
+              if (item[prop].type === Number(this.type)) {
+                let flag = this.materialList.find(val => val.material === prop)
+                if (!flag) {
+                  this.materialList.push({
+                    material: prop,
+                    total_weight: (item[prop].unit === '克' || item[prop].unit === 'g') ? (Math.ceil(item[prop][value]) / 1000).toFixed(2) : item[prop][value],
+                    unit: (item[prop].unit === '克' || item[prop].unit === 'g') ? 'kg' : item[prop].unit === '千克' ? 'kg' : item[prop].unit,
+                    need: [{
+                      name: value,
+                      value: (item[prop].unit === '克' || item[prop].unit === 'g') ? (Math.ceil(item[prop][value]) / 1000).toFixed(2) : item[prop][value]
+                    }]
+                  })
+                  this.options.colorList[prop] = [value]
+                } else {
+                  flag.total_weight = Number(flag.total_weight) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? (Math.ceil(item[prop][value]) / 1000).toFixed(2) : item[prop][value])
+                  let arr = flag.need.find(val => val.name === value)
+                  if (!arr) {
+                    flag.need.push({
+                      name: value,
+                      value: (item[prop].unit === '克' || item[prop].unit === 'g') ? (Math.ceil(item[prop][value]) / 1000).toFixed(2) : item[prop][value]
+                    })
+                    this.options.colorList[prop].push(value)
+                  } else {
+                    arr.value = Number(arr.value) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? (Math.ceil(item[prop][value]) / 1000).toFixed(2) : item[prop][value])
                   }
-                ]
-              }
-            ]
-          })
-        } else {
-          let arr = this.materialList.find(val => val.company === item.client_name)
-          if (arr && arr !== null) {
-            let obj = arr.processInfo.find(val => val.material === item.material_name)
-            if (!obj) {
-              arr.processInfo.push({
-                material: item.material_name,
-                colorInfo: [
-                  {
-                    color: item.color_code,
-                    value: item.weight
-                  }
-                ]
-              })
-            } else {
-              let ind = obj.colorInfo.find(val => val.color === item.color_code)
-              if (!ind) {
-                obj.colorInfo.push({
-                  color: item.color_code,
-                  value: item.weight
-                })
-              } else {
-                ind.value = Number(ind.value) + Number(item.weight)
+                }
               }
             }
-          } else {
-            this.materialList.push({
-              company: item.client_name,
-              processInfo: [
-                {
-                  material: item.material_name,
-                  colorInfo: [
-                    {
-                      color: item.color_code,
-                      value: item.weight
-                    }
-                  ]
-                }
-              ]
-            })
           }
         }
+      })
+      res[1].data.data.forEach(item => {
+        let flag = this.materialList.find(val => val.material === item.material_name)
+        if (flag) {
+          flag.order_weight = (flag.order_weight ? Number(flag.order_weight) : 0) + Number(item.weight)
+        }
         // 初始化加工信息
-        if (this.list.length === 0) {
-          this.list.push({
-            material: item.material_name,
-            needColors: [item.color_code],
-            total_number: Number(item.weight),
-            select_number: 0,
-            processInfo: []
-          })
-        } else {
+        // if (this.list.length === 0) {
+        //   this.list.push({
+        //     material: item.material_name,
+        //     needColors: [item.color_code],
+        //     total_number: Number(item.weight),
+        //     select_number: 0,
+        //     unit: (item.unit === null ? 'kg' : item.unit),
+        //     processInfo: []
+        //   })
+        // } else {
+        if ((this.type === '0' && item.type === 1) || (this.type === '1' && item.type === 2)) {
           let arr = this.list.find(val => val.material === item.material_name)
           if (arr) {
             arr.total_number = Number(arr.total_number) + Number(item.weight)
@@ -505,13 +510,15 @@ export default {
               needColors: [item.color_code],
               total_number: Number(item.weight),
               select_number: 0,
+              unit: (item.unit === null ? 'kg' : item.unit),
               processInfo: []
             })
           }
         }
       })
+      console.log(this.options)
       // 加工公司列表初始化
-      res[2].data.data.forEach((item, key) => {
+      res[3].data.data.forEach((item, key) => {
         if (item.type !== 2 && item.type !== 1) {
           this.options.companyList.push(item)
         }

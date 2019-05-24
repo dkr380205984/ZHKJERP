@@ -15,6 +15,9 @@ const companyType = [{
 }, {
   value: 5,
   name: '裁剪单位'
+}, {
+  value: 6,
+  name: '辅料订购单位'
 }]
 
 // 字母映射
@@ -141,50 +144,20 @@ const menu = [{
   }, {
     name: '产品库存列表',
     url: '/index/productStockList'
-  }
-  // , {
-  //   name: '原料库存列表',
-  //   url: '/index/mainMaterialStockList'
-  // }
-    // {
+  }, {
+    name: '原料库存列表',
+    url: '/index/mainMaterialStockList'
+    // }, {
     //   name: '添加原料库存',
     //   url: '/index/mainMaterialStockCreate'
-    // },
-    // {
+    // }, {
     //   name: '添加辅料库存',
     //   url: '/index/otherMaterialStockCreate'
     // }, {
     //   name: '辅料库存列表',
     //   url: '/index/otherMaterialStockList'
-    // }
-  ]
-},
-// {
-//   name: '原料管理',
-//   children: [{
-//     name: '原料预订购',
-//     url: '/index/rawMaterialPurchase'
-//   }, {
-//     name: '原料订购列表',
-//     url: '/index/rawMaterialOrderList'
-//   }, {
-//     name: '原料已订购列表',
-//     url: '/index/rawMaterialOrderCompiledList'
-//   }, {
-//     name: '原料加工列表',
-//     url: '/index/rawMaterialProcessList'
-//   }, {
-//     name: '原料已加工列表',
-//     url: '/index/rawMaterialProcessCompiledList'
-//   }, {
-//     name: '原料预入库列表',
-//     url: '/index/rawMaterialBeforeStockList'
-//   }, {
-//     name: '原料已入库列表',
-//     url: '/index/rawMaterialStockList'
-//   }]
-// },
-{
+  }]
+}, {
   name: '生产管理',
   children: [{
     name: '新建生产计划单',
@@ -192,6 +165,31 @@ const menu = [{
   }, {
     name: '生产计划单列表',
     url: '/index/productDesignList'
+  }]
+}, {
+  name: '原料管理',
+  children: [{
+    name: '原料预订购',
+    url: '/index/rawMaterialPurchase'
+  }, {
+    name: '物料详情列表',
+    url: '/index/rawMaterialOrderList'
+    // }
+    // , {
+    //   name: '物料详情列表',
+    //   url: '/index/rawMaterialOrderCompiledList'
+    // }, {
+    //   name: '原料加工列表',
+    //   url: '/index/rawMaterialProcessList'
+    // }, {
+    //   name: '原料已加工列表',
+    //   url: '/index/rawMaterialProcessCompiledList'
+  }, {
+    name: '物料出入库列表',
+    url: '/index/rawMaterialStockList'
+    // }, {
+    //   name: '原料已入库列表',
+    //   url: '/index/rawMaterialStockList'
   }]
 }, {
   name: '合作公司管理',

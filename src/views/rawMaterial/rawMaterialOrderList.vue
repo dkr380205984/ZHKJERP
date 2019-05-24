@@ -1,7 +1,7 @@
 <template>
   <div id="rawMaterialOrderList">
     <div class="head">
-      <h2>原料预订购列表</h2>
+      <h2>物料详情列表</h2>
       <el-input placeholder="输入文字精确搜索"
                 suffix-icon="el-icon-search"
                 v-model="searchVal"></el-input>
@@ -69,13 +69,14 @@
           <div class="tableColumn">外贸公司</div>
           <div class="tableColumn flex21"
                style="flex-direction:row;">
-            <span style="flex:2;border-right:1px solid #DDD;">产品信息</span>
-            <span style="flex:0.6">数量</span>
+            <span class='flex2'
+                  style="border-right:1px solid #DDD;">产品信息</span>
+            <span class="flex06">数量</span>
           </div>
           <div class="tableColumn flex08">负责小组</div>
           <div class="tableColumn">下单日期</div>
           <div class="tableColumn">交货日期</div>
-          <div class="tableColumn">操作</div>
+          <div class="tableColumn flex17">操作</div>
         </div>
         <div class="mergeBody"
              v-for="(item,key) in list"
@@ -91,7 +92,7 @@
                 <span>{{itemProduct.productCode}}</span>
                 <span>{{itemProduct.productType}}</span>
               </span>
-              <span>{{itemProduct.sum + '条'}}</span>
+              <span class="flex06">{{itemProduct.sum + '条'}}</span>
             </div>
           </div>
           <div class="tableColumn flex08">{{item.group_name}}</div>
@@ -104,10 +105,12 @@
               <span>{{itemTime}}</span>
             </div>
           </div>
-          <div class="tableColumn"
+          <div class="tableColumn flex17"
                style="flex-direction:row;">
             <span class="btns normal"
-                  @click="$router.push('./rawMaterialOrderPage/' + item.id)">订购原料</span>
+                  @click="$router.push('/index/rawMaterialOrderDetail/'+item.id + '?type=0')">原料详情</span>
+            <span class="btns normal"
+                  @click="$router.push('/index/rawMaterialOrderDetail/' + item.id + '?type=1')">辅料详情</span>
           </div>
         </div>
       </div>
@@ -125,7 +128,7 @@
 </template>
 
 <script>
-import { orderList, productTppeList, clientList, getGroup } from '@/assets/js/api.js'
+import { productionList, productTppeList, clientList, getGroup } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -176,7 +179,7 @@ export default {
   methods: {
     getOrderList () {
       this.loading = true
-      orderList({
+      productionList({
         'company_id': window.sessionStorage.getItem('company_id'),
         'limit': 5,
         'page': this.pages,
@@ -188,11 +191,11 @@ export default {
         'end_time': this.end_time
       }).then((res) => {
         this.loading = false
-        console.log(res)
+        console.log(res.data.data)
         this.total = res.data.meta.total
         this.list = res.data.data.map((item) => {
           let productList = []
-          item.order_batch.forEach((itemOrder) => {
+          item.order_info.order_batch.forEach((itemOrder) => {
             itemOrder.batch_info.forEach((itemBatch) => {
               if (productList.find((itemFind) => itemFind.productCode === itemBatch.productCode)) {
                 let mark = -1
@@ -206,7 +209,7 @@ export default {
                 }, 0)
               } else {
                 productList.push({
-                  productType: itemBatch.productInfo.category_info.product_category + (itemBatch.productInfo.type_name ? '/' + itemBatch.productInfo.type_name : '') + (itemBatch.productInfo.style_name ? '/' + itemBatch.productInfo.type_name : '') + (itemBatch.productInfo.flower_id ? '/' + itemBatch.productInfo.flower_id : ''),
+                  productInfo: itemBatch.productInfo,
                   productCode: itemBatch.productCode,
                   sum: itemBatch.size.reduce((total, current) => {
                     return total + parseInt(current.numbers)
@@ -215,17 +218,25 @@ export default {
               }
             })
           })
+          // 统计产品库存调取数量
+          productList = productList.map((itemProduct) => {
+            return {
+              productCode: itemProduct.productCode,
+              productType: (itemProduct.productInfo.category_info.product_category ? itemProduct.productInfo.category_info.product_category + '/' : '') + (itemProduct.productInfo.type_name ? itemProduct.productInfo.type_name + '/' : '') + (itemProduct.productInfo.style_name ? itemProduct.productInfo.style_name : '') + (itemProduct.productInfo.flower_id ? '/' + itemProduct.productInfo.flower_id : ''),
+              sum: itemProduct.sum
+            }
+          })
           return {
-            id: item.id,
-            group_name: item.group_name,
-            order_code: item.order_code,
-            order_time: item.order_time,
-            client_name: item.client_name,
-            contacts: item.contacts,
-            delivery_time: item.order_batch.map((item) => item.delivery_time),
+            id: item.order_info.id,
+            group_name: item.order_info.group_name,
+            order_code: item.order_info.order_code,
+            order_time: item.order_info.order_time,
+            client_name: item.order_info.client_name,
+            delivery_time: item.order_info.order_batch.map((item) => item.delivery_time),
             productList: productList
           }
         })
+        console.log(this.list)
       })
     },
     pickTime (date) {
