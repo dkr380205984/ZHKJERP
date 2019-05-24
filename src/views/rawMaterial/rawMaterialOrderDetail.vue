@@ -150,7 +150,7 @@
                         <span>{{value.remark ? value.remark : '暂无备注'}}</span>
                       </span>
                       <span class="blue"
-                            @click="open(1)">打印</span>
+                            @click="open($route.params.id)">打印</span>
                     </span>
                   </span>
                 </li>
@@ -261,7 +261,7 @@
                         <span>{{item.remark ? item.remark : '暂无备注'}}</span>
                       </span>
                       <span class="blue"
-                            @click="open(1)">打印</span>
+                            @click="open($route.params.id)">打印</span>
                     </span>
                   </span>
                 </li>
@@ -376,8 +376,8 @@ export default {
                     client_name: item.client_name,
                     material: item.material_name,
                     color: val.color,
-                    weight: val.value,
-                    total_price: item.total_price,
+                    weight: Number(val.value).toFixed(2),
+                    total_price: Number(item.total_price).toFixed(2),
                     order_time: item.order_time.split(' ')[0],
                     remark: item.desc,
                     user: item.user_name,
@@ -407,9 +407,9 @@ export default {
                   client_name: (item.client_name ? item.client_name : '仓库'),
                   material: item.material_name,
                   color: item.color_code,
-                  price: (item.total_price / item.weight).toFixed(2),
-                  weight: item.weight,
-                  total_price: item.total_price,
+                  price: Number(item.total_price / item.weight).toFixed(2),
+                  weight: Number(item.weight).toFixed(2),
+                  total_price: Number(item.total_price).toFixed(2),
                   order_time: item.order_time.split(' ')[0],
                   remark: item.desc,
                   user: item.user_name,
@@ -491,19 +491,28 @@ export default {
       this.client_name = orderInfo.client_name
       this.group_name = orderInfo.group_name
       // 初始化产品信息
+      let arr = []
       orderInfo.order_batch.forEach((item, key) => {
         item.batch_info.forEach((value, index) => {
           let types = value.productInfo.category_info.product_category + (value.productInfo.type_name ? '/' + value.productInfo.type_name : '') + (value.productInfo.style_name ? '/' + value.productInfo.type_name : '') + (value.productInfo.flower_id ? '/' + value.productInfo.flower_id : '')
           value.size.forEach((val, ind) => {
-            this.productList.push({
+            arr.push({
               type: types,
               product_code: value.productCode,
               product_size: val.name[0],
               product_color: val.name[1],
-              number: val.numbers
+              number: Math.ceil(val.numbers)
             })
           })
         })
+      })
+      arr.forEach(item => {
+        let flag = this.productList.find(val => (val.product_code === item.product_code && val.product_size === item.product_size && val.product_color === item.product_color))
+        if (!flag) {
+          this.productList.push({ ...item })
+        } else {
+          flag.number = Math.ceil(Number(flag.number) + Number(item.number))
+        }
       })
       // 初始化订购信息
       materialInfo.forEach(item => {
@@ -513,7 +522,7 @@ export default {
           if (!flag) {
             this.list.orderList.push({
               company: item.client_name,
-              total_price: item.total_price,
+              total_price: Math.ceil(item.total_price),
               create_time: item.order_time.split(' ')[0],
               remark: item.desc,
               materials: [{
@@ -521,7 +530,7 @@ export default {
                 colors: [{
                   color: item.color_code,
                   price: (item.total_price / item.weight).toFixed(2),
-                  value: item.weight,
+                  value: item.weight.toFixed(2),
                   unit: item.unit === null ? 'kg' : item.unit
                 }]
               }]
@@ -533,8 +542,8 @@ export default {
                 material: item.material_name,
                 colors: [{
                   color: item.color_code,
-                  price: item.total_price / item.weight,
-                  value: item.weight,
+                  price: (item.total_price / item.weight).toFixed(2),
+                  value: item.weight.toFixed(2),
                   unit: item.unit === null ? 'kg' : item.unit
                 }]
               })
@@ -543,7 +552,7 @@ export default {
               flag1.colors.push({
                 color: item.color_code,
                 price: (item.total_price / item.weight).toFixed(2),
-                value: item.weight,
+                value: item.weight.toFixed(2),
                 unit: item.unit === null ? 'kg' : item.unit
               })
             }
@@ -551,7 +560,7 @@ export default {
           // 统计已订购总量
           let arr = this.materialList.find(val => val.material === item.material_name)
           if (arr) {
-            arr.order_weight = arr.order_weight ? (arr.order_weight + item.weight) : item.weight
+            arr.order_weight = Number(arr.order_weight ? (arr.order_weight + item.weight) : item.weight).toFixed(2)
           }
         }
       })
@@ -567,15 +576,14 @@ export default {
                 process_type: item.process_type,
                 companys: [{
                   company: item.client_name,
-                  total_price: item.total_price,
+                  total_price: Number(item.total_price).toFixed(2),
                   create_time: item.order_time.split(' ')[0],
                   remark: item.desc,
-                  process_state: 0,
                   materials: [{
                     material: item.material_name,
                     colors: [{
                       color: value.color,
-                      value: value.value,
+                      value: Number(value.value).toFixed(2),
                       unit: (item.unit === null ? 'kg' : item.unit)
                     }]
                   }]
@@ -586,15 +594,14 @@ export default {
               if (!flag1) {
                 flag.companys.push({
                   company: item.client_name,
-                  total_price: item.total_price,
+                  total_price: Number(item.total_price).toFixed(2),
                   create_time: item.order_time.split(' ')[0],
                   remark: item.desc,
-                  process_state: 0,
                   materials: [{
                     material: item.material_name,
                     colors: [{
                       color: value.color,
-                      value: value.value,
+                      value: Number(value.value).toFixed(2),
                       unit: (item.unit === null ? 'kg' : item.unit)
                     }]
                   }]
@@ -606,7 +613,7 @@ export default {
                     material: item.material_name,
                     colors: [{
                       color: value.color,
-                      value: value.value,
+                      value: Number(value.value).toFixed(2),
                       unit: (item.unit === null ? 'kg' : item.unit)
                     }]
                   })
@@ -615,11 +622,11 @@ export default {
                   if (!flag3) {
                     flag2.colors.push({
                       color: value.color,
-                      value: value.value,
+                      value: Number(value.value).toFixed(2),
                       unit: (item.unit === null ? 'kg' : item.unit)
                     })
                   } else {
-                    flag3.value = Number(flag3.value) + Number(value.value)
+                    flag3.value = (Number(flag3.value) + Number(value.value)).toFixed(2)
                   }
                 }
               }
@@ -627,7 +634,7 @@ export default {
             // 统计已加工总价
             let arr = this.materialList.find(val => val.material === item.material_name)
             if (arr) {
-              arr.process_weight = arr.process_weight ? (Number(arr.process_weight) + Number(value.value)) : value.value
+              arr.process_weight = (arr.process_weight ? (Number(arr.process_weight) + Number(value.value)) : Number(value.value)).toFixed(2)
             }
           }
         })

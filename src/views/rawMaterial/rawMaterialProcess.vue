@@ -267,6 +267,7 @@ export default {
           value.processMaterialInfo.forEach((val, ind) => {
             if (Number(item.select_number) + Number(val.value) < Number(item.order_weight)) {
               item.select_number += Number(val.value)
+              item.select_number = (this.type === '0' ? Number(item.select_number).toFixed(2) : Math.ceil(item.select_number))
             } else {
               val.value = 0
               this.$message({
@@ -433,11 +434,12 @@ export default {
       this.client_name = orderInfo.client_name
       this.group_name = orderInfo.group_name
       // 初始化产品信息
+      let arr = []
       orderInfo.order_batch.forEach((item, key) => {
         item.batch_info.forEach((value, index) => {
           let types = value.productInfo.category_info.product_category + (value.productInfo.type_name ? '/' + value.productInfo.type_name : '') + (value.productInfo.style_name ? '/' + value.productInfo.type_name : '') + (value.productInfo.flower_id ? '/' + value.productInfo.flower_id : '')
           value.size.forEach((val, ind) => {
-            this.productList.push({
+            arr.push({
               type: types,
               product_code: value.productCode,
               product_size: val.name[0],
@@ -446,6 +448,14 @@ export default {
             })
           })
         })
+      })
+      arr.forEach(item => {
+        let flag = this.productList.find(val => (val.product_code === item.product_code && val.product_size === item.product_size && val.product_color === item.product_color))
+        if (!flag) {
+          this.productList.push({ ...item })
+        } else {
+          flag.number = Math.ceil(Number(flag.number) + Number(item.number))
+        }
       })
       // 初始化物料订购信息
       console.log(materialInfo)
@@ -458,25 +468,25 @@ export default {
                 if (!flag) {
                   this.materialList.push({
                     material: prop,
-                    total_weight: (item[prop].unit === '克' || item[prop].unit === 'g') ? (Math.ceil(item[prop][value]) / 1000).toFixed(2) : item[prop][value],
+                    total_weight: (item[prop].unit === '克' || item[prop].unit === 'g') ? (Math.ceil(item[prop][value]) / 1000).toFixed(2) : (this.type === '0' ? Number(item[prop][value]).toFixed(2) : Math.ceil(item[prop][value])),
                     unit: (item[prop].unit === '克' || item[prop].unit === 'g') ? 'kg' : item[prop].unit === '千克' ? 'kg' : item[prop].unit,
                     need: [{
                       name: value,
-                      value: (item[prop].unit === '克' || item[prop].unit === 'g') ? (Math.ceil(item[prop][value]) / 1000).toFixed(2) : item[prop][value]
+                      value: (item[prop].unit === '克' || item[prop].unit === 'g') ? (Math.ceil(item[prop][value]) / 1000).toFixed(2) : (this.type === '0' ? Number(item[prop][value]).toFixed(2) : Math.ceil(item[prop][value]))
                     }]
                   })
                   this.options.colorList[prop] = [value]
                 } else {
-                  flag.total_weight = Number(flag.total_weight) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? (Math.ceil(item[prop][value]) / 1000).toFixed(2) : item[prop][value])
+                  flag.total_weight = Number(flag.total_weight) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? (Math.ceil(item[prop][value]) / 1000).toFixed(2) : (this.type === '0' ? Number(item[prop][value]).toFixed(2) : Math.ceil(item[prop][value])))
                   let arr = flag.need.find(val => val.name === value)
                   if (!arr) {
                     flag.need.push({
                       name: value,
-                      value: (item[prop].unit === '克' || item[prop].unit === 'g') ? (Math.ceil(item[prop][value]) / 1000).toFixed(2) : item[prop][value]
+                      value: (item[prop].unit === '克' || item[prop].unit === 'g') ? (Math.ceil(item[prop][value]) / 1000).toFixed(2) : (this.type === '0' ? Number(item[prop][value]).toFixed(2) : Math.ceil(item[prop][value]))
                     })
                     this.options.colorList[prop].push(value)
                   } else {
-                    arr.value = Number(arr.value) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? (Math.ceil(item[prop][value]) / 1000).toFixed(2) : item[prop][value])
+                    arr.value = Number(arr.value) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? (Math.ceil(item[prop][value]) / 1000).toFixed(2) : (this.type === '0' ? Number(item[prop][value]).toFixed(2) : Math.ceil(item[prop][value])))
                   }
                 }
               }
@@ -487,28 +497,17 @@ export default {
       res[1].data.data.forEach(item => {
         let flag = this.materialList.find(val => val.material === item.material_name)
         if (flag) {
-          flag.order_weight = (flag.order_weight ? Number(flag.order_weight) : 0) + Number(item.weight)
+          flag.order_weight = ((flag.order_weight ? Number(flag.order_weight) : 0) + Number(item.weight)).toFixed(2)
         }
-        // 初始化加工信息
-        // if (this.list.length === 0) {
-        //   this.list.push({
-        //     material: item.material_name,
-        //     needColors: [item.color_code],
-        //     total_number: Number(item.weight),
-        //     select_number: 0,
-        //     unit: (item.unit === null ? 'kg' : item.unit),
-        //     processInfo: []
-        //   })
-        // } else {
         if ((this.type === '0' && item.type === 1) || (this.type === '1' && item.type === 2)) {
           let arr = this.list.find(val => val.material === item.material_name)
           if (arr) {
-            arr.total_number = Number(arr.total_number) + Number(item.weight)
+            arr.total_number = (Number(arr.total_number) + Number(item.weight)).toFixed(2)
           } else {
             this.list.push({
               material: item.material_name,
               needColors: [item.color_code],
-              total_number: Number(item.weight),
+              total_number: Number(item.weight).toFixed(2),
               select_number: 0,
               unit: (item.unit === null ? 'kg' : item.unit),
               processInfo: []

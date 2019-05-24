@@ -30,11 +30,10 @@
           <!-- 此处接口暂时未调 -->
           <div v-for="(item,key) in order.order_batch"
                :key="key">
-            <div v-for='value in item.batch_info'
-                 :key='value.productCode + "x"'>
-              <span>{{value.productCode}}</span>
-              <span>{{value.productInfo|filterType}}</span>
-              <span>{{value.size|filterNumber}}条</span>
+            <div>
+              <span>{{item.product_code}}</span>
+              <span>{{item.type}}</span>
+              <span>{{item.number}}条</span>
             </div>
           </div>
         </div>
@@ -109,10 +108,36 @@ export default {
     }), orderDetail({
       id: this.$route.params.id
     })]).then((res) => {
-      console.log(res)
       this.order.order_code = res[1].data.data.order_code
       this.order.client_name = res[1].data.data.client_name
-      this.order.order_batch = res[1].data.data.order_batch
+      console.log(res[1].data.data.order_batch)
+      let arr = []
+      res[1].data.data.order_batch.forEach((item, key) => {
+        item.batch_info.forEach((value, index) => {
+          let types = value.productInfo.category_info.product_category + (value.productInfo.type_name ? '/' + value.productInfo.type_name : '') + (value.productInfo.style_name ? '/' + value.productInfo.type_name : '') + (value.productInfo.flower_id ? '/' + value.productInfo.flower_id : '')
+          value.size.forEach((val, ind) => {
+            arr.push({
+              type: types,
+              product_code: value.productCode,
+              number: val.numbers
+            })
+          })
+        })
+      })
+      arr.forEach(item => {
+        let flag = this.order.order_batch.find(val => val.product_code === item.product_code)
+        if (!flag) {
+          this.order.order_batch.push({
+            type: item.type,
+            product_code: item.product_code,
+            number: item.number
+          })
+        } else {
+          flag.number = Number(flag.number) + Number(item.number)
+        }
+      })
+      console.log(this.order)
+      // this.order.order_batch = res[1].data.data.order_batch
       this.order.order_time = res[1].data.data.order_time
       this.materialInfo = res[0].data.data[0]
       this.order.group_name = res[1].data.data.group_name

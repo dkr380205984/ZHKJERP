@@ -113,7 +113,7 @@
                 <template v-else>暂无信息</template>
               </span>
               <span>{{item.needNum + item.unit}}</span>
-              <span>{{(Number(item.selectNum) + Number(item.selectNums)) + item.unit}}</span>
+              <span>{{(Number(item.selectNum) + Number(item.selectNums)).toFixed(2) + item.unit}}</span>
             </div>
           </div>
           <div class="buyInfo">
@@ -293,17 +293,19 @@ export default {
                 type: 'warning'
               }).then(() => {
                 item.selectNum = Number(item.selectNum) + Number(val.value)
-                item.selectNum = this.type === '0' ? (Math.ceil(item.selectNum * 100) / 100).toFixed(2) : Math.ceil(item.selectNum)
+                item.selectNum = (this.type === '0' ? (Math.ceil(item.selectNum * 100) / 100).toFixed(2) : Math.ceil(item.selectNum))
                 value.money += (val.price * val.value)
+                value.money = Math.ceil(value.money)
               }).catch(() => {
                 this.$message({
                   type: 'info',
                   message: '已取消'
                 })
                 val.value = 0
-                item.selectNum = Number(item.selectNum) + Number(val.value)
+                item.selectNum = (Number(item.selectNum) + Number(val.value)).toFixed(2)
                 item.selectNum = this.type === '0' ? (Math.ceil(item.selectNum * 100) / 100).toFixed(2) : Math.ceil(item.selectNum)
                 value.money += (val.price * val.value)
+                value.money = Math.ceil(value.money)
               })
             }
           })
@@ -455,7 +457,6 @@ export default {
               stockObj.weight = Number(val.value)
               stockObj.company_id = sessionStorage.company_id
               stockObj.type = (this.type === '0' ? 1 : 2)
-              console.log(stockArr)
               stockArr.push({ ...stockObj })
             }
           })
@@ -469,7 +470,6 @@ export default {
         })
         return
       }
-      console.log(arr, stockArr)
       if (flag) {
         rawMaterialOrder({
           data: {
@@ -511,7 +511,7 @@ export default {
                   material: prop,
                   need: {
                     name: val,
-                    value: (item[prop].unit === '克' || item[prop].unit === 'g') ? (Math.ceil(item[prop][val]) / 1000).toFixed(2) : item[prop][val],
+                    value: (item[prop].unit === '克' || item[prop].unit === 'g') ? (Math.ceil(item[prop][val]) / 1000).toFixed(2) : (this.type === '0' ? (item[prop][val]).toFixed(2) : Math.ceil(item[prop][val])),
                     unit: (item[prop].unit === '克' || item[prop].unit === 'g') ? 'kg' : item[prop].unit === '千克' ? 'kg' : item[prop].unit
                   },
                   have: {
@@ -533,7 +533,7 @@ export default {
           this.list.push({
             material: item.material,
             needColors: [item.need.name],
-            needNum: (this.type === '0' ? (Math.ceil(item.need.value * 100) / 100).toFixed(2) : item.need.value),
+            needNum: (this.type === '0' ? (Math.ceil(item.need.value * 100) / 100).toFixed(2) : (this.type === '0' ? (item.need.value).toFixed(2) : Math.ceil(item.need.value))),
             selectNum: 0,
             unit: item.need.unit,
             buyInfo: [
@@ -562,11 +562,12 @@ export default {
         }
       }
       // 产品信息初始化
+      let arr = []
       res[0].data.data.order_info.order_batch.forEach((item, key) => {
         item.batch_info.forEach((value, index) => {
           let types = value.productInfo.category_info.product_category + (value.productInfo.type_name ? '/' + value.productInfo.type_name : '') + (value.productInfo.style_name ? '/' + value.productInfo.type_name : '') + (value.productInfo.flower_id ? '/' + value.productInfo.flower_id : '')
           value.size.forEach((val, ind) => {
-            this.productList.push({
+            arr.push({
               type: types,
               product_code: value.productCode,
               product_size: val.name[0],
@@ -575,6 +576,14 @@ export default {
             })
           })
         })
+      })
+      arr.forEach(item => {
+        let flag = this.productList.find(val => (val.product_code === item.product_code && val.product_size === item.product_size && val.product_color === item.product_color))
+        if (!flag) {
+          this.productList.push({ ...item })
+        } else {
+          flag.number = Math.ceil(Number(flag.number) + Number(item.number))
+        }
       })
       // 库存信息初始化
       let stockInfo = res[0].data.data.stock_info
