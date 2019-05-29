@@ -14,21 +14,21 @@
         <div class="lineCtn">
           <div class="inputCtn">
             <span class="label">订单号:</span>
-            <span class="content important">KR-0001</span>
+            <span class="content important">{{order_code}}</span>
           </div>
           <div class="inputCtn">
             <span class="label">外贸公司:</span>
-            <span class="content">杭州飞泰服饰有限公司</span>
+            <span class="content">{{client_name}}</span>
           </div>
         </div>
         <div class="lineCtn">
           <div class="inputCtn">
             <span class="label">下单日期:</span>
-            <span class="content">2019-04-10</span>
+            <span class="content">{{order_time}}</span>
           </div>
           <div class="inputCtn">
             <span class="label">负责小组:</span>
-            <span class="content">A组</span>
+            <span class="content">{{group_name}}</span>
           </div>
         </div>
       </div>
@@ -53,13 +53,13 @@
                   <span>已出库</span>
                 </li>
                 <li class="materialInfo"
-                    v-for="(item,key) in materialInfo"
+                    v-for="(item,key) in materialList"
                     :key="key">
                   <span>{{item.material}}</span>
                   <span class="flex17 col">
-                    <span v-for="(val,ind) in item.colorInfo"
+                    <span v-for="(val,ind) in item.need"
                           :key="ind">
-                      <span>{{val.color}}</span>
+                      <span>{{val.name}}</span>
                       <span>{{val.value}}{{item.unit}}</span>
                     </span>
                   </span>
@@ -274,262 +274,19 @@
 </template>
 
 <script>
+import { orderDetail, rawMaterialOrderInit } from '@/assets/js/api.js'
 export default {
   data () {
     return {
-      type: '',
+      loading: true,
+      order_code: '',
+      client_name: '',
+      order_time: '',
+      group_name: '',
       now_time: '',
-      total_weight: 0,
+      type: '',
       defaultStock: '桐庐凯瑞针纺有限公司',
-      loading: false,
-      materialInfo: [
-        {
-          material: '52',
-          unit: 'kg',
-          plan_number: 100,
-          goStock_number: 200,
-          outStock_number: 300,
-          colorInfo: [
-            {
-              color: '绿',
-              value: 1220
-            }, {
-              color: '绿',
-              value: 1220
-            }, {
-              color: '绿',
-              value: 1220
-            }
-          ]
-        }, {
-          material: '52',
-          unit: 'kg',
-          plan_number: 100,
-          goStock_number: 200,
-          outStock_number: 300,
-          colorInfo: [
-            {
-              color: '绿',
-              value: 1220
-            }, {
-              color: '绿',
-              value: 1220
-            }, {
-              color: '绿',
-              value: 1220
-            }
-          ]
-        }
-      ],
-      rawMaterialPlanList: [
-        {
-          company: '杭州力欧纱线有限公司',
-          processInfo: [
-            {
-              material: '52支上光晴纶',
-              colorInfo: [
-                {
-                  color: '深绿',
-                  value: 400,
-                  unit: 'kg'
-                },
-                {
-                  color: '白胚',
-                  value: 300,
-                  unit: 'kg'
-                },
-                {
-                  color: '绿色',
-                  value: 500,
-                  unit: 'kg'
-                }
-              ]
-            },
-            {
-              material: '36支上光涤纶',
-              colorInfo: [
-                {
-                  color: '深绿',
-                  value: 400,
-                  unit: 'kg'
-                },
-                {
-                  color: '白胚',
-                  value: 300,
-                  unit: 'kg'
-                },
-                {
-                  color: '绿色',
-                  value: 500,
-                  unit: 'kg'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          company: '杭州飞泰纱线有限公司',
-          processInfo: [
-            {
-              material: '52支上光晴纶',
-              colorInfo: [
-                {
-                  color: '卡其色',
-                  value: 400.23,
-                  unit: 'kg'
-                },
-                {
-                  color: '白胚',
-                  value: 300,
-                  unit: 'kg'
-                },
-                {
-                  color: '绿色',
-                  value: 500,
-                  unit: 'kg'
-                },
-                {
-                  color: '白胚',
-                  value: 300,
-                  unit: 'kg'
-                }
-              ]
-            },
-            {
-              material: '48支上光涤纶',
-              colorInfo: [
-                {
-                  color: '深绿',
-                  value: 400,
-                  unit: 'kg'
-                },
-                {
-                  color: '白胚',
-                  value: 300,
-                  unit: 'kg'
-                },
-                {
-                  color: '绿色',
-                  value: 500,
-                  unit: 'kg'
-                }
-              ]
-            }
-          ]
-        }
-      ],
-      processInfo: [
-        {
-          process: '染色',
-          processInfo: [
-            {
-              company: '杭州飞泰服饰有限公司',
-              materials: [
-                {
-                  material: '52支上光晴纶',
-                  colors: [
-                    {
-                      color: '卡其色',
-                      value: 400,
-                      unit: 'kg'
-                    },
-                    {
-                      color: '白色',
-                      value: 300,
-                      unit: 'kg'
-                    }
-                  ]
-                },
-                {
-                  material: '48支上光晴纶',
-                  colors: [
-                    {
-                      color: '卡其色',
-                      value: 400,
-                      unit: 'kg'
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              company: '杭州飞泰服饰有限公司',
-              materials: [
-                {
-                  material: '52支上光晴纶',
-                  colors: [
-                    {
-                      color: '卡其色',
-                      value: 400,
-                      unit: 'kg'
-                    },
-                    {
-                      color: '蓝色',
-                      value: 300,
-                      unit: 'kg'
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          process: '裁剪',
-          processInfo: [
-            {
-              company: '杭州飞泰服饰有限公司',
-              materials: [
-                {
-                  material: '52支上光晴纶',
-                  colors: [
-                    {
-                      color: '卡其色',
-                      value: 400,
-                      unit: 'kg'
-                    },
-                    {
-                      color: '蓝色',
-                      value: 300,
-                      unit: 'kg'
-                    }
-                  ]
-                },
-                {
-                  material: '48支上光晴纶',
-                  colors: [
-                    {
-                      color: '卡其色',
-                      value: 400,
-                      unit: 'kg'
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              company: '杭州力欧服饰有限公司',
-              materials: [
-                {
-                  material: '52支上光晴纶',
-                  colors: [
-                    {
-                      color: '卡其色',
-                      value: 400,
-                      unit: 'kg'
-                    },
-                    {
-                      color: '蓝色',
-                      value: 300,
-                      unit: 'kg'
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ],
+      materialList: [],
       list: [
         {
           material: '',
@@ -788,71 +545,56 @@ export default {
     this.type = this.$route.params.type
     let nowDate = new Date()
     this.now_time = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1 < 10 ? '0' + (nowDate.getMonth() + 1) : (nowDate.getMonth() + 1)) + '-' + (nowDate.getDate() < 10 ? '0' + nowDate.getDate() : nowDate.getDate())
-    console.log(this.now_time)
-    let kays = true
-    this.processInfo.forEach((item, key) => {
-      item.processInfo.forEach((value, index) => {
-        value.materials.forEach((val, ind) => {
-          val.colors.forEach((cont, num) => {
-            if (kays) {
-              kays = false
-              this.list = []
-              this.list.push({
-                material: val.material,
-                total_number: cont.value,
-                stock_number: 0,
-                before_stock: 0,
-                stockInfo: [],
-                colors: [
-                  {
-                    color: cont.color,
-                    value: cont.value,
-                    unit: cont.unit
-                  }
-                ]
-              })
-            } else {
-              let flag = true
-              this.list.forEach((ite, ka) => {
-                if (ite.material === val.material) {
-                  ite.total_number += cont.value
-                  let fleg = true
-                  ite.colors.forEach((c, l) => {
-                    if (c.color === cont.color) {
-                      fleg = false
-                      c.value += cont.value
-                    } else if (c.color !== cont.color && fleg && l === ite.colors.length - 1) {
-                      ite.colors.push({
-                        color: cont.color,
-                        value: cont.value,
-                        unit: cont.unit
-                      })
-                    }
-                  })
-                  flag = false
-                } else if (flag && ite.material !== val.material && ka === this.list.length - 1) {
-                  this.list.push({
-                    material: val.material,
-                    total_number: cont.value,
-                    stock_number: 0,
-                    before_stock: 0,
-                    stockInfo: [],
-                    colors: [{
-                      color: cont.color,
-                      value: cont.value,
-                      unit: cont.unit
+    Promise.all([
+      orderDetail({
+        id: this.$route.params.id
+      }), rawMaterialOrderInit({
+        order_id: this.$route.params.id
+      })
+    ]).then(res => {
+      console.log(res)
+      this.order_code = res[0].data.data.order_code
+      this.client_name = res[0].data.data.client_name
+      this.order_time = res[0].data.data.order_time
+      this.group_name = res[0].data.data.group_name
+      this.loading = false
+      let materialInfo = res[1].data.data
+      console.log(materialInfo)
+      materialInfo.material_info.forEach((item, key) => {
+        for (let prop in item) {
+          for (let value in item[prop]) {
+            if (value !== 'total_number' && value !== 'type' && value !== 'unit') {
+              if (item[prop].type === Number(this.type)) {
+                let flag = this.materialList.find(val => val.material === prop)
+                if (!flag) {
+                  this.materialList.push({
+                    material: prop,
+                    plan_number: (item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value],
+                    unit: (item[prop].unit === '克' || item[prop].unit === 'g') ? 'kg' : item[prop].unit === '千克' ? 'kg' : item[prop].unit,
+                    need: [{
+                      name: value,
+                      value: (item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value]
                     }]
                   })
+                } else {
+                  flag.plan_number = Number(flag.plan_number) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value])
+                  let arr = flag.need.find(val => val.name === value)
+                  if (!arr) {
+                    flag.need.push({
+                      name: value,
+                      value: (item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value]
+                    })
+                  } else {
+                    arr.value = Number(arr.value) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value])
+                  }
                 }
-              })
+              }
             }
-          })
-        })
+          }
+        }
       })
+      console.log(this.materialList)
     })
-    // this.planList.forEach((item, key) => {
-    //   item.total = item.price * item.plan_number
-    // })
   }
 }
 </script>

@@ -182,17 +182,23 @@ const productionStat = (params) => http.get(`${baseUrl}/product/plan/order`, par
 const pantongList = (params) => http.get(`${baseUrl}/pan/color/list`, params)
 // 原料预订购
 const rawMaterialPurchase = (params) => http.post(`${baseUrl}/material/reserve/save`, params, 'application/json')
-// 原料订购初始化
+// 物料订购初始化
 const rawMaterialOrderInit = (params) => http.get(`${baseUrl}/material/order/init`, params)
-// 原料订购
+// 物料订购
 const rawMaterialOrder = (params) => http.post(`${baseUrl}/material/order/save`, params, 'application/json')
-// 原料已订购列表、原料订购详情
+// 物料已订购列表、物料订购详情
 const rawMaterialOrderList = (params) => http.get(`${baseUrl}/material/order/list`, params)
-//  原料已加工列表、原料加工详情
+//  物料已加工列表、物料加工详情
 const rawMaterialProcessList = (params) => http.get(`${baseUrl}/material/process/list`, params)
-// 原料加工
+// 物料加工
 const rawMaterialProcessPage = (params) => http.post(`${baseUrl}/material/process/save`, params, 'application/json')
+// 物料入库
+const rawMaterialGoStock = (params) => http.post(`${baseUrl}/order/material/push`, params, 'application/json')
+// 物料入库详情
+const rawMaterialGoStockDetail = (params) => http.get(`${baseUrl}/order/material/push/detail`, params)
 export {
+  rawMaterialGoStockDetail,
+  rawMaterialGoStock,
   rawMaterialProcessPage,
   rawMaterialProcessList,
   rawMaterialOrderList,

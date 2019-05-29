@@ -74,15 +74,15 @@ export default {
     return {
       loading: true,
       company_name: '桐庐凯瑞针纺有限公司',
-      process_code: 'KR19RS00001',
+      process_code: '',
       create_time: '',
       order_code: '',
       order_time: '',
       order_company: '',
       group_name: '',
       client_name: '',
-      linkman_tel: '13111111111',
-      linkman: '马云',
+      linkman_tel: '',
+      linkman: '',
       total_price: 0,
       process_info: []
     }

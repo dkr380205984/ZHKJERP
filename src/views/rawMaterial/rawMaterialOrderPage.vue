@@ -265,8 +265,16 @@ export default {
       return Number(item).toFixed(2)
     }
   },
+  watch: {
+    list: {
+      deep: true,
+      handler: function (newVal) {
+        console.log(newVal)
+      }
+    }
+  },
   methods: {
-    jisuan (ke, flag, va) {
+    jisuan (ke, flag) {
       this.list.forEach((item, key) => {
         item.selectNum = 0
         item.buyInfo.forEach((value, index) => {
@@ -304,6 +312,9 @@ export default {
                 item.selectNum = Number(item.selectNum) + Number(val.value)
                 value.money += (val.price * val.value)
               })
+            } else {
+              item.selectNum = Number(item.selectNum) + Number(val.value)
+              value.money += (val.price * val.value)
             }
           })
         })
@@ -314,7 +325,8 @@ export default {
         color: '',
         price: '',
         value: '',
-        attr: ''
+        attr: '',
+        vat_code: 'vat-null'
       })
     },
     deleteBuyMaterialInfo (key, kay, index) {
@@ -322,6 +334,7 @@ export default {
       this.jisuan(key)
     },
     addBuyInfo (key) {
+      console.log(this.list)
       if (!this.list[key].material) {
         this.$message({
           message: '无' + (this.type === '0' ? '原' : '辅') + '料信息，不可添加订购',
@@ -340,7 +353,8 @@ export default {
               color: '',
               price: '',
               value: '',
-              attr: ''
+              attr: '',
+              vat_code: 'vat-null'
             }
           ]
         }
@@ -446,12 +460,14 @@ export default {
             }
             obj.total_weight = Math.ceil(Number(val.value))
             obj.attribute = val.attr ? val.attr : ''
+            obj.vat_code = val.vat_code
             arr.push({ ...obj })
             if (value.company === 0 || value.company === '仓库') {
               stockObj.material_name = item.material
               stockObj.color_code = val.color
               stockObj.user_id = sessionStorage.user_id
               stockObj.weight = Number(val.value)
+              stockObj.vat_code = val.vat_code
               stockObj.company_id = sessionStorage.company_id
               stockObj.type = (this.type === '0' ? 1 : 2)
               stockArr.push({ ...stockObj })
@@ -492,7 +508,6 @@ export default {
     this.type = this.$route.params.type
     let nowDate = new Date()
     this.now_time = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1 < 10 ? '0' + (nowDate.getMonth() + 1) : (nowDate.getMonth() + 1)) + '-' + (nowDate.getDate() < 10 ? '0' + nowDate.getDate() : nowDate.getDate())
-    console.log(this.now_time)
     Promise.all([
       rawMaterialOrderInit({
         order_id: this.$route.params.id

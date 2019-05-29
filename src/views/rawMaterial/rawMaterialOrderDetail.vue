@@ -285,7 +285,8 @@
                 <div>
                   <li>
                     <span class="flexBig">时间</span>
-                    <span class="flexBig">订购公司</span>
+                    <span class="flexBig">加工单位</span>
+                    <span>加工类型</span>
                     <span>{{type === '0' ? '原' : '辅'}}料名称</span>
                     <span class="flexMid">颜色</span>
                     <span class="flexMid">重量</span>
@@ -300,6 +301,7 @@
                       :key="item.time + key">
                     <span class="flexBig">{{item.time}}</span>
                     <span class="flexBig">{{item.client_name}}</span>
+                    <span>{{item.process_type}}</span>
                     <span>{{item.material}}</span>
                     <span class="flexMid">{{item.color}}</span>
                     <span class="flexMid">{{item.weight|fixedFilter}}{{item.unit}}</span>
@@ -489,6 +491,7 @@ export default {
         }
       })
       // 初始化订购信息
+      console.log(materialInfo)
       materialInfo.forEach(item => {
         if ((this.type === '0' && item.type === 1) || (this.type === '1' && item.type === 2)) {
           // 初始化订购信息
@@ -496,14 +499,14 @@ export default {
           if (!flag) {
             this.list.orderList.push({
               company: item.client_name,
-              total_price: Math.ceil(item.total_price),
+              total_price: Math.ceil(item.price * item.weight),
               create_time: item.order_time.split(' ')[0],
               remark: item.desc,
               materials: [{
                 material: item.material_name,
                 colors: [{
                   color: item.color_code,
-                  price: item.total_price / item.weight,
+                  price: item.price,
                   value: item.weight,
                   unit: item.unit === null ? 'kg' : item.unit
                 }]
@@ -516,16 +519,16 @@ export default {
                 material: item.material_name,
                 colors: [{
                   color: item.color_code,
-                  price: item.total_price / item.weight,
+                  price: item.price,
                   value: item.weight,
                   unit: item.unit === null ? 'kg' : item.unit
                 }]
               })
             } else {
-              flag.total_price = Number(flag.total_price) + Number(item.total_price)
+              flag.total_price = Number(flag.total_price) + Number(item.price * item.weight)
               flag1.colors.push({
                 color: item.color_code,
-                price: item.total_price / item.weight,
+                price: item.price,
                 value: item.weight,
                 unit: item.unit === null ? 'kg' : item.unit
               })
@@ -542,9 +545,9 @@ export default {
             client_name: (item.client_name ? item.client_name : '仓库'),
             material: item.material_name,
             color: item.color_code,
-            price: item.total_price / item.weight,
+            price: item.price,
             weight: item.weight,
-            total_price: item.total_price,
+            total_price: item.price * item.weight,
             order_time: item.order_time.split(' ')[0],
             remark: item.desc,
             user: item.user_name,
@@ -629,6 +632,7 @@ export default {
               this.processLog.push({
                 time: item.create_time,
                 client_name: item.client_name,
+                process_type: item.process_type,
                 material: item.material_name,
                 color: val.color,
                 weight: val.value,

@@ -1,5 +1,6 @@
 <template>
-  <div id="rawMaterialPurchase">
+  <div id="rawMaterialPurchase"
+       v-loading="loading">
     <div class="head">
       <h2>原料预订购</h2>
     </div>
@@ -134,6 +135,7 @@ import { rawMaterialPurchase, pantongList, YarnColorList, clientList, YarnList }
 export default {
   data () {
     return {
+      loading: true,
       colorList: [], // 颜色列表
       companyList: [], // 公司列表
       materialList: {
@@ -150,7 +152,8 @@ export default {
           material_name: '',
           color_code: '白胚',
           attribute: '',
-          price: ''
+          price: '',
+          vat_code: 'vat-null'
         }
       ]
     }
@@ -161,7 +164,8 @@ export default {
         material_name: '',
         color_code: '白胚',
         attribute: '',
-        price: ''
+        price: '',
+        vat_code: 'vat-null'
       })
       console.log(this.material_info)
     },
@@ -200,11 +204,13 @@ export default {
           material_name: '',
           color_code: '',
           attribute: '',
-          price: ''
+          price: '',
+          vat_code: 'vat-null'
         }
       ]
     },
     save () {
+      this.loading = true
       if (!this.company) {
         this.$message({
           showClose: true,
@@ -303,15 +309,6 @@ export default {
         })
         return
       }
-      // console.log({
-      //   company_id: sessionStorage.company_id,
-      //   client_id: this.company,
-      //   material_info: [...this.material_info],
-      //   total_weight: Number(this.total_weight),
-      //   total_price: Number(this.total_price),
-      //   order_time: this.order_time,
-      //   desc: this.remark
-      // })
       rawMaterialPurchase({
         user_id: sessionStorage.user_id,
         company_id: sessionStorage.company_id,
@@ -335,6 +332,7 @@ export default {
             type: 'error'
           })
         }
+        this.loading = false
       })
     }
   },
@@ -353,13 +351,13 @@ export default {
         keyword: ''
       })
     ]).then(res => {
+      this.loading = false
       console.log(res)
       this.colorList = [{
         color_code: '',
         name: '白胚'
       },
       ...res[0].data.data, ...res[1].data.data]
-      console.log(this.colorList)
       res[2].data.data.forEach((item, key) => {
         if (item.type === 2) {
           this.companyList.push(item)
