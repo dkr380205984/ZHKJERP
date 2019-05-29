@@ -1,5 +1,6 @@
 <template>
-  <div id="rawMaterialOrderList">
+  <div id="rawMaterialOrderList"
+       v-loading='loading'>
     <div class="head">
       <h2>物料详情列表</h2>
       <el-input placeholder="输入文字精确搜索"
@@ -108,9 +109,9 @@
           <div class="tableColumn flex17"
                style="flex-direction:row;">
             <span class="btns normal"
-                  @click="$router.push('/index/rawMaterialOrderDetail/'+item.id + '?type=0')">原料详情</span>
+                  @click="$router.push('/index/rawMaterialOrderDetail/'+item.id + '/0')">原料详情</span>
             <span class="btns normal"
-                  @click="$router.push('/index/rawMaterialOrderDetail/' + item.id + '?type=1')">辅料详情</span>
+                  @click="$router.push('/index/rawMaterialOrderDetail/' + item.id + '/1')">辅料详情</span>
           </div>
         </div>
       </div>
@@ -190,8 +191,6 @@ export default {
         'start_time': this.start_time,
         'end_time': this.end_time
       }).then((res) => {
-        this.loading = false
-        console.log(res.data.data)
         this.total = res.data.meta.total
         this.list = res.data.data.map((item) => {
           let productList = []
@@ -236,7 +235,7 @@ export default {
             productList: productList
           }
         })
-        console.log(this.list)
+        this.loading = false
       })
     },
     pickTime (date) {

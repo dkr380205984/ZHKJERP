@@ -33,151 +33,119 @@
         </div>
       </div>
       <div class="stepCtn">
-        <div class="stepTitle">生产单位</div>
-        <div class="borderCtn">
-          <div class="cicle"></div>
-          <div class="border"></div>
-        </div>
-        <div class="lineCtn">
-          <div class="inputCtn"
-               style="width:100%;padding-left:40px;">
-            <ul class="makeTable">
-              <li>
-                <span>生产单位</span>
-                <span class="flex22">
-                  <span class="flex17">产品信息</span>
-                  <span class="flex06">尺码/颜色</span>
-                  <span class="flex06">生产数量</span>
-                </span>
-                <span class="flex20">
-                  <span class="flex12">所需原料</span>
-                  <span class="flex06">原料颜色</span>
-                  <span class="flex06">原料重量</span>
-                </span>
-              </li>
-              <li v-for="(item,key) in companyList"
-                  :key="key">
-                <span>
-                  <span>{{item.company}}</span>
-                </span>
-                <span class="flex22">
-                  <span class="flex17">
-                    <span v-for="(value,index) in item.productList"
-                          :key="index">
-                      <span class="flex17">
-                        <span>
-                          <div>
-                            <span>{{value.product_code}}</span>
-                            <span style="margin-left:20px">{{value.product_class}}</span>
-                          </div>
-                        </span>
-                      </span>
-                      <span class="flex12">
-                        <span v-for="(ite,ka) in value.makeInfo"
-                              :key="ka">
-                          <span class="flex06">{{ite.size + '/' + ite.color }}</span>
-                          <span class="flex06">{{ite.make_number + '条'}}</span>
-                        </span>
-                      </span>
-                    </span>
-                  </span>
-                </span>
-                <span class="flex20">
-                  <span class="flex17">
-                    <span v-for="(value,index) in item.materialList"
-                          :key="index">
-                      <span class="flex12">
-                        <span>
-                          <div>
-                            <span>{{value.material}}</span>
-                          </div>
-                        </span>
-                      </span>
-                      <span class="flex12">
-                        <span v-for="(ite,ka) in value.colors"
-                              :key="ka">
-                          <span class="flex06">{{ite.color }}</span>
-                          <span class="flex06">{{ite.number + ite.unit}}</span>
-                        </span>
-                      </span>
-                    </span>
-                  </span>
-                </span>
-
-              </li>
-            </ul>
-            <!-- <li v-for="(item,key) in companyList"
-                :key="key">
-              {{item}}
-            </li> -->
-          </div>
-        </div>
-      </div>
-      <div class="stepCtn">
-        <div class="stepTitle">生产计划信息</div>
-        <div class="borderCtn">
-          <div class="cicle"></div>
-          <div class="border"></div>
-        </div>
-        <div class="lineCtn">
-          <div class="inputCtn"
-               style="width:100%;
-               padding-left:40px;">
-            <ul class="planTable">
-              <li>
-                <span>产品编号</span>
-                <span>产品品类</span>
-                <span class="flex06">产品克重</span>
-                <span class="flex20">产品规格</span>
-                <span>计划条数</span>
-                <span class="flex06">价格</span>
-                <span class="flex06">合计</span>
-                <span>交货日期</span>
-              </li>
-              <li v-for="(item,key) in planList"
-                  :key="key">
-                <span>{{item.product_code}}</span>
-                <span>{{item.product_class}}</span>
-                <span class="flex06">{{item.product_weight}}</span>
-                <span class="flex20">
-                  <span v-for="(value,index) in item.product_size"
-                        :key="index">
-                    {{value.name + ': ' + value.value + value.unit}}
-                  </span>
-                </span>
-                <span>{{item.plan_number + '条'}}</span>
-                <span class="flex06">{{item.price + '元/条'}}</span>
-                <span class="flex06">{{item.total + '元'}}</span>
-                <span>{{item.compiled_time}}</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div class="stepCtn">
         <div class="stepTitle">原料信息</div>
         <div class="borderCtn">
           <div class="cicle"></div>
           <div class="border"></div>
         </div>
         <div class="lineCtn col">
-          <div class="inputCtn maxWidth noPadding"
-               v-for="(item,key) in rawMaterialPlanList"
-               :key="key">
-            <span class="title">{{item.company + ':'}}</span>
-            <span class="processContent">
-              <span v-for="(value,index) in item.processInfo"
-                    :key="index">
-                <span class="material">{{value.material}}</span>
-                <span class="colorInfo">
-                  <span v-for="(iten,kay) in value.colorInfo"
-                        :key="kay">
-                    <span class="tit">{{iten.color}}</span>
-                    {{iten.value + iten.unit}}
+          <div class="inputCtn noPadding">
+            <div class="content">
+              <ul class="tablesCtn">
+                <li class="title">
+                  <span>计划原料</span>
+                  <span class="flex17">
+                    <span>颜色</span>
+                    <span>数量</span>
                   </span>
-                </span>
-              </span>
-            </span>
+                  <span>已计划</span>
+                  <span>已入库</span>
+                  <span>已出库</span>
+                </li>
+                <li class="materialInfo"
+                    v-for="(item,key) in materialInfo"
+                    :key="key">
+                  <span>{{item.material}}</span>
+                  <span class="flex17 col">
+                    <span v-for="(val,ind) in item.colorInfo"
+                          :key="ind">
+                      <span>{{val.color}}</span>
+                      <span>{{val.value}}{{item.unit}}</span>
+                    </span>
+                  </span>
+                  <span>{{item.plan_number}}{{item.unit}}</span>
+                  <span>{{item.goStock_number}}{{item.unit}}</span>
+                  <span>{{item.outStock_number}}{{item.unit}}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="stepCtn">
+        <div class="stepTitle">生产单位</div>
+        <div class="borderCtn">
+          <div class="cicle"></div>
+          <div class="border"></div>
+        </div>
+        <div class="lineCtn">
+          <div class="inputCtn noPadding">
+            <div class="content">
+              <ul class="makeTable">
+                <li>
+                  <span>生产单位</span>
+                  <span class="flex22">
+                    <span class="flex17">产品信息</span>
+                    <span class="flex06">尺码/颜色</span>
+                    <span class="flex06">数量</span>
+                  </span>
+                  <span class="flex20">
+                    <span class="flex12">所需原料</span>
+                    <span class="flex06">颜色</span>
+                    <span class="flex06">数量</span>
+                  </span>
+                </li>
+                <li v-for="(item,key) in companyList"
+                    :key="key">
+                  <span>
+                    <span>{{item.company}}</span>
+                  </span>
+                  <span class="flex22">
+                    <span class="flex17">
+                      <span v-for="(value,index) in item.productList"
+                            :key="index">
+                        <span class="flex17">
+                          <span>
+                            <div>
+                              <span>{{value.product_code}}</span>
+                              <span style="margin-left:20px">{{value.product_class}}</span>
+                            </div>
+                          </span>
+                        </span>
+                        <span class="flex12">
+                          <span v-for="(ite,ka) in value.makeInfo"
+                                :key="ka">
+                            <span class="flex06">{{ite.size + '/' + ite.color }}</span>
+                            <span class="flex06">{{ite.make_number + '条'}}</span>
+                          </span>
+                        </span>
+                      </span>
+                    </span>
+                  </span>
+                  <span class="flex20">
+                    <span class="flex17">
+                      <span v-for="(value,index) in item.materialList"
+                            :key="index">
+                        <span class="flex12">
+                          <span>
+                            <div>
+                              <span>{{value.material}}</span>
+                            </div>
+                          </span>
+                        </span>
+                        <span class="flex12">
+                          <span v-for="(ite,ka) in value.colors"
+                                :key="ka">
+                            <span class="flex06">{{ite.color }}</span>
+                            <span class="flex06">{{ite.number + ite.unit}}</span>
+                          </span>
+                        </span>
+                      </span>
+                    </span>
+                  </span>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -193,9 +161,9 @@
           <div class="tablePlan">
             <div class="tableTitle">
               <span>原料名称</span>
-              <span>合计重量</span>
-              <span>已出库重量</span>
-              <span>待出库重量</span>
+              <span>合计数量</span>
+              <span>已出库数量</span>
+              <span>待出库数量</span>
             </div>
             <div class="tableInfo">
               <span>{{item.material}}</span>
@@ -213,7 +181,7 @@
               <li>
                 <span>原料颜色</span>:
                 <el-select v-model="iten.materialColor"
-                           placeholder="请选择订购来源"
+                           placeholder="请选择颜色"
                            size="small">
                   <el-option v-for="value in options"
                              :key="value.value"
@@ -221,36 +189,31 @@
                   </el-option>
                 </el-select>
               </li>
-              <!-- <li>
-                <span>缸号</span>:
-                <el-input size="small"
-                          placeholder="请输入缸号"
-                          v-model="iten.dyelot"
-                          style="width:243px;">
-                </el-input>
-              </li> -->
-              <li>
-                <span>原料属性</span>:
-                <el-select v-model="iten.materialAtr"
-                           placeholder="请选择原料属性"
-                           size="small">
-                  <el-option v-for="value in options"
-                             :key="value.value"
-                             :value="value.label">
-                  </el-option>
-                </el-select>
-              </li>
-              <!-- <li v-for="(value,index) in iten.stockWeightInfo"
+              <li v-for="(value,index) in iten.stockWeightInfo"
                   :key="index"
                   class="col">
                 <div>
-                  <span>第{{index+1}}包</span>:
+                  <span>批号/缸号</span>:
                   <el-input size="small"
-                            placeholder="请输入重量"
+                            placeholder="请输入批号/缸号"
+                            v-model="value.dyelot_number"
+                            style="width:243px;">
+                  </el-input>
+                </div>
+                <div>
+                  <span>件数/数量</span>:
+                  <el-input size="small"
+                            placeholder="件数"
+                            v-model="value.number"
+                            @change="jisuan">
+                    <template slot="append">件</template>
+                  </el-input>
+                  <el-input size="small"
+                            placeholder="数量"
                             v-model="value.weight"
                             @change="jisuan">
+                    <template slot="append">kg</template>
                   </el-input>
-                  <i>kg</i>
                 </div>
                 <em v-if="index === 0"
                     class="el-icon-plus"
@@ -258,28 +221,11 @@
                 <em v-else
                     class="el-icon-delete"
                     @click="deleteStockWeightInfo(key,kay,index)"></em>
-              </li> -->
-              <!-- <li>
-                <span>总重量</span>:
-                <el-input size="small"
-                          placeholder="0"
-                          :disabled="true"
-                          v-model="iten.total_weight">
-                </el-input>
-                <i>kg</i>
-              </li> -->
-              <li>
-                <span>出库总重</span>:
-                <el-input size="small"
-                          placeholder="请输入出库重量"
-                          v-model="iten.weight"
-                          style="width:243px;">
-                </el-input>
               </li>
               <li>
-                <span>出库仓库</span>:
-                <el-select v-model="iten.stock"
-                           placeholder="请选择仓库"
+                <span>出库单位</span>:
+                <el-select v-model="iten.outStock_client"
+                           placeholder="请选择出库单位"
                            size="small">
                   <el-option v-for="value in options"
                              :key="value.value"
@@ -331,9 +277,50 @@
 export default {
   data () {
     return {
+      type: '',
+      now_time: '',
       total_weight: 0,
       defaultStock: '桐庐凯瑞针纺有限公司',
       loading: false,
+      materialInfo: [
+        {
+          material: '52',
+          unit: 'kg',
+          plan_number: 100,
+          goStock_number: 200,
+          outStock_number: 300,
+          colorInfo: [
+            {
+              color: '绿',
+              value: 1220
+            }, {
+              color: '绿',
+              value: 1220
+            }, {
+              color: '绿',
+              value: 1220
+            }
+          ]
+        }, {
+          material: '52',
+          unit: 'kg',
+          plan_number: 100,
+          goStock_number: 200,
+          outStock_number: 300,
+          colorInfo: [
+            {
+              color: '绿',
+              value: 1220
+            }, {
+              color: '绿',
+              value: 1220
+            }, {
+              color: '绿',
+              value: 1220
+            }
+          ]
+        }
+      ],
       rawMaterialPlanList: [
         {
           company: '杭州力欧纱线有限公司',
@@ -687,124 +674,6 @@ export default {
           ]
         }
       ],
-      planList: [
-        {
-          product_code: 'ES5623134',
-          product_class: '围巾/针织/长巾',
-          product_weight: '200g',
-          product_size: [
-            {
-              name: '长',
-              value: '60',
-              unit: 'cm'
-            }, {
-              name: '宽',
-              value: '50',
-              unit: 'cm'
-            }, {
-              name: '须头',
-              value: '24',
-              unit: 'cm'
-            }
-          ],
-          plan_number: 2010,
-          price: 10,
-          total: '',
-          compiled_time: '2019-05-23'
-        }, {
-          product_code: 'ES5623134',
-          product_class: '围巾/针织/长巾',
-          product_weight: '200g',
-          product_size: [
-            {
-              name: '长',
-              value: '60',
-              unit: 'cm'
-            }, {
-              name: '宽',
-              value: '50',
-              unit: 'cm'
-            }, {
-              name: '须头',
-              value: '24',
-              unit: 'cm'
-            }
-          ],
-          plan_number: '2010',
-          price: '10',
-          total: '',
-          compiled_time: '2019-05-23'
-        }, {
-          product_code: 'ES5623134',
-          product_class: '围巾/针织/长巾',
-          product_weight: '200g',
-          product_size: [
-            {
-              name: '长',
-              value: '60',
-              unit: 'cm'
-            }, {
-              name: '宽',
-              value: '50',
-              unit: 'cm'
-            }, {
-              name: '须头',
-              value: '24',
-              unit: 'cm'
-            }
-          ],
-          plan_number: '2010',
-          price: '10',
-          total: '',
-          compiled_time: '2019-05-23'
-        }, {
-          product_code: 'ES5623134',
-          product_class: '围巾/针织/长巾',
-          product_weight: '200g',
-          product_size: [
-            {
-              name: '长',
-              value: '60',
-              unit: 'cm'
-            }, {
-              name: '宽',
-              value: '50',
-              unit: 'cm'
-            }, {
-              name: '须头',
-              value: '24',
-              unit: 'cm'
-            }
-          ],
-          plan_number: '2010',
-          price: '10',
-          total: '',
-          compiled_time: '2019-05-23'
-        }, {
-          product_code: 'ES5623134',
-          product_class: '围巾/针织/长巾',
-          product_weight: '200g',
-          product_size: [
-            {
-              name: '长',
-              value: '60',
-              unit: 'cm'
-            }, {
-              name: '宽',
-              value: '50',
-              unit: 'cm'
-            }, {
-              name: '须头',
-              value: '24',
-              unit: 'cm'
-            }
-          ],
-          plan_number: '2010',
-          price: '10',
-          total: '',
-          compiled_time: '2019-05-23'
-        }
-      ],
       options: [
         {
           value: '选项1',
@@ -862,6 +731,8 @@ export default {
     },
     appendStockWeightInfo (key, kay) {
       this.list[key].stockInfo[kay].stockWeightInfo.push({
+        dyelot_number: '',
+        number: '',
         weight: ''
       })
     },
@@ -873,25 +744,24 @@ export default {
       this.list[key].stockInfo.push(
         {
           materialColor: '',
-          dyelot: '',
-          materialAtr: '',
-          total_weight: 0,
           remark: '',
-          stock: this.defaultStock,
-          stock_time: new Date(),
+          outStock_client: this.defaultStock,
+          stock_time: this.now_time,
           stockWeightInfo: [
             {
+              dyelot_number: '',
+              number: '',
               weight: ''
             }
           ]
         }
       )
-      console.log(this.list)
     },
     deleteStockInfo (key, kay) {
       this.list[key].stockInfo.splice(kay, 1)
     },
     saveAll () {
+      console.log(this.list)
       this.list.forEach(item => {
         item.stockInfo.forEach(value => {
           let flag = value.materialColor && value.dyelot && value.materialAtr && value.total_weight && value.stock && value.stock_time
@@ -915,6 +785,10 @@ export default {
     }
   },
   created () {
+    this.type = this.$route.params.type
+    let nowDate = new Date()
+    this.now_time = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1 < 10 ? '0' + (nowDate.getMonth() + 1) : (nowDate.getMonth() + 1)) + '-' + (nowDate.getDate() < 10 ? '0' + nowDate.getDate() : nowDate.getDate())
+    console.log(this.now_time)
     let kays = true
     this.processInfo.forEach((item, key) => {
       item.processInfo.forEach((value, index) => {
@@ -976,9 +850,9 @@ export default {
         })
       })
     })
-    this.planList.forEach((item, key) => {
-      item.total = item.price * item.plan_number
-    })
+    // this.planList.forEach((item, key) => {
+    //   item.total = item.price * item.plan_number
+    // })
   }
 }
 </script>

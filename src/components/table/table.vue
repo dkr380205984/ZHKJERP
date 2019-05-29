@@ -21,7 +21,7 @@
           <span v-for="(content,number) in addLen(setSizeInfo(value,key,index,data.materialList.length,item.colorInfo.length),key)"
                 :key="number+content">
             <span>{{content.name}}</span>
-            <span>{{content.number + ((content.unit ==='克' || content.unit === '千克') ? (content.unit === '克' ? 'g' : 'kg') : content.unit)}}</span>
+            <span>{{content.number|fixedFilter}}{{((content.unit ==='克' || content.unit === '千克') ? (content.unit === '克' ? 'g' : 'kg') : content.unit)}}</span>
           </span>
           <template v-if="value.colorList.length === 0">
             <!-- {{value}} -->
@@ -64,9 +64,12 @@ export default {
       lenArr: {},
       data: null,
       total: 1,
-      colorData: [
-
-      ]
+      colorData: []
+    }
+  },
+  filters: {
+    fixedFilter (item) {
+      return Number(item).toFixed(2)
     }
   },
   props: [
@@ -120,11 +123,7 @@ export default {
       return obj
     }
     this.data = clone(this.date)
-    // this.colorData = clone(this.colorDate)
-    // console.log(this.colorData)
     this.flag = this.$attrs.color
-    // console.log(this.colorData)
-    // console.log(this.date)
   }
 }
 </script>

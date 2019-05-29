@@ -76,12 +76,12 @@
                       <span v-for="(va,inf) in val.need"
                             :key="inf">
                         <span>{{va.name}}</span>
-                        <span class="flex08">{{va.value + val.unit}}</span>
+                        <span class="flex08">{{va.value|fixedFilter}}{{val.unit}}</span>
                       </span>
                     </span>
-                    <span>{{(val.total_weight ? val.total_weight : 0) + val.unit}}</span>
-                    <span>{{(val.order_weight ? val.order_weight : 0) + val.unit}}</span>
-                    <span>{{(val.process_weight ? val.process_weight : 0) + val.unit}}</span>
+                    <span>{{(val.total_weight ? val.total_weight : 0)|fixedFilter}}{{val.unit}}</span>
+                    <span>{{(val.order_weight ? val.order_weight : 0)|fixedFilter}}{{val.unit}}</span>
+                    <span>{{(val.process_weight ? val.process_weight : 0)|fixedFilter}}{{val.unit}}</span>
                   </li>
                 </ul>
               </div>
@@ -119,7 +119,7 @@
                       </span>
                       <span>总价</span>
                       <span>下单日期</span>
-                      <span>备注</span>
+                      <!-- <span>备注</span> -->
                       <span>操作</span></span>
                   </span>
                 </li>
@@ -138,24 +138,24 @@
                             <span v-for="(content,number) in iten.colors"
                                   :key="number">
                               <span>{{content.color}}</span>
-                              <span>{{content.price + '元/' + content.unit}}</span>
-                              <span>{{content.value + content.unit}}</span>
+                              <span>{{content.price|fixedFilter}}{{'元/' + content.unit}}</span>
+                              <span>{{content.value|fixedFilter}}{{content.unit}}</span>
                             </span>
                           </span>
                         </span>
                       </span>
-                      <span>{{value.total_price + '元'}}</span>
+                      <span>{{value.total_price|fixedFilter}}{{'元'}}</span>
                       <span>{{value.create_time}}</span>
-                      <span>
+                      <!-- <span>
                         <span>{{value.remark ? value.remark : '暂无备注'}}</span>
-                      </span>
+                      </span> -->
                       <span class="blue"
-                            @click="open($route.params.id)">打印</span>
+                            @click="open($route.params.id,value.company)">打印</span>
                     </span>
                   </span>
                 </li>
                 <div class="logList"
-                     @click="showLog('order')">{{ orderLogFlag ? '收起' : '展开'}}日志</div>
+                     @click="orderLogFlag = !orderLogFlag">{{ orderLogFlag ? '收起' : '展开'}}详情</div>
               </ul>
               <ul class="log"
                   v-if="orderLogFlag">
@@ -173,25 +173,37 @@
                     <span class="flexMid">操作人</span>
                   </li>
                 </div>
-                <div v-loading="orderLoading">
+                <div>
                   <li v-for="(item,key) in orderLog"
                       :key="item.time + key">
                     <span class="flexBig">{{item.time}}</span>
                     <span class="flexBig">{{item.client_name}}</span>
                     <span>{{item.material}}</span>
                     <span class="flexMid">{{item.color}}</span>
-                    <span class="flexMid">{{item.price + '元/' + item.unit}}</span>
-                    <span class="flexMid">{{item.weight + item.unit}}</span>
-                    <span class="flexMid">{{item.total_price + '元'}}</span>
+                    <span class="flexMid">{{item.price|fixedFilter}}{{'元/' + item.unit}}</span>
+                    <span class="flexMid">{{item.weight|fixedFilter}}{{item.unit}}</span>
+                    <span class="flexMid">{{item.total_price|fixedFilter}}{{'元'}}</span>
                     <span>{{item.order_time}}</span>
-                    <span class="flexBig">{{item.remark ? item.remark : '暂无备注'}}</span>
+                    <span class="flexBig remark">
+                      <i>
+                        {{item.remark ? item.remark : '暂无备注'}}
+                        <el-popover placement="top-end"
+                                    title="备注信息"
+                                    width="200"
+                                    trigger="click"
+                                    v-if="charCodeLength(item.remark) > 15"
+                                    :content="item.remark">
+                          <span slot="reference">展开</span>
+                        </el-popover>
+                      </i>
+                    </span>
                     <span class="flexMid">{{item.user}}</span>
                   </li>
                 </div>
               </ul>
               <div class="handle">
                 <div class="order"
-                     @click="$router.push('/index/rawMaterialOrderPage/' + $route.params.id + '?type=' + type)">
+                     @click="$router.push('/index/rawMaterialOrderPage/' + $route.params.id + '/' + type)">
                   <img class="icon"
                        src="@/assets/image/icon/orderIcon.png">
                   <span>去订购</span>
@@ -226,7 +238,7 @@
                         </span>
                       </span>
                       <span>下单日期</span>
-                      <span>备注</span>
+                      <!-- <span>备注</span> -->
                       <span>操作</span></span>
                   </span>
                 </li>
@@ -251,22 +263,22 @@
                             <span v-for="(content,number) in iten.colors"
                                   :key="number">
                               <span>{{content.color}}</span>
-                              <span>{{content.value + content.unit}}</span>
+                              <span>{{content.value|fixedFilter}}{{content.unit}}</span>
                             </span>
                           </span>
                         </span>
                       </span>
                       <span>{{item.create_time}}</span>
-                      <span>
+                      <!-- <span>
                         <span>{{item.remark ? item.remark : '暂无备注'}}</span>
-                      </span>
+                      </span> -->
                       <span class="blue"
-                            @click="open($route.params.id)">打印</span>
+                            @click="open($route.params.id,item.company,value.process_type)">打印</span>
                     </span>
                   </span>
                 </li>
                 <div class="logList"
-                     @click="showLog('process')">{{ processLogFlag ? '收起' : '展开'}}日志</div>
+                     @click="processLogFlag = !processLogFlag">{{ processLogFlag ? '收起' : '展开'}}详情</div>
               </ul>
               <ul class="log"
                   v-if="processLogFlag">
@@ -283,24 +295,36 @@
                     <span>操作人</span>
                   </li>
                 </div>
-                <div v-loading="processLoading">
+                <div>
                   <li v-for="(item,key) in processLog"
                       :key="item.time + key">
                     <span class="flexBig">{{item.time}}</span>
                     <span class="flexBig">{{item.client_name}}</span>
                     <span>{{item.material}}</span>
                     <span class="flexMid">{{item.color}}</span>
-                    <span class="flexMid">{{item.weight + item.unit}}</span>
-                    <span class="flexMid">{{item.total_price + '元'}}</span>
+                    <span class="flexMid">{{item.weight|fixedFilter}}{{item.unit}}</span>
+                    <span class="flexMid">{{item.total_price|fixedFilter}}{{'元'}}</span>
                     <span>{{item.order_time}}</span>
-                    <span class="flexBig">{{item.remark ? item.remark : '暂无备注'}}</span>
+                    <span class="flexBig remark">
+                      <i>
+                        {{item.remark ? item.remark : '暂无备注'}}
+                        <el-popover placement="top-end"
+                                    title="备注信息"
+                                    width="200"
+                                    trigger="click"
+                                    v-if="charCodeLength(item.remark) > 15"
+                                    :content="item.remark">
+                          <span slot="reference">展开</span>
+                        </el-popover>
+                      </i>
+                    </span>
                     <span>{{item.user}}</span>
                   </li>
                 </div>
               </ul>
               <div class="handle">
                 <div class="order"
-                     @click="$router.push('/index/rawMaterialProcess/' + $route.params.id + '?type=' + type)">
+                     @click="$router.push('/index/rawMaterialProcess/' + $route.params.id + '/' + type)">
                   <img class="icon"
                        src="@/assets/image/icon/orderIcon.png">
                   <span>去加工</span>
@@ -345,9 +369,30 @@ export default {
       orderLog: []
     }
   },
+  filters: {
+    fixedFilter (item) {
+      return Number(item).toFixed(2)
+    }
+  },
   methods: {
-    open (id) {
-      window.open('/rawMaterialProcessTable/' + 1)
+    charCodeLength (item) {
+      if (!item) {
+        return 0
+      }
+      let len = item.length
+      let lengths = 0
+      for (let i = 0; i < len; i++) {
+        if (item.charCodeAt(i) > 255) {
+          lengths += 2
+        } else {
+          lengths++
+        }
+      }
+      return lengths
+    },
+    open (id, companyId, type) {
+      let str = '/rawMaterialProcessTable/' + id + '/' + companyId + '/' + type
+      window.open(str)
     },
     change () {
       this.$message(
@@ -356,77 +401,10 @@ export default {
           type: 'success'
         }
       )
-    },
-    showLog (item) {
-      if (item === 'process') {
-        this.processLoading = true
-        this.processLogFlag = !this.processLogFlag
-        if (this.processLogFlag) {
-          rawMaterialProcessList({
-            company_id: window.sessionStorage.getItem('company_id'),
-            order_id: this.$route.params.id
-          }).then(res => {
-            let data = res.data.data
-            data.forEach(item => {
-              if ((this.type === '0' && item.type === 1) || (this.type === '1' && item.type === 2)) {
-                item.material_info = JSON.parse(item.material_info)
-                item.material_info.forEach(val => {
-                  this.processLog.push({
-                    time: item.create_time,
-                    client_name: item.client_name,
-                    material: item.material_name,
-                    color: val.color,
-                    weight: Number(val.value).toFixed(2),
-                    total_price: Number(item.total_price).toFixed(2),
-                    order_time: item.order_time.split(' ')[0],
-                    remark: item.desc,
-                    user: item.user_name,
-                    unit: item.unit ? item.unit : 'kg'
-                  })
-                })
-              }
-            })
-            this.processLoading = false
-          })
-        } else {
-          this.processLog = []
-        }
-      } else if (item === 'order') {
-        this.orderLoading = true
-        this.orderLogFlag = !this.orderLogFlag
-        if (this.orderLogFlag) {
-          rawMaterialOrderList({
-            company_id: sessionStorage.company_id,
-            order_id: this.$route.params.id
-          }).then(res => {
-            let data = res.data.data
-            data.forEach(item => {
-              if ((this.type === '0' && item.type === 1) || (this.type === '1' && item.type === 2)) {
-                this.orderLog.push({
-                  time: item.create_time,
-                  client_name: (item.client_name ? item.client_name : '仓库'),
-                  material: item.material_name,
-                  color: item.color_code,
-                  price: Number(item.total_price / item.weight).toFixed(2),
-                  weight: Number(item.weight).toFixed(2),
-                  total_price: Number(item.total_price).toFixed(2),
-                  order_time: item.order_time.split(' ')[0],
-                  remark: item.desc,
-                  user: item.user_name,
-                  unit: (item.unit ? item.unit : 'kg')
-                })
-              }
-            })
-            this.orderLoading = false
-          })
-        } else {
-          this.orderLog = []
-        }
-      }
     }
   },
   created () {
-    this.type = document.location.href.split('type=')[1]
+    this.type = this.$route.params.type
     Promise.all([
       rawMaterialOrderInit({
         order_id: this.$route.params.id
@@ -443,13 +421,9 @@ export default {
         order_id: this.$route.params.id
       })
     ]).then(res => {
-      // console.log(res)
       let info = res[0].data.data.material_info
-      // console.log(info)
       let materialInfo = res[1].data.data
-      // console.log(materialInfo)
       let orderInfo = res[2].data.data
-      // console.log(orderInfo)
       let processInfo = res[3].data.data
       // 初始化物料信息
       info.forEach((item, key) => {
@@ -461,23 +435,23 @@ export default {
                 if (!flag) {
                   this.materialList.push({
                     material: prop,
-                    total_weight: (item[prop].unit === '克' || item[prop].unit === 'g') ? (Math.ceil(item[prop][value]) / 1000).toFixed(2) : Number(item[prop][value]).toFixed(2),
+                    total_weight: (item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value],
                     unit: (item[prop].unit === '克' || item[prop].unit === 'g') ? 'kg' : item[prop].unit === '千克' ? 'kg' : item[prop].unit,
                     need: [{
                       name: value,
-                      value: (item[prop].unit === '克' || item[prop].unit === 'g') ? (Math.ceil(item[prop][value]) / 1000).toFixed(2) : Number(item[prop][value]).toFixed(2)
+                      value: (item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value]
                     }]
                   })
                 } else {
-                  flag.total_weight = Number(Number(flag.total_weight) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? (Math.ceil(item[prop][value]) / 1000).toFixed(2) : item[prop][value])).toFixed(2)
+                  flag.total_weight = Number(flag.total_weight) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value])
                   let arr = flag.need.find(val => val.name === value)
                   if (!arr) {
                     flag.need.push({
                       name: value,
-                      value: (item[prop].unit === '克' || item[prop].unit === 'g') ? (Math.ceil(item[prop][value]) / 1000).toFixed(2) : Number(item[prop][value]).toFixed(2)
+                      value: (item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value]
                     })
                   } else {
-                    arr.value = Number(Number(arr.value) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? (Math.ceil(item[prop][value]) / 1000).toFixed(2) : item[prop][value])).toFixed(2)
+                    arr.value = Number(arr.value) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value])
                   }
                 }
               }
@@ -529,8 +503,8 @@ export default {
                 material: item.material_name,
                 colors: [{
                   color: item.color_code,
-                  price: (item.total_price / item.weight).toFixed(2),
-                  value: item.weight.toFixed(2),
+                  price: item.total_price / item.weight,
+                  value: item.weight,
                   unit: item.unit === null ? 'kg' : item.unit
                 }]
               }]
@@ -542,8 +516,8 @@ export default {
                 material: item.material_name,
                 colors: [{
                   color: item.color_code,
-                  price: (item.total_price / item.weight).toFixed(2),
-                  value: item.weight.toFixed(2),
+                  price: item.total_price / item.weight,
+                  value: item.weight,
                   unit: item.unit === null ? 'kg' : item.unit
                 }]
               })
@@ -551,8 +525,8 @@ export default {
               flag.total_price = Number(flag.total_price) + Number(item.total_price)
               flag1.colors.push({
                 color: item.color_code,
-                price: (item.total_price / item.weight).toFixed(2),
-                value: item.weight.toFixed(2),
+                price: item.total_price / item.weight,
+                value: item.weight,
                 unit: item.unit === null ? 'kg' : item.unit
               })
             }
@@ -560,8 +534,22 @@ export default {
           // 统计已订购总量
           let arr = this.materialList.find(val => val.material === item.material_name)
           if (arr) {
-            arr.order_weight = Number(arr.order_weight ? (arr.order_weight + item.weight) : item.weight).toFixed(2)
+            arr.order_weight = arr.order_weight ? (arr.order_weight + item.weight) : item.weight
           }
+          // 初始化日志
+          this.orderLog.push({
+            time: item.create_time,
+            client_name: (item.client_name ? item.client_name : '仓库'),
+            material: item.material_name,
+            color: item.color_code,
+            price: item.total_price / item.weight,
+            weight: item.weight,
+            total_price: item.total_price,
+            order_time: item.order_time.split(' ')[0],
+            remark: item.desc,
+            user: item.user_name,
+            unit: (item.unit ? item.unit : 'kg')
+          })
         }
       })
       // 初始化加工信息
@@ -576,14 +564,14 @@ export default {
                 process_type: item.process_type,
                 companys: [{
                   company: item.client_name,
-                  total_price: Number(item.total_price).toFixed(2),
+                  total_price: item.total_price,
                   create_time: item.order_time.split(' ')[0],
                   remark: item.desc,
                   materials: [{
                     material: item.material_name,
                     colors: [{
                       color: value.color,
-                      value: Number(value.value).toFixed(2),
+                      value: value.value,
                       unit: (item.unit === null ? 'kg' : item.unit)
                     }]
                   }]
@@ -594,14 +582,14 @@ export default {
               if (!flag1) {
                 flag.companys.push({
                   company: item.client_name,
-                  total_price: Number(item.total_price).toFixed(2),
+                  total_price: item.total_price,
                   create_time: item.order_time.split(' ')[0],
                   remark: item.desc,
                   materials: [{
                     material: item.material_name,
                     colors: [{
                       color: value.color,
-                      value: Number(value.value).toFixed(2),
+                      value: value.value,
                       unit: (item.unit === null ? 'kg' : item.unit)
                     }]
                   }]
@@ -613,7 +601,7 @@ export default {
                     material: item.material_name,
                     colors: [{
                       color: value.color,
-                      value: Number(value.value).toFixed(2),
+                      value: value.value,
                       unit: (item.unit === null ? 'kg' : item.unit)
                     }]
                   })
@@ -622,11 +610,11 @@ export default {
                   if (!flag3) {
                     flag2.colors.push({
                       color: value.color,
-                      value: Number(value.value).toFixed(2),
+                      value: value.value,
                       unit: (item.unit === null ? 'kg' : item.unit)
                     })
                   } else {
-                    flag3.value = (Number(flag3.value) + Number(value.value)).toFixed(2)
+                    flag3.value = Number(flag3.value) + Number(value.value)
                   }
                 }
               }
@@ -634,8 +622,23 @@ export default {
             // 统计已加工总价
             let arr = this.materialList.find(val => val.material === item.material_name)
             if (arr) {
-              arr.process_weight = (arr.process_weight ? (Number(arr.process_weight) + Number(value.value)) : Number(value.value)).toFixed(2)
+              arr.process_weight = arr.process_weight ? (Number(arr.process_weight) + Number(value.value)) : value.value
             }
+            // 日志初始化
+            item.material_info.forEach(val => {
+              this.processLog.push({
+                time: item.create_time,
+                client_name: item.client_name,
+                material: item.material_name,
+                color: val.color,
+                weight: val.value,
+                total_price: item.total_price,
+                order_time: item.order_time.split(' ')[0],
+                remark: item.desc,
+                user: item.user_name,
+                unit: item.unit ? item.unit : 'kg'
+              })
+            })
           }
         })
       })

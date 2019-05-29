@@ -2,7 +2,7 @@
   <div id="rawMaterialStock"
        v-loading="loading">
     <div class="head">
-      <h2>原料入库</h2>
+      <h2>{{type === '0' ? '原' : '辅'}}料入库</h2>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -33,29 +33,45 @@
         </div>
       </div>
       <div class="stepCtn">
-        <div class="stepTitle">原料信息</div>
+        <div class="stepTitle">{{type === '0' ? '原' : '辅'}}料信息</div>
         <div class="borderCtn">
           <div class="cicle"></div>
           <div class="border"></div>
         </div>
         <div class="lineCtn col">
-          <div class="inputCtn maxWidth noPadding"
-               v-for="(item,key) in rawMaterialPlanList"
-               :key="key">
-            <span class="title">{{item.company + ':'}}</span>
-            <span class="processContent">
-              <span v-for="(value,index) in item.processInfo"
-                    :key="index">
-                <span class="material">{{value.material}}</span>
-                <span class="colorInfo">
-                  <span v-for="(iten,kay) in value.colorInfo"
-                        :key="kay">
-                    <span class="tit">{{iten.color}}</span>
-                    {{iten.value + iten.unit}}
+          <div class="inputCtn noPadding">
+            <div class="content">
+              <ul class="tablesCtn">
+                <li class="title">
+                  <span>订购单位</span>
+                  <span class="flex45">
+                    <span>{{type === '0' ? '原' : '辅'}}料名称</span>
+                    <span class="flex17">
+                      <span>颜色</span>
+                      <span>数量</span>
+                    </span>
                   </span>
-                </span>
-              </span>
-            </span>
+                </li>
+                <li class="orderInfo"
+                    v-for="(item,key) in orderInfo"
+                    :key="key">
+                  <span>{{item.order_client}}</span>
+                  <span class="flex45 col">
+                    <span v-for="(val,ind) in item.info"
+                          :key="ind">
+                      <span>{{val.material}}</span>
+                      <span class="flex17 col">
+                        <span v-for="(value,index) in val.colorList"
+                              :key="index">
+                          <span>{{value.color}}</span>
+                          <span>{{value.value}}{{val.unit}}</span>
+                        </span>
+                      </span>
+                    </span>
+                  </span>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -73,7 +89,7 @@
               </span>
               <span class="flex45">
                 <span class="flex17">加工单位</span>
-                <span>原料名称</span>
+                <span>{{type === '0' ? '原' : '辅'}}料名称</span>
                 <span class="flex12">颜色-数量</span>
               </span>
             </div>
@@ -86,7 +102,6 @@
               <span class="flex45">
                 <span v-for="(value,index) in item.processInfo"
                       :key="index">
-                  <!-- 第二层 -->
                   <span class="flex17">
                     <span>{{value.company}}</span>
                   </span>
@@ -111,17 +126,16 @@
         </div>
       </div>
       <div class="stepCtn">
-        <div class="stepTitle">原料入库</div>
+        <div class="stepTitle">{{type === '0' ? '原' : '辅'}}料入库</div>
         <div class="borderCtn">
           <div class="cicle"></div>
-          <div class="border"></div>
         </div>
         <div class="lineCtn col"
              v-for="(item,key) in list"
              :key="key">
           <div class="tablePlan">
             <div class="tableTitle">
-              <span>原料名称</span>
+              <span>{{type === '0' ? '原' : '辅'}}料名称</span>
               <span>合计重量</span>
               <span>已入库重量</span>
               <span>待入库重量</span>
@@ -130,9 +144,6 @@
               <span>{{item.material}}</span>
               <span>
                 {{item.total_number + 'kg'}}
-                <!-- <template v-for="(value,index) in item.needColors">
-                  {{(index === 0 ? '' : '/') + value}}
-                </template> -->
               </span>
               <span>{{item.stock_number + 'kg'}}</span>
               <span>{{item.before_stock + 'kg'}}</span>
@@ -143,7 +154,7 @@
                 v-for="(iten,kay) in item.stockInfo"
                 :key="kay">
               <li>
-                <span>原料颜色</span>:
+                <span>{{type === '0' ? '原' : '辅'}}料颜色</span>:
                 <el-select v-model="iten.materialColor"
                            placeholder="请选择订购来源"
                            size="small">
@@ -155,18 +166,9 @@
                 </el-select>
               </li>
               <li>
-                <span>缸号</span>:
-                <el-input size="small"
-                          placeholder="请输入缸号"
-                          v-model="iten.dyelot"
-                          style="width:243px;">
-                </el-input>
-                <!-- <i>元</i> -->
-              </li>
-              <li>
-                <span>原料属性</span>:
+                <span>{{type === '0' ? '原' : '辅'}}料属性</span>:
                 <el-select v-model="iten.materialAtr"
-                           placeholder="请选择原料属性"
+                           :placeholder="'请选择'+ type === '0' ? '原' : '辅'+'料属性'"
                            size="small">
                   <el-option v-for="value in options"
                              :key="value.value"
@@ -179,13 +181,27 @@
                   :key="index"
                   class="col">
                 <div>
-                  <span>第{{index+1}}包</span>:
+                  <span>批号/缸号</span>:
                   <el-input size="small"
-                            placeholder="请输入重量"
+                            placeholder="请输入批号/缸号"
+                            v-model="value.dyelot_number"
+                            style="width:243px;">
+                  </el-input>
+                </div>
+                <div>
+                  <span>件数/数量</span>:
+                  <el-input size="small"
+                            placeholder="件数"
+                            v-model="value.number"
+                            @change="jisuan">
+                    <template slot="append">件</template>
+                  </el-input>
+                  <el-input size="small"
+                            placeholder="数量"
                             v-model="value.weight"
                             @change="jisuan">
+                    <template slot="append">件</template>
                   </el-input>
-                  <i>kg</i>
                 </div>
                 <em v-if="index === 0"
                     class="el-icon-plus"
@@ -193,23 +209,6 @@
                 <em v-else
                     class="el-icon-delete"
                     @click="deleteStockWeightInfo(key,kay,index)"></em>
-              </li>
-              <li>
-                <span>总重量</span>:
-                <el-input size="small"
-                          placeholder="0"
-                          :disabled="true"
-                          v-model="iten.total_weight">
-                </el-input>
-                <i>kg</i>
-              </li>
-              <li>
-                <span>入库仓库</span>:
-                <el-input size="small"
-                          placeholder="选择仓库"
-                          v-model="iten.stock"
-                          style="width:243px;">
-                </el-input>
               </li>
               <li>
                 <span>入库时间</span>:
@@ -241,28 +240,6 @@
           </div>
         </div>
       </div>
-      <div class="stepCtn"
-           style="padding-top:0;">
-        <div class="borderCtn">
-          <div class="cicle"></div>
-        </div>
-        <div class="lineCtn"
-             style="margin:0;">
-          <div class="inputCtn noPadding">
-            <span class="content"
-                  style="margin-left:40px;display:justify-content:center;">
-              <span style="width:8em">剩余入库量:</span>
-              <el-input size="small"
-                        placeholder="0"
-                        :disabled="true"
-                        v-model="total_weight"
-                        style="width:238px;margin-left:15px;">
-                <template slot="append">kg</template>
-              </el-input>
-            </span>
-          </div>
-        </div>
-      </div>
       <div class="btnCtn">
         <div class="cancleBtn"
              @click="$router.go(-1)">返回</div>
@@ -278,6 +255,8 @@ export default {
   data () {
     return {
       total_weight: 0,
+      now_time: '',
+      type: '',
       defaultStock: '桐庐凯瑞针纺有限公司',
       loading: false,
       productList: [
@@ -303,97 +282,32 @@ export default {
           number: 2000
         }
       ],
-      rawMaterialPlanList: [
+      orderInfo: [
         {
-          company: '杭州力欧纱线有限公司',
-          processInfo: [
+          order_client: '111',
+          info: [
             {
-              material: '52支上光晴纶',
-              colorInfo: [
+              material: '52',
+              unit: 'kg',
+              colorList: [
                 {
-                  color: '深绿',
-                  value: 400,
-                  unit: 'kg'
-                },
-                {
-                  color: '白胚',
-                  value: 300,
-                  unit: 'kg'
-                },
-                {
-                  color: '绿色',
-                  value: 500,
-                  unit: 'kg'
+                  color: '绿',
+                  value: 200
+                }, {
+                  color: '绿',
+                  value: 200
                 }
               ]
-            },
-            {
-              material: '36支上光涤纶',
-              colorInfo: [
+            }, {
+              material: '52',
+              unit: 'kg',
+              colorList: [
                 {
-                  color: '深绿',
-                  value: 400,
-                  unit: 'kg'
-                },
-                {
-                  color: '白胚',
-                  value: 300,
-                  unit: 'kg'
-                },
-                {
-                  color: '绿色',
-                  value: 500,
-                  unit: 'kg'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          company: '杭州飞泰纱线有限公司',
-          processInfo: [
-            {
-              material: '52支上光晴纶',
-              colorInfo: [
-                {
-                  color: '卡其色',
-                  value: 400.23,
-                  unit: 'kg'
-                },
-                {
-                  color: '白胚',
-                  value: 300,
-                  unit: 'kg'
-                },
-                {
-                  color: '绿色',
-                  value: 500,
-                  unit: 'kg'
-                },
-                {
-                  color: '白胚',
-                  value: 300,
-                  unit: 'kg'
-                }
-              ]
-            },
-            {
-              material: '48支上光涤纶',
-              colorInfo: [
-                {
-                  color: '深绿',
-                  value: 400,
-                  unit: 'kg'
-                },
-                {
-                  color: '白胚',
-                  value: 300,
-                  unit: 'kg'
-                },
-                {
-                  color: '绿色',
-                  value: 500,
-                  unit: 'kg'
+                  color: '绿',
+                  value: 200
+                }, {
+                  color: '绿',
+                  value: 200
                 }
               ]
             }
@@ -516,24 +430,10 @@ export default {
         {
           material: '',
           colors: [],
-          total_number: 0,
-          stock_number: 0,
-          before_stock: 0,
+          total_weight: 0,
+          goStock_number: 0,
+          outStock_number: 0,
           stockInfo: [
-            // {
-            //   materialColor: '',
-            //   dyelot: '',
-            //   materialAtr: '',
-            //   total_weight: 0,
-            //   remark: '',
-            //   stock: '桐庐凯瑞针纺有限公司',
-            //   stock_time: new Date(),
-            //   stockWeightInfo: [
-            //     {
-            //       weight: ''
-            //     }
-            //   ]
-            // }
           ]
         }
       ],
@@ -594,6 +494,8 @@ export default {
     },
     appendStockWeightInfo (key, kay) {
       this.list[key].stockInfo[kay].stockWeightInfo.push({
+        dyelot_number: '',
+        number: '',
         weight: ''
       })
     },
@@ -605,25 +507,24 @@ export default {
       this.list[key].stockInfo.push(
         {
           materialColor: '',
-          dyelot: '',
           materialAtr: '',
-          total_weight: 0,
           remark: '',
-          stock: this.defaultStock,
-          stock_time: new Date(),
+          stock_time: this.now_time,
           stockWeightInfo: [
             {
+              dyelot_number: '',
+              number: '',
               weight: ''
             }
           ]
         }
       )
-      console.log(this.list)
     },
     deleteStockInfo (key, kay) {
       this.list[key].stockInfo.splice(kay, 1)
     },
     saveAll () {
+      console.log(this.list)
       this.list.forEach(item => {
         item.stockInfo.forEach(value => {
           let flag = value.materialColor && value.dyelot && value.materialAtr && value.total_weight && value.stock && value.stock_time
@@ -647,6 +548,10 @@ export default {
     }
   },
   created () {
+    this.type = this.$route.params.type
+    let nowDate = new Date()
+    this.now_time = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1 < 10 ? '0' + (nowDate.getMonth() + 1) : (nowDate.getMonth() + 1)) + '-' + (nowDate.getDate() < 10 ? '0' + nowDate.getDate() : nowDate.getDate())
+    console.log(this.now_time)
     let kays = true
     this.processInfo.forEach((item, key) => {
       item.processInfo.forEach((value, index) => {
@@ -661,20 +566,6 @@ export default {
                 stock_number: 0,
                 before_stock: 0,
                 stockInfo: [
-                  // {
-                  //   materialColor: '',
-                  //   dyelot: '',
-                  //   materialAtr: '',
-                  //   total_weight: 0,
-                  //   remark: '',
-                  //   stock: this.defaultStock,
-                  //   stock_time: new Date(),
-                  //   stockWeightInfo: [
-                  //     {
-                  //       weight: ''
-                  //     }
-                  //   ]
-                  // }
                 ],
                 colors: [
                   {
@@ -710,20 +601,6 @@ export default {
                     stock_number: 0,
                     before_stock: 0,
                     stockInfo: [
-                      // {
-                      //   materialColor: '',
-                      //   dyelot: '',
-                      //   materialAtr: '',
-                      //   total_weight: 0,
-                      //   remark: '',
-                      //   stock: this.defaultStock,
-                      //   stock_time: new Date(),
-                      //   stockWeightInfo: [
-                      //     {
-                      //       weight: ''
-                      //     }
-                      //   ]
-                      // }
                     ],
                     colors: [{
                       color: cont.color,

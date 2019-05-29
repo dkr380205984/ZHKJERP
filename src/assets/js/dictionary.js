@@ -174,22 +174,9 @@ const menu = [{
   }, {
     name: '物料详情列表',
     url: '/index/rawMaterialOrderList'
-    // }
-    // , {
-    //   name: '物料详情列表',
-    //   url: '/index/rawMaterialOrderCompiledList'
-    // }, {
-    //   name: '原料加工列表',
-    //   url: '/index/rawMaterialProcessList'
-    // }, {
-    //   name: '原料已加工列表',
-    //   url: '/index/rawMaterialProcessCompiledList'
-  // }, {
-  //   name: '物料出入库列表',
-  //   url: '/index/rawMaterialStockList'
-    // }, {
-    //   name: '原料已入库列表',
-    //   url: '/index/rawMaterialStockList'
+  }, {
+    name: '物料出入库列表',
+    url: '/index/rawMaterialStockList'
   }]
 }, {
   name: '合作公司管理',

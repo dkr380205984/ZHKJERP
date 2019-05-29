@@ -75,11 +75,11 @@
                     <span v-for="(va,inf) in val.need"
                           :key="inf">
                       <span>{{va.name}}</span>
-                      <span class="flex08">{{va.value + val.unit}}</span>
+                      <span class="flex08">{{va.value|fixedFilter}}{{val.unit}}</span>
                     </span>
                   </span>
-                  <span>{{(val.total_weight ? Number(val.total_weight).toFixed(2) : 0) + val.unit}}</span>
-                  <span>{{(val.order_weight ? val.order_weight : 0) + val.unit}}</span>
+                  <span>{{(val.total_weight ? val.total_weight : 0)|fixedFilter}}{{val.unit}}</span>
+                  <span>{{(val.order_weight ? val.order_weight : 0)|fixedFilter}}{{val.unit}}</span>
                 </li>
               </ul>
             </div>
@@ -110,8 +110,8 @@
                   {{(index === 0 ? '' : '/') + value}}
                 </template>
               </span>
-              <span>{{item.total_number + item.unit}}</span>
-              <span>{{item.select_number + item.unit}}</span>
+              <span>{{item.total_number|fixedFilter}}{{item.unit}}</span>
+              <span>{{(Number(item.selectNums ? item.selectNums : 0) + Number(item.select_number))|fixedFilter}}{{item.unit}}</span>
             </div>
           </div>
           <div class="processInfo">
@@ -148,7 +148,8 @@
                   <span>{{type === '0' ? '原' : '辅'}}料信息</span>:
                   <el-select v-model="value.color"
                              placeholder="颜色"
-                             size="small">
+                             size="small"
+                             :change="watchAll(value.color,item.material,kay,key)">
                     <el-option v-for="color in options.colorList[item.material]"
                                :key="color.value"
                                :value="color">
@@ -223,6 +224,7 @@ export default {
     return {
       loading: true,
       type: '',
+      now_time: '',
       order_code: '',
       order_time: '',
       client_name: '',
@@ -259,15 +261,33 @@ export default {
       }
     }
   },
+  filters: {
+    fixedFilter (item) {
+      return Number(item).toFixed(2)
+    }
+  },
   methods: {
+    watchAll (value, item, kay, key) {
+      if (value === '所有颜色') {
+        let obj = this.materialList.find(val => val.material === item).need
+        let arr = this.list.find(val => val.material === item)
+        arr.processInfo[kay].processMaterialInfo = []
+        obj.forEach(item => {
+          arr.processInfo[kay].processMaterialInfo.push({
+            color: item.name,
+            value: Math.ceil(item.value)
+          })
+        })
+        this.jisuan(key)
+      }
+    },
     jisuan (key) {
       this.list.forEach((item, key) => {
         item.select_number = 0
         item.processInfo.forEach((value, index) => {
           value.processMaterialInfo.forEach((val, ind) => {
-            if (Number(item.select_number) + Number(val.value) < Number(item.order_weight)) {
-              item.select_number += Number(val.value)
-              item.select_number = (this.type === '0' ? Number(item.select_number).toFixed(2) : Math.ceil(item.select_number))
+            if (Number(item.select_number) + Number(val.value) < Number(item.total_number)) {
+              item.select_number = Number(item.select_number) + Number(val.value)
             } else {
               val.value = 0
               this.$message({
@@ -294,7 +314,7 @@ export default {
         {
           processCompany: '',
           money: '',
-          orderTime: '',
+          orderTime: this.now_time,
           remark: '',
           process_type: '',
           processMaterialInfo: [
@@ -361,14 +381,6 @@ export default {
             }
           }
           obj.material_info = JSON.stringify(value.processMaterialInfo)
-          // if (!value.money) {
-          //   this.$message({
-          //     message: '请输入总价',
-          //     type: 'error'
-          //   })
-          //   flag = false
-          //   return
-          // }
           obj.total_price = value.money
           if (!value.orderTime) {
             this.$message({
@@ -383,7 +395,6 @@ export default {
           arr.push({ ...obj })
         })
       })
-      console.log(arr)
       this.loading = false
       if (nums === 0) {
         this.$message({
@@ -402,7 +413,7 @@ export default {
               type: 'success'
             })
             setTimeout(() => {
-              this.$router.push('/index/rawMaterialOrderDetail/' + this.$route.params.id + '?type=' + this.type)
+              this.$router.push('/index/rawMaterialOrderDetail/' + this.$route.params.id + '/' + this.type)
             }, 800)
           }
         })
@@ -410,7 +421,10 @@ export default {
     }
   },
   created () {
-    this.type = document.location.href.split('type=')[1]
+    this.type = this.$route.params.type
+    let nowDate = new Date()
+    this.now_time = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1 < 10 ? '0' + (nowDate.getMonth() + 1) : (nowDate.getMonth() + 1)) + '-' + (nowDate.getDate() < 10 ? '0' + nowDate.getDate() : nowDate.getDate())
+    console.log(this.now_time)
     Promise.all([
       rawMaterialOrderInit({
         order_id: this.$route.params.id
@@ -426,6 +440,7 @@ export default {
         company_id: sessionStorage.company_id
       })
     ]).then(res => {
+      console.log(res)
       let materialInfo = res[0].data.data.material_info
       let orderInfo = res[2].data.data
       // 初始化订单信息
@@ -454,11 +469,10 @@ export default {
         if (!flag) {
           this.productList.push({ ...item })
         } else {
-          flag.number = Math.ceil(Number(flag.number) + Number(item.number))
+          flag.number = Number(flag.number) + Number(item.number)
         }
       })
       // 初始化物料订购信息
-      console.log(materialInfo)
       materialInfo.forEach((item, key) => {
         for (let prop in item) {
           for (let value in item[prop]) {
@@ -468,25 +482,25 @@ export default {
                 if (!flag) {
                   this.materialList.push({
                     material: prop,
-                    total_weight: (item[prop].unit === '克' || item[prop].unit === 'g') ? (Math.ceil(item[prop][value]) / 1000).toFixed(2) : (this.type === '0' ? Number(item[prop][value]).toFixed(2) : Math.ceil(item[prop][value])),
+                    total_weight: (item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value],
                     unit: (item[prop].unit === '克' || item[prop].unit === 'g') ? 'kg' : item[prop].unit === '千克' ? 'kg' : item[prop].unit,
                     need: [{
                       name: value,
-                      value: (item[prop].unit === '克' || item[prop].unit === 'g') ? (Math.ceil(item[prop][value]) / 1000).toFixed(2) : (this.type === '0' ? Number(item[prop][value]).toFixed(2) : Math.ceil(item[prop][value]))
+                      value: (item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value]
                     }]
                   })
-                  this.options.colorList[prop] = [value]
+                  this.options.colorList[prop] = ['所有颜色', value]
                 } else {
-                  flag.total_weight = Number(flag.total_weight) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? (Math.ceil(item[prop][value]) / 1000).toFixed(2) : (this.type === '0' ? Number(item[prop][value]).toFixed(2) : Math.ceil(item[prop][value])))
+                  flag.total_weight = Number(flag.total_weight) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value])
                   let arr = flag.need.find(val => val.name === value)
                   if (!arr) {
                     flag.need.push({
                       name: value,
-                      value: (item[prop].unit === '克' || item[prop].unit === 'g') ? (Math.ceil(item[prop][value]) / 1000).toFixed(2) : (this.type === '0' ? Number(item[prop][value]).toFixed(2) : Math.ceil(item[prop][value]))
+                      value: (item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value]
                     })
                     this.options.colorList[prop].push(value)
                   } else {
-                    arr.value = Number(arr.value) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? (Math.ceil(item[prop][value]) / 1000).toFixed(2) : (this.type === '0' ? Number(item[prop][value]).toFixed(2) : Math.ceil(item[prop][value])))
+                    arr.value = Number(arr.value) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value])
                   }
                 }
               }
@@ -497,17 +511,17 @@ export default {
       res[1].data.data.forEach(item => {
         let flag = this.materialList.find(val => val.material === item.material_name)
         if (flag) {
-          flag.order_weight = ((flag.order_weight ? Number(flag.order_weight) : 0) + Number(item.weight)).toFixed(2)
+          flag.order_weight = (flag.order_weight ? Number(flag.order_weight) : 0) + Number(item.weight)
         }
         if ((this.type === '0' && item.type === 1) || (this.type === '1' && item.type === 2)) {
           let arr = this.list.find(val => val.material === item.material_name)
           if (arr) {
-            arr.total_number = (Number(arr.total_number) + Number(item.weight)).toFixed(2)
+            arr.total_number = Number(arr.total_number) + Number(item.weight)
           } else {
             this.list.push({
               material: item.material_name,
               needColors: [item.color_code],
-              total_number: Number(item.weight).toFixed(2),
+              total_number: item.weight,
               select_number: 0,
               unit: (item.unit === null ? 'kg' : item.unit),
               processInfo: []
@@ -515,13 +529,20 @@ export default {
           }
         }
       })
-      console.log(this.options)
       // 加工公司列表初始化
       res[3].data.data.forEach((item, key) => {
         if (item.type !== 2 && item.type !== 1) {
           this.options.companyList.push(item)
         }
       })
+      // 已加工数量初始化
+      let selectWeight = res[0].data.data.total_weight_process
+      for (let prop in selectWeight) {
+        let flag = this.list.find(item => item.material === prop)
+        if (flag) {
+          flag.selectNums = selectWeight[prop] ? selectWeight[prop] : 0
+        }
+      }
       this.loading = false
     })
   }
