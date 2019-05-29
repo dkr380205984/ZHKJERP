@@ -69,11 +69,11 @@
                    :key="key">
                 <span>
                   <span>{{item.material}}</span>
-                  <span>{{item.need.name + ':' + item.need.value + item.need.unit}}</span>
+                  <span>{{item.need.name + ':'}}{{item.need.value|fixedFilter}}{{item.need.unit}}</span>
                 </span>
                 <span>
-                  <span>{{item.have.name + ':' + (item.have.value ? item.have.value : '0') + item.need.unit}}</span>
-                  <span v-if="type === '0'">{{'白胚:' + (item.whiteHave ? item.whiteHave + item.need.unit : '0' + item.need.unit)}}</span>
+                  <span>{{item.have.name + ':'}}{{(item.have.value ? item.have.value : '0')|fixedFilter}}{{item.need.unit}}</span>
+                  <span v-if="type === '0'">{{'白胚:'}}{{(item.whiteHave ? item.whiteHave : '0')|fixedFilter}}{{item.need.unit}}</span>
                 </span>
               </div>
             </template>
@@ -112,8 +112,8 @@
                 </template>
                 <template v-else>暂无信息</template>
               </span>
-              <span>{{Number(item.needNum).toFixed(2) + item.unit}}</span>
-              <span>{{(Number(item.selectNum) + Number(item.selectNums ? item.selectNums : 0)).toFixed(2) + item.unit}}</span>
+              <span>{{item.needNum|fixedFilter}}{{item.unit}}</span>
+              <span>{{(Number(item.selectNum) + Number(item.selectNums ? item.selectNums : 0))|fixedFilter}}{{item.unit}}</span>
             </div>
           </div>
           <div class="buyInfo">
@@ -231,6 +231,7 @@ export default {
   data () {
     return {
       loading: true,
+      now_time: '',
       type: '',
       order_code: '',
       order_time: '',
@@ -259,13 +260,13 @@ export default {
       }
     }
   },
+  filters: {
+    fixedFilter (item) {
+      return Number(item).toFixed(2)
+    }
+  },
   methods: {
     jisuan (ke, flag, va) {
-      if (flag) {
-        if (va % 1 !== 0 || Number(va) < 0) {
-
-        }
-      }
       this.list.forEach((item, key) => {
         item.selectNum = 0
         item.buyInfo.forEach((value, index) => {
@@ -293,19 +294,15 @@ export default {
                 type: 'warning'
               }).then(() => {
                 item.selectNum = Number(item.selectNum) + Number(val.value)
-                item.selectNum = (this.type === '0' ? (Math.ceil(item.selectNum * 100) / 100).toFixed(2) : Math.ceil(item.selectNum))
                 value.money += (val.price * val.value)
-                value.money = Math.ceil(value.money)
               }).catch(() => {
                 this.$message({
                   type: 'info',
                   message: '已取消'
                 })
                 val.value = 0
-                item.selectNum = (Number(item.selectNum) + Number(val.value)).toFixed(2)
-                item.selectNum = this.type === '0' ? (Math.ceil(item.selectNum * 100) / 100).toFixed(2) : Math.ceil(item.selectNum)
+                item.selectNum = Number(item.selectNum) + Number(val.value)
                 value.money += (val.price * val.value)
-                value.money = Math.ceil(value.money)
               })
             }
           })
@@ -336,7 +333,7 @@ export default {
         {
           company: '仓库',
           money: '',
-          orderTime: '',
+          orderTime: this.now_time,
           remark: '',
           buyMaterialInfo: [
             {
@@ -462,6 +459,7 @@ export default {
           })
         })
       })
+      console.log(arr)
       this.loading = false
       if (nums === 0) {
         this.$message({
@@ -483,7 +481,7 @@ export default {
               type: 'success'
             })
             setTimeout(() => {
-              this.$router.push('/index/rawMaterialOrderDetail/' + this.$route.params.id + '?type=' + this.type)
+              this.$router.push('/index/rawMaterialOrderDetail/' + this.$route.params.id + '/' + this.type)
             }, 800)
           }
         })
@@ -491,7 +489,10 @@ export default {
     }
   },
   created () {
-    this.type = document.location.href.split('type=')[1]
+    this.type = this.$route.params.type
+    let nowDate = new Date()
+    this.now_time = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1 < 10 ? '0' + (nowDate.getMonth() + 1) : (nowDate.getMonth() + 1)) + '-' + (nowDate.getDate() < 10 ? '0' + nowDate.getDate() : nowDate.getDate())
+    console.log(this.now_time)
     Promise.all([
       rawMaterialOrderInit({
         order_id: this.$route.params.id
@@ -511,7 +512,7 @@ export default {
                   material: prop,
                   need: {
                     name: val,
-                    value: (item[prop].unit === '克' || item[prop].unit === 'g') ? (Math.ceil(item[prop][val]) / 1000).toFixed(2) : (this.type === '0' ? (item[prop][val]).toFixed(2) : Math.ceil(item[prop][val])),
+                    value: (item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][val]) / 1000 : item[prop][val],
                     unit: (item[prop].unit === '克' || item[prop].unit === 'g') ? 'kg' : item[prop].unit === '千克' ? 'kg' : item[prop].unit
                   },
                   have: {
@@ -526,14 +527,13 @@ export default {
           }
         }
       })
-      console.log(this.rawMaterialPlanList)
       this.rawMaterialPlanList.forEach((item, key) => {
         let flag = this.list.find(val => val.material === item.material)
         if (!flag) {
           this.list.push({
             material: item.material,
             needColors: [item.need.name],
-            needNum: (this.type === '0' ? (Math.ceil(item.need.value * 100) / 100).toFixed(2) : (this.type === '0' ? (item.need.value).toFixed(2) : Math.ceil(item.need.value))),
+            needNum: item.need.value,
             selectNum: 0,
             unit: item.need.unit,
             buyInfo: [
@@ -542,7 +542,6 @@ export default {
         } else {
           flag.needColors.push(item.need.name)
           flag.needNum = Number(flag.needNum) + Number(item.need.value)
-          flag.needNum = this.type === '0' ? (Math.ceil(flag.needNum * 100) / 100).toFixed(2) : Math.ceil(flag.needNum)
         }
       })
       this.order_code = res[0].data.data.order_info.order_code
@@ -582,7 +581,7 @@ export default {
         if (!flag) {
           this.productList.push({ ...item })
         } else {
-          flag.number = Math.ceil(Number(flag.number) + Number(item.number))
+          flag.number = Number(flag.number) + Number(item.number)
         }
       })
       // 库存信息初始化
@@ -591,19 +590,19 @@ export default {
         stockInfo[prop].forEach((item, key) => {
           this.rawMaterialPlanList.forEach((val, ind) => {
             if (val.material === item.material_name && item.material_color === (val.have.name)) {
-              val.have.value = val.have.value === '' ? Number(item.total_weight) : Number(val.have.value) + Number(item.total_weight)
+              val.have.value = val.have.value === '' ? item.total_weight : Number(val.have.value) + Number(item.total_weight)
             } else if (val.material === item.material_name && item.material_color === '白胚') {
-              val.whiteHave = val.whiteHave === '' ? Number(item.total_weight) : Number(val.whiteHave) + Number(item.total_weight)
+              val.whiteHave = val.whiteHave === '' ? item.total_weight : Number(val.whiteHave) + Number(item.total_weight)
             }
           })
         })
       }
       // 已选重量初始化
-      let selectWeight = res[0].data.data.total_weight
+      let selectWeight = res[0].data.data.total_weight_order
       for (let prop in selectWeight) {
         let flag = this.list.find(item => item.material === prop)
         if (flag) {
-          flag.selectNums = selectWeight[prop] ? Number(selectWeight[prop]) : 0
+          flag.selectNums = selectWeight[prop] ? selectWeight[prop] : 0
         }
       }
     })

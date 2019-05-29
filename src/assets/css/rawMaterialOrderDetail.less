@@ -107,9 +107,6 @@ ul {
           padding-left: 7em;
           flex-wrap: wrap;
           min-height: 40px;
-          &:nth-child(n+2){
-            margin-top: 20px;
-          }
           &.column {
             padding-left: 0;
             flex-direction: column;
@@ -263,7 +260,6 @@ ul {
               }
             }
             &>.handle {
-              display: flex;
               position: absolute;
               top: 0;
               right: 0;
@@ -304,6 +300,33 @@ ul {
                     flex: 1;
                     text-align: center;
                     font-size: 12px;
+                    &.remark {
+                      overflow: hidden;
+                      display: flex;
+                      align-items: center;
+                      &>i {
+                        display: inline-block;
+                        font-style: normal;
+                        width: inherit;
+                        padding: 0 30px;
+                        margin: 0 auto;
+                        height: 1.3rem;
+                        overflow: hidden;
+                        max-width: inherit;
+                        position: relative;
+                        line-height: 1.3rem;
+                        &>span {
+                          position: absolute;
+                          top: 0;
+                          right: 0;
+                          line-height: 1.3rem;
+                          cursor: pointer;
+                          color: @normalBlue;
+                          padding-left: 1em;
+                          background:linear-gradient(90deg,rgba(255,255,255,0.56) 0%,rgba(255,255,255,1) 30%);
+                        }
+                      }
+                    }
                     &.flexBig {
                       flex: 1.2;
                     }

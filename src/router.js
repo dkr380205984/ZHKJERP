@@ -11,7 +11,7 @@ let router = new Router({
     path: '/',
     redirect: '/login'
   }, {
-    path: '/rawMaterialProcessTable/:id',
+    path: '/rawMaterialProcessTable/:id/:companyName/:type',
     name: 'rawMaterialProcessTable',
     component: () => import('./views/rawMaterial/rawMaterialProcessTable.vue')
   },
@@ -240,7 +240,7 @@ let router = new Router({
       name: 'rawMaterialStat',
       component: () => import('./views/rawMaterial/rawMaterialStat.vue')
     }, {
-      path: 'rawMaterialOrderPage/:id',
+      path: 'rawMaterialOrderPage/:id/:type',
       name: 'rawMaterialOrderPage',
       component: () => import('./views/rawMaterial/rawMaterialOrderPage.vue')
     }, {
@@ -248,39 +248,15 @@ let router = new Router({
       name: 'rawMaterialOrderList',
       component: () => import('./views/rawMaterial/rawMaterialOrderList.vue')
     }, {
-      //   path: 'rawMaterialOrderCompiledList',
-      //   name: 'rawMaterialOrderCompiledList',
-      //   component: () => import('./views/rawMaterial/rawMaterialOrderCompiledList.vue')
-      // }, {
-      path: 'rawMaterialOrderDetail/:id',
+      path: 'rawMaterialOrderDetail/:id/:type',
       name: 'rawMaterialOrderDetail',
       component: () => import('./views/rawMaterial/rawMaterialOrderDetail.vue')
     }, {
-      //   path: 'rawMaterialProcessList',
-      //   name: 'rawMaterialProcessList',
-      //   component: () => import('./views/rawMaterial/rawMaterialProcessList.vue')
-      // }, {
-      //   path: 'rawMaterialProcessCompiledList',
-      //   name: 'rawMaterialProcessCompiledList',
-      //   component: () => import('./views/rawMaterial/rawMaterialProcessCompiledList.vue')
-      // }, {
-      path: 'rawMaterialProcess/:id',
+      path: 'rawMaterialProcess/:id/:type',
       name: 'rawMaterialProcess',
       component: () => import('./views/rawMaterial/rawMaterialProcess.vue')
     }, {
-      //   path: 'rawMaterialProcessDetail/:id',
-      //   name: 'rawMaterialProcessDetail',
-      //   component: () => import('./views/rawMaterial/rawMaterialProcessDetail.vue')
-      // }, {
-      path: 'rawMaterialBeforeStockList',
-      name: 'rawMaterialBeforeStockList',
-      component: () => import('./views/rawMaterial/rawMaterialBeforeStockList.vue')
-    }, {
-      path: 'rawMaterialStock/:id',
-      name: 'rawMaterialStock',
-      component: () => import('./views/rawMaterial/rawMaterialStock.vue')
-    }, {
-      path: 'rawMaterialStockDetail/:id',
+      path: 'rawMaterialStockDetail/:id/:type',
       name: 'rawMaterialStockDetail',
       component: () => import('./views/rawMaterial/rawMaterialStockDetail.vue')
     }, {
@@ -288,21 +264,13 @@ let router = new Router({
       name: 'rawMaterialStockList',
       component: () => import('./views/rawMaterial/rawMaterialStockList.vue')
     }, {
-      path: 'rawMaterialOutStock/:id',
+      path: 'rawMaterialStock/:id/:type',
+      name: 'rawMaterialStock',
+      component: () => import('./views/rawMaterial/rawMaterialStock.vue')
+    }, {
+      path: 'rawMaterialOutStock/:id/:type',
       name: 'rawMaterialOutStock',
       component: () => import('./views/rawMaterial/rawMaterialOutStock.vue')
-    }, {
-      path: 'rawMaterialBeforeOutStockList',
-      name: 'rawMaterialBeforeOutStockList',
-      component: () => import('./views/rawMaterial/rawMaterialBeforeOutStockList.vue')
-    }, {
-      path: 'rawMaterialOutStockList',
-      name: 'rawMaterialOutStockList',
-      component: () => import('./views/rawMaterial/rawMaterialOutStockList.vue')
-    }, {
-      path: 'rawMaterialOutStockDetail/:id',
-      name: 'rawMaterialOutStockDetail',
-      component: () => import('./views/rawMaterial/rawMaterialOutStockDetail.vue')
     }, {
       path: 'error/:id',
       name: 'error',
@@ -327,30 +295,6 @@ let router = new Router({
       path: 'yarnSetting',
       name: 'yarnSetting',
       component: () => import('./views/setting/yarnSetting.vue')
-      // }, {
-      //   path: 'otherMaterialOrderList',
-      //   name: 'otherMaterialOrderList',
-      //   component: () => import('./views/rawMaterial/otherMaterialOrderList.vue')
-      // }, {
-      //   path: 'otherMaterialOrderPage/:id',
-      //   name: 'otherMaterialOrderPage',
-      //   component: () => import('./views/rawMaterial/otherMaterialOrderPage.vue')
-      // }, {
-      //   path: 'otherMaterialOrderCompiledList',
-      //   name: 'otherMaterialOrderCompiledList',
-      //   component: () => import('./views/rawMaterial/otherMaterialOrderCompiledList.vue')
-      // }, {
-      //   path: 'otherMaterialOrderDetail/:id',
-      //   name: 'otherMaterialOrderDetail',
-      //   component: () => import('./views/rawMaterial/otherMaterialOrderDetail.vue')
-      // }, {
-      //   path: 'otherMaterialProcessList',
-      //   name: 'otherMaterialProcessList',
-      //   component: () => import('./views/rawMaterial/otherMaterialProcessList.vue')
-      // }, {
-      //   path: 'otherMaterialProcess/:id',
-      //   name: 'otherMaterialProcess',
-      //   component: () => import('./views/rawMaterial/otherMaterialProcess.vue')
     }]
   }
   ]

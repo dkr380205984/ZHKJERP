@@ -108,9 +108,9 @@
           <div class="tableColumn flex17"
                style="flex-direction:row;">
             <span class="btns normal"
-                  @click="$router.push('/index/rawMaterialStockDetail/'+item.id + '?type=0')">原料详情</span>
+                  @click="$router.push('/index/rawMaterialStockDetail/'+item.id + '/0')">原料详情</span>
             <span class="btns normal"
-                  @click="$router.push('/index/rawMaterialStockDetail/' + item.id + '?type=1')">辅料详情</span>
+                  @click="$router.push('/index/rawMaterialStockDetail/' + item.id + '/1')">辅料详情</span>
           </div>
         </div>
       </div>
