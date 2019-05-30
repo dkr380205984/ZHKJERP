@@ -67,6 +67,7 @@
                   <span>总计划</span>
                   <span>已订购</span>
                 </li>
+                <li v-if="materialList.length === 0">暂无信息</li>
                 <li v-for="(val,ind) in materialList"
                     :key="ind"
                     class="material">
@@ -158,8 +159,7 @@
                   <strong>—</strong>
                   <el-input size="small"
                             placeholder="数量"
-                            v-model="value.value"
-                            @change="jisuan(key)">
+                            v-model="value.value">
                   </el-input>
                 </div>
                 <em v-if="index === 0"
@@ -266,6 +266,22 @@ export default {
       return Number(item).toFixed(2)
     }
   },
+  watch: {
+    list: {
+      deep: true,
+      handler: function () {
+        this.list.forEach((item, key) => {
+          let num = 0
+          item.processInfo.forEach(value => {
+            value.processMaterialInfo.forEach(val => {
+              num += Number(val.value)
+            })
+          })
+          item.select_number = num
+        })
+      }
+    }
+  },
   methods: {
     watchAll (value, item, kay, key) {
       if (value === '所有颜色') {
@@ -278,26 +294,7 @@ export default {
             value: Math.ceil(item.value)
           })
         })
-        this.jisuan(key)
       }
-    },
-    jisuan (key) {
-      this.list.forEach((item, key) => {
-        item.select_number = 0
-        item.processInfo.forEach((value, index) => {
-          value.processMaterialInfo.forEach((val, ind) => {
-            if (Number(item.select_number) + Number(val.value) < Number(item.total_number)) {
-              item.select_number = Number(item.select_number) + Number(val.value)
-            } else {
-              val.value = 0
-              this.$message({
-                message: '加工数量超过计划数量,请重新输入！！！',
-                type: 'error'
-              })
-            }
-          })
-        })
-      })
     },
     appendProcessMaterialInfo (key, kay) {
       this.list[key].processInfo[kay].processMaterialInfo.push({
@@ -307,7 +304,6 @@ export default {
     },
     deleteProcessMaterialInfo (key, kay, index) {
       this.list[key].processInfo[kay].processMaterialInfo.splice(index, 1)
-      this.jisuan(key)
     },
     addProcessInfo (key) {
       this.list[key].processInfo.push(
@@ -328,7 +324,6 @@ export default {
     },
     deleteProcessInfo (key, kay) {
       this.list[key].processInfo.splice(kay, 1)
-      this.jisuan(key)
     },
     saveAll () {
       this.loading = true
@@ -336,6 +331,11 @@ export default {
       let nums = 0
       let flag = true
       this.list.forEach((item, key) => {
+        if (Number(item.total_number) < (Number(item.select_number) + Number(item.selectNums))) {
+          alert('已选数量超出订购数量，请重新输入。')
+          flag = false
+          return
+        }
         let obj = {}
         obj.company_id = sessionStorage.company_id
         obj.order_id = this.$route.params.id
@@ -396,27 +396,27 @@ export default {
         })
       })
       this.loading = false
-      if (nums === 0) {
-        this.$message({
-          message: '无可提交的订购信息',
-          type: 'warning'
-        })
-        return
-      }
       if (flag) {
-        rawMaterialProcessPage({
-          data: arr
-        }).then(res => {
-          if (res.data.code === 200) {
-            this.$message({
-              message: '添加成功,即将跳转至详情页',
-              type: 'success'
-            })
-            setTimeout(() => {
-              this.$router.push('/index/rawMaterialOrderDetail/' + this.$route.params.id + '/' + this.type)
-            }, 800)
-          }
-        })
+        if (nums === 0) {
+          this.$message({
+            message: '无可提交的订购信息',
+            type: 'warning'
+          })
+        } else {
+          rawMaterialProcessPage({
+            data: arr
+          }).then(res => {
+            if (res.data.code === 200) {
+              this.$message({
+                message: '添加成功,即将跳转至详情页',
+                type: 'success'
+              })
+              setTimeout(() => {
+                this.$router.push('/index/rawMaterialOrderDetail/' + this.$route.params.id + '/' + this.type)
+              }, 800)
+            }
+          })
+        }
       }
     }
   },

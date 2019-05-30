@@ -52,10 +52,11 @@
                     </span>
                   </span>
                 </li>
+                <li v-if="materialList.length === 0">暂无信息</li>
                 <li class="orderInfo"
                     v-for="(item,key) in materialList"
                     :key="key">
-                  <span>{{item.company}}</span>
+                  <span>{{item.company ? item.company : '仓库'}}</span>
                   <span class="flex45 col">
                     <span v-for="(val,ind) in item.materials"
                           :key="ind">
@@ -82,45 +83,48 @@
           <div class="border"></div>
         </div>
         <div class="lineCtn">
-          <div class="table">
-            <div class="tableTitle">
-              <span>
-                <span>加工类型</span>
-              </span>
-              <span class="flex45">
-                <span class="flex17">加工单位</span>
-                <span>{{type === '0' ? '原' : '辅'}}料名称</span>
-                <span class="flex12">颜色-数量</span>
-              </span>
-            </div>
-            <div class="tableInfo"
-                 v-for="(item,key) in processList"
-                 :key="key">
-              <span>
-                <span>{{item.process_type}}</span>
-              </span>
-              <span class="flex45">
-                <span v-for="(value,index) in item.companys"
-                      :key="index">
-                  <span class="flex17">
-                    <span>{{value.company}}</span>
-                  </span>
-                  <span class="flex22">
-                    <span v-for="(val,ind) in value.materials"
-                          :key="ind">
-                      <span>
-                        <span>{{val.material}}</span>
-                      </span>
+          <div class="inputCtn noPadding">
+            <div class="content">
+              <ul class="tablesCtn">
+                <li class="title">
+                  <span>加工类型</span>
+                  <span class="flex45">
+                    <span class="flex17">加工单位</span>
+                    <span class="flex22">
+                      <span>{{type === '0' ? '原' : '辅'}}料名称</span>
                       <span class="flex12">
-                        <span v-for="(ite,ka) in val.colors"
-                              :key="ka">
-                          {{ite.color + '--' + ite.value + ite.unit}}
+                        <span>颜色</span>
+                        <span>数量</span>
+                      </span>
+                    </span>
+                  </span>
+                </li>
+                <li v-if="processList.length === 0">暂无信息</li>
+                <li class="orderInfo"
+                    v-for="(item,key) in processList"
+                    :key="key">
+                  <span>{{item.process_type}}</span>
+                  <span class="flex45 col">
+                    <span v-for="(value,index) in item.companys"
+                          :key="index">
+                      <span class="flex17">{{value.company}}</span>
+                      <span class="flex22 col">
+                        <span v-for="(val,ind) in value.materials"
+                              :key="ind">
+                          <span>{{val.material}}</span>
+                          <span class="flex12 col">
+                            <span v-for="(itam,kay) in val.colors"
+                                  :key="kay">
+                              <span>{{itam.color}}</span>
+                              <span>{{itam.value}}{{itam.unit}}</span>
+                            </span>
+                          </span>
                         </span>
                       </span>
                     </span>
                   </span>
-                </span>
-              </span>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -136,9 +140,9 @@
           <div class="tablePlan">
             <div class="tableTitle">
               <span>{{type === '0' ? '原' : '辅'}}料名称</span>
-              <span>合计重量</span>
-              <span>已入库重量</span>
-              <span>待入库重量</span>
+              <span>合计数量</span>
+              <span>已入库数量</span>
+              <span>待入库数量</span>
             </div>
             <div class="tableInfo">
               <span>{{item.material}}</span>
@@ -146,7 +150,7 @@
                 {{item.total_number}}{{item.unit}}
               </span>
               <span>{{item.goStock_number}}{{item.unit}}</span>
-              <span>{{item.waitStock_number}}{{item.unit}}</span>
+              <span>{{item.total_number - item.goStock_number}}{{item.unit}}</span>
             </div>
           </div>
           <div class="buyInfo">
@@ -159,7 +163,7 @@
                            :placeholder="'请选择'+(type === '0' ? '原' : '辅')+'料颜色'"
                            size="small">
                   <el-option v-for="value in item.colors"
-                             :key="value.value"
+                             :key="value"
                              :value="value">
                   </el-option>
                 </el-select>
@@ -186,15 +190,13 @@
                   <span>件数/数量</span>:
                   <el-input size="small"
                             placeholder="件数"
-                            v-model="value.number"
-                            @change="jisuan">
+                            v-model="value.number">
                     <template slot="append">件</template>
                   </el-input>
                   <el-input size="small"
                             placeholder="数量"
-                            v-model="value.weight"
-                            @change="jisuan">
-                    <template slot="append">kg</template>
+                            v-model="value.weight">
+                    <template slot="append">{{item.unit}}</template>
                   </el-input>
                 </div>
                 <em v-if="index === 0"
@@ -326,17 +328,6 @@ export default {
     }
   },
   methods: {
-    jisuan () {
-      console.log(this.list)
-      this.list.forEach((item, key) => {
-        item.select_number = 0
-        item.stockInfo.forEach((value, index) => {
-          value.stockWeightInfo.forEach((val, ind) => {
-            item.select_number += Number(val.value)
-          })
-        })
-      })
-    },
     appendStockWeightInfo (key, kay) {
       this.list[key].stockInfo[kay].stockWeightInfo.push({
         dyelot_number: '',
@@ -346,7 +337,6 @@ export default {
     },
     deleteStockWeightInfo (key, kay, index) {
       this.list[key].stockInfo[kay].stockWeightInfo.splice(index, 1)
-      this.jisuan()
     },
     addStockInfo (key) {
       this.list[key].stockInfo.push(
@@ -369,7 +359,6 @@ export default {
       this.list[key].stockInfo.splice(kay, 1)
     },
     saveAll () {
-      console.log(this.list)
       let date = []
       this.list.forEach(item => {
         item.stockInfo.forEach(val => {
@@ -383,7 +372,7 @@ export default {
             obj.vat_code = value.dyelot_number
             obj.color_code = val.materialColor
             obj.number = value.number
-            obj.total_weight = value.total_weight
+            obj.total_weight = value.weight
             obj.complete_time = val.stock_time
             obj.desc = val.remark
             obj.attribute = val.materialAtr
@@ -391,7 +380,7 @@ export default {
           })
         })
       })
-      console.log(date)
+      console.log('update:', date)
       rawMaterialGoStock({
         data: date
       }).then(res => {
@@ -402,6 +391,22 @@ export default {
           })
         }
       })
+    }
+  },
+  watch: {
+    list: {
+      deep: true,
+      handler: function (newVal) {
+        this.list.forEach((item, key) => {
+          let json = 0
+          item.stockInfo.forEach(value => {
+            value.stockWeightInfo.forEach(val => {
+              json = json + Number(val.weight)
+            })
+          })
+          this.list[key].goStock_number = json
+        })
+      }
     }
   },
   created () {
@@ -421,13 +426,14 @@ export default {
         order_id: this.$route.params.id
       })
     ]).then(res => {
-      console.log(res)
+      console.log('init:', res)
       this.order_code = res[0].data.data.order_code
       this.client_name = res[0].data.data.client_name
       this.order_time = res[0].data.data.order_time
       this.group_name = res[0].data.data.group_name
       // 初始化订购信息
       let materialInfo = res[1].data.data
+      // console.log(materialInfo)
       materialInfo.forEach(item => {
         if ((this.type === '0' && item.type === 1) || (this.type === '1' && item.type === 2)) {
           let flag = this.materialList.find(val => val.company === item.client_name)
@@ -462,9 +468,25 @@ export default {
               })
             }
           }
+          // 初始化入库信息
+          let fleg = this.list.find(val => val.material === item.material_name)
+          if (!fleg) {
+            this.list.push({
+              material: item.material_name,
+              unit: (item.unit === null ? 'kg' : item.unit),
+              colors: [item.color_code],
+              total_number: item.weight,
+              goStock_number: 0,
+              stockInfo: []
+            })
+          } else {
+            if (!(fleg.colors.find(val => val === item.color_code))) {
+              fleg.colors.push(item.color_code)
+            }
+            fleg.total_number = Number(fleg.total_number) + Number(item.weight)
+          }
         }
       })
-      console.log(this.materialList)
       // 初始化加工信息
       let processInfo = res[2].data.data
       processInfo.forEach(item => {
@@ -533,28 +555,10 @@ export default {
                 }
               }
             }
-            // 初始化入库信息
-          }
-          let fleg = this.list.find(val => val.material === item.material_name)
-          if (!fleg) {
-            this.list.push({
-              material: item.material_name,
-              unit: (item.unit === null ? 'kg' : item.unit),
-              colors: [value.color],
-              total_number: value.value,
-              goStock_number: 0,
-              waitStock_number: 0,
-              stockInfo: []
-            })
-          } else {
-            if (!(fleg.colors.find(val => val === value.color))) {
-              fleg.colors.push(value.color)
-            }
-            fleg.total_number = Number(fleg.total_number) + Number(value.value)
           }
         })
       })
-      console.log(this.processList)
+      // console.log(this.processList)
     })
     this.loading = false
   }

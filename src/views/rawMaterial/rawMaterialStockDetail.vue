@@ -52,6 +52,7 @@
                   <span>已入库</span>
                   <span>已出库</span>
                 </li>
+                <li v-if="materialList.length === 0">暂无信息</li>
                 <li class="material_info"
                     v-for="(item,key) in materialList"
                     :key="key">
@@ -95,6 +96,7 @@
                     <span>待入库</span>
                   </span>
                 </li>
+                <li v-if="goStockList.length === 0">暂无信息</li>
                 <li class="material_info"
                     v-for="(item,key) in goStockList"
                     :key="key">
@@ -134,6 +136,7 @@
                   </li>
                 </div>
                 <div>
+                  <li v-if="goStockLog.length === 0">暂无信息</li>
                   <li v-for="(item,key) in goStockLog"
                       :key="item.time + key">
                     <span class="flexBig">{{item.time}}</span>
@@ -545,7 +548,7 @@ export default {
             fleg.goStock_number = Number(fleg.goStock_number ? fleg.goStock_number : 0) + Number(item.total_weight)
           }
           // 初始化入库详情
-          this.goStockLog.push({
+          this.goStockLog.unshift({
             time: item.complete_time.split(' ')[0],
             material: item.material_name,
             color: item.color_code,

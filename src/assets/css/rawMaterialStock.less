@@ -132,6 +132,7 @@ ul {
               margin-left: 25px;
               li {
                 display: flex;
+                justify-content: center;
                 border-bottom: 1px solid #DDD;
                 &:nth-child(2n+1){
                   background-color: rgb(240,240,240);
@@ -179,6 +180,19 @@ ul {
                         }
                         &>span {
                           border-right: 1px solid #DDD;
+                          align-items: center;
+                          &>span {
+                            border-bottom: 1px solid #DDD;
+                            &>span {
+                              border-right: 1px solid #DDD;
+                              &:last-child {
+                                border-right: none;
+                              }
+                            }
+                            &:last-child {
+                              border-bottom: none;
+                            }
+                          }
                           &:last-child {
                             border-right: none;
                           }
@@ -198,109 +212,6 @@ ul {
             }
           }
 
-        }
-        .table {
-          margin-left: 40px;
-          width: 900px;
-          border-top: 1px solid #DDD;
-          border-left: 1px solid #DDD;
-          box-sizing: border-box;
-          &>div {
-            width: 100%;
-            min-height: 40px;
-            display: flex;
-            border-bottom: 1px solid #DDD;
-            &>span {
-              flex: 1;
-              box-sizing: border-box;
-              min-height: 60px;
-              display: flex;
-              border-right: 1px solid #DDD;
-              // text-align: center;
-              &>span {
-                flex: 1;
-                display: flex;
-              }
-              &.flex45 {
-                flex: 4.5;
-              }
-            }
-            &.tableTitle {
-              &>span {
-                &>span {
-                  justify-content: center;
-                  align-items: center;
-                  border-left: 1px solid #DDD;
-                  // box-sizing: border-box;
-                  &:first-child {
-                    border-left-color: transparent;
-                  }
-                }
-              }
-            }
-            &.tableInfo {
-              font-size: @fontMid;
-              &>span { //一
-                display: flex;
-                flex-direction: column;
-                &:first-child {
-                  span {
-                    align-items: center;
-                  }
-                }
-                &>span {//二
-                  display: flex;
-                  justify-content: center;
-                  border-bottom:1px solid #DDD;
-                  &>span { //三
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    border-right: 1px solid #DDD;
-                    &>span { //四
-                      display: flex;
-                      justify-content: center;
-                      border-bottom: 1px solid #DDD;
-                      &>span {
-                        display: flex;
-                        flex-direction: column;
-                        flex: 1;
-                        border-right: 1px solid #DDD;
-                        &>span {
-                          display: flex;
-                          align-items: center;
-                          justify-content: center;
-                          height: 100%;
-                          border-bottom: 1px solid #DDD;
-                          &:last-child {
-                            border-bottom: none;
-                          }
-                        }
-                        &:last-child {
-                          border-right: none;
-                        }
-                      }
-                      &:last-child {
-                        border-bottom: none;
-                      }
-                    }
-                    &:last-child {
-                      border-right: none;
-                    }
-                  }
-                  &:last-child {
-                    border-bottom: none;
-                  }
-                }
-              }
-              span {
-                line-height: 40px;
-              }
-            }
-            &:nth-child(2n+1) {
-              background-color: rgb(240,240,240);
-            }
-          }
         }
         .tablePlan {
           margin-left: 40px;
@@ -378,7 +289,6 @@ ul {
                 display: inline-block;
                 width: 5em;
                 text-align: right;
-                // text-align-last: justify;
                 font-size: 14px;
               }
               &>.el-select {

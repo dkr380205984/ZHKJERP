@@ -137,8 +137,7 @@
                     <strong>—</strong>
                     <el-input size="small"
                               placeholder="数量"
-                              v-model="value.value"
-                              @change="jisuan(key,true,value.value)">
+                              v-model="value.value">
                     </el-input>
                   </div>
                 </div>
@@ -152,8 +151,7 @@
                     <strong>—</strong>
                     <el-input size="small"
                               placeholder="单价"
-                              v-model="value.price"
-                              @change="jisuan(key)">
+                              v-model="value.price">
                     </el-input>
                   </div>
                 </div>
@@ -270,56 +268,22 @@ export default {
       deep: true,
       handler: function (newVal) {
         console.log(newVal)
+        this.list.forEach((item, key) => {
+          let num = 0
+          item.buyInfo.forEach(value => {
+            let money = 0
+            value.buyMaterialInfo.forEach(val => {
+              money += (val.price * val.value)
+              num += Number(val.value)
+            })
+            value.money = money
+          })
+          item.selectNum = num
+        })
       }
     }
   },
   methods: {
-    jisuan (ke, flag) {
-      this.list.forEach((item, key) => {
-        item.selectNum = 0
-        item.buyInfo.forEach((value, index) => {
-          value.money = 0
-          value.buyMaterialInfo.forEach((val, ind) => {
-            if ((val.value % 1 !== 0 || val.value < 0) && flag) {
-              if (val.value < 0) {
-                val.value = ''
-                this.$message({
-                  message: '请重新输入,请输入0以上整数',
-                  type: 'error'
-                })
-              } else {
-                this.$message({
-                  message: '请输入正整数,已为您向上取整',
-                  type: 'error'
-                })
-                val.value = Math.ceil(val.value)
-              }
-            }
-            if (Number(item.selectNum) + Number(val.value) + Number(item.selectNums) > Math.ceil(Number(item.needNum)) && Number(val.value) !== 0) {
-              this.$confirm('订购数量超出计划数量, 是否继续?', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-              }).then(() => {
-                item.selectNum = Number(item.selectNum) + Number(val.value)
-                value.money += (val.price * val.value)
-              }).catch(() => {
-                this.$message({
-                  type: 'info',
-                  message: '已取消'
-                })
-                val.value = 0
-                item.selectNum = Number(item.selectNum) + Number(val.value)
-                value.money += (val.price * val.value)
-              })
-            } else {
-              item.selectNum = Number(item.selectNum) + Number(val.value)
-              value.money += (val.price * val.value)
-            }
-          })
-        })
-      })
-    },
     appendBuyMaterialInfo (key, kay) {
       this.list[key].buyInfo[kay].buyMaterialInfo.push({
         color: '',
@@ -331,7 +295,6 @@ export default {
     },
     deleteBuyMaterialInfo (key, kay, index) {
       this.list[key].buyInfo[kay].buyMaterialInfo.splice(index, 1)
-      this.jisuan(key)
     },
     addBuyInfo (key) {
       console.log(this.list)
@@ -362,7 +325,6 @@ export default {
     },
     deleteBuyInfo (key, kay) {
       this.list[key].buyInfo.splice(kay, 1)
-      this.jisuan(key)
     },
     colorListVal (list) {
       return this.type === '0' ? ['白胚', ...list] : [...list]
@@ -376,6 +338,18 @@ export default {
       this.list.forEach((item, key) => {
         let obj = {}
         let stockObj = {}
+        if ((Number(item.selectNum) + Number(item.selectNums)) > Number(item.needNum)) {
+          let num = Number(item.selectNum) + Number(item.selectNums) - Number(item.needNum)
+          let keys = window.confirm('已选数量超出计划值' + num + '，是否继续？')
+          if (!keys) {
+            this.$message({
+              type: 'info',
+              message: '请调整已选数量。'
+            })
+            flag = false
+            return
+          }
+        }
         obj.company_id = sessionStorage.company_id
         obj.order_id = this.$route.params.id
         obj.user_id = sessionStorage.user_id
@@ -392,7 +366,6 @@ export default {
             return
           }
           obj.client_id = (value.company === '仓库' ? 0 : value.company)
-          obj.total_price = value.money
           obj.desc = value.remark
           if (!value.orderTime) {
             this.$message({
@@ -457,6 +430,13 @@ export default {
               })
               flag = false
               return
+            } else if (Number(val.value % 1 !== 0) || Number(val.value) < 0) {
+              this.$message({
+                message: '请输入正整数',
+                type: 'error'
+              })
+              flag = false
+              return
             }
             obj.total_weight = Math.ceil(Number(val.value))
             obj.attribute = val.attr ? val.attr : ''
@@ -477,30 +457,30 @@ export default {
       })
       console.log(arr)
       this.loading = false
-      if (nums === 0) {
-        this.$message({
-          message: '无可提交的订购信息',
-          type: 'warning'
-        })
-        return
-      }
       if (flag) {
-        rawMaterialOrder({
-          data: {
-            order_data: arr,
-            stock_data: stockArr
-          }
-        }).then(res => {
-          if (res.data.code === 200) {
-            this.$message({
-              message: '添加成功,即将跳转至详情页',
-              type: 'success'
-            })
-            setTimeout(() => {
-              this.$router.push('/index/rawMaterialOrderDetail/' + this.$route.params.id + '/' + this.type)
-            }, 800)
-          }
-        })
+        if (nums === 0) {
+          this.$message({
+            message: '无可提交的订购信息',
+            type: 'warning'
+          })
+        } else {
+          rawMaterialOrder({
+            data: {
+              order_data: arr,
+              stock_data: stockArr
+            }
+          }).then(res => {
+            if (res.data.code === 200) {
+              this.$message({
+                message: '添加成功,即将跳转至详情页',
+                type: 'success'
+              })
+              setTimeout(() => {
+                this.$router.push('/index/rawMaterialOrderDetail/' + this.$route.params.id + '/' + this.type)
+              }, 800)
+            }
+          })
+        }
       }
     }
   },

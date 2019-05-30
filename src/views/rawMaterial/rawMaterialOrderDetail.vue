@@ -123,7 +123,7 @@
                       <span>操作</span></span>
                   </span>
                 </li>
-                <li v-if="list.orderList.length === 0">暂无订购信息</li>
+                <li v-if="list.orderList.length === 0">暂无信息</li>
                 <li v-for="(value,index) in list.orderList"
                     :key="index">
                   <span class="flex104">
@@ -174,6 +174,7 @@
                   </li>
                 </div>
                 <div>
+                  <li v-if="orderLog.length === 0">暂无信息</li>
                   <li v-for="(item,key) in orderLog"
                       :key="item.time + key">
                     <span class="flexBig">{{item.time}}</span>
@@ -242,7 +243,7 @@
                       <span>操作</span></span>
                   </span>
                 </li>
-                <li v-if="list.processList.length === 0">暂无加工信息</li>
+                <li v-if="list.processList.length === 0">暂无信息</li>
                 <li v-for="(value,index) in list.processList"
                     :key="index"
                     class="process">
@@ -297,6 +298,7 @@
                   </li>
                 </div>
                 <div>
+                  <li v-if="processLog.length === 0">暂无信息</li>
                   <li v-for="(item,key) in processLog"
                       :key="item.time + key">
                     <span class="flexBig">{{item.time}}</span>
@@ -540,7 +542,7 @@ export default {
             arr.order_weight = arr.order_weight ? (arr.order_weight + item.weight) : item.weight
           }
           // 初始化日志
-          this.orderLog.push({
+          this.orderLog.unshift({
             time: item.create_time,
             client_name: (item.client_name ? item.client_name : '仓库'),
             material: item.material_name,
@@ -629,7 +631,7 @@ export default {
             }
             // 日志初始化
             item.material_info.forEach(val => {
-              this.processLog.push({
+              this.processLog.unshift({
                 time: item.create_time,
                 client_name: item.client_name,
                 process_type: item.process_type,

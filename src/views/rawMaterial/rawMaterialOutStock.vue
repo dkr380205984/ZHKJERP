@@ -73,7 +73,7 @@
         </div>
       </div>
       <div class="stepCtn">
-        <div class="stepTitle">生产单位</div>
+        <div class="stepTitle">生产信息</div>
         <div class="borderCtn">
           <div class="cicle"></div>
           <div class="border"></div>
