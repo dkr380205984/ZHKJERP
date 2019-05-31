@@ -63,9 +63,9 @@
                       <span>{{val.value}}{{item.unit}}</span>
                     </span>
                   </span>
-                  <span>{{item.plan_number}}{{item.unit}}</span>
-                  <span>{{item.goStock_number}}{{item.unit}}</span>
-                  <span>{{item.outStock_number}}{{item.unit}}</span>
+                  <span>{{item.plan_number ? item.plan_number : 0}}{{item.unit}}</span>
+                  <span>{{item.goStock_number ? item.goStock_number : 0}}{{item.unit}}</span>
+                  <span>{{item.outStock_number ? item.outStock_number : 0}}{{item.unit}}</span>
                 </li>
               </ul>
             </div>
@@ -81,8 +81,8 @@
         <div class="lineCtn">
           <div class="inputCtn noPadding">
             <div class="content">
-              <ul class="makeTable">
-                <li>
+              <ul class="tablesCtn">
+                <li class="title">
                   <span>生产单位</span>
                   <span class="flex22">
                     <span class="flex17">产品信息</span>
@@ -95,34 +95,29 @@
                     <span class="flex06">数量</span>
                   </span>
                 </li>
-                <li v-for="(item,key) in companyList"
+                <li v-if="productionList.length === 0">
+                  <span @click="$route">暂无生产信息(添加)</span>
+                </li>
+                <li class="materialInfo"
+                    v-for="(item,key) in productionList"
                     :key="key">
-                  <span>
-                    <span>{{item.company}}</span>
-                  </span>
-                  <span class="flex22">
-                    <span class="flex17">
-                      <span v-for="(value,index) in item.productList"
-                            :key="index">
-                        <span class="flex17">
-                          <span>
-                            <div>
-                              <span>{{value.product_code}}</span>
-                              <span style="margin-left:20px">{{value.product_class}}</span>
-                            </div>
-                          </span>
-                        </span>
-                        <span class="flex12">
-                          <span v-for="(ite,ka) in value.makeInfo"
-                                :key="ka">
-                            <span class="flex06">{{ite.size + '/' + ite.color }}</span>
-                            <span class="flex06">{{ite.make_number + '条'}}</span>
-                          </span>
+                  <span>{{item.name}}</span>
+                  <span class="flex22 col">
+                    <!-- <span class="flex17"> -->
+                    <span v-for="(value,index) in item.production"
+                          :key="index">
+                      <span class="flex17">{{value.product_code}}{{value.product_class}}</span>
+                      <span class="flex12 col">
+                        <span v-for="(ite,ka) in value.product_detail"
+                              :key="ka">
+                          <span class="flex06">{{ite.size + '/' + ite.color }}</span>
+                          <span class="flex06">{{ite.number + '条'}}</span>
                         </span>
                       </span>
                     </span>
+                    <!-- </span> -->
                   </span>
-                  <span class="flex20">
+                  <span class="flex20 col">
                     <span class="flex17">
                       <span v-for="(value,index) in item.materialList"
                             :key="index">
@@ -274,7 +269,7 @@
 </template>
 
 <script>
-import { orderDetail, rawMaterialOrderInit } from '@/assets/js/api.js'
+import { orderDetail, rawMaterialOrderInit, productionDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -431,6 +426,7 @@ export default {
           ]
         }
       ],
+      productionList: [],
       options: [
         {
           value: '选项1',
@@ -474,6 +470,42 @@ export default {
     }
   },
   methods: {
+    // json数据合并半成品
+    // jsonMerge (jsonArr, key, newKey) {
+    //   let json = jsonArr
+    //   let newJson = []
+    //   json.forEach((item, index) => {
+    //     let mark = -1
+    //     let finded = newJson.find((itemFind, indexFind) => {
+    //       if (itemFind[key] === item[key]) {
+    //         mark = indexFind
+    //         return itemFind[key] === item[key]
+    //       }
+    //     })
+    //     if (!finded) {
+    //       let value = {}
+    //       value[key] = item[key]
+    //       value[newKey] = []
+    //       let itemJson = {}
+    //       for (let i in item) {
+    //         if (i !== key) {
+    //           itemJson[i] = item[i]
+    //         }
+    //       }
+    //       value[newKey].push(itemJson)
+    //       newJson.push(value)
+    //     } else {
+    //       let itemJson = {}
+    //       for (let i in item) {
+    //         if (i !== key) {
+    //           itemJson[i] = item[i]
+    //         }
+    //       }
+    //       newJson[mark][newKey].push(itemJson)
+    //     }
+    //   })
+    //   return newJson
+    // },
     jisuan () {
       this.list.forEach((item, key) => {
         item.selectNum = 0
@@ -550,16 +582,23 @@ export default {
         id: this.$route.params.id
       }), rawMaterialOrderInit({
         order_id: this.$route.params.id
+      }),
+      // fenpei({
+      //   production_plan_id: this.$route.params.id
+      // }),
+      productionDetail({
+        order_id: this.$route.params.id
       })
     ]).then(res => {
-      console.log(res)
+      // console.log(res)
       this.order_code = res[0].data.data.order_code
       this.client_name = res[0].data.data.client_name
       this.order_time = res[0].data.data.order_time
       this.group_name = res[0].data.data.group_name
       this.loading = false
       let materialInfo = res[1].data.data
-      console.log(materialInfo)
+      // console.log(this.jsonMerge(res[2].data.data, 'client_name', 'info'))
+      // console.log(materialInfo)
       materialInfo.material_info.forEach((item, key) => {
         for (let prop in item) {
           for (let value in item[prop]) {
@@ -593,7 +632,58 @@ export default {
           }
         }
       })
-      console.log(this.materialList)
+      // console.log(this.materialList)
+      // 生产信息初始化
+      // let productionInfo = res[2].data.data
+      // console.log('init:', productionInfo)
+      // console.log('companyList:', this.companyList)
+      // // 分配信息初始化
+      // productionInfo.forEach(item => {
+      //   let types = item.product_info.category_info.product_category + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_id ? ('/' + item.product_info.flower_id) : '')
+      //   let flag = this.productionList.find(val => val.name === item.client_name)
+      //   if (!flag) {
+      //     this.productionList.push({
+      //       name: item.client_name,
+      //       production: [{
+      //         product_code: item.product_info.product_code,
+      //         product_class: types,
+      //         product_detail: [{
+      //           color: item.color,
+      //           number: item.number,
+      //           size: item.size
+      //         }]
+      //       }]
+      //     })
+      //   } else {
+      //     let flag1 = flag.production.find(val => val.product_code === item.product_info.product_code)
+      //     if (!flag1) {
+      //       flag.production.push({
+      //         product_code: item.product_info.product_code,
+      //         product_class: types,
+      //         product_detail: [{
+      //           color: item.color,
+      //           number: item.number,
+      //           size: item.size
+      //         }]
+      //       })
+      //     } else {
+      //       let flag2 = flag1.product_detail.find(val => ((val.size === item.size) && (val.color === item.color)))
+      //       if (!flag2) {
+      //         flag1.product_detail.push({
+      //           color: item.color,
+      //           number: item.number,
+      //           size: item.size
+      //         })
+      //       } else {
+      //         flag2.number = Number(flag2.number) + Number(item.number)
+      //       }
+      //     }
+      //   }
+      // })
+      // 所需原料初始化
+      let materials = res[3].data.data
+      console.log(materials)
+      console.log('productionList:', this.productionList)
     })
   }
 }

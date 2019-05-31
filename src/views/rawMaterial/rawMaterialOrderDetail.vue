@@ -42,6 +42,8 @@
                   <span @click="$router.push('/index/productDetail/' + item.product_code)">{{item.product_code}}({{item.type}})</span>
                   <span>{{item.product_size+'/'+item.product_color}}</span>
                   <span>{{item.number+'条'}}</span>
+                  <span v-if="!item.flag"
+                        @click="$router.push('/index/productPlanCreate/' + item.id)">无配料单信息(添加)</span>
                 </li>
               </ul>
             </span>
@@ -150,7 +152,7 @@
                         <span>{{value.remark ? value.remark : '暂无备注'}}</span>
                       </span> -->
                       <span class="blue"
-                            @click="open($route.params.id,value.company)">打印</span>
+                            @click="open('table',$route.params.id,'',value.company)">打印</span>
                     </span>
                   </span>
                 </li>
@@ -203,10 +205,14 @@
                 </div>
               </ul>
               <div class="handle">
-                <div class="order"
-                     @click="$router.push('/index/rawMaterialOrderPage/' + $route.params.id + '/' + type)">
+                <div :class="{'disabled':!flag}"
+                     @click="open('order',$route.params.id,flag)">
                   <img class="icon"
+                       v-if="flag"
                        src="@/assets/image/icon/orderIcon.png">
+                  <img class="icon"
+                       v-else
+                       src="@/assets/image/icon/order_disabled.png">
                   <span>去订购</span>
                 </div>
               </div>
@@ -274,7 +280,7 @@
                         <span>{{item.remark ? item.remark : '暂无备注'}}</span>
                       </span> -->
                       <span class="blue"
-                            @click="open($route.params.id,item.company,value.process_type)">打印</span>
+                            @click="open('table',$route.params.id,'',item.company,value.process_type)">打印</span>
                     </span>
                   </span>
                 </li>
@@ -327,10 +333,14 @@
                 </div>
               </ul>
               <div class="handle">
-                <div class="order"
-                     @click="$router.push('/index/rawMaterialProcess/' + $route.params.id + '/' + type)">
+                <div :class="{'disabled':!flag}"
+                     @click="open('process',$route.params.id,flag)">
                   <img class="icon"
+                       v-if="flag"
                        src="@/assets/image/icon/orderIcon.png">
+                  <img class="icon"
+                       v-else
+                       src="@/assets/image/icon/order_disabled.png">
                   <span>去加工</span>
                 </div>
               </div>
@@ -349,7 +359,7 @@
 </template>
 
 <script>
-import { rawMaterialOrderList, orderDetail, rawMaterialOrderInit, rawMaterialProcessList } from '@/assets/js/api.js'
+import { rawMaterialOrderList, orderDetail, rawMaterialOrderInit, rawMaterialProcessList, productionDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -370,7 +380,8 @@ export default {
       processLog: [],
       orderLogFlag: false,
       orderLoading: false,
-      orderLog: []
+      orderLog: [],
+      flag: true
     }
   },
   filters: {
@@ -394,9 +405,31 @@ export default {
       }
       return lengths
     },
-    open (id, companyId, type) {
-      let str = '/rawMaterialProcessTable/' + id + '/' + companyId + '/' + type
-      window.open(str)
+    open (where, id, flag, companyId, type) {
+      if (where === 'table') {
+        let str = '/rawMaterialProcessTable/' + id + '/' + companyId + '/' + type
+        window.open(str)
+      } else if (where === 'order') {
+        if (flag) {
+          this.$router.push('/index/rawMaterialOrderPage/' + id + '/' + this.type)
+        } else {
+          this.$message(
+            {
+              message: '请将产品的配料单信息填写完整',
+              type: 'error'
+            }
+          )
+        }
+      } else if (where === 'process') {
+        if (flag) {
+          this.$router.push('/index/rawMaterialProcess/' + id + '/' + this.type)
+        } else {
+          this.$message({
+            message: '请将产品的配料单信息填写完整',
+            type: 'error'
+          })
+        }
+      }
     },
     change () {
       this.$message(
@@ -423,12 +456,62 @@ export default {
       rawMaterialProcessList({
         company_id: sessionStorage.company_id,
         order_id: this.$route.params.id
+      }),
+      productionDetail({
+        order_id: 1
       })
     ]).then(res => {
       let info = res[0].data.data.material_info
       let materialInfo = res[1].data.data
       let orderInfo = res[2].data.data
       let processInfo = res[3].data.data
+      let productInfo = res[4].data.data
+      let orderProductInfo = productInfo.product_plan
+      // 初始化订单信息
+      this.order_code = orderInfo.order_code
+      this.order_time = orderInfo.order_time
+      this.client_name = orderInfo.client_name
+      this.group_name = orderInfo.group_name
+      // 初始化产品信息
+      console.log(orderInfo)
+      let arr = []
+      orderInfo.order_batch.forEach((item, key) => {
+        item.batch_info.forEach((value, index) => {
+          let types = value.productInfo.category_info.product_category + (value.productInfo.type_name ? '/' + value.productInfo.type_name : '') + (value.productInfo.style_name ? '/' + value.productInfo.type_name : '') + (value.productInfo.flower_id ? '/' + value.productInfo.flower_id : '')
+          value.size.forEach((val, ind) => {
+            // 判断产品是否有配料单
+            let flag = true
+            if (orderProductInfo[value.productCode]) {
+              let keys = orderProductInfo[value.productCode].find(a => ((a.size === val.name[0]) && (a.color_match_name === val.name[1])))
+              if (!keys) {
+                flag = false
+              }
+            } else {
+              flag = false
+              this.flag = false
+            }
+            //
+            arr.push({
+              type: types,
+              flag: flag,
+              id: value.productInfo.id,
+              product_code: value.productCode,
+              product_size: val.name[0],
+              product_color: val.name[1],
+              number: Math.ceil(val.numbers)
+            })
+          })
+        })
+      })
+      arr.forEach(item => {
+        let flag = this.productList.find(val => (val.product_code === item.product_code && val.product_size === item.product_size && val.product_color === item.product_color))
+        if (!flag) {
+          this.productList.push({ ...item })
+        } else {
+          flag.number = Math.ceil(Number(flag.number) + Number(item.number))
+        }
+      })
+      console.log(this.productList)
       // 初始化物料信息
       info.forEach((item, key) => {
         for (let prop in item) {
@@ -461,35 +544,6 @@ export default {
               }
             }
           }
-        }
-      })
-      // 初始化订单信息
-      this.order_code = orderInfo.order_code
-      this.order_time = orderInfo.order_time
-      this.client_name = orderInfo.client_name
-      this.group_name = orderInfo.group_name
-      // 初始化产品信息
-      let arr = []
-      orderInfo.order_batch.forEach((item, key) => {
-        item.batch_info.forEach((value, index) => {
-          let types = value.productInfo.category_info.product_category + (value.productInfo.type_name ? '/' + value.productInfo.type_name : '') + (value.productInfo.style_name ? '/' + value.productInfo.type_name : '') + (value.productInfo.flower_id ? '/' + value.productInfo.flower_id : '')
-          value.size.forEach((val, ind) => {
-            arr.push({
-              type: types,
-              product_code: value.productCode,
-              product_size: val.name[0],
-              product_color: val.name[1],
-              number: Math.ceil(val.numbers)
-            })
-          })
-        })
-      })
-      arr.forEach(item => {
-        let flag = this.productList.find(val => (val.product_code === item.product_code && val.product_size === item.product_size && val.product_color === item.product_color))
-        if (!flag) {
-          this.productList.push({ ...item })
-        } else {
-          flag.number = Math.ceil(Number(flag.number) + Number(item.number))
         }
       })
       // 初始化订购信息
@@ -648,6 +702,7 @@ export default {
           }
         })
       })
+      console.log(this.flag)
       this.loading = false
     })
   }

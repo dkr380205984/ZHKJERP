@@ -46,9 +46,10 @@
                   <span>计划{{type === '0' ? '原' : '辅'}}料</span>
                   <span class="flex2">
                     <span>颜色</span>
-                    <span>数量</span>
+                    <span>计划数量</span>
                   </span>
-                  <span>已计划</span>
+                  <span>已订购</span>
+                  <span>已加工</span>
                   <span>已入库</span>
                   <span>已出库</span>
                 </li>
@@ -64,7 +65,8 @@
                       <span>{{val.value|fixedFilter}}{{item.unit}}</span>
                     </span>
                   </span>
-                  <span>{{(item.plan_number ? item.plan_number : 0)|fixedFilter}}{{item.unit}}</span>
+                  <span>{{(item.order_number ? item.order_number : 0)|fixedFilter}}{{item.unit}}</span>
+                  <span>{{(item.process_number ? item.process_number : 0)|fixedFilter}}{{item.unit}}</span>
                   <span>{{(item.goStock_number ? item.goStock_number : 0)|fixedFilter}}{{item.unit}}</span>
                   <span>{{(item.outStock_number ? item.outStock_number : 0)|fixedFilter}}{{item.unit}}</span>
                 </li>
@@ -85,23 +87,23 @@
               <ul class="tablesCtn">
                 <li class="title">
                   <span>{{type === '0' ? '原' : '辅'}}料名称</span>
-                  <span class="flex6">
+                  <span class="flex4">
                     <span>颜色</span>
                     <span class="flex3">
                       <span>批/缸号</span>
                       <span>数量</span>
                       <span>包装属性</span>
                     </span>
-                    <span>已入库</span>
-                    <span>待入库</span>
                   </span>
+                  <span>已入库</span>
+                  <span>待入库</span>
                 </li>
                 <li v-if="goStockList.length === 0">暂无信息</li>
                 <li class="material_info"
                     v-for="(item,key) in goStockList"
                     :key="key">
                   <span>{{item.material}}</span>
-                  <span class="flex6 col">
+                  <span class="flex4 col">
                     <span v-for="(val,ind) in item.info"
                           :key="ind">
                       <span>{{val.color}}</span>
@@ -113,10 +115,10 @@
                           <span>{{value.attr}}</span>
                         </span>
                       </span>
-                      <span>{{val.goStock_number|fixedFilter}}{{item.unit}}</span>
-                      <span>{{(val.plan_number-val.goStock_number)|fixedFilter}}{{item.unit}}</span>
                     </span>
                   </span>
+                  <span>{{item.goStock_number|fixedFilter}}{{item.unit}}</span>
+                  <span>{{(item.order_number-item.goStock_number)|fixedFilter}}{{item.unit}}</span>
                 </li>
                 <div class="logList"
                      @click="goStockLogFlag = !goStockLogFlag">{{ goStockLogFlag ? '收起' : '展开'}}详情</div>
@@ -163,10 +165,14 @@
                 </div>
               </ul>
               <div class="handle">
-                <div class="order"
-                     @click="$router.push('/index/rawMaterialStock/' + $route.params.id + '/' + type)">
+                <div :class="{'disabled':goStockFlag === 0}"
+                     @click="open('goStock',$route.params.id,goStockFlag)">
                   <img class="icon"
+                       v-if="goStockFlag !== 0"
                        src="@/assets/image/icon/goStock.png">
+                  <img class="icon"
+                       v-else
+                       src="@/assets/image/icon/goStock_disabled.png">
                   <span>去入库</span>
                 </div>
               </div>
@@ -193,7 +199,7 @@
                       <span>批/缸号</span>
                       <span>包装属性</span>
                       <span>已出库</span>
-                      <span>待入库</span>
+                      <span>待出库</span>
                     </span>
                   </span>
                 </li>
@@ -265,9 +271,9 @@
               </ul>
               <div class="handle">
                 <div class="order"
-                     @click="$router.push('/index/rawMaterialOutStock/' + $route.params.id + '/' + type)">
+                     @click="open('outStock',$route.params.id)">
                   <img class="icon"
-                       src="@/assets/image/icon/goStock.png">
+                       src="@/assets/image/icon/outStock.png">
                   <span>去出库</span>
                 </div>
               </div>
@@ -332,6 +338,7 @@ export default {
       goStockLogFlag: false,
       goStockLog: [],
       outStockLogFlag: false,
+      goStockFlag: 0,
       outStockLog: [
         {
           time: 1,
@@ -437,8 +444,24 @@ export default {
       console.log(lengths)
       return lengths
     },
-    goStock (item) {
-      console.log(item)
+    open (where, id, flag) {
+      if (where === 'goStock') {
+        if (flag !== 0) {
+          this.$router.push('/index/rawMaterialStock/' + id + '/' + this.type)
+        } else {
+          let str = this.type === '0' ? '原' : '辅'
+          this.$message({
+            message: '请先订购' + str + '料',
+            type: 'error'
+          })
+        }
+      } else if (where === 'outStock') {
+        if (flag !== 0) {
+          this.$router.push('/index/rawMaterialOutStock/' + id + '/' + this.type)
+        } else {
+
+        }
+      }
     }
   },
   created () {
@@ -454,14 +477,14 @@ export default {
         order_id: this.$route.params.id
       })
     ]).then(res => {
-      console.log(res)
+      // console.log(res)
       this.order_code = res[0].data.data.order_code
       this.client_name = res[0].data.data.client_name
       this.order_time = res[0].data.data.order_time
       this.group_name = res[0].data.data.group_name
       // 物料信息初始化
       let materialInfo = res[1].data.data
-      // console.log(materialInfo)
+      console.log(materialInfo)
       materialInfo.material_info.forEach((item, key) => {
         for (let prop in item) {
           for (let value in item[prop]) {
@@ -471,7 +494,6 @@ export default {
                 if (!flag) {
                   this.materialList.push({
                     material: prop,
-                    plan_number: (item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value],
                     unit: (item[prop].unit === '克' || item[prop].unit === 'g') ? 'kg' : item[prop].unit === '千克' ? 'kg' : item[prop].unit,
                     need: [{
                       name: value,
@@ -479,7 +501,6 @@ export default {
                     }]
                   })
                 } else {
-                  flag.plan_number = Number(flag.plan_number) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value])
                   let arr = flag.need.find(val => val.name === value)
                   if (!arr) {
                     flag.need.push({
@@ -498,7 +519,7 @@ export default {
       // console.log(this.materialList)
       // 入库信息初始化
       let goStockInfo = res[2].data.data
-      console.log(goStockInfo)
+      // console.log(goStockInfo)
       goStockInfo.forEach(item => {
         if ((this.type === '0' && item.type === 1) || (this.type === '1' && item.type === 2)) {
           let flag = this.goStockList.find(val => val.material === item.material_name)
@@ -506,17 +527,18 @@ export default {
             this.goStockList.push({
               material: item.material_name,
               unit: (item.unit ? item.unit : 'kg'),
+              goStock_number: item.total_weight,
               info: [{
                 list: [{
                   dyelot_number: item.vat_code,
                   value: item.total_weight,
                   attr: item.attribute
                 }],
-                color: item.color_code,
-                goStock_number: item.total_weight
+                color: item.color_code
               }]
             })
           } else {
+            flag.goStock_number = Number(flag.goStock_number) + Number(item.total_weight)
             let flag1 = flag.info.find(val => val.color === item.color_code)
             if (!flag1) {
               flag.info.push({
@@ -525,11 +547,9 @@ export default {
                   value: item.total_weight,
                   attr: item.attribute
                 }],
-                color: item.color_code,
-                goStock_number: item.total_weight
+                color: item.color_code
               })
             } else {
-              flag1.goStock_number = Number(flag1.goStock_number) + Number(item.total_weight)
               let flag2 = flag1.list.find(val => val.dyelot_number === item.vat_code)
               if (!flag2) {
                 flag1.list.push({
@@ -561,17 +581,20 @@ export default {
           })
         }
       })
-      // 将物料与颜色相对应的计划值插入入库信息
       this.materialList.forEach(item => {
-        item.need.forEach(value => {
-          let flag = this.goStockList.find(val => val.material === item.material)
-          if (flag) {
-            let flag1 = flag.info.find(val => val.color === value.name)
-            if (flag1) {
-              flag1.plan_number = value.value
-            }
-          }
-        })
+        // 插入对应物料的订购值
+        let flag = this.goStockList.find(val => val.material === item.material)
+        // 给原料信息添加订购值和加工值
+        if (materialInfo.total_weight_order[item.material]) {
+          item.order_number = materialInfo.total_weight_order[item.material]
+        }
+        if (materialInfo.total_weight_process[item.material]) {
+          item.process_number = materialInfo.total_weight_process[item.material]
+        }
+        if (flag) {
+          flag.order_number = item.order_number
+          this.goStockFlag += item.order_number
+        }
       })
       console.log(this.goStockList)
     })

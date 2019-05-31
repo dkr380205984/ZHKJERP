@@ -131,7 +131,7 @@
 </template>
 
 <script>
-// import { productionList, productTppeList, clientList, getGroup } from '@/assets/js/api.js'
+import { rawMaterialOrderList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -311,6 +311,40 @@ export default {
     }
   },
   created () {
+    rawMaterialOrderList({
+      company_id: sessionStorage.company_id,
+      order_id: 2
+    }).then(res => {
+      let data = res.data.data
+      mergeData(data, ['order_client', 'color_code', 'order_group'], 0)
+    })
+    function mergeData (data, rule, num) {
+      if (num === 0) { console.log(data) }
+      // console.log(rule)
+      let arr = []
+      data.forEach(val => {
+        let flag = arr.find(a => a[rule[num]] === val[rule[num]])
+        if (!flag) {
+          let obj = {}
+          obj[rule[num]] = val[rule[num]]
+          delete val[rule[num]]
+          obj.info = [val]
+          console.log()
+          arr.push({ ...obj })
+        } else {
+          delete val[rule[num]]
+          flag.info.push(val)
+        }
+      })
+      console.log(arr)
+      arr.forEach(item => {
+        if (num < rule.length) {
+          console.log(JSON.stringify(item.info))
+          mergeData(item.info, rule, ++num)
+        }
+      })
+      return arr
+    }
     // this.getOrderList()
     this.loading = false
   }

@@ -360,7 +360,18 @@ export default {
     },
     saveAll () {
       let date = []
+      let flag = true
+      let nums = 0
       this.list.forEach(item => {
+        nums += item.stockInfo.length
+        if (Number(item.goStock_number) > Number(item.total_number)) {
+          this.$message({
+            message: '已入库数量超出合计数量，不被允许的操作，请重新输入',
+            type: 'error'
+          })
+          flag = false
+          return
+        }
         item.stockInfo.forEach(val => {
           val.stockWeightInfo.forEach(value => {
             let obj = {}
@@ -370,6 +381,38 @@ export default {
             obj.order_id = this.$route.params.id
             obj.material_name = item.material
             obj.vat_code = value.dyelot_number
+            if (!val.materialColor) {
+              this.$message({
+                message: '请选择颜色',
+                type: 'error'
+              })
+              flag = false
+              return
+            }
+            if (!value.number) {
+              this.$message({
+                message: '请输入件数',
+                type: 'error'
+              })
+              flag = false
+              return
+            }
+            if (!value.weight) {
+              this.$message({
+                message: '请输入数量',
+                type: 'error'
+              })
+              flag = false
+              return
+            }
+            if (!value.stock_time) {
+              this.$message({
+                message: '请选择入库时间',
+                type: 'error'
+              })
+              flag = false
+              return
+            }
             obj.color_code = val.materialColor
             obj.number = value.number
             obj.total_weight = value.weight
@@ -381,16 +424,28 @@ export default {
         })
       })
       console.log('update:', date)
-      rawMaterialGoStock({
-        data: date
-      }).then(res => {
-        if (res.status === 200) {
+      if (flag) {
+        if (nums === 0) {
           this.$message({
-            message: '添加成功,即将跳转至详情页',
-            type: 'success'
+            message: '无可提交的订购信息',
+            type: 'warning'
+          })
+        } else {
+          rawMaterialGoStock({
+            data: date
+          }).then(res => {
+            if (res.status === 200) {
+              this.$message({
+                message: '添加成功,即将跳转至详情页',
+                type: 'success'
+              })
+              setTimeout(() => {
+                this.$router.push('/index/rawMaterialStockDetail/' + this.$route.params.id + '/' + this.$route.params.type)
+              }, 800)
+            }
           })
         }
-      })
+      }
     }
   },
   watch: {
@@ -553,6 +608,13 @@ export default {
                     flag3.value = Number(flag3.value) + Number(value.value)
                   }
                 }
+              }
+            }
+            // 初始化入库颜色列表
+            let color = this.list.find(val => val.material === item.material_name)
+            if (color) {
+              if (!(color.colors.find(val => val === value.color))) {
+                color.colors.push(value.color)
               }
             }
           }
