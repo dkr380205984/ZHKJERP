@@ -118,7 +118,7 @@
           <div class="tableColumn" style="flex-direction:row;flex:1.5">
             <div style="margin:auto">
               <span class="btns normal" @click="$router.push('/index/productDesignWeavingDetail/'+item.id)">产品织造</span>
-              <span class="btns normal">半成品加工</span>
+              <span class="btns normal" @click="$router.push('/index/productDesignHalfDetail/'+item.id)">半成品加工</span>
             </div>
           </div>
         </div>
