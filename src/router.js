@@ -224,6 +224,26 @@ let router = new Router({
       name: 'productDesignList',
       component: () => import('./views/productDesign/productDesignList.vue')
     }, {
+      path: 'productDesignList2',
+      name: 'productDesignList2',
+      component: () => import('./views/productDesign/productDesignList2.vue')
+    }, {
+      path: 'productDesignWeavingCreate/:id',
+      name: 'productDesignWeavingCreate',
+      component: () => import('./views/productDesign/productDesignWeavingCreate.vue')
+    }, {
+      path: 'productDesignWeavingDetail/:id',
+      name: 'productDesignWeavingDetail',
+      component: () => import('./views/productDesign/productDesignWeavingDetail.vue')
+    }, {
+      path: 'productDesignHalfCreate/:id',
+      name: 'productDesignHalfCreate',
+      component: () => import('./views/productDesign/productDesignHalfCreate.vue')
+    }, {
+      path: 'productDesignHalfDetail/:id',
+      name: 'productDesignHalfDetail',
+      component: () => import('./views/productDesign/productDesignHalfDetail.vue')
+    }, {
       path: 'productDesignCreateList',
       name: 'productDesignCreateList',
       component: () => import('./views/productDesign/productDesignCreateList.vue')

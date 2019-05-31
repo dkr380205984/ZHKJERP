@@ -165,6 +165,9 @@ const menu = [{
   }, {
     name: '生产计划单列表',
     url: '/index/productDesignList'
+  }, {
+    name: '织造加工列表',
+    url: '/index/productDesignList2'
   }]
 }, {
   name: '原料管理',
