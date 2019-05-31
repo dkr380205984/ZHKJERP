@@ -301,7 +301,7 @@
         <div class="lineCtn">
           <div class="inputCtn">
             <span class="label must">组织法:</span>
-             <el-select class="elSelect" v-model="weft_data.organization_id" placeholder="请选择组织法">
+             <el-select class="elSelect" clearable="" v-model="weft_data.organization_id" placeholder="请选择组织法">
                 <el-option
                   v-for="item in methodArr"
                   :key="item.id"
@@ -1233,12 +1233,6 @@ export default {
       if (!this.warp_data.reed_width) {
         this.$message.error({
           message: '请填写筘幅'
-        })
-        return
-      }
-      if (this.weft_data.organization_id === '') {
-        this.$message.error({
-          message: '请选择组织法'
         })
         return
       }

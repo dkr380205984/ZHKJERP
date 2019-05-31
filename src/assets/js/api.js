@@ -192,7 +192,13 @@ const rawMaterialOrderList = (params) => http.get(`${baseUrl}/material/order/lis
 const rawMaterialProcessList = (params) => http.get(`${baseUrl}/material/process/list`, params)
 // 原料加工
 const rawMaterialProcessPage = (params) => http.post(`${baseUrl}/material/process/save`, params, 'application/json')
+// 织造分配
+const weaveSave = (params) => http.post(`${baseUrl}/production/weave/save`, params, 'application/json')
+// 织造分配详情
+const weaveDetail = (params) => http.get(`${baseUrl}/production/weave/list`, params)
 export {
+  weaveDetail,
+  weaveSave,
   rawMaterialProcessPage,
   rawMaterialProcessList,
   rawMaterialOrderList,
