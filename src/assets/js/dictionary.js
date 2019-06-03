@@ -82,6 +82,59 @@ const moneyArr = [{
 }
 ]
 
+// 加工类型
+let machiningType = [{
+  name: '染色',
+  id: 1
+}, {
+  name: '刺毛',
+  id: 2
+}, {
+  name: '拉毛',
+  id: 3
+}, {
+  name: '捻须',
+  id: 4
+}, {
+  name: '压皱',
+  id: 5
+}, {
+  name: '夹光',
+  id: 6
+}, {
+  name: '车缝',
+  id: 7
+}, {
+  name: '整烫',
+  id: 8
+}, {
+  name: '吊球',
+  id: 9
+}, {
+  name: '绣花',
+  id: 10
+}, {
+  name: '接指',
+  id: 11
+}, {
+  name: '套口',
+  id: 12
+}, {
+  name: '平车',
+  id: 13
+}, {
+  name: '印花',
+  id: 14
+}, {
+  name: '订扣',
+  id: 15
+}, {
+  name: '烫金',
+  id: 16
+}, {
+  name: '手缝',
+  id: 17
+}]
 // 菜单栏在做中的页面
 const menu = [{
   name: '产品管理',
@@ -460,4 +513,4 @@ const menu2 = [{
     url: '/index/foreignTradeList'
   }]
 }]
-export { menu, menu2, letterArr, companyType, moneyArr }
+export { menu, menu2, letterArr, companyType, moneyArr, machiningType }
