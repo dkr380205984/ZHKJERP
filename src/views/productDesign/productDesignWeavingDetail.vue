@@ -157,6 +157,9 @@
                     <span style="color:#1A95FF">修改</span>
                   </li>
                 </div>
+                <li v-if="logList.length===0">
+                  <span>暂无日志信息</span>
+                </li>
               </ul>
               <div class="handle">
                 <div class="order" @click="$router.push('/index/productDesignWeavingCreate/' + $route.params.id)">
@@ -220,6 +223,9 @@
                     </span>
                   </span>
                   <span style="color:#1A95FF">补纱</span>
+                </li>
+                <li v-if="materialList.length===0">
+                  <span>暂无分配信息</span>
                 </li>
               </ul>
             </div>
