@@ -206,10 +206,15 @@ const weaveSave = (params) => http.post(`${baseUrl}/production/weave/save`, para
 const weaveDetail = (params) => http.get(`${baseUrl}/production/weave/list`, params)
 // 根据订单号获取产品配料详情
 const productOrderDetail = (params) => http.get(`${baseUrl}/product/plan/order/detail`, params)
-
+// 半成品加工分配
+const halfProductSave = (params) => http.post(`${baseUrl}/production/semi_product/save`, params, 'application/json')
+// 半成品加工分配详情
+const halfProductDetail = (params) => http.get(`${baseUrl}/production/semi_product/list`, params)
 export {
   productOrderDetail,
   rawMaterialOutStockDetail,
+  halfProductDetail,
+  halfProductSave,
   rawMaterialGoStockDetail,
   rawMaterialOutStock,
   rawMaterialGoStock,

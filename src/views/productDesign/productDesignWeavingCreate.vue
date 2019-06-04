@@ -302,21 +302,10 @@ export default {
           unit_name: item.unit_name,
           info: item.info,
           colorSizeArr: colorSizeArr,
-          company: [{
-            company_id: '',
-            price_number: [{
-              price: '',
-              number: '',
-              colorSize: []
-            }],
-            total_price: 0,
-            complete_time: '',
-            desc: ''
-          }]
+          company: []
         }
         this.formList.push(json)
       })
-      console.log(this.formList)
     })
   },
   methods: {
@@ -351,35 +340,68 @@ export default {
       this.formList[index].company[indexCompany].price_number.splice(indexColorSize, 1)
     },
     saveAll () {
-      let formData = []
-      // 将数据处理成要提交的数据
-      this.formList.forEach((item, index) => {
-        item.company.forEach((itemCompany, indexCompany) => {
-          itemCompany.price_number.forEach((itemPrice, indexPrice) => {
-            formData.push({
-              company_id: window.sessionStorage.getItem('company_id'),
-              order_id: this.order.id,
-              product_code: item.product_code,
-              client_id: itemCompany.company_id,
-              // total_price: itemCompany.total_price,
-              complete_time: itemCompany.complete_time,
-              desc: itemCompany.desc,
-              price: itemPrice.price,
-              number: itemPrice.number,
-              size: itemPrice.colorSize[0],
-              color: itemPrice.colorSize[1],
-              user_id: window.sessionStorage.getItem('user_id')
+      let state = false
+      let msg = ''
+      this.formList.forEach((item) => {
+        item.company.forEach((itemCompany) => {
+          if (!itemCompany.company_id) {
+            state = true
+            msg = '检测到加工单位信息缺失'
+            return
+          }
+          let priceState = false
+          itemCompany.price_number.forEach((item) => {
+            if (!item.number || !item.price || item.colorSize.length === 0) {
+              priceState = true
+            }
+          })
+          if (priceState) {
+            state = true
+            msg = '检测到价格数量信息缺失'
+            return
+          }
+          if (!itemCompany.complete_time) {
+            state = true
+            msg = '检测到完成时间信息缺失'
+          }
+        })
+      })
+      if (state) {
+        this.$message.error({
+          message: msg
+        })
+      } else {
+        let formData = []
+        // 将数据处理成要提交的数据
+        this.formList.forEach((item, index) => {
+          item.company.forEach((itemCompany, indexCompany) => {
+            itemCompany.price_number.forEach((itemPrice, indexPrice) => {
+              formData.push({
+                company_id: window.sessionStorage.getItem('company_id'),
+                order_id: this.order.id,
+                product_code: item.product_code,
+                client_id: itemCompany.company_id,
+                // total_price: itemCompany.total_price,
+                complete_time: itemCompany.complete_time,
+                desc: itemCompany.desc,
+                price: itemPrice.price,
+                number: itemPrice.number,
+                size: itemPrice.colorSize[0],
+                color: itemPrice.colorSize[1],
+                user_id: window.sessionStorage.getItem('user_id')
+              })
             })
           })
         })
-      })
-      weaveSave({ data: formData }).then((res) => {
-        if (res.status) {
-          this.$message.success({
-            message: '分配成功'
-          })
-        }
-      })
+        weaveSave({ data: formData }).then((res) => {
+          if (res.status) {
+            this.$message.success({
+              message: '分配成功'
+            })
+          }
+          this.$router.push('/index/productDesignWeavingDetail/' + this.$route.params.id)
+        })
+      }
     }
   },
   watch: {

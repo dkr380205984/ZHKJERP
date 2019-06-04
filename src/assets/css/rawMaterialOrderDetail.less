@@ -79,6 +79,102 @@ ul {
           padding-left: 7em;
           flex-wrap: wrap;
           min-height: 40px;
+          .tablesCtn {
+            position: relative;
+            border: 1px solid #DDD;
+            width: 1200px;
+            li {
+              justify-content: center;
+              display: flex;
+              border-bottom: 1px solid #DDD;
+              &:last-of-type {
+                border-bottom: none;
+              }
+              span {
+                flex: 1;
+                display: flex;
+                justify-content: center;
+              }
+            }
+            .title {
+              display: flex;
+              background-color: rgb(240,240,240);
+              span{
+                flex: 1;
+                display: flex;
+                justify-content: center;
+                border-right: 1px solid #DDD;
+                &:last-child {
+                  border-right:none;
+                }
+              }
+            }
+            .material_info {
+              &>span{
+                border-right: 1px solid #DDD;
+                align-items: center;
+                &:last-child {
+                  border-right: none;
+                }
+                &>span {
+                  border-bottom: 1px solid #DDD;
+                  &:last-child {
+                    border-bottom: none;
+                  }
+                  &>span {
+                    border-right: 1px solid #DDD;
+                    align-items: center;
+                    &>span {
+                      border-bottom: 1px solid #DDD;
+                      &:last-child {
+                        border-bottom: none;
+                      }
+                      &>span {
+                        border-right: 1px solid #DDD;
+                        align-items: center;
+                        &>span {
+                          border-bottom: 1px solid #DDD;
+                          &:last-child {
+                            border-bottom: none;
+                          }
+                        }
+                        &:last-child {
+                          border-right: none;
+                        }
+                      }
+                    }
+                    &:last-child {
+                      border-right: none;
+                    }
+                  }
+                }
+              }
+              .col {
+                flex-direction: column;
+                align-items: unset;
+              }
+            }
+            &>.logList {
+              display: inline-block;
+              position: absolute;
+              line-height: 30px;
+              bottom: 0;
+              right: 0;
+              transform: translateY(100%);
+              color: #10AEF5;
+              cursor: pointer;
+            }
+          }
+          &.column {
+            padding-left: 0;
+            flex-direction: column;
+            &>.title {
+              text-align: left;
+              line-height: 40px;
+              font-size: @fontBig;
+              font-weight: 500;
+            }
+          }
           &.noPadding {
             padding-left: 0;
           }

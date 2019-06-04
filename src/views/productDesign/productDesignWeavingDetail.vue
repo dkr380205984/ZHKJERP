@@ -40,40 +40,34 @@
         <div class="lineCtn col">
           <div class="inputCtn noPadding">
             <div class="content">
-              <ul class="table">
-                <li class="material">
+              <ul class="tablesCtn">
+                <li class="title">
                   <span>产品编号</span>
                   <span>产品品类</span>
-                  <span style="flex-direction: row;border-bottom:0;flex:4">
-                    <span style="border-bottom:0;border-right:1px solid #ddd;">配色/尺码</span>
-                    <span style="border-bottom:0;border-right:1px solid #ddd;">生产计划数</span>
-                    <span style="border-bottom:0;border-right:1px solid #ddd;flex:1.5">纱线</span>
-                    <span style="border-bottom:0;border-right:1px solid #ddd;">颜色</span>
+                  <span style="flex:4">
+                    <span >配色/尺码</span>
+                    <span >生产计划数</span>
+                    <span style="flex:1.5">纱线</span>
+                    <span >颜色</span>
                     <span>重量</span>
                   </span>
                   <span>工艺单信息</span>
                 </li>
-                <li v-for="(item,index) in product" :key="index">
+                <li class="material_info" v-for="(item,index) in product" :key="index">
                   <span>{{item.product_code}}</span>
                   <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
-                  <span style="flex:4">
+                  <span class="col" style="flex:4">
                     <span v-for="(itemColour,indexColour) in item.info" :key="indexColour">
                       <span>{{itemColour.color}}/{{itemColour.size}}</span>
                       <span>{{itemColour.production_num}}{{item.unit_name}}</span>
-                      <span v-if="itemColour.colorArr" style="flex:1.5">
-                        <span v-for="(val,ind) in itemColour.colorArr" :key="ind">{{val.material}}</span>
-                      </span>
-                      <span v-if="itemColour.colorArr">
+                      <span class="col" v-if="itemColour.colorArr" style="flex:3.5">
                         <span v-for="(val,ind) in itemColour.colorArr" :key="ind">
-                          <span>
-                            <span style="flex-direction: column;" v-for="(val2,ind2) in val.colorWeight" :key="ind2">{{val2.color}}</span>
+                          <span style="flex:1.5">{{val.material}}</span>
+                          <span class="col">
+                            <span v-for="(val2,ind2) in val.colorWeight" :key="ind2">{{val2.color}}</span>
                           </span>
-                        </span>
-                      </span>
-                      <span v-if="itemColour.colorArr">
-                        <span v-for="(val,ind) in itemColour.colorArr" :key="ind">
-                          <span>
-                            <span style="flex-direction: column;" v-for="(val2,ind2) in val.colorWeight" :key="ind2">{{val2.weight}}千克</span>
+                          <span class="col">
+                            <span v-for="(val2,ind2) in val.colorWeight" :key="ind2">{{val2.weight}}千克</span>
                           </span>
                         </span>
                       </span>
@@ -99,22 +93,22 @@
         <div class="lineCtn col">
           <div class="inputCtn noPadding maxWidth">
             <div class="content">
-              <ul class="table">
-                <li>
+              <ul class="tablesCtn">
+                <li class="title">
                   <span>产品编号</span>
                   <span>产品品类</span>
-                  <span style="flex:5;flex-direction:row;border-bottom:0;">
-                    <span style="border-bottom:0;border-right:1px solid #ddd;">配色/尺码</span>
-                    <span style="border-bottom:0;border-right:1px solid #ddd;">下单数</span>
-                    <span style="border-bottom:0;border-right:1px solid #ddd;">库存调取数</span>
-                    <span style="border-bottom:0;border-right:1px solid #ddd;">生产计划数</span>
+                  <span style="flex:5;">
+                    <span >配色/尺码</span>
+                    <span >下单数</span>
+                    <span >库存调取数</span>
+                    <span >生产计划数</span>
                     <span>已分配数量</span>
                   </span>
                 </li>
-                <li v-for="(item,index) in StatisticsList" :key="index" class="material">
+                <li v-for="(item,index) in StatisticsList" :key="index" class="material_info">
                   <span>{{item.product_code}}</span>
                   <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
-                  <span style="flex:5;">
+                  <span class="col" style="flex:5;">
                     <span v-for="(itemColour,indexColour) in item.info" :key="indexColour">
                       <span>{{itemColour.color}}/{{itemColour.size}}</span>
                       <span>{{itemColour.order_num}}{{item.unit_name}}</span>
@@ -157,6 +151,9 @@
                     <span style="color:#1A95FF">修改</span>
                   </li>
                 </div>
+                <li v-if="logList.length===0">
+                  <span>暂无日志信息</span>
+                </li>
               </ul>
               <div class="handle">
                 <div class="order" @click="$router.push('/index/productDesignWeavingCreate/' + $route.params.id)">
@@ -177,40 +174,40 @@
         <div class="lineCtn col">
           <div class="inputCtn noPadding">
             <div class="content">
-              <ul class="table">
-                <li class="material">
+              <ul class="tablesCtn">
+                <li class="title">
                   <span>生产单位</span>
                   <span style="flex:1.5">产品信息</span>
-                  <span style="flex-direction: row;border-bottom:0;flex:5">
-                    <span style="border-bottom:0;border-right:1px solid #ddd;">配色/尺码</span>
-                    <span style="border-bottom:0;border-right:1px solid #ddd;">分配数量</span>
-                    <span style="border-bottom:0;border-right:1px solid #ddd;flex:1.5">纱线</span>
-                    <span style="border-bottom:0;border-right:1px solid #ddd;">颜色</span>
+                  <span style="flex:5">
+                    <span >配色/尺码</span>
+                    <span >分配数量</span>
+                    <span style="flex:1.5">纱线</span>
+                    <span >颜色</span>
                     <span>重量</span>
                   </span>
                   <span>操作</span>
                 </li>
-                <li v-for="(item,index) in materialList" :key="index">
+                <li class="material_info" v-for="(item,index) in materialList" :key="index">
                   <span>{{item.client_name}}</span>
                   <span style="flex:1.5">{{item.info[0].product_info.product_code}}({{item.info[0].product_info.category_info.product_category}}/{{item.info[0].product_info.type_name}}/{{item.info[0].product_info.style_name}})</span>
-                  <span style="border-bottom:0;flex:5">
+                  <span style="flex:5" class="col">
                     <span v-for="(itemColour,indexColour) in item.info" :key="indexColour">
                       <span>{{itemColour.color}}/{{itemColour.size}}</span>
                       <span>{{itemColour.number}}{{itemColour.product_info.category_info.name}}</span>
-                      <span v-if="itemColour.colorArr.length>0" style="flex:1.5">
+                      <span class="col" v-if="itemColour.colorArr.length>0" style="flex:1.5">
                         <span v-for="(itemMat,indexMat) in itemColour.colorArr" :key="indexMat">{{itemMat.material}}</span>
                       </span>
-                      <span v-if="itemColour.colorArr.length>0">
+                      <span class="col" v-if="itemColour.colorArr.length>0">
                         <span v-for="(itemMat,indexMat) in itemColour.colorArr" :key="indexMat">
-                          <span>
-                            <span style="flex-direction: column;" v-for="(itemColor,indexColor) in itemMat.colorWeight" :key="indexColor">{{itemColor.color}}</span>
+                          <span class="col">
+                            <span v-for="(itemColor,indexColor) in itemMat.colorWeight" :key="indexColor">{{itemColor.color}}</span>
                           </span>
                         </span>
                       </span>
-                      <span v-if="itemColour.colorArr.length>0">
+                      <span class="col" v-if="itemColour.colorArr.length>0">
                         <span v-for="(itemMat,indexMat) in itemColour.colorArr" :key="indexMat">
-                          <span>
-                            <span style="flex-direction: column;" v-for="(itemColor,indexColor) in itemMat.colorWeight" :key="indexColor">{{(itemColor.weight/(Number(itemColour.production_sunhao)+100)*100/itemColour.production_num*itemColour.number).toFixed(2)}}千克</span>
+                          <span class="col">
+                            <span v-for="(itemColor,indexColor) in itemMat.colorWeight" :key="indexColor">{{(itemColor.weight/(Number(itemColour.production_sunhao)+100)*100/itemColour.production_num*itemColour.number).toFixed(2)}}千克</span>
                           </span>
                         </span>
                       </span>
@@ -220,6 +217,9 @@
                     </span>
                   </span>
                   <span style="color:#1A95FF">补纱</span>
+                </li>
+                <li class="material_info" v-if="materialList.length===0">
+                  <span>暂无分配信息</span>
                 </li>
               </ul>
             </div>

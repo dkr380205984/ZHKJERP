@@ -40,33 +40,33 @@
         <div class="lineCtn col">
           <div class="inputCtn noPadding">
             <div class="content">
-              <ul class="table">
-                <li class="material">
+              <ul class="tablesCtn">
+                <li class="title">
                   <span>产品编号</span>
                   <span>产品品类</span>
-                  <span style="flex-direction: row;border-bottom:0;flex:4">
-                    <span style="border-bottom:0;border-right:1px solid #ddd;">配色/尺码</span>
-                    <span style="border-bottom:0;border-right:1px solid #ddd;">生产计划数</span>
-                    <span style="border-bottom:0;border-right:1px solid #ddd;">辅料</span>
-                    <span style="border-bottom:0;border-right:1px solid #ddd;">颜色</span>
+                  <span style="flex:4">
+                    <span>配色/尺码</span>
+                    <span>生产计划数</span>
+                    <span>辅料</span>
+                    <span>颜色</span>
                     <span>数量</span>
                   </span>
                 </li>
-                <li v-for="(item,index) in product" :key="index">
+                <li class="material_info" v-for="(item,index) in product" :key="index">
                   <span>{{item.product_code}}</span>
                   <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
-                  <span style="flex:4">
+                  <span class="col" style="flex:4">
                     <span v-for="(itemColour,indexColour) in item.info" :key="indexColour">
                       <span>{{itemColour.color}}/{{itemColour.size}}</span>
                       <span>{{itemColour.production_num}}{{item.unit_name}}</span>
-                      <span v-if="itemColour.colorArr&&itemColour.colorArr.length>0" style="flex:3;">
+                      <span class="col" v-if="itemColour.colorArr&&itemColour.colorArr.length>0" style="flex:3;">
                         <span v-for="(val,ind) in itemColour.colorArr" :key="ind">
-                          <span style="border-right:1px solid #ddd">{{val.material}}</span>
-                          <span style="border-right:1px solid #ddd">
-                            <span style="flex-direction: column;" v-for="(val2,ind2) in val.colorWeight" :key="ind2">{{val2.color}}</span>
+                          <span>{{val.material}}</span>
+                          <span class="col">
+                            <span v-for="(val2,ind2) in val.colorWeight" :key="ind2">{{val2.color}}</span>
                           </span>
-                          <span>
-                            <span style="flex-direction: column;" v-for="(val2,ind2) in val.colorWeight" :key="ind2">{{val2.weight}}{{val2.unit}}</span>
+                          <span class="col">
+                            <span v-for="(val2,ind2) in val.colorWeight" :key="ind2">{{val2.weight}}{{val2.unit}}</span>
                           </span>
                         </span>
                       </span>
@@ -85,7 +85,7 @@
         </div>
       </div>
       <div class="stepCtn">
-        <div class="stepTitle">半成品加工信息</div>
+        <div class="stepTitle">半成品加工分配信息</div>
         <div class="borderCtn">
           <div class="cicle"></div>
           <div class="border"></div>
@@ -93,32 +93,50 @@
         <div class="lineCtn col">
           <div class="inputCtn noPadding maxWidth">
             <div class="content">
-              <ul class="table">
-                <li>
+              <ul class="tablesCtn">
+                <li class="title">
+                  <span>加工单位</span>
+                  <span>加工类型</span>
                   <span>产品编号</span>
-                  <span>产品品类</span>
-                  <span style="flex:5;flex-direction:row;border-bottom:0;">
-                    <span style="border-bottom:0;border-right:1px solid #ddd;">配色/尺码</span>
-                    <span style="border-bottom:0;border-right:1px solid #ddd;">下单数</span>
-                    <span style="border-bottom:0;border-right:1px solid #ddd;">库存调取数</span>
-                    <span style="border-bottom:0;border-right:1px solid #ddd;">生产计划数</span>
-                    <span>已分配数量</span>
+                  <span style="flex:6">
+                    <span style="flex:1.5">产品品类</span>
+                    <span>颜色尺码</span>
+                    <span style="flex:0.7">单价</span>
+                    <span style="flex:0.8">数量</span>
+                    <span>创建时间</span>
+                    <span>完成时间</span>
                   </span>
+                   <span>总价</span>
+                    <span>操作</span>
                 </li>
-                <li v-for="(item,index) in StatisticsList" :key="index" class="material">
-                  <span>{{item.product_code}}</span>
-                  <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
-                  <span style="flex:5;">
-                    <span v-for="(itemColour,indexColour) in item.info" :key="indexColour">
-                      <span>{{itemColour.color}}/{{itemColour.size}}</span>
-                      <span>{{itemColour.order_num}}{{item.unit_name}}</span>
-                      <span>{{itemColour.stock_pick}}{{item.unit_name}}</span>
-                      <span>{{itemColour.production_num}}{{item.unit_name}}</span>
-                      <span>{{itemColour.fenpei}}{{item.unit_name}}</span>
+                <li class="material_info" v-for="(itemCompany,indexCompany) in mergeLogList" :key="indexCompany">
+                  <span>{{itemCompany.client_name}}</span>
+                  <span style="flex:8" class="col">
+                    <span v-for="(itemType,indexType) in itemCompany.info" :key="indexType">
+                      <span>{{itemType.type}}</span>
+                      <span class="col" style="flex:7">
+                        <span v-for="(itemPro,indexPro) in itemType.info" :key="indexPro">
+                          <span>{{itemPro.product_code}}</span>
+                          <span class="col" style="flex:6">
+                            <span v-for="(itemLast,indexLast) in itemPro.info" :key="indexLast">
+                              <span style="border-right:1px solid #ddd;flex:1.5">{{itemLast.product_info.category_info.product_category}}/{{itemLast.product_info.type_name}}/{{itemLast.product_info.style_name}}</span>
+                              <span style="border-right:1px solid #ddd">{{itemLast.color}}/{{itemLast.size}}</span>
+                              <span style="border-right:1px solid #ddd;flex:0.7">{{itemLast.price}}元</span>
+                              <span style="border-right:1px solid #ddd;flex:0.8">{{itemLast.number}}{{itemLast.product_info.category_info.name}}</span>
+                              <span style="border-right:1px solid #ddd">{{itemLast.created_at.slice(0,10)}}</span>
+                              <span >{{itemLast.complete.slice(0,10)}}</span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
                     </span>
                   </span>
+                  <span>{{itemCompany.sum}}元</span>
+                  <span style="color:#1A95FF">打印</span>
                 </li>
-                <div class="logList">展开详情</div>
+                <li class="material_info" v-if="mergeLogList.length===0">
+                  <span>还未进行任何分配</span>
+                </li>
               </ul>
               <ul class="log">
                 <div>
@@ -131,6 +149,7 @@
                     <span>配色/尺码</span>
                     <span>单价</span>
                     <span>数量</span>
+                    <span>所需辅料</span>
                     <span>总价</span>
                     <span>操作人</span>
                     <span>备注</span>
@@ -139,25 +158,43 @@
                 </div>
                 <div v-for="(item,index) in logList" :key="index">
                   <li>
-                    <span>{{item.complete_time.slice(0,10)}}</span>
+                    <span>{{item.complete.slice(0,10)}}</span>
                     <span>{{item.client_name}}</span>
-                    <span>加工类型</span>
+                    <span>{{item.type}}</span>
                     <span>{{item.product_info.product_code}}</span>
                     <span>{{item.product_info.category_info.product_category}}/{{item.product_info.type_name}}/{{item.product_info.style_name}}</span>
                     <span>{{item.color}}/{{item.size}}</span>
-                    <span>{{item.price}}</span>
+                    <span>{{item.price}}元</span>
                     <span>{{item.number}}{{item.product_info.category_info.name}}</span>
-                    <span>{{item.price*item.number}}</span>
+                    <span>
+                      <span v-if="item.ingredients.length===0">无辅料</span>
+                      <span v-for="(item2,index2) in item.ingredients" :key="item2">
+                        <span>{{item2}}</span>
+                        <span v-if="index2<item.ingredients.length-1">/</span>
+                      </span>
+                    </span>
+                    <span>{{item.price*item.number}}元</span>
                     <span>{{item.user_name}}</span>
-                    <span>{{item.desc}}</span>
+                    <span>{{item.desc?item.desc:'暂无信息'}}</span>
                     <span style="color:#1A95FF">修改</span>
+                  </li>
+                </div>
+                <div>
+                  <li v-if="logList.length===0">
+                    <span>暂无日志信息</span>
                   </li>
                 </div>
               </ul>
               <div class="handle">
-                <div class="order" @click="$router.push('/index/productDesignHalfCreate/' + $route.params.id)">
+                <div v-if="state" class="order" @click="$router.push('/index/productDesignHalfCreate/' + $route.params.id)">
                   <img class="icon" src="@/assets/image/icon/orderIcon.png">
                   <span>去加工</span>
+                </div>
+                <div class="order" v-if="!state" style="cursor:not-allowed">
+                  <img class="icon" src="@/assets/image/icon/orderIcon.png">
+                  <el-tooltip class="item" effect="dark" content="配料单信息不完善" placement="top">
+                    <span>去加工</span>
+                  </el-tooltip>
                 </div>
               </div>
             </div>
@@ -173,49 +210,40 @@
         <div class="lineCtn col">
           <div class="inputCtn noPadding">
             <div class="content">
-              <ul class="table">
-                <li class="material">
+              <ul class="tablesCtn">
+                <li class="title">
                   <span>生产单位</span>
-                  <span style="flex:1.5">产品信息</span>
-                  <span style="flex-direction: row;border-bottom:0;flex:5">
-                    <span style="border-bottom:0;border-right:1px solid #ddd;">配色/尺码</span>
-                    <span style="border-bottom:0;border-right:1px solid #ddd;">分配数量</span>
-                    <span style="border-bottom:0;border-right:1px solid #ddd;flex:1.5">辅料</span>
-                    <span style="border-bottom:0;border-right:1px solid #ddd;">颜色</span>
-                    <span>重量</span>
-                  </span>
+                  <span>加工类型</span>
+                  <span>所需辅料</span>
+                  <span>颜色</span>
+                  <span>数量</span>
                   <span>操作</span>
                 </li>
-                <li v-for="(item,index) in materialList" :key="index">
-                  <span>{{item.client_name}}</span>
-                  <span style="flex:1.5">{{item.info[0].product_info.product_code}}({{item.info[0].product_info.category_info.product_category}}/{{item.info[0].product_info.type_name}}/{{item.info[0].product_info.style_name}})</span>
-                  <span style="border-bottom:0;flex:5">
-                    <span v-for="(itemColour,indexColour) in item.info" :key="indexColour">
-                      <span>{{itemColour.color}}/{{itemColour.size}}</span>
-                      <span>{{itemColour.number}}{{itemColour.product_info.category_info.name}}</span>
-                      <span v-if="itemColour.colorArr.length>0" style="flex:1.5">
-                        <span v-for="(itemMat,indexMat) in itemColour.colorArr" :key="indexMat">{{itemMat.material}}</span>
-                      </span>
-                      <span v-if="itemColour.colorArr.length>0">
-                        <span v-for="(itemMat,indexMat) in itemColour.colorArr" :key="indexMat">
-                          <span>
-                            <span style="flex-direction: column;" v-for="(itemColor,indexColor) in itemMat.colorWeight" :key="indexColor">{{itemColor.color}}</span>
+                <li class="material_info" v-for="(itemCompany,indexCompany) in materialList" :key="indexCompany">
+                  <span>{{itemCompany.client_name}}</span>
+                  <span style="flex:4" class="col">
+                    <span v-for="(itemType,indexType) in itemCompany.info" :key="indexType">
+                      <span>{{itemType.type}}</span>
+                      <span style="flex:3" class="col">
+                        <span v-for="(itemIng,indexIng) in itemType.info" :key="indexIng">
+                          <span>{{itemIng.name}}</span>
+                          <span style="flex:2" class="col">
+                            <span v-for="(itemColor,indexColor) in itemIng.number" :key="indexColor">
+                              <span style="border-right:1px solid #ddd">{{itemColor.color}}</span>
+                              <span>{{itemColor.number}}{{itemColor.unit}}</span>
+                            </span>
                           </span>
                         </span>
-                      </span>
-                      <span v-if="itemColour.colorArr.length>0">
-                        <span v-for="(itemMat,indexMat) in itemColour.colorArr" :key="indexMat">
-                          <span>
-                            <span style="flex-direction: column;" v-for="(itemColor,indexColor) in itemMat.colorWeight" :key="indexColor">{{(itemColor.weight/(Number(itemColour.production_sunhao)+100)*100/itemColour.production_num*itemColour.number)}}{{itemColor.unit}}</span>
-                          </span>
+                        <span v-if="itemType.info.length===0">
+                          <span style="color:#ddd">无辅料</span>
                         </span>
-                      </span>
-                      <span style="flex:3.5" v-if="itemColour.colorArr.length===0">
-                        <span style="color:#F56C6C">配料单信息缺失</span>
                       </span>
                     </span>
                   </span>
                   <span style="color:#1A95FF">补充原料</span>
+                </li>
+                <li class="material_info" v-if="materialList.length===0">
+                  <span>还未进行任何分配</span>
                 </li>
               </ul>
             </div>
@@ -227,7 +255,7 @@
 </template>
 
 <script>
-import { productionDetail, weaveDetail } from '@/assets/js/api.js'
+import { productionDetail, halfProductDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -246,40 +274,28 @@ export default {
         user_name: '',
         id: ''
       },
-      productInfo: [],
       product: [],
       state: true,
       materialList: [],
       logList: [],
-      StatisticsList: []
+      mergeLogList: []
     }
   },
   mounted () {
     Promise.all([
       productionDetail({
         order_id: this.$route.params.id
-      }), weaveDetail({
+      }), halfProductDetail({
         production_plan_id: this.$route.params.id
       })
     ]).then(res => {
       this.order = res[0].data.data.production_detail.order_info
-      this.productInfo = res[0].data.data.production_detail.product_info.map((item) => {
-        let json = item
-        json.fenpei = 0
-        return json
-      })
+      let productInfo = res[0].data.data.production_detail.product_info
       let productPlan = res[0].data.data.product_plan
-      this.logList = res[1].data.data
-      // 将织造分配的数据整合到原来的数据中
-      res[1].data.data.forEach((item) => {
-        this.productInfo.forEach((itemPro, indexPro) => {
-          if (itemPro.product_code === item.product_info.product_code && itemPro.size === item.size && itemPro.color === item.color) {
-            this.productInfo[indexPro].fenpei = this.productInfo[indexPro].fenpei ? this.productInfo[indexPro].fenpei + item.number : item.number
-          }
-        })
-      })
-      // 合并相同编号的产品数据
-      this.productInfo.forEach((item) => {
+      let logList = res[1].data.data
+      // 合并第一张表信息 根据生产计划单统计所需辅料的总量
+      // 第一步 合并相同编号的产品数据
+      productInfo.forEach((item) => {
         let finded = this.product.find((itemFind, index) => itemFind.product_code === item.product_code)
         if (!finded) {
           let state = 0 // 0代表没有计划单,1代表不完整,2代表完整
@@ -311,7 +327,6 @@ export default {
               total_num: item.total_num,
               production_num: item.production_num,
               production_sunhao: item.production_sunhao,
-              fenpei: item.fenpei,
               stock_pick: item.stock_pick
             }]
           })
@@ -348,7 +363,6 @@ export default {
                   total_num: item.total_num,
                   production_num: item.production_num,
                   production_sunhao: item.production_sunhao,
-                  fenpei: item.fenpei,
                   stock_pick: item.stock_pick
                 }])
               }
@@ -358,15 +372,13 @@ export default {
           })
         }
       })
-      // 将整理出来的数据统计一下是否全部有计划单
+      // 第二步 将整理出来的数据统计一下是否全部有计划单
       this.product.forEach((item) => {
         if (item.state !== 2) {
           this.state = false
         }
       })
-      // product第一轮整理完毕后，在计算配料单之前，先把统计表做好
-      this.StatisticsList = this.product
-      // product第一轮整理完毕后，对配料单完整的数据进行原料计算
+      // 第三步，对配料单完整的数据进行辅料计算
       this.product = this.product.map((item) => {
         if (item.state === 2) {
           return {
@@ -389,7 +401,6 @@ export default {
               productPlan[item.product_code].forEach((itemPlan) => {
                 // 第一层筛选产品品类相同的，配色尺码相同的,再把原料过滤掉
                 if (itemPlan.color_match_name === itemInfo.color && itemPlan.size === itemInfo.size && itemPlan.type === 1) {
-                  // 再筛选纱线相同的
                   let mark = -1
                   let finded = json.colorArr.find((itemFind, indexFind) => {
                     if (itemFind.material === itemPlan.material_name) {
@@ -422,21 +433,90 @@ export default {
           return item
         }
       })
-      console.log(this.product)
-      // 所需原料信息和织造信息全部都放在product中，整理完毕之后，开始整理原料分配信息
-      // 第一步，把纱线和颜色信息取出来
-      let materialList = this.logList.map((itemLog, indexLog) => {
-        let newItem = itemLog
-        let finded = this.product.find((itemPro, indexPro) => itemPro.product_code === itemLog.product_info.product_code)
-        let colorArr = finded.state === 2 ? finded.info.find((itemInfo, indexInfo) => itemInfo.color === itemLog.color && itemInfo.size === itemLog.size).colorArr : []
-        newItem.colorArr = colorArr
-        newItem.production_num = finded.info.find((itemInfo, indexInfo) => itemInfo.color === itemLog.color && itemInfo.size === itemLog.size).production_num
-        newItem.production_sunhao = finded.info.find((itemInfo, indexInfo) => itemInfo.color === itemLog.color && itemInfo.size === itemLog.size).production_sunhao
-        return newItem
+      // 所需辅料信息统计至此完成，开始统计半成品分配信息
+      // 日志表格可以直接使用
+      this.logList = logList
+      // 合并日志表，先按加工单位合并，再按加工类型合并，再按产品编号合并
+      let mergeLogList = logList.map((item) => {
+        let json = item
+        json.product_code = item.product_info.product_code
+        return json
       })
-      // 第二步，合并加工单位
-      this.materialList = this.jsonMerge(materialList, ['client_name'])
-      console.log(this.materialList)
+      mergeLogList = this.jsonMerge(logList, ['client_name', 'type', 'product_code'])
+      // 合并完成后根据分配信息计算每个公司的总价
+      mergeLogList = mergeLogList.map((itemCompany) => {
+        return {
+          info: itemCompany.info,
+          client_name: itemCompany.client_name,
+          sum: itemCompany.info.reduce((totalType, currentType) => {
+            return totalType + currentType.info.reduce((totalPro, currentPro) => {
+              return totalPro + currentPro.info.reduce((totalLast, currentLast) => {
+                return totalLast + currentLast.price * currentLast.number
+              }, 0)
+            }, 0)
+          }, 0)
+        }
+      })
+      this.mergeLogList = mergeLogList
+      // 半成品分配价格统计完成，开始统计半成品分配辅料信息
+      // 第一步，先按加工单位合并，再按加工类型合并
+      let materialList = this.jsonMerge(logList, ['client_name', 'type'])
+      // 对于加工类型里的辅料需要合并一些数值
+      materialList = materialList.map((itemCompany) => {
+        return {
+          client_name: itemCompany.client_name,
+          info: itemCompany.info.map((itemType) => {
+            let arr = []
+            // 先按辅料相同的进行合并
+            itemType.info.forEach((itemPro) => {
+              itemPro.ingredients.forEach((itemIng) => {
+                let mark = -1
+                let finded = arr.find((itemFind, indexFind) => {
+                  if (itemFind.name === itemIng) {
+                    mark = indexFind
+                    return itemFind.name === itemIng
+                  }
+                })
+                if (!finded) {
+                  // 编号/尺码/颜色主要是用来匹配配料单的
+                  arr.push({
+                    product_code: itemPro.product_code,
+                    size: itemPro.size,
+                    color: itemPro.color,
+                    name: itemIng,
+                    sum: itemPro.number
+                  })
+                } else {
+                  arr[mark].sum += itemPro.number
+                }
+              })
+            })
+            // 将数据和配料单的数据合并
+            arr.map((itemInfo) => {
+              let json = itemInfo
+              json.number = []
+              productPlan[itemInfo.product_code].forEach((itemPlan) => {
+                // 第一层筛选产品品类相同的，配色尺码相同的,再把原料过滤掉
+                if (itemPlan.color_match_name === itemInfo.color && itemPlan.size === itemInfo.size && itemPlan.type === 1) {
+                  let sunhao = this.product.find((item) => item.product_code === itemInfo.product_code).info[0].production_sunhao
+                  json.number.push({
+                    unit: itemPlan.unit,
+                    color: itemPlan.color_name,
+                    number: parseInt(itemPlan.number * itemInfo.sum * (1 + sunhao / 100))
+                  })
+                }
+                return json
+              })
+            })
+            return {
+              type: itemType.type,
+              info: arr
+            }
+          })
+        }
+      })
+      this.materialList = materialList
+      console.log(materialList)
     })
   },
   methods: {
