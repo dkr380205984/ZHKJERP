@@ -89,8 +89,6 @@
         <div class="stepTitle">{{type === '0' ? '原': '辅'}}料订购</div>
         <div class="borderCtn">
           <div class="cicle"></div>
-          <div class="border"></div>
-          <div class="cicle"></div>
         </div>
         <div class="lineCtn col"
              v-for="(item,key) in list"
@@ -338,9 +336,9 @@ export default {
       this.list.forEach((item, key) => {
         let obj = {}
         let stockObj = {}
-        if ((Number(item.selectNum) + Number(item.selectNums)) > Number(item.needNum)) {
-          let num = Number(item.selectNum) + Number(item.selectNums) - Number(item.needNum)
-          let keys = window.confirm('已选数量超出计划值' + num + '，是否继续？')
+        if ((Number(item.selectNum) + Number(item.selectNums ? item.selectNums : 0)) > Number(item.needNum)) {
+          let num = Number(item.selectNum) + Number(item.selectNums ? item.selectNums : 0) - Number(item.needNum)
+          let keys = window.confirm('已选数量超出计划值' + num.toFixed(2) + '，是否继续？')
           if (!keys) {
             this.$message({
               type: 'info',
@@ -470,7 +468,7 @@ export default {
               stock_data: stockArr
             }
           }).then(res => {
-            if (res.data.code === 200) {
+            if (res.data.data.status) {
               this.$message({
                 message: '添加成功,即将跳转至详情页',
                 type: 'success'
@@ -478,6 +476,12 @@ export default {
               setTimeout(() => {
                 this.$router.push('/index/rawMaterialOrderDetail/' + this.$route.params.id + '/' + this.type)
               }, 800)
+            } else {
+              let message = res.data.data.msg
+              this.$message({
+                message: message,
+                type: 'error'
+              })
             }
           })
         }

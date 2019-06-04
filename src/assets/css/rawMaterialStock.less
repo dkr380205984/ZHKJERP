@@ -119,99 +119,13 @@ ul {
             left: 0;
             top: 0;
           }
-          .content{
+          &>.content{
             font-size: @fontMid;
-            margin-left: 15px;
+            margin-left: 40px;
             &.important{
               color:@normalBlue;
             }
-            .tablesCtn {
-              position: relative;
-              border: 1px solid #DDD;
-              width: 900px;
-              margin-left: 25px;
-              li {
-                display: flex;
-                justify-content: center;
-                border-bottom: 1px solid #DDD;
-                &:nth-child(2n+1){
-                  background-color: rgb(240,240,240);
-                }
-                &:last-of-type {
-                  border-bottom: none;
-                }
-                span {
-                  flex: 1;
-                  display: flex;
-                  justify-content: center;
-                }
-              }
-              .title {
-                display: flex;
-                span{
-                  flex: 1;
-                  display: flex;
-                  justify-content: center;
-                  border-right: 1px solid #DDD;
-                  &:last-child {
-                    border-right:none;
-                  }
-                }
-              }
-              .orderInfo {
-                &>span{
-                  border-right: 1px solid #DDD;
-                  align-items: center;
-                  &:last-child {
-                    border-right: none;
-                  }
-                  &>span {
-                    border-bottom: 1px solid #DDD;
-                    &:last-child {
-                      border-bottom: none;
-                    }
-                    &>span {
-                      border-right: 1px solid #DDD;
-                      align-items: center;
-                      &>span {
-                        border-bottom: 1px solid #DDD;
-                        &:last-child {
-                          border-bottom: none;
-                        }
-                        &>span {
-                          border-right: 1px solid #DDD;
-                          align-items: center;
-                          &>span {
-                            border-bottom: 1px solid #DDD;
-                            &>span {
-                              border-right: 1px solid #DDD;
-                              &:last-child {
-                                border-right: none;
-                              }
-                            }
-                            &:last-child {
-                              border-bottom: none;
-                            }
-                          }
-                          &:last-child {
-                            border-right: none;
-                          }
-                        }
-                      }
-                      &:last-child {
-                        border-right: none;
-                      }
-                    }
-                  }
-                }
-                .col {
-                  flex-direction: column;
-                  align-items: unset;
-                }
-              }
-            }
           }
-
         }
         .tablePlan {
           margin-left: 40px;

@@ -43,7 +43,7 @@
                   <span>{{item.product_size+'/'+item.product_color}}</span>
                   <span>{{item.number+'条'}}</span>
                   <span v-if="!item.flag"
-                        @click="$router.push('/index/productPlanCreate/' + item.id)">无配料单信息(添加)</span>
+                        @click="$router.push('/index/productPlanCreate/' + item.id)">缺少配料单信息(添加)</span>
                 </li>
               </ul>
             </span>
@@ -56,14 +56,14 @@
           <div class="cicle"></div>
           <div class="border"></div>
         </div>
-        <div class="lineCtn col">
+        <div class="lineCtn">
           <template v-if="materialList.length > 0">
             <div class="inputCtn noPadding">
               <div class="content">
-                <ul class="table">
-                  <li class="material">
+                <ul class="tablesCtn">
+                  <li class="title">
                     <span>计划原料</span>
-                    <span class="flex2 row">
+                    <span class="flex2">
                       <span>颜色</span>
                       <span class="flex08">数量</span>
                     </span>
@@ -71,19 +71,21 @@
                     <span>已订购</span>
                     <span>已加工</span>
                   </li>
-                  <li v-for="(val,ind) in materialList"
-                      :key="ind">
-                    <span>{{val.material}}</span>
-                    <span class="flex2">
-                      <span v-for="(va,inf) in val.need"
-                            :key="inf">
-                        <span>{{va.name}}</span>
-                        <span class="flex08">{{va.value|fixedFilter}}{{val.unit}}</span>
+                  <li class="content"
+                      v-for="(item,key) in materialList"
+                      :key="key">
+                    <span class="tableRow">{{item.material}}</span>
+                    <span class="flex2 col tableRow">
+                      <span v-for="(val,ind) in item.need"
+                            :key="ind"
+                            class="tableColumn">
+                        <span class="tableRow">{{val.name}}</span>
+                        <span class="tableRow flex08">{{val.value|fixedFilter}}{{item.unit}}</span>
                       </span>
                     </span>
-                    <span>{{(val.total_weight ? val.total_weight : 0)|fixedFilter}}{{val.unit}}</span>
-                    <span>{{(val.order_weight ? val.order_weight : 0)|fixedFilter}}{{val.unit}}</span>
-                    <span>{{(val.process_weight ? val.process_weight : 0)|fixedFilter}}{{val.unit}}</span>
+                    <span class="tableRow">{{(item.total_weight ? item.total_weight : 0)|fixedFilter}}{{item.unit}}</span>
+                    <span class="tableRow">{{(item.order_weight ? item.order_weight : 0)|fixedFilter}}{{item.unit}}</span>
+                    <span class="tableRow">{{(item.process_weight ? item.process_weight : 0)|fixedFilter}}{{item.unit}}</span>
                   </li>
                 </ul>
               </div>
@@ -99,62 +101,52 @@
           <div class="cicle"></div>
           <div class="border"></div>
         </div>
-        <div class="lineCtn col">
+        <div class="lineCtn">
           <div class="inputCtn noPadding">
             <div class="content">
-              <ul class="table">
-                <li>
-                  <span class="flex104"
-                        style="flex-direction:row">
-                    <span>
+              <ul class="tablesCtn">
+                <li class="title">
+                  <span class="flex104 tableRow">
+                    <span class="tableColumn">
                       <span class="flex17">订购公司</span>
-                      <span class="flex43"
-                            style="flex-direction:row;">
-                        <span class="flex17"
-                              style="borderBottom: none;">原料名称</span>
-                        <span style="border-left:1px solid #DDD;"
-                              class="flex26">
-                          <span style="border-right:1px solid #DDD">颜色</span>
-                          <span style="border-right:1px solid #DDD">单价</span>
+                      <span class="flex43">
+                        <span class="flex17">原料名称</span>
+                        <span class="flex26">
+                          <span>颜色</span>
+                          <span>单价</span>
                           <span>数量</span>
                         </span>
                       </span>
                       <span>总价</span>
                       <span>下单日期</span>
-                      <!-- <span>备注</span> -->
                       <span>操作</span></span>
                   </span>
                 </li>
                 <li v-if="list.orderList.length === 0">暂无信息</li>
                 <li v-for="(value,index) in list.orderList"
-                    :key="index">
-                  <span class="flex104">
-                    <span>
-                      <span class="flex17">{{value.company === null ? '仓库' : value.company}}</span>
-                      <span class="flex43">
-                        <span v-for="(iten,kay) in value.materials"
-                              :key="kay">
-                          <span class="flex17">{{iten.material}}</span>
-                          <span style="border-left:1px solid #DDD;"
-                                class="flex26">
-                            <span v-for="(content,number) in iten.colors"
-                                  :key="number">
-                              <span>{{content.color}}</span>
-                              <span>{{content.price|fixedFilter}}{{'元/' + content.unit}}</span>
-                              <span>{{content.value|fixedFilter}}{{content.unit}}</span>
-                            </span>
-                          </span>
+                    :key="index"
+                    class="content">
+                  <span class="flex17 tableRow">{{value.company === null ? '仓库' : value.company}}</span>
+                  <span class="flex43 tableRow col">
+                    <span v-for="(iten,kay) in value.materials"
+                          :key="kay"
+                          class="tableColumn">
+                      <span class="flex17 tableRow">{{iten.material}}</span>
+                      <span class="flex26 col">
+                        <span v-for="(content,number) in iten.colors"
+                              :key="number"
+                              class="tableColumn">
+                          <span class="tableRow">{{content.color}}</span>
+                          <span class="tableRow">{{content.price|fixedFilter}}{{'元/' + content.unit}}</span>
+                          <span class="tableRow">{{content.value|fixedFilter}}{{content.unit}}</span>
                         </span>
                       </span>
-                      <span>{{value.total_price|fixedFilter}}{{'元'}}</span>
-                      <span>{{value.create_time}}</span>
-                      <!-- <span>
-                        <span>{{value.remark ? value.remark : '暂无备注'}}</span>
-                      </span> -->
-                      <span class="blue"
-                            @click="open('table',$route.params.id,'',value.company)">打印</span>
                     </span>
                   </span>
+                  <span class="tableRow">{{value.total_price|fixedFilter}}{{'元'}}</span>
+                  <span class="tableRow">{{value.create_time}}</span>
+                  <span class="blue tableRow"
+                        @click="open('table',$route.params.id,'',value.company)">打印</span>
                 </li>
                 <div class="logList"
                      @click="orderLogFlag = !orderLogFlag">{{ orderLogFlag ? '收起' : '展开'}}详情</div>
@@ -163,14 +155,13 @@
                   v-if="orderLogFlag">
                 <div>
                   <li>
-                    <span class="flexBig">时间</span>
+                    <span class="flexBig">下单日期</span>
                     <span class="flexBig">订购公司</span>
                     <span>{{type === '0' ? '原' : '辅'}}料名称</span>
                     <span class="flexMid">颜色</span>
                     <span class="flexMid">单价</span>
                     <span class="flexMid">重量</span>
                     <span class="flexMid">总价</span>
-                    <span>下单日期</span>
                     <span class="flexBig">备注</span>
                     <span class="flexMid">操作人</span>
                   </li>
@@ -179,14 +170,13 @@
                   <li v-if="orderLog.length === 0">暂无信息</li>
                   <li v-for="(item,key) in orderLog"
                       :key="item.time + key">
-                    <span class="flexBig">{{item.time}}</span>
+                    <span class="flexBig">{{item.order_time}}</span>
                     <span class="flexBig">{{item.client_name}}</span>
                     <span>{{item.material}}</span>
                     <span class="flexMid">{{item.color}}</span>
                     <span class="flexMid">{{item.price|fixedFilter}}{{'元/' + item.unit}}</span>
                     <span class="flexMid">{{item.weight|fixedFilter}}{{item.unit}}</span>
                     <span class="flexMid">{{item.total_price|fixedFilter}}{{'元'}}</span>
-                    <span>{{item.order_time}}</span>
                     <span class="flexBig remark">
                       <i>
                         {{item.remark ? item.remark : '暂无备注'}}
@@ -225,61 +215,52 @@
         <div class="borderCtn">
           <div class="cicle"></div>
         </div>
-        <div class="lineCtn col">
+        <div class="lineCtn">
           <div class="inputCtn noPadding">
             <div class="content">
-              <ul class="table">
-                <li>
+              <ul class="tablesCtn">
+                <li class="title">
                   <span>加工类型</span>
-                  <span class="flex104"
-                        style="flex-direction:row">
-                    <span>
-                      <span class="flex17">加工单位</span>
-                      <span class="flex37"
-                            style="flex-direction:row;">
-                        <span class="flex17"
-                              style="borderBottom: none;">原料名称</span>
-                        <span style="border-left:1px solid #DDD;flex:2;">
-                          <span style="border-right:1px solid #DDD">颜色</span>
-                          <span>数量</span>
-                        </span>
+                  <span class="flex104">
+                    <span class="flex17">加工单位</span>
+                    <span class="flex37">
+                      <span class="flex17">原料名称</span>
+                      <span class="flex2">
+                        <span>颜色</span>
+                        <span>数量</span>
                       </span>
-                      <span>下单日期</span>
-                      <!-- <span>备注</span> -->
-                      <span>操作</span></span>
+                    </span>
+                    <span>下单日期</span>
+                    <span>操作</span>
                   </span>
                 </li>
                 <li v-if="list.processList.length === 0">暂无信息</li>
                 <li v-for="(value,index) in list.processList"
                     :key="index"
-                    class="process">
-                  <span>
-                    <span>{{value.process_type}}</span>
-                  </span>
-                  <span class="flex104">
+                    class="content">
+                  <span class="tableRow">{{value.process_type}}</span>
+                  <span class="flex104 col tableRow">
                     <span v-for="(item,key) in value.companys"
-                          :key="key">
-                      <span class="flex17">
-                        {{item.company}}
-                      </span>
-                      <span class="flex37">
+                          :key="key"
+                          class="tableColumn">
+                      <span class="flex17 tableRow">{{item.company}}</span>
+                      <span class="flex37 tableRow col">
                         <span v-for="(iten,kay) in item.materials"
-                              :key="kay">
-                          <span class="flex17">{{iten.material}}</span>
-                          <span style="border-left:1px solid #DDD;flex:2;">
+                              :key="kay"
+                              class="tableColumn">
+                          <span class="flex17 tableRow">{{iten.material}}</span>
+                          <span class="tableRow col flex2">
                             <span v-for="(content,number) in iten.colors"
-                                  :key="number">
-                              <span>{{content.color}}</span>
-                              <span>{{content.value|fixedFilter}}{{content.unit}}</span>
+                                  :key="number"
+                                  class="tableColumn">
+                              <span class="tableRow">{{content.color}}</span>
+                              <span class="tableRow">{{content.value|fixedFilter}}{{content.unit}}</span>
                             </span>
                           </span>
                         </span>
                       </span>
-                      <span>{{item.create_time}}</span>
-                      <!-- <span>
-                        <span>{{item.remark ? item.remark : '暂无备注'}}</span>
-                      </span> -->
-                      <span class="blue"
+                      <span class="tableRow">{{item.create_time}}</span>
+                      <span class="blue tableRow"
                             @click="open('table',$route.params.id,'',item.company,value.process_type)">打印</span>
                     </span>
                   </span>
@@ -291,14 +272,12 @@
                   v-if="processLogFlag">
                 <div>
                   <li>
-                    <span class="flexBig">时间</span>
+                    <span class="flexBig">下单日期</span>
                     <span class="flexBig">加工单位</span>
                     <span>加工类型</span>
                     <span>{{type === '0' ? '原' : '辅'}}料名称</span>
                     <span class="flexMid">颜色</span>
                     <span class="flexMid">重量</span>
-                    <span class="flexMid">总价</span>
-                    <span>下单日期</span>
                     <span class="flexBig">备注</span>
                     <span>操作人</span>
                   </li>
@@ -307,14 +286,12 @@
                   <li v-if="processLog.length === 0">暂无信息</li>
                   <li v-for="(item,key) in processLog"
                       :key="item.time + key">
-                    <span class="flexBig">{{item.time}}</span>
+                    <span class="flexBig">{{item.order_time}}</span>
                     <span class="flexBig">{{item.client_name}}</span>
                     <span>{{item.process_type}}</span>
                     <span>{{item.material}}</span>
                     <span class="flexMid">{{item.color}}</span>
                     <span class="flexMid">{{item.weight|fixedFilter}}{{item.unit}}</span>
-                    <span class="flexMid">{{item.total_price|fixedFilter}}{{'元'}}</span>
-                    <span>{{item.order_time}}</span>
                     <span class="flexBig remark">
                       <i>
                         {{item.remark ? item.remark : '暂无备注'}}
@@ -458,7 +435,7 @@ export default {
         order_id: this.$route.params.id
       }),
       productionDetail({
-        order_id: 1
+        order_id: this.$route.params.id
       })
     ]).then(res => {
       let info = res[0].data.data.material_info
@@ -473,7 +450,7 @@ export default {
       this.client_name = orderInfo.client_name
       this.group_name = orderInfo.group_name
       // 初始化产品信息
-      console.log(orderInfo)
+      // console.log(productInfo)
       let arr = []
       orderInfo.order_batch.forEach((item, key) => {
         item.batch_info.forEach((value, index) => {
@@ -485,6 +462,7 @@ export default {
               let keys = orderProductInfo[value.productCode].find(a => ((a.size === val.name[0]) && (a.color_match_name === val.name[1])))
               if (!keys) {
                 flag = false
+                this.flag = false
               }
             } else {
               flag = false
@@ -498,7 +476,9 @@ export default {
               product_code: value.productCode,
               product_size: val.name[0],
               product_color: val.name[1],
-              number: Math.ceil(val.numbers)
+              number: Math.ceil(val.numbers),
+              has_craft: value.productInfo.has_craft,
+              craft_id: value.productInfo.category_info.id
             })
           })
         })
@@ -511,7 +491,7 @@ export default {
           flag.number = Math.ceil(Number(flag.number) + Number(item.number))
         }
       })
-      console.log(this.productList)
+      // console.log(this.productList)
       // 初始化物料信息
       info.forEach((item, key) => {
         for (let prop in item) {
@@ -547,7 +527,7 @@ export default {
         }
       })
       // 初始化订购信息
-      console.log(materialInfo)
+      // console.log(materialInfo)
       materialInfo.forEach(item => {
         if ((this.type === '0' && item.type === 1) || (this.type === '1' && item.type === 2)) {
           // 初始化订购信息
@@ -692,7 +672,6 @@ export default {
                 material: item.material_name,
                 color: val.color,
                 weight: val.value,
-                total_price: item.total_price,
                 order_time: item.order_time.split(' ')[0],
                 remark: item.desc,
                 user: item.user_name,
@@ -702,7 +681,6 @@ export default {
           }
         })
       })
-      console.log(this.flag)
       this.loading = false
     })
   }

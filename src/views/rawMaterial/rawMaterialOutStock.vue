@@ -2,7 +2,7 @@
   <div id="rawMaterialOutStock"
        v-loading="loading">
     <div class="head">
-      <h2>原料出库</h2>
+      <h2>{{type === '0' ? '原' : '辅'}}料出库</h2>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -33,17 +33,17 @@
         </div>
       </div>
       <div class="stepCtn">
-        <div class="stepTitle">原料信息</div>
+        <div class="stepTitle">{{type === '0' ? '原' : '辅'}}料信息</div>
         <div class="borderCtn">
           <div class="cicle"></div>
           <div class="border"></div>
         </div>
-        <div class="lineCtn col">
+        <div class="lineCtn">
           <div class="inputCtn noPadding">
             <div class="content">
               <ul class="tablesCtn">
                 <li class="title">
-                  <span>计划原料</span>
+                  <span>计划{{type === '0' ? '原' : '辅'}}料</span>
                   <span class="flex17">
                     <span>颜色</span>
                     <span>数量</span>
@@ -52,20 +52,21 @@
                   <span>已入库</span>
                   <span>已出库</span>
                 </li>
-                <li class="materialInfo"
+                <li class="content"
                     v-for="(item,key) in materialList"
                     :key="key">
-                  <span>{{item.material}}</span>
-                  <span class="flex17 col">
+                  <span class="tableRow">{{item.material}}</span>
+                  <span class="tableRow flex17 col">
                     <span v-for="(val,ind) in item.need"
-                          :key="ind">
-                      <span>{{val.name}}</span>
-                      <span>{{val.value}}{{item.unit}}</span>
+                          :key="ind"
+                          class="tableColumn">
+                      <span class="tableRow">{{val.name}}</span>
+                      <span class="tableRow">{{val.value}}{{item.unit}}</span>
                     </span>
                   </span>
-                  <span>{{item.plan_number ? item.plan_number : 0}}{{item.unit}}</span>
-                  <span>{{item.goStock_number ? item.goStock_number : 0}}{{item.unit}}</span>
-                  <span>{{item.outStock_number ? item.outStock_number : 0}}{{item.unit}}</span>
+                  <span class="tableRow">{{item.plan_number ? item.plan_number : 0}}{{item.unit}}</span>
+                  <span class="tableRow">{{item.goStock_number ? item.goStock_number : 0}}{{item.unit}}</span>
+                  <span class="tableRow">{{item.outStock_number ? item.outStock_number : 0}}{{item.unit}}</span>
                 </li>
               </ul>
             </div>
@@ -86,54 +87,52 @@
                   <span>生产单位</span>
                   <span class="flex22">
                     <span class="flex17">产品信息</span>
-                    <span class="flex06">尺码/颜色</span>
-                    <span class="flex06">数量</span>
+                    <span class="flex12">
+                      <span>尺码/颜色</span>
+                      <span>数量</span>
+                    </span>
                   </span>
                   <span class="flex20">
-                    <span class="flex12">所需原料</span>
-                    <span class="flex06">颜色</span>
-                    <span class="flex06">数量</span>
+                    <span>所需{{type === '0' ? '原' : '辅'}}料</span>
+                    <span>
+                      <span>颜色</span>
+                      <span>数量</span>
+                    </span>
                   </span>
                 </li>
                 <li v-if="productionList.length === 0">
                   <span @click="$route">暂无生产信息(添加)</span>
                 </li>
-                <li class="materialInfo"
+                <li class="content"
                     v-for="(item,key) in productionList"
                     :key="key">
-                  <span>{{item.name}}</span>
-                  <span class="flex22 col">
-                    <!-- <span class="flex17"> -->
+                  <span class="tableRow">{{item.name}}</span>
+                  <span class="tableRow flex22 col">
                     <span v-for="(value,index) in item.production"
-                          :key="index">
-                      <span class="flex17">{{value.product_code}}{{value.product_class}}</span>
-                      <span class="flex12 col">
+                          :key="index"
+                          class="tableColumn">
+                      <span class="tableRow flex17"><span class="flex06">{{value.product_code}}</span><span>{{value.product_class}}</span></span>
+                      <span class="tableRow flex12 col">
                         <span v-for="(ite,ka) in value.product_detail"
-                              :key="ka">
-                          <span class="flex06">{{ite.size + '/' + ite.color }}</span>
-                          <span class="flex06">{{ite.number + '条'}}</span>
+                              :key="ka"
+                              class="tableColumn">
+                          <span class="tableRow">{{ite.size + '/' + ite.color }}</span>
+                          <span class="tableRow">{{ite.number + '条'}}</span>
                         </span>
                       </span>
                     </span>
-                    <!-- </span> -->
                   </span>
-                  <span class="flex20 col">
-                    <span class="flex17">
-                      <span v-for="(value,index) in item.materialList"
-                            :key="index">
-                        <span class="flex12">
-                          <span>
-                            <div>
-                              <span>{{value.material}}</span>
-                            </div>
-                          </span>
-                        </span>
-                        <span class="flex12">
-                          <span v-for="(ite,ka) in value.colors"
-                                :key="ka">
-                            <span class="flex06">{{ite.color }}</span>
-                            <span class="flex06">{{ite.number + ite.unit}}</span>
-                          </span>
+                  <span class="tableRow flex20 col">
+                    <span v-for="(value,index) in item.materials"
+                          :key="index"
+                          class="tableColumn">
+                      <span class="tableRow">{{value.material}}</span>
+                      <span class="tableRow col">
+                        <span v-for="(ite,ka) in value.colors"
+                              :key="ka"
+                              class="tableColumn">
+                          <span class="tableRow">{{ite.color }}</span>
+                          <span class="tableRow">{{ite.number}}{{ite.unit}}</span>
                         </span>
                       </span>
                     </span>
@@ -145,28 +144,26 @@
         </div>
       </div>
       <div class="stepCtn">
-        <div class="stepTitle">原料出库</div>
+        <div class="stepTitle">{{type === '0' ? '原' : '辅'}}料出库</div>
         <div class="borderCtn">
           <div class="cicle"></div>
-          <div class="border"></div>
+          <!-- <div class="border"></div> -->
         </div>
         <div class="lineCtn col"
              v-for="(item,key) in list"
              :key="key">
           <div class="tablePlan">
             <div class="tableTitle">
-              <span>原料名称</span>
+              <span>{{type === '0' ? '原' : '辅'}}料名称</span>
               <span>合计数量</span>
               <span>已出库数量</span>
               <span>待出库数量</span>
             </div>
             <div class="tableInfo">
               <span>{{item.material}}</span>
-              <span>
-                {{item.total_number + 'kg'}}
-              </span>
-              <span>{{item.stock_number + 'kg'}}</span>
-              <span>{{item.before_stock + 'kg'}}</span>
+              <span>{{item.total_number ? item.total_number : 0}}{{item.unit}}</span>
+              <span>{{(item.stock_number ? item.stock_number : 0) + (item.stocks_number ? item.stocks_number : 0)}}{{item.unit}}</span>
+              <span>{{item.total_number - (item.stock_number ? item.stock_number : 0) - (item.stocks_number ? item.stocks_number : 0)}}{{item.unit}}</span>
             </div>
           </div>
           <div class="buyInfo">
@@ -174,13 +171,25 @@
                 v-for="(iten,kay) in item.stockInfo"
                 :key="kay">
               <li>
-                <span>原料颜色</span>:
+                <span>出库单位</span>:
+                <el-select v-model="iten.outStockClient"
+                           placeholder="请选择出库单位"
+                           size="small">
+                  <el-option v-for="(value,index) in item.client_name"
+                             :key="index"
+                             :label="value.name"
+                             :value="value.id">
+                  </el-option>
+                </el-select>
+              </li>
+              <li>
+                <span>{{type === '0' ? '原' : '辅'}}料颜色</span>:
                 <el-select v-model="iten.materialColor"
                            placeholder="请选择颜色"
                            size="small">
-                  <el-option v-for="value in options"
+                  <el-option v-for="value in update(item,iten.outStockClient)"
                              :key="value.value"
-                             :value="value.label">
+                             :value="value">
                   </el-option>
                 </el-select>
               </li>
@@ -189,24 +198,25 @@
                   class="col">
                 <div>
                   <span>批号/缸号</span>:
-                  <el-input size="small"
-                            placeholder="请输入批号/缸号"
-                            v-model="value.dyelot_number"
-                            style="width:243px;">
-                  </el-input>
+                  <el-select v-model="value.dyelot_number"
+                             placeholder="请选择批/缸号"
+                             size="small">
+                    <el-option v-for="value in item.vatList[iten.materialColor]"
+                               :key="value.value"
+                               :value="value">
+                    </el-option>
+                  </el-select>
                 </div>
                 <div>
                   <span>件数/数量</span>:
                   <el-input size="small"
                             placeholder="件数"
-                            v-model="value.number"
-                            @change="jisuan">
+                            v-model="value.number">
                     <template slot="append">件</template>
                   </el-input>
                   <el-input size="small"
                             placeholder="数量"
-                            v-model="value.weight"
-                            @change="jisuan">
+                            v-model="value.weight">
                     <template slot="append">kg</template>
                   </el-input>
                 </div>
@@ -216,17 +226,6 @@
                 <em v-else
                     class="el-icon-delete"
                     @click="deleteStockWeightInfo(key,kay,index)"></em>
-              </li>
-              <li>
-                <span>出库单位</span>:
-                <el-select v-model="iten.outStock_client"
-                           placeholder="请选择出库单位"
-                           size="small">
-                  <el-option v-for="value in options"
-                             :key="value.value"
-                             :value="value.label">
-                  </el-option>
-                </el-select>
               </li>
               <li>
                 <span>出库时间</span>:
@@ -269,7 +268,7 @@
 </template>
 
 <script>
-import { orderDetail, rawMaterialOrderInit, productionDetail } from '@/assets/js/api.js'
+import { orderDetail, rawMaterialOrderInit, weaveDetail, productOrderDetail, rawMaterialOutStock, rawMaterialGoStockDetail, rawMaterialOutStockDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -280,152 +279,8 @@ export default {
       group_name: '',
       now_time: '',
       type: '',
-      defaultStock: '桐庐凯瑞针纺有限公司',
       materialList: [],
-      list: [
-        {
-          material: '',
-          colors: [],
-          total_number: 0,
-          stock_number: 0,
-          before_stock: 0,
-          stockInfo: [],
-          weight: ''
-        }
-      ],
-      companyList: [
-        {
-          company: '杭州凰顺针织有限公司',
-          productList: [
-            {
-              product_code: 'ES5623134',
-              product_class: '围巾/针织/长巾',
-              makeInfo: [
-                {
-                  size: 'S码',
-                  color: '深绿',
-                  make_number: 2010
-                }, {
-                  size: 'M码',
-                  color: '卡其色',
-                  make_number: 1998
-                }
-              ]
-            }, {
-              product_code: 'ES5623134',
-              product_class: '围巾/针织/长巾',
-              makeInfo: [
-                {
-                  size: 'S码',
-                  color: '深绿',
-                  make_number: 2010
-                }, {
-                  size: 'M码',
-                  color: '卡其色',
-                  make_number: 1998
-                }
-              ]
-            }
-          ],
-          materialList: [
-            {
-              material: '52支上光单股晴纶',
-              colors: [
-                {
-                  color: '卡其色',
-                  number: 200,
-                  unit: 'kg'
-                }, {
-                  color: '白色',
-                  number: 20,
-                  unit: 'g'
-                }
-              ]
-            }, {
-              material: '36支上光双股晴纶',
-              colors: [
-                {
-                  color: '卡其色',
-                  number: 200,
-                  unit: 'kg'
-                }
-              ]
-            }, {
-              material: '48支上光双股晴纶',
-              colors: [
-                {
-                  color: '卡其色',
-                  number: 200,
-                  unit: 'kg'
-                }
-              ]
-            }
-          ]
-        }, {
-          company: '杭州凰顺针织有限公司',
-          productList: [
-            {
-              product_code: 'ES5623134',
-              product_class: '围巾/针织/长巾',
-              makeInfo: [
-                {
-                  size: 'S码',
-                  color: '深绿',
-                  make_number: 2010
-                }
-              ]
-            }, {
-              product_code: 'ES5623134',
-              product_class: '围巾/针织/长巾',
-              makeInfo: [
-                {
-                  size: 'S码',
-                  color: '深绿',
-                  make_number: 2010
-                }, {
-                  size: 'M码',
-                  color: '卡其色',
-                  make_number: 1998
-                }
-              ]
-            }
-          ],
-          materialList: [
-            {
-              material: '52支上光单股晴纶',
-              colors: [
-                {
-                  color: '卡其色',
-                  number: 200,
-                  unit: 'kg'
-                }, {
-                  color: '白色',
-                  number: 20,
-                  unit: 'g'
-                }
-              ]
-            }, {
-              material: '36支上光双股晴纶',
-              colors: [
-                {
-                  color: '卡其色',
-                  number: 200,
-                  unit: 'kg'
-                }
-              ]
-            }, {
-              material: '48支上光双股晴纶',
-              colors: [
-                {
-                  color: '卡其色',
-                  number: 200,
-                  unit: 'kg'
-                }
-              ]
-            }
-          ]
-        }
-      ],
+      list: [],
       productionList: [],
       options: [
         {
@@ -469,54 +324,28 @@ export default {
       }
     }
   },
-  methods: {
-    // json数据合并半成品
-    // jsonMerge (jsonArr, key, newKey) {
-    //   let json = jsonArr
-    //   let newJson = []
-    //   json.forEach((item, index) => {
-    //     let mark = -1
-    //     let finded = newJson.find((itemFind, indexFind) => {
-    //       if (itemFind[key] === item[key]) {
-    //         mark = indexFind
-    //         return itemFind[key] === item[key]
-    //       }
-    //     })
-    //     if (!finded) {
-    //       let value = {}
-    //       value[key] = item[key]
-    //       value[newKey] = []
-    //       let itemJson = {}
-    //       for (let i in item) {
-    //         if (i !== key) {
-    //           itemJson[i] = item[i]
-    //         }
-    //       }
-    //       value[newKey].push(itemJson)
-    //       newJson.push(value)
-    //     } else {
-    //       let itemJson = {}
-    //       for (let i in item) {
-    //         if (i !== key) {
-    //           itemJson[i] = item[i]
-    //         }
-    //       }
-    //       newJson[mark][newKey].push(itemJson)
-    //     }
-    //   })
-    //   return newJson
-    // },
-    jisuan () {
-      this.list.forEach((item, key) => {
-        item.selectNum = 0
-        item.stockInfo.forEach((value, index) => {
-          value.total_weight = 0
-          value.stockWeightInfo.forEach((val, ind) => {
-            item.selectNum += Number(val.value)
-            value.total_weight += Number(val.weight)
+  watch: {
+    list: {
+      deep: true,
+      handler: function () {
+        this.list.forEach(item => {
+          let num = 0
+          item.stockInfo.forEach(value => {
+            value.stockWeightInfo.forEach(val => {
+              num += Number(val.weight)
+            })
           })
+          item.stock_number = num
         })
-      })
+      }
+    }
+  },
+  methods: {
+    update (item, key) {
+      let arr = item.client_name.find(val => val.id === key)
+      if (arr) {
+        return item.colors[arr.name]
+      }
     },
     appendStockWeightInfo (key, kay) {
       this.list[key].stockInfo[kay].stockWeightInfo.push({
@@ -527,50 +356,119 @@ export default {
     },
     deleteStockWeightInfo (key, kay, index) {
       this.list[key].stockInfo[kay].stockWeightInfo.splice(index, 1)
-      this.jisuan()
     },
     addStockInfo (key) {
-      this.list[key].stockInfo.push(
-        {
-          materialColor: '',
-          remark: '',
-          outStock_client: this.defaultStock,
-          stock_time: this.now_time,
-          stockWeightInfo: [
-            {
-              dyelot_number: '',
-              number: '',
-              weight: ''
-            }
-          ]
-        }
-      )
+      this.list[key].stockInfo.push({
+        materialColor: '',
+        remark: '',
+        outStockClient: '',
+        stock_time: this.now_time,
+        stockWeightInfo: [
+          {
+            dyelot_number: '',
+            number: '',
+            weight: ''
+          }
+        ]
+      })
     },
     deleteStockInfo (key, kay) {
       this.list[key].stockInfo.splice(kay, 1)
     },
     saveAll () {
       console.log(this.list)
+      let arr = []
+      let flag = true
+      let nums = 0
       this.list.forEach(item => {
+        if ((Number(item.stocks_number ? item.stocks_number : 0) + Number(item.stock_number ? item.stock_number : 0)) > Number(item.total_number)) {
+          this.$message({
+            message: '出库数量超出合计数量，不被允许的操作，请重新输入',
+            type: 'error'
+          })
+          flag = false
+          return
+        }
+        nums += item.stockInfo.length
         item.stockInfo.forEach(value => {
-          let flag = value.materialColor && value.dyelot && value.materialAtr && value.total_weight && value.stock && value.stock_time
-          if (flag) {
-            this.$message(
-              {
-                message: '添加成功',
-                type: 'success'
-              }
-            )
-          } else {
-            this.$message(
-              {
-                message: '添加失败，有必填项未填',
+          value.stockWeightInfo.forEach(val => {
+            if (!value.materialColor) {
+              this.$message({
+                message: '请选择颜色',
                 type: 'error'
-              }
-            )
-          }
+              })
+              flag = false
+              return
+            }
+            if (!val.number) {
+              this.$message({
+                message: '请输入总件数',
+                type: 'error'
+              })
+              flag = false
+              return
+            }
+            if (!val.weight) {
+              this.$message({
+                message: '请输入数量',
+                type: 'error'
+              })
+              flag = false
+              return
+            }
+            if (!value.outStockClient) {
+              this.$message({
+                message: '请选择出库单位',
+                type: 'error'
+              })
+              flag = false
+              return
+            }
+            if (!value.stock_time) {
+              this.$message({
+                message: '请选择出库时间',
+                type: 'error'
+              })
+              flag = false
+              return
+            }
+            arr.push({
+              company_id: window.sessionStorage.getItem('company_id'),
+              order_id: this.$route.params.id,
+              material_name: item.material,
+              user_id: window.sessionStorage.getItem('user_id'),
+              vat_code: ((val.dyelot_number !== '默认' || val.dyelot_number) ? val.dyelot_number : 'vat_null'),
+              color_code: value.materialColor,
+              number: val.number,
+              client_id: value.outStockClient,
+              weight: val.weight,
+              complete_time: value.stock_time,
+              desc: value.remark,
+              type: (this.type === '0' ? 1 : 2)
+            })
+          })
         })
       })
+      console.log(arr)
+      if (flag) {
+        if (nums === 0) {
+          this.$message({
+            message: '无可提交的信息',
+            type: 'error'
+          })
+        } else {
+          rawMaterialOutStock({
+            data: arr
+          }).then(res => {
+            if (res.data.code === 200) {
+              this.$message({
+                message: '添加成功',
+                type: 'success'
+              })
+            }
+          })
+        }
+      }
     }
   },
   created () {
@@ -580,13 +478,20 @@ export default {
     Promise.all([
       orderDetail({
         id: this.$route.params.id
-      }), rawMaterialOrderInit({
+      }),
+      rawMaterialOrderInit({
         order_id: this.$route.params.id
       }),
-      // fenpei({
-      //   production_plan_id: this.$route.params.id
-      // }),
-      productionDetail({
+      weaveDetail({
+        production_plan_id: this.$route.params.id
+      }),
+      productOrderDetail({
+        order_id: this.$route.params.id
+      }),
+      rawMaterialGoStockDetail({
+        order_id: this.$route.params.id
+      }),
+      rawMaterialOutStockDetail({
         order_id: this.$route.params.id
       })
     ]).then(res => {
@@ -597,8 +502,6 @@ export default {
       this.group_name = res[0].data.data.group_name
       this.loading = false
       let materialInfo = res[1].data.data
-      // console.log(this.jsonMerge(res[2].data.data, 'client_name', 'info'))
-      // console.log(materialInfo)
       materialInfo.material_info.forEach((item, key) => {
         for (let prop in item) {
           for (let value in item[prop]) {
@@ -632,58 +535,167 @@ export default {
           }
         }
       })
-      // console.log(this.materialList)
       // 生产信息初始化
-      // let productionInfo = res[2].data.data
-      // console.log('init:', productionInfo)
-      // console.log('companyList:', this.companyList)
-      // // 分配信息初始化
-      // productionInfo.forEach(item => {
-      //   let types = item.product_info.category_info.product_category + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_id ? ('/' + item.product_info.flower_id) : '')
-      //   let flag = this.productionList.find(val => val.name === item.client_name)
-      //   if (!flag) {
-      //     this.productionList.push({
-      //       name: item.client_name,
-      //       production: [{
-      //         product_code: item.product_info.product_code,
-      //         product_class: types,
-      //         product_detail: [{
-      //           color: item.color,
-      //           number: item.number,
-      //           size: item.size
-      //         }]
-      //       }]
-      //     })
-      //   } else {
-      //     let flag1 = flag.production.find(val => val.product_code === item.product_info.product_code)
-      //     if (!flag1) {
-      //       flag.production.push({
-      //         product_code: item.product_info.product_code,
-      //         product_class: types,
-      //         product_detail: [{
-      //           color: item.color,
-      //           number: item.number,
-      //           size: item.size
-      //         }]
-      //       })
-      //     } else {
-      //       let flag2 = flag1.product_detail.find(val => ((val.size === item.size) && (val.color === item.color)))
-      //       if (!flag2) {
-      //         flag1.product_detail.push({
-      //           color: item.color,
-      //           number: item.number,
-      //           size: item.size
-      //         })
-      //       } else {
-      //         flag2.number = Number(flag2.number) + Number(item.number)
-      //       }
-      //     }
-      //   }
-      // })
+      let productionInfo = res[2].data.data
+      // 分配信息初始化
+      productionInfo.forEach(item => {
+        let types = item.product_info.category_info.product_category + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_id ? ('/' + item.product_info.flower_id) : '')
+        let flag = this.productionList.find(val => val.name === item.client_name)
+        if (!flag) {
+          this.productionList.push({
+            name: item.client_name,
+            client_id: item.client_id,
+            production: [{
+              product_code: item.product_info.product_code,
+              product_class: types,
+              product_detail: [{
+                color: item.color,
+                number: item.number,
+                size: item.size
+              }]
+            }]
+          })
+        } else {
+          let flag1 = flag.production.find(val => val.product_code === item.product_info.product_code)
+          if (!flag1) {
+            flag.production.push({
+              product_code: item.product_info.product_code,
+              product_class: types,
+              product_detail: [{
+                color: item.color,
+                number: item.number,
+                size: item.size
+              }]
+            })
+          } else {
+            let flag2 = flag1.product_detail.find(val => ((val.size === item.size) && (val.color === item.color)))
+            if (!flag2) {
+              flag1.product_detail.push({
+                color: item.color,
+                number: item.number,
+                size: item.size
+              })
+            } else {
+              flag2.number = Number(flag2.number) + Number(item.number)
+            }
+          }
+        }
+      })
       // 所需原料初始化
       let materials = res[3].data.data
-      console.log(materials)
-      console.log('productionList:', this.productionList)
+      this.productionList.forEach(item => {
+        item.production.forEach(value => {
+          value.product_detail.forEach(val => {
+            materials.forEach(vals => {
+              if (vals.type === Number(this.type) && vals.product_code === value.product_code && vals.size === val.size && vals.color_match_name === val.color) {
+                if (!item.materials) {
+                  item.materials = []
+                }
+                let flag = item.materials.find(key => key.material === vals.material_name)
+                if (!flag) {
+                  item.materials.push({
+                    material: vals.material_name,
+                    colors: [{
+                      color: vals.color_name,
+                      number: (vals.unit === '克' || vals.unit === 'g') ? ((vals.number * val.number) / 1000) : (vals.number * val.number),
+                      unit: (vals.unit === '克' || vals.unit === 'g') ? 'kg' : vals.unit
+                    }]
+                  })
+                } else {
+                  let flag1 = flag.colors.find(key => key.color === vals.color_name)
+                  if (!flag1) {
+                    flag.colors.push({
+                      color: vals.color_name,
+                      number: (vals.unit === '克' || vals.unit === 'g') ? ((vals.number * val.number) / 1000) : (vals.number * val.number),
+                      unit: (vals.unit === '克' || vals.unit === 'g') ? 'kg' : vals.unit
+                    })
+                  } else {
+                    flag1.number += (vals.unit === '克' || vals.unit === 'g') ? ((vals.number * val.number) / 1000) : (vals.number * val.number)
+                  }
+                }
+              }
+            })
+          })
+        })
+      })
+      // 初始化出库信息
+      console.log(this.productionList)
+      this.productionList.forEach(item => {
+        item.materials.forEach(value => {
+          value.colors.forEach(val => {
+            let flag = this.list.find(key => key.material === value.material)
+            if (!flag) {
+              this.list.push({
+                material: value.material,
+                client_name: [{
+                  name: item.name,
+                  id: item.client_id
+                }],
+                // vatList: {
+                //   [item.name]: {
+                //     [val.color]: []
+                //   }
+                // },
+                colors: {
+                  [item.name]: [val.color]
+                },
+                total_number: val.number,
+                unit: val.unit,
+                stock_number: 0,
+                stockInfo: []
+              })
+            } else {
+              flag.total_number = Number(flag.total_number) + Number(val.number)
+              // let color = flag.colors.find(key => key === val.color)
+              // if (!color) {
+              //   flag.colors.push(val.color)
+              // }
+              if (!flag.colors[item.name]) {
+                flag.colors[item.name] = [val.color]
+              } else {
+                let color = flag.colors[item.name].find(key => key === val.color)
+                if (!color) {
+                  flag.colors[item.name].push(val.color)
+                }
+              }
+              let client = flag.client_name.find(key => key.name === item.name)
+              if (!client) {
+                flag.client_name.push({
+                  name: item.name,
+                  id: item.client_id
+                })
+              }
+            }
+          })
+        })
+      })
+      // 初始化原料缸号信息
+      let vatInfo = res[4].data.data
+      console.log(this.list)
+      vatInfo.forEach(item => {
+        let flag = this.list.find(val => val.material === item.material_name)
+        if (flag) {
+          if (!flag.vatList) {
+            flag.vatList = {}
+          }
+          if (!flag.vatList[item.color_code]) {
+            flag.vatList[item.color_code] = [item.vat_code]
+          } else {
+            let flag1 = flag.vatList[item.color_code].find(val => (val === item.vat_code || (val === '默认' && item.vat_code === 'vat_null')))
+            if (!flag1) {
+              flag.vatList[item.color_code].push(item.vat_code === 'vat_null' ? '默认' : item.vat_code)
+            }
+          }
+        }
+      })
+      // 初始化原料出库数量
+      let outStockInfo = res[5].data.data
+      outStockInfo.forEach(item => {
+        let flag = this.list.find(val => val.material === item.material_name)
+        if (flag) {
+          flag.stocks_number = Number(flag.stocks_number ? flag.stocks_number : 0) + item.weight
+        }
+      })
     })
   }
 }

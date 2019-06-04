@@ -54,11 +54,11 @@
           <div class="cicle"></div>
           <div class="border"></div>
         </div>
-        <div class="lineCtn col">
-          <div class="inputCtn noPadding maxWidth">
+        <div class="lineCtn">
+          <div class="inputCtn noPadding">
             <div class="content">
-              <ul class="table">
-                <li>
+              <ul class="tablesCtn">
+                <li class="title">
                   <span>计划原料</span>
                   <span class="flex2">
                     <span>颜色</span>
@@ -70,17 +70,18 @@
                 <li v-if="materialList.length === 0">暂无信息</li>
                 <li v-for="(val,ind) in materialList"
                     :key="ind"
-                    class="material">
-                  <span>{{val.material}}</span>
-                  <span class="flex2">
+                    class="content">
+                  <span class="tableRow">{{val.material}}</span>
+                  <span class="flex2 tableRow col">
                     <span v-for="(va,inf) in val.need"
-                          :key="inf">
-                      <span>{{va.name}}</span>
-                      <span class="flex08">{{va.value|fixedFilter}}{{val.unit}}</span>
+                          :key="inf"
+                          class="tableColumn">
+                      <span class="tableRow">{{va.name}}</span>
+                      <span class="flex08 tableRow">{{va.value|fixedFilter}}{{val.unit}}</span>
                     </span>
                   </span>
-                  <span>{{(val.total_weight ? val.total_weight : 0)|fixedFilter}}{{val.unit}}</span>
-                  <span>{{(val.order_weight ? val.order_weight : 0)|fixedFilter}}{{val.unit}}</span>
+                  <span class="tableRow">{{(val.total_weight ? val.total_weight : 0)|fixedFilter}}{{val.unit}}</span>
+                  <span class="tableRow">{{(val.order_weight ? val.order_weight : 0)|fixedFilter}}{{val.unit}}</span>
                 </li>
               </ul>
             </div>
@@ -90,8 +91,6 @@
       <div class="stepCtn">
         <div class="stepTitle">{{type === '0' ? '原' : '辅'}}料加工</div>
         <div class="borderCtn">
-          <div class="cicle"></div>
-          <div class="border"></div>
           <div class="cicle"></div>
         </div>
         <div class="lineCtn col"
@@ -258,7 +257,8 @@ export default {
             picker.$emit('pick', date)
           }
         }]
-      }
+      },
+      save: true
     }
   },
   filters: {
@@ -326,97 +326,117 @@ export default {
       this.list[key].processInfo.splice(kay, 1)
     },
     saveAll () {
-      this.loading = true
-      let arr = []
-      let nums = 0
-      let flag = true
-      this.list.forEach((item, key) => {
-        if (Number(item.total_number) < (Number(item.select_number) + Number(item.selectNums))) {
-          alert('已选数量超出订购数量，请重新输入。')
-          flag = false
-          return
-        }
-        let obj = {}
-        obj.company_id = sessionStorage.company_id
-        obj.order_id = this.$route.params.id
-        obj.user_id = sessionStorage.user_id
-        obj.type = (this.type === '0' ? 1 : 2)
-        nums += item.processInfo.length
-        obj.material_name = item.material
-        item.processInfo.forEach((value, index) => {
-          if (!value.process_type) {
-            this.$message({
-              message: '请选择加工类型',
-              type: 'error'
-            })
+      if (this.save) {
+        this.save = false
+        this.loading = true
+        let arr = []
+        let nums = 0
+        let flag = true
+        this.list.forEach((item, key) => {
+          if (Number(item.total_number) < (Number(item.select_number) + Number(item.selectNums ? item.selectNums : 0))) {
+            alert('已选数量超出订购数量，请重新输入。')
             flag = false
             return
           }
-          obj.process_type = value.process_type
-          if (!value.processCompany) {
-            this.$message({
-              message: '请选择加工单位',
-              type: 'error'
-            })
-            flag = false
-            return
-          }
-          obj.client_id = value.processCompany
-          for (let prop in value.processMaterialInfo) {
-            if (!value.processMaterialInfo[prop].color) {
+          let obj = {}
+          obj.company_id = sessionStorage.company_id
+          obj.order_id = this.$route.params.id
+          obj.user_id = sessionStorage.user_id
+          obj.type = (this.type === '0' ? 1 : 2)
+          nums += item.processInfo.length
+          obj.material_name = item.material
+          item.processInfo.forEach((value, index) => {
+            if (!value.process_type) {
               this.$message({
-                message: '请选择颜色',
+                message: '请选择加工类型',
                 type: 'error'
               })
               flag = false
               return
             }
-            if (!value.processMaterialInfo[prop].value) {
+            obj.process_type = value.process_type
+            if (!value.processCompany) {
               this.$message({
-                message: '请输入数量',
+                message: '请选择加工单位',
                 type: 'error'
               })
               flag = false
               return
             }
-          }
-          obj.material_info = JSON.stringify(value.processMaterialInfo)
-          obj.total_price = value.money
-          if (!value.orderTime) {
-            this.$message({
-              message: '请选择订购日期',
-              type: 'error'
-            })
-            flag = false
-            return
-          }
-          obj.order_time = value.orderTime
-          obj.desc = value.remark
-          arr.push({ ...obj })
+            obj.client_id = value.processCompany
+            for (let prop in value.processMaterialInfo) {
+              if (!value.processMaterialInfo[prop].color) {
+                this.$message({
+                  message: '请选择颜色',
+                  type: 'error'
+                })
+                flag = false
+                return
+              }
+              if (!value.processMaterialInfo[prop].value) {
+                this.$message({
+                  message: '请输入数量',
+                  type: 'error'
+                })
+                flag = false
+                return
+              }
+            }
+            obj.material_info = JSON.stringify(value.processMaterialInfo)
+            obj.total_price = value.money
+            if (!value.orderTime) {
+              this.$message({
+                message: '请选择订购日期',
+                type: 'error'
+              })
+              flag = false
+              return
+            }
+            obj.order_time = value.orderTime
+            obj.desc = value.remark
+            arr.push({ ...obj })
+          })
         })
-      })
-      this.loading = false
-      if (flag) {
-        if (nums === 0) {
-          this.$message({
-            message: '无可提交的订购信息',
-            type: 'warning'
-          })
-        } else {
-          rawMaterialProcessPage({
-            data: arr
-          }).then(res => {
-            if (res.data.code === 200) {
-              this.$message({
-                message: '添加成功,即将跳转至详情页',
-                type: 'success'
-              })
-              setTimeout(() => {
-                this.$router.push('/index/rawMaterialOrderDetail/' + this.$route.params.id + '/' + this.type)
-              }, 800)
-            }
-          })
+        this.loading = false
+        if (flag) {
+          if (nums === 0) {
+            this.$message({
+              message: '无可提交的订购信息',
+              type: 'warning'
+            })
+          } else {
+            rawMaterialProcessPage({
+              data: arr
+            }).then(res => {
+              if (res.data.status) {
+                this.$message({
+                  message: '添加成功,即将跳转至详情页',
+                  type: 'success'
+                })
+                setTimeout(() => {
+                  this.$router.push('/index/rawMaterialOrderDetail/' + this.$route.params.id + '/' + this.type)
+                }, 800)
+              } else {
+                this.$message({
+                  message: '添加成功,即将跳转至详情页',
+                  type: 'success'
+                })
+              }
+            })
+          }
         }
+      } else {
+        let self = this
+        this.$alert('请求速度过于频繁', '提醒', {
+          confirmButtonText: '确定',
+          callback: action => {
+            this.$message({
+              type: 'error',
+              message: `请于1s后重新请求`
+            })
+          }
+        })
+        setTimeout(() => { self.save = true }, 1000)
       }
     }
   },
@@ -424,7 +444,7 @@ export default {
     this.type = this.$route.params.type
     let nowDate = new Date()
     this.now_time = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1 < 10 ? '0' + (nowDate.getMonth() + 1) : (nowDate.getMonth() + 1)) + '-' + (nowDate.getDate() < 10 ? '0' + nowDate.getDate() : nowDate.getDate())
-    console.log(this.now_time)
+    // console.log(this.now_time)
     Promise.all([
       rawMaterialOrderInit({
         order_id: this.$route.params.id

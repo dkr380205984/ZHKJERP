@@ -137,45 +137,8 @@ ul {
             width: 13em;
             text-align: right;
           }
-          &>.processContent {
-            flex: 1;
-            margin-left: 15px;
-            height: auto;
-            display: flex;
-            flex-direction: column;
-            font-size: @fontMid;
-            &>span {
-              display: flex;
-              &>.material {
-                width: 10em;
-              }
-              &>.colorInfo {
-                width: 100%;
-                height: auto;
-                &>span {
-                  position: relative;
-                  display: inline-block;
-                  width: 30%;
-                  padding-left: 5em;
-                  box-sizing: border-box;
-                  .tit {
-                    box-sizing: border-box;
-                    position: absolute;
-                    width: 5em;
-                    top: 0;
-                    left: 0;
-                    padding-right: 10px;
-                    text-align: right;
-                  }
-                }
-              }
-            }
-          }
           &.noPadding {
             padding-left: 0;
-          }
-          &.maxWidth {
-            width: 752px;
           }
           .label{
             font-size: @fontBig;
@@ -198,71 +161,6 @@ ul {
           &>.content{
             font-size: @fontMid;
             margin-left: 40px;
-            &>.table {
-              width: 900px;
-              border: 1px solid #DDD;
-              li {
-                display: flex;
-                border-bottom: 1px solid #DDD;
-                box-sizing: border-box;
-                justify-content: center;
-                &:last-child {
-                  border: none;
-                }
-                &>span {
-                  flex: 1;
-                  justify-content: center;
-                  border-right: 1px solid #DDD;
-                  display: flex;
-                  &.flex2 {
-                    flex: 2;
-                  }
-                  &>span {
-                    flex: 1;
-                    display: flex;
-                    border-right: 1px solid #DDD;
-                    justify-content: center;
-                    &:last-child {
-                      border-right: none;
-                    }
-                  }
-                  &:last-child {
-                    border-right: none;
-                  }
-                }
-                &.material {
-                  &>span{
-                    flex-direction: column!important;
-                    align-items: center;
-                    &>span {
-                      border-right: none;
-                      border-bottom: 1px solid #DDD;
-                      width: 100%;
-                      &>span {
-                        text-align: center;
-                        border-right: 1px solid #DDD;
-                        flex: 1;
-                        &:last-child {
-                          border-right: none;
-                        }
-                      }
-                      &:last-child {
-                        border-bottom: none;
-                      }
-                    }
-                  }
-                }
-                &:first-child {
-                  background-color: rgb(240,240,240)!important;
-                }
-                &:nth-child(n+2) {
-                  font-size: @fontSmall;
-                }
-                &:nth-child(2n+1) {
-                  background-color:rgb(250, 250, 250) 
-                }
-              }
-            }
             &.important{
               color:@normalBlue;
               cursor: pointer;
@@ -341,7 +239,6 @@ ul {
                 display: inline-block;
                 width: 5em;
                 text-align: right;
-                // text-align-last: justify;
                 font-size: 14px;
               }
               &>.el-select {
@@ -366,7 +263,6 @@ ul {
                 &>span {
                   width: 5em;
                   text-align: right;
-                  // text-align-last: justify;
                   font-size: 14px;
                 }
                 &>.el-select {
@@ -375,23 +271,6 @@ ul {
                 }
                 &>.el-input {
                   width: 114px;
-                  // margin: 0 0 0 15px;
-                }
-                &>i {
-                  display: inline-block;
-                  width: 50px;
-                  text-align: center;
-                  font-style: normal;
-                  border-top:1px solid rgb(230, 230, 230);
-                  border-bottom: 1px solid rgb(230, 230, 230);
-                  border-right: 1px solid rgb(230, 230, 230);
-                  height: 32px;
-                  box-sizing: border-box;
-                  border-top-right-radius: 4px;
-                  border-bottom-right-radius: 4px;
-                  font-size: 14px;
-                  line-height: 30px;
-                  background-color: rgb(245,247,250)
                 }
               }
               &>i {

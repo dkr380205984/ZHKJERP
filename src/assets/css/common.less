@@ -394,3 +394,54 @@
   margin: 50px 0;
   text-align: center;
 }
+// 物料表格样式部分
+.tablesCtn {
+  position: relative;
+  border: 1px solid #DDD;
+  width: 1200px;
+  li {
+    justify-content: center;
+    display: flex;
+    border-bottom: 1px solid #DDD;
+    &:last-of-type {
+      border-bottom: none;
+    }
+    span {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+  }
+  .title {
+    display: flex;
+    background-color: rgb(240,240,240);
+    span{
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      border-right: 1px solid #DDD;
+      &:last-child {
+        border-right:none;
+      }
+    }
+  }
+  .content {
+    .tableRow{
+      border-right: 1px solid #DDD;
+      align-items: center;
+      &:last-child {
+        border-right: none;
+      }
+    }
+    .tableColumn {
+      border-bottom: 1px solid #DDD;
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+    .col {
+      flex-direction: column;
+      align-items: unset;
+    }
+  }
+}

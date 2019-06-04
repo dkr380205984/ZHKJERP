@@ -110,12 +110,13 @@ export default {
         company_id: sessionStorage.company_id,
         order_id: this.$route.params.id
       }).then(res => {
+        console.log(res)
         res.data.data.forEach(item => {
+          this.total_price += Number(item.total_price)
           this.order_code = item.order_code
           item.material_info = JSON.parse(item.material_info)
           item.material_info.forEach(value => {
             if (item.process_type === this.type && String(item.client_name) === this.client_name) {
-              this.total_price += Number(item.total_price)
               let flag = this.process_info.find(val => val.material === item.material_name)
               if (!flag) {
                 this.process_info.push({
@@ -152,7 +153,7 @@ export default {
         console.log(res)
         res.data.data.forEach(item => {
           if (String(item.client_name) === this.client_name) {
-            this.total_price += Number(item.total_price)
+            this.total_price += Number(item.price * item.weight)
             let flag = this.process_info.find(val => val.material === item.material_name)
             if (!flag) {
               this.process_info.push({

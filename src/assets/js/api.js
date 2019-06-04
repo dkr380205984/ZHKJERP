@@ -194,14 +194,24 @@ const rawMaterialProcessList = (params) => http.get(`${baseUrl}/material/process
 const rawMaterialProcessPage = (params) => http.post(`${baseUrl}/material/process/save`, params, 'application/json')
 // 物料入库
 const rawMaterialGoStock = (params) => http.post(`${baseUrl}/order/material/push`, params, 'application/json')
+// 物料出库
+const rawMaterialOutStock = (params) => http.post(`${baseUrl}/order/material/pop`, params, 'application/json')
+// 物料出库详情
+const rawMaterialOutStockDetail = (params) => http.get(`${baseUrl}/order/material/pop/detail`, params)
 // 物料入库详情
 const rawMaterialGoStockDetail = (params) => http.get(`${baseUrl}/order/material/push/detail`, params)
 // 织造分配
 const weaveSave = (params) => http.post(`${baseUrl}/production/weave/save`, params, 'application/json')
 // 织造分配详情
 const weaveDetail = (params) => http.get(`${baseUrl}/production/weave/list`, params)
+// 根据订单号获取产品配料详情
+const productOrderDetail = (params) => http.get(`${baseUrl}/product/plan/order/detail`, params)
+
 export {
+  productOrderDetail,
+  rawMaterialOutStockDetail,
   rawMaterialGoStockDetail,
+  rawMaterialOutStock,
   rawMaterialGoStock,
   weaveDetail,
   weaveSave,

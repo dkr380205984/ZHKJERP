@@ -38,7 +38,7 @@
           <div class="cicle"></div>
           <div class="border"></div>
         </div>
-        <div class="lineCtn col">
+        <div class="lineCtn">
           <div class="inputCtn noPadding">
             <div class="content">
               <ul class="tablesCtn">
@@ -53,19 +53,21 @@
                   </span>
                 </li>
                 <li v-if="materialList.length === 0">暂无信息</li>
-                <li class="orderInfo"
+                <li class="content"
                     v-for="(item,key) in materialList"
                     :key="key">
-                  <span>{{item.company ? item.company : '仓库'}}</span>
-                  <span class="flex45 col">
+                  <span class="tableRow">{{item.company ? item.company : '仓库'}}</span>
+                  <span class="tableRow flex45 col">
                     <span v-for="(val,ind) in item.materials"
-                          :key="ind">
-                      <span>{{val.material}}</span>
-                      <span class="flex17 col">
+                          :key="ind"
+                          class="tableColumn">
+                      <span class="tableRow">{{val.material}}</span>
+                      <span class="tableRow flex17 col">
                         <span v-for="(value,index) in val.colors"
-                              :key="index">
-                          <span>{{value.color}}</span>
-                          <span>{{value.value}}{{value.unit}}</span>
+                              :key="index"
+                              class="tableColumn">
+                          <span class="tableRow">{{value.color}}</span>
+                          <span class="tableRow">{{value.value}}{{value.unit}}</span>
                         </span>
                       </span>
                     </span>
@@ -100,23 +102,26 @@
                   </span>
                 </li>
                 <li v-if="processList.length === 0">暂无信息</li>
-                <li class="orderInfo"
+                <li class="content"
                     v-for="(item,key) in processList"
                     :key="key">
-                  <span>{{item.process_type}}</span>
-                  <span class="flex45 col">
+                  <span class="tableRow">{{item.process_type}}</span>
+                  <span class="tableRow flex45 col">
                     <span v-for="(value,index) in item.companys"
-                          :key="index">
-                      <span class="flex17">{{value.company}}</span>
-                      <span class="flex22 col">
+                          :key="index"
+                          class="tableColumn">
+                      <span class="flex17 tableRow">{{value.company}}</span>
+                      <span class="flex22 col tableRow">
                         <span v-for="(val,ind) in value.materials"
-                              :key="ind">
-                          <span>{{val.material}}</span>
-                          <span class="flex12 col">
+                              :key="ind"
+                              class="tableColumn">
+                          <span class="tableRow">{{val.material}}</span>
+                          <span class="tableRow flex12 col">
                             <span v-for="(itam,kay) in val.colors"
-                                  :key="kay">
-                              <span>{{itam.color}}</span>
-                              <span>{{itam.value}}{{itam.unit}}</span>
+                                  :key="kay"
+                                  class="tableColumn">
+                              <span class="tableRow">{{itam.color}}</span>
+                              <span class="tableRow">{{itam.value}}{{itam.unit}}</span>
                             </span>
                           </span>
                         </span>
@@ -149,8 +154,8 @@
               <span>
                 {{item.total_number}}{{item.unit}}
               </span>
-              <span>{{item.goStock_number}}{{item.unit}}</span>
-              <span>{{item.total_number - item.goStock_number}}{{item.unit}}</span>
+              <span>{{item.goStock_number + item.goStocks_number}}{{item.unit}}</span>
+              <span>{{item.total_number - item.goStocks_number - item.goStock_number}}{{item.unit}}</span>
             </div>
           </div>
           <div class="buyInfo">
@@ -247,7 +252,7 @@
 </template>
 
 <script>
-import { orderDetail, rawMaterialOrderList, rawMaterialProcessList, rawMaterialGoStock } from '@/assets/js/api.js'
+import { orderDetail, rawMaterialOrderList, rawMaterialProcessList, rawMaterialGoStock, rawMaterialGoStockDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -364,7 +369,7 @@ export default {
       let nums = 0
       this.list.forEach(item => {
         nums += item.stockInfo.length
-        if (Number(item.goStock_number) > Number(item.total_number)) {
+        if (Number(item.goStock_number) + Number(item.goStocks_number) > Number(item.total_number)) {
           this.$message({
             message: '已入库数量超出合计数量，不被允许的操作，请重新输入',
             type: 'error'
@@ -380,7 +385,7 @@ export default {
             obj.user_id = window.sessionStorage.getItem('user_id')
             obj.order_id = this.$route.params.id
             obj.material_name = item.material
-            obj.vat_code = value.dyelot_number
+            obj.vat_code = (value.dyelot_number ? value.dyelot_number : 'vat_null')
             if (!val.materialColor) {
               this.$message({
                 message: '请选择颜色',
@@ -405,7 +410,7 @@ export default {
               flag = false
               return
             }
-            if (!value.stock_time) {
+            if (!val.stock_time) {
               this.$message({
                 message: '请选择入库时间',
                 type: 'error'
@@ -479,6 +484,9 @@ export default {
       rawMaterialProcessList({
         company_id: sessionStorage.company_id,
         order_id: this.$route.params.id
+      }),
+      rawMaterialGoStockDetail({
+        order_id: this.$route.params.id
       })
     ]).then(res => {
       console.log('init:', res)
@@ -532,6 +540,7 @@ export default {
               colors: [item.color_code],
               total_number: item.weight,
               goStock_number: 0,
+              goStocks_number: 0,
               stockInfo: []
             })
           } else {
@@ -621,6 +630,16 @@ export default {
         })
       })
       // console.log(this.processList)
+      // 初始化已入库数量
+      let stockNumber = res[3].data.data
+      console.log(stockNumber)
+      stockNumber.forEach(item => {
+        let flag = this.list.find(val => val.material === item.material_name)
+        if (flag) {
+          flag.goStocks_number = Number(flag.goStocks_number ? flag.goStocks_number : 0) + Number(item.total_weight)
+        }
+      })
+      console.log(this.list)
     })
     this.loading = false
   }
