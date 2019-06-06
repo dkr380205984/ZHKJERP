@@ -476,7 +476,7 @@ export default {
               setTimeout(() => {
                 this.$router.push('/index/rawMaterialOrderDetail/' + this.$route.params.id + '/' + this.type)
               }, 800)
-            } else {
+            } else if (res.data.data.status === false) {
               let message = res.data.data.msg
               this.$message({
                 message: message,

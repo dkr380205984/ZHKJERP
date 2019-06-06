@@ -232,7 +232,7 @@ export default {
       materialList: [],
       list: [],
       options: {
-        processType: ['倒纱', '裁剪', '染色'],
+        processType: ['倒纱', '裁剪', '染色', '扦经', '拼线'],
         companyList: [],
         colorList: {}
       },

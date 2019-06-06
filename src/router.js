@@ -16,6 +16,11 @@ let router = new Router({
     component: () => import('./views/rawMaterial/rawMaterialProcessTable.vue')
   },
   {
+    path: '/productDesignWeavingTable/:id/:clientName/:type',
+    name: 'productDesignWeavingTable',
+    component: () => import('./views/productDesign/productDesignWeavingTable.vue')
+  },
+  {
     path: '/designFormTable/:id',
     name: 'designFormTable',
     component: () => import('./views/designForm/designFormTable.vue')
