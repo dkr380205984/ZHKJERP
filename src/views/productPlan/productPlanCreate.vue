@@ -707,9 +707,11 @@ export default {
             if (!item2.name) {
               state = true
             }
-            if (!item2.number) {
-              state = true
-            }
+            item2.value.forEach((item3) => {
+              if (!item3.number) {
+                state = true
+              }
+            })
           })
         })
       })

@@ -405,7 +405,7 @@ export default {
       keyword: '',
       status: 1
     }).then((res) => {
-      this.companyArr = res.data.data
+      this.companyArr = res.data.data.filter((item) => item.type === 1)
     })
     getGroup({
       company_id: window.sessionStorage.getItem('company_id')

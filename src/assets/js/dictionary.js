@@ -84,7 +84,7 @@ const moneyArr = [{
 
 // 加工类型
 let machiningType = [{
-  name: '染色',
+  name: '成品染色',
   id: 1
 }, {
   name: '刺毛',

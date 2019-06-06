@@ -43,7 +43,7 @@
             </el-select>
             <el-select v-model="company" placeholder="外贸公司">
               <el-option
-                v-for="item in companyArr"
+                v-for="item in companyArrS"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id">
@@ -189,7 +189,8 @@ export default {
       groupArr: [],
       timer: '',
       start_time: '',
-      end_time: ''
+      end_time: '',
+      companyArrS: []
     }
   },
   methods: {
@@ -436,6 +437,7 @@ export default {
         }
       })
       this.total = res[3].data.data.count
+      this.companyArrS = res[1].data.data.filter((item) => item.type === 1)
       this.loading = false
     })
   }

@@ -167,7 +167,7 @@
             <span class="label">辅料列表:</span>
             <div class="specialCtn" v-for="(item,index) in otherIngredient.ingredient.length" :key="index">
               <div class="blockCtn">
-                <el-select style="width:200px" v-model="otherIngredient.ingredient[index]" placeholder="请选择主要辅料">
+                <el-select :disabled="index<otherIngredient.old" style="width:200px" v-model="otherIngredient.ingredient[index]" placeholder="请选择主要辅料">
                   <el-option
                     v-for="item in materialArr"
                     :key="item.name"
@@ -208,7 +208,7 @@
                   </div>
                 </div>
               </div>
-              <div class="deleteIcon" @click="deleteOtherMaterial(index)"><i class="el-icon-close"></i></div>
+              <div v-show="index>=otherIngredient.old" class="deleteIcon" @click="deleteOtherMaterial(index)"><i class="el-icon-close"></i></div>
             </div>
           </div>
         </div>
@@ -287,7 +287,8 @@ export default {
       otherIngredient: {
         ingredient: [],
         colour: [],
-        color: []
+        color: [],
+        old: 0
       },
       colourArr: [],
       colorArr: [],
@@ -435,10 +436,32 @@ export default {
               value: itemColor.size
             }
           })))
+          this.otherIngredient.old++
         }
       })
       this.loading = false
+      console.log(this.otherIngredient)
     })
+  },
+  watch: {
+    'otherIngredient.ingredient': {
+      handler: function (newVal) {
+        newVal.forEach((item, index) => {
+          if (item) {
+            let unit = this.materialArr.find((itemFind) => itemFind.name === item).unit
+            for (let index1 in this.otherIngredient.color[index]) {
+              for (let index2 in this.otherIngredient.color[index][index1]) {
+                for (let index3 in this.otherIngredient.color[index][index1][index2].value) {
+                  this.otherIngredient.color[index][index1][index2].value[index3].unit = unit
+                }
+              }
+            }
+            this.commonUnit2 = unit
+          }
+        })
+      },
+      deep: true
+    }
   },
   methods: {
     // 添加主要原料
@@ -742,9 +765,11 @@ export default {
             if (!item2.name) {
               state = true
             }
-            if (!item2.number) {
-              state = true
-            }
+            item2.value.forEach((item3) => {
+              if (!item3.number) {
+                state = true
+              }
+            })
           })
         })
       })

@@ -97,7 +97,7 @@
       </div>
       <div class="btnCtn">
         <div class="cancleBtn" @click="$router.go(-1)">返回</div>
-        <div class="okBtn">修改</div>
+        <div class="okBtn" @click="$router.push('/index/productDesignUpdate/'+$route.params.id +'/'+$route.params.id)">修改</div>
       </div>
     </div>
   </div>

@@ -729,7 +729,7 @@ export default {
       company_id: this.companyId
     })]).then((res) => {
       console.log(res[1])
-      this.companyArr = res[0].data.data
+      this.companyArr = res[0].data.data.filter((item) => item.type === 1)
       this.seachProduct = res[1].data.data
       this.typeArr = res[2].data.data.map((item) => {
         return {
