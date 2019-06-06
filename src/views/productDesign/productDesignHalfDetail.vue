@@ -547,6 +547,7 @@ export default {
       // 半成品分配价格统计完成，开始统计半成品分配辅料信息
       // 第一步，先按加工单位合并，再按加工类型合并
       let materialList = this.jsonMerge(logList, ['client_name', 'type'])
+      console.log(materialList)
       // 对于加工类型里的辅料需要合并一些数值
       materialList = materialList.map((itemCompany) => {
         return {
@@ -577,13 +578,14 @@ export default {
                 }
               })
             })
+            console.log(arr)
             // 将数据和配料单的数据合并
             arr.map((itemInfo) => {
               let json = itemInfo
               json.number = []
               productPlan[itemInfo.product_code].forEach((itemPlan) => {
                 // 第一层筛选产品品类相同的，配色尺码相同的,再把原料过滤掉
-                if (itemPlan.color_match_name === itemInfo.color && itemPlan.size === itemInfo.size && itemPlan.type === 1) {
+                if (itemPlan.color_match_name === itemInfo.color && itemPlan.size === itemInfo.size && itemPlan.type === 1 && itemPlan.material_name === itemInfo.name) {
                   let sunhao = this.product.find((item) => item.product_code === itemInfo.product_code).info[0].production_sunhao
                   json.number.push({
                     unit: itemPlan.unit,
@@ -594,6 +596,7 @@ export default {
                 return json
               })
             })
+            console.log(arr)
             return {
               type: itemType.type,
               info: arr
@@ -601,8 +604,8 @@ export default {
           })
         }
       })
-      this.materialList = materialList
       console.log(materialList)
+      this.materialList = materialList
     })
   },
   methods: {

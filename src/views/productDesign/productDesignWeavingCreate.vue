@@ -112,7 +112,7 @@
               <span class="el-icon-close" @click="deleteCompany(index,indexCompany)"></span>
               <li>
                 <span>加工单位:</span>
-                <el-select v-model="itemCompany.company_id" placeholder="请选择加工单位" size="small">
+                <el-select filterable v-model="itemCompany.company_id" placeholder="请选择加工单位" size="small">
                   <el-option v-for="item in companyArr"
                     :key="item.id"
                     :label="item.name"
@@ -123,18 +123,18 @@
               <li class="col" v-for="(itemcolorSize,indexColorSize) in itemCompany.price_number" :key="indexColorSize">
                 <div>
                   <span>价格数量:</span>
-                  <el-input style="margin-left:15px" size="small" placeholder="价格" v-model="itemcolorSize.price"></el-input>
-                  <strong>—</strong>
-                  <el-input size="small" placeholder="数量" v-model="itemcolorSize.number"></el-input>
-                </div>
-                <div>
-                  <span></span>
                   <el-cascader
                     placeholder="选择尺码/颜色"
                     style="margin-left:15px;width:243px;"
                     :options="item.colorSizeArr"
                     v-model="itemcolorSize.colorSize">
                   </el-cascader>
+                </div>
+                 <div>
+                  <span></span>
+                  <el-input style="margin-left:15px" size="small" placeholder="价格" v-model="itemcolorSize.price"></el-input>
+                  <strong>—</strong>
+                  <el-input size="small" placeholder="数量" v-model="itemcolorSize.number"></el-input>
                 </div>
                 <em v-if="indexColorSize === 0" class="el-icon-plus" @click="addSizeColor(index,indexCompany)"></em>
                 <em v-else class="el-icon-delete" @click="deleteSizeColor(index,indexCompany,indexColorSize)"></em>
