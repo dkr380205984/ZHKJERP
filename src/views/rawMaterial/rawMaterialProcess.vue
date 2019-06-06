@@ -551,7 +551,7 @@ export default {
       })
       // 加工公司列表初始化
       res[3].data.data.forEach((item, key) => {
-        if (item.type !== 2 && item.type !== 1) {
+        if (item.type === 3) {
           this.options.companyList.push(item)
         }
       })

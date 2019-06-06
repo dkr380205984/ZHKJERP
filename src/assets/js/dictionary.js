@@ -1,24 +1,51 @@
 // 字典文件，存储常用json数据
 // 公司类型
-const companyType = [{
-  value: 1,
-  name: '外贸公司'
-}, {
-  value: 2,
-  name: '纱线订购单位'
-}, {
-  value: 3,
-  name: '染色单位'
-}, {
-  value: 4,
-  name: '倒纱单位'
-}, {
-  value: 5,
-  name: '裁剪单位'
-}, {
-  value: 6,
-  name: '辅料订购单位'
-}]
+const companyType = [
+  //   {
+  //   value: 1,
+  //   name: '外贸公司'
+  // }, {
+  //   value: 2,
+  //   name: '纱线订购单位'
+  // }, {
+  //   value: 3,
+  //   name: '染色单位'
+  // }, {
+  //   value: 4,
+  //   name: '倒纱单位'
+  // }, {
+  //   value: 5,
+  //   name: '裁剪单位'
+  // }, {
+  //   value: 6,
+  //   name: '辅料订购单位'
+  // }
+  {
+    value: 1,
+    name: '外贸公司'
+  }, {
+    value: 2,
+    name: '物料订购公司'
+  }, {
+    value: 3,
+    name: '物料加工单位'
+  }, {
+    value: 4,
+    name: '生产织造单位'
+  }, {
+    value: 5,
+    name: '半成品加工单位'
+  }, {
+    value: 6,
+    name: '检验单位'
+  }, {
+    value: 7,
+    name: '包装辅料公司'
+  }, {
+    value: 8,
+    name: '运输单位'
+  }
+]
 
 // 字母映射
 const letterArr = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'Y', 'Z']

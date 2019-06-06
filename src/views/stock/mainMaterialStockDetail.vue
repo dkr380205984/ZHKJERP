@@ -1,5 +1,6 @@
 <template>
-  <div id="mainMaterialStockDetail">
+  <div id="mainMaterialStockDetail"
+       v-loading='loading'>
     <div class="head">
       <h2>原料库存详情</h2>
     </div>
@@ -66,7 +67,7 @@
               <li class="list"
                   v-for="(item,key) in list"
                   :key="key">
-                <span  style="flex:1">{{item.time}}</span>
+                <span style="flex:1">{{item.time}}</span>
                 <span>{{item.action}}</span>
                 <span :style="{'color':item.style}">{{item.weight + item.unit}}</span>
                 <span>{{item.user_name}}</span>
@@ -94,6 +95,7 @@ import { materialStockDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      loading: true,
       list: [],
       weight: 5000,
       materialInfo: {
@@ -127,6 +129,7 @@ export default {
           user_name: item.user_name
         }
       })
+      this.loading = false
     })
   }
 }

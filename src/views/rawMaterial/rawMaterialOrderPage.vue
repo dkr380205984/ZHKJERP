@@ -548,17 +548,11 @@ export default {
       this.group_name = res[0].data.data.order_info.group_name
       this.company_name = res[0].data.data.order_info.client_name
       // 订购公司列表初始化
-      if (this.type === '0') {
-        let arr = res[1].data.data.find(val => val.type === 2)
-        if (arr) {
-          this.options.companyList.push(arr)
+      res[1].data.data.forEach(item => {
+        if (item.type === 2) {
+          this.options.companyList.push(item)
         }
-      } else {
-        let arr = res[1].data.data.find(val => val.type === 6)
-        if (arr) {
-          this.options.companyList.push(arr)
-        }
-      }
+      })
       // 产品信息初始化
       let arr = []
       res[0].data.data.order_info.order_batch.forEach((item, key) => {
