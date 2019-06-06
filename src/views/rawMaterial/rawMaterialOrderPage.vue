@@ -468,7 +468,7 @@ export default {
               stock_data: stockArr
             }
           }).then(res => {
-            if (res.data.data.status) {
+            if (res.data.data === true) {
               this.$message({
                 message: '添加成功,即将跳转至详情页',
                 type: 'success'

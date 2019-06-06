@@ -341,7 +341,7 @@ export default {
 @import "~@/assets/css/rawMaterialOrderList.less";
 </style>
 <style lang="less">
-#orderList {
+#rawMaterialOrderList {
   .el-carousel__arrow {
     color: #fff;
     background: #1a95ff;

@@ -319,6 +319,14 @@ let router = new Router({
       path: 'productExaminationList',
       name: 'productExaminationList',
       component: () => import('./views/productExamination/productExaminationList.vue')
+    }, {
+      path: 'semiExaminationDetail/:id',
+      name: 'semiExaminationDetail',
+      component: () => import('./views/productExamination/semiExaminationDetail.vue')
+    }, {
+      path: 'semiExamination/:product_code',
+      name: 'semiExamination',
+      component: () => import('./views/productExamination/semiExamination.vue')
     }]
   }
   ]

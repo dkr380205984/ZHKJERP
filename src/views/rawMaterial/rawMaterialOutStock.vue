@@ -268,7 +268,7 @@
 </template>
 
 <script>
-import { orderDetail, rawMaterialOrderInit, weaveDetail, productOrderDetail, rawMaterialOutStock, rawMaterialGoStockDetail, rawMaterialOutStockDetail } from '@/assets/js/api.js'
+import { orderDetail, rawMaterialOrderInit, weaveDetail, productionDetail, rawMaterialOutStock, rawMaterialGoStockDetail, rawMaterialOutStockDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -485,7 +485,7 @@ export default {
       weaveDetail({
         production_plan_id: this.$route.params.id
       }),
-      productOrderDetail({
+      productionDetail({
         order_id: this.$route.params.id
       }),
       rawMaterialGoStockDetail({
@@ -582,12 +582,22 @@ export default {
         }
       })
       // 所需原料初始化
-      let materials = res[3].data.data
+      let productsInfo = res[3].data.data
+      console.log(productsInfo)
+      let materials = []
+      for (let prop in productsInfo.product_plan) {
+        materials.push(...productsInfo.product_plan[prop])
+      }
+      console.log(materials)
       this.productionList.forEach(item => {
         item.production.forEach(value => {
           value.product_detail.forEach(val => {
             materials.forEach(vals => {
               if (vals.type === Number(this.type) && vals.product_code === value.product_code && vals.size === val.size && vals.color_match_name === val.color) {
+                let fleg = productsInfo.production_detail.product_info.find(key => key.product_code === value.product_code)
+                if (fleg) {
+                  value.product_sunhao = fleg.production_sunhao
+                }
                 if (!item.materials) {
                   item.materials = []
                 }
@@ -597,7 +607,7 @@ export default {
                     material: vals.material_name,
                     colors: [{
                       color: vals.color_name,
-                      number: (vals.unit === '克' || vals.unit === 'g') ? ((vals.number * val.number) / 1000) : (vals.number * val.number),
+                      number: (vals.unit === '克' || vals.unit === 'g') ? ((vals.number * val.number * (1 + Number(value.product_sunhao) / 100)) / 1000) : (vals.number * val.number * (1 + Number(value.product_sunhao) / 100)),
                       unit: (vals.unit === '克' || vals.unit === 'g') ? 'kg' : vals.unit
                     }]
                   })
@@ -606,11 +616,11 @@ export default {
                   if (!flag1) {
                     flag.colors.push({
                       color: vals.color_name,
-                      number: (vals.unit === '克' || vals.unit === 'g') ? ((vals.number * val.number) / 1000) : (vals.number * val.number),
+                      number: (vals.unit === '克' || vals.unit === 'g') ? ((vals.number * val.number * (1 + Number(value.product_sunhao) / 100)) / 1000) : (vals.number * val.number * (1 + Number(value.product_sunhao) / 100)),
                       unit: (vals.unit === '克' || vals.unit === 'g') ? 'kg' : vals.unit
                     })
                   } else {
-                    flag1.number += (vals.unit === '克' || vals.unit === 'g') ? ((vals.number * val.number) / 1000) : (vals.number * val.number)
+                    flag1.number += (vals.unit === '克' || vals.unit === 'g') ? ((vals.number * val.number * (1 + Number(value.product_sunhao) / 100)) / 1000) : (vals.number * val.number * (1 + Number(value.product_sunhao) / 100))
                   }
                 }
               }
@@ -618,8 +628,8 @@ export default {
           })
         })
       })
-      // 初始化出库信息
       console.log(this.productionList)
+      // 初始化出库信息
       this.productionList.forEach(item => {
         item.materials.forEach(value => {
           value.colors.forEach(val => {
@@ -631,11 +641,6 @@ export default {
                   name: item.name,
                   id: item.client_id
                 }],
-                // vatList: {
-                //   [item.name]: {
-                //     [val.color]: []
-                //   }
-                // },
                 colors: {
                   [item.name]: [val.color]
                 },
@@ -646,10 +651,6 @@ export default {
               })
             } else {
               flag.total_number = Number(flag.total_number) + Number(val.number)
-              // let color = flag.colors.find(key => key === val.color)
-              // if (!color) {
-              //   flag.colors.push(val.color)
-              // }
               if (!flag.colors[item.name]) {
                 flag.colors[item.name] = [val.color]
               } else {
@@ -671,7 +672,6 @@ export default {
       })
       // 初始化原料缸号信息
       let vatInfo = res[4].data.data
-      console.log(this.list)
       vatInfo.forEach(item => {
         let flag = this.list.find(val => val.material === item.material_name)
         if (flag) {
