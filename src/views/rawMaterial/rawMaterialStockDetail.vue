@@ -322,7 +322,7 @@
                     <span>{{val.dyelot_number}}</span>
                     <span>{{val.surplu|fixedFilter}}{{val.unit}}</span>
                     <span @click="goStock(val)"
-                          class="important">暂时没用</span>
+                          class="important">暂无</span>
                   </li>
                 </div>
               </ul>

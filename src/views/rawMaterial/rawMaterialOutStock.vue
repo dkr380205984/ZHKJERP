@@ -64,9 +64,9 @@
                       <span class="tableRow">{{val.value}}{{item.unit}}</span>
                     </span>
                   </span>
-                  <span class="tableRow">{{item.plan_number ? item.plan_number : 0}}{{item.unit}}</span>
-                  <span class="tableRow">{{item.goStock_number ? item.goStock_number : 0}}{{item.unit}}</span>
-                  <span class="tableRow">{{item.outStock_number ? item.outStock_number : 0}}{{item.unit}}</span>
+                  <span class="tableRow">{{(item.plan_number ? item.plan_number : 0)|fixedFilter}}{{item.unit}}</span>
+                  <span class="tableRow">{{(item.goStock_number ? item.goStock_number : 0)|fixedFilter}}{{item.unit}}</span>
+                  <span class="tableRow">{{(item.outStock_number ? item.outStock_number : 0)|fixedFilter}}{{item.unit}}</span>
                 </li>
               </ul>
             </div>
@@ -132,7 +132,7 @@
                               :key="ka"
                               class="tableColumn">
                           <span class="tableRow">{{ite.color }}</span>
-                          <span class="tableRow">{{ite.number}}{{ite.unit}}</span>
+                          <span class="tableRow">{{ite.number|fixedFilter}}{{ite.unit}}</span>
                         </span>
                       </span>
                     </span>
@@ -161,9 +161,9 @@
             </div>
             <div class="tableInfo">
               <span>{{item.material}}</span>
-              <span>{{item.total_number ? item.total_number : 0}}{{item.unit}}</span>
-              <span>{{(item.stock_number ? item.stock_number : 0) + (item.stocks_number ? item.stocks_number : 0)}}{{item.unit}}</span>
-              <span>{{item.total_number - (item.stock_number ? item.stock_number : 0) - (item.stocks_number ? item.stocks_number : 0)}}{{item.unit}}</span>
+              <span>{{(item.total_number ? item.total_number : 0)|fixedFilter}}{{item.unit}}</span>
+              <span>{{((item.stock_number ? item.stock_number : 0) + (item.stocks_number ? item.stocks_number : 0))|fixedFilter}}{{item.unit}}</span>
+              <span>{{(item.total_number - (item.stock_number ? item.stock_number : 0) - (item.stocks_number ? item.stocks_number : 0))|fixedFilter}}{{item.unit}}</span>
             </div>
           </div>
           <div class="buyInfo">
@@ -322,6 +322,11 @@ export default {
           }
         }]
       }
+    }
+  },
+  filters: {
+    fixedFilter (item) {
+      return Number(item).toFixed(2)
     }
   },
   watch: {
@@ -642,7 +647,7 @@ export default {
                   id: item.client_id
                 }],
                 colors: {
-                  [item.name]: [val.color]
+                  [item.name]: ['白胚', val.color]
                 },
                 total_number: val.number,
                 unit: val.unit,

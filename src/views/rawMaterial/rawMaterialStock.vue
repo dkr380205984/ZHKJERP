@@ -67,7 +67,7 @@
                               :key="index"
                               class="tableColumn">
                           <span class="tableRow">{{value.color}}</span>
-                          <span class="tableRow">{{value.value}}{{value.unit}}</span>
+                          <span class="tableRow">{{value.value|fixedFilter}}{{value.unit}}</span>
                         </span>
                       </span>
                     </span>
@@ -121,7 +121,7 @@
                                   :key="kay"
                                   class="tableColumn">
                               <span class="tableRow">{{itam.color}}</span>
-                              <span class="tableRow">{{itam.value}}{{itam.unit}}</span>
+                              <span class="tableRow">{{itam.value|fixedFilter}}{{itam.unit}}</span>
                             </span>
                           </span>
                         </span>
@@ -152,10 +152,10 @@
             <div class="tableInfo">
               <span>{{item.material}}</span>
               <span>
-                {{item.total_number}}{{item.unit}}
+                {{item.total_number|fixedFilter}}{{item.unit}}
               </span>
-              <span>{{item.goStock_number + item.goStocks_number}}{{item.unit}}</span>
-              <span>{{item.total_number - item.goStocks_number - item.goStock_number}}{{item.unit}}</span>
+              <span>{{(item.goStock_number + item.goStocks_number)|fixedFilter}}{{item.unit}}</span>
+              <span>{{(item.total_number - item.goStocks_number - item.goStock_number)|fixedFilter}}{{item.unit}}</span>
             </div>
           </div>
           <div class="buyInfo">
@@ -330,6 +330,11 @@ export default {
           }
         }]
       }
+    }
+  },
+  filters: {
+    fixedFilter (item) {
+      return Number(item).toFixed(2)
     }
   },
   methods: {
