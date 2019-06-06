@@ -40,8 +40,8 @@
        <div class="lineCtn col">
           <div class="inputCtn noPadding maxWidth">
             <div class="content">
-              <ul class="table">
-                <li>
+              <ul class="tablesCtn">
+                <li class="title">
                   <span>产品编号</span>
                   <span>产品品类</span>
                   <span style="flex:5;">
@@ -52,10 +52,10 @@
                     <span>已分配数量</span>
                   </span>
                 </li>
-                 <li v-for="(item,index) in productList" :key="index" class="material">
+                 <li v-for="(item,index) in productList" :key="index" class="material_info">
                   <span>{{item.product_code}}</span>
                   <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
-                  <span style="flex:5;">
+                  <span class="col" style="flex:5;">
                     <span v-for="(itemColour,indexColour) in item.info" :key="indexColour">
                       <span>{{itemColour.color}}/{{itemColour.size}}</span>
                       <span>{{itemColour.order_num}}{{item.unit_name}}</span>
@@ -79,8 +79,8 @@
         <div class="lineCtn col" v-for="(item,index) in formList" :key="index">
           <div class="inputCtn noPadding maxWidth">
             <div class="content">
-              <ul class="table">
-                <li>
+              <ul class="tablesCtn">
+                <li class="title">
                   <span>产品编号</span>
                   <span>产品品类</span>
                   <span style="flex:5;">
@@ -91,10 +91,10 @@
                     <span>已分配数量</span>
                   </span>
                 </li>
-                <li class="material">
+                <li class="material_info">
                   <span>{{item.product_code}}</span>
                   <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
-                  <span style="flex:5;">
+                  <span class="col" style="flex:5;">
                     <span v-for="(itemColour,indexColour) in item.info" :key="indexColour">
                       <span>{{itemColour.color}}/{{itemColour.size}}</span>
                       <span>{{itemColour.order_num}}{{item.unit_name}}</span>

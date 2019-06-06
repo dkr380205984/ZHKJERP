@@ -51,7 +51,7 @@
           <div class="tableColumn">{{item.material_color}}</div>
           <div class="tableColumn">{{item.material_attribute?item.material_attribute:'无'}}</div>
           <div class="tableColumn">{{item.total_weight}}</div>
-          <div class="tableColumn">{{item.vat_code?item.vat.code:'无'}}</div>
+          <div class="tableColumn">{{item.vat_code?item.vat_code:'无'}}</div>
           <div class="tableColumn">{{item.updated_at}}</div>
           <div class="tableColumn flex9">
             <span class="btns success" @click="$router.push('./mainMaterialStockDetail/' + item.id)">详情</span>

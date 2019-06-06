@@ -742,12 +742,15 @@ export default {
             if (!item2.name) {
               state = true
             }
+            if (!item2.number) {
+              state = true
+            }
           })
         })
       })
       if (state) {
         this.$message.error({
-          message: '检测到有未填写的辅料颜色信息，请完善信息'
+          message: '检测到有未填写的辅料颜色或辅料数量信息，请完善信息'
         })
         return
       }

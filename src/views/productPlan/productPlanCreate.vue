@@ -122,7 +122,7 @@
                     <div class="allInputs" v-for="(item4,index4) in mainIngredient.color[index][index2][index3].value.length" :key="index4">
                       <span class="labeled">{{mainIngredient.color[index][index2][index3].value[index4].size}}</span>
                       <input :disabled="!state||hasIngredient==='0'" class="input1" placeholder="数量" v-model="mainIngredient.color[index][index2][index3].value[index4].number"/>
-                      <input class="input2" @blur="commonUnit1=mainIngredient.color[index][index2][index3].value[index4].unit" placeholder="单位" v-model="mainIngredient.color[index][index2][index3].value[index4].unit"/>
+                      <input disabled style="text-align:center;background:#f5f7fa" class="input2" @blur="commonUnit1=mainIngredient.color[index][index2][index3].value[index4].unit" placeholder="单位" v-model="mainIngredient.color[index][index2][index3].value[index4].unit"/>
                     </div>
                     <i class="el-icon-delete delete" @click="deleteColor(index,index2,index3)"></i>
                   </div>
@@ -175,7 +175,7 @@
             <span class="label">辅料列表:</span>
             <div class="specialCtn" v-for="(item,index) in otherIngredient.ingredient.length" :key="index">
               <div class="blockCtn">
-                <el-select style="width:200px" v-model="otherIngredient.ingredient[index]" placeholder="请选择主要辅料">
+                <el-select filterable style="width:200px" v-model="otherIngredient.ingredient[index]" placeholder="请选择主要辅料">
                   <el-option
                     v-for="item in materialArr"
                     :key="item.name"
@@ -206,7 +206,7 @@
                     <div class="allInputs" v-for="(item4,index4) in otherIngredient.color[index][index2][index3].value.length" :key="index4">
                       <span class="labeled">{{otherIngredient.color[index][index2][index3].value[index4].size}}</span>
                       <input class="input1" placeholder="数量" v-model="otherIngredient.color[index][index2][index3].value[index4].number"/>
-                      <input class="input2" @blur="commonUnit2=otherIngredient.color[index][index2][index3].value[index4].unit" placeholder="单位" v-model="otherIngredient.color[index][index2][index3].value[index4].unit"/>
+                      <input disabled style="text-align:center;background:#f5f7fa" class="input2" @blur="commonUnit2=otherIngredient.color[index][index2][index3].value[index4].unit" placeholder="单位" v-model="otherIngredient.color[index][index2][index3].value[index4].unit"/>
                     </div>
                     <i class="el-icon-delete delete" @click="deleteOtherColor(index,index2,index3)"></i>
                   </div>
@@ -707,12 +707,15 @@ export default {
             if (!item2.name) {
               state = true
             }
+            if (!item2.number) {
+              state = true
+            }
           })
         })
       })
       if (state) {
         this.$message.error({
-          message: '检测到有未填写的辅料颜色信息，请完善信息'
+          message: '检测到有未填写的辅料颜色或辅料数量信息，请完善信息'
         })
         return
       }
@@ -850,10 +853,32 @@ export default {
             })
           }]
         })]
-        this.weight = [0]
+        let weightArr = []
+        this.mainIngredient.color[0][0][0].value.forEach((item) => {
+          weightArr.push(0)
+        })
+        this.weight = weightArr
         this.xishu = [0]
       }
       console.log(this.mainIngredient)
+    },
+    'otherIngredient.ingredient': {
+      handler: function (newVal) {
+        newVal.forEach((item, index) => {
+          if (item) {
+            let unit = this.materialArr.find((itemFind) => itemFind.name === item).unit
+            for (let index1 in this.otherIngredient.color[index]) {
+              for (let index2 in this.otherIngredient.color[index][index1]) {
+                for (let index3 in this.otherIngredient.color[index][index1][index2].value) {
+                  this.otherIngredient.color[index][index1][index2].value[index3].unit = unit
+                }
+              }
+            }
+            this.commonUnit2 = unit
+          }
+        })
+      },
+      deep: true
     }
   },
   filters: {

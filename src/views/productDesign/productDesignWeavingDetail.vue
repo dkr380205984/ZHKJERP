@@ -76,7 +76,7 @@
                       </span>
                     </span>
                   </span>
-                  <span v-if="item.has_craft===1" style="color:#1A95FF;">点击查看</span>
+                  <span v-if="item.has_craft===1" style="color:#1A95FF;" @click="$router.push('/index/designFormDetail/'+item.product_code)">点击查看</span>
                   <span v-if="item.has_craft===0" style="color:#ccc;">暂无工艺单</span>
                 </li>
               </ul>
@@ -118,7 +118,7 @@
                     </span>
                   </span>
                 </li>
-                <div class="logList">展开日志</div>
+                <!-- <div class="logList">展开日志</div> -->
               </ul>
               <ul class="log">
                 <div>
@@ -145,10 +145,10 @@
                     <span>{{item.color}}/{{item.size}}</span>
                     <span>{{item.price}}</span>
                     <span>{{item.number}}{{item.product_info.category_info.name}}</span>
-                    <span>{{item.price*item.number}}</span>
+                    <span>{{parseInt(item.price*item.number)}}</span>
                     <span>{{item.user_name}}</span>
                     <span>{{item.desc}}</span>
-                    <span style="color:#1A95FF">修改</span>
+                    <span style="color:#1A95FF;cursor:pointer" @click="updateLog(item)">修改</span>
                   </li>
                 </div>
                 <li v-if="logList.length===0">
@@ -161,6 +161,56 @@
                   <span>去织造</span>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="stepCtn">
+        <div class="stepTitle">生产分配信息</div>
+        <div class="borderCtn">
+          <div class="cicle"></div>
+          <div class="border"></div>
+        </div>
+        <div class="lineCtn col">
+          <div class="inputCtn noPadding">
+            <div class="content">
+              <ul class="tablesCtn">
+                <li class="title">
+                  <span>生产单位</span>
+                  <span>产品信息</span>
+                  <span>颜色/尺码</span>
+                  <span>单价</span>
+                  <span>数量</span>
+                  <span>创建时间</span>
+                  <span>完成时间</span>
+                  <span>备注</span>
+                  <span>总价</span>
+                  <span>操作</span>
+                </li>
+                <li class="material_info" v-for="(item,index) in fenpeiList" :key="index">
+                  <span>{{item.client_name}}</span>
+                  <span class="col" style="flex:7">
+                    <span v-for="(itemPro,indexPro) in item.info" :key="indexPro">
+                      <span>{{itemPro.product_code}}</span>
+                      <span>{{itemPro.info[0].product_info.category_info.product_category}}/{{itemPro.info[0].product_info.type_name}}/{{itemPro.info[0].product_info.style_name}}</span>
+                      <span class="col" style="flex:5">
+                        <span v-for="(itemPrice,indexPrice) in itemPro.info" :key="indexPrice">
+                          <span>{{itemPrice.price}}</span>
+                          <span>{{itemPrice.number}}</span>
+                          <span>{{itemPrice.created_at.slice(0,10)}}</span>
+                          <span>{{itemPrice.complete_time.slice(0,10)}}</span>
+                          <span>{{itemPrice.desc}}</span>
+                        </span>
+                      </span>
+                    </span>
+                  </span>
+                  <span>{{item.sum}}元</span>
+                  <span style="color:#1A95FF;cursor:pointer">打印</span>
+                </li>
+                <li class="material_info" v-if="fenpeiList.length===0">
+                  <span>暂无分配信息</span>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -207,7 +257,7 @@
                       <span class="col" v-if="itemColour.colorArr.length>0">
                         <span v-for="(itemMat,indexMat) in itemColour.colorArr" :key="indexMat">
                           <span class="col">
-                            <span v-for="(itemColor,indexColor) in itemMat.colorWeight" :key="indexColor">{{(itemColor.weight/(Number(itemColour.production_sunhao)+100)*100/itemColour.production_num*itemColour.number).toFixed(2)}}千克</span>
+                            <span v-for="(itemColor,indexColor) in itemMat.colorWeight" :key="indexColor">{{(itemColor.weight/itemColour.production_num*itemColour.number).toFixed(2)}}千克</span>
                           </span>
                         </span>
                       </span>
@@ -226,15 +276,76 @@
           </div>
         </div>
       </div>
+      <div class="btnCtn">
+        <div class="cancleBtn" @click="$router.go(-1)">返回</div>
+        <div class="okBtn" @click="$router.go(-1)">确认</div>
+      </div>
+    </div>
+    <div class="shade" v-show="showShade">
+      <div class="main">
+        <div class="close" @click="showShade=false">
+          <span class="icon">x</span>
+        </div>
+        <div class="title">修改日志信息</div>
+        <div class="inputCtn">
+          <span class="label"><em>*</em>加工单位:</span>
+          <div class="elCtn">
+            {{updateInfo.client_name}}
+          </div>
+        </div>
+        <div class="inputCtn">
+          <span class="label">产品信息:</span>
+          <div class="elCtn">
+            {{updateInfo.product_info.category_info.product_category}}/{{updateInfo.product_info.type_name}}/{{updateInfo.product_info.style_name}} &nbsp;&nbsp; {{updateInfo.color}}/{{updateInfo.size}}
+          </div>
+        </div>
+        <div class="inputCtn">
+          <span class="label"><em>*</em>单价:</span>
+          <div class="elCtn">
+            <el-input v-model="updateInfo.price" placeholder="请输入单价">
+              <template slot="append">元</template>
+            </el-input>
+          </div>
+        </div>
+        <div class="inputCtn">
+          <span class="label"><em>*</em>分配数量:</span>
+          <div class="elCtn">
+            <el-input v-model="updateInfo.number" placeholder="请输入分配数量">
+              <template slot="append">{{updateInfo.product_info.category_info.name}}</template>
+            </el-input>
+          </div>
+        </div>
+        <div class="inputCtn">
+          <span class="label"><em>*</em>完成时间:</span>
+          <div class="elCtn">
+            <el-date-picker v-model="updateInfo.complete_time"
+              type="date"
+              placeholder="选择日期"
+              value-format="yyyy-MM-dd">
+            </el-date-picker>
+          </div>
+        </div>
+        <div class="inputCtn">
+          <span class="label">备注:</span>
+          <div class="elCtn">
+            <el-input v-model="updateInfo.desc" placeholder="请输入其他信息"></el-input>
+          </div>
+        </div>
+        <div class="btnCtn">
+          <div class="okBtn" @click="updateLogFn">修改</div>
+          <div class="cancleBtn" @click="showShade=false">取消</div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { productionDetail, weaveDetail } from '@/assets/js/api.js'
+import { productionDetail, weaveDetail, weaveUpadate } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      showShade: false,
       order: {
         order_code: '',
         client_name: '',
@@ -255,7 +366,26 @@ export default {
       state: true,
       materialList: [],
       logList: [],
-      StatisticsList: []
+      StatisticsList: [],
+      updateInfo: {
+        id: '',
+        client_name: '',
+        product_info: {
+          category_info: {
+            product_category: '',
+            name: ''
+          },
+          type_name: '',
+          style_name: ''
+        },
+        desc: '',
+        color: '',
+        size: '',
+        number: '',
+        price: '',
+        complete_time: ''
+      },
+      fenpeiList: []
     }
   },
   mounted () {
@@ -448,7 +578,26 @@ export default {
       })
       // 第二步，合并加工单位
       this.materialList = this.jsonMerge(materialList, ['client_name'])
-      console.log(this.materialList)
+      // 统计生产分配信息
+      // 先按生产单位合并，再按产品编号合并
+      let fenpeiList = this.jsonMerge(this.logList.map((item) => {
+        let json = item
+        json.product_code = item.product_info.product_code
+        return json
+      }), ['client_name', 'product_code'])
+      // 合并完成之后计算每个公司的money
+      this.fenpeiList = fenpeiList.map((itemCompany) => {
+        return {
+          info: itemCompany.info,
+          client_name: itemCompany.client_name,
+          sum: itemCompany.info.reduce((totalType, currentType) => {
+            return totalType + currentType.info.reduce((totalLast, currentLast) => {
+              return totalLast + currentLast.price * currentLast.number
+            }, 0)
+          }, 0)
+        }
+      })
+      console.log(this.fenpeiList)
     })
   },
   methods: {
@@ -501,6 +650,32 @@ export default {
           }
         })
       }
+    },
+    // 点击修改
+    updateLog (item) {
+      this.updateInfo = item
+      this.showShade = true
+    },
+    // 修改日志
+    updateLogFn () {
+      weaveUpadate({
+        id: this.updateInfo.id,
+        price: this.updateInfo.price,
+        number: this.updateInfo.number,
+        complete_time: this.updateInfo.complete_time,
+        desc: this.updateInfo.desc
+      }).then((res) => {
+        if (res.data.status) {
+          this.$message.success({
+            message: '修改成功'
+          })
+        } else {
+          this.$message.error({
+            message: res.data.message
+          })
+        }
+        this.showShade = false
+      })
     }
   }
 }
@@ -508,4 +683,98 @@ export default {
 
 <style scoped lang='less'>
   @import "~@/assets/css/rawMaterialOrderDetail.less";
+</style>
+<style lang="less" scoped>
+  #rawMaterialOrderDetail{
+    .shade{
+      position: fixed;
+      top:0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: rgba(0,0,0,0.8);
+      .main{
+        position: absolute;
+        width: 640px;
+        height: 560px;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        margin: auto;
+        background: #ffffff;
+        overflow: hidden;
+        border-radius: 4px;
+        .close{
+          position: absolute;
+          right: -30px;
+          top: -30px;
+          width: 60px;
+          height: 60px;
+          background: #1A95FF;
+          border-radius: 50%;
+          cursor: pointer;
+          transition: 0.1s;
+          color: #ECF0F1;
+          &:hover{
+            transform: scale(1.1);
+            color: #ffffff;
+            background: #48AAFF;
+          }
+          .icon{
+            position: absolute;
+            left: 15px;
+            bottom: 7px;
+            font-size: 16px;
+            font-weight: bold;
+          }
+        }
+        .title{
+          line-height: 66px;
+          font-size: 22px;
+          padding: 0 20px;
+          background: linear-gradient(to right,#1A95FF,#CEDDEF);
+          border-radius: 4px;
+          border-bottom-left-radius: 0;
+          border-bottom-right-radius: 0;
+          color: #ffffff;
+          margin-bottom: 40px;
+        }
+        .inputCtn{
+          margin: 20px;
+          position: relative;
+          font-size: 16px;
+          padding-left: 5em;
+          height: 40px;
+          line-height: 40px;
+          color: #666;
+          .label{
+            position: absolute;
+            left: 0;
+            text-align: right;
+            width: 5em;
+            color: #666;
+            em{
+              color:#F56C6C;
+              line-height: 40px;
+              margin-right: 2px;
+              vertical-align: -4px;
+            }
+          }
+          .elCtn{
+            margin-left: 15px;
+            width: 400px;
+          }
+        }
+        .btnCtn{
+          margin-top: 40px;
+          display: flex;
+          justify-content: center;
+          .okBtn{
+            margin: 0 30px;
+          }
+        }
+      }
+    }
+  }
 </style>

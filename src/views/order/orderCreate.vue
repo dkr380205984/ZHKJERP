@@ -263,7 +263,7 @@
                       <template slot="append">{{money}}</template>
                     </el-input>
                     <el-input class="elInput" v-model="orderArr[indexOrder].product[indexProduct].size[indexType].numbers" placeholder="数量" style="width:145px;">
-                      <template slot="append">个</template>
+                      <template slot="append">{{orderArr[indexOrder].product[indexProduct].product_info.category_info?orderArr[indexOrder].product[indexProduct].product_info.category_info.name:''}}</template>
                     </el-input>
                     <i class="el-icon-delete" @click="deleteSize(indexOrder,indexProduct,indexType)"></i>
                   </div>

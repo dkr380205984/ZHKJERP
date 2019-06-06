@@ -176,7 +176,7 @@
                     <span>{{item.price*item.number}}元</span>
                     <span>{{item.user_name}}</span>
                     <span>{{item.desc?item.desc:'暂无信息'}}</span>
-                    <span style="color:#1A95FF">修改</span>
+                    <span style="color:#1A95FF;cursor:pointer" @click="updateLog(item)">修改</span>
                   </li>
                 </div>
                 <div>
@@ -250,15 +250,82 @@
           </div>
         </div>
       </div>
+      <div class="btnCtn">
+        <div class="cancleBtn" @click="$router.go(-1)">返回</div>
+        <div class="okBtn" @click="$router.go(-1)">确认</div>
+      </div>
+    </div>
+    <div class="shade" v-show="showShade">
+      <div class="main">
+        <div class="close" @click="showShade=false">
+          <span class="icon">x</span>
+        </div>
+        <div class="title">修改日志信息</div>
+        <div class="inputCtn">
+          <span class="label"><em>*</em>加工单位:</span>
+          <div class="elCtn">
+            {{updateInfo.client_name}}/{{updateInfo.type}}
+          </div>
+        </div>
+        <div class="inputCtn">
+          <span class="label"><em>*</em>加工类型:</span>
+          <div class="elCtn">
+            {{updateInfo.type}}
+          </div>
+        </div>
+        <div class="inputCtn">
+          <span class="label">产品信息:</span>
+          <div class="elCtn">
+            {{updateInfo.product_info.category_info.product_category}}/{{updateInfo.product_info.type_name}}/{{updateInfo.product_info.style_name}} &nbsp;&nbsp; {{updateInfo.color}}/{{updateInfo.size}}
+          </div>
+        </div>
+        <div class="inputCtn">
+          <span class="label"><em>*</em>单价:</span>
+          <div class="elCtn">
+            <el-input v-model="updateInfo.price" placeholder="请输入单价">
+              <template slot="append">元</template>
+            </el-input>
+          </div>
+        </div>
+        <div class="inputCtn">
+          <span class="label"><em>*</em>分配数量:</span>
+          <div class="elCtn">
+            <el-input v-model="updateInfo.number" placeholder="请输入分配数量">
+              <template slot="append">{{updateInfo.product_info.category_info.name}}</template>
+            </el-input>
+          </div>
+        </div>
+        <div class="inputCtn">
+          <span class="label"><em>*</em>完成时间:</span>
+          <div class="elCtn">
+            <el-date-picker v-model="updateInfo.complete"
+              type="date"
+              placeholder="选择日期"
+              value-format="yyyy-MM-dd">
+            </el-date-picker>
+          </div>
+        </div>
+        <div class="inputCtn">
+          <span class="label">备注:</span>
+          <div class="elCtn">
+            <el-input v-model="updateInfo.desc" placeholder="请输入其他信息"></el-input>
+          </div>
+        </div>
+        <div class="btnCtn">
+          <div class="okBtn" @click="updateLogFn">修改</div>
+          <div class="cancleBtn" @click="showShade=false">取消</div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { productionDetail, halfProductDetail } from '@/assets/js/api.js'
+import { productionDetail, halfProductDetail, halfProductUpadate } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      showShade: false,
       order: {
         order_code: '',
         client_name: '',
@@ -278,7 +345,26 @@ export default {
       state: true,
       materialList: [],
       logList: [],
-      mergeLogList: []
+      mergeLogList: [],
+      updateInfo: {
+        id: '',
+        client_name: '',
+        product_info: {
+          category_info: {
+            product_category: '',
+            name: ''
+          },
+          type_name: '',
+          style_name: ''
+        },
+        desc: '',
+        color: '',
+        size: '',
+        number: '',
+        price: '',
+        complete: '',
+        type: ''
+      }
     }
   },
   mounted () {
@@ -569,6 +655,34 @@ export default {
           }
         })
       }
+    },
+    // 点击修改
+    updateLog (item) {
+      console.log(item)
+      this.updateInfo = item
+      this.showShade = true
+    },
+    // 修改日志
+    updateLogFn () {
+      halfProductUpadate({
+        id: this.updateInfo.id,
+        price: this.updateInfo.price,
+        number: this.updateInfo.number,
+        complete_time: this.updateInfo.complete,
+        desc: this.updateInfo.desc,
+        type: this.updateInfo.type
+      }).then((res) => {
+        if (res.data.status) {
+          this.$message.success({
+            message: '修改成功'
+          })
+        } else {
+          this.$message.error({
+            message: res.data.message
+          })
+        }
+        this.showShade = false
+      })
     }
   }
 }
@@ -576,4 +690,98 @@ export default {
 
 <style scoped lang='less'>
   @import "~@/assets/css/rawMaterialOrderDetail.less";
+</style>
+<style lang="less" scoped>
+  #rawMaterialOrderDetail{
+    .shade{
+      position: fixed;
+      top:0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: rgba(0,0,0,0.8);
+      .main{
+        position: absolute;
+        width: 640px;
+        height: 620px;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        margin: auto;
+        background: #ffffff;
+        overflow: hidden;
+        border-radius: 4px;
+        .close{
+          position: absolute;
+          right: -30px;
+          top: -30px;
+          width: 60px;
+          height: 60px;
+          background: #1A95FF;
+          border-radius: 50%;
+          cursor: pointer;
+          transition: 0.1s;
+          color: #ECF0F1;
+          &:hover{
+            transform: scale(1.1);
+            color: #ffffff;
+            background: #48AAFF;
+          }
+          .icon{
+            position: absolute;
+            left: 15px;
+            bottom: 7px;
+            font-size: 16px;
+            font-weight: bold;
+          }
+        }
+        .title{
+          line-height: 66px;
+          font-size: 22px;
+          padding: 0 20px;
+          background: linear-gradient(to right,#1A95FF,#CEDDEF);
+          border-radius: 4px;
+          border-bottom-left-radius: 0;
+          border-bottom-right-radius: 0;
+          color: #ffffff;
+          margin-bottom: 40px;
+        }
+        .inputCtn{
+          margin: 20px;
+          position: relative;
+          font-size: 16px;
+          padding-left: 5em;
+          height: 40px;
+          line-height: 40px;
+          color: #666;
+          .label{
+            position: absolute;
+            left: 0;
+            text-align: right;
+            width: 5em;
+            color: #666;
+            em{
+              color:#F56C6C;
+              line-height: 40px;
+              margin-right: 2px;
+              vertical-align: -4px;
+            }
+          }
+          .elCtn{
+            margin-left: 15px;
+            width: 400px;
+          }
+        }
+        .btnCtn{
+          margin-top: 40px;
+          display: flex;
+          justify-content: center;
+          .okBtn{
+            margin: 0 30px;
+          }
+        }
+      }
+    }
+  }
 </style>
