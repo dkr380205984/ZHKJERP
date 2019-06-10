@@ -237,7 +237,7 @@ let router = new Router({
       name: 'productDesignWeavingCreate',
       component: () => import('./views/productDesign/productDesignWeavingCreate.vue')
     }, {
-      path: 'productDesignWeavingDetail/:planId/:orderId',
+      path: 'productDesignWeavingDetail/:id',
       name: 'productDesignWeavingDetail',
       component: () => import('./views/productDesign/productDesignWeavingDetail.vue')
     }, {
@@ -245,7 +245,7 @@ let router = new Router({
       name: 'productDesignHalfCreate',
       component: () => import('./views/productDesign/productDesignHalfCreate.vue')
     }, {
-      path: 'productDesignHalfDetail/:planId/:orderId',
+      path: 'productDesignHalfDetail/:id',
       name: 'productDesignHalfDetail',
       component: () => import('./views/productDesign/productDesignHalfDetail.vue')
     }, {

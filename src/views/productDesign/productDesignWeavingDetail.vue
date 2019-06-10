@@ -176,7 +176,7 @@
               </ul>
               <div class="handle">
                 <div class="order"
-                  @click="$router.push('/index/productDesignWeavingCreate/' + $route.params.planId)">
+                  @click="$router.push('/index/productDesignWeavingCreate/' + $route.params.id)">
                   <img class="icon"
                     src="@/assets/image/icon/orderIcon.png">
                   <span>去织造</span>
@@ -233,7 +233,7 @@
                   </span>
                   <span>{{item.sum}}元</span>
                   <span style="color:#1A95FF;cursor:pointer"
-                    @click="open($route.params.planId,item.client_name,0)">打印</span>
+                    @click="open($route.params.id,item.client_name,0)">打印</span>
                 </li>
                 <li class="material_info"
                   v-if="fenpeiList.length===0">
@@ -444,9 +444,9 @@ export default {
   mounted () {
     Promise.all([
       productionDetail({
-        order_id: this.$route.params.orderId
+        order_id: this.$route.params.id
       }), weaveDetail({
-        production_plan_id: this.$route.params.planId
+        order_id: this.$route.params.id
       })
     ]).then(res => {
       this.order = res[0].data.data.production_detail.order_info
