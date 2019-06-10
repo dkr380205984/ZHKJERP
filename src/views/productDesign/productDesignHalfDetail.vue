@@ -152,7 +152,7 @@
                   </span>
                   <span>{{itemCompany.sum}}元</span>
                   <span style="color:#1A95FF"
-                        @click="open($route.params.id,itemCompany.client_name,1)">打印</span>
+                        @click="open($route.params.planId,itemCompany.client_name,1)">打印</span>
                 </li>
                 <li class="material_info"
                     v-if="mergeLogList.length===0">
@@ -212,7 +212,7 @@
               <div class="handle">
                 <div v-if="state"
                      class="order"
-                     @click="$router.push('/index/productDesignHalfCreate/' + $route.params.id)">
+                     @click="$router.push('/index/productDesignHalfCreate/' + $route.params.planId)">
                   <img class="icon"
                        src="@/assets/image/icon/orderIcon.png">
                   <span>去加工</span>
@@ -421,9 +421,9 @@ export default {
   mounted () {
     Promise.all([
       productionDetail({
-        order_id: this.$route.params.id
+        order_id: this.$route.params.orderId
       }), halfProductDetail({
-        production_plan_id: this.$route.params.id
+        production_plan_id: this.$route.params.planId
       })
     ]).then(res => {
       this.order = res[0].data.data.production_detail.order_info
