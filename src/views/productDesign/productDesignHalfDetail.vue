@@ -212,7 +212,7 @@
               <div class="handle">
                 <div v-if="state"
                   class="order"
-                  @click="$router.push('/index/productDesignHalfCreate/' + $route.params.planId)">
+                  @click="$router.push('/index/productDesignHalfCreate/' + $route.params.id)">
                   <img class="icon"
                     src="@/assets/image/icon/orderIcon.png">
                   <span>去加工</span>
@@ -421,9 +421,9 @@ export default {
   mounted () {
     Promise.all([
       productionDetail({
-        order_id: this.$route.params.orderId
+        order_id: this.$route.params.id
       }), halfProductDetail({
-        production_plan_id: this.$route.params.planId
+        order_id: this.$route.params.id
       })
     ]).then(res => {
       this.order = res[0].data.data.production_detail.order_info

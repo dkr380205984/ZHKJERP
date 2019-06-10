@@ -242,7 +242,7 @@ export default {
       }), clientList({
         company_id: window.sessionStorage.getItem('company_id')
       }), weaveDetail({
-        production_plan_id: this.$route.params.id
+        order_id: this.$route.params.id
       })
     ]).then(res => {
       this.order = res[0].data.data.production_detail.order_info

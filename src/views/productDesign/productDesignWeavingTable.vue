@@ -204,7 +204,7 @@ export default {
     // 获取数据
     if (this.type === '0') {
       weaveDetail({
-        production_plan_id: this.$route.params.id
+        order_id: this.$route.params.id
       }).then(res => {
         let data = res.data.data
         console.log(data)
@@ -263,7 +263,7 @@ export default {
       this.loading = false
     } else if (this.type === '1') {
       halfProductDetail({
-        production_plan_id: this.$route.params.id
+        order_id: this.$route.params.id
       }).then(res => {
         let data = res.data.data
         console.log(data)
