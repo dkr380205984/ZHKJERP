@@ -88,7 +88,7 @@
                   </span>
                   <span v-if="item.has_craft===1"
                     style="color:#1A95FF;"
-                    @click="$router.push('/index/designFormDetail/'+item.product_code)">点击查看</span>
+                    @click="$router.push('/index/designFormDetail/'+item.craft_list_id)">点击查看</span>
                   <span v-if="item.has_craft===0"
                     style="color:#ccc;">暂无工艺单</span>
                 </li>
@@ -491,6 +491,8 @@ export default {
             num: 1,
             state: state,
             unit_name: item.unit_name,
+            craft_list_id: item.craft_list_id,
+            has_craft: item.has_craft,
             info: [{
               color: item.color,
               order_num: item.order_num,
@@ -528,6 +530,8 @@ export default {
                 num: (itemPro.num + 1),
                 state: state,
                 unit_name: item.unit_name,
+                craft_list_id: itemPro.craft_list_id,
+                has_craft: itemPro.has_craft,
                 info: itemPro.info.concat([{
                   color: item.color,
                   order_num: item.order_num,
@@ -563,6 +567,8 @@ export default {
             style_name: item.style_name,
             state: item.state,
             unit_name: item.unit_name,
+            craft_list_id: item.craft_list_id,
+            has_craft: item.has_craft,
             info: item.info.map((itemInfo) => {
               let json = {
                 color: itemInfo.color,
@@ -606,16 +612,6 @@ export default {
         } else {
           return item
         }
-      })
-      // product第二轮整理完之后，把有无工艺单的信息匹配出来
-      let arr = [] // arr存储了所有批次的产品信息，部分产品信息会重复
-      this.order.order_batch.forEach((itemBatch) => {
-        arr = arr.concat(itemBatch.batch_info)
-      })
-      this.product = this.product.map((item) => {
-        let json = item
-        json.has_craft = arr.find((itemFind) => itemFind.productCode === item.product_code).productInfo.has_craft
-        return json
       })
       console.log(this.product)
       // 所需原料信息和织造信息全部都放在product中，整理完毕之后，开始整理原料分配信息
