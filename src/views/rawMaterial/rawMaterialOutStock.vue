@@ -14,7 +14,8 @@
         <div class="lineCtn">
           <div class="inputCtn">
             <span class="label">订单号:</span>
-            <span class="content important">{{order_code}}</span>
+            <span class="content important"
+                  @click="$router.push('/index/orderDetail/' + $route.params.id)">{{order_code}}</span>
           </div>
           <div class="inputCtn">
             <span class="label">外贸公司:</span>
@@ -488,7 +489,7 @@ export default {
         order_id: this.$route.params.id
       }),
       weaveDetail({
-        production_plan_id: this.$route.params.id
+        production_plan_id: this.$route.params.planId
       }),
       productionDetail({
         order_id: this.$route.params.id

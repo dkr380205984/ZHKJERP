@@ -14,7 +14,8 @@
         <div class="lineCtn">
           <div class="inputCtn">
             <span class="label">订单号:</span>
-            <span class="content important">{{order_code}}</span>
+            <span class="content important"
+                  @click="$router.push('/index/orderDetail/' + $route.params.id)">{{order_code}}</span>
           </div>
           <div class="inputCtn">
             <span class="label">外贸公司:</span>
@@ -359,15 +360,7 @@ export default {
       goStockList: [],
       outStockInfo: [],
       productionList: [],
-      surplus: [
-        {
-          material: '52',
-          color: '20',
-          surplu: 10,
-          dyelot_number: '1',
-          unit: 'kg'
-        }
-      ]
+      surplus: []
     }
   },
   filters: {
@@ -405,7 +398,7 @@ export default {
         }
       } else if (where === 'outStock') {
         if (flag !== 0) {
-          this.$router.push('/index/rawMaterialOutStock/' + id + '/' + this.type)
+          this.$router.push('/index/rawMaterialOutStock/' + id + '/' + this.$route.params.planId + '/' + this.type)
         } else {
 
         }

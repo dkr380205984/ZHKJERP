@@ -192,13 +192,14 @@
                   </el-select>
                   <em v-if="ind === 0"
                       class="el-icon-plus"
-                      style="right:-25px;top:5px;"
+                      style="right:-35px;top:5px;"
                       @click="appendDefectiveInfo(kay,index)"></em>
                   <em v-else
                       class="el-icon-delete"
-                      style="right:-25px;top:5px;"
+                      style="right:-35px;top:5px;"
                       @click="deleteDefectiveInfo(kay,index,ind)"></em>
                 </div>
+                <span class="tag">颜色/尺码{{index + 1}}</span>
                 <em v-if="index === 0"
                     class="el-icon-plus"
                     @click="appendTestSizeInfo(kay)"></em>
