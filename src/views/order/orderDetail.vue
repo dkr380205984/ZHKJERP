@@ -51,8 +51,8 @@
           <span class="label">订单批次:</span>
           <span class="content">
             <div class="list"
-                 v-for="(item,key) in list"
-                 :key="key">
+              v-for="(item,key) in list"
+              :key="key">
               <div class="title">第{{key+1}}批</div>
               <div class="content">
                 <div class="contentCtn">
@@ -63,8 +63,9 @@
                   <span class="label">产品信息:</span>
                   <span class="content">
                     <span v-for="(value,index) in item.product_info"
-                          :key='index'>
-                      <span @click="$router.push('/index/productDetail/'+value.product_code)" style='flex:3;cursor:pointer;color:#1a95ff'>{{value.product_code}}({{value.product_class}})</span>
+                      :key='index'>
+                      <span @click="$router.push('/index/productDetail/'+value.product_code)"
+                        style='flex:3;cursor:pointer;color:#1a95ff'>{{value.product_code}}({{value.product_class}})</span>
                       <span>{{value.size}}/{{value.color}}</span>
                       <span>{{value.price}}{{account_unit}}/{{value.unit}}</span>
                       <span>{{value.number}}条</span>
@@ -87,9 +88,9 @@
         <div class="inputCtn">
           <span class="content btn">
             <span class="goBack"
-                  @click="$router.go(-1)">返回</span>
+              @click="$router.go(-1)">返回</span>
             <span class="change"
-                  @click="$router.go(-1)">修改</span>
+              @click="$router.go(-1)">修改</span>
           </span>
         </div>
       </div>

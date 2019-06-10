@@ -28,16 +28,16 @@
         <div class="inputCtn">
           <span class="label">产品规格:</span>
           <span class="content contentLine"
-                v-for="(item,key) in product_info.size"
-                :key="key">
+            v-for="(item,key) in product_info.size"
+            :key="key">
             <span class="size">{{key}}</span>
             <span class="sizeDetail">
               <span class="sizeOnce"
-                    v-for="itemChild in item"
-                    :key="itemChild.id">{{itemChild.size_name + '：' + itemChild.size_value + (itemChild.size_name == '克重' ? 'g' : 'cm')}}</span>
+                v-for="itemChild in item"
+                :key="itemChild.id">{{itemChild.size_name + '：' + itemChild.size_value + (itemChild.size_name == '克重' ? 'g' : 'cm')}}</span>
               <template v-for="(value,index) in weight">
                 <span :key="index"
-                      v-if="(key === index) || index === '均码'">
+                  v-if="(key === index) || index === '均码'">
                   {{'净重：' + value.toFixed(2) + 'g'}}
                 </span>
               </template>
@@ -49,8 +49,14 @@
         <div class="inputCtn">
           <span class="label">产品图片:</span>
           <span class="content">
-            <img v-if="product_info.img.length === 0" class="img" src="@/assets/image/index/noPic.jpg"/>
-            <img v-for="(item,index) in product_info.img" :key="index" class="img" :src="item.image_url" :onerror="defaultImg" />
+            <img v-if="product_info.img.length === 0"
+              class="img"
+              src="@/assets/image/index/noPic.jpg" />
+            <img v-for="(item,index) in product_info.img"
+              :key="index"
+              class="img"
+              :src="item.image_url"
+              :onerror="defaultImg" />
           </span>
         </div>
       </div>
@@ -59,7 +65,7 @@
           <span class="label">损耗比例:</span>
           <span class="content">
             <span v-for="(loss,size) in loss"
-                  :key="size">
+              :key="size">
               {{size}}:{{loss}}
             </span>
           </span>
@@ -71,9 +77,9 @@
           <div class="content tableBox">
             <template v-for="(item,index) in material_data.main_material">
               <yl-table color="#1A95FF"
-                        :date='item'
-                        :key="index"
-                        :class="{'maT': (index !== 0)}" />
+                :date='item'
+                :key="index"
+                :class="{'maT': (index !== 0)}" />
             </template>
           </div>
         </div>
@@ -85,9 +91,9 @@
             {{material_data.main_ingredients.length !== 0 ? '' : '暂无信息'}}
             <template v-for="(item,index) in material_data.main_ingredients">
               <yl-table color="#1A05FF"
-                        :date='item'
-                        :class="{'marT': (index !== 0)}"
-                        :key="index" />
+                :date='item'
+                :class="{'marT': (index !== 0)}"
+                :key="index" />
             </template>
           </div>
         </div>
@@ -97,7 +103,7 @@
           <span class="label change">外道加工流程:</span>
           <ul class="liucheng content">
             <li v-for="(item,index) in liucheng"
-                :key="index">{{item}}</li>
+              :key="index">{{item}}</li>
           </ul>
         </div>
       </div>
@@ -105,9 +111,9 @@
         <div class="inputCtn">
           <span class="content btn">
             <span class="goBack"
-                  @click="$router.go(-1)">返回</span>
+              @click="$router.go(-1)">返回</span>
             <span class="change"
-                  @click="$router.push('../productPlanUpdate/' + product_info.product_code)">修改</span>
+              @click="$router.push('../productPlanUpdate/' + product_info.product_code)">修改</span>
           </span>
         </div>
       </div>

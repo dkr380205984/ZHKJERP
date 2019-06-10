@@ -1,175 +1,253 @@
 <template>
-  <div id='productSetting'  v-loading="loading">
+  <div id='productSetting'
+    v-loading="loading">
     <div class="head">
       <h2>产品设置</h2>
     </div>
     <div class="body">
-      <div class="lineCtn" :style="{'max-height':flagObj.flowerFlag?'300px':'64px'}">
+      <div class="lineCtn"
+        :style="{'max-height':flagObj.flowerFlag?'300px':'64px'}">
         <div class="inputCtn">
           <span class="label">添加花型:</span>
-          <el-input class="elInput" v-model="flower" placeholder="请输入花型"></el-input>
-          <div class="okBtn" @click="saveFlower">添加</div>
-          <div class="showAll" @click="flagObj.flowerFlag=!flagObj.flowerFlag">{{!flagObj.flowerFlag?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flagObj.flowerFlag?'showIcon':'hideIcon'"></i></div>
+          <el-input class="elInput"
+            v-model="flower"
+            placeholder="请输入花型"></el-input>
+          <div class="okBtn"
+            @click="saveFlower">添加</div>
+          <div class="showAll"
+            @click="flagObj.flowerFlag=!flagObj.flowerFlag">{{!flagObj.flowerFlag?'展开':'收起'}}<i class="el-icon-d-arrow-right"
+              :class="!flagObj.flowerFlag?'showIcon':'hideIcon'"></i></div>
         </div>
         <div class="allInfo">
           <div class="bgWhite"></div>
           <div class="list">
-            <div class="btnCtn" v-for="item in flowerArr" :key="item.id">
+            <div class="btnCtn"
+              v-for="item in flowerArr"
+              :key="item.id">
               <span>{{item.name}}</span>
-              <i class="iconCancle" @click="deleteFlower(item.id)">x</i>
+              <i class="iconCancle"
+                @click="deleteFlower(item.id)">x</i>
             </div>
           </div>
         </div>
       </div>
-      <div class="lineCtn" :style="{'max-height':flagObj.ingredientFlag?'300px':'64px'}">
+      <div class="lineCtn"
+        :style="{'max-height':flagObj.ingredientFlag?'300px':'64px'}">
         <div class="inputCtn">
           <span class="label">添加成分:</span>
-          <el-input class="elInput" v-model="ingredient" placeholder="请输入成分"></el-input>
-          <div class="okBtn" @click="saveIngredient">添加</div>
-          <div class="showAll" @click="flagObj.ingredientFlag=!flagObj.ingredientFlag">{{!flagObj.ingredientFlag?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flagObj.ingredientFlag?'showIcon':'hideIcon'"></i></div>
+          <el-input class="elInput"
+            v-model="ingredient"
+            placeholder="请输入成分"></el-input>
+          <div class="okBtn"
+            @click="saveIngredient">添加</div>
+          <div class="showAll"
+            @click="flagObj.ingredientFlag=!flagObj.ingredientFlag">{{!flagObj.ingredientFlag?'展开':'收起'}}<i class="el-icon-d-arrow-right"
+              :class="!flagObj.ingredientFlag?'showIcon':'hideIcon'"></i></div>
         </div>
         <div class="allInfo">
           <div class="bgWhite"></div>
           <div class="list">
-            <div class="btnCtn" v-for="item in ingredientArr" :key="item.id">
+            <div class="btnCtn"
+              v-for="item in ingredientArr"
+              :key="item.id">
               <span>{{item.name}}</span>
-              <i class="iconCancle" @click="deleteIngredient(item.id)">x</i>
+              <i class="iconCancle"
+                @click="deleteIngredient(item.id)">x</i>
             </div>
           </div>
         </div>
       </div>
-      <div class="lineCtn" :style="{'max-height':flagObj.otherIngredient?'300px':'64px'}">
+      <div class="lineCtn"
+        :style="{'max-height':flagObj.otherIngredient?'300px':'64px'}">
         <div class="inputCtn">
           <span class="label">添加辅料:</span>
-          <el-input class="elInput" v-model="otherIngredient" placeholder="请输入辅料"></el-input>
-          <div class="okBtn" @click="saveOtherIngredient">添加</div>
-          <div class="showAll" @click="flagObj.otherIngredient=!flagObj.otherIngredient">{{!flagObj.otherIngredient?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flagObj.otherIngredient?'showIcon':'hideIcon'"></i></div>
+          <el-input class="elInput"
+            v-model="otherIngredient"
+            placeholder="请输入辅料"></el-input>
+          <div class="okBtn"
+            @click="saveOtherIngredient">添加</div>
+          <div class="showAll"
+            @click="flagObj.otherIngredient=!flagObj.otherIngredient">{{!flagObj.otherIngredient?'展开':'收起'}}<i class="el-icon-d-arrow-right"
+              :class="!flagObj.otherIngredient?'showIcon':'hideIcon'"></i></div>
         </div>
         <div class="allInfo">
           <div class="bgWhite"></div>
           <div class="list">
-            <div class="btnCtn" v-for="item in otherIngredientArr" :key="item.id">
+            <div class="btnCtn"
+              v-for="item in otherIngredientArr"
+              :key="item.id">
               <span>{{item.name}}</span>
-              <i class="iconCancle" @click="deleteOtherIngredient(item.id)">x</i>
+              <i class="iconCancle"
+                @click="deleteOtherIngredient(item.id)">x</i>
             </div>
           </div>
         </div>
       </div>
-      <div class="lineCtn" :style="{'max-height':flagObj.colorFlag?'300px':'64px'}">
+      <div class="lineCtn"
+        :style="{'max-height':flagObj.colorFlag?'300px':'64px'}">
         <div class="inputCtn">
           <span class="label">添加配色:</span>
-          <el-input class="elInput" v-model="colorName" placeholder="请输入产品配色方案名称"></el-input>
-          <el-color-picker style="margin-left:15px;" v-model="colorValue"></el-color-picker>
-          <div class="okBtn" @click="saveColor">添加</div>
-          <div class="showAll" @click="flagObj.colorFlag=!flagObj.colorFlag">{{!flagObj.colorFlag?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flagObj.colorFlag?'showIcon':'hideIcon'"></i></div>
+          <el-input class="elInput"
+            v-model="colorName"
+            placeholder="请输入产品配色方案名称"></el-input>
+          <el-color-picker style="margin-left:15px;"
+            v-model="colorValue"></el-color-picker>
+          <div class="okBtn"
+            @click="saveColor">添加</div>
+          <div class="showAll"
+            @click="flagObj.colorFlag=!flagObj.colorFlag">{{!flagObj.colorFlag?'展开':'收起'}}<i class="el-icon-d-arrow-right"
+              :class="!flagObj.colorFlag?'showIcon':'hideIcon'"></i></div>
         </div>
         <div class="allInfo">
           <div class="bgWhite"></div>
-           <div class="list">
-            <div class="btnCtn" v-for="item in colorArr" :key="item.id">
-              <div class="colorBlock" :style="{'background':item.color_code}"></div>
+          <div class="list">
+            <div class="btnCtn"
+              v-for="item in colorArr"
+              :key="item.id">
+              <div class="colorBlock"
+                :style="{'background':item.color_code}"></div>
               <span>{{item.name}}</span>
-              <i class="iconCancle" @click="deleteColor(item.id)">x</i>
+              <i class="iconCancle"
+                @click="deleteColor(item.id)">x</i>
             </div>
           </div>
         </div>
       </div>
-      <div class="lineCtn" :style="{'max-height':flagObj.sizeTFlag?'300px':'64px'}">
+      <div class="lineCtn"
+        :style="{'max-height':flagObj.sizeTFlag?'300px':'64px'}">
         <div class="inputCtn">
           <span class="label">添加规格:</span>
-          <el-select v-model="selectTypes2" placeholder="请选择大类" class="elInput">
-            <el-option
-              v-for="item in treeData"
+          <el-select v-model="selectTypes2"
+            placeholder="请选择大类"
+            class="elInput">
+            <el-option v-for="item in treeData"
               :key="item.id"
               :label="item.label"
               :value="item.id">
             </el-option>
           </el-select>
-          <el-input class="elInput" placeholder="请逐个输入产品规格" v-model="sizeTname" @keyup.enter.native="saveSizeTname"></el-input>
+          <el-input class="elInput"
+            placeholder="请逐个输入产品规格"
+            v-model="sizeTname"
+            @keyup.enter.native="saveSizeTname"></el-input>
           <div class="floatDiv">
             <span class="title">{{selectTComputed}}</span>
             <span class="content">{{sizeString}}</span>
           </div>
-          <div class="okBtn" @click="saveSizeTname">添加</div>
-          <div class="showAll" @click="flagObj.sizeTFlag=!flagObj.sizeTFlag">{{!flagObj.sizeTFlag?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flagObj.sizeTFlag?'showIcon':'hideIcon'"></i></div>
+          <div class="okBtn"
+            @click="saveSizeTname">添加</div>
+          <div class="showAll"
+            @click="flagObj.sizeTFlag=!flagObj.sizeTFlag">{{!flagObj.sizeTFlag?'展开':'收起'}}<i class="el-icon-d-arrow-right"
+              :class="!flagObj.sizeTFlag?'showIcon':'hideIcon'"></i></div>
         </div>
         <div class="allInfo">
           <div class="bgWhite"></div>
-           <div class="list">
-            <div class="line" v-for="item in sizeTarr" :key="item.id">
+          <div class="list">
+            <div class="line"
+              v-for="item in sizeTarr"
+              :key="item.id">
               <span class="lineTitle">{{item.name}}:</span>
-              <div class="btnCtn" v-for="itemchild in item.child_size" :key="itemchild.name">
+              <div class="btnCtn"
+                v-for="itemchild in item.child_size"
+                :key="itemchild.name">
                 <span>{{itemchild.name}}</span>
-                <i class="iconCancle" @click="deleteSizeT(itemchild.id)">x</i>
+                <i class="iconCancle"
+                  @click="deleteSizeT(itemchild.id)">x</i>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="lineCtn" :style="{'max-height':flagObj.sizeFlag?'300px':'64px'}">
+      <div class="lineCtn"
+        :style="{'max-height':flagObj.sizeFlag?'300px':'64px'}">
         <div class="inputCtn">
           <span class="label">添加尺码:</span>
-          <el-select v-model="selectTypes" placeholder="请选择大类" class="elInput">
-            <el-option
-              v-for="item in treeData"
+          <el-select v-model="selectTypes"
+            placeholder="请选择大类"
+            class="elInput">
+            <el-option v-for="item in treeData"
               :key="item.id"
               :label="item.label"
               :value="item.id">
             </el-option>
           </el-select>
-          <el-input class="elInput" placeholder="请逐个输入尺码包含的种类" v-model="sizeName" @keyup.enter.native="saveSizeName"></el-input>
+          <el-input class="elInput"
+            placeholder="请逐个输入尺码包含的种类"
+            v-model="sizeName"
+            @keyup.enter.native="saveSizeName"></el-input>
           <div class="floatDiv">
             <span class="title">{{selectComputed}}</span>
             <span class="content">{{sizeTString}}</span>
           </div>
-          <div class="okBtn" @click="saveSizeName">添加</div>
-          <div class="showAll" @click="flagObj.sizeFlag=!flagObj.sizeFlag">{{!flagObj.sizeFlag?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flagObj.sizeFlag?'showIcon':'hideIcon'"></i></div>
+          <div class="okBtn"
+            @click="saveSizeName">添加</div>
+          <div class="showAll"
+            @click="flagObj.sizeFlag=!flagObj.sizeFlag">{{!flagObj.sizeFlag?'展开':'收起'}}<i class="el-icon-d-arrow-right"
+              :class="!flagObj.sizeFlag?'showIcon':'hideIcon'"></i></div>
         </div>
         <div class="allInfo">
           <div class="bgWhite"></div>
-           <div class="list">
-            <div class="line" v-for="item in sizeArr" :key="item.id">
+          <div class="list">
+            <div class="line"
+              v-for="item in sizeArr"
+              :key="item.id">
               <span class="lineTitle">{{item.name}}:</span>
-              <div class="btnCtn" v-for="itemchild in item.child_footage" :key="itemchild.name">
+              <div class="btnCtn"
+                v-for="itemchild in item.child_footage"
+                :key="itemchild.name">
                 <span>{{itemchild.name}}</span>
-                <i class="iconCancle" @click="deleteSize(itemchild.id)">x</i>
+                <i class="iconCancle"
+                  @click="deleteSize(itemchild.id)">x</i>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="lineCtn" :style="{'max-height':flagObj.unitFlag?'300px':'64px'}">
+      <div class="lineCtn"
+        :style="{'max-height':flagObj.unitFlag?'300px':'64px'}">
         <div class="inputCtn">
           <span class="label">添加单位:</span>
-          <el-select v-model="selectTypes3" placeholder="请选择大类" class="elInput">
-            <el-option
-              v-for="item in treeData"
+          <el-select v-model="selectTypes3"
+            placeholder="请选择大类"
+            class="elInput">
+            <el-option v-for="item in treeData"
               :key="item.id"
               :label="item.label"
               :value="item.id">
             </el-option>
           </el-select>
-          <el-input class="elInput" placeholder="请输入大类对应的单位" v-model="unit" @keyup.enter.native="saveUnit"></el-input>
-          <div class="okBtn" @click="saveUnit">添加</div>
-          <div class="showAll" @click="flagObj.unitFlag=!flagObj.unitFlag">{{!flagObj.unitFlag?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flagObj.unitFlag?'showIcon':'hideIcon'"></i></div>
+          <el-input class="elInput"
+            placeholder="请输入大类对应的单位"
+            v-model="unit"
+            @keyup.enter.native="saveUnit"></el-input>
+          <div class="okBtn"
+            @click="saveUnit">添加</div>
+          <div class="showAll"
+            @click="flagObj.unitFlag=!flagObj.unitFlag">{{!flagObj.unitFlag?'展开':'收起'}}<i class="el-icon-d-arrow-right"
+              :class="!flagObj.unitFlag?'showIcon':'hideIcon'"></i></div>
         </div>
         <div class="allInfo">
           <div class="bgWhite"></div>
-           <div class="list">
-             <div class="btnCtn" v-for="item in unitArr" :key="item.id">
+          <div class="list">
+            <div class="btnCtn"
+              v-for="item in unitArr"
+              :key="item.id">
               <span>{{item.product_category}}({{item.name}})</span>
-              <i class="iconCancle" @click="deleteUnit(item.id)">x</i>
+              <i class="iconCancle"
+                @click="deleteUnit(item.id)">x</i>
             </div>
           </div>
         </div>
       </div>
       <div class="treeCtn">
         <span class="label">添加产品:</span>
-        <el-input class="elInput" v-model="newType" placeholder="请输入一级大类"></el-input>
-        <div class="okBtn" @click="addType">添加</div>
+        <el-input class="elInput"
+          v-model="newType"
+          placeholder="请输入一级大类"></el-input>
+        <div class="okBtn"
+          @click="addType">添加</div>
         <div class="treeMain">
-          <el-tree
-            ref="tree"
+          <el-tree ref="tree"
             :key="tree_key"
             :data="treeData"
             node-key="id"
@@ -427,7 +505,7 @@ export default {
       return productTppeList({
         company_id: window.sessionStorage.getItem('company_id')
       }).then((res) => {
-      // 用最简单粗暴的方式解析了三级结构
+        // 用最简单粗暴的方式解析了三级结构
         if (res.data.status) {
           this.treeData = res.data.data.map((item) => {
             return {
@@ -546,7 +624,7 @@ export default {
     // 是否展示操作框
     showOrEdit (data, node) {
       if (data.isEdit) {
-        return <input class="tree_edit_input" type="text" value={data.label} on-blur={ev => this.edit_sure(ev, data, node)}/>
+        return <input class="tree_edit_input" type="text" value={data.label} on-blur={ev => this.edit_sure(ev, data, node)} />
       } else {
         return <span className="node_labe">{data.label}</span>
       }
@@ -586,23 +664,23 @@ export default {
         return (
           <span class="tree_node_Ctn">
             <span>
-              { this.showOrEdit(data, node) }
+              {this.showOrEdit(data, node)}
             </span>
             <div class="tree_node_op">
-              <i class="el-icon-plus" on-click={ (ev) => this.nodeAppend(ev, data) }></i>
-              <i class="el-icon-edit" on-click={ (ev) => this.nodeEdit(ev, store, data) }></i>
-              <i class="el-icon-delete" on-click={ () => this.nodeDelete(node, data) }></i>
+              <i class="el-icon-plus" on-click={(ev) => this.nodeAppend(ev, data)}></i>
+              <i class="el-icon-edit" on-click={(ev) => this.nodeEdit(ev, store, data)}></i>
+              <i class="el-icon-delete" on-click={() => this.nodeDelete(node, data)}></i>
             </div>
           </span>)
       } else {
         return (
           <span class="tree_node_Ctn">
             <span>
-              { this.showOrEdit(data, node) }
+              {this.showOrEdit(data, node)}
             </span>
             <div class="tree_node_op">
-              <i class="el-icon-edit" on-click={ (ev) => this.nodeEdit(ev, store, data) }></i>
-              <i class="el-icon-delete" on-click={ () => this.nodeDelete(node, data) }></i>
+              <i class="el-icon-edit" on-click={(ev) => this.nodeEdit(ev, store, data)}></i>
+              <i class="el-icon-delete" on-click={() => this.nodeDelete(node, data)}></i>
             </div>
           </span>)
       }
@@ -955,34 +1033,33 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/productSetting.less';
+@import "~@/assets/css/productSetting.less";
 </style>
 <style lang="less">
-.tree_node_Ctn{
-  display:flex;
-  width:300px;
+.tree_node_Ctn {
+  display: flex;
+  width: 300px;
   justify-content: space-between;
   align-items: center;
-  &:hover{
-    .tree_node_op{
+  &:hover {
+    .tree_node_op {
       display: block;
     }
   }
-  .tree_edit_input{
-    color:#666;
-    font-size:12px;
+  .tree_edit_input {
+    color: #666;
+    font-size: 12px;
   }
-  .tree_node_op{
-    display:none;
-    margin-left:30px;
-    color:#666;
-  i{
-    margin:0 5px;
-    &:hover{
-      color:#1A95FF;
+  .tree_node_op {
+    display: none;
+    margin-left: 30px;
+    color: #666;
+    i {
+      margin: 0 5px;
+      &:hover {
+        color: #1a95ff;
+      }
     }
   }
 }
-}
-
 </style>

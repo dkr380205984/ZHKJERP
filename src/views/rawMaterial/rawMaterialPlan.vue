@@ -1,6 +1,6 @@
 <template>
   <div id="rawMaterialPlan"
-       v-loading="loading">
+    v-loading="loading">
     <div class="head">
       <h2>生产计划详情</h2>
     </div>
@@ -43,18 +43,18 @@
           <div class="content">
             <div class="btn">
               <span :class="{'active': sizeName.material === item.size }"
-                    v-for="(item,index) in product.main_material"
-                    :key="index"
-                    @click="changeSize(item.size,'material')">{{item.size}}</span>
+                v-for="(item,index) in product.main_material"
+                :key="index"
+                @click="changeSize(item.size,'material')">{{item.size}}</span>
             </div>
             <template v-for="(item,key) in product.main_material">
               <template v-if="item.size === sizeName.material">
                 <yl-table :date='item'
-                          :key="key" />
+                  :key="key" />
               </template>
             </template>
             <span @click="openWin('/productDesignTable/' + $route.params.orderId + '/' + $route.params.productId + '?type=0')"
-                  class="print">去打印</span>
+              class="print">去打印</span>
           </div>
         </div>
       </div>
@@ -64,26 +64,26 @@
           <div class="content">
             <div class="btn">
               <span :class="{'active': sizeName.ingredients === item.size }"
-                    v-for="(item,index) in product.main_ingredients"
-                    :key="index"
-                    @click="changeSize(item.size,'ingredients')">{{item.size}}</span>
+                v-for="(item,index) in product.main_ingredients"
+                :key="index"
+                @click="changeSize(item.size,'ingredients')">{{item.size}}</span>
             </div>
             <template v-for="(item,key) in product.main_ingredients">
               <template v-if="item.size === sizeName.ingredients">
                 <yl-table :date='item'
-                          :key="key" />
+                  :key="key" />
               </template>
             </template>
             <span @click="openWin('/productDesignTable/' + $route.params.orderId + '/' + $route.params.productId + '?type=1')"
-                  class="print">去打印</span>
+              class="print">去打印</span>
           </div>
         </div>
       </div>
       <div class="btnCtn">
         <div class="cancleBtn"
-             @click="$router.go(-1)">返回</div>
+          @click="$router.go(-1)">返回</div>
         <div class="okBtn"
-             @click="$router.push('/index/productDesignUpdate/'+$route.params.orderId)">修改</div>
+          @click="$router.push('/index/productDesignUpdate/'+$route.params.orderId)">修改</div>
       </div>
     </div>
   </div>

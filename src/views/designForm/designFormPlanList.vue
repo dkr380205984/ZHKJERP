@@ -1,13 +1,18 @@
 <template>
-  <div id="productList" v-loading="loading">
+  <div id="productList"
+    v-loading="loading">
     <div class="head">
       <h2>设计单列表</h2>
-      <el-input placeholder="输入设计单精确搜索" suffix-icon="el-icon-search" v-model="searchVal"></el-input>
+      <el-input placeholder="输入设计单精确搜索"
+        suffix-icon="el-icon-search"
+        v-model="searchVal"></el-input>
     </div>
     <div class="body">
-      <div class="filterCtn" style="justify-content:flex-end;display: flex;">
+      <div class="filterCtn"
+        style="justify-content:flex-end;display: flex;">
         <div class="rightFilter">
-          <el-date-picker v-model="date" type="daterange"
+          <el-date-picker v-model="date"
+            type="daterange"
             align="right"
             unlink-panels
             value-format="yyyy-MM-dd"
@@ -20,16 +25,26 @@
         </div>
       </div>
       <div class="canvasDraw">
-        <div class="canvasCtn" v-for="item in list" :key="item.id" @click="$router.push('/index/designFormPlanDetail/'+item.id)" :ref="'ctn'+item.id">
-          <i class="el-icon-close" @click.stop="deleteCraft(item.id)"></i>
-          <canvas :ref="'ref'+item.id" height="170" width="170" style="padding:10px 10px 5px 10px"></canvas>
+        <div class="canvasCtn"
+          v-for="item in list"
+          :key="item.id"
+          @click="$router.push('/index/designFormPlanDetail/'+item.id)"
+          :ref="'ctn'+item.id">
+          <i class="el-icon-close"
+            @click.stop="deleteCraft(item.id)"></i>
+          <canvas :ref="'ref'+item.id"
+            height="170"
+            width="170"
+            style="padding:10px 10px 5px 10px"></canvas>
           <div class="canvasContent">{{item.title}}</div>
           <div class="canvasContent2">{{item.user_name}} / {{item.create_time}}</div>
         </div>
       </div>
     </div>
     <div class="suspend">
-      <span @click="getCraftList" :class="{'blue':!noMore,'red':noMore}" style="border-radius:4px">{{noMore?'加载完毕':'加载更多'}}</span>
+      <span @click="getCraftList"
+        :class="{'blue':!noMore,'red':noMore}"
+        style="border-radius:4px">{{noMore?'加载完毕':'加载更多'}}</span>
     </div>
   </div>
 </template>
@@ -520,36 +535,36 @@ export default {
 }
 </style>
 <style lang="less" scoped>
-.canvasDraw{
+.canvasDraw {
   display: flex;
   flex-wrap: wrap;
-  .canvasCtn{
+  .canvasCtn {
     margin: 10px;
     width: 190px;
     height: 240px;
     position: relative;
-    .el-icon-close{
+    .el-icon-close {
       position: absolute;
       right: -2px;
       top: -2px;
       border-radius: 50%;
       padding: 3px;
       cursor: pointer;
-      background: #F56C6C;
+      background: #f56c6c;
       color: #fff;
       display: none;
     }
-    &:hover{
-      .el-icon-close{
+    &:hover {
+      .el-icon-close {
         display: block;
       }
-      background: rgb(229,243,255);
+      background: rgb(229, 243, 255);
     }
-    .canvasContent{
+    .canvasContent {
       text-align: center;
       color: #666;
     }
-    .canvasContent2{
+    .canvasContent2 {
       text-align: center;
       font-size: 12px;
       color: #ccc;

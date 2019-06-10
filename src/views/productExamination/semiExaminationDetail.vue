@@ -1,6 +1,6 @@
 <template>
   <div id="semiExaminationDetail"
-       v-loading="loading">
+    v-loading="loading">
     <div class="head">
       <h2>半成品检验详情</h2>
     </div>
@@ -15,7 +15,7 @@
           <div class="inputCtn">
             <span class="label">订单号:</span>
             <span class="content important"
-                  @click="$router.push('/index/orderDetail/' + $route.params.id)">{{order_code}}</span>
+              @click="$router.push('/index/orderDetail/' + $route.params.id)">{{order_code}}</span>
           </div>
           <div class="inputCtn">
             <span class="label">外贸公司:</span>
@@ -59,19 +59,19 @@
                     <span class="flex17">操作</span>
                   </li>
                   <li class="content"
-                      v-for="(item,key) in productList"
-                      :key="key">
+                    v-for="(item,key) in productList"
+                    :key="key">
                     <span class="tableRow blue">{{item.product_code}}</span>
                     <span class="tableRow flex17">{{item.product_class}}</span>
                     <span class="tableRow col flex45">
                       <span v-for="(val,ind) in item.size_info"
-                            :key="ind"
-                            class="tableColumn">
+                        :key="ind"
+                        class="tableColumn">
                         <span class="tableRow">{{val.size}}{{'/'}}{{val.color}}</span>
                         <span class="tableRow col flex4">
                           <span v-for="(value,index) in val.production_info"
-                                :key='index'
-                                class="tableColumn">
+                            :key='index'
+                            class="tableColumn">
                             <span class="tableRow flex13">{{value.production_client}}</span>
                             <span class="tableRow">{{value.plan_number}}{{'条'}}</span>
                             <span class="tableRow">{{value.goStock_number}}{{'条'}}</span>
@@ -82,7 +82,7 @@
                     </span>
                     <span class="tableRow flex17">
                       <span class="blue"
-                            @click="go(item.product_code)">显示详情</span>
+                        @click="go(item.product_code)">显示详情</span>
                       <span class="blue">半成品检验</span>
                     </span>
                   </li>
@@ -91,19 +91,19 @@
             </div>
           </template>
           <div v-else
-               class="inputCtn">暂无信息</div>
+            class="inputCtn">暂无信息</div>
         </div>
       </div>
       <div class="stepCtn"
-           v-for="(item,key) in productList"
-           :key="key"
-           :id="item.product_code">
+        v-for="(item,key) in productList"
+        :key="key"
+        :id="item.product_code">
         <div class="stepTitle"
-             id="product1">产品{{key + 1 }}</div>
+          id="product1">产品{{key + 1 }}</div>
         <div class="borderCtn">
           <div class="cicle"></div>
           <div class="border"
-               v-if="key !== productList.length -1"></div>
+            v-if="key !== productList.length -1"></div>
         </div>
         <div class="lineCtn">
           <div class="inputCtn noPadding">
@@ -125,7 +125,7 @@
                 <!-- <li v-if="list.orderList.length === 0">暂无信息</li> -->
                 <li class="content">
                   <span class="tableRow"
-                        style="line-height:1.5em;">
+                    style="line-height:1.5em;">
                     <div>
                       <span class="blue">{{item.product_code}}</span>
                       <span>{{item.product_class}}</span>
@@ -133,13 +133,13 @@
                   </span>
                   <span class="tableRow col flex55">
                     <span v-for="(value,index) in item.size_info"
-                          :key="index"
-                          class="tableColumn">
+                      :key="index"
+                      class="tableColumn">
                       <span class="tableRow">{{value.size}}{{'/'}}{{value.color}}</span>
                       <span class="tableRow flex45 col">
                         <span v-for="(val,ind) in value.production_info"
-                              :key="ind"
-                              class="tableColumn">
+                          :key="ind"
+                          class="tableColumn">
                           <span class="tableRow flex13">{{val.production_client}}</span>
                           <span class="tableRow flex13">{{val.plan_number}}{{'条'}}</span>
                           <span class="tableRow">{{val.test_number}}{{'条'}}</span>
@@ -151,10 +151,10 @@
                   </span>
                 </li>
                 <div class="logList"
-                     @click="item.flag = !item.flag">{{ item.flag ? '收起' : '展开'}}详情</div>
+                  @click="item.flag = !item.flag">{{ item.flag ? '收起' : '展开'}}详情</div>
               </ul>
               <ul class="log"
-                  v-if="item.flag">
+                v-if="item.flag">
                 <div>
                   <li>
                     <span>检验日期</span>
@@ -171,7 +171,7 @@
                 <div>
                   <li v-if="item.log.length === 0">暂无信息</li>
                   <li v-for="(value,index) in item.Log"
-                      :key="index">
+                    :key="index">
                     <span class="flexBig">{{item.order_time}}</span>
                     <span class="flexBig">{{item.client_name}}</span>
                     <span>{{item.material}}</span>
@@ -183,11 +183,11 @@
                       <i>
                         {{item.remark ? item.remark : '暂无备注'}}
                         <el-popover placement="top-end"
-                                    title="备注信息"
-                                    width="200"
-                                    trigger="click"
-                                    v-if="charCodeLength(item.remark) > 15"
-                                    :content="item.remark">
+                          title="备注信息"
+                          width="200"
+                          trigger="click"
+                          v-if="charCodeLength(item.remark) > 15"
+                          :content="item.remark">
                           <span slot="reference">展开</span>
                         </el-popover>
                       </i>
@@ -198,13 +198,13 @@
               </ul>
               <div class="handle">
                 <div :class="{'disabled':!flag}"
-                     @click="$router.push('/index/semiExamination/' + item.product_code)">
+                  @click="$router.push('/index/semiExamination/' + item.product_code)">
                   <img class="icon"
-                       v-if="flag"
-                       src="@/assets/image/icon/orderIcon.png">
+                    v-if="flag"
+                    src="@/assets/image/icon/orderIcon.png">
                   <img class="icon"
-                       v-else
-                       src="@/assets/image/icon/order_disabled.png">
+                    v-else
+                    src="@/assets/image/icon/order_disabled.png">
                   <span>去检验</span>
                 </div>
               </div>
@@ -214,9 +214,9 @@
       </div>
       <div class="btnCtn">
         <div class="cancleBtn"
-             @click="$router.go(-1)">返回</div>
+          @click="$router.go(-1)">返回</div>
         <div class="okBtn"
-             @click="$router.go(-1)">确认</div>
+          @click="$router.go(-1)">确认</div>
       </div>
     </div>
   </div>

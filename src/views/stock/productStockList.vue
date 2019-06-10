@@ -2,47 +2,57 @@
   <div id="productStockList">
     <div class="head">
       <h2>产品列表</h2>
-      <el-input placeholder="输入产品编号精确搜索" suffix-icon="el-icon-search" v-model="searchVal"></el-input>
+      <el-input placeholder="输入产品编号精确搜索"
+        suffix-icon="el-icon-search"
+        v-model="searchVal"></el-input>
     </div>
     <div class="body">
       <div class="filterCtn">
         <div class="filterLine">
           <span class="label">筛选列表:</span>
-          <el-tag closable v-show="categoryValCmp" @close="clear('categoryVal')">{{categoryValCmp}}</el-tag>
-          <el-tag closable v-show="typesValCmp" @close="clear('typesVal')">{{typesValCmp}}</el-tag>
-          <el-tag closable v-show="styleValCmp" @close="clear('styleVal')">{{styleValCmp}}</el-tag>
-          <el-tag closable v-show="flowerValCmp" @close="clear('flowerVal')">{{flowerValCmp}}</el-tag>
+          <el-tag closable
+            v-show="categoryValCmp"
+            @close="clear('categoryVal')">{{categoryValCmp}}</el-tag>
+          <el-tag closable
+            v-show="typesValCmp"
+            @close="clear('typesVal')">{{typesValCmp}}</el-tag>
+          <el-tag closable
+            v-show="styleValCmp"
+            @close="clear('styleVal')">{{styleValCmp}}</el-tag>
+          <el-tag closable
+            v-show="flowerValCmp"
+            @close="clear('flowerVal')">{{flowerValCmp}}</el-tag>
         </div>
         <div class="selectLine">
           <span class="label">筛选条件:</span>
           <div class="leftFilter">
-            <el-select v-model="categoryVal" placeholder="筛选品类">
-              <el-option
-                v-for="item in category"
+            <el-select v-model="categoryVal"
+              placeholder="筛选品类">
+              <el-option v-for="item in category"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id">
               </el-option>
             </el-select>
-            <el-select v-model="typesVal" placeholder="筛选类型">
-              <el-option
-                v-for="item in types"
+            <el-select v-model="typesVal"
+              placeholder="筛选类型">
+              <el-option v-for="item in types"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id">
               </el-option>
             </el-select>
-            <el-select v-model="styleVal" placeholder="筛选款型">
-              <el-option
-                v-for="item in style"
+            <el-select v-model="styleVal"
+              placeholder="筛选款型">
+              <el-option v-for="item in style"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id">
               </el-option>
             </el-select>
-            <el-select v-model="flowerVal" placeholder="筛选花型">
-              <el-option
-                v-for="item in flower"
+            <el-select v-model="flowerVal"
+              placeholder="筛选花型">
+              <el-option v-for="item in flower"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id">
@@ -50,8 +60,7 @@
             </el-select>
           </div>
           <div class="rightFilter">
-            <el-date-picker
-              v-model="date"
+            <el-date-picker v-model="date"
               type="daterange"
               align="right"
               unlink-panels
@@ -77,8 +86,11 @@
           <div class="tableColumn">更新时间</div>
           <div class="tableColumn">操作</div>
         </div>
-        <div class="tableRow bodyTableRow" v-for="(item) in list" :key="item.id">
-          <div class="tableColumn" style="color:#1A95FF">{{item.product_info.product_code}}</div>
+        <div class="tableRow bodyTableRow"
+          v-for="(item) in list"
+          :key="item.id">
+          <div class="tableColumn"
+            style="color:#1A95FF">{{item.product_info.product_code}}</div>
           <div class="tableColumn flex9">{{item.product_info|filterType}}</div>
           <div class="tableColumn">{{item.product_info.flower_id}}</div>
           <div class="tableColumn">{{item.size }}</div>
@@ -87,21 +99,25 @@
           <div class="tableColumn">
             <div class="tableColumn">
               <div class="imgCtn">
-                <img class="img" :src="item.product_info.img.length>0?item.product_info.img[0].thumb:require('@/assets/image/index/noPic.jpg')" :onerror="defaultImg" />
-                <div class="toolTips" v-if="item.product_info.img.length>0"><span @click="showImg(item.product_info.img)">点击查看大图</span></div>
-                <div class="toolTips" v-if="item.product_info.img.length===0"><span>没有预览图</span></div>
+                <img class="img"
+                  :src="item.product_info.img.length>0?item.product_info.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
+                  :onerror="defaultImg" />
+                <div class="toolTips"
+                  v-if="item.product_info.img.length>0"><span @click="showImg(item.product_info.img)">点击查看大图</span></div>
+                <div class="toolTips"
+                  v-if="item.product_info.img.length===0"><span>没有预览图</span></div>
               </div>
             </div>
           </div>
           <div class="tableColumn">{{item.update_time}}</div>
           <div class="tableColumn">
-            <span class="btns success" @click="$router.push('/index/productStockDetail/'+item.product_info.id+'/'+item.size+'/'+item.color)">详情</span>
+            <span class="btns success"
+              @click="$router.push('/index/productStockDetail/'+item.product_info.id+'/'+item.size+'/'+item.color)">详情</span>
           </div>
         </div>
       </div>
       <div class="pageCtn">
-        <el-pagination
-          background
+        <el-pagination background
           :page-size="5"
           layout="prev, pager, next"
           :total="total"
@@ -109,12 +125,18 @@
           @current-change="getProductList">
         </el-pagination>
       </div>
-      <div class="shade" v-show="showShade">
+      <div class="shade"
+        v-show="showShade">
         <div class="main">
-          <div class="closeBtn" @click="showShade=false">点此退出预览</div>
-          <el-carousel indicator-position="outside" height="550px" arrow="always">
-            <el-carousel-item v-for="item in imgList" :key="item.image_url">
-              <img :src="item.image_url" class="imgList" />
+          <div class="closeBtn"
+            @click="showShade=false">点此退出预览</div>
+          <el-carousel indicator-position="outside"
+            height="550px"
+            arrow="always">
+            <el-carousel-item v-for="item in imgList"
+              :key="item.image_url">
+              <img :src="item.image_url"
+                class="imgList" />
             </el-carousel-item>
           </el-carousel>
         </div>
@@ -333,15 +355,15 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/productStockList.less';
+@import "~@/assets/css/productStockList.less";
 </style>
 <style lang="less">
-#productStockList{
-  .el-carousel__arrow{
-    color:#fff;
-    background: #1A95FF;
-    &:hover{
-      background:#48AAFF;
+#productStockList {
+  .el-carousel__arrow {
+    color: #fff;
+    background: #1a95ff;
+    &:hover {
+      background: #48aaff;
     }
   }
 }

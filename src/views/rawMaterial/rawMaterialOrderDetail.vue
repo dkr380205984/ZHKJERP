@@ -1,6 +1,6 @@
 <template>
   <div id="rawMaterialOrderDetail"
-       v-loading="loading">
+    v-loading="loading">
     <div class="head">
       <h2>{{type === '0' ? '原' : '辅'}}料详情</h2>
     </div>
@@ -15,7 +15,7 @@
           <div class="inputCtn">
             <span class="label">订单号:</span>
             <span class="content important"
-                  @click="$router.push('/index/orderDetail/' + $route.params.id)">{{order_code}}</span>
+              @click="$router.push('/index/orderDetail/' + $route.params.id)">{{order_code}}</span>
           </div>
           <div class="inputCtn">
             <span class="label">外贸公司:</span>
@@ -38,12 +38,12 @@
             <span class="content">
               <ul class="productInfo">
                 <li v-for="(item,key) in productList"
-                    :key="key">
+                  :key="key">
                   <span @click="$router.push('/index/productDetail/' + item.product_code)">{{item.product_code}}({{item.type}})</span>
                   <span>{{item.product_size+'/'+item.product_color}}</span>
                   <span>{{item.number+'条'}}</span>
                   <span v-if="!item.flag"
-                        @click="$router.push('/index/productPlanCreate/' + item.id)">缺少配料单信息(添加)</span>
+                    @click="$router.push('/index/productPlanCreate/' + item.id)">缺少配料单信息(添加)</span>
                 </li>
               </ul>
             </span>
@@ -72,13 +72,13 @@
                     <span>已加工</span>
                   </li>
                   <li class="content"
-                      v-for="(item,key) in materialList"
-                      :key="key">
+                    v-for="(item,key) in materialList"
+                    :key="key">
                     <span class="tableRow">{{item.material}}</span>
                     <span class="flex2 col tableRow">
                       <span v-for="(val,ind) in item.need"
-                            :key="ind"
-                            class="tableColumn">
+                        :key="ind"
+                        class="tableColumn">
                         <span class="tableRow">{{val.name}}</span>
                         <span class="tableRow flex08">{{val.value|fixedFilter}}{{item.unit}}</span>
                       </span>
@@ -92,7 +92,7 @@
             </div>
           </template>
           <div v-else
-               class="inputCtn">暂无信息</div>
+            class="inputCtn">暂无信息</div>
         </div>
       </div>
       <div class="stepCtn">
@@ -124,18 +124,18 @@
                 </li>
                 <li v-if="list.orderList.length === 0">暂无信息</li>
                 <li v-for="(value,index) in list.orderList"
-                    :key="index"
-                    class="content">
+                  :key="index"
+                  class="content">
                   <span class="flex17 tableRow">{{value.company === null ? '仓库' : value.company}}</span>
                   <span class="flex43 tableRow col">
                     <span v-for="(iten,kay) in value.materials"
-                          :key="kay"
-                          class="tableColumn">
+                      :key="kay"
+                      class="tableColumn">
                       <span class="flex17 tableRow">{{iten.material}}</span>
                       <span class="flex26 col">
                         <span v-for="(content,number) in iten.colors"
-                              :key="number"
-                              class="tableColumn">
+                          :key="number"
+                          class="tableColumn">
                           <span class="tableRow">{{content.color}}</span>
                           <span class="tableRow">{{content.price|fixedFilter}}{{'元/' + content.unit}}</span>
                           <span class="tableRow">{{content.value|fixedFilter}}{{content.unit}}</span>
@@ -146,13 +146,13 @@
                   <span class="tableRow">{{value.total_price|fixedFilter}}{{'元'}}</span>
                   <span class="tableRow">{{value.create_time}}</span>
                   <span class="blue tableRow"
-                        @click="open('table',$route.params.id,'',value.company)">打印</span>
+                    @click="open('table',$route.params.id,'',value.company)">打印</span>
                 </li>
                 <div class="logList"
-                     @click="orderLogFlag = !orderLogFlag">{{ orderLogFlag ? '收起' : '展开'}}详情</div>
+                  @click="orderLogFlag = !orderLogFlag">{{ orderLogFlag ? '收起' : '展开'}}详情</div>
               </ul>
               <ul class="log"
-                  v-if="orderLogFlag">
+                v-if="orderLogFlag">
                 <div>
                   <li>
                     <span class="flexBig">下单日期</span>
@@ -169,7 +169,7 @@
                 <div>
                   <li v-if="orderLog.length === 0">暂无信息</li>
                   <li v-for="(item,key) in orderLog"
-                      :key="item.time + key">
+                    :key="item.time + key">
                     <span class="flexBig">{{item.order_time}}</span>
                     <span class="flexBig">{{item.client_name}}</span>
                     <span>{{item.material}}</span>
@@ -181,11 +181,11 @@
                       <i>
                         {{item.remark ? item.remark : '暂无备注'}}
                         <el-popover placement="top-end"
-                                    title="备注信息"
-                                    width="200"
-                                    trigger="click"
-                                    v-if="charCodeLength(item.remark) > 15"
-                                    :content="item.remark">
+                          title="备注信息"
+                          width="200"
+                          trigger="click"
+                          v-if="charCodeLength(item.remark) > 15"
+                          :content="item.remark">
                           <span slot="reference">展开</span>
                         </el-popover>
                       </i>
@@ -196,13 +196,13 @@
               </ul>
               <div class="handle">
                 <div :class="{'disabled':!flag}"
-                     @click="open('order',$route.params.id,flag)">
+                  @click="open('order',$route.params.id,flag)">
                   <img class="icon"
-                       v-if="flag"
-                       src="@/assets/image/icon/orderIcon.png">
+                    v-if="flag"
+                    src="@/assets/image/icon/orderIcon.png">
                   <img class="icon"
-                       v-else
-                       src="@/assets/image/icon/order_disabled.png">
+                    v-else
+                    src="@/assets/image/icon/order_disabled.png">
                   <span>去订购</span>
                 </div>
               </div>
@@ -236,23 +236,23 @@
                 </li>
                 <li v-if="list.processList.length === 0">暂无信息</li>
                 <li v-for="(value,index) in list.processList"
-                    :key="index"
-                    class="content">
+                  :key="index"
+                  class="content">
                   <span class="tableRow">{{value.process_type}}</span>
                   <span class="flex104 col tableRow">
                     <span v-for="(item,key) in value.companys"
-                          :key="key"
-                          class="tableColumn">
+                      :key="key"
+                      class="tableColumn">
                       <span class="flex17 tableRow">{{item.company}}</span>
                       <span class="flex37 tableRow col">
                         <span v-for="(iten,kay) in item.materials"
-                              :key="kay"
-                              class="tableColumn">
+                          :key="kay"
+                          class="tableColumn">
                           <span class="flex17 tableRow">{{iten.material}}</span>
                           <span class="tableRow col flex2">
                             <span v-for="(content,number) in iten.colors"
-                                  :key="number"
-                                  class="tableColumn">
+                              :key="number"
+                              class="tableColumn">
                               <span class="tableRow">{{content.color}}</span>
                               <span class="tableRow">{{content.value|fixedFilter}}{{content.unit}}</span>
                             </span>
@@ -261,15 +261,15 @@
                       </span>
                       <span class="tableRow">{{item.create_time}}</span>
                       <span class="blue tableRow"
-                            @click="open('table',$route.params.id,'',item.company,value.process_type)">打印</span>
+                        @click="open('table',$route.params.id,'',item.company,value.process_type)">打印</span>
                     </span>
                   </span>
                 </li>
                 <div class="logList"
-                     @click="processLogFlag = !processLogFlag">{{ processLogFlag ? '收起' : '展开'}}详情</div>
+                  @click="processLogFlag = !processLogFlag">{{ processLogFlag ? '收起' : '展开'}}详情</div>
               </ul>
               <ul class="log"
-                  v-if="processLogFlag">
+                v-if="processLogFlag">
                 <div>
                   <li>
                     <span class="flexBig">下单日期</span>
@@ -285,7 +285,7 @@
                 <div>
                   <li v-if="processLog.length === 0">暂无信息</li>
                   <li v-for="(item,key) in processLog"
-                      :key="item.time + key">
+                    :key="item.time + key">
                     <span class="flexBig">{{item.order_time}}</span>
                     <span class="flexBig">{{item.client_name}}</span>
                     <span>{{item.process_type}}</span>
@@ -296,11 +296,11 @@
                       <i>
                         {{item.remark ? item.remark : '暂无备注'}}
                         <el-popover placement="top-end"
-                                    title="备注信息"
-                                    width="200"
-                                    trigger="click"
-                                    v-if="charCodeLength(item.remark) > 15"
-                                    :content="item.remark">
+                          title="备注信息"
+                          width="200"
+                          trigger="click"
+                          v-if="charCodeLength(item.remark) > 15"
+                          :content="item.remark">
                           <span slot="reference">展开</span>
                         </el-popover>
                       </i>
@@ -311,13 +311,13 @@
               </ul>
               <div class="handle">
                 <div :class="{'disabled':!flag}"
-                     @click="open('process',$route.params.id,flag)">
+                  @click="open('process',$route.params.id,flag)">
                   <img class="icon"
-                       v-if="flag"
-                       src="@/assets/image/icon/orderIcon.png">
+                    v-if="flag"
+                    src="@/assets/image/icon/orderIcon.png">
                   <img class="icon"
-                       v-else
-                       src="@/assets/image/icon/order_disabled.png">
+                    v-else
+                    src="@/assets/image/icon/order_disabled.png">
                   <span>去加工</span>
                 </div>
               </div>
@@ -327,9 +327,9 @@
       </div>
       <div class="btnCtn">
         <div class="cancleBtn"
-             @click="$router.go(-1)">返回</div>
+          @click="$router.go(-1)">返回</div>
         <div class="okBtn"
-             @click="$router.go(-1)">确认</div>
+          @click="$router.go(-1)">确认</div>
       </div>
     </div>
   </div>

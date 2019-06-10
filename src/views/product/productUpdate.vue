@@ -1,5 +1,6 @@
 <template>
-  <div id="productCreate" v-loading="loading">
+  <div id="productCreate"
+    v-loading="loading">
     <div class="head">
       <h2>产品修改</h2>
     </div>
@@ -11,8 +12,7 @@
       <div class="inputCtn">
         <span class="label must">产品分类:</span>
         <div class="ascaderCtn">
-          <el-cascader
-            :options="treeData"
+          <el-cascader :options="treeData"
             expand-trigger="hover"
             v-model="types"
             @change="handleChange"
@@ -21,92 +21,136 @@
           </el-cascader>
         </div>
       </div>
-      <div class="inputCtn" style="margin-bottom:0">
+      <div class="inputCtn"
+        style="margin-bottom:0">
         <span class="label must">产品花型:</span>
-        <el-select clearable style="width:400px" class="elSelect" v-model="flower" placeholder="请选择花型" disabled>
-          <el-option
-            v-for="item in flowerArr"
+        <el-select clearable
+          style="width:400px"
+          class="elSelect"
+          v-model="flower"
+          placeholder="请选择花型"
+          disabled>
+          <el-option v-for="item in flowerArr"
             :key="item.id"
             :label="item.name"
             :value="item.id">
           </el-option>
         </el-select>
       </div>
-      <div class="inputCtn" style="margin-top:0;margin-bottom:0">
+      <div class="inputCtn"
+        style="margin-top:0;margin-bottom:0">
         <span class="label must">产品成分:</span>
-        <div class="cancleCtn" v-for="item in ingredientNum" :key="item">
+        <div class="cancleCtn"
+          v-for="item in ingredientNum"
+          :key="item">
           <div class="index">{{item}}</div>
-          <el-select :disabled="has_next" class="specialSel" v-model="ingredient[item-1]" placeholder="请选择成分">
-            <el-option
-              v-for="item in ingredientArr"
+          <el-select :disabled="has_next"
+            class="specialSel"
+            v-model="ingredient[item-1]"
+            placeholder="请选择成分">
+            <el-option v-for="item in ingredientArr"
               :key="item.id"
               :label="item.name"
               :value="item.id">
             </el-option>
           </el-select>
-          <el-input :disabled="has_next" style="width:160px;margin-left:15px;margin-bottom:24px" placeholder="请输入比例" v-model="ingredientScale[item-1]" class="input-with-select">
+          <el-input :disabled="has_next"
+            style="width:160px;margin-left:15px;margin-bottom:24px"
+            placeholder="请输入比例"
+            v-model="ingredientScale[item-1]"
+            class="input-with-select">
             <template slot="append">%</template>
           </el-input>
-          <div class="deleteBtn" @click="deleteIngredient(item)"><i class="el-icon-delete"></i></div>
+          <div class="deleteBtn"
+            @click="deleteIngredient(item)"><i class="el-icon-delete"></i></div>
         </div>
-        <div class="addBtn" @click="addingredientNum">
+        <div class="addBtn"
+          @click="addingredientNum">
           <span>添加成分</span>
           <span>+</span>
         </div>
-        <div class="tooltips" v-show="showError">
+        <div class="tooltips"
+          v-show="showError">
           <i class="el-icon-warning"></i>
           产品成分比例总和不等于100%，请检查比例
         </div>
       </div>
-      <div class="inputCtn" style="margin-bottom:0;margin-top:4px">
+      <div class="inputCtn"
+        style="margin-bottom:0;margin-top:4px">
         <span class="label must">产品尺寸:</span>
-        <div class="lineCtn" v-for="(itemf,indexf) in sizeNum" :key="indexf">
-          <el-select :disabled="has_next" clearable class="elInput" v-model="footage[indexf]" placeholder="请选择尺码" style="width:200px;margin-bottom: 24px;">
-            <el-option
-              v-for="item in child_footage"
+        <div class="lineCtn"
+          v-for="(itemf,indexf) in sizeNum"
+          :key="indexf">
+          <el-select :disabled="has_next"
+            clearable
+            class="elInput"
+            v-model="footage[indexf]"
+            placeholder="请选择尺码"
+            style="width:200px;margin-bottom: 24px;">
+            <el-option v-for="item in child_footage"
               :key="item.id"
               :label="item.name"
               :value="item.id">
             </el-option>
           </el-select>
-          <el-input :disabled="has_next" v-for="(item,index) in child_size" class="elInputAp" placeholder="请输入数字" v-model="sizeArr[indexf][index]" :key="item.id">
+          <el-input :disabled="has_next"
+            v-for="(item,index) in child_size"
+            class="elInputAp"
+            placeholder="请输入数字"
+            v-model="sizeArr[indexf][index]"
+            :key="item.id">
             <template slot="prepend">{{item.name}}</template>
             <template slot="append">厘米</template>
           </el-input>
-          <el-input :disabled="has_next" class="elInputAp" style="width:200px" placeholder="请输入产品克重" v-model="weight[indexf]">
+          <el-input :disabled="has_next"
+            class="elInputAp"
+            style="width:200px"
+            placeholder="请输入产品克重"
+            v-model="weight[indexf]">
             <template slot="append">克</template>
           </el-input>
-          <div class="deleteBtn2" @click="deleteSize(itemf)"><i class="el-icon-delete"></i></div>
+          <div class="deleteBtn2"
+            @click="deleteSize(itemf)"><i class="el-icon-delete"></i></div>
         </div>
-        <div class="addBtn" @click="addSizeLine">
+        <div class="addBtn"
+          @click="addSizeLine">
           <span>添加尺寸</span>
           <span>+</span>
         </div>
       </div>
-      <div class="inputCtn" style="margin-top:0;margin-bottom:0">
+      <div class="inputCtn"
+        style="margin-top:0;margin-bottom:0">
         <span class="label must">产品配色:</span>
-        <div class="cancleCtn" v-for="item in colorNum" :key="item">
-          <el-select :disabled="has_next" clearable filterable class="elSelect" v-model="color[item-1]" placeholder="请选择配色">
-            <el-option
-              v-for="item in colorArr"
+        <div class="cancleCtn"
+          v-for="item in colorNum"
+          :key="item">
+          <el-select :disabled="has_next"
+            clearable
+            filterable
+            class="elSelect"
+            v-model="color[item-1]"
+            placeholder="请选择配色">
+            <el-option v-for="item in colorArr"
               :key="item.id"
               :label="item.name"
               :value="item.id">
-              <div class="bgBlock" :style="{'background':item.color_code}"></div>
+              <div class="bgBlock"
+                :style="{'background':item.color_code}"></div>
               <div class="desc">{{item.name}}</div>
             </el-option>
           </el-select>
-          <div class="deleteBtn" @click="deleteColor(item)"><i class="el-icon-delete"></i></div>
+          <div class="deleteBtn"
+            @click="deleteColor(item)"><i class="el-icon-delete"></i></div>
         </div>
-        <div class="addBtn" @click="addcolorNum">
+        <div class="addBtn"
+          @click="addcolorNum">
           <span>添加配色</span>
           <span>+</span>
         </div>
       </div>
       <div class="inputCtn">
         <span class="label">产品图片:</span>
-        <el-upload
-          class="upload-demo"
+        <el-upload class="upload-demo"
           action="http://upload.qiniup.com/"
           accept="image/jpeg,image/gif,image/png,image/bmp"
           :on-preview="handlePreview"
@@ -114,17 +158,19 @@
           :on-success="handleSuccess"
           :before-upload="beforeAvatarUpload"
           :file-list="fileArr"
-          :data = postData
+          :data=postData
           ref="uploada"
           list-type="picture">
-          <el-button size="small" type="primary">点击上传</el-button>
-          <div slot="tip" class="el-upload__tip">只能上传jpg/png图片文件，且不超过10M</div>
+          <el-button size="small"
+            type="primary">点击上传</el-button>
+          <div slot="tip"
+            class="el-upload__tip">只能上传jpg/png图片文件，且不超过10M</div>
         </el-upload>
       </div>
-      <div class="inputCtn" style="margin-top:50px">
+      <div class="inputCtn"
+        style="margin-top:50px">
         <span class="label">产品描述:</span>
-        <el-input
-          class="textarea"
+        <el-input class="textarea"
           type="textarea"
           :rows="6"
           placeholder="请输入内容"
@@ -132,8 +178,10 @@
         </el-input>
       </div>
       <div class="btnCtn">
-        <div class="cancleBtn" @click="$router.go(-1)">返回</div>
-        <div class="okBtn" @click="saveAll">修改</div>
+        <div class="cancleBtn"
+          @click="$router.go(-1)">返回</div>
+        <div class="okBtn"
+          @click="saveAll">修改</div>
       </div>
     </div>
   </div>
@@ -575,33 +623,34 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/productCreate.less';
+@import "~@/assets/css/productCreate.less";
 </style>
 <style lang="less">
-.el-cascader-menu{
+.el-cascader-menu {
   font-size: 14px;
   color: #666;
-  font-family: 'systemfont';
+  font-family: "systemfont";
   font-weight: 300;
 }
-.el-input-group--append .el-select .el-input.is-focus .el-input__inner, .el-input-group--prepend .el-select .el-input.is-focus .el-input__inner{
-  border:0!important;
-  &:hover{
-    border:0!important;
-    border-color:transparent!important;
+.el-input-group--append .el-select .el-input.is-focus .el-input__inner,
+.el-input-group--prepend .el-select .el-input.is-focus .el-input__inner {
+  border: 0 !important;
+  &:hover {
+    border: 0 !important;
+    border-color: transparent !important;
   }
-  &:focus{
-    border:0!important;
-    border-color:transparent!important;
+  &:focus {
+    border: 0 !important;
+    border-color: transparent !important;
   }
 }
-.el-cascader.is-disabled .el-cascader__label span{
-  color:#c0c4cc!important;
+.el-cascader.is-disabled .el-cascader__label span {
+  color: #c0c4cc !important;
 }
-.el-cascader.is-disabled .el-cascader__label{
-  cursor: not-allowed!important;
+.el-cascader.is-disabled .el-cascader__label {
+  cursor: not-allowed !important;
 }
-.el-input.is-disabled .el-input__inner{
-  color:#c0c4cc!important;
+.el-input.is-disabled .el-input__inner {
+  color: #c0c4cc !important;
 }
 </style>

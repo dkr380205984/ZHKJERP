@@ -1,6 +1,6 @@
 <template>
   <div id="rawMaterialPurchase"
-       v-loading="loading">
+    v-loading="loading">
     <div class="head">
       <h2>原料预订购</h2>
     </div>
@@ -10,11 +10,11 @@
           <span class="label">订购单位:</span>
           <span class="content">
             <el-select v-model="company"
-                       placeholder="请选择订购单位">
+              placeholder="请选择订购单位">
               <el-option v-for="item in companyList"
-                         :key="item.id"
-                         :label="item.name"
-                         :value="item.id">
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
               </el-option>
             </el-select>
           </span>
@@ -25,47 +25,47 @@
           <span class="label">原料信息:</span>
           <span class="content">
             <div class="material"
-                 v-for="(item,key) in material_info"
-                 :key="key">
+              v-for="(item,key) in material_info"
+              :key="key">
               <h4>第{{change(key+1)}}种原料</h4>
               <div class="inputBox">
                 <el-select v-model="item.material_name"
-                           filterable
-                           placeholder="请选择原料">
+                  filterable
+                  placeholder="请选择原料">
                   <el-option v-for="value in materialList.material"
-                             :key="value.value"
-                             :value="value.name">
+                    :key="value.value"
+                    :value="value.name">
                   </el-option>
                 </el-select>
                 <el-select v-model="item.color_code"
-                           filterable
-                           placeholder="请选择颜色">
+                  filterable
+                  placeholder="请选择颜色">
                   <el-option v-for="value in colorList"
-                             :key="value.name + value.id"
-                             :value="value.name">
+                    :key="value.name + value.id"
+                    :value="value.name">
                   </el-option>
                 </el-select>
                 <el-select v-model="item.attribute"
-                           placeholder="请选择包装">
+                  placeholder="请选择包装">
                   <el-option v-for="value in materialList.attr"
-                             :key="value.value"
-                             :value="value.name">
+                    :key="value.value"
+                    :value="value.name">
                   </el-option>
                 </el-select>
                 <el-input placeholder="请输入预定价格"
-                          v-model="item.price">
+                  v-model="item.price">
                   <span class="small"
-                        slot="append">元/千克</span>
+                    slot="append">元/千克</span>
                 </el-input>
               </div>
               <span class="delet el-icon-close"
-                    @click="delet(key)"></span>
+                @click="delet(key)"></span>
             </div>
           </span>
         </div>
         <div class="inputCtn">
           <div class="addBtn"
-               @click="addMaterial">
+            @click="addMaterial">
             <span>添加原料</span>
             <span>+</span>
           </div>
@@ -76,7 +76,7 @@
           <span class="label">原料总重:</span>
           <span class="content">
             <el-input placeholder="请输入所有原料总重量"
-                      v-model="total_weight">
+              v-model="total_weight">
               <span slot="append">千克</span>
             </el-input>
           </span>
@@ -87,7 +87,7 @@
           <span class="label">总价:</span>
           <span class="content">
             <el-input placeholder="请输入所有原料总价"
-                      v-model="total_price">
+              v-model="total_price">
               <span slot="append">元</span>
             </el-input>
           </span>
@@ -98,9 +98,9 @@
           <span class="label">订购日期:</span>
           <span class="content">
             <el-date-picker v-model="order_time"
-                            value-format="yyyy-MM-dd"
-                            type="date"
-                            placeholder="请选择订购日期">
+              value-format="yyyy-MM-dd"
+              type="date"
+              placeholder="请选择订购日期">
             </el-date-picker>
           </span>
         </div>
@@ -110,8 +110,8 @@
           <span class="label">备注:</span>
           <span class="content">
             <el-input type="textarea"
-                      :rows="4"
-                      v-model="remark">
+              :rows="4"
+              v-model="remark">
             </el-input>
           </span>
         </div>
@@ -120,9 +120,9 @@
         <div class="inputCtn">
           <span class="content btn">
             <span class="clean"
-                  @click="clean">清空</span>
+              @click="clean">清空</span>
             <span class="save"
-                  @click="save">保存</span>
+              @click="save">保存</span>
           </span>
         </div>
       </div>

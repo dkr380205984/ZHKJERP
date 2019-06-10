@@ -1,5 +1,6 @@
 <template>
-  <div id = "productDetail" v-loading="loading">
+  <div id="productDetail"
+    v-loading="loading">
     <div class="head">
       <h2>产品详情</h2>
     </div>
@@ -43,10 +44,14 @@
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">产品规格:</span>
-          <span class="content contentLine" v-for="(item,key) in productDetail.size" :key="key">
+          <span class="content contentLine"
+            v-for="(item,key) in productDetail.size"
+            :key="key">
             <span class="size">{{key}}</span>
             <span class="sizeDetail">
-              <span class="sizeOnce" v-for="itemChild in item" :key="itemChild.id">{{itemChild.size_name + '：' + itemChild.size_value + 'cm'}}</span>
+              <span class="sizeOnce"
+                v-for="itemChild in item"
+                :key="itemChild.id">{{itemChild.size_name + '：' + itemChild.size_value + 'cm'}}</span>
               <span class="sizeOnce">{{ item[0].weight + 'g' + '(克重)'}}</span>
             </span>
           </span>
@@ -55,9 +60,12 @@
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">产品配色:</span>
-          <span class="content contentFlex" v-for="(item,index) in productDetail.color" :key="index">
+          <span class="content contentFlex"
+            v-for="(item,index) in productDetail.color"
+            :key="index">
             <span class="sort">{{index+1}}.</span>
-            <div class="colorBg" :style="{'background':item.color_code}"></div>
+            <div class="colorBg"
+              :style="{'background':item.color_code}"></div>
             <span class="color">{{item.name}}</span>
           </span>
         </div>
@@ -66,8 +74,14 @@
         <div class="inputCtn">
           <span class="label">产品图片:</span>
           <span class="content">
-            <img v-if="productDetail.img.length === 0" class="img" src="@/assets/image/index/noPic.jpg"/>
-            <img v-for="(item,index) in productDetail.img" :key="index" class="img" :src="item.image_url" :onerror="defaultImg" />
+            <img v-if="productDetail.img.length === 0"
+              class="img"
+              src="@/assets/image/index/noPic.jpg" />
+            <img v-for="(item,index) in productDetail.img"
+              :key="index"
+              class="img"
+              :src="item.image_url"
+              :onerror="defaultImg" />
           </span>
         </div>
       </div>
@@ -78,10 +92,19 @@
         </div>
       </div>
       <div class="btnCtn">
-        <div class="cancleBtn" @click="$router.go(-1)">返回</div>
-        <div class="okBtn" v-if="productDetail.has_craft===0&&productDetail.in_order===0&&productDetail.has_plan===0" @click="$router.push('/index/productUpdate/'+productDetail.id)">修改</div>
-        <el-tooltip v-if="productDetail.has_craft===1||productDetail.in_order===1||productDetail.has_plan===1" class="item" effect="dark" :content="toolTips(productDetail)" placement="top-start">
-          <div class="okBtn" style="background:#E6A23C" @click="$router.push('/index/productUpdate/'+productDetail.id)">修改</div>
+        <div class="cancleBtn"
+          @click="$router.go(-1)">返回</div>
+        <div class="okBtn"
+          v-if="productDetail.has_craft===0&&productDetail.in_order===0&&productDetail.has_plan===0"
+          @click="$router.push('/index/productUpdate/'+productDetail.id)">修改</div>
+        <el-tooltip v-if="productDetail.has_craft===1||productDetail.in_order===1||productDetail.has_plan===1"
+          class="item"
+          effect="dark"
+          :content="toolTips(productDetail)"
+          placement="top-start">
+          <div class="okBtn"
+            style="background:#E6A23C"
+            @click="$router.push('/index/productUpdate/'+productDetail.id)">修改</div>
         </el-tooltip>
       </div>
     </div>
@@ -168,5 +191,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/productDetail.less';
+@import "~@/assets/css/productDetail.less";
 </style>

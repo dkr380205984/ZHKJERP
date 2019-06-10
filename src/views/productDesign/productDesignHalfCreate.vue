@@ -55,42 +55,42 @@
                   </span>
                 </li>
                 <li v-for="(item,index) in productList"
-                    :key="index"
-                    class="material_info">
+                  :key="index"
+                  class="material_info">
                   <span>{{item.product_code}}</span>
                   <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
                   <span style="flex:7;"
-                        class="col">
+                    class="col">
                     <span v-for="(itemColour,indexColour) in item.info"
-                          :key="indexColour">
+                      :key="indexColour">
                       <span>{{itemColour.color}}/{{itemColour.size}}</span>
                       <span>{{itemColour.order_num}}{{item.unit_name}}</span>
                       <span>{{itemColour.stock_pick}}{{item.unit_name}}</span>
                       <span>{{itemColour.production_num}}{{item.unit_name}}</span>
                       <span v-if="itemColour.fenpei.length>0"
-                            class="col"
-                            style="flex:3;">
+                        class="col"
+                        style="flex:3;">
                         <span v-for="itemType in itemColour.fenpei"
-                              :key="itemType.name">
+                          :key="itemType.name">
                           <span>{{itemType.name}}</span>
                           <span class="col"
-                                style="flex:2">
+                            style="flex:2">
                             <span v-for="itemCompany in itemType.info"
-                                  :key="itemCompany.name">
+                              :key="itemCompany.name">
                               <span style="border-right: 1px solid #DDD;">{{itemCompany.name}}</span>
                               <span class="col">
                                 <span style="color:#1A95FF;cursor:pointer"
-                                      v-if="itemCompany.info[0].ingredients.length>0"
-                                      @click="getDetail(itemCompany.name,itemCompany.info)">查看详情</span>
+                                  v-if="itemCompany.info[0].ingredients.length>0"
+                                  @click="getDetail(itemCompany.name,itemCompany.info)">查看详情</span>
                                 <span style="color:#ddd;"
-                                      v-else>无辅料</span>
+                                  v-else>无辅料</span>
                               </span>
                             </span>
                           </span>
                         </span>
                       </span>
                       <span v-else
-                            style="flex:3;color:rgb(245, 108, 108)">没有分配信息</span>
+                        style="flex:3;color:rgb(245, 108, 108)">没有分配信息</span>
                     </span>
                   </span>
                 </li>
@@ -113,29 +113,29 @@
                   <span>辅料所需数量</span>
                 </li>
                 <li class="material_info"
-                    v-if="ingredientInfo.name">
+                  v-if="ingredientInfo.name">
                   <span>{{ingredientInfo.name}}</span>
                   <span style="flex:6"
-                        class="col">
+                    class="col">
                     <span v-for="(item,index) in ingredientInfo.info"
-                          :key="index">
+                      :key="index">
                       <span>{{item.created_at.slice(0,10)}}</span>
                       <span>{{item.complete.slice(0,10)}}</span>
                       <span style="flex:4"
-                            class="col">
+                        class="col">
                         <span v-for="(itemIng,indexIng) in item.ingredients"
-                              :key="itemIng">
+                          :key="itemIng">
                           <span>{{item.ingredientsArr[indexIng][0].fenpei}}</span>
                           <span>{{itemIng}}</span>
                           <span class="col">
                             <span v-for="(itemDetail,indexDetail) in item.ingredientsArr[indexIng]"
-                                  :key="indexDetail">
+                              :key="indexDetail">
                               <span>{{itemDetail.color}}</span>
                             </span>
                           </span>
                           <span class="col">
                             <span v-for="(itemDetail,indexDetail) in item.ingredientsArr[indexIng]"
-                                  :key="indexDetail">
+                              :key="indexDetail">
                               <span>{{itemDetail.number}}{{itemDetail.unit}}</span>
                             </span>
                           </span>
@@ -145,7 +145,7 @@
                   </span>
                 </li>
                 <li class="material_info"
-                    v-else>
+                  v-else>
                   <span>暂无详情信息</span>
                 </li>
               </ul>
@@ -160,8 +160,8 @@
           <div class="border"></div>
         </div>
         <div class="lineCtn col"
-             v-for="(item,index) in formList"
-             :key="index">
+          v-for="(item,index) in formList"
+          :key="index">
           <div class="inputCtn noPadding maxWidth">
             <div class="content">
               <ul class="tablesCtn">
@@ -181,30 +181,30 @@
                   <span>{{item.product_code}}</span>
                   <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
                   <span class="col"
-                        style="flex:6;">
+                    style="flex:6;">
                     <span v-for="(itemColour,indexColour) in item.info"
-                          :key="indexColour">
+                      :key="indexColour">
                       <span>{{itemColour.color}}/{{itemColour.size}}</span>
                       <span>{{itemColour.order_num}}{{item.unit_name}}</span>
                       <span>{{itemColour.stock_pick}}{{item.unit_name}}</span>
                       <span>{{itemColour.production_num}}{{item.unit_name}}</span>
                       <span v-if="itemColour.fenpei.length>0"
-                            class="col"
-                            style="flex:2;">
+                        class="col"
+                        style="flex:2;">
                         <span v-for="itemType in itemColour.fenpei"
-                              :key="itemType.name">
+                          :key="itemType.name">
                           <span>{{itemType.name}}</span>
                           <span class="col"
-                                style="flex:1">
+                            style="flex:1">
                             <span v-for="itemCompany in itemType.info"
-                                  :key="itemCompany.name">
+                              :key="itemCompany.name">
                               <span style="border-right: 1px solid #DDD;">{{itemCompany.name}}</span>
                             </span>
                           </span>
                         </span>
                       </span>
                       <span v-else
-                            style="flex:2;color:rgb(245, 108, 108)">没有分配信息</span>
+                        style="flex:2;color:rgb(245, 108, 108)">没有分配信息</span>
                     </span>
                   </span>
                 </li>
@@ -213,109 +213,109 @@
           </div>
           <div class="processInfo">
             <ul class="processFrom"
-                v-for="(itemCompany,indexCompany) in item.company"
-                :key="indexCompany"
-                style="height:530px">
+              v-for="(itemCompany,indexCompany) in item.company"
+              :key="indexCompany"
+              style="height:530px">
               <span class="el-icon-close"
-                    @click="deleteCompany(index,indexCompany)"></span>
+                @click="deleteCompany(index,indexCompany)"></span>
               <li>
                 <span>加工单位:</span>
                 <el-select filterable
-                           v-model="itemCompany.company_id"
-                           placeholder="请选择加工单位"
-                           size="small">
+                  v-model="itemCompany.company_id"
+                  placeholder="请选择加工单位"
+                  size="small">
                   <el-option v-for="item in companyArr"
-                             :key="item.id"
-                             :label="item.name"
-                             :value="item.id">
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id">
                   </el-option>
                 </el-select>
               </li>
               <li>
                 <span>加工类型:</span>
                 <el-select v-model="itemCompany.machining"
-                           placeholder="请选择加工类型"
-                           size="small">
+                  placeholder="请选择加工类型"
+                  size="small">
                   <el-option v-for="item in machiningType"
-                             :key="item.name"
-                             :label="item.name"
-                             :value="item.name">
+                    :key="item.name"
+                    :label="item.name"
+                    :value="item.name">
                   </el-option>
                 </el-select>
               </li>
               <li class="col"
-                  v-for="(itemcolorSize,indexColorSize) in itemCompany.price_number"
-                  :key="indexColorSize">
+                v-for="(itemcolorSize,indexColorSize) in itemCompany.price_number"
+                :key="indexColorSize">
                 <div>
                   <span>价格数量:</span>
                   <el-cascader placeholder="选择尺码/颜色"
-                               style="margin-left:15px;width:243px;"
-                               :options="item.colorSizeArr"
-                               v-model="itemcolorSize.colorSize">
+                    style="margin-left:15px;width:243px;"
+                    :options="item.colorSizeArr"
+                    v-model="itemcolorSize.colorSize">
                   </el-cascader>
                 </div>
                 <div>
                   <span></span>
                   <el-input style="margin-left:15px"
-                            size="small"
-                            placeholder="价格"
-                            v-model="itemcolorSize.price"></el-input>
+                    size="small"
+                    placeholder="价格"
+                    v-model="itemcolorSize.price"></el-input>
                   <strong>—</strong>
                   <el-input size="small"
-                            placeholder="数量"
-                            v-model="itemcolorSize.number"></el-input>
+                    placeholder="数量"
+                    v-model="itemcolorSize.number"></el-input>
                 </div>
                 <em v-if="indexColorSize === 0"
-                    class="el-icon-plus"
-                    @click="addSizeColor(index,indexCompany)"></em>
+                  class="el-icon-plus"
+                  @click="addSizeColor(index,indexCompany)"></em>
                 <em v-else
-                    class="el-icon-delete"
-                    @click="deleteSizeColor(index,indexCompany,indexColorSize)"></em>
+                  class="el-icon-delete"
+                  @click="deleteSizeColor(index,indexCompany,indexColorSize)"></em>
               </li>
               <li>
                 <span>产品总价:</span>
                 <el-input style="width:243px"
-                          disabled
-                          size="small"
-                          placeholder="总价"
-                          v-model="itemCompany.total_price">
+                  disabled
+                  size="small"
+                  placeholder="总价"
+                  v-model="itemCompany.total_price">
                   <template slot="append"><span style="line-height:30px">元</span></template>
                 </el-input>
               </li>
               <li>
                 <span>选择辅料:</span>
                 <el-select multiple
-                           v-model="itemCompany.otherMat"
-                           placeholder="请选择所需辅料"
-                           size="small">
+                  v-model="itemCompany.otherMat"
+                  placeholder="请选择所需辅料"
+                  size="small">
                   <el-option v-for="itemMat in item.otherMatArr"
-                             :key="itemMat"
-                             :label="itemMat"
-                             :value="itemMat">
+                    :key="itemMat"
+                    :label="itemMat"
+                    :value="itemMat">
                   </el-option>
                 </el-select>
               </li>
               <li>
                 <span>完成时间:</span>
                 <el-date-picker v-model="itemCompany.complete_time"
-                                type="date"
-                                placeholder="选择日期"
-                                value-format="yyyy-MM-dd"
-                                size="small"
-                                style="width:243px">
+                  type="date"
+                  placeholder="选择日期"
+                  value-format="yyyy-MM-dd"
+                  size="small"
+                  style="width:243px">
                 </el-date-picker>
               </li>
               <li>
                 <span>备注信息:</span>
                 <el-input type="textarea"
-                          placeholder="请输入内容"
-                          style="width:243px;margin: 0 0 0 15px;height:45px;"
-                          v-model="itemCompany.desc"></el-input>
+                  placeholder="请输入内容"
+                  style="width:243px;margin: 0 0 0 15px;height:45px;"
+                  v-model="itemCompany.desc"></el-input>
               </li>
             </ul>
           </div>
           <div class="addBtn"
-               @click="addCompany(index)">
+            @click="addCompany(index)">
             <span>+</span>
             <span>添加公司</span>
           </div>
@@ -323,9 +323,9 @@
       </div>
       <div class="btnCtn">
         <div class="cancleBtn"
-             @click="$router.go(-1)">返回</div>
+          @click="$router.go(-1)">返回</div>
         <div class="okBtn"
-             @click="saveAll">保存</div>
+          @click="saveAll">保存</div>
       </div>
     </div>
   </div>

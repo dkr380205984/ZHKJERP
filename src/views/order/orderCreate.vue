@@ -1,5 +1,6 @@
 <template>
-  <div id="orderCreate" v-loading="loading">
+  <div id="orderCreate"
+    v-loading="loading">
     <div class="head">
       <h2>添加订单</h2>
     </div>
@@ -7,15 +8,19 @@
       <div class="lineCtn">
         <div class="inputCtn oneLine">
           <span class="label must">订单号：</span>
-          <el-input class="elInput" v-model="orderId" placeholder="请输入订单号"></el-input>
+          <el-input class="elInput"
+            v-model="orderId"
+            placeholder="请输入订单号"></el-input>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label must">外贸公司：</span>
-           <el-select class="elInput" v-model="company" placeholder="请选择外贸公司" @change="getContacts">
-            <el-option
-              v-for="item in companyArr"
+          <el-select class="elInput"
+            v-model="company"
+            placeholder="请选择外贸公司"
+            @change="getContacts">
+            <el-option v-for="item in companyArr"
               :key="item.id"
               :label="item.name"
               :value="item.id">
@@ -24,9 +29,10 @@
         </div>
         <div class="inputCtn">
           <span class="label must">联系人：</span>
-          <el-select class="elInput" v-model="contacts" placeholder="请选择联系人">
-            <el-option
-              v-for="item in contactsArr"
+          <el-select class="elInput"
+            v-model="contacts"
+            placeholder="请选择联系人">
+            <el-option v-for="item in contactsArr"
               :key="item.id"
               :label="item.name"
               :value="item.id">
@@ -37,9 +43,10 @@
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label must">结算单位：</span>
-          <el-select class="elInput" v-model="money" placeholder="请选择结算单位">
-            <el-option
-              v-for="item in moneyArr"
+          <el-select class="elInput"
+            v-model="money"
+            placeholder="请选择结算单位">
+            <el-option v-for="item in moneyArr"
               :key="item.name"
               :label="item.name"
               :value="item.name"
@@ -52,15 +59,26 @@
         </div>
         <div class="inputCtn">
           <span class="label must">汇率：</span>
-          <el-input class="elInput" v-model="exchangeRate" placeholder="请输入汇率" @focus="showTips=true" @blur="showTips=false"></el-input>
-          <div  style="color:#b5b5b5!important" class="tips" @mousedown="goBaidu">如:结算单位美元,100美元=670人民币,填写数字670</div>
-          <div  style="top:63px" v-show="showTips" class="tips" @mousedown="goBaidu">点击查询实时汇率</div>
+          <el-input class="elInput"
+            v-model="exchangeRate"
+            placeholder="请输入汇率"
+            @focus="showTips=true"
+            @blur="showTips=false"></el-input>
+          <div style="color:#b5b5b5!important"
+            class="tips"
+            @mousedown="goBaidu">如:结算单位美元,100美元=670人民币,填写数字670</div>
+          <div style="top:63px"
+            v-show="showTips"
+            class="tips"
+            @mousedown="goBaidu">点击查询实时汇率</div>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label must">税率：</span>
-          <el-input class="elInput" v-model="taxRate" placeholder="请选择货币">
+          <el-input class="elInput"
+            v-model="taxRate"
+            placeholder="请选择货币">
             <template slot="append">%</template>
           </el-input>
         </div>
@@ -68,8 +86,7 @@
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label must">下单日期：</span>
-          <el-date-picker
-            value-format="yyyy-MM-dd"
+          <el-date-picker value-format="yyyy-MM-dd"
             class="elInput"
             v-model="date"
             type="date"
@@ -78,9 +95,10 @@
         </div>
         <div class="inputCtn">
           <span class="label must">负责小组：</span>
-          <el-select class="elInput" v-model="group" placeholder="请选择小组">
-            <el-option
-              v-for="item in groupArr"
+          <el-select class="elInput"
+            v-model="group"
+            placeholder="请选择小组">
+            <el-option v-for="item in groupArr"
               :key="item.id"
               :label="item.name"
               :value="item.id">
@@ -91,23 +109,24 @@
       <div class="lineCtn">
         <div class="inputCtn oneLine product">
           <span class="label must">添加产品：</span>
-          <div class="lineSearch" :class="{'show':showSeach}">
-            <el-input
-              class="elInput"
+          <div class="lineSearch"
+            :class="{'show':showSeach}">
+            <el-input class="elInput"
               placeholder="输产品编号按回车搜索"
               suffix-icon="el-icon-search"
               v-model="search"
               @keyup.enter.native="getSearch">
             </el-input>
-            <span class="gjss" @click="showSeach=!showSeach">高级搜索
-              <i class="el-icon" :class="{'el-icon-arrow-up':!showSeach,'el-icon-arrow-down':showSeach}"></i>
+            <span class="gjss"
+              @click="showSeach=!showSeach">高级搜索
+              <i class="el-icon"
+                :class="{'el-icon-arrow-up':!showSeach,'el-icon-arrow-down':showSeach}"></i>
             </span>
             <div class="hideSearch">
               <div class="block">
                 <div class="blockOnce">
                   <span class="name">产品类别：</span>
-                   <el-cascader
-                    expand-trigger="hover"
+                  <el-cascader expand-trigger="hover"
                     class="elInput"
                     placeholder="请选择产品类别"
                     :options="typeArr"
@@ -118,8 +137,7 @@
                 </div>
                 <div class="blockOnce">
                   <span class="name">创建日期：</span>
-                  <el-date-picker
-                    @change="getSearch"
+                  <el-date-picker @change="getSearch"
                     value-format="yyyy-MM-dd"
                     class="elInput"
                     v-model="dateSearch"
@@ -131,9 +149,12 @@
               <div class="block">
                 <div class="blockOnce">
                   <span class="name">产品花型：</span>
-                  <el-select class="elInput" v-model="flower" placeholder="请选择产品花型"  @change="getSearchList" clearable>
-                    <el-option
-                      @change="getSearch"
+                  <el-select class="elInput"
+                    v-model="flower"
+                    placeholder="请选择产品花型"
+                    @change="getSearchList"
+                    clearable>
+                    <el-option @change="getSearch"
                       v-for="item in flowerArr"
                       :key="item.id"
                       :label="item.name"
@@ -153,7 +174,8 @@
                     </el-option>
                   </el-select> -->
                   <span class="name">配料单：</span>
-                  <el-radio-group v-model="hasJHD"  @change="getSearch">
+                  <el-radio-group v-model="hasJHD"
+                    @change="getSearch">
                     <el-radio :label="null">全部</el-radio>
                     <el-radio :label="1">有</el-radio>
                     <el-radio :label="0">无</el-radio>
@@ -174,9 +196,14 @@
                 <div class="flex">操作</div>
               </div>
             </div>
-            <div class="lineBody" ref="scrollBox">
-              <div class="list" v-for="item in seachProduct" :key="item.id">
-                <div class="flex" style="color:#10AEF5;cursor:help" @click="openUrl('/index/productDetail/'+item.product_code)">{{item.product_code}}</div>
+            <div class="lineBody"
+              ref="scrollBox">
+              <div class="list"
+                v-for="item in seachProduct"
+                :key="item.id">
+                <div class="flex"
+                  style="color:#10AEF5;cursor:help"
+                  @click="openUrl('/index/productDetail/'+item.product_code)">{{item.product_code}}</div>
                 <div class="flex">{{item|filterType}}</div>
                 <div class="flex">{{item.flower_id}}</div>
                 <div class="flex">{{item.user_name}}</div>
@@ -185,7 +212,9 @@
                   <el-checkbox @change="getProduct($event,item.id)"></el-checkbox>
                 </div>
               </div>
-              <div class="list" v-if="nomore" style="text-align:center;display:block;color:rgb(181,181,181)">没有更多产品信息</div>
+              <div class="list"
+                v-if="nomore"
+                style="text-align:center;display:block;color:rgb(181,181,181)">没有更多产品信息</div>
             </div>
           </div>
           <div class="lineTitle">已选产品</div>
@@ -201,27 +230,33 @@
               </div>
             </div>
             <div class="lineBody">
-              <div class="list" v-for="item in productArr" :key="item.id">
-                <div class="flex" style="color:#10AEF5">{{item.product_code}}</div>
+              <div class="list"
+                v-for="item in productArr"
+                :key="item.id">
+                <div class="flex"
+                  style="color:#10AEF5">{{item.product_code}}</div>
                 <div class="flex">{{item|filterType}}</div>
                 <div class="flex">{{item.flower_id}}</div>
                 <div class="flex">{{item.user_name}}</div>
                 <div class="flex">{{item.create_time}}</div>
                 <div class="flex">
-                  <span class="delete" @click="deleteProduct(item.id)">删除</span>
+                  <span class="delete"
+                    @click="deleteProduct(item.id)">删除</span>
                 </div>
               </div>
             </div>
           </div>
-          <div class="specialCtn" v-for="(itemOrder,indexOrder) in orderArr" :key="indexOrder">
+          <div class="specialCtn"
+            v-for="(itemOrder,indexOrder) in orderArr"
+            :key="indexOrder">
             <div class="lineTitle">第 {{indexOrder+1}} 批
-              <div class="deleteIcon" @click="deleteBatch(indexOrder)"><i class="el-icon-close"></i></div>
+              <div class="deleteIcon"
+                @click="deleteBatch(indexOrder)"><i class="el-icon-close"></i></div>
             </div>
             <div class="mainCtn">
               <div class="mainOnce">
                 <span class="label">交货日期：</span>
-                <el-date-picker
-                  value-format="yyyy-MM-dd"
+                <el-date-picker value-format="yyyy-MM-dd"
                   class="elInput"
                   v-model="orderArr[indexOrder].date"
                   type="date"
@@ -231,44 +266,60 @@
               <div class="mainOnce">
                 <span class="label">产品信息：</span>
                 <div class="btnCtn">
-                  <div class="addBtn" @click="addProductOne(indexOrder)">
+                  <div class="addBtn"
+                    @click="addProductOne(indexOrder)">
                     <span>添加产品</span>
                     <span>+</span>
                   </div>
                 </div>
-                <div class="productCtn" v-for="(itemProduct,indexProduct) in orderArr[indexOrder].product" :key="indexProduct">
+                <div class="productCtn"
+                  v-for="(itemProduct,indexProduct) in orderArr[indexOrder].product"
+                  :key="indexProduct">
                   <div class="product">
                     <div class="index">产品 {{indexProduct+1}}：</div>
-                    <el-select class="elInput" v-model="orderArr[indexOrder].product[indexProduct].name" placeholder="请选择产品编号" style="margin-top:24px;" @change="getColorSize($event,indexOrder,indexProduct)">
-                      <el-option
-                        v-for="item in productArr"
+                    <el-select class="elInput"
+                      v-model="orderArr[indexOrder].product[indexProduct].name"
+                      placeholder="请选择产品编号"
+                      style="margin-top:24px;"
+                      @change="getColorSize($event,indexOrder,indexProduct)">
+                      <el-option v-for="item in productArr"
                         :key="item.product_code"
                         :label="item.product_code"
                         :value="item.product_code">
                         <span style="font-size:12px">{{item.product_code}}({{item.category_info.product_category}}/{{item.type_name}}/{{item.style_name}})</span>
                       </el-option>
                     </el-select>
-                    <i class="el-icon-delete" @click="deleteProductOne (indexOrder, indexProduct)"></i>
+                    <i class="el-icon-delete"
+                      @click="deleteProductOne (indexOrder, indexProduct)"></i>
                   </div>
-                  <div class="typeCtn" v-for="(itemType,indexType) in orderArr[indexOrder].product[indexProduct].size" :key="indexType">
+                  <div class="typeCtn"
+                    v-for="(itemType,indexType) in orderArr[indexOrder].product[indexProduct].size"
+                    :key="indexType">
                     <div class="index">{{indexType+1}}</div>
-                    <el-cascader
-                      style="width:160px;margin-right:10px"
+                    <el-cascader style="width:160px;margin-right:10px"
                       class="elInput"
                       placeholder="请选择尺码和颜色"
                       :options="orderArr[indexOrder].product[indexProduct].colorSizeArr"
                       v-model="orderArr[indexOrder].product[indexProduct].size[indexType].name">
                     </el-cascader>
-                    <el-input class="elInput" v-model="orderArr[indexOrder].product[indexProduct].size[indexType].unitPrice" placeholder="单价" style="width:145px;margin-right:10px">
+                    <el-input class="elInput"
+                      v-model="orderArr[indexOrder].product[indexProduct].size[indexType].unitPrice"
+                      placeholder="单价"
+                      style="width:145px;margin-right:10px">
                       <template slot="append">{{money}}</template>
                     </el-input>
-                    <el-input class="elInput" v-model="orderArr[indexOrder].product[indexProduct].size[indexType].numbers" placeholder="数量" style="width:145px;">
+                    <el-input class="elInput"
+                      v-model="orderArr[indexOrder].product[indexProduct].size[indexType].numbers"
+                      placeholder="数量"
+                      style="width:145px;">
                       <template slot="append">{{orderArr[indexOrder].product[indexProduct].product_info.category_info?orderArr[indexOrder].product[indexProduct].product_info.category_info.name:''}}</template>
                     </el-input>
-                    <i class="el-icon-delete" @click="deleteSize(indexOrder,indexProduct,indexType)"></i>
+                    <i class="el-icon-delete"
+                      @click="deleteSize(indexOrder,indexProduct,indexType)"></i>
                   </div>
                   <div style="margin-top:24px;">
-                    <div class="addBtn" @click="addSize(indexOrder,indexProduct)">
+                    <div class="addBtn"
+                      @click="addSize(indexOrder,indexProduct)">
                       <span>添加尺码/颜色</span>
                       <span>+</span>
                     </div>
@@ -277,8 +328,10 @@
               </div>
             </div>
           </div>
-          <div class="btnCtn" style="margin-top:24px;">
-            <div class="addBtn" @click="addBatch">
+          <div class="btnCtn"
+            style="margin-top:24px;">
+            <div class="addBtn"
+              @click="addBatch">
               <span>添加批次</span>
               <span>+</span>
             </div>
@@ -288,18 +341,28 @@
       <div class="lineCtn">
         <div class="inputCtn oneLine product">
           <span class="label must">总价：</span>
-          <el-input class="elInput" v-model="totalMoney" placeholder="总价" disabled></el-input>
+          <el-input class="elInput"
+            v-model="totalMoney"
+            placeholder="总价"
+            disabled></el-input>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn oneLine product">
           <span class="label">备注：</span>
-          <el-input style="width:670px" type="textarea" :rows="6" class="elInput" v-model="otherInfo" placeholder="其他信息填写"></el-input>
+          <el-input style="width:670px"
+            type="textarea"
+            :rows="6"
+            class="elInput"
+            v-model="otherInfo"
+            placeholder="其他信息填写"></el-input>
         </div>
       </div>
       <div class="bottom">
-        <div class="cancleBtn" @click="$router.push('/index/orderList')">返回</div>
-        <div class="okBtn" @click="saveAll">保存</div>
+        <div class="cancleBtn"
+          @click="$router.push('/index/orderList')">返回</div>
+        <div class="okBtn"
+          @click="saveAll">保存</div>
       </div>
     </div>
   </div>
@@ -773,5 +836,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/orderCreate.less';
+@import "~@/assets/css/orderCreate.less";
 </style>

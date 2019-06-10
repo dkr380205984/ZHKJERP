@@ -1,7 +1,7 @@
 <template>
   <div id="rawMaterialProcessTable"
-       @click.right="goTop"
-       v-loading='loading'>
+    @click.right="goTop"
+    v-loading='loading'>
     <h2>{{company_name + type + '单'}}</h2>
     <div class="processCodeTime">
       <span>{{type}}单编号：{{process_code}}</span>
@@ -40,7 +40,7 @@
       </div>
       <div>
         <ul v-for="(item,key) in process_info"
-            :key="key">
+          :key="key">
           <li>
             <span>原料名称</span>
             <span>{{item.material}}</span>
@@ -48,7 +48,7 @@
             <span>{{item.total_weight|fixedFilter}}{{item.unit}}</span>
           </li>
           <li v-for="(val,ind) in item.color_info"
-              :key="ind">
+            :key="ind">
             <span>颜色重量</span>
             <span>
               {{val.name}}

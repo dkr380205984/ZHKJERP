@@ -1,39 +1,58 @@
 <template>
-  <div id="accountSetting" v-loading="loading">
+  <div id="accountSetting"
+    v-loading="loading">
     <div class="head">
       <h2>账号设置</h2>
     </div>
     <div class="body">
-      <div class="lineCtn" :style="{'max-height':flagObj.stationFlag?'300px':'64px'}">
+      <div class="lineCtn"
+        :style="{'max-height':flagObj.stationFlag?'300px':'64px'}">
         <div class="inputCtn">
           <span class="label">添加岗位:</span>
-          <el-input class="elInput" v-model="station" placeholder="请输入岗位"></el-input>
-          <div class="okBtn" @click="saveStation">添加</div>
-          <div class="showAll" @click="flagObj.stationFlag=!flagObj.stationFlag">{{!flagObj.stationFlag?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flagObj.stationFlag?'showIcon':'hideIcon'"></i></div>
+          <el-input class="elInput"
+            v-model="station"
+            placeholder="请输入岗位"></el-input>
+          <div class="okBtn"
+            @click="saveStation">添加</div>
+          <div class="showAll"
+            @click="flagObj.stationFlag=!flagObj.stationFlag">{{!flagObj.stationFlag?'展开':'收起'}}<i class="el-icon-d-arrow-right"
+              :class="!flagObj.stationFlag?'showIcon':'hideIcon'"></i></div>
         </div>
         <div class="allInfo">
           <div class="bgWhite"></div>
           <div class="list">
-            <div class="btnCtn" v-for="item in stationArr" :key="item.id">
+            <div class="btnCtn"
+              v-for="item in stationArr"
+              :key="item.id">
               <span>{{item.name}}</span>
-              <i class="iconCancle" @click="deleteStation(item.id)">x</i>
+              <i class="iconCancle"
+                @click="deleteStation(item.id)">x</i>
             </div>
           </div>
         </div>
       </div>
-      <div class="lineCtn" :style="{'max-height':flagObj.groupFlag?'300px':'64px'}">
+      <div class="lineCtn"
+        :style="{'max-height':flagObj.groupFlag?'300px':'64px'}">
         <div class="inputCtn">
           <span class="label">添加小组:</span>
-          <el-input class="elInput" v-model="group" placeholder="请输入岗位"></el-input>
-          <div class="okBtn" @click="saveGroup">添加</div>
-          <div class="showAll" @click="flagObj.groupFlag=!flagObj.groupFlag">{{!flagObj.groupFlag?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flagObj.groupFlag?'showIcon':'hideIcon'"></i></div>
+          <el-input class="elInput"
+            v-model="group"
+            placeholder="请输入岗位"></el-input>
+          <div class="okBtn"
+            @click="saveGroup">添加</div>
+          <div class="showAll"
+            @click="flagObj.groupFlag=!flagObj.groupFlag">{{!flagObj.groupFlag?'展开':'收起'}}<i class="el-icon-d-arrow-right"
+              :class="!flagObj.groupFlag?'showIcon':'hideIcon'"></i></div>
         </div>
         <div class="allInfo">
           <div class="bgWhite"></div>
           <div class="list">
-            <div class="btnCtn" v-for="item in groupArr" :key="item.id">
+            <div class="btnCtn"
+              v-for="item in groupArr"
+              :key="item.id">
               <span>{{item.name}}</span>
-              <i class="iconCancle" @click="deleteGroup(item.id)">x</i>
+              <i class="iconCancle"
+                @click="deleteGroup(item.id)">x</i>
             </div>
           </div>
         </div>
@@ -168,5 +187,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/accountSetting.less';
+@import "~@/assets/css/accountSetting.less";
 </style>

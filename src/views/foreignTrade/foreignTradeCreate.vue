@@ -6,16 +6,25 @@
     <div class="body">
       <div class="inputCtn">
         <span class="label must">公司名称:</span>
-        <el-input class="elInput" placeholder="请输入外贸公司名称" v-model="name"></el-input>
+        <el-input class="elInput"
+          placeholder="请输入外贸公司名称"
+          v-model="name"></el-input>
       </div>
       <div class="inputCtn">
         <span class="label">公司简称:</span>
-        <el-input class="elInput" placeholder="请输入外贸公司简称" v-model="abbreviation"></el-input>
+        <el-input class="elInput"
+          placeholder="请输入外贸公司简称"
+          v-model="abbreviation"></el-input>
       </div>
       <div class="inputCtn">
         <span class="label must">公司类型:</span>
-        <el-select class="elInput" placeholder="请选择公司类型" v-model="type">
-          <el-option v-for="item in companyType" :key="item.value" :value="item.value" :label="item.name"></el-option>
+        <el-select class="elInput"
+          placeholder="请选择公司类型"
+          v-model="type">
+          <el-option v-for="item in companyType"
+            :key="item.value"
+            :value="item.value"
+            :label="item.name"></el-option>
         </el-select>
       </div>
       <div class="inputCtn">
@@ -28,18 +37,28 @@
             <div class="once">操作</div>
           </div>
           <div class="tableFirstLine">
-            <div class="once"><input class="noborder" placeholder="输入姓名" v-model="contactsName"/></div>
-            <div class="once"><input class="noborder" placeholder="输入职务" v-model="contactsStation"/></div>
-            <div class="once"><input class="noborder" placeholder="输入联系号码" v-model="contactsPhone"/></div>
-            <div class="once"><span class="btns normal" @click="addContacts">添加</span></div>
+            <div class="once"><input class="noborder"
+                placeholder="输入姓名"
+                v-model="contactsName" /></div>
+            <div class="once"><input class="noborder"
+                placeholder="输入职务"
+                v-model="contactsStation" /></div>
+            <div class="once"><input class="noborder"
+                placeholder="输入联系号码"
+                v-model="contactsPhone" /></div>
+            <div class="once"><span class="btns normal"
+                @click="addContacts">添加</span></div>
           </div>
           <div class="tableBody">
-            <div class="line" v-for="(item,index) in contacts" :key="index">
+            <div class="line"
+              v-for="(item,index) in contacts"
+              :key="index">
               <div class="once">{{item.name}}</div>
               <div class="once">{{item.station}}</div>
               <div class="once">{{item.phone}}</div>
               <div class="once">
-                <span class="btns error" @click="deleteContacts(index)">删除</span>
+                <span class="btns error"
+                  @click="deleteContacts(index)">删除</span>
               </div>
             </div>
           </div>
@@ -48,21 +67,29 @@
       <div class="inputCtn">
         <span class="label must">合作状态:</span>
         <div style="display:flex;align-items:center;margin-left:15px;">
-          <el-radio v-model="status" label="1">合作中</el-radio>
-          <el-radio v-model="status" label="0">暂停合作</el-radio>
+          <el-radio v-model="status"
+            label="1">合作中</el-radio>
+          <el-radio v-model="status"
+            label="0">暂停合作</el-radio>
         </div>
       </div>
       <div class="inputCtn">
         <span class="label">联系电话:</span>
-        <el-input class="elInput" placeholder="请输入联系电话" v-model="phone"></el-input>
+        <el-input class="elInput"
+          placeholder="请输入联系电话"
+          v-model="phone"></el-input>
       </div>
       <div class="inputCtn">
         <span class="label">公司地址:</span>
-        <el-input class="elInput" placeholder="请输入公司地址" v-model="address"></el-input>
+        <el-input class="elInput"
+          placeholder="请输入公司地址"
+          v-model="address"></el-input>
       </div>
       <div class="btnCtn">
-        <div class="cancleBtn" @click="$router.go(-1)">返回</div>
-        <div class="okBtn" @click="saveAll">添加</div>
+        <div class="cancleBtn"
+          @click="$router.go(-1)">返回</div>
+        <div class="okBtn"
+          @click="saveAll">添加</div>
       </div>
     </div>
   </div>
@@ -152,5 +179,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/foreignTradeCreate.less';
+@import "~@/assets/css/foreignTradeCreate.less";
 </style>

@@ -2,7 +2,9 @@
   <div id="sampleList">
     <div class="head">
       <h2>产品列表</h2>
-      <el-input placeholder="输入订单号精确搜索" suffix-icon="el-icon-search" v-model="searchVal"></el-input>
+      <el-input placeholder="输入订单号精确搜索"
+        suffix-icon="el-icon-search"
+        v-model="searchVal"></el-input>
     </div>
     <div class="body">
       <div class="filterCtn">
@@ -15,17 +17,17 @@
         <div class="selectLine">
           <span class="label">筛选条件:</span>
           <div class="leftFilter">
-            <el-select v-model="value" placeholder="筛选公司">
-              <el-option
-                v-for="item in options"
+            <el-select v-model="value"
+              placeholder="筛选公司">
+              <el-option v-for="item in options"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
               </el-option>
             </el-select>
-            <el-select v-model="value" placeholder="筛选小组">
-              <el-option
-                v-for="item in options"
+            <el-select v-model="value"
+              placeholder="筛选小组">
+              <el-option v-for="item in options"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
@@ -33,8 +35,7 @@
             </el-select>
           </div>
           <div class="rightFilter">
-            <el-date-picker
-              v-model="date"
+            <el-date-picker v-model="date"
               type="daterange"
               align="right"
               unlink-panels
@@ -169,8 +170,7 @@
         </div>
       </div>
       <div class="pageCtn">
-        <el-pagination
-          background
+        <el-pagination background
           layout="prev, pager, next"
           :total="1000">
         </el-pagination>
@@ -229,5 +229,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/sampleList.less';
+@import "~@/assets/css/sampleList.less";
 </style>

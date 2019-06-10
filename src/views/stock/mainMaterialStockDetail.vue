@@ -1,6 +1,6 @@
 <template>
   <div id="mainMaterialStockDetail"
-       v-loading='loading'>
+    v-loading='loading'>
     <div class="head">
       <h2>原料库存详情</h2>
     </div>
@@ -65,8 +65,8 @@
                 <span>操作人</span>
               </li>
               <li class="list"
-                  v-for="(item,key) in list"
-                  :key="key">
+                v-for="(item,key) in list"
+                :key="key">
                 <span style="flex:1">{{item.time}}</span>
                 <span>{{item.action}}</span>
                 <span :style="{'color':item.style}">{{item.weight + item.unit}}</span>
@@ -80,9 +80,9 @@
         <div class="inputCtn">
           <span class="content btn">
             <span class="goBack"
-                  @click="$router.go(-1)">返回</span>
+              @click="$router.go(-1)">返回</span>
             <span class="change"
-                  @click="$router.push('/index/mainMaterialStockChange/' + $route.params.id)">修改</span>
+              @click="$router.push('/index/mainMaterialStockChange/' + $route.params.id)">修改</span>
           </span>
         </div>
       </div>

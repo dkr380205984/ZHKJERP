@@ -2,47 +2,57 @@
   <div id="productList">
     <div class="head">
       <h2>添加样品订单</h2>
-      <el-input placeholder="输入产品编号精确搜索" suffix-icon="el-icon-search" v-model="searchVal"></el-input>
+      <el-input placeholder="输入产品编号精确搜索"
+        suffix-icon="el-icon-search"
+        v-model="searchVal"></el-input>
     </div>
     <div class="body">
       <div class="filterCtn">
         <div class="filterLine">
           <span class="label">筛选列表:</span>
-          <el-tag closable v-show="categoryValCmp" @close="clear('categoryVal')">{{categoryValCmp}}</el-tag>
-          <el-tag closable v-show="typesValCmp" @close="clear('typesVal')">{{typesValCmp}}</el-tag>
-          <el-tag closable v-show="styleValCmp" @close="clear('styleVal')">{{styleValCmp}}</el-tag>
-          <el-tag closable v-show="flowerValCmp" @close="clear('flowerVal')">{{flowerValCmp}}</el-tag>
+          <el-tag closable
+            v-show="categoryValCmp"
+            @close="clear('categoryVal')">{{categoryValCmp}}</el-tag>
+          <el-tag closable
+            v-show="typesValCmp"
+            @close="clear('typesVal')">{{typesValCmp}}</el-tag>
+          <el-tag closable
+            v-show="styleValCmp"
+            @close="clear('styleVal')">{{styleValCmp}}</el-tag>
+          <el-tag closable
+            v-show="flowerValCmp"
+            @close="clear('flowerVal')">{{flowerValCmp}}</el-tag>
         </div>
         <div class="selectLine">
           <span class="label">筛选条件:</span>
           <div class="leftFilter">
-            <el-select v-model="categoryVal" placeholder="筛选品类">
-              <el-option
-                v-for="item in category"
+            <el-select v-model="categoryVal"
+              placeholder="筛选品类">
+              <el-option v-for="item in category"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id">
               </el-option>
             </el-select>
-            <el-select v-model="typesVal" placeholder="筛选类型">
-              <el-option
-                v-for="item in types"
+            <el-select v-model="typesVal"
+              placeholder="筛选类型">
+              <el-option v-for="item in types"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id">
               </el-option>
             </el-select>
-            <el-select v-model="styleVal" placeholder="筛选款型">
-              <el-option
-                v-for="item in style"
+            <el-select v-model="styleVal"
+              placeholder="筛选款型">
+              <el-option v-for="item in style"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id">
               </el-option>
             </el-select>
-            <el-select v-model="flowerVal" placeholder="筛选花型">
-              <el-option
-                v-for="item in flower"
+            <el-select v-model="flowerVal"
+              placeholder="筛选花型">
+              <el-option v-for="item in flower"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id">
@@ -50,8 +60,7 @@
             </el-select>
           </div>
           <div class="rightFilter">
-            <el-date-picker
-              v-model="date"
+            <el-date-picker v-model="date"
               type="daterange"
               align="right"
               unlink-panels
@@ -77,7 +86,9 @@
           <div class="tableColumn">创建时间</div>
           <div class="tableColumn">操作</div>
         </div>
-        <div class="tableRow bodyTableRow" v-for="(item,index) in list" :key="item.id">
+        <div class="tableRow bodyTableRow"
+          v-for="(item,index) in list"
+          :key="item.id">
           <div class="tableColumn">{{(index+1)+(pages-1)*5}}</div>
           <div class="tableColumn">{{item.product_info|filterType}}</div>
           <div class="tableColumn">200写死</div>
@@ -92,8 +103,7 @@
         </div>
       </div>
       <div class="pageCtn">
-        <el-pagination
-          background
+        <el-pagination background
           :page-size="5"
           layout="prev, pager, next"
           :total="total"
@@ -301,17 +311,16 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/productList.less';
+@import "~@/assets/css/productList.less";
 </style>
 <style lang="less">
-#productList{
-  .el-carousel__arrow{
-    color:#fff;
-    background: #1A95FF;
-    &:hover{
-      background:#48AAFF;
+#productList {
+  .el-carousel__arrow {
+    color: #fff;
+    background: #1a95ff;
+    &:hover {
+      background: #48aaff;
     }
   }
 }
-
 </style>

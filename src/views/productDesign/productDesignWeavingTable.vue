@@ -1,7 +1,7 @@
 <template>
   <div id="productDesignWeavingTable"
-       @click.right="goTop"
-       v-loading='loading'>
+    @click.right="goTop"
+    v-loading='loading'>
     <h2>{{company_name + '生产单'}}</h2>
     <div class="processCodeTime">
       <span>生产单编号：{{process_code}}</span>
@@ -40,7 +40,7 @@
       </div>
       <div>
         <ul class="tables"
-            style="width:inherit">
+          style="width:inherit">
           <li class="title">
             <span>产品信息</span>
             <span class="flex5">
@@ -55,8 +55,8 @@
             </span>
           </li>
           <li v-for="(item,key) in product_info"
-              :key="key"
-              class="content">
+            :key="key"
+            class="content">
             <span class="tableRow">
               <div>
                 {{item.product_code}}<br />{{item.product_type}}
@@ -64,13 +64,13 @@
             </span>
             <span class="tableRow col flex5">
               <span class="tableColumn"
-                    v-for="(val,ind) in item.size_info"
-                    :key="ind">
+                v-for="(val,ind) in item.size_info"
+                :key="ind">
                 <span class="tableRow">{{val.size}}{{'/'}}{{val.color}}</span>
                 <span class="tableRow col flex4">
                   <span class="tableColumn"
-                        v-for="(value,index) in val.process_info"
-                        :key="index">
+                    v-for="(value,index) in val.process_info"
+                    :key="index">
                     <span class="tableRow">{{value.type}}</span>
                     <span class="tableRow">{{value.price}}{{'元/条'}}</span>
                     <span class="tableRow">{{value.number}}{{'条'}}</span>
@@ -93,13 +93,13 @@
           </li>
           <li v-if="material_info.length === 0">无{{type === '0' ? '原' : '辅'}}料信息</li>
           <li class="content"
-              v-for="(item,key) in material_info"
-              :key="key">
+            v-for="(item,key) in material_info"
+            :key="key">
             <span class="tableRow">{{item.material}}</span>
             <span class="tableRow flex5 col">
               <span class="tableColumn"
-                    v-for="(val,ind) in item.color_info"
-                    :key="ind">
+                v-for="(val,ind) in item.color_info"
+                :key="ind">
                 <span class="tableRow">{{val.color}}</span>
                 <span class="flex4 tableRow">{{type === '0' ? val.number.toFixed(2) : Math.ceil(val.number)}}{{val.unit}}</span>
               </span>

@@ -3,18 +3,35 @@
     <!-- 占位符 -->
     <span class="placeHolder">{{content}}</span>
     <!-- input输入框,用于获取鼠标blur事件 -->
-    <el-tooltip class="item" effect="dark" :content="tips?tips:'无'" placement="top">
-      <input class="getFocus" @click="show" @blur="hide" :style="{'background':color}"/>
+    <el-tooltip class="item"
+      effect="dark"
+      :content="tips?tips:'无'"
+      placement="top">
+      <input class="getFocus"
+        @click="show"
+        @blur="hide"
+        :style="{'background':color}" />
     </el-tooltip>
     <!-- 实际显示的文字 设置点透-->
     <span class="realContent">{{content}}</span>
-    <div class="selectList" v-show="flag||flag2">
+    <div class="selectList"
+      v-show="flag||flag2">
       <div class="selectListCtn">
         <div class="searchOpt">
-          <input ref="search" type="text" placeholder="可搜索潘通色号" v-model="search" @mousedown="flag3=true" @blur="flag2=false"/>
+          <input ref="search"
+            type="text"
+            placeholder="可搜索潘通色号"
+            v-model="search"
+            @mousedown="flag3=true"
+            @blur="flag2=false" />
         </div>
-        <div class="selectListChild" v-for="(item,index) in colorArray" :key="index" @mousedown="getColor(item.color_code,item.name)" node="colorPick">
-          <div class="bgColorBlock" :style="{'background':item.color_code}"></div>
+        <div class="selectListChild"
+          v-for="(item,index) in colorArray"
+          :key="index"
+          @mousedown="getColor(item.color_code,item.name)"
+          node="colorPick">
+          <div class="bgColorBlock"
+            :style="{'background':item.color_code}"></div>
           <span class="bgColorLabel">{{item.name}}</span>
         </div>
       </div>

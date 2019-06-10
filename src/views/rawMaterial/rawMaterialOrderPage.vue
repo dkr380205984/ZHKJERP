@@ -1,6 +1,6 @@
 <template>
   <div id="rawMaterialOrderPage"
-       v-loading="loading">
+    v-loading="loading">
     <div class="head">
       <h2>{{type === '0' ? '原': '辅'}}料订购</h2>
     </div>
@@ -15,7 +15,7 @@
           <div class="inputCtn">
             <span class="label">订单号:</span>
             <span class="content important"
-                  @click="$router.push('/index/orderDetail/' + $route.params.id)">{{order_code}}</span>
+              @click="$router.push('/index/orderDetail/' + $route.params.id)">{{order_code}}</span>
           </div>
           <div class="inputCtn">
             <span class="label">外贸公司:</span>
@@ -39,7 +39,7 @@
               <ul class="productInfo">
                 <template v-if="productList.length !== 0">
                   <li v-for="(item,key) in productList"
-                      :key="key">
+                    :key="key">
                     <span @click="$router.push('/index/productDetail/' + item.product_code)">{{item.product_code}}({{item.type}})</span>
                     <span>{{item.product_size+'/'+item.product_color}}</span>
                     <span>{{item.number+'条'}}</span>
@@ -65,8 +65,8 @@
             </div>
             <template v-if="rawMaterialPlanList.length !== 0">
               <div class="tableInfo"
-                   v-for="(item,key) in rawMaterialPlanList"
-                   :key="key">
+                v-for="(item,key) in rawMaterialPlanList"
+                :key="key">
                 <span>
                   <span>{{item.material}}</span>
                   <span>{{item.need.name + ':'}}{{item.need.value|fixedFilter}}{{item.need.unit}}</span>
@@ -78,7 +78,7 @@
               </div>
             </template>
             <div v-else
-                 class="tableInfo">
+              class="tableInfo">
               <span>暂无信息</span>
               <span>暂无信息</span>
             </div>
@@ -91,8 +91,8 @@
           <div class="cicle"></div>
         </div>
         <div class="lineCtn col"
-             v-for="(item,key) in list"
-             :key="key">
+          v-for="(item,key) in list"
+          :key="key">
           <div class="tablePlan">
             <div class="tableTitle">
               <span>{{type === '0' ? '原': '辅'}}料名称</span>
@@ -116,26 +116,26 @@
           </div>
           <div class="buyInfo">
             <ul class="buyFrom"
-                v-for="(iten,kay) in item.buyInfo"
-                :key="kay">
+              v-for="(iten,kay) in item.buyInfo"
+              :key="kay">
               <li v-for="(value,index) in iten.buyMaterialInfo"
-                  :key="index"
-                  class="col">
+                :key="index"
+                class="col">
                 <div>
                   <span>{{type === '0' ? '原': '辅'}}料信息:</span>
                   <div>
                     <el-select v-model="value.color"
-                               placeholder="颜色"
-                               size="small">
+                      placeholder="颜色"
+                      size="small">
                       <el-option v-for="color in colorListVal(item.needColors)"
-                                 :key="color.value"
-                                 :value="color">
+                        :key="color.value"
+                        :value="color">
                       </el-option>
                     </el-select>
                     <strong>—</strong>
                     <el-input size="small"
-                              placeholder="数量"
-                              v-model="value.value">
+                      placeholder="数量"
+                      v-model="value.value">
                     </el-input>
                   </div>
                 </div>
@@ -143,69 +143,69 @@
                   <span></span>
                   <div>
                     <el-input size="small"
-                              placeholder="包装"
-                              v-model="value.attr">
+                      placeholder="包装"
+                      v-model="value.attr">
                     </el-input>
                     <strong>—</strong>
                     <el-input size="small"
-                              placeholder="单价"
-                              v-model="value.price">
+                      placeholder="单价"
+                      v-model="value.price">
                     </el-input>
                   </div>
                 </div>
                 <em v-if="index === 0"
-                    class="el-icon-plus"
-                    @click="appendBuyMaterialInfo(key,kay)"></em>
+                  class="el-icon-plus"
+                  @click="appendBuyMaterialInfo(key,kay)"></em>
                 <em v-else
-                    class="el-icon-delete"
-                    @click="deleteBuyMaterialInfo(key,kay,index)"></em>
+                  class="el-icon-delete"
+                  @click="deleteBuyMaterialInfo(key,kay,index)"></em>
               </li>
               <li>
                 <span cl>订购公司:</span>
                 <el-select v-model="iten.company"
-                           placeholder="请选择订购来源"
-                           size="small">
+                  placeholder="请选择订购来源"
+                  size="small">
                   <el-option v-for="value in options.companyList"
-                             :key="value.id"
-                             :label="value.name"
-                             :value="value.id">
+                    :key="value.id"
+                    :label="value.name"
+                    :value="value.id">
                   </el-option>
                 </el-select>
               </li>
               <li>
                 <span>总价:</span>
                 <el-input size="small"
-                          placeholder="总价"
-                          :disabled="true"
-                          v-model="iten.money">
+                  placeholder="总价"
+                  :disabled="true"
+                  v-model="iten.money">
                 </el-input>
                 <i>元</i>
               </li>
               <li>
                 <span>订购日期:</span>
                 <el-date-picker v-model="iten.orderTime"
-                                type="date"
-                                placeholder="选择日期"
-                                value-format="yyyy-MM-dd"
-                                size="small"
-                                style="width:243px"
-                                :picker-options="pickerOptions">
+                  type="date"
+                  placeholder="选择日期"
+                  value-format="yyyy-MM-dd"
+                  size="small"
+                  style="width:243px"
+                  :picker-options="pickerOptions">
                 </el-date-picker>
               </li>
               <li>
                 <span>备注:</span>
                 <el-input type="textarea"
-                          placeholder="请输入内容"
-                          style="width:243px;margin: 0 0 0 15px;height:45px;"
-                          v-model="iten.remark">
+                  placeholder="请输入内容"
+                  style="width:243px;margin: 0 0 0 15px;height:45px;"
+                  v-model="iten.remark">
                 </el-input>
               </li>
               <span class="el-icon-close"
-                    @click="deleteBuyInfo(key,kay)"></span>
+                @click="deleteBuyInfo(key,kay)"></span>
             </ul>
           </div>
           <div class="addBtn"
-               @click="addBuyInfo(key)">
+            @click="addBuyInfo(key)">
             <span>+</span>
             <span>添加公司</span>
           </div>
@@ -213,9 +213,9 @@
       </div>
       <div class="btnCtn">
         <div class="cancleBtn"
-             @click="$router.go(-1)">返回</div>
+          @click="$router.go(-1)">返回</div>
         <div class="okBtn"
-             @click="saveAll">保存</div>
+          @click="saveAll">保存</div>
       </div>
     </div>
   </div>

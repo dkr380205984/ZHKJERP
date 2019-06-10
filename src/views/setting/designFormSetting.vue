@@ -4,68 +4,100 @@
       <h2>工艺单设置</h2>
     </div>
     <div class="body">
-      <div class="lineCtn" :style="{'max-height':flagObj.ruffled?'300px':'64px'}">
+      <div class="lineCtn"
+        :style="{'max-height':flagObj.ruffled?'300px':'64px'}">
         <div class="inputCtn">
           <span class="label">边型:</span>
-          <el-input class="elInput" v-model="ruffled" placeholder="请输入边型"></el-input>
-          <div class="okBtn" @click="saveRuffled">添加</div>
-          <div class="showAll" @click="flagObj.ruffled=!flagObj.ruffled">{{!flagObj.ruffled?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flagObj.ruffled?'showIcon':'hideIcon'"></i></div>
+          <el-input class="elInput"
+            v-model="ruffled"
+            placeholder="请输入边型"></el-input>
+          <div class="okBtn"
+            @click="saveRuffled">添加</div>
+          <div class="showAll"
+            @click="flagObj.ruffled=!flagObj.ruffled">{{!flagObj.ruffled?'展开':'收起'}}<i class="el-icon-d-arrow-right"
+              :class="!flagObj.ruffled?'showIcon':'hideIcon'"></i></div>
         </div>
         <div class="allInfo">
           <div class="bgWhite"></div>
           <div class="list">
-            <div class="btnCtn" v-for="item in ruffledArr" :key="item.id">
+            <div class="btnCtn"
+              v-for="item in ruffledArr"
+              :key="item.id">
               <span>{{item.name}}</span>
               <!-- <i class="iconCancle" @click="deleteRuffled(item.id)">x</i> -->
             </div>
           </div>
         </div>
       </div>
-      <div class="lineCtn" :style="{'max-height':flagObj.model?'300px':'64px'}">
+      <div class="lineCtn"
+        :style="{'max-height':flagObj.model?'300px':'64px'}">
         <div class="inputCtn">
           <span class="label">机型:</span>
-          <el-input class="elInput" v-model="model" placeholder="请输入机型"></el-input>
-          <div class="okBtn" @click="saveModel">添加</div>
-          <div class="showAll" @click="flagObj.model=!flagObj.model">{{!flagObj.model?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flagObj.model?'showIcon':'hideIcon'"></i></div>
+          <el-input class="elInput"
+            v-model="model"
+            placeholder="请输入机型"></el-input>
+          <div class="okBtn"
+            @click="saveModel">添加</div>
+          <div class="showAll"
+            @click="flagObj.model=!flagObj.model">{{!flagObj.model?'展开':'收起'}}<i class="el-icon-d-arrow-right"
+              :class="!flagObj.model?'showIcon':'hideIcon'"></i></div>
         </div>
         <div class="allInfo">
           <div class="bgWhite"></div>
           <div class="list">
-            <div class="btnCtn" v-for="item in modelArr" :key="item.id">
+            <div class="btnCtn"
+              v-for="item in modelArr"
+              :key="item.id">
               <span>{{item.name}}</span>
               <!-- <i class="iconCancle" @click="deleteModel(item.id)">x</i> -->
             </div>
           </div>
         </div>
       </div>
-      <div class="lineCtn" :style="{'max-height':flagObj.organization?'300px':'64px'}">
+      <div class="lineCtn"
+        :style="{'max-height':flagObj.organization?'300px':'64px'}">
         <div class="inputCtn">
           <span class="label">组织法:</span>
-          <el-input class="elInput" v-model="organization" placeholder="请输入组织法"></el-input>
-          <div class="okBtn" @click="saveOrganization">添加</div>
-          <div class="showAll" @click="flagObj.organization=!flagObj.organization">{{!flagObj.organization?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flagObj.organization?'showIcon':'hideIcon'"></i></div>
+          <el-input class="elInput"
+            v-model="organization"
+            placeholder="请输入组织法"></el-input>
+          <div class="okBtn"
+            @click="saveOrganization">添加</div>
+          <div class="showAll"
+            @click="flagObj.organization=!flagObj.organization">{{!flagObj.organization?'展开':'收起'}}<i class="el-icon-d-arrow-right"
+              :class="!flagObj.organization?'showIcon':'hideIcon'"></i></div>
         </div>
         <div class="allInfo">
           <div class="bgWhite"></div>
           <div class="list">
-            <div class="btnCtn" v-for="item in organizationArr" :key="item.id">
+            <div class="btnCtn"
+              v-for="item in organizationArr"
+              :key="item.id">
               <span>{{item.name}}</span>
               <!-- <i class="iconCancle" @click="deleteOrganization(item.id)">x</i> -->
             </div>
           </div>
         </div>
       </div>
-      <div class="lineCtn" :style="{'max-height':flagObj.process?'300px':'64px'}">
+      <div class="lineCtn"
+        :style="{'max-height':flagObj.process?'300px':'64px'}">
         <div class="inputCtn">
           <span class="label">产品生产流程</span>
-          <el-input class="elInput" v-model="process" placeholder="请输入工序流程"></el-input>
-          <div class="okBtn" @click="saveProcess">添加</div>
-          <div class="showAll" @click="flagObj.process=!flagObj.process">{{!flagObj.process?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flagObj.process?'showIcon':'hideIcon'"></i></div>
+          <el-input class="elInput"
+            v-model="process"
+            placeholder="请输入工序流程"></el-input>
+          <div class="okBtn"
+            @click="saveProcess">添加</div>
+          <div class="showAll"
+            @click="flagObj.process=!flagObj.process">{{!flagObj.process?'展开':'收起'}}<i class="el-icon-d-arrow-right"
+              :class="!flagObj.process?'showIcon':'hideIcon'"></i></div>
         </div>
         <div class="allInfo">
           <div class="bgWhite"></div>
           <div class="list">
-            <div class="btnCtn" v-for="item in processArr" :key="item.id">
+            <div class="btnCtn"
+              v-for="item in processArr"
+              :key="item.id">
               <span>{{item.name}}</span>
               <!-- <i class="iconCancle" @click="deleteProcess(item.id)">x</i> -->
             </div>
@@ -239,5 +271,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/designFormSetting.less';
+@import "~@/assets/css/designFormSetting.less";
 </style>

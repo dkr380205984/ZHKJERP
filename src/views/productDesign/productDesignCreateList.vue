@@ -1,57 +1,70 @@
 <template>
-  <div id="productDesignCreateList" v-loading="loading">
+  <div id="productDesignCreateList"
+    v-loading="loading">
     <div class="head">
       <h2>订单列表</h2>
-      <el-input placeholder="输入订单号精确搜索" suffix-icon="el-icon-search" v-model="searchVal"></el-input>
+      <el-input placeholder="输入订单号精确搜索"
+        suffix-icon="el-icon-search"
+        v-model="searchVal"></el-input>
     </div>
     <div class="body">
       <div class="filterCtn">
         <div class="filterLine">
           <span class="label">筛选列表:</span>
-          <el-tag closable v-show="categoryValCmp" @close="clear('categoryVal')">{{categoryValCmp}}</el-tag>
-          <el-tag closable v-show="typesValCmp" @close="clear('typesVal')">{{typesValCmp}}</el-tag>
-          <el-tag closable v-show="styleValCmp" @close="clear('styleVal')">{{styleValCmp}}</el-tag>
-          <el-tag closable v-show="companyCmp" @close="clear('company')">{{companyCmp}}</el-tag>
-          <el-tag closable v-show="groupCmp" @close="clear('group')">{{groupCmp}}</el-tag>
+          <el-tag closable
+            v-show="categoryValCmp"
+            @close="clear('categoryVal')">{{categoryValCmp}}</el-tag>
+          <el-tag closable
+            v-show="typesValCmp"
+            @close="clear('typesVal')">{{typesValCmp}}</el-tag>
+          <el-tag closable
+            v-show="styleValCmp"
+            @close="clear('styleVal')">{{styleValCmp}}</el-tag>
+          <el-tag closable
+            v-show="companyCmp"
+            @close="clear('company')">{{companyCmp}}</el-tag>
+          <el-tag closable
+            v-show="groupCmp"
+            @close="clear('group')">{{groupCmp}}</el-tag>
         </div>
         <div class="selectLine">
           <span class="label">筛选条件:</span>
           <div class="leftFilter">
-            <el-select v-model="categoryVal" placeholder="筛选品类">
-              <el-option
-                v-for="item in category"
+            <el-select v-model="categoryVal"
+              placeholder="筛选品类">
+              <el-option v-for="item in category"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id">
               </el-option>
             </el-select>
-            <el-select v-model="typesVal" placeholder="筛选类型">
-              <el-option
-                v-for="item in types"
+            <el-select v-model="typesVal"
+              placeholder="筛选类型">
+              <el-option v-for="item in types"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id">
               </el-option>
             </el-select>
-            <el-select v-model="styleVal" placeholder="筛选款型">
-              <el-option
-                v-for="item in style"
+            <el-select v-model="styleVal"
+              placeholder="筛选款型">
+              <el-option v-for="item in style"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id">
               </el-option>
             </el-select>
-            <el-select v-model="company" placeholder="外贸公司">
-              <el-option
-                v-for="item in companyArr"
+            <el-select v-model="company"
+              placeholder="外贸公司">
+              <el-option v-for="item in companyArr"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id">
               </el-option>
             </el-select>
-             <el-select v-model="group" placeholder="负责小组">
-              <el-option
-                v-for="item in groupArr"
+            <el-select v-model="group"
+              placeholder="负责小组">
+              <el-option v-for="item in groupArr"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id">
@@ -59,8 +72,7 @@
             </el-select>
           </div>
           <div class="rightFilter">
-            <el-date-picker
-              v-model="date"
+            <el-date-picker v-model="date"
               type="daterange"
               align="right"
               unlink-panels
@@ -77,52 +89,72 @@
         <div class="mergeHeader">
           <div class="tableColumn">订单号</div>
           <div class="tableColumn">外贸公司</div>
-          <div class="tableColumn" style="flex:2">产品信息</div>
-          <div class="tableColumn" style="flex:0.7">下单数</div>
-          <div class="tableColumn" style="flex:0.7">负责小组</div>
-          <div class="tableColumn" style="flex:0.7">下单日期</div>
+          <div class="tableColumn"
+            style="flex:2">产品信息</div>
+          <div class="tableColumn"
+            style="flex:0.7">下单数</div>
+          <div class="tableColumn"
+            style="flex:0.7">负责小组</div>
+          <div class="tableColumn"
+            style="flex:0.7">下单日期</div>
           <div class="tableColumn">交货日期</div>
           <div class="tableColumn">操作</div>
         </div>
-        <div class="mergeBody" v-for="(item ,index) in list" :key="index">
+        <div class="mergeBody"
+          v-for="(item ,index) in list"
+          :key="index">
           <div class="tableColumn">{{item.order_code}}</div>
           <div class="tableColumn">{{item.client_name}}</div>
-          <div class="tableColumn" style="flex:2">
-            <div class="small" v-for="(itemProduct,indexProduct) in item.productList" :key="indexProduct" style="height:60px;text-align:center;justify-content:space-around">
+          <div class="tableColumn"
+            style="flex:2">
+            <div class="small"
+              v-for="(itemProduct,indexProduct) in item.productList"
+              :key="indexProduct"
+              style="height:60px;text-align:center;justify-content:space-around">
               <span style="display:inline-block">
                 <span style="margin:0 5px">{{itemProduct.productCode}}</span>
                 <span style="margin:0 5px">{{itemProduct.productInfo.category_info.product_category}}/{{itemProduct.productInfo.type_name}}/{{itemProduct.productInfo.style_name}}/{{itemProduct.productInfo.flower_id}}</span>
               </span>
             </div>
           </div>
-          <div class="tableColumn" style="flex:0.7">
-            <div class="small" v-for="(itemProduct,indexProduct) in item.productList" :key="indexProduct" style="height:60px;text-align:center;justify-content:space-around">
+          <div class="tableColumn"
+            style="flex:0.7">
+            <div class="small"
+              v-for="(itemProduct,indexProduct) in item.productList"
+              :key="indexProduct"
+              style="height:60px;text-align:center;justify-content:space-around">
               <span style="display:inline-block">
                 <span style="margin:0 5px">{{itemProduct.sum}}{{itemProduct.productInfo.category_info.name}}</span>
               </span>
             </div>
           </div>
-          <div class="tableColumn" style="flex:0.7">{{item.group_name}}</div>
-          <div class="tableColumn" style="flex:0.7">{{item.order_time}}</div>
+          <div class="tableColumn"
+            style="flex:0.7">{{item.group_name}}</div>
+          <div class="tableColumn"
+            style="flex:0.7">{{item.order_time}}</div>
           <div class="tableColumn">
-            <div class="once" v-for="(itemTime,indexTime) in item.delivery_time" :key="indexTime">
+            <div class="once"
+              v-for="(itemTime,indexTime) in item.delivery_time"
+              :key="indexTime">
               <span>第 {{indexTime+1}} 批：</span>
               <span>{{itemTime}}</span>
             </div>
           </div>
-          <div class="tableColumn" style="flex-direction:row;">
+          <div class="tableColumn"
+            style="flex-direction:row;">
             <div style="margin:auto">
-              <span class="btns normal" @click="$router.push('/index/productDesignCreate/'+item.id)">添加</span>
+              <span class="btns normal"
+                @click="$router.push('/index/productDesignCreate/'+item.id)">添加</span>
             </div>
           </div>
         </div>
-        <div class="mergeBody" v-if="list.length===0">
+        <div class="mergeBody"
+          v-if="list.length===0">
           <div style="width:100%;text-align:center;line-height:59px;">暂无数据</div>
         </div>
       </div>
       <div class="pageCtn">
-        <el-pagination
-          background
+        <el-pagination background
           :page-size="5"
           layout="prev, pager, next"
           :total="total"
@@ -381,17 +413,16 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/productDesignCreateList.less';
+@import "~@/assets/css/productDesignCreateList.less";
 </style>
 <style lang="less">
-#productDesignCreateList{
-  .el-carousel__arrow{
-    color:#fff;
-    background: #1A95FF;
-    &:hover{
-      background:#48AAFF;
+#productDesignCreateList {
+  .el-carousel__arrow {
+    color: #fff;
+    background: #1a95ff;
+    &:hover {
+      background: #48aaff;
     }
   }
 }
-
 </style>

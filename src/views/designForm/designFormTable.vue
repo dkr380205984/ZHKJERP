@@ -1,6 +1,6 @@
 <template>
   <div id="designFormTable"
-       @click.right='goTop'>
+    @click.right='goTop'>
     <div class="table">
       <p class="company">桐庐凯瑞针纺有限公司工艺单</p>
       <div class="page_header">
@@ -43,7 +43,7 @@
               <span>次要原料(经)</span>
               <span>
                 <span v-for="(itemMaterial,indexMaterial) in material_data.warpMaterialOther"
-                      :key="indexMaterial">
+                  :key="indexMaterial">
                   {{itemMaterial.name}}:
                   <template v-for="(item,index) in itemMaterial.value">
                     {{item === 0 ? '主' : '夹' + item}}{{index+1 !== itemMaterial.value.length ? '/' : ''}}
@@ -55,25 +55,25 @@
               <div class="title">经向排列</div>
               <div class="content">
                 <div class="particulars"
-                     v-if="warp_data.warp_rank_bottom.length < 13 || weft_data.weft_rank_bottom.length < 13">
+                  v-if="warp_data.warp_rank_bottom.length < 13 || weft_data.weft_rank_bottom.length < 13">
                   <div>
                     <span v-for="(item,key) in add(warp_data.warp_rank_bottom)"
-                          :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
-                          :key="key">{{item === 'no' ? '' : (item === 0 ? '主' : '夹' + item)}}</span>
+                      :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
+                      :key="key">{{item === 'no' ? '' : (item === 0 ? '主' : '夹' + item)}}</span>
                   </div>
                   <div v-for="(item,key) in warp_data.warp_rank"
-                       :key="key">
+                    :key="key">
                     <template v-if="key === 0">
                       <span v-for="(item,key) in add(item)"
-                            :style="{minWidth : (100/12) + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
-                            :key="key">
+                        :style="{minWidth : (100/12) + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
+                        :key="key">
                         {{item === 'no' ? '' : item}}
                       </span>
                     </template>
                     <template v-else>
                       <span v-for="(value,index) in changeArr(add(item))"
-                            :key="index"
-                            :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999'}">
+                        :key="index"
+                        :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999'}">
                         {{value.value === 'no' ? '' : value.value}}
                       </span>
                     </template>
@@ -158,7 +158,7 @@
               <span>次要原料(纬)</span>
               <span>
                 <span v-for="(itemMaterial,indexMaterial) in material_data.weftMaterialOther"
-                      :key="indexMaterial">{{itemMaterial.name}}:
+                  :key="indexMaterial">{{itemMaterial.name}}:
                   <template v-for="(item,index) in itemMaterial.value">
                     {{item === 0 ? '主' : '夹' + item}}{{index+1 !== itemMaterial.value.length ? '/' : ''}}
                   </template>
@@ -169,25 +169,25 @@
               <div class="title">纬向排列</div>
               <div class="content">
                 <div class="particulars"
-                     v-if="weft_data.weft_rank_bottom.length < 13 || warp_data.warp_rank_bottom.length < 13">
+                  v-if="weft_data.weft_rank_bottom.length < 13 || warp_data.warp_rank_bottom.length < 13">
                   <div>
                     <span v-for="(item,key) in add(weft_data.weft_rank_bottom)"
-                          :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
-                          :key="key">{{item === 'no' ? '' : (item === 0 ? '主' : '夹' + item)}}</span>
+                      :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
+                      :key="key">{{item === 'no' ? '' : (item === 0 ? '主' : '夹' + item)}}</span>
                   </div>
                   <div v-for="(item,key) in weft_data.weft_rank"
-                       :key="key">
+                    :key="key">
                     <template v-if="key === 0">
                       <span v-for="(item,key) in add(item)"
-                            :style="{minWidth : (100/12) + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
-                            :key="key">
+                        :style="{minWidth : (100/12) + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
+                        :key="key">
                         {{item === 'no' ? '' : item}}
                       </span>
                     </template>
                     <template v-else>
                       <span v-for="(value,index) in changeArr(add(item))"
-                            :key="index"
-                            :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999'}">
+                        :key="index"
+                        :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999'}">
                         {{value.value === 'no' ? '' : value.value}}
                       </span>
                     </template>
@@ -208,7 +208,7 @@
                   <span>具体配色</span>
                 </div>
                 <div v-for="(item,index) in forArr(6)"
-                     :key="index">
+                  :key="index">
                   <div>{{index === 0 ? "主" : "夹" + index}}</div>
                   <div>
                     <span>经</span>
@@ -220,13 +220,13 @@
                 <li>
                   <div class="table-head-col">克重</div>
                   <div v-for="(val,ind) in weight_info"
-                       :key="ind + 'a'">
+                    :key="ind + 'a'">
                     <span :style="{fontSize:smallFont(val.data.warp ? val.data.warp.weight + 'g' : '') ? '10px' : false}">{{val.data.warp ? val.data.warp.weight + 'g' : ''}}</span>
                     <span :style="{fontSize:smallFont(val.data.weft ? val.data.weft.weight + 'g' : '') ? '10px' : false}">{{val.data.weft ? val.data.weft.weight + 'g' : ''}}</span>
                   </div>
                   <template v-if="weight_info.length < 6">
                     <div v-for="(x,y) in forArr( 6 - weight_info.length)"
-                         :key="y">
+                      :key="y">
                       <span></span>
                       <span></span>
                     </div>
@@ -234,16 +234,16 @@
                 </li>
                 <template v-for="(value,index) in color_data">
                   <li v-if='index < 5'
-                      :key="index">
+                    :key="index">
                     <div class="table-head-col">{{value.product_color}}</div>
                     <div v-for="(item,key) in value.color_scheme"
-                         :key="key">
+                      :key="key">
                       <span :style="{fontSize:smallFont(item.warp.name) ? '10px' : false}">{{item.warp.name}}</span>
                       <span :style="{fontSize:smallFont(item.weft.name) ? '10px' : false}">{{item.weft ? item.weft.name : ''}}</span>
                     </div>
                     <template v-if="value.color_scheme.length<6">
                       <div v-for="(x,y) in forArr( 6 - value.color_scheme.length)"
-                           :key="y+'1'">
+                        :key="y+'1'">
                         <span></span>
                         <span></span>
                       </div>
@@ -253,10 +253,10 @@
 
                 <template v-if="color_data.length < 6">
                   <li v-for="(b,cdf) in forArr(6 - color_data.length)"
-                      :key="cdf+b">
+                    :key="cdf+b">
                     <div class="table-head-col"></div>
                     <div v-for="(item,key) in forArr(6)"
-                         :key="key+item">
+                      :key="key+item">
                       <span></span>
                       <span></span>
                     </div>
@@ -274,7 +274,7 @@
       </ul>
     </div>
     <div class="outTable-arrangement"
-         v-if="warp_data.warp_rank_bottom.length > 12">
+      v-if="warp_data.warp_rank_bottom.length > 12">
       <div class="code">
         <div class="title">工艺单编号:</div>
         <div class="content">{{craft_code}}</div>
@@ -283,34 +283,34 @@
         <div class="title">经向排列:</div>
         <div class="content">
           <div class="particulars"
-               v-for=" (a,b) in add(warp_data.warp_rank_bottom,'all')"
-               :key="b">
+            v-for=" (a,b) in add(warp_data.warp_rank_bottom,'all')"
+            :key="b">
             <div>
               <span v-for="(item,key) in add(warp_data.warp_rank_bottom,b)"
-                    :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
-                    :key="key">{{item === 'no' ? '' : (item === 0 ? '主' : '夹' + item)}}</span>
+                :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
+                :key="key">{{item === 'no' ? '' : (item === 0 ? '主' : '夹' + item)}}</span>
             </div>
             <div v-for="(item,key) in warp_data.warp_rank"
-                 :key="key">
+              :key="key">
               <template v-if="key === 0">
                 <span v-for="(val,ind) in add(item,b)"
-                      :style="{minWidth : (100/12) + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
-                      :key="ind">
+                  :style="{minWidth : (100/12) + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
+                  :key="ind">
                   {{val === 'no' ? '' : val}}
                 </span>
               </template>
               <template v-else>
                 <span v-for="(value,index) in changeArr(add(item,b))"
-                      :key="index"
-                      :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999',background: consol(item,b,value,index) && value.value !== 'no' ? 'rgb(240,240,240)' : false}">
+                  :key="index"
+                  :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999',background: consol(item,b,value,index) && value.value !== 'no' ? 'rgb(240,240,240)' : false}">
                   {{value.value === 'no' ? '' : value.value}}
                   <span v-if="consol(item,b,value,index) && value.value !== 'no'"
-                        class="jiantou">
+                    class="jiantou">
                     <span v-if="consol(item,b,value,index,true) === '' && b !== 0 && b !== add(warp_data.warp_rank_bottom,'all').length -1"></span>
                     <span v-else-if="(((item[(b + 1) * 12] === item[(b + 1) * 12 - 1] && item[( b + 1 ) * 12 ] === '' ) || item[(b + 1) * 12] === null) && index === changeArr(add(item, b)).length - 1)"
-                          class="el-icon-back left"></span>
+                      class="el-icon-back left"></span>
                     <span v-else-if="(((item[b * 12] === item[b * 12 - 1] && item[b * 12] === '') || item[b * 12] === null) && index === 0 && b !== 0)"
-                          class="el-icon-back right"></span>
+                      class="el-icon-back right"></span>
                   </span>
                 </span>
               </template>
@@ -322,35 +322,35 @@
         <div class="title">纬向排列:</div>
         <div class="content">
           <div class="particulars"
-               v-for=" (a,b) in add(weft_data.weft_rank_bottom,'all')"
-               :key="b">
+            v-for=" (a,b) in add(weft_data.weft_rank_bottom,'all')"
+            :key="b">
             <div>
               <span v-for="(item,key) in add(weft_data.weft_rank_bottom,b)"
-                    :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
-                    :key="key">{{item === 'no' ? '' : (item === 0 ? '主' : '夹' + item)}}</span>
+                :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
+                :key="key">{{item === 'no' ? '' : (item === 0 ? '主' : '夹' + item)}}</span>
             </div>
             <div v-for="(item,key) in weft_data.weft_rank"
-                 :key="key">
+              :key="key">
               <template v-if="key === 0">
                 <span v-for="(items,key) in add(item,b)"
-                      :style="{minWidth : (100/12) + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
-                      :key="key">
+                  :style="{minWidth : (100/12) + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
+                  :key="key">
                   {{items === 'no' ? '' : items}}
                 </span>
               </template>
               <template v-else>
                 <span v-for="(value,index) in changeArr(add(item,b))"
-                      :key="index"
-                      :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999',background: consol(item,b,value,index) && value.value !== 'no' ? 'rgb(240,240,240)' : false}">
+                  :key="index"
+                  :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999',background: consol(item,b,value,index) && value.value !== 'no' ? 'rgb(240,240,240)' : false}">
                   {{value.value === 'no' ? '' : value.value}}
 
                   <span v-if="consol(item,b,value,index) && value.value !== 'no' "
-                        class="jiantou">
+                    class="jiantou">
                     <span v-if="consol(item,b,value,index,true) === '' && b !== 0 && b !== add(weft_data.weft_rank_bottom,'all').length -1"></span>
                     <span v-else-if="(((item[(b + 1) * 12] === item[(b + 1) * 12 - 1] && item[( b + 1 ) * 12 ] === '' ) || item[(b + 1) * 12] === null) && index === changeArr(add(item, b)).length - 1)"
-                          class="el-icon-back left"></span>
+                      class="el-icon-back left"></span>
                     <span v-else-if="(((item[b * 12] === item[b * 12 - 1] && item[b * 12] === '') || item[b * 12] === null) && index === 0 && b !== 0)"
-                          class="el-icon-back right"></span>
+                      class="el-icon-back right"></span>
                   </span>
                 </span>
               </template>
@@ -360,7 +360,7 @@
       </div>
     </div>
     <div class="outTable-color"
-         v-if='color_data.length > 6'>
+      v-if='color_data.length > 6'>
       <div class="code">
         <div class="title">工艺单编号:</div>
         <div class="content">{{craft_code}}</div>
@@ -372,7 +372,7 @@
             <span>具体配色</span>
           </div>
           <div v-for="(item,index) in forArr(6)"
-               :key="index">
+            :key="index">
             <div>{{index === 0 ? "主" : "夹" + index}}</div>
             <div>
               <span>经</span>
@@ -384,13 +384,13 @@
           <li>
             <div class="table-head-col">克重</div>
             <div v-for="(val,ind) in weight_info"
-                 :key="ind">
+              :key="ind">
               <span :style="{fontSize:smallFont(item.warp.name) ? '10px' : false}">{{val.data.warp.weight + 'g'}}</span>
               <span :style="{fontSize:smallFont(item.weft.name) ? '10px' : false}">{{val.data.weft.weight + 'g'}}</span>
             </div>
             <template v-if="weight_info.length < 6">
               <div v-for="(x,y) in forArr( 6 - weight_info.length)"
-                   :key="y">
+                :key="y">
                 <span></span>
                 <span></span>
               </div>
@@ -398,16 +398,16 @@
           </li>
           <template v-for="(value,index) in color_data">
             <li v-if='index < 5'
-                :key="index">
+              :key="index">
               <div class="table-head-col">{{value.product_color}}</div>
               <div v-for="(item,key) in value.color_scheme"
-                   :key="key">
+                :key="key">
                 <span :style="{fontSize:smallFont(item.warp.name) ? '10px' : false}">{{item.warp.name}}</span>
                 <span :style="{fontSize:smallFont(item.weft.name) ? '10px' : false}">{{item.weft ? item.weft.name : ''}}</span>
               </div>
               <template v-if="value.color_scheme.length < 6">
                 <div v-for="(x,y) in forArr( 6 - value.color_scheme.length)"
-                     :key="y">
+                  :key="y">
                   <span></span>
                   <span></span>
                 </div>
@@ -415,10 +415,10 @@
             </li>
             <template v-if="color_data.length < 6">
               <li v-for="(value,index) in forArr(6 - color_data.length)"
-                  :key="index+'1'">
+                :key="index+'1'">
                 <div class="table-head-col"></div>
                 <div v-for="(item,key) in forArr(6)"
-                     :key="key+'1'">
+                  :key="key+'1'">
                   <span></span>
                   <span></span>
                 </div>

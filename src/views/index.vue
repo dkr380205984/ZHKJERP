@@ -5,17 +5,19 @@
       <div class="menuCtn">
         <!-- 本层嵌套是为了消除滚动条的影响 该容器预留五像素宽度给滚动条-->
         <div class="menuCtnForScroll">
-          <el-menu
-           class="myMenu"
-           background-color="#2E384E"
-           text-color="#EEEEEE"
-           active-text-color = "#FFFFFF"
-           :default-active="$route.path"
-           :router="true"
-           >
-            <el-submenu v-for="(item,index) in menu" :index="index.toString()" :key="item.name">
+          <el-menu class="myMenu"
+            background-color="#2E384E"
+            text-color="#EEEEEE"
+            active-text-color="#FFFFFF"
+            :default-active="$route.path"
+            :router="true">
+            <el-submenu v-for="(item,index) in menu"
+              :index="index.toString()"
+              :key="item.name">
               <span slot="title">{{item.name}}</span>
-              <el-menu-item v-for="(item2) in item.children" :index="item2.url" :key="item2.name">{{item2.name}}</el-menu-item>
+              <el-menu-item v-for="(item2) in item.children"
+                :index="item2.url"
+                :key="item2.name">{{item2.name}}</el-menu-item>
             </el-submenu>
           </el-menu>
         </div>
@@ -57,5 +59,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/index.less';
+@import "~@/assets/css/index.less";
 </style>

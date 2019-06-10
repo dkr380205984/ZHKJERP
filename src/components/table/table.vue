@@ -1,25 +1,25 @@
 <template>
   <ul id="table">
     <li class="col"
-        :style="{width: (100/6) + '%',backgroundColor:'#EEE'}">
+      :style="{width: (100/6) + '%',backgroundColor:'#EEE'}">
       <span>
         <span>{{data.size}}</span>
       </span>
       <span v-for="(item,key) in colorData"
-            :key="key+item">
+        :key="key+item">
         <span>{{item}}</span>
       </span>
     </li>
     <li class="col"
-        v-for="(item,key) in data.materialList"
-        :key="key+item">
+      v-for="(item,key) in data.materialList"
+      :key="key+item">
       <span>
         <span>{{item.material}}</span>
       </span>
       <template v-for="(value,index) in item.colorInfo">
         <span :key="index+value">
           <span v-for="(content,number) in addLen(setSizeInfo(value,key,index,data.materialList.length,item.colorInfo.length),key)"
-                :key="number+content">
+            :key="number+content">
             <span>{{content.name}}</span>
             <span>{{content.number|fixedFilter}}{{((content.unit ==='克' || content.unit === '千克') ? (content.unit === '克' ? 'g' : 'kg') : content.unit)}}</span>
           </span>
@@ -28,25 +28,25 @@
             <span v-if="index === 0"></span>
             <template v-else>
               <span v-for="(content,number) in item.colorInfo[index-1].colorList"
-                    :key='number'></span>
+                :key='number'></span>
             </template>
           </template>
         </span>
       </template>
       <template v-if="item.colorInfo.length < colorData.length">
         <span v-for="(value,index) in addArr((colorData.length)-(item.colorInfo.length))"
-              :key="index+value">
+          :key="index+value">
           <span v-for="(content,number) in addArr(lenArr[key],value)"
-                :key="number+content"></span>
+            :key="number+content"></span>
         </span>
       </template>
     </li>
     <template v-if="total < 6">
       <li class="col"
-          v-for="(item,key) in addArr(6-total)"
-          :key="key+item">
+        v-for="(item,key) in addArr(6-total)"
+        :key="key+item">
         <span v-for="(value,index) in addArr(colorData.length+1)"
-              :key="index+value">
+          :key="index+value">
           <span></span>
         </span>
       </li>

@@ -5,8 +5,12 @@
     </div>
     <div class="body">
       <div class="blockCtn">
-        <div @click="$router.push(item.url)" class="blocks" v-for="(item,index) in list" :key="index">
-          <img class="image" :src="item.img" />
+        <div @click="$router.push(item.url)"
+          class="blocks"
+          v-for="(item,index) in list"
+          :key="index">
+          <img class="image"
+            :src="item.img" />
           <span class="description">{{item.name}}</span>
         </div>
       </div>
@@ -45,5 +49,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/settings.less';
+@import "~@/assets/css/settings.less";
 </style>

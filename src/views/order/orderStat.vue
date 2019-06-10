@@ -1,57 +1,70 @@
 <template>
-  <div id="orderList" v-loading="loading">
+  <div id="orderList"
+    v-loading="loading">
     <div class="head">
       <h2>订单发货列表</h2>
-      <el-input placeholder="输入订单号精确搜索" suffix-icon="el-icon-search" v-model="searchVal"></el-input>
+      <el-input placeholder="输入订单号精确搜索"
+        suffix-icon="el-icon-search"
+        v-model="searchVal"></el-input>
     </div>
     <div class="body">
       <div class="filterCtn">
         <div class="filterLine">
           <span class="label">筛选列表:</span>
-          <el-tag closable v-show="categoryValCmp" @close="clear('categoryVal')">{{categoryValCmp}}</el-tag>
-          <el-tag closable v-show="typesValCmp" @close="clear('typesVal')">{{typesValCmp}}</el-tag>
-          <el-tag closable v-show="styleValCmp" @close="clear('styleVal')">{{styleValCmp}}</el-tag>
-          <el-tag closable v-show="companyCmp" @close="clear('company')">{{companyCmp}}</el-tag>
-          <el-tag closable v-show="groupCmp" @close="clear('group')">{{groupCmp}}</el-tag>
+          <el-tag closable
+            v-show="categoryValCmp"
+            @close="clear('categoryVal')">{{categoryValCmp}}</el-tag>
+          <el-tag closable
+            v-show="typesValCmp"
+            @close="clear('typesVal')">{{typesValCmp}}</el-tag>
+          <el-tag closable
+            v-show="styleValCmp"
+            @close="clear('styleVal')">{{styleValCmp}}</el-tag>
+          <el-tag closable
+            v-show="companyCmp"
+            @close="clear('company')">{{companyCmp}}</el-tag>
+          <el-tag closable
+            v-show="groupCmp"
+            @close="clear('group')">{{groupCmp}}</el-tag>
         </div>
         <div class="selectLine">
           <span class="label">筛选条件:</span>
           <div class="leftFilter">
-            <el-select v-model="categoryVal" placeholder="筛选品类">
-              <el-option
-                v-for="item in category"
+            <el-select v-model="categoryVal"
+              placeholder="筛选品类">
+              <el-option v-for="item in category"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id">
               </el-option>
             </el-select>
-            <el-select v-model="typesVal" placeholder="筛选类型">
-              <el-option
-                v-for="item in types"
+            <el-select v-model="typesVal"
+              placeholder="筛选类型">
+              <el-option v-for="item in types"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id">
               </el-option>
             </el-select>
-            <el-select v-model="styleVal" placeholder="筛选款型">
-              <el-option
-                v-for="item in style"
+            <el-select v-model="styleVal"
+              placeholder="筛选款型">
+              <el-option v-for="item in style"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id">
               </el-option>
             </el-select>
-            <el-select v-model="company" placeholder="外贸公司">
-              <el-option
-                v-for="item in companyArrS"
+            <el-select v-model="company"
+              placeholder="外贸公司">
+              <el-option v-for="item in companyArrS"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id">
               </el-option>
             </el-select>
-             <el-select v-model="group" placeholder="负责小组">
-              <el-option
-                v-for="item in groupArr"
+            <el-select v-model="group"
+              placeholder="负责小组">
+              <el-option v-for="item in groupArr"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id">
@@ -59,8 +72,7 @@
             </el-select>
           </div>
           <div class="rightFilter">
-            <el-date-picker
-              v-model="date"
+            <el-date-picker v-model="date"
               type="daterange"
               align="right"
               unlink-panels
@@ -77,23 +89,46 @@
         <div class="mergeHeader">
           <div class="tableColumn">发货日期</div>
           <div class="tableColumn">订单号</div>
-          <div class="tableColumn" style="flex:1.8">订单公司</div>
-          <div class="tableColumn" style="flex:3">产品信息</div>
+          <div class="tableColumn"
+            style="flex:1.8">订单公司</div>
+          <div class="tableColumn"
+            style="flex:3">产品信息</div>
           <div class="tableColumn">下单数</div>
           <div class="tableColumn">小组信息</div>
-          <div class="tableColumn" style="flex:1">操作</div>
+          <div class="tableColumn"
+            style="flex:1">操作</div>
         </div>
-        <div class="mergeBody" v-for="(item ,index) in list" :key="index" :style="{'height':(item.lineNum*60)+'px'}">
+        <div class="mergeBody"
+          v-for="(item ,index) in list"
+          :key="index"
+          :style="{'height':(item.lineNum*60)+'px'}">
           <div class="tableColumn">{{item.date}}</div>
           <div class="tableColumn">
-            <div class="small" v-for="(itemOrder,indexOrder) in item.orderInfo" :key="indexOrder" :style="{'height':(itemOrder.lineNum*60)+'px'}"><div style="margin:auto">{{itemOrder.order_code}}</div></div>
+            <div class="small"
+              v-for="(itemOrder,indexOrder) in item.orderInfo"
+              :key="indexOrder"
+              :style="{'height':(itemOrder.lineNum*60)+'px'}">
+              <div style="margin:auto">{{itemOrder.order_code}}</div>
+            </div>
           </div>
-          <div class="tableColumn" style="flex:1.8">
-            <div class="small" v-for="(itemOrder,indexOrder) in item.orderInfo" :key="indexOrder" :style="{'height':(itemOrder.lineNum*60)+'px'}"><div style="margin:auto">{{itemOrder.company_name}}</div></div>
+          <div class="tableColumn"
+            style="flex:1.8">
+            <div class="small"
+              v-for="(itemOrder,indexOrder) in item.orderInfo"
+              :key="indexOrder"
+              :style="{'height':(itemOrder.lineNum*60)+'px'}">
+              <div style="margin:auto">{{itemOrder.company_name}}</div>
+            </div>
           </div>
-          <div class="tableColumn" style="flex:3">
-             <div class="small column" v-for="(itemOrder,indexOrder) in item.orderInfo" :key="indexOrder" :style="{'height':(itemOrder.lineNum*60)+'px'}">
-              <div class="smallChild" v-for="(itemProduct,indexProduct) in itemOrder.batch_info" :key="indexProduct">
+          <div class="tableColumn"
+            style="flex:3">
+            <div class="small column"
+              v-for="(itemOrder,indexOrder) in item.orderInfo"
+              :key="indexOrder"
+              :style="{'height':(itemOrder.lineNum*60)+'px'}">
+              <div class="smallChild"
+                v-for="(itemProduct,indexProduct) in itemOrder.batch_info"
+                :key="indexProduct">
                 <div style="margin:auto">
                   <span style="margin:0 5px">{{itemProduct.productCode}}</span>
                   <span style="margin:0 5px">{{itemProduct.productInfo.category_info.product_category}}/{{itemProduct.productInfo.type_name}}/{{itemProduct.productInfo.style_name}}/{{itemProduct.productInfo.flower_id}}</span>
@@ -102,8 +137,13 @@
             </div>
           </div>
           <div class="tableColumn">
-             <div class="small column" v-for="(itemOrder,indexOrder) in item.orderInfo" :key="indexOrder" :style="{'height':(itemOrder.lineNum*60)+'px'}">
-              <div class="smallChild" v-for="(itemProduct,indexProduct) in itemOrder.batch_info" :key="indexProduct">
+            <div class="small column"
+              v-for="(itemOrder,indexOrder) in item.orderInfo"
+              :key="indexOrder"
+              :style="{'height':(itemOrder.lineNum*60)+'px'}">
+              <div class="smallChild"
+                v-for="(itemProduct,indexProduct) in itemOrder.batch_info"
+                :key="indexProduct">
                 <div style="margin:auto">
                   <span style="margin:0 5px">{{itemProduct.sum}}{{itemProduct.productInfo.category_info.name}}</span>
                 </div>
@@ -111,23 +151,34 @@
             </div>
           </div>
           <div class="tableColumn">
-            <div class="small" v-for="(itemOrder,indexOrder) in item.orderInfo" :key="indexOrder" :style="{'height':(itemOrder.lineNum*60)+'px'}"><div style="margin:auto">{{itemOrder.group_name}}</div></div>
+            <div class="small"
+              v-for="(itemOrder,indexOrder) in item.orderInfo"
+              :key="indexOrder"
+              :style="{'height':(itemOrder.lineNum*60)+'px'}">
+              <div style="margin:auto">{{itemOrder.group_name}}</div>
+            </div>
           </div>
-          <div class="tableColumn" style="flex:1;">
-             <div class="small" v-for="(itemOrder,indexOrder) in item.orderInfo" :key="indexOrder" :style="{'height':(itemOrder.lineNum*60)+'px'}">
+          <div class="tableColumn"
+            style="flex:1;">
+            <div class="small"
+              v-for="(itemOrder,indexOrder) in item.orderInfo"
+              :key="indexOrder"
+              :style="{'height':(itemOrder.lineNum*60)+'px'}">
               <div style="margin:auto">
-                <span class="btns success" @click="$router.push('/index/orderDetail/'+itemOrder.order_id)">详情</span>
-              </div></div>
+                <span class="btns success"
+                  @click="$router.push('/index/orderDetail/'+itemOrder.order_id)">详情</span>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="mergeBody" v-if="list.length===0">
+        <div class="mergeBody"
+          v-if="list.length===0">
           <div style="width:100%;text-align:center;line-height:59px;">暂无数据</div>
         </div>
       </div>
       <!-- <div class="sum">订单统计:暂不统计</div> -->
       <div class="pageCtn">
-        <el-pagination
-          background
+        <el-pagination background
           :page-size="5"
           layout="prev, pager, next"
           :total="total"
@@ -445,17 +496,16 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/orderList.less';
+@import "~@/assets/css/orderList.less";
 </style>
 <style lang="less">
-#orderList{
-  .el-carousel__arrow{
-    color:#fff;
-    background: #1A95FF;
-    &:hover{
-      background:#48AAFF;
+#orderList {
+  .el-carousel__arrow {
+    color: #fff;
+    background: #1a95ff;
+    &:hover {
+      background: #48aaff;
     }
   }
 }
-
 </style>

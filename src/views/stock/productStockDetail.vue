@@ -40,7 +40,8 @@
           <span class="content">{{total}}</span>
         </div>
       </div>
-       <div class="tableCtn" style="min-height:0">
+      <div class="tableCtn"
+        style="min-height:0">
         <div class="tableRow titleTableRow">
           <div class="tableColumn">时间</div>
           <div class="tableColumn">订单号</div>
@@ -50,8 +51,11 @@
           <div class="tableColumn">次品数量</div>
           <div class="tableColumn">备注信息</div>
         </div>
-         <div class="tableRow bodyTableRow" v-for="(item) in list" :key="item.id">
-          <div class="tableColumn" style="color:#1A95FF">{{item.update_time}}</div>
+        <div class="tableRow bodyTableRow"
+          v-for="(item) in list"
+          :key="item.id">
+          <div class="tableColumn"
+            style="color:#1A95FF">{{item.update_time}}</div>
           <div class="tableColumn">{{item.order_code}}</div>
           <div class="tableColumn">{{item.user_name}}</div>
           <div class="tableColumn">出库/入库</div>
@@ -61,7 +65,7 @@
           </div>
           <div class="tableColumn">{{item.remark?item.remark:'暂无信息'}}</div>
         </div>
-       </div>
+      </div>
       <!-- <div class="btnCtn">
         <div class="cancleBtn" @click="$router.go(-1)">返回</div>
         <div class="okBtn">修改</div>

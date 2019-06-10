@@ -1,6 +1,6 @@
 <template>
   <div id="rawMaterialOutStock"
-       v-loading="loading">
+    v-loading="loading">
     <div class="head">
       <h2>{{type === '0' ? '原' : '辅'}}料出库</h2>
     </div>
@@ -15,7 +15,7 @@
           <div class="inputCtn">
             <span class="label">订单号:</span>
             <span class="content important"
-                  @click="$router.push('/index/orderDetail/' + $route.params.id)">{{order_code}}</span>
+              @click="$router.push('/index/orderDetail/' + $route.params.id)">{{order_code}}</span>
           </div>
           <div class="inputCtn">
             <span class="label">外贸公司:</span>
@@ -54,13 +54,13 @@
                   <span>已出库</span>
                 </li>
                 <li class="content"
-                    v-for="(item,key) in materialList"
-                    :key="key">
+                  v-for="(item,key) in materialList"
+                  :key="key">
                   <span class="tableRow">{{item.material}}</span>
                   <span class="tableRow flex17 col">
                     <span v-for="(val,ind) in item.need"
-                          :key="ind"
-                          class="tableColumn">
+                      :key="ind"
+                      class="tableColumn">
                       <span class="tableRow">{{val.name}}</span>
                       <span class="tableRow">{{val.value}}{{item.unit}}</span>
                     </span>
@@ -105,18 +105,18 @@
                   <span @click="$route">暂无生产信息(添加)</span>
                 </li>
                 <li class="content"
-                    v-for="(item,key) in productionList"
-                    :key="key">
+                  v-for="(item,key) in productionList"
+                  :key="key">
                   <span class="tableRow">{{item.name}}</span>
                   <span class="tableRow flex22 col">
                     <span v-for="(value,index) in item.production"
-                          :key="index"
-                          class="tableColumn">
+                      :key="index"
+                      class="tableColumn">
                       <span class="tableRow flex17"><span class="flex06">{{value.product_code}}</span><span>{{value.product_class}}</span></span>
                       <span class="tableRow flex12 col">
                         <span v-for="(ite,ka) in value.product_detail"
-                              :key="ka"
-                              class="tableColumn">
+                          :key="ka"
+                          class="tableColumn">
                           <span class="tableRow">{{ite.size + '/' + ite.color }}</span>
                           <span class="tableRow">{{ite.number + '条'}}</span>
                         </span>
@@ -125,13 +125,13 @@
                   </span>
                   <span class="tableRow flex20 col">
                     <span v-for="(value,index) in item.materials"
-                          :key="index"
-                          class="tableColumn">
+                      :key="index"
+                      class="tableColumn">
                       <span class="tableRow">{{value.material}}</span>
                       <span class="tableRow col">
                         <span v-for="(ite,ka) in value.colors"
-                              :key="ka"
-                              class="tableColumn">
+                          :key="ka"
+                          class="tableColumn">
                           <span class="tableRow">{{ite.color }}</span>
                           <span class="tableRow">{{ite.number|fixedFilter}}{{ite.unit}}</span>
                         </span>
@@ -151,8 +151,8 @@
           <!-- <div class="border"></div> -->
         </div>
         <div class="lineCtn col"
-             v-for="(item,key) in list"
-             :key="key">
+          v-for="(item,key) in list"
+          :key="key">
           <div class="tablePlan">
             <div class="tableTitle">
               <span>{{type === '0' ? '原' : '辅'}}料名称</span>
@@ -169,90 +169,90 @@
           </div>
           <div class="buyInfo">
             <ul class="buyFrom"
-                v-for="(iten,kay) in item.stockInfo"
-                :key="kay">
+              v-for="(iten,kay) in item.stockInfo"
+              :key="kay">
               <li>
                 <span>出库单位</span>:
                 <el-select v-model="iten.outStockClient"
-                           placeholder="请选择出库单位"
-                           size="small">
+                  placeholder="请选择出库单位"
+                  size="small">
                   <el-option v-for="(value,index) in item.client_name"
-                             :key="index"
-                             :label="value.name"
-                             :value="value.id">
+                    :key="index"
+                    :label="value.name"
+                    :value="value.id">
                   </el-option>
                 </el-select>
               </li>
               <li>
                 <span>{{type === '0' ? '原' : '辅'}}料颜色</span>:
                 <el-select v-model="iten.materialColor"
-                           placeholder="请选择颜色"
-                           size="small">
+                  placeholder="请选择颜色"
+                  size="small">
                   <el-option v-for="value in update(item,iten.outStockClient)"
-                             :key="value.value"
-                             :value="value">
+                    :key="value.value"
+                    :value="value">
                   </el-option>
                 </el-select>
               </li>
               <li v-for="(value,index) in iten.stockWeightInfo"
-                  :key="index"
-                  class="col">
+                :key="index"
+                class="col">
                 <div>
                   <span>批号/缸号</span>:
                   <el-select v-model="value.dyelot_number"
-                             placeholder="请选择批/缸号"
-                             size="small">
+                    placeholder="请选择批/缸号"
+                    size="small">
                     <el-option v-for="value in item.vatList[iten.materialColor]"
-                               :key="value.value"
-                               :value="value">
+                      :key="value.value"
+                      :value="value">
                     </el-option>
                   </el-select>
                 </div>
                 <div>
                   <span>件数/数量</span>:
                   <el-input size="small"
-                            placeholder="件数"
-                            v-model="value.number">
+                    placeholder="件数"
+                    v-model="value.number">
                     <template slot="append">件</template>
                   </el-input>
                   <el-input size="small"
-                            placeholder="数量"
-                            v-model="value.weight">
+                    placeholder="数量"
+                    v-model="value.weight">
                     <template slot="append">kg</template>
                   </el-input>
                 </div>
                 <em v-if="index === 0"
-                    class="el-icon-plus"
-                    @click="appendStockWeightInfo(key,kay)"></em>
+                  class="el-icon-plus"
+                  @click="appendStockWeightInfo(key,kay)"></em>
                 <em v-else
-                    class="el-icon-delete"
-                    @click="deleteStockWeightInfo(key,kay,index)"></em>
+                  class="el-icon-delete"
+                  @click="deleteStockWeightInfo(key,kay,index)"></em>
               </li>
               <li>
                 <span>出库时间</span>:
                 <el-date-picker v-model="iten.stock_time"
-                                align="right"
-                                type="date"
-                                placeholder="选择出库时间"
-                                size="small"
-                                style="width:243px"
-                                :picker-options="pickerOptions">
+                  align="right"
+                  type="date"
+                  placeholder="选择出库时间"
+                  size="small"
+                  style="width:243px"
+                  :picker-options="pickerOptions">
                 </el-date-picker>
               </li>
               <li>
                 <span>备注</span>:
                 <el-input type="textarea"
-                          placeholder="请输入内容"
-                          style="width:243px;margin: 0 0 0 15px;height:45px;"
-                          v-model="iten.remark">
+                  placeholder="请输入内容"
+                  style="width:243px;margin: 0 0 0 15px;height:45px;"
+                  v-model="iten.remark">
                 </el-input>
               </li>
               <span class="el-icon-close"
-                    @click="deleteStockInfo(key,kay)"></span>
+                @click="deleteStockInfo(key,kay)"></span>
             </ul>
           </div>
           <div class="addBtn"
-               @click="addStockInfo(key)">
+            @click="addStockInfo(key)">
             <span>+</span>
             <span>添加出库</span>
           </div>
@@ -260,9 +260,9 @@
       </div>
       <div class="btnCtn">
         <div class="cancleBtn"
-             @click="$router.go(-1)">返回</div>
+          @click="$router.go(-1)">返回</div>
         <div class="okBtn"
-             @click="saveAll">保存</div>
+          @click="saveAll">保存</div>
       </div>
     </div>
   </div>
@@ -489,7 +489,7 @@ export default {
         order_id: this.$route.params.id
       }),
       weaveDetail({
-        production_plan_id: this.$route.params.planId
+        order_id: this.$route.params.planId
       }),
       productionDetail({
         order_id: this.$route.params.id

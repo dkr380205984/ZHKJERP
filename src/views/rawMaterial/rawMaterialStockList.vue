@@ -3,62 +3,62 @@
     <div class="head">
       <h2>物料出入库列表</h2>
       <el-input placeholder="输入文字精确搜索"
-                suffix-icon="el-icon-search"
-                v-model="searchVal"></el-input>
+        suffix-icon="el-icon-search"
+        v-model="searchVal"></el-input>
     </div>
     <div class="body">
       <div class="filterCtn">
         <div class="filterLine">
           <span class="label">筛选列表:</span>
           <el-tag closable
-                  v-show="clientValCmp"
-                  @close="clear('clientVal')">{{clientValCmp}}</el-tag>
+            v-show="clientValCmp"
+            @close="clear('clientVal')">{{clientValCmp}}</el-tag>
           <el-tag closable
-                  v-show="categoryCmp"
-                  @close="clear('category')">{{categoryCmp}}</el-tag>
+            v-show="categoryCmp"
+            @close="clear('category')">{{categoryCmp}}</el-tag>
           <el-tag closable
-                  v-show="groupValCmp"
-                  @close="clear('groupVal')">{{groupValCmp}}</el-tag>
+            v-show="groupValCmp"
+            @close="clear('groupVal')">{{groupValCmp}}</el-tag>
         </div>
         <div class="selectLine">
           <span class="label">筛选条件:</span>
           <div class="leftFilter">
             <el-select v-model="clientVal"
-                       placeholder="筛选公司">
+              placeholder="筛选公司">
               <el-option v-for="item in client"
-                         :key="item.id"
-                         :label="item.name"
-                         :value="item.id">
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
               </el-option>
             </el-select>
             <el-select v-model="categoryVal"
-                       placeholder="筛选品类">
+              placeholder="筛选品类">
               <el-option v-for="item in category"
-                         :key="item.id"
-                         :label="item.name"
-                         :value="item.id">
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
               </el-option>
             </el-select>
             <el-select v-model="groupVal"
-                       placeholder="筛选小组">
+              placeholder="筛选小组">
               <el-option v-for="item in group"
-                         :key="item.id"
-                         :label="item.name"
-                         :value="item.id">
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
               </el-option>
             </el-select>
           </div>
           <div class="rightFilter">
             <el-date-picker v-model="date"
-                            type="daterange"
-                            align="right"
-                            unlink-panels
-                            value-format="yyyy-MM-dd"
-                            range-separator="至"
-                            start-placeholder="开始日期"
-                            end-placeholder="结束日期"
-                            :picker-options="pickerOptions"
-                            @change="pickTime">
+              type="daterange"
+              align="right"
+              unlink-panels
+              value-format="yyyy-MM-dd"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              :picker-options="pickerOptions"
+              @change="pickTime">
             </el-date-picker>
           </div>
         </div>
@@ -68,9 +68,9 @@
           <div class="tableColumn">订单号</div>
           <div class="tableColumn">外贸公司</div>
           <div class="tableColumn flex21"
-               style="flex-direction:row;">
+            style="flex-direction:row;">
             <span class='flex2'
-                  style="border-right:1px solid #DDD;">产品信息</span>
+              style="border-right:1px solid #DDD;">产品信息</span>
             <span class="flex06">数量</span>
           </div>
           <div class="tableColumn flex08">负责小组</div>
@@ -79,16 +79,16 @@
           <div class="tableColumn flex17">操作</div>
         </div>
         <div class="mergeBody"
-             v-for="(item,key) in list"
-             :key="key">
+          v-for="(item,key) in list"
+          :key="key">
           <div class="tableColumn">{{item.order_code}}</div>
           <div class="tableColumn">{{item.client_name}}</div>
           <div class="tableColumn flex21">
             <div class="once onces"
-                 v-for="(itemProduct,indexProduct) in item.productList"
-                 :key="indexProduct">
+              v-for="(itemProduct,indexProduct) in item.productList"
+              :key="indexProduct">
               <span class="flex2"
-                    style="border-right:1px solid #DDD;">
+                style="border-right:1px solid #DDD;">
                 <span>{{itemProduct.productCode}}</span>
                 <span>{{itemProduct.productType}}</span>
               </span>
@@ -99,28 +99,28 @@
           <div class="tableColumn">{{item.order_time}}</div>
           <div class="tableColumn">
             <div class="once"
-                 v-for="(itemTime,indexTime) in item.delivery_time"
-                 :key="indexTime">
+              v-for="(itemTime,indexTime) in item.delivery_time"
+              :key="indexTime">
               <span>第 {{indexTime + 1}} 批：</span>
               <span>{{itemTime}}</span>
             </div>
           </div>
           <div class="tableColumn flex17"
-               style="flex-direction:row;">
+            style="flex-direction:row;">
             <span class="btns normal"
-                  @click="$router.push('/index/rawMaterialStockDetail/'+item.id + '/' + item.plan_id +'/0')">原料详情</span>
+              @click="$router.push('/index/rawMaterialStockDetail/'+item.id + '/' + item.plan_id +'/0')">原料详情</span>
             <span class="btns normal"
-                  @click="$router.push('/index/rawMaterialStockDetail/' + item.id + '/' + item.plan_id + '/1')">辅料详情</span>
+              @click="$router.push('/index/rawMaterialStockDetail/' + item.id + '/' + item.plan_id + '/1')">辅料详情</span>
           </div>
         </div>
       </div>
       <div class="pageCtn">
         <el-pagination background
-                       :page-size="5"
-                       layout="prev, pager, next"
-                       :total="total"
-                       :current-page.sync="pages"
-                       @current-change="getOrderList">
+          :page-size="5"
+          layout="prev, pager, next"
+          :total="total"
+          :current-page.sync="pages"
+          @current-change="getOrderList">
         </el-pagination>
       </div>
     </div>

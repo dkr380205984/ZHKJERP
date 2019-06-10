@@ -1,6 +1,6 @@
 <template>
   <div id="rawMaterialProcess"
-       v-loading="loading">
+    v-loading="loading">
     <div class="head">
       <h2>{{type === '0' ? '原' : '辅'}}料加工</h2>
     </div>
@@ -15,7 +15,7 @@
           <div class="inputCtn">
             <span class="label">订单号:</span>
             <span class="content important"
-                  @click="$router.push('/index/orderDetail/' + $route.params.id)">{{order_code}}</span>
+              @click="$router.push('/index/orderDetail/' + $route.params.id)">{{order_code}}</span>
           </div>
           <div class="inputCtn">
             <span class="label">外贸公司:</span>
@@ -38,7 +38,7 @@
             <span class="content">
               <ul class="productInfo">
                 <li v-for="(item,key) in productList"
-                    :key="key">
+                  :key="key">
                   <span @click="$router.push('/index/productDetail/' + item.product_code)">{{item.product_code}}({{item.type}})</span>
                   <span>{{item.product_size+'/'+item.product_color}}</span>
                   <span>{{item.number+'条'}}</span>
@@ -69,13 +69,13 @@
                 </li>
                 <li v-if="materialList.length === 0">暂无信息</li>
                 <li v-for="(val,ind) in materialList"
-                    :key="ind"
-                    class="content">
+                  :key="ind"
+                  class="content">
                   <span class="tableRow">{{val.material}}</span>
                   <span class="flex2 tableRow col">
                     <span v-for="(va,inf) in val.need"
-                          :key="inf"
-                          class="tableColumn">
+                      :key="inf"
+                      class="tableColumn">
                       <span class="tableRow">{{va.name}}</span>
                       <span class="flex08 tableRow">{{va.value|fixedFilter}}{{val.unit}}</span>
                     </span>
@@ -94,8 +94,8 @@
           <div class="cicle"></div>
         </div>
         <div class="lineCtn col"
-             v-for="(item,key) in list"
-             :key="key">
+          v-for="(item,key) in list"
+          :key="key">
           <div class="tablePlan">
             <div class="tableTitle">
               <span>{{type === '0' ? '原' : '辅'}}料名称</span>
@@ -116,91 +116,91 @@
           </div>
           <div class="processInfo">
             <ul class="processFrom"
-                v-for="(iten,kay) in item.processInfo"
-                :key="kay">
+              v-for="(iten,kay) in item.processInfo"
+              :key="kay">
               <li>
                 <span>加工类型</span>:
                 <el-select v-model="iten.process_type"
-                           placeholder="请选择加工类型"
-                           size="small">
+                  placeholder="请选择加工类型"
+                  size="small">
                   <el-option v-for="value in options.processType"
-                             :key="value.value"
-                             :value="value">
+                    :key="value.value"
+                    :value="value">
                   </el-option>
                 </el-select>
               </li>
               <li>
                 <span>加工单位</span>:
                 <el-select v-model="iten.processCompany"
-                           placeholder="请选择加工单位"
-                           size="small">
+                  placeholder="请选择加工单位"
+                  size="small">
                   <el-option v-for="value in options.companyList"
-                             :key="value.value"
-                             :label="value.name"
-                             :value="value.id">
+                    :key="value.value"
+                    :label="value.name"
+                    :value="value.id">
                   </el-option>
                 </el-select>
               </li>
               <li v-for="(value,index) in iten.processMaterialInfo"
-                  :key="index"
-                  class="col">
+                :key="index"
+                class="col">
                 <div>
                   <span>{{type === '0' ? '原' : '辅'}}料信息</span>:
                   <el-select v-model="value.color"
-                             placeholder="颜色"
-                             size="small"
-                             :change="watchAll(value.color,item.material,kay,key)">
+                    placeholder="颜色"
+                    size="small"
+                    :change="watchAll(value.color,item.material,kay,key)">
                     <el-option v-for="color in options.colorList[item.material]"
-                               :key="color.value"
-                               :value="color">
+                      :key="color.value"
+                      :value="color">
                     </el-option>
                   </el-select>
                   <strong>—</strong>
                   <el-input size="small"
-                            placeholder="数量"
-                            v-model="value.value">
+                    placeholder="数量"
+                    v-model="value.value">
                   </el-input>
                 </div>
                 <em v-if="index === 0"
-                    class="el-icon-plus"
-                    @click="appendProcessMaterialInfo(key,kay)"></em>
+                  class="el-icon-plus"
+                  @click="appendProcessMaterialInfo(key,kay)"></em>
                 <em v-else
-                    class="el-icon-delete"
-                    @click="deleteProcessMaterialInfo(key,kay,index)"></em>
+                  class="el-icon-delete"
+                  @click="deleteProcessMaterialInfo(key,kay,index)"></em>
               </li>
               <li>
                 <span>总价</span>:
                 <el-input size="small"
-                          placeholder="总价"
-                          v-model="iten.money">
+                  placeholder="总价"
+                  v-model="iten.money">
                 </el-input>
                 <i>元</i>
               </li>
               <li>
                 <span>订购日期</span>:
                 <el-date-picker v-model="iten.orderTime"
-                                align="right"
-                                type="date"
-                                value-format="yyyy-MM-dd"
-                                placeholder="选择日期"
-                                size="small"
-                                style="width:243px">
+                  align="right"
+                  type="date"
+                  value-format="yyyy-MM-dd"
+                  placeholder="选择日期"
+                  size="small"
+                  style="width:243px">
                 </el-date-picker>
               </li>
               <li>
                 <span>备注</span>:
                 <el-input type="textarea"
-                          placeholder="请输入内容"
-                          style="width:243px;margin: 0 0 0 15px;height:45px;"
-                          v-model="iten.remark">
+                  placeholder="请输入内容"
+                  style="width:243px;margin: 0 0 0 15px;height:45px;"
+                  v-model="iten.remark">
                 </el-input>
               </li>
               <span class="el-icon-close"
-                    @click="deleteProcessInfo(key,kay)"></span>
+                @click="deleteProcessInfo(key,kay)"></span>
             </ul>
           </div>
           <div class="addBtn"
-               @click="addProcessInfo(key)">
+            @click="addProcessInfo(key)">
             <span>+</span>
             <span>添加公司</span>
           </div>
@@ -208,9 +208,9 @@
       </div>
       <div class="btnCtn">
         <div class="cancleBtn"
-             @click="$router.go(-1)">返回</div>
+          @click="$router.go(-1)">返回</div>
         <div class="okBtn"
-             @click="saveAll">保存</div>
+          @click="saveAll">保存</div>
       </div>
     </div>
   </div>

@@ -2,27 +2,34 @@
   <div id="mainMaterialStockList">
     <div class="head">
       <h2>原料库存列表</h2>
-      <el-input style="width:250px" placeholder="输入原料名称搜索" suffix-icon="el-icon-search" v-model="searchVal"></el-input>
+      <el-input style="width:250px"
+        placeholder="输入原料名称搜索"
+        suffix-icon="el-icon-search"
+        v-model="searchVal"></el-input>
     </div>
     <div class="body">
       <div class="filterCtn">
         <div class="selectLine">
           <span class="label">筛选条件:</span>
           <div class="leftFilter">
-            <el-select v-model="color" placeholder="可输入颜色进行筛选" style="width:230px" clearable filterable @change="getList">
-              <el-option
-                v-for="item in colorList"
+            <el-select v-model="color"
+              placeholder="可输入颜色进行筛选"
+              style="width:230px"
+              clearable
+              filterable
+              @change="getList">
+              <el-option v-for="item in colorList"
                 :key="item.id + item.name"
                 :label="item.name"
                 :value="item.name">
-                <div class="bgBlock" :style="{'background':item.color_code}"></div>
+                <div class="bgBlock"
+                  :style="{'background':item.color_code}"></div>
                 <div class="desc">{{item.name}}</div>
               </el-option>
             </el-select>
           </div>
           <div class="rightFilter">
-            <el-date-picker
-              v-model="date"
+            <el-date-picker v-model="date"
               type="daterange"
               align="right"
               unlink-panels
@@ -46,7 +53,9 @@
           <div class="tableColumn">更新时间</div>
           <div class="tableColumn flex9">操作</div>
         </div>
-        <div class="tableRow bodyTableRow" v-for="item in list" :key="item.id">
+        <div class="tableRow bodyTableRow"
+          v-for="item in list"
+          :key="item.id">
           <div class="tableColumn flex9">{{item.material_name}}</div>
           <div class="tableColumn">{{item.material_color}}</div>
           <div class="tableColumn">{{item.material_attribute?item.material_attribute:'无'}}</div>
@@ -54,13 +63,13 @@
           <div class="tableColumn">{{item.vat_code?item.vat_code:'无'}}</div>
           <div class="tableColumn">{{item.updated_at}}</div>
           <div class="tableColumn flex9">
-            <span class="btns success" @click="$router.push('./mainMaterialStockDetail/' + item.id)">详情</span>
+            <span class="btns success"
+              @click="$router.push('./mainMaterialStockDetail/' + item.id)">详情</span>
           </div>
         </div>
       </div>
       <div class="pageCtn">
-        <el-pagination
-          background
+        <el-pagination background
           :page-size="5"
           layout="prev, pager, next"
           :total="total"

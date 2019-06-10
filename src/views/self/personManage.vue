@@ -8,27 +8,37 @@
         <div class="filterLine">
           <span class="label">筛选列表:</span>
           <el-tag v-show="stationVal===''&&groupVal===''&&searchName===''">显示全部</el-tag>
-          <el-tag @close="stationVal=''" v-show="stationVal!==''" closable>{{stationLabel}}</el-tag>
-          <el-tag @close="groupVal=''" v-show="groupVal!==''" closable>{{groupLabel}}</el-tag>
-          <el-tag @close="searchName=''" v-show="searchName!==''" closable>{{searchName}}</el-tag>
+          <el-tag @close="stationVal=''"
+            v-show="stationVal!==''"
+            closable>{{stationLabel}}</el-tag>
+          <el-tag @close="groupVal=''"
+            v-show="groupVal!==''"
+            closable>{{groupLabel}}</el-tag>
+          <el-tag @close="searchName=''"
+            v-show="searchName!==''"
+            closable>{{searchName}}</el-tag>
         </div>
         <div class="selectLine">
           <span class="label">筛选条件:</span>
           <div class="leftFilter">
-            <el-input placeholder="请输入手机号或用户姓名" v-model="searchName" @keydown.native.enter="getAuthList">
-              <i slot="suffix" class="el-input__icon el-icon-search" @click="getAuthList"></i>
+            <el-input placeholder="请输入手机号或用户姓名"
+              v-model="searchName"
+              @keydown.native.enter="getAuthList">
+              <i slot="suffix"
+                class="el-input__icon el-icon-search"
+                @click="getAuthList"></i>
             </el-input>
-            <el-select v-model="stationVal" placeholder="筛选用户岗位">
-              <el-option
-                v-for="item in stationArr"
+            <el-select v-model="stationVal"
+              placeholder="筛选用户岗位">
+              <el-option v-for="item in stationArr"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
               </el-option>
             </el-select>
-            <el-select v-model="groupVal" placeholder="筛选用户小组">
-              <el-option
-                v-for="item in groupArr"
+            <el-select v-model="groupVal"
+              placeholder="筛选用户小组">
+              <el-option v-for="item in groupArr"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
@@ -36,7 +46,8 @@
             </el-select>
           </div>
           <div class="rightFilter">
-            <div class="okBtn" @click="shadeType='create'">+ 添加新员工</div>
+            <div class="okBtn"
+              @click="shadeType='create'">+ 添加新员工</div>
           </div>
         </div>
       </div>
@@ -51,7 +62,9 @@
           <div class="tableColumn">注册时间</div>
           <div class="tableColumn flex8">操作</div>
         </div>
-        <div class="tableRow bodyTableRow" v-for="(item,index) in authArr" :key="item.id">
+        <div class="tableRow bodyTableRow"
+          v-for="(item,index) in authArr"
+          :key="item.id">
           <div class="tableColumn">{{index+1}}</div>
           <div class="tableColumn">{{item.name}}</div>
           <div class="tableColumn">{{item.telephone}}</div>
@@ -59,16 +72,20 @@
           <div class="tableColumn">{{item.group}}</div>
           <div class="tableColumn">{{item.station}}</div>
           <div class="tableColumn">{{item.create_time}}</div>
-           <div class="tableColumn flex8">
-            <span class="btns normal" @click="updateAuth(item)">修改</span>
-            <span class="btns error" v-if="item.status===1" @click="banauth(item.id,'禁用')">禁用</span>
-            <span class="btns success" v-if="item.status===0" @click="banauth(item.id,'启用')">启用</span>
+          <div class="tableColumn flex8">
+            <span class="btns normal"
+              @click="updateAuth(item)">修改</span>
+            <span class="btns error"
+              v-if="item.status===1"
+              @click="banauth(item.id,'禁用')">禁用</span>
+            <span class="btns success"
+              v-if="item.status===0"
+              @click="banauth(item.id,'启用')">启用</span>
           </div>
         </div>
       </div>
       <div class="pageCtn">
-        <el-pagination
-          background
+        <el-pagination background
           layout="prev, pager, next,total"
           @current-change="getAuthList"
           :page-size="5"
@@ -77,37 +94,44 @@
         </el-pagination>
       </div>
     </div>
-    <div class="shade" v-show="shadeType==='create'||shadeType==='update'">
+    <div class="shade"
+      v-show="shadeType==='create'||shadeType==='update'">
       <div class="main">
-        <div class="close" @click="shadeType=''">
+        <div class="close"
+          @click="shadeType=''">
           <span class="icon">x</span>
         </div>
-        <div class="title" v-if="shadeType==='create'">新增员工账号</div>
-        <div class="title" v-if="shadeType==='update'">修改员工信息</div>
+        <div class="title"
+          v-if="shadeType==='create'">新增员工账号</div>
+        <div class="title"
+          v-if="shadeType==='update'">修改员工信息</div>
         <div class="inputCtn">
           <span class="label"><em>*</em>电话号码:</span>
           <div class="elCtn">
-            <el-input v-model="telephone" placeholder="请输入用户账号/手机号"></el-input>
+            <el-input v-model="telephone"
+              placeholder="请输入用户账号/手机号"></el-input>
           </div>
         </div>
         <div class="inputCtn">
           <span class="label"><em>*</em>姓名:</span>
           <div class="elCtn">
-            <el-input v-model="authName" placeholder="请输入用户姓名"></el-input>
+            <el-input v-model="authName"
+              placeholder="请输入用户姓名"></el-input>
           </div>
         </div>
         <div class="inputCtn">
           <span class="label"><em>*</em>联系电话:</span>
           <div class="elCtn">
-            <el-input v-model="mobile" placeholder="请输入联系方式"></el-input>
+            <el-input v-model="mobile"
+              placeholder="请输入联系方式"></el-input>
           </div>
         </div>
         <div class="inputCtn">
           <span class="label"><em>*</em>用户岗位:</span>
           <div class="elCtn">
-            <el-select v-model="addStationVal" placeholder="请选择">
-              <el-option
-                v-for="item in stationArr"
+            <el-select v-model="addStationVal"
+              placeholder="请选择">
+              <el-option v-for="item in stationArr"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
@@ -118,9 +142,9 @@
         <div class="inputCtn">
           <span class="label"><em>*</em>用户分组:</span>
           <div class="elCtn">
-            <el-select v-model="addGroupVal" placeholder="请选择">
-              <el-option
-                v-for="item in groupArr"
+            <el-select v-model="addGroupVal"
+              placeholder="请选择">
+              <el-option v-for="item in groupArr"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
@@ -129,9 +153,14 @@
           </div>
         </div>
         <div class="btnCtn">
-          <div v-if="shadeType==='create'" class="okBtn" @click="addauth">添加</div>
-          <div v-if="shadeType==='update'" class="okBtn" @click="addauth">修改</div>
-          <div class="cancleBtn" @click="shadeType=''">取消</div>
+          <div v-if="shadeType==='create'"
+            class="okBtn"
+            @click="addauth">添加</div>
+          <div v-if="shadeType==='update'"
+            class="okBtn"
+            @click="addauth">修改</div>
+          <div class="cancleBtn"
+            @click="shadeType=''">取消</div>
         </div>
       </div>
     </div>
@@ -403,5 +432,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/personManage.less';
+@import "~@/assets/css/personManage.less";
 </style>

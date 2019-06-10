@@ -1,5 +1,6 @@
 <template>
-  <div id="designFormCreate" v-loading="loading">
+  <div id="designFormCreate"
+    v-loading="loading">
     <div class="head">
       <h2>添加工艺单</h2>
       <div class="rigth">
@@ -15,12 +16,11 @@
           @change="getCarft"
           style="width:300px"
           placeholder="输入工艺单编号导入工艺单">
-          <el-option
-            v-for="item in gydArr"
+          <el-option v-for="item in gydArr"
             :key="item.craft_code"
             :label="item.craft_code"
             :value="item.id">
-            <span >{{ item.craft_code }}</span>
+            <span>{{ item.craft_code }}</span>
             <span style="margin-left:10px;color: #8492a6; font-size: 13px">({{item.product_info?item.product_info.category_info.product_category +'/'+item.product_info.type_name+'/'+item.product_info.style_name+'/'+item.product_info.flower_id:'设计单' }})</span>
           </el-option>
         </el-select>
@@ -61,19 +61,26 @@
             <span class="content">{{product.user_name}}</span>
           </div>
         </div>
-         <div class="lineCtn">
-          <div class="inputCtn" style="width:620px">
+        <div class="lineCtn">
+          <div class="inputCtn"
+            style="width:620px">
             <span class="label">产品规格:</span>
-            <span class="content contentLine"  style="width:100%" v-for="(item,key) in product.size" :key="key">
+            <span class="content contentLine"
+              style="width:100%"
+              v-for="(item,key) in product.size"
+              :key="key">
               <span style="margin-right:15px">{{key}}</span>
               <span class="sizeDetail">
-                <span class="sizeOnce" v-for="itemChild in item" :key="itemChild.id">{{itemChild.size_value + 'cm' + '(' + itemChild.size_name + ')'}}&nbsp;&nbsp;&nbsp;</span>
+                <span class="sizeOnce"
+                  v-for="itemChild in item"
+                  :key="itemChild.id">{{itemChild.size_value + 'cm' + '(' + itemChild.size_name + ')'}}&nbsp;&nbsp;&nbsp;</span>
                 <span class="sizeOnce">{{ item[0].weight + 'g' + '(克重)'}}</span>
               </span>
-              <br/>
+              <br />
             </span>
           </div>
-          <div class="inputCtn" style="align-items:flex-start">
+          <div class="inputCtn"
+            style="align-items:flex-start">
             <span class="label">产品成分:</span>
             <span class="content">{{product.materials|filterMaterials}}</span>
           </div>
@@ -88,50 +95,68 @@
         <div class="lineCtn">
           <div class="inputCtn">
             <span class="label must">配色方案:</span>
-            <div class="addBtn" @click="addColour">
+            <div class="addBtn"
+              @click="addColour">
               <span>新增配色方案</span>
               <span>+</span>
             </div>
           </div>
         </div>
-        <div class="lineCtn" style="margin-bottom:0">
+        <div class="lineCtn"
+          style="margin-bottom:0">
           <div class="inputCtn oneLine">
             <span class="label">方案列表:</span>
-            <div class="list" style="margin-bottom:0" v-for="(item,index) in colourNum" :key="index">
-              <el-select class="elSelect" v-model="colour[index]" placeholder="请选择配色方案">
-                <el-option
-                  v-for="item in colourArr"
+            <div class="list"
+              style="margin-bottom:0"
+              v-for="(item,index) in colourNum"
+              :key="index">
+              <el-select class="elSelect"
+                v-model="colour[index]"
+                placeholder="请选择配色方案">
+                <el-option v-for="item in colourArr"
                   :key="item.name"
                   :label="item.name"
                   :value="item.name">
-                  <div class="bgBlock" :style="{'background':item.color_code}"></div>
+                  <div class="bgBlock"
+                    :style="{'background':item.color_code}"></div>
                   <div class="desc">{{item.name}}</div>
                 </el-option>
               </el-select>
-              <color-picker v-for="(item2,index2) in colorNum[index]" :key="index2 + color[index][index2].color"
+              <color-picker v-for="(item2,index2) in colorNum[index]"
+                :key="index2 + color[index][index2].color"
                 style="margin-left:15px;margin-bottom:24px"
                 v-model="color[index][index2]"
                 :content="filterMethods(index2)"
                 :colorArr="colorArr"></color-picker>
-              <div class="addBtn" @click="addColor(index)" style="width:40px;text-align:center;padding:0">
+              <div class="addBtn"
+                @click="addColor(index)"
+                style="width:40px;text-align:center;padding:0">
                 <i class="el-icon-plus"></i>
               </div>
-              <div class="addBtn" @click="deleteColor(index)" style="width:40px;text-align:center;padding:0">
+              <div class="addBtn"
+                @click="deleteColor(index)"
+                style="width:40px;text-align:center;padding:0">
                 <i class="el-icon-minus"></i>
               </div>
-              <div class="addBtn" @click="deleteColour(index)" style="width:40px;text-align:center;padding:0;border-color:transparent">
+              <div class="addBtn"
+                @click="deleteColour(index)"
+                style="width:40px;text-align:center;padding:0;border-color:transparent">
                 <i class="el-icon-delete"></i>
               </div>
             </div>
           </div>
         </div>
-        <div class="lineCtn" style="margin-bottom:0;margin-top:0">
+        <div class="lineCtn"
+          style="margin-bottom:0;margin-top:0">
           <div class="inputCtn oneLine">
             <span class="label must">主要原料:</span>
             <div class="list">
-              <el-select filterable class="elSelect" v-model="mainIngredient" style="margin-left:15px;width:200px" placeholder="请选择主要原料">
-                <el-option
-                  v-for="item in ingredientArr"
+              <el-select filterable
+                class="elSelect"
+                v-model="mainIngredient"
+                style="margin-left:15px;width:200px"
+                placeholder="请选择主要原料">
+                <el-option v-for="item in ingredientArr"
                   :key="item.name"
                   :label="item.name"
                   :value="item.name">
@@ -140,64 +165,93 @@
             </div>
           </div>
         </div>
-        <div class="lineCtn" style="margin-top:0">
+        <div class="lineCtn"
+          style="margin-top:0">
           <div class="inputCtn">
             <span class="label">次要原料:</span>
-            <div class="addBtn" @click="addOtherIngredient">
+            <div class="addBtn"
+              @click="addOtherIngredient">
               <span>新增次要原料</span>
               <span>+</span>
             </div>
           </div>
         </div>
-        <div v-show="otherIngredientNum>0" class="lineCtn" style="margin-bottom:0;margin-top:0">
+        <div v-show="otherIngredientNum>0"
+          class="lineCtn"
+          style="margin-bottom:0;margin-top:0">
           <div class="inputCtn oneLine">
             <span class="label must">次料列表:</span>
-            <div class="list" v-for="(item,index) in otherIngredientNum" :key="index">
-              <el-select filterable  class="elSelect" v-model="otherIngredient[index]" style="margin-left:15px;width:200px" placeholder="请选择次要原料">
-                <el-option
-                  v-for="item in ingredientArr"
+            <div class="list"
+              v-for="(item,index) in otherIngredientNum"
+              :key="index">
+              <el-select filterable
+                class="elSelect"
+                v-model="otherIngredient[index]"
+                style="margin-left:15px;width:200px"
+                placeholder="请选择次要原料">
+                <el-option v-for="item in ingredientArr"
                   :key="item.name"
                   :label="item.name"
                   :value="item.name">
                 </el-option>
               </el-select>
-              <el-select v-for="(item2,index2) in jiaNum[index]" :key="index2" class="elSelect" style="width:80px" v-model="jia[index][index2]" placeholder="夹">
-                <el-option
-                  v-for="(item,index2) in colorNum[0]"
+              <el-select v-for="(item2,index2) in jiaNum[index]"
+                :key="index2"
+                class="elSelect"
+                style="width:80px"
+                v-model="jia[index][index2]"
+                placeholder="夹">
+                <el-option v-for="(item,index2) in colorNum[0]"
                   :key="item"
                   :label="filterMethods(item-1)"
                   :value="index2">
                 </el-option>
               </el-select>
-              <div class="addBtn" @click="addJia(index)" style="width:40px;text-align:center;padding:0">
+              <div class="addBtn"
+                @click="addJia(index)"
+                style="width:40px;text-align:center;padding:0">
                 <i class="el-icon-plus"></i>
               </div>
-              <div class="addBtn" @click="deleteJia(index)" style="width:40px;text-align:center;padding:0">
+              <div class="addBtn"
+                @click="deleteJia(index)"
+                style="width:40px;text-align:center;padding:0">
                 <i class="el-icon-minus"></i>
               </div>
-              <div class="addBtn" @click="deleteOtherIngredient(index)" style="width:40px;text-align:center;padding:0;border-color:transparent">
+              <div class="addBtn"
+                @click="deleteOtherIngredient(index)"
+                style="width:40px;text-align:center;padding:0;border-color:transparent">
                 <i class="el-icon-delete"></i>
               </div>
             </div>
           </div>
         </div>
-        <div class="lineCtn" style="margin-top:0">
+        <div class="lineCtn"
+          style="margin-top:0">
           <div class="inputCtn oneLine rowLine">
             <span class="label must">经向排列:</span>
-            <div class="overflowCtn" :style="{'overflow-x':longSort.length>12?'auto':'hidden'}">
-              <div class="selectCtn" style="height:40px;line-height:40px;">
+            <div class="overflowCtn"
+              :style="{'overflow-x':longSort.length>12?'auto':'hidden'}">
+              <div class="selectCtn"
+                style="height:40px;line-height:40px;">
                 <div class="tableConnect">
-                  <div class="selectOnce" v-for="(item,index) in longSort" :key="index" style="text-align:center;padding:0;cursor:not-allowed">
+                  <div class="selectOnce"
+                    v-for="(item,index) in longSort"
+                    :key="index"
+                    style="text-align:center;padding:0;cursor:not-allowed">
                     {{index+1}}
                   </div>
                 </div>
               </div>
               <div class="selectCtn">
                 <div class="tableConnect">
-                  <div class="selectOnce" v-for="(item,index) in longSort" :key="index">
-                    <el-select class="elSelect" style="width:50px;margin-left:0;" placeholder="" v-model="longSort[index]">
-                      <el-option
-                        v-for="(item,index2) in colorNum[0]"
+                  <div class="selectOnce"
+                    v-for="(item,index) in longSort"
+                    :key="index">
+                    <el-select class="elSelect"
+                      style="width:50px;margin-left:0;"
+                      placeholder=""
+                      v-model="longSort[index]">
+                      <el-option v-for="(item,index2) in colorNum[0]"
                         :key="item"
                         :label="filterMethods(item-1)"
                         :value="index2">
@@ -207,7 +261,9 @@
                 </div>
               </div>
               <div class="excelCtn">
-                <hot-table :settings="hotSettings" :height="140" ref="table"></hot-table>
+                <hot-table :settings="hotSettings"
+                  :height="140"
+                  ref="table"></hot-table>
               </div>
             </div>
           </div>
@@ -215,57 +271,69 @@
         <div class="lineCtn">
           <div class="inputCtn">
             <span class="label">整经总头纹:</span>
-            <el-input class="elInput" v-model="warp_data.weft" disabled>
+            <el-input class="elInput"
+              v-model="warp_data.weft"
+              disabled>
               <template slot="append">根</template>
             </el-input>
           </div>
           <div class="inputCtn">
             <span class="label must">边型:</span>
-             <el-select class="elSelect" v-model="warp_data.side_id" placeholder="请选择边型">
-                <el-option
-                  v-for="item in sideArr"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id">
-                </el-option>
-              </el-select>
+            <el-select class="elSelect"
+              v-model="warp_data.side_id"
+              placeholder="请选择边型">
+              <el-option v-for="item in sideArr"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
           </div>
         </div>
         <div class="lineCtn">
           <div class="inputCtn">
             <span class="label">整经门幅:</span>
-            <el-input class="elInput" placeholder="请输入数字" v-model="warp_data.width">
+            <el-input class="elInput"
+              placeholder="请输入数字"
+              v-model="warp_data.width">
               <template slot="append">厘米</template>
             </el-input>
           </div>
           <div class="inputCtn">
             <span class="label must">机型:</span>
-             <el-select class="elSelect" v-model="warp_data.machine_id" placeholder="请选择机型">
-                <el-option
-                  v-for="item in modeleArr"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id">
-                </el-option>
-              </el-select>
+            <el-select class="elSelect"
+              v-model="warp_data.machine_id"
+              placeholder="请选择机型">
+              <el-option v-for="item in modeleArr"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
           </div>
         </div>
         <div class="lineCtn">
           <div class="inputCtn">
             <span class="label">筘号:</span>
-            <el-input class="elInput" placeholder="请输入数字" v-model="warp_data.reed">
+            <el-input class="elInput"
+              placeholder="请输入数字"
+              v-model="warp_data.reed">
               <template slot="append">筘</template>
             </el-input>
           </div>
           <div class="inputCtn">
             <span class="label">穿筘法:</span>
-            <el-input class="elInput" placeholder="数字" v-model="warp_data.reed_method">
+            <el-input class="elInput"
+              placeholder="数字"
+              v-model="warp_data.reed_method">
               <template slot="append">根/筘</template>
             </el-input>
           </div>
           <div class="inputCtn">
             <span class="label must">筘幅:</span>
-            <el-input class="elInput" placeholder="请输入数字" v-model="warp_data.reed_width">
+            <el-input class="elInput"
+              placeholder="请输入数字"
+              v-model="warp_data.reed_width">
               <template slot="append">厘米</template>
             </el-input>
           </div>
@@ -273,16 +341,18 @@
         <div class="lineCtn">
           <div class="inputCtn">
             <span class="label">综页:</span>
-            <el-input class="elInput" placeholder="请输入数字" v-model="warp_data.sum_up">
+            <el-input class="elInput"
+              placeholder="请输入数字"
+              v-model="warp_data.sum_up">
               <template slot="append">片</template>
             </el-input>
           </div>
         </div>
         <div class="lineCtn">
-          <div class="inputCtn" style="width:940px">
+          <div class="inputCtn"
+            style="width:940px">
             <span class="label">穿综法:</span>
-            <el-input
-              style="margin-left:15px;"
+            <el-input style="margin-left:15px;"
               class="warp_data.drafting_method"
               type="textarea"
               :rows="6"
@@ -301,24 +371,31 @@
         <div class="lineCtn">
           <div class="inputCtn">
             <span class="label must">组织法:</span>
-             <el-select class="elSelect" clearable="" v-model="weft_data.organization_id" placeholder="请选择组织法">
-                <el-option
-                  v-for="item in methodArr"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id">
-                </el-option>
-              </el-select>
+            <el-select class="elSelect"
+              clearable=""
+              v-model="weft_data.organization_id"
+              placeholder="请选择组织法">
+              <el-option v-for="item in methodArr"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
           </div>
           <div class="inputCtn">
             <span class="label must">机上坯幅:</span>
-            <el-input class="elInput" placeholder="请输入数字" v-model="weft_data.peifu">
+            <el-input class="elInput"
+              placeholder="请输入数字"
+              v-model="weft_data.peifu">
               <template slot="append">厘米</template>
             </el-input>
           </div>
           <div class="inputCtn">
             <span class="label must">纬密:</span>
-            <el-input class="elInput" placeholder="数字" v-model="weimi" disabled>
+            <el-input class="elInput"
+              placeholder="数字"
+              v-model="weimi"
+              disabled>
               <template slot="append">梭/厘米</template>
             </el-input>
           </div>
@@ -326,13 +403,17 @@
         <div class="lineCtn">
           <div class="inputCtn">
             <span class="label">上齿牙:</span>
-            <el-input class="elInput" placeholder="请输入数字" v-model="weft_data.shangchiya">
+            <el-input class="elInput"
+              placeholder="请输入数字"
+              v-model="weft_data.shangchiya">
               <template slot="append">牙</template>
             </el-input>
           </div>
           <div class="inputCtn">
             <span class="label">下齿牙:</span>
-            <el-input class="elInput" placeholder="请输入数字" v-model="weft_data.xiachiya">
+            <el-input class="elInput"
+              placeholder="请输入数字"
+              v-model="weft_data.xiachiya">
               <template slot="append">牙</template>
             </el-input>
           </div>
@@ -340,15 +421,22 @@
         <div class="lineCtn">
           <div class="inputCtn oneLine">
             <span class="label must">让位要求:</span>
-            <el-input class="elInput" placeholder="数字" v-model="weft_data.neichang">
+            <el-input class="elInput"
+              placeholder="数字"
+              v-model="weft_data.neichang">
               <template slot="prepend">内长</template>
               <template slot="append">厘米</template>
             </el-input>
-            <el-input class="elInput" placeholder="数字" v-model="weft_data.rangwei">
+            <el-input class="elInput"
+              placeholder="数字"
+              v-model="weft_data.rangwei">
               <template slot="prepend">让位</template>
               <template slot="append">厘米</template>
             </el-input>
-            <el-input class="elInput" placeholder="数字" disabled v-model="weft_data.total">
+            <el-input class="elInput"
+              placeholder="数字"
+              disabled
+              v-model="weft_data.total">
               <template slot="prepend">总计</template>
               <template slot="append">梭</template>
             </el-input>
@@ -357,50 +445,68 @@
         <div class="lineCtn">
           <div class="inputCtn">
             <span class="label must">配色方案:</span>
-            <div class="addBtn" @click="addColour">
+            <div class="addBtn"
+              @click="addColour">
               <span>新增配色方案</span>
               <span>+</span>
             </div>
           </div>
         </div>
-        <div class="lineCtn" style="margin-bottom:0">
+        <div class="lineCtn"
+          style="margin-bottom:0">
           <div class="inputCtn oneLine">
             <span class="label">方案列表:</span>
-            <div class="list" style="margin-bottom:0" v-for="(item,index) in colourNum" :key="index">
-              <el-select class="elSelect" v-model="colour[index]" placeholder="请选择配色方案">
-                <el-option
-                  v-for="item in colourArr"
+            <div class="list"
+              style="margin-bottom:0"
+              v-for="(item,index) in colourNum"
+              :key="index">
+              <el-select class="elSelect"
+                v-model="colour[index]"
+                placeholder="请选择配色方案">
+                <el-option v-for="item in colourArr"
                   :key="item.name"
                   :label="item.name"
                   :value="item.name">
-                  <div class="bgBlock" :style="{'background':item.color_code}"></div>
+                  <div class="bgBlock"
+                    :style="{'background':item.color_code}"></div>
                   <div class="desc">{{item.name}}</div>
                 </el-option>
               </el-select>
-              <color-picker v-for="(item2,index2) in colorNum2[index]" :key="index2 + color2[index][index2].color"
+              <color-picker v-for="(item2,index2) in colorNum2[index]"
+                :key="index2 + color2[index][index2].color"
                 style="margin-left:15px;margin-bottom:24px"
                 v-model="color2[index][index2]"
                 :content="filterMethods(index2)"
                 :colorArr="colorArr"></color-picker>
-              <div class="addBtn" @click="addColor2(index)" style="width:40px;text-align:center;padding:0">
+              <div class="addBtn"
+                @click="addColor2(index)"
+                style="width:40px;text-align:center;padding:0">
                 <i class="el-icon-plus"></i>
               </div>
-              <div class="addBtn" @click="deleteColor2(index)" style="width:40px;text-align:center;padding:0">
+              <div class="addBtn"
+                @click="deleteColor2(index)"
+                style="width:40px;text-align:center;padding:0">
                 <i class="el-icon-minus"></i>
               </div>
-              <div class="addBtn" @click="deleteColour(index)" style="width:40px;text-align:center;padding:0;border-color:transparent">
+              <div class="addBtn"
+                @click="deleteColour(index)"
+                style="width:40px;text-align:center;padding:0;border-color:transparent">
                 <i class="el-icon-delete"></i>
               </div>
             </div>
           </div>
         </div>
-        <div class="lineCtn" style="margin-bottom:0;margin-top:0">
+        <div class="lineCtn"
+          style="margin-bottom:0;margin-top:0">
           <div class="inputCtn oneLine">
             <span class="label must">主要原料:</span>
             <div class="list">
-              <el-select filterable  class="elSelect" v-model="mainIngredient2" style="margin-left:15px;width:200px" placeholder="请选择主要原料">
-                <el-option
-                  v-for="item in ingredientArr"
+              <el-select filterable
+                class="elSelect"
+                v-model="mainIngredient2"
+                style="margin-left:15px;width:200px"
+                placeholder="请选择主要原料">
+                <el-option v-for="item in ingredientArr"
                   :key="item.name"
                   :label="item.name"
                   :value="item.name">
@@ -409,64 +515,93 @@
             </div>
           </div>
         </div>
-        <div class="lineCtn" style="margin-top:0">
+        <div class="lineCtn"
+          style="margin-top:0">
           <div class="inputCtn">
             <span class="label">次要原料:</span>
-            <div class="addBtn" @click="addOtherIngredient2">
+            <div class="addBtn"
+              @click="addOtherIngredient2">
               <span>新增次要原料</span>
               <span>+</span>
             </div>
           </div>
         </div>
-        <div v-show="otherIngredientNum2>0" class="lineCtn" style="margin-bottom:0;margin-top:0">
+        <div v-show="otherIngredientNum2>0"
+          class="lineCtn"
+          style="margin-bottom:0;margin-top:0">
           <div class="inputCtn oneLine">
             <span class="label must">次料列表:</span>
-            <div class="list" v-for="(item,index) in otherIngredientNum2" :key="index">
-              <el-select filterable  class="elSelect" v-model="otherIngredient2[index]" style="margin-left:15px;width:200px" placeholder="请选择次要原料">
-                <el-option
-                  v-for="item in ingredientArr"
+            <div class="list"
+              v-for="(item,index) in otherIngredientNum2"
+              :key="index">
+              <el-select filterable
+                class="elSelect"
+                v-model="otherIngredient2[index]"
+                style="margin-left:15px;width:200px"
+                placeholder="请选择次要原料">
+                <el-option v-for="item in ingredientArr"
                   :key="item.name"
                   :label="item.name"
                   :value="item.name">
                 </el-option>
               </el-select>
-              <el-select v-for="(item2,index2) in jiaNum2[index]" :key="index2" class="elSelect" style="width:80px" v-model="jia2[index][index2]" placeholder="夹">
-                <el-option
-                  v-for="(item,index2) in colorNum2[0]"
+              <el-select v-for="(item2,index2) in jiaNum2[index]"
+                :key="index2"
+                class="elSelect"
+                style="width:80px"
+                v-model="jia2[index][index2]"
+                placeholder="夹">
+                <el-option v-for="(item,index2) in colorNum2[0]"
                   :key="item"
                   :label="filterMethods(item-1)"
                   :value="index2">
                 </el-option>
               </el-select>
-              <div class="addBtn" @click="addJia2(index)" style="width:40px;text-align:center;padding:0">
+              <div class="addBtn"
+                @click="addJia2(index)"
+                style="width:40px;text-align:center;padding:0">
                 <i class="el-icon-plus"></i>
               </div>
-              <div class="addBtn" @click="deleteJia2(index)" style="width:40px;text-align:center;padding:0">
+              <div class="addBtn"
+                @click="deleteJia2(index)"
+                style="width:40px;text-align:center;padding:0">
                 <i class="el-icon-minus"></i>
               </div>
-              <div class="addBtn" @click="deleteOtherIngredient2(index)" style="width:40px;text-align:center;padding:0;border-color:transparent">
+              <div class="addBtn"
+                @click="deleteOtherIngredient2(index)"
+                style="width:40px;text-align:center;padding:0;border-color:transparent">
                 <i class="el-icon-delete"></i>
               </div>
             </div>
           </div>
         </div>
-        <div class="lineCtn" style="margin-top:0">
+        <div class="lineCtn"
+          style="margin-top:0">
           <div class="inputCtn oneLine rowLine">
             <span class="label must">纬向排列</span>
-            <div class="overflowCtn" :style="{'overflow-x':longSort2.length>12?'auto':'hidden'}">
-              <div class="selectCtn" style="height:40px;line-height:40px;">
+            <div class="overflowCtn"
+              :style="{'overflow-x':longSort2.length>12?'auto':'hidden'}">
+              <div class="selectCtn"
+                style="height:40px;line-height:40px;">
                 <div class="tableConnect">
-                  <div class="selectOnce" v-for="(item,index) in longSort2" :key="index" style="text-align:center;padding:0;cursor:not-allowed">
+                  <div class="selectOnce"
+                    v-for="(item,index) in longSort2"
+                    :key="index"
+                    style="text-align:center;padding:0;cursor:not-allowed">
                     {{index+1}}
                   </div>
                 </div>
               </div>
               <div class="selectCtn">
                 <div class="tableConnect">
-                  <div class="selectOnce" v-for="(item,index) in longSort2" :key="index">
-                    <el-select class="elSelect" style="width:50px;margin-left:0;" placeholder="" v-model="longSort2[index]">
-                      <el-option
-                        v-for="(item,index2) in colorNum2[0]"
+                  <div class="selectOnce"
+                    v-for="(item,index) in longSort2"
+                    :key="index">
+                    <el-select class="elSelect"
+                      style="width:50px;margin-left:0;"
+                      placeholder=""
+                      v-model="longSort2[index]">
+                      <el-option v-for="(item,index2) in colorNum2[0]"
                         :key="item"
                         :label="filterMethods(item-1)"
                         :value="index2">
@@ -476,7 +611,10 @@
                 </div>
               </div>
               <div class="excelCtn">
-                <hot-table :settings="hotSettings2" :width="2000" :height="140" ref="table2"></hot-table>
+                <hot-table :settings="hotSettings2"
+                  :width="2000"
+                  :height="140"
+                  ref="table2"></hot-table>
               </div>
             </div>
           </div>
@@ -484,7 +622,9 @@
         <div class="lineCtn">
           <div class="inputCtn">
             <span class="label must">产品净重:</span>
-            <el-input class="elInput" placeholder="请输入数字" v-model="weight">
+            <el-input class="elInput"
+              placeholder="请输入数字"
+              v-model="weight">
               <template slot="append">克</template>
             </el-input>
           </div>
@@ -499,8 +639,13 @@
         <div class="lineCtn must">
           <div class="inputCtn oneLine">
             <span class="label must">纱线系数:</span>
-            <div class="list" v-for="(item,index) in materialList" :key="index">
-              <el-input style="width:420px" class="elInput" placeholder="数字" v-model="coefficient[index]">
+            <div class="list"
+              v-for="(item,index) in materialList"
+              :key="index">
+              <el-input style="width:420px"
+                class="elInput"
+                placeholder="数字"
+                v-model="coefficient[index]">
                 <template slot="prepend">{{item}}</template>
                 <template slot="append">克/厘米</template>
               </el-input>
@@ -509,14 +654,18 @@
         </div>
       </div>
       <div class="btnCtn">
-        <div class="cancleBtn" @click="$router.go(-1)">返回</div>
-        <div class="okBtn" @click="saveAll">添加</div>
+        <div class="cancleBtn"
+          @click="$router.go(-1)">返回</div>
+        <div class="okBtn"
+          @click="saveAll">添加</div>
       </div>
     </div>
     <div class="suspend">
-      <span class="blue" @click="saveDraft">保存草稿</span>
+      <span class="blue"
+        @click="saveDraft">保存草稿</span>
       <div class="border"></div>
-      <span class="red" @click="clearDraft">清空草稿</span>
+      <span class="red"
+        @click="clearDraft">清空草稿</span>
     </div>
   </div>
 </template>
@@ -1576,7 +1725,7 @@ export default {
         })
         this.hotSettings.data[1].forEach((item, index) => {
           if (item || index === this.hotSettings.data[1].length - 1) {
-          // 遇到第一个不为null的数开始计算,否则初始化col
+            // 遇到第一个不为null的数开始计算,否则初始化col
             if (unNull > 0) {
               if (item === null && index === this.hotSettings.data[1].length - 1) {
                 mergeCells.push({ row: 1, col: col, rowspan: 1, colspan: colspan + 1 })
@@ -1616,7 +1765,7 @@ export default {
         })
         this.hotSettings.data[2].forEach((item, index) => {
           if (item !== null || index === this.hotSettings.data[2].length - 1) {
-          // 遇到第一个不为null的数开始计算,否则初始化col
+            // 遇到第一个不为null的数开始计算,否则初始化col
             if (unNull > 0) {
               if (item === null && index === this.hotSettings.data[2].length - 1) {
                 mergeCells.push({ row: 2, col: col, rowspan: 1, colspan: colspan + 1 })
@@ -1658,7 +1807,7 @@ export default {
         })
         this.hotSettings2.data[1].forEach((item, index) => {
           if (item || index === this.hotSettings2.data[1].length - 1) {
-          // 遇到第一个不为null的数开始计算,否则初始化col
+            // 遇到第一个不为null的数开始计算,否则初始化col
             if (unNull > 0) {
               if (!item && index === this.hotSettings2.data[1].length - 1) {
                 mergeCells.push({ row: 1, col: col, rowspan: 1, colspan: colspan + 1 })
@@ -1699,7 +1848,7 @@ export default {
         })
         this.hotSettings2.data[2].forEach((item, index) => {
           if (item || index === this.hotSettings2.data[2].length - 1) {
-          // 遇到第一个不为null的数开始计算,否则初始化col
+            // 遇到第一个不为null的数开始计算,否则初始化col
             if (unNull > 0) {
               if (!item && index === this.hotSettings2.data[2].length - 1) {
                 mergeCells.push({ row: 2, col: col, rowspan: 1, colspan: colspan + 1 })
@@ -1787,16 +1936,16 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/designFormCreate.less';
+@import "~@/assets/css/designFormCreate.less";
 </style>
 <style lang="less">
-.selectOnce{
-  .el-input--suffix .el-input__inner{
-    padding:0 15px 0 5px;
+.selectOnce {
+  .el-input--suffix .el-input__inner {
+    padding: 0 15px 0 5px;
   }
-  .el-select .el-input .el-select__caret{
-    font-size:10px;
-    width:15px;
+  .el-select .el-input .el-select__caret {
+    font-size: 10px;
+    width: 15px;
   }
 }
 </style>

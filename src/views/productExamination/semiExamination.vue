@@ -1,6 +1,6 @@
 <template>
   <div id="semiExamination"
-       v-loading="loading">
+    v-loading="loading">
     <div class="head">
       <h2>半成品检验</h2>
     </div>
@@ -15,7 +15,7 @@
           <div class="inputCtn">
             <span class="label">订单号:</span>
             <span class="content important"
-                  @click="$router.push('/index/orderDetail/' + $route.params.id)">{{order_code}}</span>
+              @click="$router.push('/index/orderDetail/' + $route.params.id)">{{order_code}}</span>
           </div>
           <div class="inputCtn">
             <span class="label">外贸公司:</span>
@@ -61,13 +61,13 @@
                   <span class="flex2 tableRow">{{this.productList.product_class}}</span>
                   <span class="tableRow flex4 col">
                     <span v-for="(value,index) in this.productList.size_info"
-                          :key='index'
-                          class="tableColumn">
+                      :key='index'
+                      class="tableColumn">
                       <span class="tableRow flex12">{{value.size}}{{'/'}}{{value.color}}</span>
                       <span class="flex3 tableRow col">
                         <span v-for="(item,key) in value.production_info"
-                              :key="key"
-                              class="tableColumn">
+                          :key="key"
+                          class="tableColumn">
                           <span class="tableRow flex12">{{item.production_client}}</span>
                           <span class="tableRow">{{item.production_number}}{{'条'}}</span>
                           <span class="tableRow">{{item.goStock_number}}{{'条'}}</span>
@@ -105,8 +105,8 @@
                   <span class="tableRow flex12">{{list.product_class}}</span>
                   <span class="tableRow col flex3">
                     <span v-for="(item,key) in list.size_info"
-                          :key="key"
-                          class="tableColumn">
+                      :key="key"
+                      class="tableColumn">
                       <span class="tableRow">{{item.size}}{{'/'}}{{item.color}}</span>
                       <span class="tableRow">{{item.production_number}}{{'条'}}</span>
                       <span class="tableRow">{{item.compiled_number}}{{'条'}}</span>
@@ -119,108 +119,108 @@
           </div>
           <div class="testInfo">
             <ul class="testFrom"
-                v-for="(item,kay) in this.list.testInfo"
-                :key="kay">
+              v-for="(item,kay) in this.list.testInfo"
+              :key="kay">
               <li>
                 <span>生产单位</span>:
                 <el-select v-model="item.production_client"
-                           placeholder="请选择生产单位"
-                           size="small">
+                  placeholder="请选择生产单位"
+                  size="small">
                   <el-option v-for="value in options.testType"
-                             :key="value.value"
-                             :value="value">
+                    :key="value.value"
+                    :value="value">
                   </el-option>
                 </el-select>
               </li>
               <li>
                 <span>检验人员</span>:
                 <el-select v-model="item.tester_name"
-                           placeholder="请选择加工单位"
-                           size="small">
+                  placeholder="请选择加工单位"
+                  size="small">
                   <el-option v-for="value in options.companyList"
-                             :key="value.value"
-                             :label="value.name"
-                             :value="value.id">
+                    :key="value.value"
+                    :label="value.name"
+                    :value="value.id">
                   </el-option>
                 </el-select>
               </li>
               <li v-for="(value,index) in item.testSizeInfo"
-                  :key="index"
-                  class="col"
-                  style="border-top:1px solid #DDD">
+                :key="index"
+                class="col"
+                style="border-top:1px solid #DDD">
                 <div>
                   <span>颜色尺码</span>:
                   <el-select v-model="value.color"
-                             placeholder="颜色/尺码"
-                             size="small"
-                             style="margin-left:15px;width:243px;">
+                    placeholder="颜色/尺码"
+                    size="small"
+                    style="margin-left:15px;width:243px;">
                     <el-option v-for="color in options.colorList"
-                               :key="color.value"
-                               :value="color">
+                      :key="color.value"
+                      :value="color">
                     </el-option>
                   </el-select>
                 </div>
                 <div>
                   <span>件数/数量</span>:
                   <el-input size="small"
-                            placeholder="件数"
-                            v-model="value.value"
-                            style="margin-left:15px;">
+                    placeholder="件数"
+                    v-model="value.value"
+                    style="margin-left:15px;">
                   </el-input>
                   <strong>—</strong>
                   <el-input size="small"
-                            placeholder="数量"
-                            v-model="value.number">
+                    placeholder="数量"
+                    v-model="value.number">
                   </el-input>
                 </div>
                 <div v-for="(val,ind) in value.defective_info"
-                     :key="ind">
+                  :key="ind">
                   <span>次品信息</span>:
                   <el-input size="small"
-                            placeholder="数量"
-                            v-model="val.number"
-                            style="margin-left:15px;">
+                    placeholder="数量"
+                    v-model="val.number"
+                    style="margin-left:15px;">
                   </el-input>
                   <strong>—</strong>
                   <el-select v-model="val.defective_why"
-                             placeholder="次品原因"
-                             size="small">
+                    placeholder="次品原因"
+                    size="small">
                     <el-option v-for="color in options.colorList"
-                               :key="color.value"
-                               :value="color">
+                      :key="color.value"
+                      :value="color">
                     </el-option>
                   </el-select>
                   <em v-if="ind === 0"
-                      class="el-icon-plus"
-                      style="right:-35px;top:5px;"
-                      @click="appendDefectiveInfo(kay,index)"></em>
+                    class="el-icon-plus"
+                    style="right:-35px;top:5px;"
+                    @click="appendDefectiveInfo(kay,index)"></em>
                   <em v-else
-                      class="el-icon-delete"
-                      style="right:-35px;top:5px;"
-                      @click="deleteDefectiveInfo(kay,index,ind)"></em>
+                    class="el-icon-delete"
+                    style="right:-35px;top:5px;"
+                    @click="deleteDefectiveInfo(kay,index,ind)"></em>
                 </div>
                 <span class="tag">颜色/尺码{{index + 1}}</span>
                 <em v-if="index === 0"
-                    class="el-icon-plus"
-                    @click="appendTestSizeInfo(kay)"></em>
+                  class="el-icon-plus"
+                  @click="appendTestSizeInfo(kay)"></em>
                 <em v-else
-                    class="el-icon-delete"
-                    @click="deleteTestSizeInfo(kay,index)"></em>
+                  class="el-icon-delete"
+                  @click="deleteTestSizeInfo(kay,index)"></em>
               </li>
               <li>
                 <span>备注</span>:
                 <el-input type="textarea"
-                          placeholder="请输入内容"
-                          style="width:243px;margin: 0 0 0 15px;height:45px;"
-                          v-model="item.remark">
+                  placeholder="请输入内容"
+                  style="width:243px;margin: 0 0 0 15px;height:45px;"
+                  v-model="item.remark">
                 </el-input>
               </li>
               <span class="el-icon-close"
-                    @click="deleteTestInfo(kay)"></span>
+                @click="deleteTestInfo(kay)"></span>
             </ul>
           </div>
           <div class="addBtn"
-               @click="addTestInfo">
+            @click="addTestInfo">
             <span>+</span>
             <span>添加公司</span>
           </div>
@@ -228,9 +228,9 @@
       </div>
       <div class="btnCtn">
         <div class="cancleBtn"
-             @click="$router.go(-1)">返回</div>
+          @click="$router.go(-1)">返回</div>
         <div class="okBtn"
-             @click="saveAll">保存</div>
+          @click="saveAll">保存</div>
       </div>
     </div>
   </div>

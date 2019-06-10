@@ -1,6 +1,6 @@
 <template>
   <div id="rawMaterialStat"
-       v-loading="loading">
+    v-loading="loading">
     <div class="head">
       <h2>生产统计详情</h2>
     </div>
@@ -44,9 +44,9 @@
             <div class="btn">
               <template v-for="(item,index) in materialInfo">
                 <span :class="{'active': sizeName.material === index }"
-                      :key="index"
-                      v-if="item.type === 0"
-                      @click="changeSize(index,'material')">{{index}}</span>
+                  :key="index"
+                  v-if="item.type === 0"
+                  @click="changeSize(index,'material')">{{index}}</span>
               </template>
             </div>
             <ul class="table">
@@ -58,14 +58,14 @@
               </li>
               <template v-for="(value,index) in materialInfo[sizeName.material]">
                 <li v-if="index !== 'total_number' && index !== 'type'&& index !== 'unit'"
-                    :key="index">
+                  :key="index">
                   <span>颜色重量</span>
                   <span>{{index + ' ' + (value/1000).toFixed(2) + '千克'}}</span>
                 </li>
               </template>
             </ul>
             <span @click="openWin('/productStatisticsTable/' + $route.params.id + '?type=0')"
-                  class="print">去打印</span>
+              class="print">去打印</span>
           </div>
         </div>
       </div>
@@ -76,9 +76,9 @@
             <div class="btn">
               <template v-for="(item,index) in materialInfo">
                 <span :class="{'active': sizeName.ingredients === index }"
-                      :key="index"
-                      v-if="item.type === 1"
-                      @click="changeSize(index,'ingredients')">{{index}}</span>
+                  :key="index"
+                  v-if="item.type === 1"
+                  @click="changeSize(index,'ingredients')">{{index}}</span>
               </template>
             </div>
             <ul class="table">
@@ -90,14 +90,14 @@
               </li>
               <template v-for="(value,index) in materialInfo[sizeName.ingredients]">
                 <li v-if="index !== 'total_number' && index !== 'type' && index !== 'unit'"
-                    :key="index">
+                  :key="index">
                   <span>数量</span>
                   <span>{{index + ' ' + parseInt(value) + materialInfo[sizeName.ingredients].unit}}</span>
                 </li>
               </template>
             </ul>
             <span @click="openWin('/productStatisticsTable/' + $route.params.id + '?type=1')"
-                  class="print">去打印</span>
+              class="print">去打印</span>
           </div>
         </div>
       </div>
@@ -105,9 +105,9 @@
         <div class="inputCtn oneLine">
           <span class="content btn">
             <span class="goBack"
-                  @click="$router.go(-1)">返回</span>
+              @click="$router.go(-1)">返回</span>
             <span class="change"
-                  @click="$router.go(-1)">修改</span>
+              @click="$router.go(-1)">修改</span>
           </span>
         </div>
       </div>

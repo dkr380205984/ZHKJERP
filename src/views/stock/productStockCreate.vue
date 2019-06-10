@@ -37,10 +37,14 @@
       <div class="lineCtn">
         <div class="inputCtn oneLine">
           <span class="label">产品规格:</span>
-          <span class="content contentLine" v-for="(item,key) in product.size" :key="key">
+          <span class="content contentLine"
+            v-for="(item,key) in product.size"
+            :key="key">
             <span class="size">{{key}}</span>
             <span class="sizeDetail">
-              <span class="sizeOnce" v-for="itemChild in item" :key="itemChild.id">{{itemChild.size_name + '：' + itemChild.size_value + 'cm'}}</span>
+              <span class="sizeOnce"
+                v-for="itemChild in item"
+                :key="itemChild.id">{{itemChild.size_name + '：' + itemChild.size_value + 'cm'}}</span>
             </span>
             <span class="size">{{item[0].weight}}g(克重)</span>
           </span>
@@ -50,8 +54,14 @@
         <div class="inputCtn oneLine">
           <span class="label">产品图片:</span>
           <span class="content">
-            <img v-if="product.img.length === 0" class="img" src="@/assets/image/index/noPic.jpg"/>
-            <img v-for="(item,index) in product.img" :key="index" class="img" :src="item.image_url" :onerror="defaultImg" />
+            <img v-if="product.img.length === 0"
+              class="img"
+              src="@/assets/image/index/noPic.jpg" />
+            <img v-for="(item,index) in product.img"
+              :key="index"
+              class="img"
+              :src="item.image_url"
+              :onerror="defaultImg" />
           </span>
         </div>
       </div>
@@ -65,15 +75,18 @@
       <div class="lineCtn">
         <div class="inputCtn oneLine">
           <span class="label">订单号:</span>
-          <el-input class="elSelect" placeholder="请输入库存来源订单号" v-model="orderId"></el-input>
+          <el-input class="elSelect"
+            placeholder="请输入库存来源订单号"
+            v-model="orderId"></el-input>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn oneLine">
           <span class="label must">选择尺码:</span>
-          <el-select class="elSelect" v-model="size" placeholder="请选择尺码" >
-            <el-option
-              v-for="item in sizeArr"
+          <el-select class="elSelect"
+            v-model="size"
+            placeholder="请选择尺码">
+            <el-option v-for="item in sizeArr"
               :key="item"
               :label="item"
               :value="item">
@@ -84,13 +97,15 @@
       <div class="lineCtn">
         <div class="inputCtn oneLine">
           <span class="label must">选择配色:</span>
-          <el-select class="elSelect" v-model="colour" placeholder="请选择配色" >
-            <el-option
-              v-for="item in colourArr"
+          <el-select class="elSelect"
+            v-model="colour"
+            placeholder="请选择配色">
+            <el-option v-for="item in colourArr"
               :key="item.name"
               :label="item.name"
               :value="item.name">
-              <div class="bgBlock" :style="{'background':item.color_code}"></div>
+              <div class="bgBlock"
+                :style="{'background':item.color_code}"></div>
               <div class="desc">{{item.name}}</div>
             </el-option>
           </el-select>
@@ -99,27 +114,42 @@
       <div class="lineCtn">
         <div class="inputCtn oneLine">
           <span class="label must">录入库存数:</span>
-          <el-input class="elSelect" placeholder="请输入录入数量" v-model="numbers">
+          <el-input class="elSelect"
+            placeholder="请输入录入数量"
+            v-model="numbers">
             <template slot="append">{{unit}}</template>
           </el-input>
         </div>
       </div>
       <div class="lineCtn">
-        <div class="inputCtn oneLine" style="display:block">
+        <div class="inputCtn oneLine"
+          style="display:block">
           <span class="label">是否有次品:</span>
           <div class="radioCtn">
-            <el-radio v-model="ifBad" :label="true">有次品</el-radio>
-            <el-radio v-model="ifBad" :label="false">无次品</el-radio>
+            <el-radio v-model="ifBad"
+              :label="true">有次品</el-radio>
+            <el-radio v-model="ifBad"
+              :label="false">无次品</el-radio>
           </div>
-          <div class="block" v-for="(item,index) in inferior" :key="index">
-            <el-input class="elSelect" placeholder="请输入数量" v-model="inferior[index].num">
+          <div class="block"
+            v-for="(item,index) in inferior"
+            :key="index">
+            <el-input class="elSelect"
+              placeholder="请输入数量"
+              v-model="inferior[index].num">
               <template slot="append">{{unit}}</template>
             </el-input>
-            <el-input class="elSelect" placeholder="请输入次品原因" v-model="inferior[index].reason"></el-input>
-            <i class="el-icon-delete" @click="deleteInferior(index)"></i>
+            <el-input class="elSelect"
+              placeholder="请输入次品原因"
+              v-model="inferior[index].reason"></el-input>
+            <i class="el-icon-delete"
+              @click="deleteInferior(index)"></i>
           </div>
-          <div class="block" v-if="ifBad">
-            <div class="addBtn" style="margin-left:15px" @click="inferior.push({num:'',reason:''})">
+          <div class="block"
+            v-if="ifBad">
+            <div class="addBtn"
+              style="margin-left:15px"
+              @click="inferior.push({num:'',reason:''})">
               <span>添加次品</span>
               <span>+</span>
             </div>
@@ -129,7 +159,9 @@
       <div class="lineCtn">
         <div class="inputCtn oneLine">
           <span class="label must">成本价:</span>
-          <el-input class="elSelect" placeholder="请输入成本价" v-model="cost">
+          <el-input class="elSelect"
+            placeholder="请输入成本价"
+            v-model="cost">
             <template slot="append">元/{{unit}}</template>
           </el-input>
         </div>
@@ -137,7 +169,10 @@
       <div class="lineCtn">
         <div class="inputCtn oneLine">
           <span class="label">总价:</span>
-          <el-input class="elSelect" placeholder="总价" disabled v-model="totalPrice">
+          <el-input class="elSelect"
+            placeholder="总价"
+            disabled
+            v-model="totalPrice">
             <template slot="append">元</template>
           </el-input>
         </div>
@@ -145,8 +180,7 @@
       <div class="lineCtn">
         <div class="inputCtn oneLine">
           <span class="label must">存放时间:</span>
-          <el-date-picker
-            v-model="date"
+          <el-date-picker v-model="date"
             type="date"
             class="elSelect"
             value-format="yyyy-MM-dd"
@@ -157,12 +191,18 @@
       <div class="lineCtn">
         <div class="inputCtn oneLine">
           <span class="label">备注:</span>
-          <el-input style="width:670px;margin-left:15px" type="textarea" :rows="6"  v-model="otherInfo" placeholder="其他信息填写"></el-input>
+          <el-input style="width:670px;margin-left:15px"
+            type="textarea"
+            :rows="6"
+            v-model="otherInfo"
+            placeholder="其他信息填写"></el-input>
         </div>
       </div>
       <div class="bottom">
-        <div class="cancleBtn" @click="clearAll">清空</div>
-        <div class="okBtn" @click="saveAll">保存</div>
+        <div class="cancleBtn"
+          @click="clearAll">清空</div>
+        <div class="okBtn"
+          @click="saveAll">保存</div>
       </div>
     </div>
   </div>
@@ -328,13 +368,13 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/productStockCreate.less';
+@import "~@/assets/css/productStockCreate.less";
 </style>
 <style lang="less">
-#productStockCreate{
-  .onceLine{
-    .el-input__inner{
-      background: #F8F8F8;
+#productStockCreate {
+  .onceLine {
+    .el-input__inner {
+      background: #f8f8f8;
     }
   }
 }

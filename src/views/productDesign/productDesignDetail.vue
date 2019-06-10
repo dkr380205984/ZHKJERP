@@ -1,5 +1,6 @@
 <template>
-  <div id="productDesignDetail" v-loading="loading">
+  <div id="productDesignDetail"
+    v-loading="loading">
     <div class="head">
       <h2>生产计划单详情</h2>
     </div>
@@ -36,15 +37,21 @@
           <span class="content">{{order.remark?order.remark:'暂无信息'}}</span>
         </div>
       </div>
-      <div class="lineCtn" style="max-width:1200px">
-        <div class="inputCtn oneLine" >
+      <div class="lineCtn"
+        style="max-width:1200px">
+        <div class="inputCtn oneLine">
           <span class="label">生产数量：</span>
           <div class="specialTable">
             <div class="left">
               <div class="firstLine">产品品类</div>
-              <div class="mergeLine" v-for="(item,index) in product" :style="{height:(index!==product.length-1)?(61*item.num)+'px':(61*item.num)-1+'px'}" :key="item.product_code">
-                <span @click="$router.push('/index/productDetail/'+item.product_code)" style="color:#1A95FF;cursor:pointer">{{item.product_code}}</span>
-                <span @click="$router.push('/index/productDetail/'+item.product_code)" style="color:#1A95FF;cursor:pointer">{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
+              <div class="mergeLine"
+                v-for="(item,index) in product"
+                :style="{height:(index!==product.length-1)?(61*item.num)+'px':(61*item.num)-1+'px'}"
+                :key="item.product_code">
+                <span @click="$router.push('/index/productDetail/'+item.product_code)"
+                  style="color:#1A95FF;cursor:pointer">{{item.product_code}}</span>
+                <span @click="$router.push('/index/productDetail/'+item.product_code)"
+                  style="color:#1A95FF;cursor:pointer">{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
               </div>
             </div>
             <div class="right">
@@ -57,7 +64,9 @@
                 <div class="tableColumn">总计</div>
                 <div class="tableColumn">生产损耗</div>
               </div>
-              <div class="tableRow bodyTableRow" v-for="(item) in productInfo" :key="item.id">
+              <div class="tableRow bodyTableRow"
+                v-for="(item) in productInfo"
+                :key="item.id">
                 <div class="tableColumn">{{item.size}}/{{item.color}}</div>
                 <div class="tableColumn">{{item.order_num}}{{item.unit_name}}</div>
                 <div class="tableColumn">{{item.stock_number}}{{item.unit_name}}</div>
@@ -73,22 +82,38 @@
                 </div>
               </div>
             </div>
-            <div class="left" style="border-left:1px solid #b5b5b5;width:120px">
+            <div class="left"
+              style="border-left:1px solid #b5b5b5;width:120px">
               <div class="firstLine">操作</div>
-              <div class="mergeLine" v-for="(item,index) in product" :style="{height:(index!==product.length-1)?(61*item.num)+'px':(61*item.num)-1+'px'}" :key="item.product_code">
+              <div class="mergeLine"
+                v-for="(item,index) in product"
+                :style="{height:(index!==product.length-1)?(61*item.num)+'px':(61*item.num)-1+'px'}"
+                :key="item.product_code">
                 <div class="btnCtns">
-                  <span class="btns normal" v-if="item.state===2" @click="$router.push('/index/rawMaterialPlan/'+$route.params.id+'/'+item.product_code)">查看计划单</span>
-                  <span class="btns normal" v-if="item.state===1" @click="$router.push('/index/productPlanUpdate/'+item.product_code)">配料单(修改)</span>
-                  <span class="btns normal" v-if="item.state===0" @click="$router.push('/index/productPlanCreate/'+item.product_code)">配料单(添加)</span>
+                  <span class="btns normal"
+                    v-if="item.state===2"
+                    @click="$router.push('/index/rawMaterialPlan/'+$route.params.id+'/'+item.product_code)">查看计划单</span>
+                  <span class="btns normal"
+                    v-if="item.state===1"
+                    @click="$router.push('/index/productPlanUpdate/'+item.product_code)">配料单(修改)</span>
+                  <span class="btns normal"
+                    v-if="item.state===0"
+                    @click="$router.push('/index/productPlanCreate/'+item.product_code)">配料单(添加)</span>
                 </div>
               </div>
             </div>
-            <div class="left" style="border-left:1px solid #b5b5b5;width:120px">
+            <div class="left"
+              style="border-left:1px solid #b5b5b5;width:120px">
               <div class="firstLine">操作</div>
-              <div class="mergeLine" style="height:calc(100% - 61px)">
+              <div class="mergeLine"
+                style="height:calc(100% - 61px)">
                 <div class="btnCtns">
-                  <span class="btns normal" v-if="state" @click="$router.push('/index/rawMaterialStat/'+$route.params.id)">查看统计单</span>
-                  <span class="btns ban" style="color:#b5b5b5!important;cursor:not-allowed;" v-if="!state">查看统计单</span>
+                  <span class="btns normal"
+                    v-if="state"
+                    @click="$router.push('/index/rawMaterialStat/'+$route.params.id)">查看统计单</span>
+                  <span class="btns ban"
+                    style="color:#b5b5b5!important;cursor:not-allowed;"
+                    v-if="!state">查看统计单</span>
                 </div>
               </div>
             </div>
@@ -96,8 +121,10 @@
         </div>
       </div>
       <div class="btnCtn">
-        <div class="cancleBtn" @click="$router.go(-1)">返回</div>
-        <div class="okBtn" @click="$router.push('/index/productDesignUpdate/'+$route.params.id +'/'+$route.params.id)">修改</div>
+        <div class="cancleBtn"
+          @click="$router.go(-1)">返回</div>
+        <div class="okBtn"
+          @click="$router.push('/index/productDesignUpdate/'+$route.params.id +'/'+$route.params.id)">修改</div>
       </div>
     </div>
   </div>
@@ -212,5 +239,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/productDesignDetail.less';
+@import "~@/assets/css/productDesignDetail.less";
 </style>

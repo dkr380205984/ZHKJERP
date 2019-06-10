@@ -1,5 +1,6 @@
 <template>
-  <div id="productDesignCreate" v-loading="loading">
+  <div id="productDesignCreate"
+    v-loading="loading">
     <div class="head">
       <h2>修改生产计划单</h2>
     </div>
@@ -56,51 +57,76 @@
           <span class="content">{{order.remark?order.remark:'暂无信息'}}</span>
         </div>
       </div>
-       <div class="lineCtn" style="max-width:1200px">
+      <div class="lineCtn"
+        style="max-width:1200px">
         <div class="inputCtn oneLine">
           <span class="label">生产数量：</span>
           <div class="specialTable">
-            <div class="left" style="width:150px">
-              <div class="firstLine" style="font-size:14px;">产品品类</div>
-              <div class="mergeLine" v-for="(item,index) in product" :style="{height:(index!==product.length-1)?(61*item.num)+'px':(61*item.num)-1+'px'}" :key="item.product_code">
+            <div class="left"
+              style="width:150px">
+              <div class="firstLine"
+                style="font-size:14px;">产品品类</div>
+              <div class="mergeLine"
+                v-for="(item,index) in product"
+                :style="{height:(index!==product.length-1)?(61*item.num)+'px':(61*item.num)-1+'px'}"
+                :key="item.product_code">
                 <span>{{item.product_code}}</span>
                 <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
               </div>
             </div>
             <div class="right">
               <div class="tableRow titleTableRow">
-                <div class="tableColumn" style="font-size:14px;">尺寸/颜色</div>
-                <div class="tableColumn" style="font-size:14px;">下单数</div>
-                <div class="tableColumn" style="font-size:14px;">库存数量</div>
-                <div class="tableColumn" style="font-size:14px;">原库存调取</div>
-                <div class="tableColumn" style="font-size:14px;">现库存调取</div>
-                <div class="tableColumn" style="font-size:14px;">库存变动</div>
-                <div class="tableColumn" style="font-size:14px;">工厂生产</div>
-                <div class="tableColumn" style="font-size:14px;">总计</div>
-                <div class="tableColumn" style="font-size:14px;">生产损耗(%)</div>
+                <div class="tableColumn"
+                  style="font-size:14px;">尺寸/颜色</div>
+                <div class="tableColumn"
+                  style="font-size:14px;">下单数</div>
+                <div class="tableColumn"
+                  style="font-size:14px;">库存数量</div>
+                <div class="tableColumn"
+                  style="font-size:14px;">原库存调取</div>
+                <div class="tableColumn"
+                  style="font-size:14px;">现库存调取</div>
+                <div class="tableColumn"
+                  style="font-size:14px;">库存变动</div>
+                <div class="tableColumn"
+                  style="font-size:14px;">工厂生产</div>
+                <div class="tableColumn"
+                  style="font-size:14px;">总计</div>
+                <div class="tableColumn"
+                  style="font-size:14px;">生产损耗(%)</div>
               </div>
-              <div class="tableRow bodyTableRow" v-for="(item) in productInfo" :key="item.id">
+              <div class="tableRow bodyTableRow"
+                v-for="(item) in productInfo"
+                :key="item.id">
                 <div class="tableColumn">{{item.size}}/{{item.color}}</div>
                 <div class="tableColumn">{{item.order_num}}{{item.unit_name}}</div>
                 <div class="tableColumn">{{item.stock_number}}{{item.unit_name}}</div>
                 <div class="tableColumn">{{item.stock_pick}}{{item.unit_name}}</div>
                 <div class="tableColumn">
-                  <input class="inputs" placeholder="输入数字" v-model="item.stock_pick_now"/>
+                  <input class="inputs"
+                    placeholder="输入数字"
+                    v-model="item.stock_pick_now" />
                 </div>
                 <div class="tableColumn">{{item|stockFilter}}</div>
                 <div class="tableColumn">
-                  <input class="inputs" placeholder="输入数字" v-model="item.production_num"/>
+                  <input class="inputs"
+                    placeholder="输入数字"
+                    v-model="item.production_num" />
                 </div>
                 <div class="tableColumn">{{(parseInt(item.stock_pick_now) + parseInt(item.production_num))?(parseInt(item.stock_pick_now) + parseInt(item.production_num)):'待计算'}}</div>
-                <div class="tableColumn"><input class="inputs" placeholder="损耗比" v-model="item.production_sunhao"/></div>
+                <div class="tableColumn"><input class="inputs"
+                    placeholder="损耗比"
+                    v-model="item.production_sunhao" /></div>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div class="btnCtn">
-        <div class="cancleBtn" @click="$router.go(-1)">返回</div>
-        <div class="okBtn" @click="saveAll">修改</div>
+        <div class="cancleBtn"
+          @click="$router.go(-1)">返回</div>
+        <div class="okBtn"
+          @click="saveAll">修改</div>
       </div>
     </div>
   </div>
@@ -250,5 +276,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/productDesignCreate.less';
+@import "~@/assets/css/productDesignCreate.less";
 </style>

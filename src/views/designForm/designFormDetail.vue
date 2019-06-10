@@ -1,5 +1,6 @@
 <template>
- <div id="designFormDetail" v-loading="loading">
+  <div id="designFormDetail"
+    v-loading="loading">
     <div class="head">
       <h2>工艺单详情页</h2>
     </div>
@@ -24,19 +25,26 @@
             <span class="content">{{product.flower_id}}</span>
           </div>
         </div>
-         <div class="lineCtn">
-          <div class="inputCtn" style="width:620px">
+        <div class="lineCtn">
+          <div class="inputCtn"
+            style="width:620px">
             <span class="label">产品规格:</span>
-            <span class="content contentLine"  style="width:100%" v-for="(item,key) in product.size" :key="key">
+            <span class="content contentLine"
+              style="width:100%"
+              v-for="(item,key) in product.size"
+              :key="key">
               <span style="margin-right:15px">{{key}}</span>
               <span class="sizeDetail">
-                <span class="sizeOnce" v-for="itemChild in item" :key="itemChild.id">{{itemChild.size_value + 'cm' + '(' + itemChild.size_name + ')'}}&nbsp;&nbsp;&nbsp;</span>
+                <span class="sizeOnce"
+                  v-for="itemChild in item"
+                  :key="itemChild.id">{{itemChild.size_value + 'cm' + '(' + itemChild.size_name + ')'}}&nbsp;&nbsp;&nbsp;</span>
                 <span class="sizeOnce">{{ item[0].weight + 'g' + '(克重)'}}</span>
               </span>
-              <br/>
+              <br />
             </span>
           </div>
-          <div class="inputCtn" style="align-items:flex-start">
+          <div class="inputCtn"
+            style="align-items:flex-start">
             <span class="label">产品成分:</span>
             <span class="content">{{product.materials|filterMaterials}}</span>
           </div>
@@ -48,22 +56,32 @@
           <div class="cicle"></div>
           <div class="border"></div>
         </div>
-        <div class="lineCtn" style="margin-bottom:0">
+        <div class="lineCtn"
+          style="margin-bottom:0">
           <div class="inputCtn oneLine">
             <span class="label">配色方案:</span>
-            <div class="columnCtn" v-for="(itemColour,indexColour) in color_data.warpColorData" :key="indexColour">
+            <div class="columnCtn"
+              v-for="(itemColour,indexColour) in color_data.warpColorData"
+              :key="indexColour">
               <div class="name">{{indexColour+1}}.{{itemColour.product_color}}：</div>
               <div class="value">
-                <el-tooltip class="item" effect="dark" :content="itemColor.name +' : '+ warpWeightArr[indexColor].toFixed(2) + '克'" placement="top" v-for="(itemColor,indexColor) in itemColour.color_scheme" :key="indexColor">
+                <el-tooltip class="item"
+                  effect="dark"
+                  :content="itemColor.name +' : '+ warpWeightArr[indexColor].toFixed(2) + '克'"
+                  placement="top"
+                  v-for="(itemColor,indexColor) in itemColour.color_scheme"
+                  :key="indexColor">
                   <div class="bgBlock">
-                    <div :style="{'background-color':itemColor.value}" class="shadeBlock">{{indexColor|filterMethods}}</div>
+                    <div :style="{'background-color':itemColor.value}"
+                      class="shadeBlock">{{indexColor|filterMethods}}</div>
                   </div>
                 </el-tooltip>
               </div>
             </div>
           </div>
         </div>
-        <div class="lineCtn" style="margin-top:0">
+        <div class="lineCtn"
+          style="margin-top:0">
           <div class="inputCtn oneLine">
             <span class="label">主要原料:</span>
             <div class="content">{{this.material_data.warpMaterialMain}}</div>
@@ -72,27 +90,40 @@
         <div class="lineCtn">
           <div class="inputCtn oneLine">
             <span class="label">次要原料:</span>
-            <div class="columnCtn" v-for="(itemMaterial,indexMaterial) in material_data.warpMaterialOther" :key="indexMaterial">
+            <div class="columnCtn"
+              v-for="(itemMaterial,indexMaterial) in material_data.warpMaterialOther"
+              :key="indexMaterial">
               <div class="name">{{itemMaterial.name}}：</div>
               <div class="value">
-                <div class="bgBlock" v-for="(itemColor,indexColor) in itemMaterial.value" :key="indexColor"><div class="shadeBlock" style="background:rgba(0,0,0,0.5)">{{itemColor|filterMethods}}</div></div>
+                <div class="bgBlock"
+                  v-for="(itemColor,indexColor) in itemMaterial.value"
+                  :key="indexColor">
+                  <div class="shadeBlock"
+                    style="background:rgba(0,0,0,0.5)">{{itemColor|filterMethods}}</div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="lineCtn" style="margin-top:0">
+        <div class="lineCtn"
+          style="margin-top:0">
           <div class="inputCtn oneLine rowLine">
             <span class="label">经向排列:</span>
-            <div class="overflowCtn" :style="{'overflow-x':longSort.length>12?'auto':'hidden'}">
+            <div class="overflowCtn"
+              :style="{'overflow-x':longSort.length>12?'auto':'hidden'}">
               <div class="selectCtn">
                 <div class="tableConnect">
-                  <div class="selectOnce" v-for="(item,index) in longSort" :key="index">
+                  <div class="selectOnce"
+                    v-for="(item,index) in longSort"
+                    :key="index">
                     {{item|filterMethods}}
                   </div>
                 </div>
               </div>
               <div class="excelCtn">
-                <hot-table :settings="hotSettings" :height="140" ref="table"></hot-table>
+                <hot-table :settings="hotSettings"
+                  :height="140"
+                  ref="table"></hot-table>
               </div>
             </div>
           </div>
@@ -136,7 +167,8 @@
             <span class="label">综页:</span>
             <div class="content">{{warp_data.sum_up?warp_data.sum_up+'支':'暂无信息'}}</div>
           </div>
-          <div class="inputCtn" style="width:615px">
+          <div class="inputCtn"
+            style="width:615px">
             <span class="label">穿综法:</span>
             <div class="content">{{warp_data.drafting_method?warp_data.drafting_method:'暂无信息'}}</div>
           </div>
@@ -178,20 +210,32 @@
             <div class="content">{{'内长：'+ weft_data.neichang+'cm / 让位：'+ weft_data.rangwei +'cm / 总计：'+ weft_data.total + '梭'}}</div>
           </div>
         </div>
-        <div class="lineCtn" style="margin-bottom:0">
+        <div class="lineCtn"
+          style="margin-bottom:0">
           <div class="inputCtn oneLine">
             <span class="label">配色方案:</span>
-            <div class="columnCtn" v-for="(itemColour,indexColour) in color_data.weftColorData" :key="indexColour">
+            <div class="columnCtn"
+              v-for="(itemColour,indexColour) in color_data.weftColorData"
+              :key="indexColour">
               <div class="name">{{indexColour+1}}.{{itemColour.product_color}}：</div>
               <div class="value">
-                <el-tooltip class="item" effect="dark" :content="itemColor.name +' : '+ weftWeightArr[indexColor].toFixed(2) + '克'" placement="top" v-for="(itemColor,indexColor) in itemColour.color_scheme" :key="indexColor">
-                  <div class="bgBlock" ><div :style="{'background-color':itemColor.value}" class="shadeBlock">{{indexColor|filterMethods}}</div></div>
+                <el-tooltip class="item"
+                  effect="dark"
+                  :content="itemColor.name +' : '+ weftWeightArr[indexColor].toFixed(2) + '克'"
+                  placement="top"
+                  v-for="(itemColor,indexColor) in itemColour.color_scheme"
+                  :key="indexColor">
+                  <div class="bgBlock">
+                    <div :style="{'background-color':itemColor.value}"
+                      class="shadeBlock">{{indexColor|filterMethods}}</div>
+                  </div>
                 </el-tooltip>
               </div>
             </div>
           </div>
         </div>
-        <div class="lineCtn" style="margin-top:0">
+        <div class="lineCtn"
+          style="margin-top:0">
           <div class="inputCtn oneLine">
             <span class="label">主要原料:</span>
             <div class="content">{{this.material_data.weftMaterialMain}}</div>
@@ -200,27 +244,40 @@
         <div class="lineCtn">
           <div class="inputCtn oneLine">
             <span class="label">次要原料:</span>
-            <div class="columnCtn" v-for="(itemMaterial,indexMaterial) in material_data.weftMaterialOther" :key="indexMaterial">
+            <div class="columnCtn"
+              v-for="(itemMaterial,indexMaterial) in material_data.weftMaterialOther"
+              :key="indexMaterial">
               <div class="name">{{itemMaterial.name}}：</div>
               <div class="value">
-                <div class="bgBlock" v-for="(itemColor,indexColor) in itemMaterial.value" :key="indexColor"><div class="shadeBlock" style="background:rgba(0,0,0,0.5)">{{itemColor|filterMethods}}</div></div>
+                <div class="bgBlock"
+                  v-for="(itemColor,indexColor) in itemMaterial.value"
+                  :key="indexColor">
+                  <div class="shadeBlock"
+                    style="background:rgba(0,0,0,0.5)">{{itemColor|filterMethods}}</div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="lineCtn" style="margin-top:0">
+        <div class="lineCtn"
+          style="margin-top:0">
           <div class="inputCtn oneLine rowLine">
             <span class="label">纬向排列:</span>
-            <div class="overflowCtn" :style="{'overflow-x':longSort2.length>12?'auto':'hidden'}">
+            <div class="overflowCtn"
+              :style="{'overflow-x':longSort2.length>12?'auto':'hidden'}">
               <div class="selectCtn">
                 <div class="tableConnect">
-                  <div class="selectOnce" v-for="(item,index) in longSort2" :key="index">
+                  <div class="selectOnce"
+                    v-for="(item,index) in longSort2"
+                    :key="index">
                     {{item|filterMethods}}
                   </div>
                 </div>
               </div>
               <div class="excelCtn">
-                <hot-table :settings="hotSettings2" :height="140" ref="table"></hot-table>
+                <hot-table :settings="hotSettings2"
+                  :height="140"
+                  ref="table"></hot-table>
               </div>
             </div>
           </div>
@@ -239,10 +296,13 @@
             <span class="content">{{((weigthAll - weight)/weight*100).toFixed(2)}}%</span>
           </div>
         </div>
-         <div class="lineCtn">
+        <div class="lineCtn">
           <div class="inputCtn oneLine">
             <span class="label">纱线系数:</span>
-            <span class="content" style="width:100%"  v-for="item in yarn" :key="item.name">{{item.name}} : {{item.value}}克</span>
+            <span class="content"
+              style="width:100%"
+              v-for="item in yarn"
+              :key="item.name">{{item.name}} : {{item.value}}克</span>
           </div>
         </div>
       </div>
@@ -256,20 +316,29 @@
           <div class="inputCtn oneLine">
             <span class="label">选择配色方案:</span>
             <div class="colourCtn">
-              <div class="colour" @click="chooseWhichColour=index" :class="{'active':index===chooseWhichColour}" v-for="(item,index) in color_data.warpColorData" :key="index">{{item.product_color}}</div>
+              <div class="colour"
+                @click="chooseWhichColour=index"
+                :class="{'active':index===chooseWhichColour}"
+                v-for="(item,index) in color_data.warpColorData"
+                :key="index">{{item.product_color}}</div>
             </div>
           </div>
         </div>
-        <div class="canvasCtn" :style="{height:600*chang/kuan + 'px'}">
-          <canvas ref="myCanvas" width="600" :height="600*chang/kuan"></canvas>
+        <div class="canvasCtn"
+          :style="{height:600*chang/kuan + 'px'}">
+          <canvas ref="myCanvas"
+            width="600"
+            :height="600*chang/kuan"></canvas>
         </div>
       </div>
       <div class="btnCtn">
-        <div class="cancleBtn" @click="$router.go(-1)">返回</div>
-        <div class="okBtn"  @click="copy($route.params.id)">打印</div>
+        <div class="cancleBtn"
+          @click="$router.go(-1)">返回</div>
+        <div class="okBtn"
+          @click="copy($route.params.id)">打印</div>
       </div>
     </div>
- </div>
+  </div>
 </template>
 
 <script>
@@ -906,5 +975,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/designFormDetail.less';
+@import "~@/assets/css/designFormDetail.less";
 </style>

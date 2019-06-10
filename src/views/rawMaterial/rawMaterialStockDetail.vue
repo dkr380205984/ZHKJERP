@@ -1,6 +1,6 @@
 <template>
   <div id="rawMaterialStockDetail"
-       v-loading="loading">
+    v-loading="loading">
     <div class="head">
       <h2>{{type === '0' ? '原' : '辅'}}料出入库详情</h2>
     </div>
@@ -15,7 +15,7 @@
           <div class="inputCtn">
             <span class="label">订单号:</span>
             <span class="content important"
-                  @click="$router.push('/index/orderDetail/' + $route.params.id)">{{order_code}}</span>
+              @click="$router.push('/index/orderDetail/' + $route.params.id)">{{order_code}}</span>
           </div>
           <div class="inputCtn">
             <span class="label">外贸公司:</span>
@@ -56,13 +56,13 @@
                 </li>
                 <li v-if="materialList.length === 0">暂无信息</li>
                 <li class="content"
-                    v-for="(item,key) in materialList"
-                    :key="key">
+                  v-for="(item,key) in materialList"
+                  :key="key">
                   <span class="tableRow">{{item.material}}</span>
                   <span class="flex2 col tableRow">
                     <span v-for="(val,ind) in item.need"
-                          :key="ind"
-                          class="tableColumn">
+                      :key="ind"
+                      class="tableColumn">
                       <span class="tableRow">{{val.name}}</span>
                       <span class="tableRow">{{val.value|fixedFilter}}{{item.unit}}</span>
                     </span>
@@ -102,18 +102,18 @@
                 </li>
                 <li v-if="goStockList.length === 0">暂无信息</li>
                 <li class="content"
-                    v-for="(item,key) in goStockList"
-                    :key="key">
+                  v-for="(item,key) in goStockList"
+                  :key="key">
                   <span class="tableRow">{{item.material}}</span>
                   <span class="tableRow flex4 col">
                     <span v-for="(val,ind) in item.info"
-                          :key="ind"
-                          class="tableColumn">
+                      :key="ind"
+                      class="tableColumn">
                       <span class="tableRow">{{val.color}}</span>
                       <span class="tableRow flex3 col">
                         <span v-for="(value,index) in val.list"
-                              :key="index"
-                              class="tableColumn">
+                          :key="index"
+                          class="tableColumn">
                           <span class="tableRow">{{value.dyelot_number === 'vat_null' ? '默认' : value.dyelot_number}}</span>
                           <span class="tableRow">{{value.value|fixedFilter}}{{item.unit}}</span>
                           <span class="tableRow">{{value.attr}}</span>
@@ -125,10 +125,10 @@
                   <span class="tableRow">{{(item.order_number - item.goStock_number)|fixedFilter}}{{item.unit}}</span>
                 </li>
                 <div class="logList"
-                     @click="goStockLogFlag = !goStockLogFlag">{{ goStockLogFlag ? '收起' : '展开'}}详情</div>
+                  @click="goStockLogFlag = !goStockLogFlag">{{ goStockLogFlag ? '收起' : '展开'}}详情</div>
               </ul>
               <ul class="log"
-                  v-if="goStockLogFlag">
+                v-if="goStockLogFlag">
                 <div>
                   <li>
                     <span class="flexBig">入库日期</span>
@@ -144,7 +144,7 @@
                 <div>
                   <li v-if="goStockLog.length === 0">暂无信息</li>
                   <li v-for="(item,key) in goStockLog"
-                      :key="item.time + key">
+                    :key="item.time + key">
                     <span class="flexBig">{{item.time}}</span>
                     <span class="flexBig">{{item.material}}</span>
                     <span>{{item.color}}</span>
@@ -155,11 +155,11 @@
                       <i>
                         {{item.remark ? item.remark : '暂无备注'}}
                         <el-popover placement="top-end"
-                                    title="备注信息"
-                                    width="200"
-                                    trigger="click"
-                                    v-if="charCodeLength(item.remark) > 15"
-                                    :content="item.remark">
+                          title="备注信息"
+                          width="200"
+                          trigger="click"
+                          v-if="charCodeLength(item.remark) > 15"
+                          :content="item.remark">
                           <span slot="reference">展开</span>
                         </el-popover>
                       </i>
@@ -170,13 +170,13 @@
               </ul>
               <div class="handle">
                 <div :class="{'disabled':stockFlag === 0}"
-                     @click="open('goStock',$route.params.id,stockFlag)">
+                  @click="open('goStock',$route.params.id,stockFlag)">
                   <img class="icon"
-                       v-if="stockFlag !== 0"
-                       src="@/assets/image/icon/goStock.png">
+                    v-if="stockFlag !== 0"
+                    src="@/assets/image/icon/goStock.png">
                   <img class="icon"
-                       v-else
-                       src="@/assets/image/icon/goStock_disabled.png">
+                    v-else
+                    src="@/assets/image/icon/goStock_disabled.png">
                   <span>去入库</span>
                 </div>
               </div>
@@ -210,23 +210,23 @@
                 </li>
                 <li v-if="outStockInfo.length === 0">暂无信息</li>
                 <li class="content"
-                    v-for="(item,key) in outStockInfo"
-                    :key="key">
+                  v-for="(item,key) in outStockInfo"
+                  :key="key">
                   <span class="tableRow">{{item.material}}</span>
                   <span class="tableRow flex6 col">
                     <span v-for="(val,ind) in item.client_list"
-                          :key="ind"
-                          class="tableColumn">
+                      :key="ind"
+                      class="tableColumn">
                       <span class="tableRow flex16">{{val.client_name}}</span>
                       <span class="tableRow flex44 col">
                         <span v-for="(value,index) in val.color_list"
-                              :key='index'
-                              class="tableColumn">
+                          :key='index'
+                          class="tableColumn">
                           <span class="tableRow">{{value.color}}</span>
                           <span class="tableRow col">
                             <span v-for="(itemVat,keyVat) in value.vat_list"
-                                  :key="keyVat"
-                                  class="tableColumn">
+                              :key="keyVat"
+                              class="tableColumn">
                               <span class="tableRow">{{itemVat}}</span>
                             </span>
                           </span>
@@ -238,10 +238,10 @@
                   </span>
                 </li>
                 <div class="logList"
-                     @click="outStockLogFlag = !outStockLogFlag">{{ outStockLogFlag ? '收起' : '展开'}}详情</div>
+                  @click="outStockLogFlag = !outStockLogFlag">{{ outStockLogFlag ? '收起' : '展开'}}详情</div>
               </ul>
               <ul class="log"
-                  v-if="outStockLogFlag">
+                v-if="outStockLogFlag">
                 <div>
                   <li>
                     <span class="flexBig">出库日期</span>
@@ -257,7 +257,7 @@
                 <div>
                   <li v-if="outStockLog.length === 0">暂无信息</li>
                   <li v-for="(item,key) in outStockLog"
-                      :key="item.time + key">
+                    :key="item.time + key">
                     <span class="flexBig">{{item.time}}</span>
                     <span class="flexBig">{{item.material}}</span>
                     <span class="flexBig">{{item.client_name}}</span>
@@ -268,11 +268,11 @@
                       <i>
                         {{item.remark ? item.remark : '暂无备注'}}
                         <el-popover placement="top-end"
-                                    title="备注信息"
-                                    width="200"
-                                    trigger="click"
-                                    v-if="charCodeLength(item.remark) > 15"
-                                    :content="item.remark">
+                          title="备注信息"
+                          width="200"
+                          trigger="click"
+                          v-if="charCodeLength(item.remark) > 15"
+                          :content="item.remark">
                           <span slot="reference">展开</span>
                         </el-popover>
                       </i>
@@ -283,13 +283,13 @@
               </ul>
               <div class="handle">
                 <div :class="{'disabled':stockFlag === 0}"
-                     @click="open('outStock',$route.params.id,stockFlag)">
+                  @click="open('outStock',$route.params.id,stockFlag)">
                   <img class="icon"
-                       v-if="stockFlag !== 0"
-                       src="@/assets/image/icon/outStock.png">
+                    v-if="stockFlag !== 0"
+                    src="@/assets/image/icon/outStock.png">
                   <img class="icon"
-                       v-else
-                       src="@/assets/image/icon/outStock_disabled.png">
+                    v-else
+                    src="@/assets/image/icon/outStock_disabled.png">
                   <span>去出库</span>
                 </div>
               </div>
@@ -317,13 +317,13 @@
                 </div>
                 <div>
                   <li v-for="(val,ind) in surplus"
-                      :key="ind">
+                    :key="ind">
                     <span>{{val.material}}</span>
                     <span>{{val.color}}</span>
                     <span>{{val.dyelot_number}}</span>
                     <span>{{val.surplu|fixedFilter}}{{val.unit}}</span>
                     <span @click="goStock(val)"
-                          class="important">暂无</span>
+                      class="important">暂无</span>
                   </li>
                 </div>
               </ul>
@@ -333,9 +333,9 @@
       </div>
       <div class="btnCtn">
         <div class="cancleBtn"
-             @click="$router.go(-1)">返回</div>
+          @click="$router.go(-1)">返回</div>
         <div class="okBtn"
-             @click="$router.go(-1)">确定</div>
+          @click="$router.go(-1)">确定</div>
       </div>
     </div>
   </div>

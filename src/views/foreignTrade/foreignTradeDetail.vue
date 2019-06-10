@@ -40,8 +40,8 @@
             </div>
             <div class="tableBody">
               <div class="line"
-                   v-for="item in companyInfo.contacts"
-                   :key="item.id">
+                v-for="item in companyInfo.contacts"
+                :key="item.id">
                 <div class="once">{{item.name}}</div>
                 <div class="once">{{item.station}}</div>
                 <div class="once">{{item.phone}}</div>
@@ -77,9 +77,9 @@
       </div>
       <div class="btnCtn">
         <div class="cancleBtn"
-             @click="$router.go(-1)">返回</div>
+          @click="$router.go(-1)">返回</div>
         <div class="okBtn"
-             @click="$router.push('/index/foreignTradeUpdate/' + $route.params.id)">修改</div>
+          @click="$router.push('/index/foreignTradeUpdate/' + $route.params.id)">修改</div>
       </div>
     </div>
   </div>

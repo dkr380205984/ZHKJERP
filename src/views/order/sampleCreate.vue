@@ -1,5 +1,5 @@
 <template>
-  <div id = "sampleCreate">
+  <div id="sampleCreate">
     <div class="head">
       <h2>添加样品订单</h2>
     </div>
@@ -41,10 +41,14 @@
       <div class="lineCtn">
         <div class="inputCtn oneLine">
           <span class="label">产品规格:</span>
-          <span class="content contentLine" v-for="(item,key) in product.size" :key="key">
+          <span class="content contentLine"
+            v-for="(item,key) in product.size"
+            :key="key">
             <span class="size">{{key}}</span>
             <span class="sizeDetail">
-              <span class="sizeOnce" v-for="itemChild in item" :key="itemChild.id">{{itemChild.size_name + '：' + itemChild.size_value + 'cm'}}</span>
+              <span class="sizeOnce"
+                v-for="itemChild in item"
+                :key="itemChild.id">{{itemChild.size_name + '：' + itemChild.size_value + 'cm'}}</span>
             </span>
           </span>
         </div>
@@ -53,8 +57,14 @@
         <div class="inputCtn oneLine">
           <span class="label">产品图片:</span>
           <span class="content">
-            <img v-if="product.img.length === 0" class="img" src="@/assets/image/index/noPic.jpg"/>
-            <img v-for="(item,index) in product.img" :key="index" class="img" :src="item.image_url" :onerror="defaultImg" />
+            <img v-if="product.img.length === 0"
+              class="img"
+              src="@/assets/image/index/noPic.jpg" />
+            <img v-for="(item,index) in product.img"
+              :key="index"
+              class="img"
+              :src="item.image_url"
+              :onerror="defaultImg" />
           </span>
         </div>
       </div>
@@ -68,13 +78,17 @@
         <div class="inputCtn">
           <span class="label">原料信息:</span>
           <span class="content">
-            <span v-for="(item,index) in material_data.mainIngredient.ingredient" :key="index" style="margin-right:25px">{{item.join('')}}</span>
+            <span v-for="(item,index) in material_data.mainIngredient.ingredient"
+              :key="index"
+              style="margin-right:25px">{{item.join('')}}</span>
           </span>
         </div>
         <div class="inputCtn">
           <span class="label">辅料信息:</span>
           <span class="content">
-            <span v-for="(item,index) in material_data.otherIngredient.ingredient" :key="index" style="margin-right:25px">{{item}}</span>
+            <span v-for="(item,index) in material_data.otherIngredient.ingredient"
+              :key="index"
+              style="margin-right:25px">{{item}}</span>
           </span>
         </div>
       </div>
@@ -82,7 +96,9 @@
         <div class="inputCtn oneLine">
           <span class="label">外道加工:</span>
           <span class="content">
-            <span v-for="(item,index) in outside_data" :key="index" style="margin-right:25px">{{index+1}}.{{item}}</span>
+            <span v-for="(item,index) in outside_data"
+              :key="index"
+              style="margin-right:25px">{{index+1}}.{{item}}</span>
           </span>
         </div>
       </div>
@@ -90,9 +106,12 @@
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">订单公司:</span>
-          <el-select class="elSelect" v-model="client" placeholder="可输入名称精确搜索" filterable @change="getContacts">
-            <el-option
-              v-for="item in clientArr"
+          <el-select class="elSelect"
+            v-model="client"
+            placeholder="可输入名称精确搜索"
+            filterable
+            @change="getContacts">
+            <el-option v-for="item in clientArr"
               :key="item.id"
               :label="item.name"
               :value="item.id">
@@ -101,9 +120,10 @@
         </div>
         <div class="inputCtn">
           <span class="label">联系人:</span>
-          <el-select class="elSelect" v-model="contacts" placeholder="请选择对接联系人">
-            <el-option
-              v-for="item in contactsArr"
+          <el-select class="elSelect"
+            v-model="contacts"
+            placeholder="请选择对接联系人">
+            <el-option v-for="item in contactsArr"
               :key="item.id"
               :label="item.name"
               :value="item.id">
@@ -111,66 +131,92 @@
           </el-select>
         </div>
       </div>
-      <div class="lineCtn" style="margin-bottom:0">
+      <div class="lineCtn"
+        style="margin-bottom:0">
         <div class="specialCtn">
           <span class="label">订单信息:</span>
-          <div class="infoCtn" v-for="(item,index) in order_info.length" :key="item">
+          <div class="infoCtn"
+            v-for="(item,index) in order_info.length"
+            :key="item">
             <span class="index">{{item}}</span>
-            <el-select style="width:150px" v-model="order_info[index].size" placeholder="请选择尺码">
-              <el-option
-                v-for="item in sizeArr"
+            <el-select style="width:150px"
+              v-model="order_info[index].size"
+              placeholder="请选择尺码">
+              <el-option v-for="item in sizeArr"
                 :key="item"
                 :label="item"
                 :value="item">
               </el-option>
             </el-select>
-            <el-select v-model="order_info[index].colour" placeholder="请选择配色" style="margin-left:15px;width:150px">
-              <el-option
-                v-for="item in colourArr"
+            <el-select v-model="order_info[index].colour"
+              placeholder="请选择配色"
+              style="margin-left:15px;width:150px">
+              <el-option v-for="item in colourArr"
                 :key="item.value"
                 :label="item.name"
                 :value="item.value">
               </el-option>
             </el-select>
-            <el-input class="elInputAp" placeholder="请输入数字" v-model="order_info[index].number" @blur="computedTotal">
+            <el-input class="elInputAp"
+              placeholder="请输入数字"
+              v-model="order_info[index].number"
+              @blur="computedTotal">
               <template slot="prepend">订单数:</template>
               <template slot="append">{{unit}}</template>
             </el-input>
-            <el-icon class="el-icon-delete" @click.native="deleteOrder(index)"></el-icon>
+            <el-icon class="el-icon-delete"
+              @click.native="deleteOrder(index)"></el-icon>
           </div>
-          <div class="addBtn" @click="addOrder">
+          <div class="addBtn"
+            @click="addOrder">
             <span>添加分类</span>
             <span>+</span>
           </div>
         </div>
       </div>
-      <div class="lineCtn" style="margin-top:4px;margin-bottom:4px">
-        <div class="specialCtn" style="width:300px">
+      <div class="lineCtn"
+        style="margin-top:4px;margin-bottom:4px">
+        <div class="specialCtn"
+          style="width:300px">
           <span class="label">订单价格:</span>
-          <div class="infoCtn" style="height:40px">
-            <el-radio-group v-model="price_model" @change="getPrice">
+          <div class="infoCtn"
+            style="height:40px">
+            <el-radio-group v-model="price_model"
+              @change="getPrice">
               <el-radio :label="1">按单价计算</el-radio>
               <el-radio :label="2">按款数计算</el-radio>
             </el-radio-group>
           </div>
           <div class="infoCtn">
-            <el-input style="margin-left:0px" class="elInputAp" placeholder="请输入数字" v-model="danjia" :disabled="price_model===2" @blur="computedTotal">
+            <el-input style="margin-left:0px"
+              class="elInputAp"
+              placeholder="请输入数字"
+              v-model="danjia"
+              :disabled="price_model===2"
+              @blur="computedTotal">
               <template slot="prepend">单价:</template>
               <template slot="append">元/{{unit}}</template>
             </el-input>
           </div>
           <div class="infoCtn">
-            <el-input style="margin-left:0px" class="elInputAp" placeholder="请输入数字" v-model="price_total" :disabled="price_model===1">
+            <el-input style="margin-left:0px"
+              class="elInputAp"
+              placeholder="请输入数字"
+              v-model="price_total"
+              :disabled="price_model===1">
               <template slot="prepend">总价:</template>
               <template slot="append">元</template>
             </el-input>
           </div>
         </div>
       </div>
-      <div class="lineCtn" style="margin-top:0;margin-bottom:0px;">
-        <div class="specialCtn" style="width:300px">
+      <div class="lineCtn"
+        style="margin-top:0;margin-bottom:0px;">
+        <div class="specialCtn"
+          style="width:300px">
           <span class="label">承担方:</span>
-          <div class="infoCtn" style="height:40px">
+          <div class="infoCtn"
+            style="height:40px">
             <el-radio-group v-model="assume">
               <el-radio :label="1">工厂承担</el-radio>
               <el-radio :label="2">订单公司承担</el-radio>
@@ -178,10 +224,13 @@
           </div>
         </div>
       </div>
-      <div class="lineCtn" style="margin-top:0">
+      <div class="lineCtn"
+        style="margin-top:0">
         <div class="inputCtn">
           <span class="label">税率:</span>
-          <el-input style="margin-left:15px;" placeholder="请输入数字" v-model="tax_rate">
+          <el-input style="margin-left:15px;"
+            placeholder="请输入数字"
+            v-model="tax_rate">
             <template slot="append">%</template>
           </el-input>
         </div>
@@ -189,8 +238,7 @@
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">下单日期:</span>
-           <el-date-picker
-            style="margin-left:15px;width:200px"
+          <el-date-picker style="margin-left:15px;width:200px"
             v-model="order_time"
             value-format="yyyy-MM-dd"
             type="date"
@@ -199,8 +247,7 @@
         </div>
         <div class="inputCtn">
           <span class="label">交货日期:</span>
-           <el-date-picker
-            value-format="yyyy-MM-dd"
+          <el-date-picker value-format="yyyy-MM-dd"
             style="margin-left:15px;width:200px"
             v-model="consignment_time"
             type="date"
@@ -210,7 +257,8 @@
       </div>
       <div class="btnCtn">
         <div class="cancleBtn">清空</div>
-        <div class="okBtn"  @click="saveAll">保存</div>
+        <div class="okBtn"
+          @click="saveAll">保存</div>
       </div>
     </div>
   </div>
@@ -373,13 +421,13 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/sampleCreate.less';
+@import "~@/assets/css/sampleCreate.less";
 </style>
 <style lang="less">
-#sampleCreate{
-  .onceLine{
-    .el-input__inner{
-      background: #F8F8F8;
+#sampleCreate {
+  .onceLine {
+    .el-input__inner {
+      background: #f8f8f8;
     }
   }
 }

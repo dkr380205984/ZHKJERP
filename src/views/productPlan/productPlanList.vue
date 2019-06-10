@@ -1,35 +1,47 @@
 <template>
-  <div id="productList" v-loading="loading">
+  <div id="productList"
+    v-loading="loading">
     <div class="head">
       <h2>配料单列表</h2>
-      <el-input placeholder="输入计划单编号精确搜索" suffix-icon="el-icon-search" v-model="searchVal"></el-input>
+      <el-input placeholder="输入计划单编号精确搜索"
+        suffix-icon="el-icon-search"
+        v-model="searchVal"></el-input>
     </div>
     <div class="body">
       <div class="filterCtn">
         <div class="filterLine">
           <span class="label">筛选列表:</span>
-          <el-tag closable v-show="categoryValCmp" @close="clear('categoryVal')">{{categoryValCmp}}</el-tag>
-          <el-tag closable v-show="typesValCmp" @close="clear('typesVal')">{{typesValCmp}}</el-tag>
-          <el-tag closable v-show="styleValCmp" @close="clear('styleVal')">{{styleValCmp}}</el-tag>
+          <el-tag closable
+            v-show="categoryValCmp"
+            @close="clear('categoryVal')">{{categoryValCmp}}</el-tag>
+          <el-tag closable
+            v-show="typesValCmp"
+            @close="clear('typesVal')">{{typesValCmp}}</el-tag>
+          <el-tag closable
+            v-show="styleValCmp"
+            @close="clear('styleVal')">{{styleValCmp}}</el-tag>
         </div>
         <div class="selectLine">
           <span class="label">筛选条件:</span>
           <div class="leftFilter">
-            <el-select v-model="categoryVal" placeholder="筛选品类">
+            <el-select v-model="categoryVal"
+              placeholder="筛选品类">
               <el-option v-for="item in category"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id">
               </el-option>
             </el-select>
-            <el-select v-model="typesVal" placeholder="筛选类型">
+            <el-select v-model="typesVal"
+              placeholder="筛选类型">
               <el-option v-for="item in types"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id">
               </el-option>
             </el-select>
-            <el-select v-model="styleVal" placeholder="筛选款型">
+            <el-select v-model="styleVal"
+              placeholder="筛选款型">
               <el-option v-for="item in style"
                 :key="item.id"
                 :label="item.name"
@@ -64,8 +76,11 @@
           <div class="tableColumn">创建日期</div>
           <div class="tableColumn flex9">操作</div>
         </div>
-        <div class="tableRow bodyTableRow" v-for="(item) in list" :key="item.id">
-          <div class="tableColumn" style="color: rgb(26, 149, 255);">{{item.plan_code}}</div>
+        <div class="tableRow bodyTableRow"
+          v-for="(item) in list"
+          :key="item.id">
+          <div class="tableColumn"
+            style="color: rgb(26, 149, 255);">{{item.plan_code}}</div>
           <div class="tableColumn">{{item.product_info.product_code}}</div>
           <div class="tableColumn">{{item.product_info|filterType}}</div>
           <div class="tableColumn">{{item.product_info.size|filterSize}}</div>
@@ -74,8 +89,10 @@
           <div class="tableColumn">{{item.product_info.user_name}}</div>
           <div class="tableColumn">{{item.product_info.create_time}}</div>
           <div class="tableColumn flex9">
-            <span class="btns warning" @click="$router.push('/index/productPlanUpdate/'+item.product_info.product_code)">修改</span>
-            <span class="btns success" @click="$router.push('/index/productPlanDetail/'+item.id)">查看</span>
+            <span class="btns warning"
+              @click="$router.push('/index/productPlanUpdate/'+item.product_info.product_code)">修改</span>
+            <span class="btns success"
+              @click="$router.push('/index/productPlanDetail/'+item.id)">查看</span>
           </div>
         </div>
       </div>

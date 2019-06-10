@@ -1,5 +1,6 @@
 <template>
-  <div id="productDesignCreate" v-loading="loading">
+  <div id="productDesignCreate"
+    v-loading="loading">
     <div class="head">
       <h2>添加生产计划单</h2>
     </div>
@@ -36,15 +37,22 @@
           <span class="content">{{order.remark?order.remark:'暂无信息'}}</span>
         </div>
       </div>
-       <div class="lineCtn">
+      <div class="lineCtn">
         <div class="inputCtn oneLine">
           <span class="label">生产数量：</span>
           <div class="specialTable">
-            <div class="left" style="width:180px">
+            <div class="left"
+              style="width:180px">
               <div class="firstLine">产品品类</div>
-              <div style="color:#1a95ff;" class="mergeLine" v-for="(item,index) in product" :style="{height:(index!==product.length-1)?(61*item.num)+'px':(61*item.num)-1+'px'}" :key="item.product_code">
-                <span @click="$router.push('/index/productDetail/'+item.product_code)" style="cursor:help">{{item.product_code}}</span>
-                <span @click="$router.push('/index/productDetail/'+item.product_code)" style="cursor:help">{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
+              <div style="color:#1a95ff;"
+                class="mergeLine"
+                v-for="(item,index) in product"
+                :style="{height:(index!==product.length-1)?(61*item.num)+'px':(61*item.num)-1+'px'}"
+                :key="item.product_code">
+                <span @click="$router.push('/index/productDetail/'+item.product_code)"
+                  style="cursor:help">{{item.product_code}}</span>
+                <span @click="$router.push('/index/productDetail/'+item.product_code)"
+                  style="cursor:help">{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
               </div>
             </div>
             <div class="right">
@@ -55,21 +63,31 @@
                 <div class="tableColumn">库存调取</div>
                 <div class="tableColumn">工厂生产</div>
                 <div class="tableColumn">总计</div>
-                <div class="tableColumn" style="flex:1.3">生产损耗(%)</div>
+                <div class="tableColumn"
+                  style="flex:1.3">生产损耗(%)</div>
               </div>
-              <div class="tableRow bodyTableRow" v-for="(item) in productInfo" :key="item.id">
+              <div class="tableRow bodyTableRow"
+                v-for="(item) in productInfo"
+                :key="item.id">
                 <div class="tableColumn">{{item.size}}/{{item.color}}</div>
                 <div class="tableColumn">{{item.numbers}}{{item.unit_name}}</div>
                 <div class="tableColumn">{{item.stock_num}}{{item.unit_name}}</div>
                 <div class="tableColumn">
-                  <input class="inputs" placeholder="输入数字" v-model="item.stock_pick"/>
+                  <input class="inputs"
+                    placeholder="输入数字"
+                    v-model="item.stock_pick" />
                 </div>
                 <div class="tableColumn">
-                  <input class="inputs" placeholder="输入数字" v-model="item.production_num"/>
+                  <input class="inputs"
+                    placeholder="输入数字"
+                    v-model="item.production_num" />
                 </div>
                 <div class="tableColumn">{{(parseInt(item.stock_pick) + parseInt(item.production_num))?(parseInt(item.stock_pick) + parseInt(item.production_num)):'待计算'}}</div>
-                 <div class="tableColumn" style="flex:1.3">
-                  <input class="inputs" placeholder="百分比" v-model="item.production_sunhao"/>
+                <div class="tableColumn"
+                  style="flex:1.3">
+                  <input class="inputs"
+                    placeholder="百分比"
+                    v-model="item.production_sunhao" />
                 </div>
               </div>
             </div>
@@ -77,8 +95,10 @@
         </div>
       </div>
       <div class="btnCtn">
-        <div class="cancleBtn" @click="$router.go(-1)">返回</div>
-        <div class="okBtn" @click="saveAll">添加</div>
+        <div class="cancleBtn"
+          @click="$router.go(-1)">返回</div>
+        <div class="okBtn"
+          @click="saveAll">添加</div>
       </div>
     </div>
   </div>
@@ -246,5 +266,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/productDesignCreate.less';
+@import "~@/assets/css/productDesignCreate.less";
 </style>

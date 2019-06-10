@@ -1,16 +1,19 @@
 <template>
-  <div id="foreignTradeList" v-loading="loading">
+  <div id="foreignTradeList"
+    v-loading="loading">
     <div class="head">
       <h2>合作公司列表</h2>
-      <el-input placeholder="请输入公司名称或简称" suffix-icon="el-icon-search" v-model="searchVal"></el-input>
+      <el-input placeholder="请输入公司名称或简称"
+        suffix-icon="el-icon-search"
+        v-model="searchVal"></el-input>
     </div>
     <div class="body">
       <div class="filterMenu">
         <div class="selectLine">
           <div class="leftFilter">
-            <el-select v-model="status" placeholder="请选择">
-              <el-option
-                v-for="item in statusArr"
+            <el-select v-model="status"
+              placeholder="请选择">
+              <el-option v-for="item in statusArr"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
@@ -18,8 +21,7 @@
             </el-select>
           </div>
           <div class="rightFilter">
-            <el-date-picker
-              v-model="date"
+            <el-date-picker v-model="date"
               type="daterange"
               align="right"
               unlink-panels
@@ -45,7 +47,9 @@
           <div class="tableColumn">更新时间</div>
           <div class="tableColumn flex9">操作</div>
         </div>
-        <div class="tableRow bodyTableRow" v-for="(item,index) in list" :key="index">
+        <div class="tableRow bodyTableRow"
+          v-for="(item,index) in list"
+          :key="index">
           <div class="tableColumn">{{item.name}}</div>
           <div class="tableColumn">{{item.abbreviation}}</div>
           <div class="tableColumn">{{item.type|filterType}}</div>
@@ -56,15 +60,16 @@
           <div class="tableColumn">{{item.update_time}}</div>
           <div class="tableColumn flex9">
             <div class="once">
-              <span class="btns warning" @click="$router.push('/index/foreignTradeUpdate/'+item.id)">修改</span>
-              <span class="btns success" @click="$router.push('/index/foreignTradeDetail/'+item.id)">详情</span>
+              <span class="btns warning"
+                @click="$router.push('/index/foreignTradeUpdate/'+item.id)">修改</span>
+              <span class="btns success"
+                @click="$router.push('/index/foreignTradeDetail/'+item.id)">详情</span>
             </div>
           </div>
         </div>
       </div>
       <div class="pageCtn">
-        <el-pagination
-          background
+        <el-pagination background
           layout="prev, pager, next,total"
           @current-change="getList"
           :page-size="5"
@@ -184,5 +189,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/foreignTradeList.less';
+@import "~@/assets/css/foreignTradeList.less";
 </style>

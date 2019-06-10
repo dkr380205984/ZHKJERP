@@ -1,6 +1,7 @@
 <template>
-  <div id="productPlan" v-loading="loading">
-     <div class="head">
+  <div id="productPlan"
+    v-loading="loading">
+    <div class="head">
       <h2>添加配料单</h2>
     </div>
     <div class="body">
@@ -15,7 +16,7 @@
             <span class="label">产品编号:</span>
             <span class="content important">{{product.product_code}}</span>
           </div>
-           <div class="inputCtn">
+          <div class="inputCtn">
             <span class="label">产品名称:</span>
             <span class="content">{{product|filterType}}</span>
           </div>
@@ -34,23 +35,31 @@
             <span class="content">{{product.color|filterColor}}</span>
           </div>
         </div>
-         <div class="lineCtn">
-          <div class="inputCtn" style="align-items:flex-start">
+        <div class="lineCtn">
+          <div class="inputCtn"
+            style="align-items:flex-start">
             <span class="label">创建日期:</span>
             <span class="content">{{product.create_time}}</span>
           </div>
-          <div class="inputCtn" style="align-items:flex-start">
+          <div class="inputCtn"
+            style="align-items:flex-start">
             <span class="label">创建人:</span>
             <span class="content">{{product.user_name}}</span>
           </div>
         </div>
         <div class="lineCtn">
-          <div class="inputCtn" style="width:100%">
+          <div class="inputCtn"
+            style="width:100%">
             <span class="label">产品规格:</span>
-            <span class="content" style="width:100%;" v-for="(item,key) in product.size" :key="key">
+            <span class="content"
+              style="width:100%;"
+              v-for="(item,key) in product.size"
+              :key="key">
               <span style="margin-right:15px">{{key}}</span>
               <span class="sizeDetail">
-                <span class="sizeOnce" v-for="itemChild in item" :key="itemChild.id">{{itemChild.size_value + 'cm' + '(' + itemChild.size_name + ')'}}&nbsp;&nbsp;&nbsp;</span>
+                <span class="sizeOnce"
+                  v-for="itemChild in item"
+                  :key="itemChild.id">{{itemChild.size_value + 'cm' + '(' + itemChild.size_name + ')'}}&nbsp;&nbsp;&nbsp;</span>
               </span>
               <span class="size">{{item[0].weight}}g(克重)</span>
             </span>
@@ -66,14 +75,19 @@
         <div class="lineCtn">
           <div class="inputCtn">
             <span class="label must">是否有原料:</span>
-            <el-radio :disabled="!state" style="margin-left:15px" v-model="hasIngredient" label="0">无</el-radio>
-            <el-radio v-model="hasIngredient" label="1">有</el-radio>
+            <el-radio :disabled="!state"
+              style="margin-left:15px"
+              v-model="hasIngredient"
+              label="0">无</el-radio>
+            <el-radio v-model="hasIngredient"
+              label="1">有</el-radio>
           </div>
         </div>
         <div class="lineCtn">
           <div class="inputCtn oneLine">
             <span class="label must">主要原料:</span>
-            <div class="addBtn" @click="addMainMaterial">
+            <div class="addBtn"
+              @click="addMainMaterial">
               <span>添加主要原料</span>
               <span>+</span>
             </div>
@@ -88,58 +102,95 @@
         <div class="lineCtn">
           <div class="inputCtn oneLine rowLine">
             <span class="label must">原料列表:</span>
-            <div class="specialCtn" v-for="(item,index) in mainIngredient.ingredient.length" :key="index">
+            <div class="specialCtn"
+              v-for="(item,index) in mainIngredient.ingredient.length"
+              :key="index">
               <div class="blockCtn">
-                <el-select filterable  class="elSelect" v-model="mainIngredient.ingredient[index]" style="margin-left:0;width:200px" placeholder="请选择主要原料">
-                  <el-option
-                    v-for="item in ingredientArr"
+                <el-select filterable
+                  class="elSelect"
+                  v-model="mainIngredient.ingredient[index]"
+                  style="margin-left:0;width:200px"
+                  placeholder="请选择主要原料">
+                  <el-option v-for="item in ingredientArr"
                     :key="item.name"
                     :label="item.name"
                     :value="item.name">
                   </el-option>
                 </el-select>
-                <div class="addBtn" style="background:#fff;" @click="addColour(index)">
+                <div class="addBtn"
+                  style="background:#fff;"
+                  @click="addColour(index)">
                   <span>添加配色方案</span>
                   <span>+</span>
                 </div>
               </div>
-              <div class="blockCtn" v-for="(item2,index2) in mainIngredient.colour[index].length" :key="index2">
-                <el-select v-model="mainIngredient.colour[index][index2]" placeholder="请选择配色方案">
-                  <el-option
-                    v-for="item in colourArr"
+              <div class="blockCtn"
+                v-for="(item2,index2) in mainIngredient.colour[index].length"
+                :key="index2">
+                <el-select v-model="mainIngredient.colour[index][index2]"
+                  placeholder="请选择配色方案">
+                  <el-option v-for="item in colourArr"
                     :key="item.name"
                     :label="item.name"
                     :value="item.name">
-                    <div class="bgBlock" :style="{'background':item.color_code}"></div>
+                    <div class="bgBlock"
+                      :style="{'background':item.color_code}"></div>
                     <div class="desc">{{item.name}}</div>
                   </el-option>
                 </el-select>
-                <div class="deleteCtn" @click="deleteColour(index,index2)"><i class="el-icon-delete"></i></div>
+                <div class="deleteCtn"
+                  @click="deleteColour(index,index2)"><i class="el-icon-delete"></i></div>
                 <div class="colorsCtn">
-                  <div class="colorOnce" v-for="(item3,index3) in mainIngredient.color[index][index2].length" :key="index3">
+                  <div class="colorOnce"
+                    v-for="(item3,index3) in mainIngredient.color[index][index2].length"
+                    :key="index3">
                     <!-- v-if是为了解决第一次渲染的时候colorArr数据没过来的bug -->
-                    <color-picker v-if="colorArr.length>0" :key="mainIngredient.color[index][index2][index3].colorCode.color + mainIngredient.color[index][index2][index3].colorCode.name" :content="mainIngredient.color[index][index2][index3].name.substr(0,1)" :colorArr="colorArr" v-model="mainIngredient.color[index][index2][index3].colorCode" @colorChange="(json)=>{getColor(json,index,index2,index3)}"></color-picker>
-                    <div class="allInputs" v-for="(item4,index4) in mainIngredient.color[index][index2][index3].value.length" :key="index4">
+                    <color-picker v-if="colorArr.length>0"
+                      :key="mainIngredient.color[index][index2][index3].colorCode.color + mainIngredient.color[index][index2][index3].colorCode.name"
+                      :content="mainIngredient.color[index][index2][index3].name.substr(0,1)"
+                      :colorArr="colorArr"
+                      v-model="mainIngredient.color[index][index2][index3].colorCode"
+                      @colorChange="(json)=>{getColor(json,index,index2,index3)}"></color-picker>
+                    <div class="allInputs"
+                      v-for="(item4,index4) in mainIngredient.color[index][index2][index3].value.length"
+                      :key="index4">
                       <span class="labeled">{{mainIngredient.color[index][index2][index3].value[index4].size}}</span>
-                      <input :disabled="!state||hasIngredient==='0'" class="input1" placeholder="数量" v-model="mainIngredient.color[index][index2][index3].value[index4].number"/>
-                      <input disabled style="text-align:center;background:#f5f7fa" class="input2" @blur="commonUnit1=mainIngredient.color[index][index2][index3].value[index4].unit" placeholder="单位" v-model="mainIngredient.color[index][index2][index3].value[index4].unit"/>
+                      <input :disabled="!state||hasIngredient==='0'"
+                        class="input1"
+                        placeholder="数量"
+                        v-model="mainIngredient.color[index][index2][index3].value[index4].number" />
+                      <input disabled
+                        style="text-align:center;background:#f5f7fa"
+                        class="input2"
+                        @blur="commonUnit1=mainIngredient.color[index][index2][index3].value[index4].unit"
+                        placeholder="单位"
+                        v-model="mainIngredient.color[index][index2][index3].value[index4].unit" />
                     </div>
-                    <i class="el-icon-delete delete" @click="deleteColor(index,index2,index3)"></i>
+                    <i class="el-icon-delete delete"
+                      @click="deleteColor(index,index2,index3)"></i>
                   </div>
-                  <div class="addBtn" style="background:#fff;margin-left:0;margin-bottom:15px;" @click="addColor(index,index2)">
+                  <div class="addBtn"
+                    style="background:#fff;margin-left:0;margin-bottom:15px;"
+                    @click="addColor(index,index2)">
                     <span>添加颜色</span>
                     <span>+</span>
                   </div>
                 </div>
               </div>
-              <div class="deleteIcon" @click="deleteMainMaterial(index)"><i class="el-icon-close"></i></div>
+              <div class="deleteIcon"
+                @click="deleteMainMaterial(index)"><i class="el-icon-close"></i></div>
             </div>
           </div>
         </div>
         <div class="lineCtn">
           <div class="inputCtn oneLine">
             <span class="label must">净重:</span>
-            <el-input :disabled="!state||hasIngredient==='0'" class="elInput" placeholder="原料净重" v-model="weight[index]" v-for="(item,index) in sizeKey" :key="index">
+            <el-input :disabled="!state||hasIngredient==='0'"
+              class="elInput"
+              placeholder="原料净重"
+              v-model="weight[index]"
+              v-for="(item,index) in sizeKey"
+              :key="index">
               <template slot="prepend">{{item}}</template>
               <template slot="append">克</template>
             </el-input>
@@ -148,7 +199,13 @@
         <div class="lineCtn">
           <div class="inputCtn oneLine">
             <span class="label">纱线系数:</span>
-            <el-input :disabled="!state||hasIngredient==='0'" style="width:300px" class="elInput" placeholder="纱线系数" v-model="xishu[index]" v-for="(item,index) in ingredientCmp" :key="index">
+            <el-input :disabled="!state||hasIngredient==='0'"
+              style="width:300px"
+              class="elInput"
+              placeholder="纱线系数"
+              v-model="xishu[index]"
+              v-for="(item,index) in ingredientCmp"
+              :key="index">
               <template slot="prepend">{{item}}</template>
               <template slot="append">克/厘米</template>
             </el-input>
@@ -164,59 +221,89 @@
         <div class="lineCtn">
           <div class="inputCtn oneLine">
             <span class="label">主要辅料:</span>
-            <div class="addBtn" @click="addOtherMaterial">
+            <div class="addBtn"
+              @click="addOtherMaterial">
               <span>添加辅料</span>
               <span>+</span>
             </div>
           </div>
         </div>
-        <div class="lineCtn" v-show="otherIngredient.ingredient.length>0">
+        <div class="lineCtn"
+          v-show="otherIngredient.ingredient.length>0">
           <div class="inputCtn oneLine rowLine">
             <span class="label">辅料列表:</span>
-            <div class="specialCtn" v-for="(item,index) in otherIngredient.ingredient.length" :key="index">
+            <div class="specialCtn"
+              v-for="(item,index) in otherIngredient.ingredient.length"
+              :key="index">
               <div class="blockCtn">
-                <el-select filterable style="width:200px" v-model="otherIngredient.ingredient[index]" placeholder="请选择主要辅料">
-                  <el-option
-                    v-for="item in materialArr"
+                <el-select filterable
+                  style="width:200px"
+                  v-model="otherIngredient.ingredient[index]"
+                  placeholder="请选择主要辅料">
+                  <el-option v-for="item in materialArr"
                     :key="item.name"
                     :label="item.name"
                     :value="item.name">
                   </el-option>
                 </el-select>
-                <div class="addBtn" style="background:#fff;" @click="addOtherColour(index)">
+                <div class="addBtn"
+                  style="background:#fff;"
+                  @click="addOtherColour(index)">
                   <span>添加配色方案</span>
                   <span>+</span>
                 </div>
               </div>
-              <div class="blockCtn" v-for="(item2,index2) in otherIngredient.colour[index].length" :key="index2">
-                <el-select v-model="otherIngredient.colour[index][index2]" placeholder="请选择配色方案">
-                  <el-option
-                    v-for="item in colourArr"
+              <div class="blockCtn"
+                v-for="(item2,index2) in otherIngredient.colour[index].length"
+                :key="index2">
+                <el-select v-model="otherIngredient.colour[index][index2]"
+                  placeholder="请选择配色方案">
+                  <el-option v-for="item in colourArr"
                     :key="item.name"
                     :label="item.name"
                     :value="item.name">
-                    <div class="bgBlock" :style="{'background':item.color_code}"></div>
+                    <div class="bgBlock"
+                      :style="{'background':item.color_code}"></div>
                     <div class="desc">{{item.name}}</div>
                   </el-option>
                 </el-select>
-                <div class="deleteCtn" @click="deleteOtherColour(index,index2)"><i class="el-icon-delete"></i></div>
+                <div class="deleteCtn"
+                  @click="deleteOtherColour(index,index2)"><i class="el-icon-delete"></i></div>
                 <div class="colorsCtn">
-                  <div class="colorOnce" style="padding-left:0" v-for="(item3,index3) in otherIngredient.color[index][index2].length" :key="index3">
-                    <el-input placeholder="请输入颜色" v-model="otherIngredient.color[index][index2][index3].name" style="width:150px"/>
-                    <div class="allInputs" v-for="(item4,index4) in otherIngredient.color[index][index2][index3].value.length" :key="index4">
+                  <div class="colorOnce"
+                    style="padding-left:0"
+                    v-for="(item3,index3) in otherIngredient.color[index][index2].length"
+                    :key="index3">
+                    <el-input placeholder="请输入颜色"
+                      v-model="otherIngredient.color[index][index2][index3].name"
+                      style="width:150px" />
+                    <div class="allInputs"
+                      v-for="(item4,index4) in otherIngredient.color[index][index2][index3].value.length"
+                      :key="index4">
                       <span class="labeled">{{otherIngredient.color[index][index2][index3].value[index4].size}}</span>
-                      <input class="input1" placeholder="数量" v-model="otherIngredient.color[index][index2][index3].value[index4].number"/>
-                      <input disabled style="text-align:center;background:#f5f7fa" class="input2" @blur="commonUnit2=otherIngredient.color[index][index2][index3].value[index4].unit" placeholder="单位" v-model="otherIngredient.color[index][index2][index3].value[index4].unit"/>
+                      <input class="input1"
+                        placeholder="数量"
+                        v-model="otherIngredient.color[index][index2][index3].value[index4].number" />
+                      <input disabled
+                        style="text-align:center;background:#f5f7fa"
+                        class="input2"
+                        @blur="commonUnit2=otherIngredient.color[index][index2][index3].value[index4].unit"
+                        placeholder="单位"
+                        v-model="otherIngredient.color[index][index2][index3].value[index4].unit" />
                     </div>
-                    <i class="el-icon-delete delete" @click="deleteOtherColor(index,index2,index3)"></i>
+                    <i class="el-icon-delete delete"
+                      @click="deleteOtherColor(index,index2,index3)"></i>
                   </div>
-                  <div class="addBtn" style="background:#fff;margin-left:0;margin-bottom:15px;" @click="addOtherColor(index,index2)">
+                  <div class="addBtn"
+                    style="background:#fff;margin-left:0;margin-bottom:15px;"
+                    @click="addOtherColor(index,index2)">
                     <span>添加颜色</span>
                     <span>+</span>
                   </div>
                 </div>
               </div>
-              <div class="deleteIcon" @click="deleteOtherMaterial(index)"><i class="el-icon-close"></i></div>
+              <div class="deleteIcon"
+                @click="deleteOtherMaterial(index)"><i class="el-icon-close"></i></div>
             </div>
           </div>
         </div>
@@ -230,26 +317,36 @@
         <div class="lineCtn">
           <div class="inputCtn oneLine">
             <span class="label must">生产流程:</span>
-            <el-select v-for="(item,index) in process.length" class="elSelect" style="margin-bottom:24px" v-model="process[index]" placeholder="请选择工序" :key="index">
-              <el-option
-                v-for="item in processArr"
+            <el-select v-for="(item,index) in process.length"
+              class="elSelect"
+              style="margin-bottom:24px"
+              v-model="process[index]"
+              placeholder="请选择工序"
+              :key="index">
+              <el-option v-for="item in processArr"
                 :key="item.name"
                 :label="item.name"
                 :value="item.name">
               </el-option>
             </el-select>
-            <div @click="addProcess" class="addBtn" style="display:block;width:40px;text-align:center;padding:0;margin-bottom:24px">
+            <div @click="addProcess"
+              class="addBtn"
+              style="display:block;width:40px;text-align:center;padding:0;margin-bottom:24px">
               <i class="el-icon-plus"></i>
             </div>
-            <div @click="deleteProcess" class="addBtn" style="width:40px;text-align:center;padding:0;margin-bottom:24px">
+            <div @click="deleteProcess"
+              class="addBtn"
+              style="width:40px;text-align:center;padding:0;margin-bottom:24px">
               <i class="el-icon-minus"></i>
             </div>
           </div>
         </div>
       </div>
       <div class="btnCtn">
-        <div class="cancleBtn" @click="$router.go(-1)">返回</div>
-        <div class="okBtn" @click="saveAll">添加</div>
+        <div class="cancleBtn"
+          @click="$router.go(-1)">返回</div>
+        <div class="okBtn"
+          @click="saveAll">添加</div>
       </div>
     </div>
   </div>
@@ -915,5 +1012,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/productPlan.less';
+@import "~@/assets/css/productPlan.less";
 </style>

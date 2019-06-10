@@ -4,36 +4,54 @@
       <h2>原料设置</h2>
     </div>
     <div class="body">
-      <div class="lineCtn" :style="{'max-height':flagObj.yarn?'300px':'64px'}">
+      <div class="lineCtn"
+        :style="{'max-height':flagObj.yarn?'300px':'64px'}">
         <div class="inputCtn">
           <span class="label">纱线名称:</span>
-          <el-input class="elInput" v-model="yarn" placeholder="请输入纱线名称"></el-input>
-          <div class="okBtn" @click="saveYarn">添加</div>
-          <div class="showAll" @click="flagObj.yarn=!flagObj.yarn">{{!flagObj.yarn?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flagObj.yarn?'showIcon':'hideIcon'"></i></div>
+          <el-input class="elInput"
+            v-model="yarn"
+            placeholder="请输入纱线名称"></el-input>
+          <div class="okBtn"
+            @click="saveYarn">添加</div>
+          <div class="showAll"
+            @click="flagObj.yarn=!flagObj.yarn">{{!flagObj.yarn?'展开':'收起'}}<i class="el-icon-d-arrow-right"
+              :class="!flagObj.yarn?'showIcon':'hideIcon'"></i></div>
         </div>
         <div class="allInfo">
           <div class="bgWhite"></div>
           <div class="list">
-            <div class="btnCtn" v-for="item in yarnArr" :key="item.id">
+            <div class="btnCtn"
+              v-for="item in yarnArr"
+              :key="item.id">
               <span>{{item.name}}</span>
               <!-- <i class="iconCancle" @click="deleteYarn(item.id)">x</i> -->
             </div>
           </div>
         </div>
       </div>
-       <div class="lineCtn" :style="{'max-height':flagObj.color?'1000px':'64px'}">
+      <div class="lineCtn"
+        :style="{'max-height':flagObj.color?'1000px':'64px'}">
         <div class="inputCtn">
           <span class="label">纱线颜色:</span>
-          <el-input class="elInput" v-model="color" placeholder="请输入颜色"></el-input>
-          <el-color-picker style="margin-left:15px;" v-model="colorVal"></el-color-picker>
-          <div class="okBtn" @click="saveColor">添加</div>
-          <div class="showAll" @click="flagObj.color=!flagObj.color">{{!flagObj.color?'展开':'收起'}}<i class="el-icon-d-arrow-right" :class="!flagObj.color?'showIcon':'hideIcon'"></i></div>
+          <el-input class="elInput"
+            v-model="color"
+            placeholder="请输入颜色"></el-input>
+          <el-color-picker style="margin-left:15px;"
+            v-model="colorVal"></el-color-picker>
+          <div class="okBtn"
+            @click="saveColor">添加</div>
+          <div class="showAll"
+            @click="flagObj.color=!flagObj.color">{{!flagObj.color?'展开':'收起'}}<i class="el-icon-d-arrow-right"
+              :class="!flagObj.color?'showIcon':'hideIcon'"></i></div>
         </div>
         <div class="allInfo">
           <div class="bgWhite"></div>
-           <div class="list">
-            <div class="btnCtn" v-for="item in colorArr" :key="item.id">
-              <div class="colorBlock" :style="{'background':item.color_code}"></div>
+          <div class="list">
+            <div class="btnCtn"
+              v-for="item in colorArr"
+              :key="item.id">
+              <div class="colorBlock"
+                :style="{'background':item.color_code}"></div>
               <span>{{item.name}}</span>
             </div>
           </div>
@@ -133,5 +151,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/yarnSetting.less';
+@import "~@/assets/css/yarnSetting.less";
 </style>

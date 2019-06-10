@@ -1,7 +1,7 @@
 <template>
   <div id="productDesignTable"
-       v-loading="loading"
-       @click.right="goTop">
+    v-loading="loading"
+    @click.right="goTop">
     <ul class="tableBox">
       <li class="title-info">
         <div class="title">
@@ -28,36 +28,36 @@
         <div class="title"><span>产品详情</span></div>
         <div class="content">
           <div v-for="(item,key,n) in sizeInfo"
-               :key="key">
+            :key="key">
             {{key}}
             <span v-for="(value,index) in item"
-                  :key="index">{{value.size_name + ':' + value.size_value + 'cm'}}</span>
+              :key="index">{{value.size_name + ':' + value.size_value + 'cm'}}</span>
             <span>克重:{{weight_group[n] + 'g'}}</span>
           </div>
         </div>
       </li>
       <li class="size-tables">
         <div class="size-table"
-             v-for="(item,key) in product[type === '0' ? 'main_material' : 'main_ingredients']"
-             :key="key">
+          v-for="(item,key) in product[type === '0' ? 'main_material' : 'main_ingredients']"
+          :key="key">
           <div class="title">
             <span class="bold12">{{item.size}}</span>
             <span class="center"
-                  v-for="(value,index) in colorInfo[item.size]"
-                  :key="index">
+              v-for="(value,index) in colorInfo[item.size]"
+              :key="index">
               <span>{{index}}</span>
               <span>{{value}}条</span>
             </span>
           </div>
           <div class="content">
             <div v-for="(value,index) in item.materialList"
-                 :key="index"
-                 :style="{flex:value.colorInfo[0].colorList.length ? value.colorInfo[0].colorList.length : 1}">
+              :key="index"
+              :style="{flex:value.colorInfo[0].colorList.length ? value.colorInfo[0].colorList.length : 1}">
               <span class='tit'><span>{{value.material}}</span></span>
               <span v-for="(c,n) in value.colorInfo"
-                    :key="n">
+                :key="n">
                 <span v-for="(x,y) in setSizeInfo(c,item.size)"
-                      :key="y">
+                  :key="y">
                   <span>{{x.name}}</span>
                   <span>{{x.number + x.unit}}</span>
                 </span>
