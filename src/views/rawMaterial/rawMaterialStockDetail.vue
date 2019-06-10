@@ -398,7 +398,7 @@ export default {
         }
       } else if (where === 'outStock') {
         if (flag !== 0) {
-          this.$router.push('/index/rawMaterialOutStock/' + id + '/' + this.$route.params.planId + '/' + this.type)
+          this.$router.push('/index/rawMaterialOutStock/' + id + '/' + this.type)
         } else {
 
         }
@@ -424,7 +424,7 @@ export default {
         order_id: this.$route.params.id
       }),
       weaveDetail({
-        production_plan_id: this.$route.params.id
+        order_id: this.$route.params.id
       }),
       productionDetail({
         order_id: this.$route.params.id

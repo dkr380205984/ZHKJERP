@@ -108,9 +108,9 @@
           <div class="tableColumn flex17"
             style="flex-direction:row;">
             <span class="btns normal"
-              @click="$router.push('/index/rawMaterialStockDetail/'+item.id + '/' + item.plan_id +'/0')">原料详情</span>
+              @click="$router.push('/index/rawMaterialStockDetail/'+item.id + '/0')">原料详情</span>
             <span class="btns normal"
-              @click="$router.push('/index/rawMaterialStockDetail/' + item.id + '/' + item.plan_id + '/1')">辅料详情</span>
+              @click="$router.push('/index/rawMaterialStockDetail/' + item.id +  '/1')">辅料详情</span>
           </div>
         </div>
       </div>
@@ -228,7 +228,6 @@ export default {
           })
           return {
             id: item.order_info.id,
-            plan_id: item.id,
             group_name: item.order_info.group_name,
             order_code: item.order_info.order_code,
             order_time: item.order_info.order_time,

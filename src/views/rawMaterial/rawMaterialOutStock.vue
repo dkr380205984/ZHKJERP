@@ -62,7 +62,7 @@
                       :key="ind"
                       class="tableColumn">
                       <span class="tableRow">{{val.name}}</span>
-                      <span class="tableRow">{{val.value}}{{item.unit}}</span>
+                      <span class="tableRow">{{val.value|fixedFilter}}{{item.unit}}</span>
                     </span>
                   </span>
                   <span class="tableRow">{{(item.plan_number ? item.plan_number : 0)|fixedFilter}}{{item.unit}}</span>
@@ -468,9 +468,12 @@ export default {
           }).then(res => {
             if (res.data.code === 200) {
               this.$message({
-                message: '添加成功',
+                message: '添加成功,即将跳转至详情页',
                 type: 'success'
               })
+              setTimeout(() => {
+                this.$router.push('/index/rawMaterialStockDetail/' + this.$route.params.id + '/' + this.$route.params.type)
+              }, 800)
             }
           })
         }
@@ -489,7 +492,7 @@ export default {
         order_id: this.$route.params.id
       }),
       weaveDetail({
-        order_id: this.$route.params.planId
+        order_id: this.$route.params.id
       }),
       productionDetail({
         order_id: this.$route.params.id

@@ -408,7 +408,14 @@ export default {
               flag = false
               return
             }
-            if (!value.weight) {
+            if (value.weight === '0') {
+              this.$message({
+                message: '数量不可为0',
+                type: 'error'
+              })
+              flag = false
+              return
+            } else if (!value.weight) {
               this.$message({
                 message: '请输入数量',
                 type: 'error'

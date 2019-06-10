@@ -281,7 +281,7 @@ let router = new Router({
       name: 'rawMaterialProcess',
       component: () => import('./views/rawMaterial/rawMaterialProcess.vue')
     }, {
-      path: 'rawMaterialStockDetail/:id/:planId/:type',
+      path: 'rawMaterialStockDetail/:id/:type',
       name: 'rawMaterialStockDetail',
       component: () => import('./views/rawMaterial/rawMaterialStockDetail.vue')
     }, {
@@ -293,7 +293,7 @@ let router = new Router({
       name: 'rawMaterialStock',
       component: () => import('./views/rawMaterial/rawMaterialStock.vue')
     }, {
-      path: 'rawMaterialOutStock/:id/:planId/:type',
+      path: 'rawMaterialOutStock/:id/:type',
       name: 'rawMaterialOutStock',
       component: () => import('./views/rawMaterial/rawMaterialOutStock.vue')
     }, {
