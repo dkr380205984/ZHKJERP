@@ -111,7 +111,7 @@
             <span class="btns normal"
               @click="$router.push('/index/semiExaminationDetail/' + item.id)">半成品</span>
             <span class="btns normal"
-              @click="$router.push('/index/semiExaminationDetail/' + item.id)">成品</span>
+              @click="$router.push('/index/finishedExaminationDetail/' + item.id)">成品</span>
           </div>
         </div>
       </div>

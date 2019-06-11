@@ -34,7 +34,7 @@
         </div>
       </div>
       <div class="stepCtn">
-        <div class="stepTitle">产品信息</div>
+        <div class="stepTitle">产品织造信息</div>
         <div class="borderCtn">
           <div class="cicle"></div>
           <div class="border"></div>
@@ -61,7 +61,8 @@
                   <li class="content"
                     v-for="(item,key) in productList"
                     :key="key">
-                    <span class="tableRow blue">{{item.product_code}}</span>
+                    <span class="tableRow blue"
+                      @click="$router.push('/index/productDetail/' + item.product_code)">{{item.product_code}}</span>
                     <span class="tableRow flex17">{{item.product_class}}</span>
                     <span class="tableRow col flex45">
                       <span v-for="(val,ind) in item.size_info"
@@ -74,7 +75,7 @@
                             class="tableColumn">
                             <span class="tableRow flex13">{{value.production_client}}</span>
                             <span class="tableRow">{{value.plan_number}}{{'条'}}</span>
-                            <span class="tableRow">{{value.goStock_number}}{{'条'}}</span>
+                            <span class="tableRow">{{value.goStock_number ? value.goStock_number : '0'}}{{'条'}}</span>
                             <span class="tableRow">{{value.compiled_time}}</span>
                           </span>
                         </span>
@@ -83,7 +84,8 @@
                     <span class="tableRow flex17">
                       <span class="blue"
                         @click="go(item.product_code)">显示详情</span>
-                      <span class="blue">半成品检验</span>
+                      <span class="blue"
+                        @click="$router.push('/index/semiExamination/' + $route.params.id + '/' +item.product_code)">半成品检验</span>
                     </span>
                   </li>
                 </ul>
@@ -99,7 +101,7 @@
         :key="key"
         :id="item.product_code">
         <div class="stepTitle"
-          id="product1">产品{{key + 1 }}</div>
+          id="product1">产品{{chinaNumber[key + 1] }}</div>
         <div class="borderCtn">
           <div class="cicle"></div>
           <div class="border"
@@ -127,7 +129,8 @@
                   <span class="tableRow"
                     style="line-height:1.5em;">
                     <div>
-                      <span class="blue">{{item.product_code}}</span>
+                      <span class="blue"
+                        @click="$router.push('/index/productDetail/' + item.product_code)">{{item.product_code}}</span>
                       <span>{{item.product_class}}</span>
                     </div>
                   </span>
@@ -142,8 +145,8 @@
                           class="tableColumn">
                           <span class="tableRow flex13">{{val.production_client}}</span>
                           <span class="tableRow flex13">{{val.plan_number}}{{'条'}}</span>
-                          <span class="tableRow">{{val.test_number}}{{'条'}}</span>
-                          <span class="tableRow">{{val.defective_number}}{{'条'}}</span>
+                          <span class="tableRow">{{val.test_number ? val.test_number : 0}}{{'条'}}</span>
+                          <span class="tableRow">{{val.defective_number ? val.defective_number : 0}}{{'条'}}</span>
                           <span :class="{'tableRow':true,'compiled':val.plan_number === val.test_number,'unCompiled':val.plan_number !== val.test_number}">{{val.plan_number === val.test_number ? '完成' : '未完成'}}</span>
                         </span>
                       </span>
@@ -198,7 +201,7 @@
               </ul>
               <div class="handle">
                 <div :class="{'disabled':!flag}"
-                  @click="$router.push('/index/semiExamination/' + item.product_code)">
+                  @click="$router.push('/index/semiExamination/' + $route.params.id + '/' +item.product_code)">
                   <img class="icon"
                     v-if="flag"
                     src="@/assets/image/icon/orderIcon.png">
@@ -223,95 +226,27 @@
 </template>
 
 <script>
+import { orderDetail, weaveDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
-      loading: false,
-      order_code: '19askf',
-      client_name: '见佛排位',
-      order_time: '2019-05-31',
-      group_name: 'A组',
-      productList: [
-        {
-          product_code: 'es56245',
-          product_class: '手套',
-          flag: false,
-          log: [],
-          size_info: [
-            {
-              size: '儿童款',
-              color: '深绿',
-              production_info: [
-                {
-                  production_client: '桐庐纺织',
-                  plan_number: 2000,
-                  goStock_number: 810,
-                  test_number: 300,
-                  defective_number: 20,
-                  compiled_time: '2019-03-04'
-                }, {
-                  production_client: '桐庐纺织',
-                  plan_number: 2000,
-                  goStock_number: 810,
-                  test_number: 300,
-                  defective_number: 20,
-                  compiled_time: '2019-03-04'
-                }
-              ]
-            },
-            {
-              size: '儿童款',
-              color: '深绿',
-              production_info: [
-                {
-                  production_client: '桐庐纺织',
-                  plan_number: 2000,
-                  goStock_number: 810,
-                  test_number: 300,
-                  defective_number: 20,
-                  compiled_time: '2019-03-04'
-                }
-              ]
-            },
-            {
-              size: '儿童款',
-              color: '深绿',
-              production_info: [
-                {
-                  production_client: '桐庐纺织',
-                  plan_number: 2000,
-                  goStock_number: 810,
-                  test_number: 2000,
-                  defective_number: 20,
-                  compiled_time: '2019-03-04'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          product_code: 'es562tk45',
-          product_class: '围巾/长巾/针织/千格鸟',
-          flag: false,
-          log: [],
-          size_info: [
-            {
-              size: '儿童款',
-              color: '深绿',
-              production_info: [
-                {
-                  production_client: '桐庐纺织',
-                  plan_number: 2000,
-                  goStock_number: 810,
-                  test_number: 300,
-                  defective_number: 20,
-                  compiled_time: '2019-03-04'
-                }
-              ]
-            }
-          ]
-        }
-      ],
+      loading: true,
+      order_code: '',
+      client_name: '',
+      order_time: '',
+      group_name: '',
+      productList: [],
+      chinaNumber: {
+        1: '一',
+        2: '二',
+        3: '三',
+        4: '四',
+        5: '五',
+        6: '六',
+        7: '七',
+        8: '八',
+        9: '九'
+      },
       flag: true
     }
   },
@@ -334,6 +269,73 @@ export default {
     go (idName) {
       document.getElementById(idName).scrollIntoView(true)
     }
+  },
+  created () {
+    Promise.all([
+      orderDetail({
+        id: this.$route.params.id
+      }),
+      weaveDetail({
+        order_id: this.$route.params.id
+      })
+    ]).then(res => {
+      let orderInfo = res[0].data.data
+      let weaveInfo = res[1].data.data
+      // console.log('orderInfo', orderInfo)
+      console.log('weaveInfo', weaveInfo)
+      // 初始化订单信息
+      this.order_code = orderInfo.order_code
+      this.client_name = orderInfo.client_name
+      this.order_time = orderInfo.order_time
+      this.group_name = orderInfo.group_name
+      // 匹配产品织造信息
+      weaveInfo.forEach(item => {
+        let flag = this.productList.find(key => key.product_code === item.product_info.product_code)
+        if (!flag) {
+          let type = item.product_info.category_info.product_category + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_id ? '/' + item.product_info.flower_id : '')
+          this.productList.push({
+            product_code: item.product_info.product_code,
+            product_class: type,
+            flag: false,
+            log: [],
+            size_info: [{
+              size: item.size,
+              color: item.color,
+              production_info: [{
+                plan_number: item.number,
+                production_client: item.client_name,
+                compiled_time: item.complete_time.split(' ')[0]
+              }]
+            }]
+          })
+        } else {
+          let flag1 = flag.size_info.find(key => (key.size === item.size && key.color === item.color))
+          if (!flag1) {
+            flag.size_info.push({
+              size: item.size,
+              color: item.color,
+              production_info: [{
+                plan_number: item.number,
+                production_client: item.client_name,
+                compiled_time: item.complete_time.split(' ')[0]
+              }]
+            })
+          } else {
+            let flag2 = flag1.production_info.find(key => key.production_client === item.client_name)
+            if (!flag2) {
+              flag1.production_info.push({
+                plan_number: item.number,
+                production_client: item.client_name,
+                compiled_time: item.complete_time.split(' ')[0]
+              })
+            } else {
+              flag2.plan_number = Number(flag2.plan_number) + Number(item.number)
+            }
+          }
+        }
+      })
+      this.loading = false
+    })
   }
 }
 </script>
