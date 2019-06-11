@@ -265,50 +265,9 @@ export default {
       now_time: '',
       type: '',
       defaultStock: '桐庐凯瑞针纺有限公司',
-      productList: [
-        {
-          product_code: 'ES5623134',
-          product_class: '围巾/针织/长巾/豹纹',
-          size: 'S',
-          color: '深绿',
-          number: 2000
-        },
-        {
-          product_code: 'ES5623134',
-          product_class: '围巾/针织/长巾/豹纹',
-          size: 'S',
-          color: '深绿',
-          number: 2000
-        },
-        {
-          product_code: 'ES5623134',
-          product_class: '围巾/针织/长巾/豹纹',
-          size: 'S',
-          color: '深绿',
-          number: 2000
-        }
-      ],
       materialList: [],
       processList: [],
       list: [],
-      options: [
-        {
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
-        }
-      ],
       pickerOptions: {
         shortcuts: [{
           text: '今天',
@@ -652,9 +611,9 @@ export default {
           flag.goStocks_number = Number(flag.goStocks_number ? flag.goStocks_number : 0) + Number(item.total_weight)
         }
       })
+      this.loading = false
       console.log(this.list)
     })
-    this.loading = false
   }
 }
 </script>

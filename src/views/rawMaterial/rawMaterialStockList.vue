@@ -1,5 +1,6 @@
 <template>
-  <div id="rawMaterialOrderList">
+  <div id="rawMaterialOrderList"
+    v-loading='loading'>
     <div class="head">
       <h2>物料出入库列表</h2>
       <el-input placeholder="输入文字精确搜索"
@@ -190,7 +191,6 @@ export default {
         'start_time': this.start_time,
         'end_time': this.end_time
       }).then((res) => {
-        this.loading = false
         console.log(res.data.data)
         this.total = res.data.meta.total
         this.list = res.data.data.map((item) => {
@@ -236,6 +236,7 @@ export default {
             productList: productList
           }
         })
+        this.loading = false
         console.log(this.list)
       })
     },
@@ -310,7 +311,6 @@ export default {
     }
   },
   created () {
-    this.getOrderList()
     clientList({
       company_id: window.sessionStorage.getItem('company_id')
     }).then((res) => {
@@ -334,6 +334,7 @@ export default {
     }).then((res) => {
       this.group = res.data.data
     })
+    this.getOrderList()
   }
 }
 </script>

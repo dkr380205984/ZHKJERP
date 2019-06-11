@@ -1,8 +1,8 @@
 <template>
-  <div id="semiExamination"
+  <div id="finishedExamination"
     v-loading="loading">
     <div class="head">
-      <h2>半成品检验</h2>
+      <h2>成品检验</h2>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -47,30 +47,30 @@
                   <span>产品编号</span>
                   <span class="flex2">产品品类</span>
                   <span class="flex4">
-                    <span class="flex12">尺码颜色</span>
-                    <span class="flex3">
-                      <span class="flex12">生产单位</span>
-                      <span>生产数量</span>
-                      <span>已入库数量</span>
+                    <span>发货批次</span>
+                    <span>发货日期</span>
+                    <span class="flex2">
+                      <span>尺码/颜色</span>
+                      <span>发货数量</span>
                     </span>
                   </span>
                 </li>
                 <li v-if="productList.length === 0">暂无信息</li>
                 <li class="content">
                   <span class="tableRow blue">{{this.productList.product_code}}</span>
-                  <span class="flex2 tableRow">{{this.productList.product_class}}</span>
+                  <span class="flex2 tableRow">{{this.productList.type}}</span>
                   <span class="tableRow flex4 col">
-                    <span v-for="(value,index) in this.productList.size_info"
+                    <span v-for="(value,index) in this.productList.batch_info"
                       :key='index'
                       class="tableColumn">
-                      <span class="tableRow flex12">{{value.size}}{{'/'}}{{value.color}}</span>
-                      <span class="flex3 tableRow col">
-                        <span v-for="(item,key) in value.production_info"
+                      <span class="tableRow">{{'第'}}{{chinaNumber[value.batch_id]}}{{'批'}}</span>
+                      <span class="tableRow">{{value.delivery_time}}</span>
+                      <span class="flex2 tableRow col">
+                        <span v-for="(item,key) in value.size_info"
                           :key="key"
                           class="tableColumn">
-                          <span class="tableRow flex12">{{item.production_client}}</span>
-                          <span class="tableRow">{{item.plan_number ? item.plan_number : 0}}{{'条'}}</span>
-                          <span class="tableRow">{{item.goStock_number ? item.goStock_number : 0}}{{'条'}}</span>
+                          <span class="tableRow">{{item.size}}{{'/'}}{{item.color}}</span>
+                          <span class="tableRow">{{item.number ? item.number : 0}}{{'条'}}</span>
                         </span>
                       </span>
                     </span>
@@ -95,7 +95,7 @@
                   <span class="flex12">产品品类</span>
                   <span class="flex3">
                     <span>尺码颜色</span>
-                    <span>生产数量</span>
+                    <span>下单数量</span>
                     <span>已检验数量</span>
                     <span>次品数量</span>
                   </span>
@@ -108,9 +108,9 @@
                       :key="key"
                       class="tableColumn">
                       <span class="tableRow">{{item.size}}{{'/'}}{{item.color}}</span>
-                      <span class="tableRow">{{item.plan_number}}{{'条'}}</span>
-                      <span class="tableRow">{{item.compiled_number}}{{'条'}}</span>
-                      <span class="tableRow">{{item.defective_number}}{{'条'}}</span>
+                      <span class="tableRow">{{item.number ? item.number : 0 }}{{'条'}}</span>
+                      <span class="tableRow">{{item.test_number ? item.test_number : 0}}{{'条'}}</span>
+                      <span class="tableRow">{{item.defective_number ? item.defective_number : 0}}{{'条'}}</span>
                     </span>
                   </span>
                 </li>
@@ -121,17 +121,6 @@
             <ul class="testFrom"
               v-for="(item,kay) in this.list.testInfo"
               :key="kay">
-              <li>
-                <span>生产单位</span>:
-                <el-select v-model="item.production_client"
-                  placeholder="请选择生产单位"
-                  size="small">
-                  <el-option v-for="value in options.testType"
-                    :key="value.value"
-                    :value="value">
-                  </el-option>
-                </el-select>
-              </li>
               <li>
                 <span>检验人员</span>:
                 <el-select v-model="item.tester_name"
@@ -161,44 +150,53 @@
                   </el-select>
                 </div>
                 <div>
-                  <span>件数/数量</span>:
+                  <span>检验数量</span>:
                   <el-input size="small"
-                    placeholder="件数"
-                    v-model="value.value"
-                    style="margin-left:15px;">
-                  </el-input>
-                  <strong>—</strong>
-                  <el-input size="small"
-                    placeholder="数量"
-                    v-model="value.number">
+                    style="margin-left:15px;width:243px;"
+                    placeholder="请输入检验数量"
+                    v-model="value.value">
                   </el-input>
                 </div>
-                <div v-for="(val,ind) in value.defective_info"
-                  :key="ind">
-                  <span>次品信息</span>:
-                  <el-input size="small"
-                    placeholder="数量"
-                    v-model="val.number"
-                    style="margin-left:15px;">
-                  </el-input>
-                  <strong>—</strong>
-                  <el-select v-model="val.defective_why"
-                    placeholder="次品原因"
-                    size="small">
-                    <el-option v-for="color in options.colorList"
-                      :key="color.value"
-                      :value="color">
-                    </el-option>
-                  </el-select>
-                  <em v-if="ind === 0"
-                    class="el-icon-plus"
-                    style="right:-35px;top:5px;"
-                    @click="appendDefectiveInfo(kay,index)"></em>
-                  <em v-else
-                    class="el-icon-delete"
-                    style="right:-35px;top:5px;"
-                    @click="deleteDefectiveInfo(kay,index,ind)"></em>
-                </div>
+                <template v-for="(val,ind) in value.defective_info">
+                  <div :key="ind">
+                    <span>次品</span>:
+                    <el-input size="small"
+                      placeholder="数量"
+                      v-model="val.number"
+                      style="margin-left:15px;">
+                    </el-input>
+                    <strong>—</strong>
+                    <el-select v-model="val.defective_why"
+                      placeholder="次品原因"
+                      size="small">
+                      <el-option v-for="color in options.colorList"
+                        :key="color.value"
+                        :value="color">
+                      </el-option>
+                    </el-select>
+                    <em v-if="ind === 0"
+                      class="el-icon-plus"
+                      style="right:-35px;top:5px;"
+                      @click="appendDefectiveInfo(kay,index)"></em>
+                    <em v-else
+                      class="el-icon-delete"
+                      style="right:-35px;top:5px;"
+                      @click="deleteDefectiveInfo(kay,index,ind)"></em>
+                  </div>
+                  <div :key="ind + 'x'">
+                    <span>次品承担</span>:
+                    <el-select v-model="val.assume_client"
+                      placeholder="请选择次品承担单位"
+                      size="small"
+                      style="margin-left:15px;width:243px;">
+                      <el-option v-for="color in options.colorList"
+                        :key="color.value"
+                        :value="color">
+                      </el-option>
+                    </el-select>
+
+                  </div>
+                </template>
                 <span class="tag">颜色/尺码{{index + 1}}</span>
                 <em v-if="index === 0"
                   class="el-icon-plus"
@@ -237,7 +235,7 @@
 </template>
 
 <script>
-import { orderDetail, weaveDetail } from '@/assets/js/api.js'
+import { orderDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -250,6 +248,17 @@ export default {
       productList: {},
       list: {
         testInfo: []
+      },
+      chinaNumber: {
+        1: '一',
+        2: '二',
+        3: '三',
+        4: '四',
+        5: '五',
+        6: '六',
+        7: '七',
+        8: '八',
+        9: '九'
       },
       options: {
         testType: ['倒纱', '裁剪', '染色'],
@@ -305,7 +314,8 @@ export default {
     appendDefectiveInfo (kay, key) {
       this.list.testInfo[kay].testSizeInfo[key].defective_info.push({
         number: '',
-        defective_why: ''
+        defective_why: '',
+        assume_client: ''
       })
     },
     deleteDefectiveInfo (kay, key, index) {
@@ -315,10 +325,10 @@ export default {
       this.list.testInfo[kay].testSizeInfo.push({
         color: '',
         value: '',
-        number: '',
         defective_info: [{
           number: '',
-          defective_why: ''
+          defective_why: '',
+          assume_client: ''
         }]
       })
     },
@@ -328,17 +338,16 @@ export default {
     addTestInfo () {
       this.list.testInfo.push(
         {
-          production_client: '',
           remark: '',
           tester_name: '',
           testSizeInfo: [
             {
               color: '',
               value: '',
-              number: '',
               defective_info: [{
                 number: '',
-                defective_why: ''
+                defective_why: '',
+                assume_client: ''
               }]
             }
           ]
@@ -367,76 +376,73 @@ export default {
     }
   },
   created () {
-    this.type = this.$route.params.type
-    let nowDate = new Date()
-    this.now_time = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1 < 10 ? '0' + (nowDate.getMonth() + 1) : (nowDate.getMonth() + 1)) + '-' + (nowDate.getDate() < 10 ? '0' + nowDate.getDate() : nowDate.getDate())
-    // console.log(this.now_time)
     Promise.all([
       orderDetail({
         id: this.$route.params.id
-      }),
-      weaveDetail({
-        order_id: this.$route.params.id
       })
     ]).then(res => {
       let orderInfo = res[0].data.data
-      let weaveInfo = res[1].data.data
-      // console.log('orderInfo', orderInfo)
-      console.log('weaveInfo', weaveInfo)
+      // let weaveInfo = res[1].data.data
+      console.log('orderInfo', orderInfo)
+      // console.log('weaveInfo', weaveInfo)
       // 初始化订单信息
       this.order_code = orderInfo.order_code
       this.client_name = orderInfo.client_name
       this.order_time = orderInfo.order_time
       this.group_name = orderInfo.group_name
-      // 匹配产品织造信息
-      weaveInfo.forEach(item => {
-        if (this.$route.params.product_code === item.product_info.product_code) {
-          this.productList.product_code = item.product_info.product_code
-          this.productList.product_class = item.product_info.category_info.product_category + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_id ? '/' + item.product_info.flower_id : '')
-          if (!this.productList.size_info) {
-            this.productList.size_info = []
-          }
-          let flag = this.productList.size_info.find(key => (key.size === item.size && key.color === item.color))
-          if (!flag) {
-            this.productList.size_info.push({
-              size: item.size,
-              color: item.color,
-              production_info: [{
-                plan_number: item.number,
-                production_client: item.client_name
-              }]
-            })
-          } else {
-            let flag1 = flag.production_info.find(key => key.production_client === item.client_name)
-            if (!flag1) {
-              flag.production_info.push({
-                plan_number: item.number,
-                production_client: item.client_name
-              })
-            } else {
-              flag1.plan_number = Number(flag1.plan_number) + Number(item.number)
+      // 初始化产品信息
+      orderInfo.order_batch.forEach(item => {
+        item.batch_info.forEach(value => {
+          value.size.forEach(val => {
+            if (this.$route.params.product_code === value.productCode) {
+              this.productList.product_code = value.productCode
+              this.productList.type = value.productInfo.category_info.product_category + '/' + value.productInfo.type_name + '/' + value.productInfo.style_name + (value.productInfo.flower_id ? '/' + value.productInfo.flower_id : '')
+              if (!this.productList.batch_info) {
+                this.productList.batch_info = []
+              }
+              let flag = this.productList.batch_info.find(key => key.batch_id === item.batch_id)
+              if (!flag) {
+                this.productList.batch_info.push({
+                  batch_id: item.batch_id,
+                  delivery_time: item.delivery_time,
+                  size_info: [{
+                    size: val.name[0],
+                    color: val.name[1],
+                    number: val.numbers
+                  }]
+                })
+              } else {
+                let flag1 = flag.size_info.find(key => (key.size === val.name[0] && key.color === val.name[1]))
+                if (!flag1) {
+                  flag.size_info.push({
+                    size: val.name[0],
+                    color: val.name[1],
+                    number: val.numbers
+                  })
+                } else {
+                  flag1.number = Number(flag1.number) + Number(val.numbers)
+                }
+              }
             }
-          }
-        }
+          })
+        })
       })
       this.list.product_code = this.productList.product_code
-      this.list.product_class = this.productList.product_class
-      this.productList.size_info.forEach(value => {
-        value.production_info.forEach(val => {
+      this.list.product_class = this.productList.type
+      this.productList.batch_info.forEach(item => {
+        item.size_info.forEach(value => {
           if (!this.list.size_info) {
             this.list.size_info = []
           }
-          let flag = this.list.size_info.find(key => ((key.size === value.size) && (key.color === value.color)))
+          let flag = this.list.size_info.find(key => (key.size === value.size && key.color === value.color))
           if (!flag) {
             this.list.size_info.push({
               size: value.size,
               color: value.color,
-              plan_number: val.plan_number,
-              compiled_number: 0,
-              defective_number: 0
+              number: value.number
             })
           } else {
-            flag.plan_number = Number(flag.plan_number) + Number(val.plan_number)
+            flag.number = Number(flag.number) + Number(value.number)
           }
         })
       })
@@ -448,5 +454,5 @@ export default {
 </script>
 
 <style scoped lang='less'>
-@import "~@/assets/css/semiExamination.less";
+@import "~@/assets/css/finishedExamination.less";
 </style>

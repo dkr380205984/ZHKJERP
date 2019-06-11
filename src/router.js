@@ -329,9 +329,17 @@ let router = new Router({
       name: 'semiExaminationDetail',
       component: () => import('./views/productExamination/semiExaminationDetail.vue')
     }, {
-      path: 'semiExamination/:product_code',
+      path: 'finishedExaminationDetail/:id',
+      name: 'finishedExaminationDetail',
+      component: () => import('./views/productExamination/finishedExaminationDetail.vue')
+    }, {
+      path: 'semiExamination/:id/:product_code',
       name: 'semiExamination',
       component: () => import('./views/productExamination/semiExamination.vue')
+    }, {
+      path: 'finishedExamination/:id/:product_code',
+      name: 'finishedExamination',
+      component: () => import('./views/productExamination/finishedExamination.vue')
     }]
   }
   ]

@@ -262,6 +262,12 @@ const menu = [{
     url: '/index/rawMaterialStockList'
   }]
 }, {
+  name: '检验管理',
+  children: [{
+    name: '产品检验列表',
+    url: '/index/productExaminationList'
+  }]
+}, {
   name: '合作公司管理',
   children: [{
     name: '添加合作公司',
