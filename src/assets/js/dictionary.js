@@ -267,12 +267,12 @@ const menu = [{
     name: '产品检验列表',
     url: '/index/productExaminationList'
   }]
-}, {
-  name: '装箱出库管理',
-  children: [{
-    name: '包装列表',
-    url: '/index/packagList'
-  }]
+  // }, {
+  //   name: '装箱出库管理',
+  //   children: [{
+  //     name: '包装列表',
+  //     url: '/index/packagList'
+  //   }]
 }, {
   name: '收发管理',
   children: [{
