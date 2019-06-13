@@ -389,7 +389,7 @@ export default {
             }
             arr.size = value.color.split('/')[0]
             arr.color = value.color.split('/')[1]
-            arr.client_id = item.production_client
+            arr.client_name = item.production_client
             arr.user_inspection = item.tester_name
             arr.count = value.value
             arr.number = value.number

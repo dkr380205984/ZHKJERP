@@ -88,7 +88,6 @@
               <li class="col"
                 v-for="(value,index) in item"
                 :key="index">
-                <!-- <template v-for="(val,ind) in value"> -->
                 <div style="flex-direction:column">
                   <div class="divInp">
                     <span>包装分类:</span>
@@ -132,11 +131,28 @@
                     </div>
                     <div class="divInp"
                       v-for="(valPro,indPro) in valCode.product_info"
-                      :key="indPro">
+                      :key="indPro"
+                      style="margin-left:6em;font-size:14px;">
+                      <el-select v-model="valPro.name"
+                        :placeholder="'产品' + (indPro + 1)"
+                        size="small"
+                        style="width:110px;">
+                        <el-option v-for="color in options.colorList"
+                          :key="color.value"
+                          :value="color">
+                        </el-option>
+                      </el-select>
+                      <strong>——</strong>
+                      <el-input size="small"
+                        style="width:110px;"
+                        placeholder="每包数量"
+                        v-model="valPro.number">
+                      </el-input>
                     </div>
                     <div class="addLv"
-                      style="width:6em;margin-left:6em;font-size:14px;"
-                      @click="addPackagLv(key)">添加{{key+1}}{{letterArr[index]}}</div>
+                      v-if="indCode === 0"
+                      style="width:6em;margin-left:6em;font-size:14px;margin-top:20px;"
+                      @click="addPackagCode(key,index)">添加{{key+1}}{{letterArr[index]}}</div>
                   </div>
                 </div>
                 <!-- </template> -->
@@ -377,6 +393,16 @@ export default {
   //   }
   // },
   methods: {
+    addPackagCode (key, index) {
+      this.list.addPackagList[key][index].packag_info.push({
+        packag_code: '',
+        packag_number: '',
+        product_info: [{
+          name: '',
+          number: ''
+        }]
+      })
+    },
     addPackagLv (key) {
       this.list.addPackagList[key].push({
         type: '',
