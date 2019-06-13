@@ -274,6 +274,12 @@ const menu = [{
     url: '/index/packagList'
   }]
 }, {
+  name: '收发管理',
+  children: [{
+    name: '产品出入库列表',
+    url: '/index/orderStockList'
+  }]
+}, {
   name: '合作公司管理',
   children: [{
     name: '添加合作公司',

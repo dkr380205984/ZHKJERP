@@ -56,7 +56,8 @@
                 <li class="material_info"
                   v-for="(item,index) in product"
                   :key="index">
-                  <span>{{item.product_code}}</span>
+                  <span style="color:#1A95FF"
+                    @click="$router.push('/index/productDetail/'+item.product_code)">{{item.product_code}}</span>
                   <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
                   <span class="col"
                     style="flex:4">
@@ -88,7 +89,7 @@
                   </span>
                   <span v-if="item.has_craft===1"
                     style="color:#1A95FF;"
-                    @click="$router.push('/index/designFormDetail/'+item.product_code)">点击查看</span>
+                    @click="$router.push('/index/designFormDetail/'+item.craft_list_id)">点击查看</span>
                   <span v-if="item.has_craft===0"
                     style="color:#ccc;">暂无工艺单</span>
                 </li>
@@ -198,13 +199,15 @@
               <ul class="tablesCtn">
                 <li class="title">
                   <span>生产单位</span>
-                  <span>产品信息</span>
-                  <span>颜色/尺码</span>
-                  <span>单价</span>
-                  <span>数量</span>
-                  <span>创建时间</span>
-                  <span>完成时间</span>
-                  <span>备注</span>
+                  <span style="flex:8">
+                    <span style="flex:2">产品信息</span>
+                    <span>颜色/尺码</span>
+                    <span>单价</span>
+                    <span>数量</span>
+                    <span>创建时间</span>
+                    <span>完成时间</span>
+                    <span>备注</span>
+                  </span>
                   <span>总价</span>
                   <span>操作</span>
                 </li>
@@ -213,17 +216,17 @@
                   :key="index">
                   <span>{{item.client_name}}</span>
                   <span class="col"
-                    style="flex:7">
+                    style="flex:8">
                     <span v-for="(itemPro,indexPro) in item.info"
                       :key="indexPro">
-                      <span>{{itemPro.product_code}}</span>
-                      <span>{{itemPro.info[0].product_info.category_info.product_category}}/{{itemPro.info[0].product_info.type_name}}/{{itemPro.info[0].product_info.style_name}}</span>
+                      <span style="flex:2">{{itemPro.product_code}}({{itemPro.info[0].product_info.category_info.product_category}}/{{itemPro.info[0].product_info.type_name}}/{{itemPro.info[0].product_info.style_name}})</span>
                       <span class="col"
-                        style="flex:5">
+                        style="flex:6">
                         <span v-for="(itemPrice,indexPrice) in itemPro.info"
                           :key="indexPrice">
+                          <span>{{itemPrice.color}}/{{itemPrice.size}}</span>
                           <span>{{itemPrice.price}}</span>
-                          <span>{{itemPrice.number}}</span>
+                          <span>{{itemPrice.number}}{{itemPrice.product_info.category_info.name}}</span>
                           <span>{{itemPrice.created_at.slice(0,10)}}</span>
                           <span>{{itemPrice.complete_time.slice(0,10)}}</span>
                           <span>{{itemPrice.desc}}</span>
@@ -232,8 +235,13 @@
                     </span>
                   </span>
                   <span>{{item.sum}}元</span>
-                  <span style="color:#1A95FF;cursor:pointer"
-                    @click="open($route.params.id,item.client_name,0)">打印</span>
+                  <span class="col">
+                    <span v-for="(itemPro,indexPro) in item.info"
+                      :key="indexPro">
+                      <span style="color:#1A95FF;cursor:pointer"
+                        @click="open($route.params.id,item.client_name,itemPro.product_code,0)">打印</span>
+                    </span>
+                  </span>
                 </li>
                 <li class="material_info"
                   v-if="fenpeiList.length===0">
@@ -270,42 +278,34 @@
                   v-for="(item,index) in materialList"
                   :key="index">
                   <span>{{item.client_name}}</span>
-                  <span style="flex:1.5">{{item.info[0].product_info.product_code}}({{item.info[0].product_info.category_info.product_category}}/{{item.info[0].product_info.type_name}}/{{item.info[0].product_info.style_name}})</span>
-                  <span style="flex:5"
-                    class="col">
-                    <span v-for="(itemColour,indexColour) in item.info"
-                      :key="indexColour">
-                      <span>{{itemColour.color}}/{{itemColour.size}}</span>
-                      <span>{{itemColour.number}}{{itemColour.product_info.category_info.name}}</span>
+                  <span class="col"
+                    style="flex:6.5">
+                    <span v-for="(itemPro,indexPro) in item.info"
+                      :key="indexPro">
+                      <span style="flex:1.5">{{itemPro.product_code}}({{itemPro.info[0].product_info.category_info.product_category}}/{{itemPro.info[0].product_info.type_name}}/{{itemPro.info[0].product_info.style_name}})</span>
                       <span class="col"
-                        v-if="itemColour.colorArr.length>0"
-                        style="flex:1.5">
-                        <span v-for="(itemMat,indexMat) in itemColour.colorArr"
-                          :key="indexMat">{{itemMat.material}}</span>
-                      </span>
-                      <span class="col"
-                        v-if="itemColour.colorArr.length>0">
-                        <span v-for="(itemMat,indexMat) in itemColour.colorArr"
-                          :key="indexMat">
-                          <span class="col">
-                            <span v-for="(itemColor,indexColor) in itemMat.colorWeight"
-                              :key="indexColor">{{itemColor.color}}</span>
+                        style="flex:5">
+                        <span v-for="(itemColour,indexColour) in itemPro.info"
+                          :key="indexColour">
+                          <span>{{itemColour.color}}/{{itemColour.size}}</span>
+                          <span>{{itemColour.number}}{{itemColour.product_info.category_info.name}}</span>
+                          <span class="col"
+                            style="flex:3.5">
+                            <span v-for="(itemColor,indexColor) in itemColour.colorArr"
+                              :key="indexColor">
+                              <span style="flex:1.5;border-right:1px solid #ddd;align-items: center;">{{itemColor.material}}</span>
+                              <span class="col"
+                                style="flex:2">
+                                <span v-for="(itemWeight,indexWeight) in itemColor.colorWeight"
+                                  :key="indexWeight">
+                                  <span style="border-right:1px solid #ddd;"
+                                    :style="{'border-bottom':indexWeight<( itemColor.colorWeight.length-1)?'1px solid #ddd':'none'}">{{itemWeight.color}}</span>
+                                  <span :style="{'border-bottom':indexWeight<( itemColor.colorWeight.length-1)?'1px solid #ddd':'none'}">{{itemWeight.weight}}千克</span>
+                                </span>
+                              </span>
+                            </span>
                           </span>
                         </span>
-                      </span>
-                      <span class="col"
-                        v-if="itemColour.colorArr.length>0">
-                        <span v-for="(itemMat,indexMat) in itemColour.colorArr"
-                          :key="indexMat">
-                          <span class="col">
-                            <span v-for="(itemColor,indexColor) in itemMat.colorWeight"
-                              :key="indexColor">{{(itemColor.weight/itemColour.production_num*itemColour.number).toFixed(2)}}千克</span>
-                          </span>
-                        </span>
-                      </span>
-                      <span style="flex:3.5"
-                        v-if="itemColour.colorArr.length===0">
-                        <span style="color:#F56C6C">配料单信息缺失</span>
                       </span>
                     </span>
                   </span>
@@ -491,6 +491,8 @@ export default {
             num: 1,
             state: state,
             unit_name: item.unit_name,
+            craft_list_id: item.craft_list_id,
+            has_craft: item.has_craft,
             info: [{
               color: item.color,
               order_num: item.order_num,
@@ -528,6 +530,8 @@ export default {
                 num: (itemPro.num + 1),
                 state: state,
                 unit_name: item.unit_name,
+                craft_list_id: itemPro.craft_list_id,
+                has_craft: itemPro.has_craft,
                 info: itemPro.info.concat([{
                   color: item.color,
                   order_num: item.order_num,
@@ -563,6 +567,8 @@ export default {
             style_name: item.style_name,
             state: item.state,
             unit_name: item.unit_name,
+            craft_list_id: item.craft_list_id,
+            has_craft: item.has_craft,
             info: item.info.map((itemInfo) => {
               let json = {
                 color: itemInfo.color,
@@ -607,17 +613,6 @@ export default {
           return item
         }
       })
-      // product第二轮整理完之后，把有无工艺单的信息匹配出来
-      let arr = [] // arr存储了所有批次的产品信息，部分产品信息会重复
-      this.order.order_batch.forEach((itemBatch) => {
-        arr = arr.concat(itemBatch.batch_info)
-      })
-      this.product = this.product.map((item) => {
-        let json = item
-        json.has_craft = arr.find((itemFind) => itemFind.productCode === item.product_code).productInfo.has_craft
-        return json
-      })
-      console.log(this.product)
       // 所需原料信息和织造信息全部都放在product中，整理完毕之后，开始整理原料分配信息
       // 第一步，把纱线和颜色信息取出来
       let materialList = this.logList.map((itemLog, indexLog) => {
@@ -627,10 +622,11 @@ export default {
         newItem.colorArr = colorArr
         newItem.production_num = finded.info.find((itemInfo, indexInfo) => itemInfo.color === itemLog.color && itemInfo.size === itemLog.size).production_num
         newItem.production_sunhao = finded.info.find((itemInfo, indexInfo) => itemInfo.color === itemLog.color && itemInfo.size === itemLog.size).production_sunhao
+        newItem.product_code = itemLog.product_info.product_code
         return newItem
       })
       // 第二步，合并加工单位
-      this.materialList = this.jsonMerge(materialList, ['client_name'])
+      this.materialList = this.jsonMerge(materialList, ['client_name', 'product_code'])
       // 统计生产分配信息
       // 先按生产单位合并，再按产品编号合并
       let fenpeiList = this.jsonMerge(this.logList.map((item) => {
@@ -719,7 +715,8 @@ export default {
         price: this.updateInfo.price,
         number: this.updateInfo.number,
         complete_time: this.updateInfo.complete_time,
-        desc: this.updateInfo.desc
+        desc: this.updateInfo.desc,
+        user_id: window.sessionStorage.getItem('user_id')
       }).then((res) => {
         if (res.data.status) {
           this.$message.success({
