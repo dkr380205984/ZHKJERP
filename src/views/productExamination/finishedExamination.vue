@@ -235,7 +235,7 @@
 </template>
 
 <script>
-import { orderDetail, halfProductDetail, finishedExamination, finishedExaminationDetail } from '@/assets/js/api.js'
+import { orderDetail, halfProductDetail, finishedExamination, finishedExaminationDetail, authList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -262,7 +262,7 @@ export default {
         9: '九'
       },
       options: {
-        testerList: ['小王', '小李', '老王', '老李'],
+        testerList: [],
         clientList: [],
         colorList: [],
         defectiveList: ['破损', '色差', '质量问题', '有污渍']
@@ -438,6 +438,9 @@ export default {
       }),
       finishedExaminationDetail({
         order_id: this.$route.params.id
+      }),
+      authList({
+        company_id: window.sessionStorage.getItem('company_id')
       })
     ]).then(res => {
       let orderInfo = res[0].data.data
@@ -451,6 +454,12 @@ export default {
       this.client_name = orderInfo.client_name
       this.order_time = orderInfo.order_time
       this.group_name = orderInfo.group_name
+      // 初始化检验人员数据
+      res[3].data.data.forEach(item => {
+        if (item.station_id === 4) {
+          this.options.testerList.push(item.name)
+        }
+      })
       // 初始化产品信息
       orderInfo.order_batch.forEach(item => {
         item.batch_info.forEach(value => {

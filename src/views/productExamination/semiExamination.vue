@@ -456,12 +456,13 @@ export default {
       // console.log('orderInfo', orderInfo)
       // console.log('weaveInfo', weaveInfo)
       console.log('semiInfo', semiInfo)
-      // 初始化订单信息
+      // 初始化检验人员数据
       res[3].data.data.forEach(item => {
         if (item.station_id === 4) {
           this.options.testerList.push(item.name)
         }
       })
+      // 初始化订单信息
       this.order_code = orderInfo.order_code
       this.client_name = orderInfo.client_name
       this.order_time = orderInfo.order_time
