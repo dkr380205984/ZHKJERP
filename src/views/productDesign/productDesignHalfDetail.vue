@@ -152,8 +152,18 @@
                     </span>
                   </span>
                   <span>{{itemCompany.sum}}元</span>
-                  <span style="color:#1A95FF"
-                    @click="open($route.params.planId,itemCompany.client_name,1)">打印</span>
+                  <span class="col">
+                    <span v-for="(itemType,indexType) in itemCompany.info"
+                      :key="indexType">
+                      <span class="col">
+                        <span v-for="(itemPro,indexPro) in itemType.info"
+                          :key="indexPro">
+                          <span style="color:#1A95FF"
+                            @click="open($route.params.id,itemCompany.client_name,item.product_code,1)">打印</span>
+                        </span>
+                      </span>
+                    </span>
+                  </span>
                 </li>
                 <li class="material_info"
                   v-if="mergeLogList.length===0">

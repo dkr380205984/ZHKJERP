@@ -235,8 +235,13 @@
                     </span>
                   </span>
                   <span>{{item.sum}}元</span>
-                  <span style="color:#1A95FF;cursor:pointer"
-                    @click="open($route.params.id,item.client_name,0)">打印</span>
+                  <span class="col">
+                    <span v-for="(itemPro,indexPro) in item.info"
+                      :key="indexPro">
+                      <span style="color:#1A95FF;cursor:pointer"
+                        @click="open($route.params.id,item.client_name,itemPro.product_code,0)">打印</span>
+                    </span>
+                  </span>
                 </li>
                 <li class="material_info"
                   v-if="fenpeiList.length===0">
