@@ -918,19 +918,20 @@ export default {
       for (let i = 0; i < this.color_data.weftColorData[0].color_scheme.length; i++) {
         this.weftWeightArr.push(0)
       }
+
       // 根据经纬排列的下标和前面得到的两组数据计算最终的主夹克重
       data.warp_data.warp_rank_bottom.forEach((item, index) => {
         if (!this.warpWeightArr[item]) {
-          this.warpWeightArr[item] = warpWeight[item] * newWarpData[0][index] * newWarpData[1][index] * newWarpData[2][index]
+          this.warpWeightArr[item] = warpWeight[item] * newWarpData[0][index] * newWarpData[1][index] * newWarpData[2][index] * (this.weft_data.neichang + this.weft_data.rangwei) / 100
         } else {
-          this.warpWeightArr[item] += warpWeight[item] * newWarpData[0][index] * newWarpData[1][index] * newWarpData[2][index]
+          this.warpWeightArr[item] += warpWeight[item] * newWarpData[0][index] * newWarpData[1][index] * newWarpData[2][index] * (this.weft_data.neichang + this.weft_data.rangwei) / 100
         }
       })
       data.weft_data.weft_rank_bottom.forEach((item, index) => {
         if (!this.weftWeightArr[item]) {
-          this.weftWeightArr[item] = weftWeight[item] * newWeftData[0][index] * newWeftData[1][index] * newWeftData[2][index]
+          this.weftWeightArr[item] = weftWeight[item] * newWeftData[0][index] * newWeftData[1][index] * newWeftData[2][index] * this.warp_data.reed_width / 100
         } else {
-          this.weftWeightArr[item] += weftWeight[item] * newWeftData[0][index] * newWeftData[1][index] * newWeftData[2][index]
+          this.weftWeightArr[item] += weftWeight[item] * newWeftData[0][index] * newWeftData[1][index] * newWeftData[2][index] * this.warp_data.reed_width / 100
         }
       })
       // 计算下总重量

@@ -169,6 +169,22 @@ let router = new Router({
       name: 'productPlanDetail',
       component: () => import('./views/productPlan/productPlanDetail.vue')
     }, {
+      path: 'orderStockDetail/:id',
+      name: 'orderStockDetail',
+      component: () => import('./views/orderStock/orderStockDetail.vue')
+    }, {
+      path: 'orderStockList',
+      name: 'orderStockList',
+      component: () => import('./views/orderStock/orderStockList.vue')
+    }, {
+      path: 'orderStockIn/:orderId/:productId',
+      name: 'orderStockIn',
+      component: () => import('./views/orderStock/orderStockIn.vue')
+    }, {
+      path: 'orderStockOut/:orderId/:productId',
+      name: 'orderStockOut',
+      component: () => import('./views/orderStock/orderStockOut.vue')
+    }, {
       path: 'mainMaterialStockCreate',
       name: 'mainMaterialStockCreate',
       component: () => import('./views/stock/mainMaterialStockCreate.vue')

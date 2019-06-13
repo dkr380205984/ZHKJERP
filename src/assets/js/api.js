@@ -214,7 +214,25 @@ const halfProductSave = (params) => http.post(`${baseUrl}/production/semi_produc
 const halfProductDetail = (params) => http.get(`${baseUrl}/production/semi_product/list`, params)
 // 半成品加工更新
 const halfProductUpadate = (params) => http.post(`${baseUrl}/production/semi_product/edit`, params, 'application/json')
+// 产品出库
+const storeOut = (params) => http.post(`${baseUrl}/product/order/pop`, params, 'application/json')
+// 出库详情列表
+const storeOutList = (params) => http.get(`${baseUrl}/product/order/push/list`, params)
+// 出库日志修改
+const storeOutUpdate = (params) => http.post(`${baseUrl}/product/order/pop/edit`, params, 'application/json')
+// 产品入库
+const storeIn = (params) => http.post(`${baseUrl}/product/order/push`, params, 'application/json')
+// 入库详情列表
+const storeInList = (params) => http.get(`${baseUrl}/product/order/pop/list`, params)
+// 入库日志修改
+const storeInUpdate = (params) => http.post(`${baseUrl}/product/order/push/edit`, params, 'application/json')
 export {
+  storeOutUpdate,
+  storeInUpdate,
+  storeOut,
+  storeOutList,
+  storeIn,
+  storeInList,
   halfProductUpadate,
   weaveUpadate,
   productOrderDetail,
