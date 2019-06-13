@@ -235,6 +235,7 @@
 </template>
 
 <script>
+import { defectiveType } from '@/assets/js/dictionary.js'
 import { orderDetail, halfProductDetail, finishedExamination, finishedExaminationDetail, authList } from '@/assets/js/api.js'
 export default {
   data () {
@@ -265,7 +266,7 @@ export default {
         testerList: [],
         clientList: [],
         colorList: [],
-        defectiveList: ['破损', '色差', '质量问题', '有污渍']
+        defectiveList: defectiveType
       },
       pickerOptions: {
         shortcuts: [{

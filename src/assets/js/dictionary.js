@@ -267,12 +267,12 @@ const menu = [{
     name: '产品检验列表',
     url: '/index/productExaminationList'
   }]
-}, {
-  name: '装箱出库管理',
-  children: [{
-    name: '包装列表',
-    url: '/index/packagList'
-  }]
+  // }, {
+  //   name: '装箱出库管理',
+  //   children: [{
+  //     name: '包装列表',
+  //     url: '/index/packagList'
+  //   }]
 }, {
   name: '收发管理',
   children: [{
@@ -295,6 +295,7 @@ const menu = [{
     url: '/index/setting'
   }]
 }]
+const defectiveType = ['跳线', '污迹', '经纬断线', '严重破损', '边型问题', '流苏问题', '颜色问题', '花型问题', '款型问题', '克重问题', '长度问题', '工序问题', '质量问题', '加工问题', '其他问题']
 // 左侧栏菜单 副本
 const menu2 = [{
   name: '产品管理',
@@ -558,4 +559,4 @@ const menu2 = [{
     url: '/index/foreignTradeList'
   }]
 }]
-export { menu, menu2, letterArr, companyType, moneyArr, machiningType }
+export { menu, menu2, letterArr, companyType, moneyArr, machiningType, defectiveType }
