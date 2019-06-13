@@ -650,8 +650,8 @@ export default {
     })
   },
   methods: {
-    open (id, client, type) {
-      window.open('/productDesignWeavingTable/' + id + '/' + client + '/' + type)
+    open (id, client, code, type) {
+      window.open('/productDesignWeavingTable/' + id + '/' + client + '/' + code + '/' + type)
     },
     jsonMerge (jsonArr, keyArr) {
       let newJson = [] // 合并好的数据都放在这个数组里

@@ -159,7 +159,7 @@
                         <span v-for="(itemPro,indexPro) in itemType.info"
                           :key="indexPro">
                           <span style="color:#1A95FF"
-                            @click="open($route.params.id,itemCompany.client_name,item.product_code,1)">打印</span>
+                            @click="open($route.params.id,itemCompany.client_name,itemPro.product_code,1)">打印</span>
                         </span>
                       </span>
                     </span>
@@ -671,8 +671,8 @@ export default {
     })
   },
   methods: {
-    open (id, client, type) {
-      window.open('/productDesignWeavingTable/' + id + '/' + client + '/' + type)
+    open (id, client, code, type) {
+      window.open('/productDesignWeavingTable/' + id + '/' + client + '/' + code + '/' + type)
     },
     jsonMerge (jsonArr, keyArr) {
       let newJson = [] // 合并好的数据都放在这个数组里
