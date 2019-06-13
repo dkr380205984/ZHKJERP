@@ -152,6 +152,7 @@ export default {
         order_id: this.$route.params.id
       }).then(res => {
         let data = res.data.data
+        console.log(data)
         this.product_info.forEach(item => {
           item.size_info.forEach(value => {
             let sunhao = data.production_detail.product_info.find(index => (index.product_code === item.product_code && index.size === value.size && index.color === value.color))
@@ -268,7 +269,7 @@ export default {
         let data = res.data.data
         console.log(data)
         data.forEach(item => {
-          if (item.client_name === this.client_name) {
+          if (item.client_name === this.client_name && item.product_info.product_code === this.$route.params.product_code) {
             let flag = this.product_info.find(val => val.product_code === item.product_info.product_code)
             if (!flag) {
               this.total_price += item.price * item.number
@@ -345,6 +346,7 @@ export default {
       company_id: window.sessionStorage.getItem('company_id')
     }).then(res => {
       let clientList = res.data.data
+      console.log(clientList)
       this.order_company = clientList.find(val => val.name === this.order_company).abbreviation
     })
   },
