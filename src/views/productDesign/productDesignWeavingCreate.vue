@@ -55,7 +55,8 @@
                 <li v-for="(item,index) in productList"
                   :key="index"
                   class="material_info">
-                  <span>{{item.product_code}}</span>
+                  <span style="color:#1A95FF"
+                    @click="open(item.product_code)">{{item.product_code}}</span>
                   <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
                   <span class="col"
                     style="flex:5;">
@@ -98,7 +99,8 @@
                   </span>
                 </li>
                 <li class="material_info">
-                  <span>{{item.product_code}}</span>
+                  <span style="color:#1A95FF"
+                    @click="open(item.product_code)">{{item.product_code}}</span>
                   <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
                   <span class="col"
                     style="flex:5;">
@@ -347,6 +349,10 @@ export default {
     })
   },
   methods: {
+    // 打开产品详情
+    open (code) {
+      window.open('/index/productDetail/' + code)
+    },
     // 添加公司
     addCompany (index) {
       this.formList[index].company.push({

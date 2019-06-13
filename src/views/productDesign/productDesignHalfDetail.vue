@@ -55,7 +55,8 @@
                 <li class="material_info"
                   v-for="(item,index) in product"
                   :key="index">
-                  <span>{{item.product_code}}</span>
+                  <span style="color:#1A95FF"
+                    @click="$router.push('/index/productDetail/'+item.product_code)">{{item.product_code}}</span>
                   <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
                   <span class="col"
                     style="flex:4">
@@ -151,8 +152,18 @@
                     </span>
                   </span>
                   <span>{{itemCompany.sum}}元</span>
-                  <span style="color:#1A95FF"
-                    @click="open($route.params.planId,itemCompany.client_name,1)">打印</span>
+                  <span class="col">
+                    <span v-for="(itemType,indexType) in itemCompany.info"
+                      :key="indexType">
+                      <span class="col">
+                        <span v-for="(itemPro,indexPro) in itemType.info"
+                          :key="indexPro">
+                          <span style="color:#1A95FF"
+                            @click="open($route.params.id,itemCompany.client_name,item.product_code,1)">打印</span>
+                        </span>
+                      </span>
+                    </span>
+                  </span>
                 </li>
                 <li class="material_info"
                   v-if="mergeLogList.length===0">
@@ -727,7 +738,8 @@ export default {
         number: this.updateInfo.number,
         complete_time: this.updateInfo.complete,
         desc: this.updateInfo.desc,
-        type: this.updateInfo.type
+        type: this.updateInfo.type,
+        user_id: window.sessionStorage.getItem('user_id')
       }).then((res) => {
         if (res.data.status) {
           this.$message.success({

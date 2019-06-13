@@ -530,6 +530,7 @@ export default {
       this.orderArr.push({
         date: '',
         product: [{
+          product_info: {},
           name: '',
           colorSizeArr: [],
           size: [{

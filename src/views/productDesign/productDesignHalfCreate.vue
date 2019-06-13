@@ -57,7 +57,8 @@
                 <li v-for="(item,index) in productList"
                   :key="index"
                   class="material_info">
-                  <span>{{item.product_code}}</span>
+                  <span style="color:#1A95FF"
+                    @click="open(item.product_code)">{{item.product_code}}</span>
                   <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
                   <span style="flex:7;"
                     class="col">
@@ -178,7 +179,8 @@
                   </span>
                 </li>
                 <li class="material_info">
-                  <span>{{item.product_code}}</span>
+                  <span style="color:#1A95FF"
+                    @click="open(item.product_code)">{{item.product_code}}</span>
                   <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
                   <span class="col"
                     style="flex:6;">
@@ -526,6 +528,10 @@ export default {
     })
   },
   methods: {
+    // 打开产品详情
+    open (code) {
+      window.open('/index/productDetail/' + code)
+    },
     jsonMerge (jsonArr, keyArr) {
       let newJson = [] // 合并好的数据都放在这个数组里
       jsonArr.forEach((itemJson, indexJson) => {
