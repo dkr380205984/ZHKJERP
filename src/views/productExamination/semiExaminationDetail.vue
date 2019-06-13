@@ -120,6 +120,7 @@
                       <span class="flex13">计划生产数量</span>
                       <span>已检验数量</span>
                       <span>次品数量</span>
+                      <span>次品率</span>
                       <span>检验状态</span>
                     </span>
                   </span>
@@ -147,6 +148,7 @@
                           <span class="tableRow flex13">{{val.plan_number}}{{'条'}}</span>
                           <span class="tableRow">{{val.test_number ? val.test_number : 0}}{{'条'}}</span>
                           <span class="tableRow">{{val.defective_number ? val.defective_number : 0}}{{'条'}}</span>
+                          <span class="tableRow">{{((val.defective_number ? val.defective_number : 0)/(val.test_number ? val.test_number : 0)) ? ((val.defective_number ? val.defective_number : 0)/(val.test_number ? val.test_number : 0)) : 0}}{{'%'}}</span>
                           <span :class="{'tableRow':true,'compiled':(val.test_number ? val.test_number : 0) >= val.plan_number,'unCompiled':val.plan_number > (val.test_number ? val.test_number : 0)}">{{(val.test_number ? val.test_number : 0) >= val.plan_number ? '完成' : '未完成'}}</span>
                         </span>
                       </span>
@@ -240,7 +242,7 @@
 </template>
 
 <script>
-import { orderDetail, weaveDetail, semiExaminationDetail } from '@/assets/js/api.js'
+import { orderDetail, weaveDetail, semiExaminationDetail, storeInList, storeOutList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -294,14 +296,24 @@ export default {
       }),
       semiExaminationDetail({
         order_id: this.$route.params.id
+      }),
+      storeInList({
+        order_id: this.$route.params.id
+      }),
+      storeOutList({
+        order_id: this.$route.params.id
       })
     ]).then(res => {
       let orderInfo = res[0].data.data
       let weaveInfo = res[1].data.data
       let semiInfo = res[2].data.data
+      let goStockInfo = res[3].data.data
+      let outStockInfo = res[4].data.data
       // console.log('orderInfo', orderInfo)
-      console.log('weaveInfo', weaveInfo)
-      console.log('semiInfo', semiInfo)
+      // console.log('weaveInfo', weaveInfo)
+      // console.log('semiInfo', semiInfo)
+      console.log('goStockInfo', goStockInfo)
+      console.log('outStockInfo', outStockInfo)
       // 初始化订单信息
       this.order_code = orderInfo.order_code
       this.client_name = orderInfo.client_name
@@ -386,6 +398,31 @@ export default {
             }
           }
           flag.log.push(log)
+        }
+      })
+      // 统计入库数量
+      goStockInfo.forEach(item => {
+        let flag = this.productList.find(key => key.product_code === item.product_info.product_code)
+        if (flag) {
+          let flag1 = flag.size_info.find(key => (key.size === item.size && key.color === item.color))
+          if (flag1) {
+            let flag2 = flag1.production_info.find(key => key.production_client === item.client_name)
+            if (flag2) {
+              flag2.goStock_number = Number(flag2.goStock_number ? flag2.goStock_number : 0) + Number(item.number)
+            }
+          }
+        }
+      })
+      outStockInfo.forEach(item => {
+        let flag = this.productList.find(key => key.product_code === item.product_info.product_code)
+        if (flag) {
+          let flag1 = flag.size_info.find(key => (key.size === item.size && key.color === item.color))
+          if (flag1) {
+            let flag2 = flag1.production_info.find(key => key.production_client === item.client_name)
+            if (flag2) {
+              flag2.goStock_number = Number(flag2.goStock_number ? flag2.goStock_number : 0) - item.number
+            }
+          }
         }
       })
       this.loading = false

@@ -255,7 +255,7 @@
 </template>
 
 <script>
-import { orderDetail, finishedExaminationDetail } from '@/assets/js/api.js'
+import { orderDetail, finishedExaminationDetail, storeInList, storeOutList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -299,7 +299,7 @@ export default {
       document.getElementById(idName).scrollIntoView(true)
     },
     testStatus (key, index, number) {
-      console.log((this.productList[key].size_info[index].number ? this.productList[key].size_info[index].number : 0) - number)
+      // console.log((this.productList[key].size_info[index].number ? this.productList[key].size_info[index].number : 0) - number)
       return (this.productList[key].size_info[index].number ? this.productList[key].size_info[index].number : 0) - number
     }
   },
@@ -310,12 +310,22 @@ export default {
       }),
       finishedExaminationDetail({
         order_id: this.$route.params.id
+      }),
+      storeInList({
+        order_id: this.$route.params.id
+      }),
+      storeOutList({
+        order_id: this.$route.params.id
       })
     ]).then(res => {
       let orderInfo = res[0].data.data
       let finishedInfo = res[1].data.data
-      console.log('orderInfo', orderInfo)
-      console.log('finishedInfo', finishedInfo)
+      let goStockInfo = res[2].data.data
+      let outStockInfo = res[3].data.data
+      // console.log('orderInfo', orderInfo)
+      // console.log('finishedInfo', finishedInfo)
+      console.log('goStockInfo', goStockInfo)
+      console.log('outStockInfo', outStockInfo)
       // 初始化订单信息
       this.order_code = orderInfo.order_code
       this.client_name = orderInfo.client_name
@@ -371,6 +381,7 @@ export default {
           })
         })
       })
+      // 初始化检验数量
       finishedInfo.forEach(item => {
         let flag = this.productList.find(key => key.product_code === item.product_info.product_code)
         if (flag) {
@@ -400,6 +411,25 @@ export default {
             })
           }
           flag.log.push(log)
+        }
+      })
+      // 初始化入库数量
+      goStockInfo.forEach(item => {
+        let flag = this.productList.find(key => key.product_code === item.product_info.product_code)
+        if (flag) {
+          let flag1 = flag.size_info.find(key => (key.size === item.size && key.color === item.color))
+          if (flag1) {
+            flag1.goStock_number = Number(flag1.goStock_number ? flag1.goStock_number : 0) + Number(item.number)
+          }
+        }
+      })
+      outStockInfo.forEach(item => {
+        let flag = this.productList.find(key => key.product_code === item.product_info.product_code)
+        if (flag) {
+          let flag1 = flag.size_info.find(key => (key.size === item.size && key.color === item.color))
+          if (flag1) {
+            flag1.goStock_number = Number(flag1.goStock_number ? flag1.goStock_number : 0) - item.number
+          }
         }
       })
       this.loading = false

@@ -218,18 +218,11 @@
               <ul class="list">
                 <li>
                   <div class="table-head-col">克重</div>
-                  <div v-for="(val,ind) in weight_info"
+                  <div v-for="(val,ind) in forArr(6)"
                     :key="ind + 'a'">
-                    <span :style="{fontSize:smallFont(val.data.warp ? val.data.warp.weight + 'g' : '') ? '10px' : false}">{{val.data.warp ? val.data.warp.weight + 'g' : ''}}</span>
-                    <span :style="{fontSize:smallFont(val.data.weft ? val.data.weft.weight + 'g' : '') ? '10px' : false}">{{val.data.weft ? val.data.weft.weight + 'g' : ''}}</span>
+                    <span :style="{fontSize:smallFont(weight_info[ind] ? (weight_info[ind].data ? (weight_info[ind].data.warp ? weight_info[ind].data.warp.weight + 'g' : '') : '') : '') ? '10px' : false}">{{weight_info[ind] ? (weight_info[ind].data ? (weight_info[ind].data.warp ? weight_info[ind].data.warp.weight + 'g' : '') : '') : ''}}</span>
+                    <span :style="{fontSize:smallFont(weight_info[ind] ? (weight_info[ind].data ? (weight_info[ind].data.weft ? weight_info[ind].data.weft.weight + 'g' : '') : '') : '') ? '10px' : false}">{{weight_info[ind] ? (weight_info[ind].data ? (weight_info[ind].data.weft ? weight_info[ind].data.weft.weight + 'g' : '') : '') : ''}}</span>
                   </div>
-                  <template v-if="weight_info.length < 6">
-                    <div v-for="(x,y) in forArr( 6 - weight_info.length)"
-                      :key="y">
-                      <span></span>
-                      <span></span>
-                    </div>
-                  </template>
                 </li>
                 <template v-for="(value,index) in color_data">
                   <li v-if='index < 5'
@@ -382,18 +375,11 @@
         <ul class="list">
           <li>
             <div class="table-head-col">克重</div>
-            <div v-for="(val,ind) in weight_info"
+            <div v-for="(val,ind) in forArr(6)"
               :key="ind">
-              <span :style="{fontSize:smallFont(item.warp.name) ? '10px' : false}">{{val.data.warp.weight + 'g'}}</span>
-              <span :style="{fontSize:smallFont(item.weft.name) ? '10px' : false}">{{val.data.weft.weight + 'g'}}</span>
+              <span :style="{fontSize:smallFont(item.warp.name) ? '10px' : false}">{{ + 'g'}}</span>
+              <span :style="{fontSize:smallFont(item.weft.name) ? '10px' : false}">{{ + 'g'}}</span>
             </div>
-            <template v-if="weight_info.length < 6">
-              <div v-for="(x,y) in forArr( 6 - weight_info.length)"
-                :key="y">
-                <span></span>
-                <span></span>
-              </div>
-            </template>
           </li>
           <template v-for="(value,index) in color_data">
             <li v-if='index < 5'
@@ -435,7 +421,7 @@ import { craftOne } from '@/assets/js/api.js'
 export default {
   data () {
     return {
-      weight_info: [],
+      weight_info: {},
       craft_code: '',
       create_time: '',
       product_info: {
@@ -495,10 +481,10 @@ export default {
       // 判断条件2：((item[(b + 1) * 12] === item[(b + 1) * 12 - 1] || item[(b + 1) * 12] === null) && index === this.changeArr(this.add(item, b)).length - 1)
       // 判断当前元素是否等于下一行的第一个等于'' 并且当前元素为最后一个
       if (fleg) {
-        console.log(key ? '' : flag)
+        // console.log(key ? '' : flag)
         return key ? '' : flag
       }
-      console.log(item, b, value, index, fleg)
+      // console.log(item, b, value, index, fleg)
       // console.log(flag)
       return flag
     },
@@ -595,7 +581,7 @@ export default {
           }
           arr.push({ value: 'no', key: 1 })
         } else if (index === len - 1) {
-          if ((firstVal === value && value === 1) || value === null) {
+          if ((firstVal === value && value === 1) || value === null || firstVal === value) {
             n++
           }
           obj.value = firstVal
@@ -624,7 +610,7 @@ export default {
           }
         }
       })
-      console.log(arr)
+      // console.log(arr)
       return arr
     },
     goTop () {
@@ -666,7 +652,7 @@ export default {
     craftOne({
       id: this.$route.params.id
     }).then((res) => {
-      console.log(res.data.data)
+      // console.log(res.data.data)
       const data = res.data.data
       this.product_info = data.product_info
       this.craft_code = data.craft_code
@@ -769,69 +755,67 @@ export default {
       })
       // 计算经纬根数
       this.warp_data.warp_rank_bottom.forEach((item, key) => {
-        let flag = this.weight_info.find(val => val.name === item)
+        let flag = this.weight_info[item]
         if (!flag) {
-          this.weight_info.push({
+          this.weight_info[item] = {
             name: item,
             data: {
               warp: {
                 value: this.warp_data.warp_rank[0][key] * this.warp_data.warp_rank[1][key] * this.warp_data.warp_rank[2][key]
               }
             }
-          })
-        } else {
-          if (flag.data.warp) {
-            flag.data.warp.value += (this.warp_data.warp_rank[0][key] * this.warp_data.warp_rank[1][key] * this.warp_data.warp_rank[2][key])
-          } else {
-            flag.data.warp = {
-              value: this.warp_data.warp_rank[0][key] * this.warp_data.warp_rank[1][key] * this.warp_data.warp_rank[2][key]
-            }
           }
+        } else {
+          if (!flag.data.warp) {
+            flag.data.warp = {}
+          }
+          flag.data.warp.value = Number(flag.data.warp.value ? flag.data.warp.value : 0) + (this.warp_data.warp_rank[0][key] * this.warp_data.warp_rank[1][key] * this.warp_data.warp_rank[2][key])
         }
       })
       this.weft_data.weft_rank_bottom.forEach((item, key) => {
-        let flag = this.weight_info.find(val => val.name === item)
+        let flag = this.weight_info[item]
         if (!flag) {
-          this.weight_info.push({
+          console.log(this.weight_info[item])
+          this.weight_info[item] = {
             name: item,
             data: {
               weft: {
                 value: this.weft_data.weft_rank[0][key] * this.weft_data.weft_rank[1][key] * this.weft_data.weft_rank[2][key]
               }
             }
-          })
-        } else {
-          if (flag.data.weft) {
-            flag.data.weft.value += (this.weft_data.weft_rank[0][key] * this.weft_data.weft_rank[1][key] * this.weft_data.weft_rank[2][key])
-          } else {
-            flag.data.weft = {
-              value: this.weft_data.weft_rank[0][key] * this.weft_data.weft_rank[1][key] * this.weft_data.weft_rank[2][key]
-            }
           }
+        } else {
+          if (!flag.data.weft) {
+            flag.data.weft = {}
+          }
+          flag.data.weft.value = Number(flag.data.weft.value ? flag.data.weft.value : 0) + (this.weft_data.weft_rank[0][key] * this.weft_data.weft_rank[1][key] * this.weft_data.weft_rank[2][key])
         }
       })
-      console.log(this.weight_info)
       // 与原料关联
       data.material_data.forEach((item, key) => {
         item.apply.forEach((value, index) => {
-          let flag = this.weight_info.find(val => val.name === value)
+          let flag = this.weight_info[value]
           if (flag) {
             if (item.type === 1) {
+              if (!flag.data.weft) {
+                flag.data.weft = {}
+              }
               flag.data.weft.material = item.material_name
               let flag1 = data.yarn_coefficient.find(val => val.name === item.material_name)
-              flag.data.weft.weight = (flag.data.weft.value * flag1.value).toFixed(2)
+              console.log(flag1)
+              flag.data.weft.weight = ((flag.data.weft.value ? flag.data.weft.value : 0) * flag1.value).toFixed(2)
             } else {
+              if (!flag.data.warp) {
+                flag.data.warp = {}
+              }
               flag.data.warp.material = item.material_name
               let flag1 = data.yarn_coefficient.find(val => val.name === item.material_name)
-              flag.data.warp.weight = (flag.data.warp.value * flag1.value).toFixed(2)
+              console.log(flag1)
+              flag.data.warp.weight = ((flag.data.warp.value ? flag.data.warp.value : 0) * flag1.value).toFixed(2)
             }
           }
         })
       })
-      // 计算纱线克重
-      // data.yarn_coefficient.forEach((item, key) => {
-      //   this
-      // })
     })
     console.log(this)
   },

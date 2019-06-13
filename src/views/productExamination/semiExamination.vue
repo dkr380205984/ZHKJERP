@@ -239,7 +239,7 @@
 
 <script>
 import { defectiveType } from '@/assets/js/dictionary.js'
-import { orderDetail, weaveDetail, semiExamination, semiExaminationDetail, authList } from '@/assets/js/api.js'
+import { orderDetail, weaveDetail, semiExamination, semiExaminationDetail, authList, storeInList, storeOutList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -448,14 +448,24 @@ export default {
       }),
       authList({
         company_id: window.sessionStorage.getItem('company_id')
+      }),
+      storeInList({
+        order_id: this.$route.params.id
+      }),
+      storeOutList({
+        order_id: this.$route.params.id
       })
     ]).then(res => {
       let orderInfo = res[0].data.data
       let weaveInfo = res[1].data.data
       let semiInfo = res[2].data.data
+      let goStockInfo = res[4].data.data
+      let outStockInfo = res[5].data.data
       // console.log('orderInfo', orderInfo)
       // console.log('weaveInfo', weaveInfo)
-      console.log('semiInfo', semiInfo)
+      // console.log('semiInfo', semiInfo)
+      console.log('goStockInfo', goStockInfo)
+      console.log('outStockInfo', outStockInfo)
       // 初始化检验人员数据
       res[3].data.data.forEach(item => {
         if (item.station_id === 4) {
@@ -535,7 +545,7 @@ export default {
           }
         })
       })
-      console.log(this.list)
+      console.log(this)
       semiInfo.forEach(item => {
         if (item.product_info.product_code === this.list.product_code) {
           let flag = this.list.size_info.find(key => (key.size === item.size && key.color === item.color))
@@ -545,6 +555,29 @@ export default {
             item.rejects_info.forEach(value => {
               flag.defective_number = Number(flag.defective_number ? flag.defective_number : 0) + Number(value.number)
             })
+          }
+        }
+      })
+      // 初始化入库数量
+      goStockInfo.forEach(item => {
+        if (this.productList.product_code === item.product_info.product_code) {
+          let flag = this.productList.size_info.find(key => (key.size === item.size && key.color === item.color))
+          if (flag) {
+            let flag1 = flag.production_info.find(key => key.production_client === item.client_name)
+            if (flag1) {
+              flag1.goStock_number = Number(flag1.goStock_number ? flag1.goStock_number : 0) + Number(item.number)
+            }
+          }
+        }
+      })
+      outStockInfo.forEach(item => {
+        if (this.productList.product_code === item.product_info.product_code) {
+          let flag = this.productList.size_info.find(key => (key.size === item.size && key.color === item.color))
+          if (flag) {
+            let flag1 = flag.production_info.find(key => key.production_client === item.client_name)
+            if (flag1) {
+              flag1.goStock_number = Number(flag1.goStock_number ? flag1.goStock_number : 0) - Number(item.number)
+            }
           }
         }
       })
