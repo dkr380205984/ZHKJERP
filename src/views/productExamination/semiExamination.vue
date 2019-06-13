@@ -239,7 +239,7 @@
 </template>
 
 <script>
-import { orderDetail, weaveDetail, semiExamination, semiExaminationDetail } from '@/assets/js/api.js'
+import { orderDetail, weaveDetail, semiExamination, semiExaminationDetail, authList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -254,7 +254,7 @@ export default {
         testInfo: []
       },
       options: {
-        testerList: ['小王', '小李', '老王', '老李'],
+        testerList: [],
         clientList: [],
         colorList: {},
         defectiveList: ['破损', '色差', '质量问题', '有污渍']
@@ -445,6 +445,9 @@ export default {
       }),
       semiExaminationDetail({
         order_id: this.$route.params.id
+      }),
+      authList({
+        company_id: window.sessionStorage.getItem('company_id')
       })
     ]).then(res => {
       let orderInfo = res[0].data.data
@@ -454,6 +457,11 @@ export default {
       // console.log('weaveInfo', weaveInfo)
       console.log('semiInfo', semiInfo)
       // 初始化订单信息
+      res[3].data.data.forEach(item => {
+        if (item.station_id === 4) {
+          this.options.testerList.push(item.name)
+        }
+      })
       this.order_code = orderInfo.order_code
       this.client_name = orderInfo.client_name
       this.order_time = orderInfo.order_time
