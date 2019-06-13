@@ -153,6 +153,10 @@
                       v-if="indCode === 0"
                       style="width:6em;margin-left:6em;font-size:14px;margin-top:20px;"
                       @click="addPackagCode(key,index)">添加{{key+1}}{{letterArr[index]}}</div>
+                    <div class="addLv"
+                      v-else
+                      style="width:6em;margin-left:6em;font-size:14px;margin-top:20px;"
+                      @click="deletPackagCode(key,index,)">删除{{key+1}}{{letterArr[index]}}</div>
                   </div>
                 </div>
                 <!-- </template> -->

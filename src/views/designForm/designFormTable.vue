@@ -37,7 +37,6 @@
                   {{item === 0 ? '主' : '夹' + item}}{{index+1 !== material_data.warpMaterialMain.value.length ? '/' : ''}}
                 </template>
               </span>
-
             </div>
             <div class="lost-raw-material material">
               <span>次要原料(经)</span>
@@ -55,7 +54,7 @@
               <div class="title">经向排列</div>
               <div class="content">
                 <div class="particulars"
-                  v-if="warp_data.warp_rank_bottom.length < 13 || weft_data.weft_rank_bottom.length < 13">
+                  v-if="warp_data.warp_rank_bottom.length < 13 && weft_data.weft_rank_bottom.length < 13">
                   <div>
                     <span v-for="(item,key) in add(warp_data.warp_rank_bottom)"
                       :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
@@ -169,7 +168,7 @@
               <div class="title">纬向排列</div>
               <div class="content">
                 <div class="particulars"
-                  v-if="weft_data.weft_rank_bottom.length < 13 || warp_data.warp_rank_bottom.length < 13">
+                  v-if="weft_data.weft_rank_bottom.length < 13 && warp_data.warp_rank_bottom.length < 13">
                   <div>
                     <span v-for="(item,key) in add(weft_data.weft_rank_bottom)"
                       :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
@@ -302,16 +301,16 @@
               <template v-else>
                 <span v-for="(value,index) in changeArr(add(item,b))"
                   :key="index"
-                  :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999',background: consol(item,b,value,index) && value.value !== 'no' ? 'rgb(240,240,240)' : false}">
+                  :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999',background: (consol(item,b,value,index) && value.value !== 'no') ? 'rgb(240,240,240)' : false}">
                   {{value.value === 'no' ? '' : value.value}}
-                  <span v-if="consol(item,b,value,index) && value.value !== 'no'"
+                  <!-- <span v-if="consol(item,b,value,index) && value.value !== 'no'"
                     class="jiantou">
                     <span v-if="consol(item,b,value,index,true) === '' && b !== 0 && b !== add(warp_data.warp_rank_bottom,'all').length -1"></span>
                     <span v-else-if="(((item[(b + 1) * 12] === item[(b + 1) * 12 - 1] && item[( b + 1 ) * 12 ] === '' ) || item[(b + 1) * 12] === null) && index === changeArr(add(item, b)).length - 1)"
                       class="el-icon-back left"></span>
                     <span v-else-if="(((item[b * 12] === item[b * 12 - 1] && item[b * 12] === '') || item[b * 12] === null) && index === 0 && b !== 0)"
                       class="el-icon-back right"></span>
-                  </span>
+                  </span> -->
                 </span>
               </template>
             </div>
@@ -489,15 +488,18 @@ export default {
   methods: {
     consol (item, b, value, index, fleg) {
       // console.log(item)
-      let key = (((item[b * 12] === item[b * 12 - 1] && item[b * 12] === '') || item[b * 12] === null) && index === 0 && b !== 0) && ((item[(b + 1) * 12] === item[(b + 1) * 12 - 1] || item[(b + 1) * 12] === null) && index === this.changeArr(this.add(item, b)).length - 1)
-      let flag = (((item[b * 12] === item[b * 12 - 1] && item[b * 12] === '') || item[b * 12] === null) && index === 0 && b !== 0) || ((item[(b + 1) * 12] === item[(b + 1) * 12 - 1] || item[(b + 1) * 12] === null) && index === this.changeArr(this.add(item, b)).length - 1)
+      let key = (((item[b * 12] === item[b * 12 - 1] || item[b * 12] === '') || item[b * 12] === null) && index === 0 && b !== 0) && ((item[(b + 1) * 12] === item[(b + 1) * 12 - 1] || item[(b + 1) * 12] === null) && index === this.changeArr(this.add(item, b)).length - 1)
+      let flag = (((item[b * 12] === item[b * 12 - 1] || item[b * 12] === '') || item[b * 12] === null) && index === 0 && b !== 0) || ((item[(b + 1) * 12] === item[(b + 1) * 12 - 1] || item[(b + 1) * 12] === null) && index === this.changeArr(this.add(item, b)).length - 1)
       // 判断条件1：((item[b * 12] === item[b * 12 - 1] || item[b * 12] === null) && index === 0 && b !== 0)
       // 判断当前元素是否等于上一行的最后一个等于''或者为null 并且当前元素为第一个 当前行数不为第一个
       // 判断条件2：((item[(b + 1) * 12] === item[(b + 1) * 12 - 1] || item[(b + 1) * 12] === null) && index === this.changeArr(this.add(item, b)).length - 1)
       // 判断当前元素是否等于下一行的第一个等于'' 并且当前元素为最后一个
       if (fleg) {
+        console.log(key ? '' : flag)
         return key ? '' : flag
       }
+      console.log(item, b, value, index, fleg)
+      // console.log(flag)
       return flag
     },
     forArr: (num) => {
@@ -576,6 +578,7 @@ export default {
     },
     // 处理数组
     changeArr (item) {
+      // console.log(item)
       let obj = {}
       let n = 1
       let firstVal = ''
@@ -607,7 +610,7 @@ export default {
         } else if (value === null) {
           n++
         } else {
-          if (value === firstVal && value === 1) {
+          if ((value === firstVal) || (value === firstVal && value === 1)) {
             n++
           } else {
             if (index !== 0) {
@@ -621,6 +624,7 @@ export default {
           }
         }
       })
+      console.log(arr)
       return arr
     },
     goTop () {
@@ -829,6 +833,7 @@ export default {
       //   this
       // })
     })
+    console.log(this)
   },
   updated () {
     // window.print()
