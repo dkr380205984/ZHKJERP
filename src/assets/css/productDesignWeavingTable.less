@@ -9,12 +9,13 @@ ul {
   height: auto;
   margin: 80px 0 30px 115px;
   font-family: 'systemfont';
-  font-size: 14px;
+  font-size: @fontBig;
   color: @fontNormal;
   h2{
     margin: 0 auto;
     font-weight: 500;
     text-align: center;
+    font-size: 30px;
   }
   .processCodeTime {
     display: flex;
@@ -52,9 +53,9 @@ ul {
           text-align: center;
           border-right: 1px solid #999;
           box-sizing: border-box;
-          font-size: @fontMid;
+          font-size: @fontBig;
           &:nth-child(2n+1) {
-            font-size: @fontBig
+            font-size: 18px
           }
           &:first-child {
             width:170px;
@@ -99,6 +100,7 @@ ul {
         .title {
           display: flex;
           background-color: rgb(240,240,240);
+          font-size: 18px;
           span{
             flex: 1;
             display: flex;

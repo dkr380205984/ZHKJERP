@@ -49,12 +49,12 @@
                     <span class="flex17">产品类别</span>
                     <span class="flex45">
                       <span>尺码/颜色</span>
-                      <span class="flex4">
+                      <span class="flex3">
                         <span>发货批次</span>
                         <span>发货数量</span>
-                        <span>已入库数量</span>
                         <span>发货日期</span>
                       </span>
+                      <span>已入库数量</span>
                     </span>
                     <span class="flex17">操作</span>
                   </li>
@@ -69,16 +69,16 @@
                         :key="ind"
                         class="tableColumn">
                         <span class="tableRow">{{val.size}}{{'/'}}{{val.color}}</span>
-                        <span class="tableRow col flex4">
+                        <span class="tableRow col flex3">
                           <span v-for="(value,index) in val.batch_info"
                             :key='index'
                             class="tableColumn">
                             <span class="tableRow">{{'第'}}{{chinaNumber[value.batch_id]}}{{'批'}}</span>
                             <span class="tableRow">{{value.number ? value.number : '0'}}{{'条'}}</span>
-                            <span class="tableRow">{{value.goStock_number ? value.goStock_number : 0}}{{'条'}}</span>
                             <span class="tableRow">{{value.delivery_time}}</span>
                           </span>
                         </span>
+                        <span class="tableRow">{{val.goStock_number ? val.goStock_number : 0}}{{'条'}}</span>
                       </span>
                     </span>
                     <span class="tableRow flex17">
@@ -149,7 +149,8 @@
                           <span class="tableRow">{{'第'}}{{chinaNumber[val.batch_id]}}{{'批'}}</span>
                           <span class="tableRow">{{val.delivery_time}}</span>
                           <span class="tableRow">{{val.number ? val.number : 0}}{{'条'}}</span>
-                          <span :class="{'tableRow':true,'compiled':val.plan_number === val.test_number,'unCompiled':val.plan_number !== val.test_number}">{{val.plan_number === val.test_number ? '完成' : '未完成'}}</span>
+                          <span :class="{'tableRow':true,'compiled':testStatus(key,index,val.number) >= 0,'unCompiled': (0 > testStatus(key,index,val.number) || !testStatus(key,index,val.number))}"
+                            v-once>{{testStatus(key,index,val.number) >= 0 ? '完成' : '未完成'}}</span>
                         </span>
                       </span>
                     </span>
@@ -162,43 +163,68 @@
                 v-if="item.flag">
                 <div>
                   <li>
-                    <span>检验日期</span>
-                    <span>检验人员</span>
+                    <span class="flexBig">检验日期</span>
+                    <span class="flexMid">检验人员</span>
                     <span class="flexMid">尺码颜色</span>
                     <span class="flexMid">检验数量</span>
                     <span class="flexMid">次品数量</span>
-                    <span>次品原因</span>
-                    <span>次品承担单位</span>
-                    <span>备注信息</span>
-                    <span class="flexMid">检验人</span>
+                    <span class="flexBig">次品原因</span>
+                    <span class="flexBig">次品承担单位</span>
+                    <span class="flexBig">备注信息</span>
+                    <span class="flexMid">操作人</span>
                     <span class="flexMid">操作</span>
                   </li>
                 </div>
                 <div>
                   <li v-if="item.log.length === 0">暂无信息</li>
-                  <li v-for="(value,index) in item.Log"
+                  <li v-for="(value,index) in item.log"
                     :key="index">
-                    <span class="flexBig">{{item.order_time}}</span>
-                    <span class="flexBig">{{item.client_name}}</span>
-                    <span>{{item.material}}</span>
-                    <span class="flexMid">{{item.color}}</span>
-                    <span class="flexMid">{{item.price|fixedFilter}}{{'元/' + item.unit}}</span>
-                    <span class="flexMid">{{item.weight|fixedFilter}}{{item.unit}}</span>
-                    <span class="flexMid">{{item.total_price|fixedFilter}}{{'元'}}</span>
+                    <span class="flexBig">{{value.time}}</span>
+                    <span class="flexMid">{{value.tester}}</span>
+                    <span class="flexMid">{{value.sizeColor}}</span>
+                    <span class="flexMid">{{value.number}}{{'条'}}</span>
+                    <span class="flexMid">{{value.defective_number}}{{'条'}}</span>
                     <span class="flexBig remark">
                       <i>
-                        {{item.remark ? item.remark : '暂无备注'}}
+                        {{value.defective_why ? value.defective_why : '暂无次品'}}
                         <el-popover placement="top-end"
-                          title="备注信息"
+                          title="次品信息"
                           width="200"
                           trigger="click"
-                          v-if="charCodeLength(item.remark) > 15"
-                          :content="item.remark">
+                          v-if="charCodeLength(value.defective_why) > 15"
+                          :content="value.defective_why">
                           <span slot="reference">展开</span>
                         </el-popover>
                       </i>
                     </span>
-                    <span class="flexMid">{{item.user}}</span>
+                    <span class="flexBig remark">
+                      <i>
+                        {{value.assume_client ? value.assume_client : '无'}}
+                        <el-popover placement="top-end"
+                          title="次品承担信息"
+                          width="200"
+                          trigger="click"
+                          v-if="charCodeLength(value.assume_client) > 15"
+                          :content="value.assume_client">
+                          <span slot="reference">展开</span>
+                        </el-popover>
+                      </i>
+                    </span>
+                    <span class="flexBig remark">
+                      <i>
+                        {{value.remark ? value.remark : '暂无备注'}}
+                        <el-popover placement="top-end"
+                          title="备注信息"
+                          width="200"
+                          trigger="click"
+                          v-if="charCodeLength(value.remark) > 15"
+                          :content="value.remark">
+                          <span slot="reference">展开</span>
+                        </el-popover>
+                      </i>
+                    </span>
+                    <span class="flexMid">{{value.user}}</span>
+                    <span class="flexMid blue">修改</span>
                   </li>
                 </div>
               </ul>
@@ -229,7 +255,7 @@
 </template>
 
 <script>
-import { orderDetail } from '@/assets/js/api.js'
+import { orderDetail, finishedExaminationDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -271,16 +297,25 @@ export default {
     },
     go (idName) {
       document.getElementById(idName).scrollIntoView(true)
+    },
+    testStatus (key, index, number) {
+      console.log((this.productList[key].size_info[index].number ? this.productList[key].size_info[index].number : 0) - number)
+      return (this.productList[key].size_info[index].number ? this.productList[key].size_info[index].number : 0) - number
     }
   },
   created () {
     Promise.all([
       orderDetail({
         id: this.$route.params.id
+      }),
+      finishedExaminationDetail({
+        order_id: this.$route.params.id
       })
     ]).then(res => {
       let orderInfo = res[0].data.data
+      let finishedInfo = res[1].data.data
       console.log('orderInfo', orderInfo)
+      console.log('finishedInfo', finishedInfo)
       // 初始化订单信息
       this.order_code = orderInfo.order_code
       this.client_name = orderInfo.client_name
@@ -335,6 +370,37 @@ export default {
             }
           })
         })
+      })
+      finishedInfo.forEach(item => {
+        let flag = this.productList.find(key => key.product_code === item.product_info.product_code)
+        if (flag) {
+          let log = {}
+          log.time = item.created_at
+          log.tester = item.user_inspection
+          log.sizeColor = item.size + '/' + item.color
+          log.number = item.number
+          log.remark = item.desc
+          log.user = item.user_name
+          let flag1 = flag.size_info.find(key => (key.size === item.size && key.color === item.color))
+          if (flag1) {
+            flag1.test_number = Number(flag1.test_number ? flag1.test_number : 0) + Number(item.number)
+            flag1.number = Number(flag1.number ? flag1.number : 0) + Number(item.number)
+            JSON.parse(item.rejects_info).forEach((value, index) => {
+              log.defective_number = Number(log.defective_number ? log.defective_number : 0) + Number(value.number)
+              if (!log.defective_why) {
+                log.defective_why = ''
+              }
+              log.defective_why += (value.number ? ((index !== 0 ? '，' : '') + value.number + '条' + value.defective_why) : '')
+              if (!log.assume_client) {
+                log.assume_client = ''
+              }
+              log.assume_client += (value.number ? ((index !== 0 ? '，' : '') + value.number + '条' + value.defective_why + '-' + value.assume_client) : '')
+              flag1.defective_number = Number(flag1.defective_number ? flag1.defective_number : 0) + Number(value.number)
+              flag1.number -= value.number
+            })
+          }
+          flag.log.push(log)
+        }
       })
       this.loading = false
       console.log('productList', this.productList)

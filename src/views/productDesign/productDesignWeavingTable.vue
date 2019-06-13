@@ -118,7 +118,7 @@
 </template>
 
 <script>
-import { orderDetail, authList, productionDetail, weaveDetail, halfProductDetail } from '@/assets/js/api.js'
+import { orderDetail, authList, productionDetail, weaveDetail, halfProductDetail, clientList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -339,6 +339,13 @@ export default {
       let linkman = res.data.data.find(val => val.id === window.sessionStorage.getItem('user_id'))
       this.linkman = linkman.name
       this.linkman_tel = linkman.mobile
+    })
+    // 将公司名称转为简称
+    clientList({
+      company_id: window.sessionStorage.getItem('company_id')
+    }).then(res => {
+      let clientList = res.data.data
+      this.order_company = clientList.find(val => val.name === this.order_company).abbreviation
     })
   },
   updated () {

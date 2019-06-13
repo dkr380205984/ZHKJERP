@@ -214,7 +214,19 @@ const halfProductSave = (params) => http.post(`${baseUrl}/production/semi_produc
 const halfProductDetail = (params) => http.get(`${baseUrl}/production/semi_product/list`, params)
 // 半成品加工更新
 const halfProductUpadate = (params) => http.post(`${baseUrl}/production/semi_product/edit`, params, 'application/json')
+// 半成品检验
+const semiExamination = (params) => http.post(`${baseUrl}/product/semi/inspection`, params, 'application/json')
+// 成品检验
+const finishedExamination = (params) => http.post(`${baseUrl}/product/inspection`, params, 'application/json')
+// 半成品检验详情
+const semiExaminationDetail = (params) => http.get(`${baseUrl}/product/semi/inspection/list`, params)
+// 成品检验详情
+const finishedExaminationDetail = (params) => http.get(`${baseUrl}/product/inspection/list`, params)
 export {
+  finishedExaminationDetail,
+  semiExaminationDetail,
+  finishedExamination,
+  semiExamination,
   halfProductUpadate,
   weaveUpadate,
   productOrderDetail,

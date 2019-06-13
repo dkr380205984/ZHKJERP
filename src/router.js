@@ -340,6 +340,22 @@ let router = new Router({
       path: 'finishedExamination/:id/:product_code',
       name: 'finishedExamination',
       component: () => import('./views/productExamination/finishedExamination.vue')
+    }, {
+      path: 'packagList',
+      name: 'packagList',
+      component: () => import('./views/packaging/packagList.vue')
+    }, {
+      path: 'packagDetail/:id',
+      name: 'packagDetail',
+      component: () => import('./views/packaging/packagDetail.vue')
+    }, {
+      path: 'packagInfoCreate/:id',
+      name: 'packagInfoCreate',
+      component: () => import('./views/packaging/packagInfoCreate.vue')
+    }, {
+      path: 'packagMaterialPage/:id',
+      name: 'packagMaterialPage',
+      component: () => import('./views/packaging/packagMaterialPage.vue')
     }]
   }
   ]

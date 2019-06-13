@@ -4,7 +4,7 @@ ul {
   margin: 0;
   list-style: none;
 }
-#semiExamination {
+#packagInfoCreate {
   height: 100%;
   font-family: 'systemfont';
   font-weight: 300;
@@ -142,13 +142,13 @@ ul {
             }
           }
         }
-        .testInfo {
+        .addPackagInfo {
           width: 900px;
           height: auto;
           margin-left: 40px;
           display: flex;
           flex-wrap: wrap;        
-          &>.testFrom {
+          &>.addPackagFrom {
             position: relative;
             margin-top: 30px;
             background-color: #F6F6F6;
@@ -159,8 +159,20 @@ ul {
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
+            // justify-content: center;
+            // align-items: center;
             &:nth-child(2n) {
               margin-left: 66px;
+            }
+            .addLv {
+              width: 150px;
+              height: 30px;
+              color: @normalBlue;
+              text-align: center;
+              line-height: 30px;
+              border: 1px solid @normalBlue;
+              border-radius: 4px;
+              cursor: pointer;
             }
             &>.el-icon-close {
               position: absolute;
@@ -185,6 +197,7 @@ ul {
                 align-items: flex-start;
                 margin-top: 15px;
                 padding-top: 25px;
+                border-top: 1px solid #DDD;
               }
               .tag {
                 position: absolute;
@@ -193,6 +206,7 @@ ul {
                 transform: translate(-50%,-50%);
                 padding: 0 10px;
                 color: #999;
+                text-align: center;
                 background-color: #f6f6f6;
               }
               &>span {
@@ -209,7 +223,7 @@ ul {
                 width: 193px;
                 margin: 0 0 0 15px;
               }
-              &>div {
+              .divInp {
                 position: relative;
                 margin-top: 20px;
                 display: flex;
@@ -225,6 +239,7 @@ ul {
                   width: 5em;
                   text-align: right;
                   font-size: 14px;
+                  margin-right: 1em;
                 }
                 &>.el-select {
                   width: 114px;

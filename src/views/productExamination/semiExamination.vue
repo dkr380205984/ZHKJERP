@@ -57,10 +57,11 @@
                 </li>
                 <li v-if="productList.length === 0">暂无信息</li>
                 <li class="content">
-                  <span class="tableRow blue">{{this.productList.product_code}}</span>
-                  <span class="flex2 tableRow">{{this.productList.product_class}}</span>
+                  <span class="tableRow blue"
+                    @click="$router.push('/index/productDetail/' + productList.product_code)">{{productList.product_code}}</span>
+                  <span class="flex2 tableRow">{{productList.product_class}}</span>
                   <span class="tableRow flex4 col">
-                    <span v-for="(value,index) in this.productList.size_info"
+                    <span v-for="(value,index) in productList.size_info"
                       :key='index'
                       class="tableColumn">
                       <span class="tableRow flex12">{{value.size}}{{'/'}}{{value.color}}</span>
@@ -101,7 +102,8 @@
                   </span>
                 </li>
                 <li class="content">
-                  <span class="tableRow blue">{{list.product_code}}</span>
+                  <span class="tableRow blue"
+                    @click="$router.push('/index/productDetail/' + list.product_code)">{{list.product_code}}</span>
                   <span class="tableRow flex12">{{list.product_class}}</span>
                   <span class="tableRow col flex3">
                     <span v-for="(item,key) in list.size_info"
@@ -126,21 +128,21 @@
                 <el-select v-model="item.production_client"
                   placeholder="请选择生产单位"
                   size="small">
-                  <el-option v-for="value in options.testType"
+                  <el-option v-for="value in options.clientList"
                     :key="value.value"
-                    :value="value">
+                    :label="value.name"
+                    :value="value.id">
                   </el-option>
                 </el-select>
               </li>
               <li>
                 <span>检验人员</span>:
                 <el-select v-model="item.tester_name"
-                  placeholder="请选择加工单位"
+                  placeholder="请选择检验人员"
                   size="small">
-                  <el-option v-for="value in options.companyList"
+                  <el-option v-for="value in options.testerList"
                     :key="value.value"
-                    :label="value.name"
-                    :value="value.id">
+                    :value="value">
                   </el-option>
                 </el-select>
               </li>
@@ -154,7 +156,7 @@
                     placeholder="颜色/尺码"
                     size="small"
                     style="margin-left:15px;width:243px;">
-                    <el-option v-for="color in options.colorList"
+                    <el-option v-for="color in options.colorList[item.production_client]"
                       :key="color.value"
                       :value="color">
                     </el-option>
@@ -185,7 +187,7 @@
                   <el-select v-model="val.defective_why"
                     placeholder="次品原因"
                     size="small">
-                    <el-option v-for="color in options.colorList"
+                    <el-option v-for="color in options.defectiveList"
                       :key="color.value"
                       :value="color">
                     </el-option>
@@ -222,7 +224,7 @@
           <div class="addBtn"
             @click="addTestInfo">
             <span>+</span>
-            <span>添加公司</span>
+            <span>添加单位</span>
           </div>
         </div>
       </div>
@@ -237,12 +239,12 @@
 </template>
 
 <script>
-import { orderDetail, weaveDetail } from '@/assets/js/api.js'
+import { orderDetail, weaveDetail, semiExamination, semiExaminationDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
       loading: true,
-      now_time: '',
+      save: true,
       order_code: '',
       order_time: '',
       client_name: '',
@@ -252,9 +254,10 @@ export default {
         testInfo: []
       },
       options: {
-        testType: ['倒纱', '裁剪', '染色'],
-        companyList: [],
-        colorList: {}
+        testerList: ['小王', '小李', '老王', '老李'],
+        clientList: [],
+        colorList: {},
+        defectiveList: ['破损', '色差', '质量问题', '有污渍']
       },
       pickerOptions: {
         shortcuts: [{
@@ -285,22 +288,6 @@ export default {
       return Number(item).toFixed(2)
     }
   },
-  // watch: {
-  //   list: {
-  //     deep: true,
-  //     handler: function () {
-  //       this.list.forEach((item, key) => {
-  //         let num = 0
-  //         item.testInfo.forEach(value => {
-  //           value.testSizeInfo.forEach(val => {
-  //             num += Number(val.value)
-  //           })
-  //         })
-  //         item.select_number = num
-  //       })
-  //     }
-  //   }
-  // },
   methods: {
     appendDefectiveInfo (kay, key) {
       this.list.testInfo[kay].testSizeInfo[key].defective_info.push({
@@ -351,8 +338,91 @@ export default {
     saveAll () {
       if (this.save) {
         this.save = false
+        let flag = true
+        let data = []
+        console.log(this.list.testInfo)
+        this.list.testInfo.forEach(item => {
+          item.testSizeInfo.forEach(value => {
+            let arr = {}
+            arr.order_id = this.$route.params.id
+            arr.user_id = window.sessionStorage.getItem('user_id')
+            arr.product_code = this.$route.params.product_code
+            if (!item.production_client) {
+              this.$message({
+                type: 'error',
+                message: `请选择生产单位`
+              })
+              flag = false
+              return
+            }
+            if (!item.tester_name) {
+              this.$message({
+                type: 'error',
+                message: `请选择检验人员`
+              })
+              flag = false
+              return
+            }
+            if (!value.color) {
+              this.$message({
+                type: 'error',
+                message: `请选择尺码颜色`
+              })
+              flag = false
+              return
+            }
+            if (!value.value) {
+              this.$message({
+                type: 'error',
+                message: `请输入检验总件数`
+              })
+              flag = false
+              return
+            }
+            if (!value.number) {
+              this.$message({
+                type: 'error',
+                message: `请输入检验数量`
+              })
+              flag = false
+              return
+            }
+            arr.size = value.color.split('/')[0]
+            arr.color = value.color.split('/')[1]
+            arr.client_id = item.production_client
+            arr.user_inspection = item.tester_name
+            arr.count = value.value
+            arr.number = value.number
+            arr.rejects_info = JSON.stringify(value.defective_info)
+            arr.desc = item.remark
+            data.push(arr)
+          })
+        })
+        if (flag) {
+          if (this.list.testInfo.length !== 0) {
+            semiExamination({
+              data: data
+            }).then(res => {
+              console.log(res)
+              if (res.data.status) {
+                this.$message({
+                  type: 'success',
+                  message: `添加成功，即将跳转至详情页。`
+                })
+                setTimeout(() => {
+                  this.$router.push('/index/semiExaminationDetail/' + this.$route.params.id)
+                }, 800)
+              }
+            })
+          } else {
+            this.$message({
+              type: 'warning',
+              message: `无可提交数据！`
+            })
+          }
+        }
+        setTimeout(() => { this.save = true }, 1000)
       } else {
-        let self = this
         this.$alert('请求速度过于频繁', '提醒', {
           confirmButtonText: '确定',
           callback: action => {
@@ -362,27 +432,27 @@ export default {
             })
           }
         })
-        setTimeout(() => { self.save = true }, 1000)
       }
     }
   },
   created () {
-    this.type = this.$route.params.type
-    let nowDate = new Date()
-    this.now_time = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1 < 10 ? '0' + (nowDate.getMonth() + 1) : (nowDate.getMonth() + 1)) + '-' + (nowDate.getDate() < 10 ? '0' + nowDate.getDate() : nowDate.getDate())
-    // console.log(this.now_time)
     Promise.all([
       orderDetail({
         id: this.$route.params.id
       }),
       weaveDetail({
         order_id: this.$route.params.id
+      }),
+      semiExaminationDetail({
+        order_id: this.$route.params.id
       })
     ]).then(res => {
       let orderInfo = res[0].data.data
       let weaveInfo = res[1].data.data
+      let semiInfo = res[2].data.data
       // console.log('orderInfo', orderInfo)
-      console.log('weaveInfo', weaveInfo)
+      // console.log('weaveInfo', weaveInfo)
+      console.log('semiInfo', semiInfo)
       // 初始化订单信息
       this.order_code = orderInfo.order_code
       this.client_name = orderInfo.client_name
@@ -417,6 +487,25 @@ export default {
               flag1.plan_number = Number(flag1.plan_number) + Number(item.number)
             }
           }
+          // 初始化生产单位数组
+          let client = this.options.clientList.find(key => key.name === item.client_name)
+          if (!client) {
+            this.options.clientList.push({
+              name: item.client_name,
+              id: item.client_id
+            })
+          }
+          // 初始化颜色尺码数组
+          if (!this.options.colorList[item.client_id]) {
+            let str = item.size + '/' + item.color
+            this.options.colorList[item.client_id] = [str]
+          } else {
+            let str = item.size + '/' + item.color
+            let sizeColor = this.options.colorList[item.client_id].find(key => key === str)
+            if (!sizeColor) {
+              this.options.colorList[item.client_id].push(str)
+            }
+          }
         }
       })
       this.list.product_code = this.productList.product_code
@@ -441,6 +530,18 @@ export default {
         })
       })
       console.log(this.list)
+      semiInfo.forEach(item => {
+        if (item.product_info.product_code === this.list.product_code) {
+          let flag = this.list.size_info.find(key => (key.size === item.size && key.color === item.color))
+          if (flag) {
+            flag.compiled_number = Number(flag.compiled_number ? flag.compiled_number : 0) + Number(item.number)
+            item.rejects_info = JSON.parse(item.rejects_info)
+            item.rejects_info.forEach(value => {
+              flag.defective_number = Number(flag.defective_number ? flag.defective_number : 0) + Number(value.number)
+            })
+          }
+        }
+      })
       this.loading = false
     })
   }

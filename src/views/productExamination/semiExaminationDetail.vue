@@ -147,7 +147,7 @@
                           <span class="tableRow flex13">{{val.plan_number}}{{'条'}}</span>
                           <span class="tableRow">{{val.test_number ? val.test_number : 0}}{{'条'}}</span>
                           <span class="tableRow">{{val.defective_number ? val.defective_number : 0}}{{'条'}}</span>
-                          <span :class="{'tableRow':true,'compiled':val.plan_number === val.test_number,'unCompiled':val.plan_number !== val.test_number}">{{val.plan_number === val.test_number ? '完成' : '未完成'}}</span>
+                          <span :class="{'tableRow':true,'compiled':(val.test_number ? val.test_number : 0) >= val.plan_number,'unCompiled':val.plan_number > (val.test_number ? val.test_number : 0)}">{{(val.test_number ? val.test_number : 0) >= val.plan_number ? '完成' : '未完成'}}</span>
                         </span>
                       </span>
                     </span>
@@ -160,42 +160,56 @@
                 v-if="item.flag">
                 <div>
                   <li>
-                    <span>检验日期</span>
+                    <span class="flexBig">检验日期</span>
                     <span>生产单位</span>
                     <span>尺码颜色</span>
                     <span class="flexMid">检验件数</span>
+                    <span class="flexMid">检验数量</span>
                     <span class="flexMid">次品数量</span>
-                    <span>次品原因</span>
-                    <span>备注信息</span>
+                    <span class="flexBig">次品原因</span>
+                    <span class="flexBig">备注信息</span>
                     <span class="flexMid">检验人</span>
                     <span class="flexMid">操作</span>
                   </li>
                 </div>
                 <div>
                   <li v-if="item.log.length === 0">暂无信息</li>
-                  <li v-for="(value,index) in item.Log"
+                  <li v-for="(value,index) in item.log"
                     :key="index">
-                    <span class="flexBig">{{item.order_time}}</span>
-                    <span class="flexBig">{{item.client_name}}</span>
-                    <span>{{item.material}}</span>
-                    <span class="flexMid">{{item.color}}</span>
-                    <span class="flexMid">{{item.price|fixedFilter}}{{'元/' + item.unit}}</span>
-                    <span class="flexMid">{{item.weight|fixedFilter}}{{item.unit}}</span>
-                    <span class="flexMid">{{item.total_price|fixedFilter}}{{'元'}}</span>
+                    <span class="flexBig">{{value.time}}</span>
+                    <span>{{value.client_name}}</span>
+                    <span>{{value.sizeColor}}</span>
+                    <span class="flexMid">{{value.count}}</span>
+                    <span class="flexMid">{{value.number}}</span>
+                    <span class="flexMid">{{value.defective_number ? value.defective_number : 0}}{{'条'}}</span>
                     <span class="flexBig remark">
                       <i>
-                        {{item.remark ? item.remark : '暂无备注'}}
+                        {{value.defective_why ? value.defective_why : '暂无次品'}}
                         <el-popover placement="top-end"
-                          title="备注信息"
+                          title="次品信息"
                           width="200"
                           trigger="click"
-                          v-if="charCodeLength(item.remark) > 15"
-                          :content="item.remark">
+                          v-if="charCodeLength(value.defective_why) > 15"
+                          :content="value.defective_why">
                           <span slot="reference">展开</span>
                         </el-popover>
                       </i>
                     </span>
-                    <span class="flexMid">{{item.user}}</span>
+                    <span class="flexBig remark">
+                      <i>
+                        {{value.remark ? value.remark : '暂无备注'}}
+                        <el-popover placement="top-end"
+                          title="备注信息"
+                          width="200"
+                          trigger="click"
+                          v-if="charCodeLength(value.remark) > 15"
+                          :content="value.remark">
+                          <span slot="reference">展开</span>
+                        </el-popover>
+                      </i>
+                    </span>
+                    <span class="flexMid">{{value.tester}}</span>
+                    <span class="flexMid blue">修改</span>
                   </li>
                 </div>
               </ul>
@@ -226,7 +240,7 @@
 </template>
 
 <script>
-import { orderDetail, weaveDetail } from '@/assets/js/api.js'
+import { orderDetail, weaveDetail, semiExaminationDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -277,12 +291,17 @@ export default {
       }),
       weaveDetail({
         order_id: this.$route.params.id
+      }),
+      semiExaminationDetail({
+        order_id: this.$route.params.id
       })
     ]).then(res => {
       let orderInfo = res[0].data.data
       let weaveInfo = res[1].data.data
+      let semiInfo = res[2].data.data
       // console.log('orderInfo', orderInfo)
       console.log('weaveInfo', weaveInfo)
+      console.log('semiInfo', semiInfo)
       // 初始化订单信息
       this.order_code = orderInfo.order_code
       this.client_name = orderInfo.client_name
@@ -303,6 +322,7 @@ export default {
               color: item.color,
               production_info: [{
                 plan_number: item.number,
+                client_id: item.client_id,
                 production_client: item.client_name,
                 compiled_time: item.complete_time.split(' ')[0]
               }]
@@ -316,6 +336,7 @@ export default {
               color: item.color,
               production_info: [{
                 plan_number: item.number,
+                client_id: item.client_id,
                 production_client: item.client_name,
                 compiled_time: item.complete_time.split(' ')[0]
               }]
@@ -325,6 +346,7 @@ export default {
             if (!flag2) {
               flag1.production_info.push({
                 plan_number: item.number,
+                client_id: item.client_id,
                 production_client: item.client_name,
                 compiled_time: item.complete_time.split(' ')[0]
               })
@@ -332,6 +354,38 @@ export default {
               flag2.plan_number = Number(flag2.plan_number) + Number(item.number)
             }
           }
+        }
+      })
+      console.log('productList', this.productList)
+      // 初始化已检验数量与次品数量
+      semiInfo.forEach(item => {
+        let flag = this.productList.find(key => key.product_code === item.product_info.product_code)
+        if (flag) {
+          let log = {}
+          log.time = item.created_at
+          log.client_name = item.client_name
+          log.sizeColor = item.size + '/' + item.color
+          log.count = item.count
+          log.number = item.number
+          log.remark = item.desc
+          log.tester = item.user_inspection
+          let flag1 = flag.size_info.find(key => (key.size === item.size && key.color === item.color))
+          if (flag1) {
+            let flag2 = flag1.production_info.find(key => key.production_client === item.client_name)
+            if (flag2) {
+              flag2.test_number = Number(flag2.test_number ? flag2.test_number : 0) + Number(item.number)
+              item.rejects_info = JSON.parse(item.rejects_info)
+              item.rejects_info.forEach((value, index) => {
+                log.defective_number = Number(log.defective_number ? log.defective_number : 0) + Number(value.number)
+                if (!log.defective_why) {
+                  log.defective_why = ''
+                }
+                log.defective_why += (value.number ? ((index !== 0 ? '，' : '') + value.number + '条' + value.defective_why) : '')
+                flag2.defective_number = Number(flag2.defective_number ? flag2.defective_number : 0) + Number(value.number)
+              })
+            }
+          }
+          flag.log.push(log)
         }
       })
       this.loading = false
