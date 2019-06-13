@@ -130,8 +130,7 @@
                   size="small">
                   <el-option v-for="value in options.clientList"
                     :key="value.value"
-                    :label="value.name"
-                    :value="value.id">
+                    :value="value">
                   </el-option>
                 </el-select>
               </li>
@@ -497,22 +496,19 @@ export default {
             }
           }
           // 初始化生产单位数组
-          let client = this.options.clientList.find(key => key.name === item.client_name)
+          let client = this.options.clientList.find(key => key === item.client_name)
           if (!client) {
-            this.options.clientList.push({
-              name: item.client_name,
-              id: item.client_id
-            })
+            this.options.clientList.push(item.client_name)
           }
           // 初始化颜色尺码数组
-          if (!this.options.colorList[item.client_id]) {
+          if (!this.options.colorList[item.client_name]) {
             let str = item.size + '/' + item.color
-            this.options.colorList[item.client_id] = [str]
+            this.options.colorList[item.client_name] = [str]
           } else {
             let str = item.size + '/' + item.color
-            let sizeColor = this.options.colorList[item.client_id].find(key => key === str)
+            let sizeColor = this.options.colorList[item.client_name].find(key => key === str)
             if (!sizeColor) {
-              this.options.colorList[item.client_id].push(str)
+              this.options.colorList[item.client_name].push(str)
             }
           }
         }
