@@ -210,7 +210,7 @@ export default {
         let data = res.data.data
         console.log(data)
         data.forEach(item => {
-          if (item.client_name === this.client_name) {
+          if (item.client_name === this.client_name && item.product_info.product_code === this.$route.params.product_code) {
             let flag = this.product_info.find(val => val.product_code === item.product_info.product_code)
             if (!flag) {
               this.total_price += item.price * item.number
