@@ -803,7 +803,7 @@ export default {
               flag.data.weft.material = item.material_name
               let flag1 = data.yarn_coefficient.find(val => val.name === item.material_name)
               console.log(flag1)
-              flag.data.weft.weight = ((flag.data.weft.value ? flag.data.weft.value : 0) * flag1.value).toFixed(2)
+              flag.data.weft.weight = ((flag.data.weft.value ? flag.data.weft.value : 0) * flag1.value * (this.warp_data.reed_width / 100)).toFixed(2)
             } else {
               if (!flag.data.warp) {
                 flag.data.warp = {}
@@ -811,7 +811,7 @@ export default {
               flag.data.warp.material = item.material_name
               let flag1 = data.yarn_coefficient.find(val => val.name === item.material_name)
               console.log(flag1)
-              flag.data.warp.weight = ((flag.data.warp.value ? flag.data.warp.value : 0) * flag1.value).toFixed(2)
+              flag.data.warp.weight = ((flag.data.warp.value ? flag.data.warp.value : 0) * flag1.value * ((this.weft_data.neichang + this.weft_data.rangwei) / 100)).toFixed(2)
             }
           }
         })
