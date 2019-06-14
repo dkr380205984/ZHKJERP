@@ -131,34 +131,38 @@
                         <template slot="prepend">{{key+1}}{{letterArr[index]}}{{indCode+1}}</template>
                       </el-input>
                     </div>
-                    <div class="divInp"
-                      v-for="(valPro,indPro) in valCode.product_info"
-                      :key="indPro"
-                      style="margin-left:6em;font-size:14px;">
-                      <el-select v-model="valPro.name"
-                        :placeholder="'产品' + (indPro + 1)"
-                        size="small"
-                        style="width:110px;">
-                        <el-option v-for="color in options.colorList"
-                          :key="color.value"
-                          :value="color">
-                        </el-option>
-                      </el-select>
-                      <strong>——</strong>
-                      <el-input size="small"
-                        style="width:110px;"
-                        placeholder="每包数量"
-                        v-model="valPro.number">
-                      </el-input>
-                      <em v-if="indPro === 0"
-                        class="el-icon-plus"
-                        style="right:-35px;top:5px;"
-                        @click="addProduct(key,index,indCode)"></em>
-                      <em v-else
-                        class="el-icon-delete"
-                        style="right:-35px;top:5px;"
-                        @click="deleteProduct(key,index,indCode,indPro)"></em>
-                    </div>
+                    <template v-for="(valPro,indPro) in valCode.product_info">
+                      <div class="divInp"
+                        :key="indPro">
+                        <span>产品{{indPro + 1}}:</span>
+                        <el-select v-model="valPro.name"
+                          :placeholder="'产品' + (indPro + 1)"
+                          size="small"
+                          style="width:243px;font-size:10px;">
+                          <el-option v-for="product in arrGeter(key)"
+                            :key="product.value"
+                            :value="product">
+                          </el-option>
+                        </el-select>
+                        <em v-if="indPro === 0"
+                          class="el-icon-plus"
+                          style="right:-35px;top:5px;"
+                          @click="addProduct(key,index,indCode)"></em>
+                        <em v-else
+                          class="el-icon-delete"
+                          style="right:-35px;top:5px;"
+                          @click="deleteProduct(key,index,indCode,indPro)"></em>
+                      </div>
+                      <div class="divInp"
+                        style="margin-left:6em;font-size:14px;flex-direction:column"
+                        :key="indPro+'Y'">
+                        <el-input size="small"
+                          style="width:243px"
+                          placeholder="每包数量"
+                          v-model="valPro.number">
+                        </el-input>
+                      </div>
+                    </template>
                     <div class="addLv"
                       v-if="indCode === 0"
                       style="width:6em;margin-left:6em;font-size:14px;margin-top:20px;"
@@ -314,6 +318,7 @@ export default {
             value: '蛇皮袋'
           }
         ],
+        productArr: [],
         testType: ['倒纱', '裁剪', '染色'],
         companyList: [],
         colorList: {}
@@ -365,7 +370,7 @@ export default {
     'list.addPackagList': {
       deep: true,
       handler: function (newVal) {
-        console.log(newVal)
+        // console.log(newVal)
         this.list.addPackagInfo = []
         newVal.forEach(item => {
           item.forEach(value => {
@@ -394,18 +399,34 @@ export default {
                     type: valPro.name ? valPro.name.split(' ')[1] : '未选择',
                     size: valPro.name ? valPro.name.split(' ')[2].split('/')[0] : '',
                     color: valPro.name ? valPro.name.split(' ')[2].split('/')[1] : '',
-                    number: valPro.number ? valPro.number : '未输入'
+                    number: valPro.number ? valPro.number : '0'
                   })
                 }
               })
             })
           })
         })
-        console.log(this.list.addPackagInfo)
+        // console.log(this.list.addPackagInfo)
       }
     }
   },
   methods: {
+    arrGeter (key) {
+      let arr = [...this.options.productArr]
+      this.list.addPackagList.forEach((item, kay) => {
+        if (kay < key) {
+          item.forEach(value => {
+            value.packag_info.forEach(valCode => {
+              let fleg = arr.find(key => key === (valCode.packag_code + ' ' + value.type))
+              if (!fleg) {
+                arr.unshift(valCode.packag_code + ' ' + value.type.split(' ')[0])
+              }
+            })
+          })
+        }
+      })
+      return arr
+    },
     addProduct (key, index, indCode) {
       this.list.addPackagList[key][index].packag_info[indCode].product_info.push({
         name: '',
@@ -490,7 +511,7 @@ export default {
           }]
         }]
       }])
-      console.log(this.list.addPackagList)
+      // console.log(this.list.addPackagList)
     },
     deleteLvInfo (key) {
       let len = this.list.addPackagList.length
@@ -529,7 +550,7 @@ export default {
     ]).then(res => {
       let orderInfo = res[0].data.data
       // let weaveInfo = res[1].data.data
-      console.log('orderInfo', orderInfo)
+      // console.log('orderInfo', orderInfo)
       // console.log('weaveInfo', weaveInfo)
       // 初始化订单信息
       this.order_code = orderInfo.order_code
@@ -540,9 +561,9 @@ export default {
       orderInfo.order_batch.forEach(item => {
         item.batch_info.forEach(value => {
           value.size.forEach(val => {
+            let type = value.productInfo.category_info.product_category + '/' + value.productInfo.type_name + '/' + value.productInfo.style_name + (value.productInfo.flower_id ? '/' + value.productInfo.flower_id : '')
             let flag = this.productList.find(key => key.product_code === value.productCode)
             if (!flag) {
-              let type = value.productInfo.category_info.product_category + '/' + value.productInfo.type_name + '/' + value.productInfo.style_name + (value.productInfo.flower_id ? '/' + value.productInfo.flower_id : '')
               this.productList.push({
                 product_code: value.productCode,
                 type: type,
@@ -563,6 +584,11 @@ export default {
               } else {
                 flag1.plan_number = Number(flag1.plan_number) + Number(val.numbers)
               }
+            }
+            // 初始化产品下拉框数据
+            let fleg = this.options.productArr.find(key => key === (value.productCode + ' ' + type + ' ' + val.name[0] + '/' + val.name[1]))
+            if (!fleg) {
+              this.options.productArr.push(value.productCode + ' ' + type + ' ' + val.name[0] + '/' + val.name[1])
             }
           })
         })
