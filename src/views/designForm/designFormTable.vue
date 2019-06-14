@@ -200,7 +200,7 @@
         <li class="match-colors">
           <div class="title">配色工艺</div>
           <div class="content">
-            <template v-if="color_data.length < 7">
+            <template v-if="color_data.length < 7 && panduan() < 7">
               <div class="table-head-row">
                 <div class="table-head">
                   <span>颜色组</span>
@@ -257,7 +257,7 @@
               </ul>
             </template>
             <template v-else>
-              <span>
+              <span class="fujian">
                 见附件
               </span>
             </template>
@@ -352,7 +352,7 @@
       </div>
     </div>
     <div class="outTable-color"
-      v-if='color_data.length > 6'>
+      v-if='color_data.length > 6 || panduan() > 6'>
       <div class="code">
         <div class="title">工艺单编号:</div>
         <div class="content">{{craft_code}}</div>
@@ -376,23 +376,80 @@
           <li>
             <div class="table-head-col">克重</div>
             <div v-for="(val,ind) in forArr(6)"
-              :key="ind">
-              <span :style="{fontSize:smallFont(item.warp.name) ? '10px' : false}">{{ + 'g'}}</span>
-              <span :style="{fontSize:smallFont(item.weft.name) ? '10px' : false}">{{ + 'g'}}</span>
+              :key="ind + 'a'">
+              <span :style="{fontSize:smallFont(weight_info[ind] ? (weight_info[ind].data ? (weight_info[ind].data.warp ? weight_info[ind].data.warp.weight + 'g' : '') : '') : '') ? '10px' : false}">{{weight_info[ind] ? (weight_info[ind].data ? (weight_info[ind].data.warp ? weight_info[ind].data.warp.weight + 'g' : '') : '') : ''}}</span>
+              <span :style="{fontSize:smallFont(weight_info[ind] ? (weight_info[ind].data ? (weight_info[ind].data.weft ? weight_info[ind].data.weft.weight + 'g' : '') : '') : '') ? '10px' : false}">{{weight_info[ind] ? (weight_info[ind].data ? (weight_info[ind].data.weft ? weight_info[ind].data.weft.weight + 'g' : '') : '') : ''}}</span>
             </div>
           </li>
           <template v-for="(value,index) in color_data">
-            <li v-if='index < 5'
-              :key="index">
+            <li :key="index">
               <div class="table-head-col">{{value.product_color}}</div>
-              <div v-for="(item,key) in value.color_scheme"
+              <template v-for="(item,key) in value.color_scheme">
+                <div :key="key"
+                  v-if="key < 6">
+                  <span :style="{fontSize:smallFont(item.warp ? item.warp.name : '') ? '10px' : false}">{{item.warp ? item.warp.name : ''}}</span>
+                  <span :style="{fontSize:smallFont(item.weft ? item.weft.name : '') ? '10px' : false}">{{item.weft ? item.weft.name : ''}}</span>
+                </div>
+              </template>
+              <template v-if="value.color_scheme.length < 6">
+                <div v-for="(x,y) in forArr( 6 - value.color_scheme.length)"
+                  :key="y">
+                  <span></span>
+                  <span></span>
+                </div>
+              </template>
+            </li>
+            <template v-if="color_data.length < 6">
+              <li v-for="(value,index) in forArr(6 - color_data.length)"
+                :key="index+'1'">
+                <div class="table-head-col"></div>
+                <div v-for="(item,key) in forArr(6)"
+                  :key="key+'1'">
+                  <span></span>
+                  <span></span>
+                </div>
+              </li>
+            </template>
+          </template>
+        </ul>
+      </div>
+      <div class="content"
+        v-if="panduan() > 6"
+        style="margin-top:30px;">
+        <div class="table-head-row">
+          <div class="table-head">
+            <span>颜色组</span>
+            <span>具体配色</span>
+          </div>
+          <div v-for="(item,index) in forArr(6)"
+            :key="index">
+            <div>{{"夹" + (index + 6)}}</div>
+            <div>
+              <span>经</span>
+              <span>纬</span>
+            </div>
+          </div>
+        </div>
+        <ul class="list">
+          <li>
+            <div class="table-head-col">克重</div>
+            <div v-for="(val,ind) in forArr(6)"
+              :key="ind + 'a'">
+              <span :style="{fontSize:smallFont(weight_info[ind + 6] ? (weight_info[ind + 6].data ? (weight_info[ind + 6].data.warp ? weight_info[ind + 6].data.warp.weight + 'g' : '') : '') : '') ? '10px' : false}">{{weight_info[ind + 6] ? (weight_info[ind + 6].data ? (weight_info[ind + 6].data.warp ? weight_info[ind + 6].data.warp.weight + 'g' : '') : '') : ''}}</span>
+              <span :style="{fontSize:smallFont(weight_info[ind + 6] ? (weight_info[ind + 6].data ? (weight_info[ind + 6].data.weft ? weight_info[ind + 6].data.weft.weight + 'g' : '') : '') : '') ? '10px' : false}">{{weight_info[ind + 6] ? (weight_info[ind + 6].data ? (weight_info[ind + 6].data.weft ? weight_info[ind + 6].data.weft.weight + 'g' : '') : '') : ''}}</span>
+            </div>
+          </li>
+          <template v-for="(value,index) in color_data">
+            <li :key="index">
+              <div class="table-head-col">{{value.product_color}}</div>
+              <div v-for="(item,key) in splices(value.color_scheme)"
                 :key="key">
                 <span :style="{fontSize:smallFont(item.warp ? item.warp.name : '') ? '10px' : false}">{{item.warp ? item.warp.name : ''}}</span>
                 <span :style="{fontSize:smallFont(item.weft ? item.weft.name : '') ? '10px' : false}">{{item.weft ? item.weft.name : ''}}</span>
               </div>
-              <template v-if="value.color_scheme.length < 6">
-                <div v-for="(x,y) in forArr( 6 - value.color_scheme.length)"
-                  :key="y">
+              <template v-if="splices(value.color_scheme).length < 6">
+                <div v-for="(x,y) in forArr( 6 - splices(value.color_scheme).length)"
+                  :key="y+'X'">
                   <span></span>
                   <span></span>
                 </div>
@@ -488,7 +545,7 @@ export default {
       // console.log(flag)
       return flag
     },
-    forArr: (num) => {
+    forArr (num) {
       let arr = []
       for (let i = 0; i < num; i++) {
         arr.push(Math.random())
@@ -510,6 +567,22 @@ export default {
       } else {
         return false
       }
+    },
+    // 判断是否超出夹5
+    panduan () {
+      let len = 0
+      this.color_data.forEach(item => {
+        if (len < item.color_scheme.length) {
+          len = item.color_scheme.length
+        }
+      })
+      console.log(len)
+      return len
+    },
+    // 截取颜色长度
+    splices (item) {
+      let arr = [...item]
+      return arr.splice(6, 13)
     },
     // 如果数据少于12条
     add (item, flag) {

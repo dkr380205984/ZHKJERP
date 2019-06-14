@@ -459,6 +459,7 @@ ul {
           padding: 21px 0 37px;
         }
         .content {
+          position: relative;
           .table-head-row {
             background-color: #F0F0F0;
             display: flex;
@@ -555,6 +556,12 @@ ul {
                 width: 117px;
               }
             }
+          }
+          &>span.fujian {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%;)
           }
         }
       }
