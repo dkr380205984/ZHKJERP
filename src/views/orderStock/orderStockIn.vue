@@ -213,7 +213,7 @@ export default {
         id: ''
       },
       productList: [],
-      companyArr: machiningType,
+      companyArr: [],
       machiningType: machiningType,
       colorSizeArr: [],
       formList: [{
@@ -239,7 +239,7 @@ export default {
     }), storeInList({
       order_id: this.$route.params.orderId
     })]).then((res) => {
-      this.companyArr = res[0].data.data
+      this.companyArr = res[0].data.data.filter((item) => { return (item.type === 4 || item.type === 5 || item.type === 6) })
       this.order = res[1].data.data.production_detail.order_info
       let productList = res[1].data.data.production_detail.product_info.filter((item) => item.product_code === this.$route.params.productId)
       let logListIn = res[2].data.data
