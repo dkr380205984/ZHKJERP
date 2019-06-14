@@ -64,7 +64,7 @@
                     <span v-for="(value,index) in productList.batch_info"
                       :key='index'
                       class="tableColumn">
-                      <span class="tableRow">{{'第'}}{{chinaNumber[value.batch_id]}}{{'批'}}</span>
+                      <span class="tableRow">{{'第'}}{{chinaNumber(value.batch_id)}}{{'批'}}</span>
                       <span class="tableRow">{{value.delivery_time}}</span>
                       <span class="flex2 tableRow col">
                         <span v-for="(item,key) in value.size_info"
@@ -251,17 +251,6 @@ export default {
       list: {
         testInfo: []
       },
-      chinaNumber: {
-        1: '一',
-        2: '二',
-        3: '三',
-        4: '四',
-        5: '五',
-        6: '六',
-        7: '七',
-        8: '八',
-        9: '九'
-      },
       options: {
         testerList: [],
         clientList: [],
@@ -298,6 +287,26 @@ export default {
     }
   },
   methods: {
+    chinaNumber (key) {
+      let obj = {
+        1: '一',
+        2: '二',
+        3: '三',
+        4: '四',
+        5: '五',
+        6: '六',
+        7: '七',
+        8: '八',
+        9: '九'
+      }
+      if (key / 10 > 1) {
+        let str = ''
+        str = obj[Math.floor(key / 10)] + '十' + obj[key % 10]
+        return str
+      } else {
+        return obj[key]
+      }
+    },
     appendDefectiveInfo (kay, key) {
       this.list.testInfo[kay].testSizeInfo[key].defective_info.push({
         number: '',

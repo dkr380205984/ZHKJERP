@@ -73,7 +73,7 @@
                           <span v-for="(value,index) in val.batch_info"
                             :key='index'
                             class="tableColumn">
-                            <span class="tableRow">{{'第'}}{{chinaNumber[value.batch_id]}}{{'批'}}</span>
+                            <span class="tableRow">{{'第'}}{{chinaNumber(value.batch_id)}}{{'批'}}</span>
                             <span class="tableRow">{{value.number ? value.number : '0'}}{{'条'}}</span>
                             <span class="tableRow">{{value.delivery_time}}</span>
                           </span>
@@ -101,7 +101,7 @@
         :key="key"
         :id="item.product_code">
         <div class="stepTitle"
-          id="product1">产品{{chinaNumber[key + 1] }}</div>
+          id="product1">产品{{chinaNumber(key + 1) }}</div>
         <div class="borderCtn">
           <div class="cicle"></div>
           <div class="border"
@@ -146,7 +146,7 @@
                         <span v-for="(val,ind) in value.batch_info"
                           :key="ind"
                           class="tableColumn">
-                          <span class="tableRow">{{'第'}}{{chinaNumber[val.batch_id]}}{{'批'}}</span>
+                          <span class="tableRow">{{'第'}}{{chinaNumber(val.batch_id)}}{{'批'}}</span>
                           <span class="tableRow">{{val.delivery_time}}</span>
                           <span class="tableRow">{{val.number ? val.number : 0}}{{'条'}}</span>
                           <span :class="{'tableRow':true,'compiled':testStatus(key,index,val.number) >= 0,'unCompiled': (0 > testStatus(key,index,val.number) || !testStatus(key,index,val.number))}"
@@ -265,17 +265,6 @@ export default {
       order_time: '',
       group_name: '',
       productList: [],
-      chinaNumber: {
-        1: '一',
-        2: '二',
-        3: '三',
-        4: '四',
-        5: '五',
-        6: '六',
-        7: '七',
-        8: '八',
-        9: '九'
-      },
       flag: true
     }
   },
@@ -301,6 +290,26 @@ export default {
     testStatus (key, index, number) {
       // console.log((this.productList[key].size_info[index].number ? this.productList[key].size_info[index].number : 0) - number)
       return (this.productList[key].size_info[index].number ? this.productList[key].size_info[index].number : 0) - number
+    },
+    chinaNumber (key) {
+      let obj = {
+        1: '一',
+        2: '二',
+        3: '三',
+        4: '四',
+        5: '五',
+        6: '六',
+        7: '七',
+        8: '八',
+        9: '九'
+      }
+      if (key / 10 > 1) {
+        let str = ''
+        str = obj[Math.floor(key / 10)] + '十' + obj[key % 10]
+        return str
+      } else {
+        return obj[key]
+      }
     }
   },
   created () {

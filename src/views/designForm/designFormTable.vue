@@ -230,8 +230,8 @@
                     <div class="table-head-col">{{value.product_color}}</div>
                     <div v-for="(item,key) in value.color_scheme"
                       :key="key">
-                      <span :style="{fontSize:smallFont(item.warp.name) ? '10px' : false}">{{item.warp.name}}</span>
-                      <span :style="{fontSize:smallFont(item.weft.name) ? '10px' : false}">{{item.weft ? item.weft.name : ''}}</span>
+                      <span :style="{fontSize:smallFont(item.warp ? item.warp.name : '') ? '10px' : false}">{{item.warp ? item.warp.name : ''}}</span>
+                      <span :style="{fontSize:smallFont(item.weft ? item.weft.name : '') ? '10px' : false}">{{item.weft ? item.weft.name : ''}}</span>
                     </div>
                     <template v-if="value.color_scheme.length<6">
                       <div v-for="(x,y) in forArr( 6 - value.color_scheme.length)"
@@ -266,7 +266,7 @@
       </ul>
     </div>
     <div class="outTable-arrangement"
-      v-if="warp_data.warp_rank_bottom.length > 12">
+      v-if="warp_data.warp_rank_bottom.length > 12 || weft_data.weft_rank_bottom.length > 12">
       <div class="code">
         <div class="title">工艺单编号:</div>
         <div class="content">{{craft_code}}</div>
@@ -387,8 +387,8 @@
               <div class="table-head-col">{{value.product_color}}</div>
               <div v-for="(item,key) in value.color_scheme"
                 :key="key">
-                <span :style="{fontSize:smallFont(item.warp.name) ? '10px' : false}">{{item.warp.name}}</span>
-                <span :style="{fontSize:smallFont(item.weft.name) ? '10px' : false}">{{item.weft ? item.weft.name : ''}}</span>
+                <span :style="{fontSize:smallFont(item.warp ? item.warp.name : '') ? '10px' : false}">{{item.warp ? item.warp.name : ''}}</span>
+                <span :style="{fontSize:smallFont(item.weft ? item.weft.name : '') ? '10px' : false}">{{item.weft ? item.weft.name : ''}}</span>
               </div>
               <template v-if="value.color_scheme.length < 6">
                 <div v-for="(x,y) in forArr( 6 - value.color_scheme.length)"
@@ -682,58 +682,89 @@ export default {
           })
         }
       })
+      console.log(data.color_data)
       data.color_data.forEach(item => {
         item.color_scheme.forEach((index, n) => {
-          if (this.color_data.length === 0) {
+          let flag = this.color_data.find(key => key.product_color === item.product_color)
+          if (!flag) {
             let obj = {}
-            obj.product_color = item.product_color
-            obj.color_scheme = []
-            let info = {}
-            info[(item.type) === 0 ? 'warp' : 'weft'] = {
-              name: index.name,
-              value: index.value
+            if (item.type === 0) {
+              obj.warp = { name: index.name, value: index.value }
+            } else {
+              obj.weft = { name: index.name, value: index.value }
             }
-            obj.color_scheme.push(info)
-            this.color_data.push(obj)
-          } else {
-            let flag = true
-            this.color_data.forEach((value, x) => {
-              if (value.product_color === item.product_color) {
-                flag = false
-                if (item.type === 0) {
-                  value.color_scheme.push({
-                    warp: {
-                      'name': index.name,
-                      'value': index.value
-                    },
-                    weft: {
-
-                    }
-                  })
-                } else if (item.type === 1) {
-                  if (value.color_scheme[n]) {
-                    value.color_scheme[n].weft = {
-                      name: index.name,
-                      value: index.value
-                    }
-                  }
-                }
-              } else if (x === this.color_data.length - 1 && value.product_color !== item.product_color && flag) {
-                let obj = {}
-                obj.product_color = item.product_color
-                obj.color_scheme = []
-                let info = {}
-                info[(item.type) === 0 ? 'warp' : 'weft'] = {
-                  name: index.name,
-                  value: index.value
-                }
-                obj.color_scheme.push(info)
-                this.color_data.push(obj)
-              }
+            this.color_data.push({
+              product_color: item.product_color,
+              color_scheme: [obj]
             })
+          } else {
+            if (flag.color_scheme[n]) {
+              if (item.type === 0) {
+                flag.color_scheme[n].warp = { name: index.name, value: index.value }
+              } else {
+                flag.color_scheme[n].weft = { name: index.name, value: index.value }
+              }
+            } else {
+              let obj = {}
+              if (item.type === 0) {
+                obj.warp = { name: index.name, value: index.value }
+              } else {
+                obj.weft = { name: index.name, value: index.value }
+              }
+              flag.color_scheme.push(obj)
+            }
           }
+          // if (this.color_data.length === 0) {
+          //   let obj = {}
+          //   obj.product_color = item.product_color
+          //   obj.color_scheme = []
+          //   let info = {}
+          //   info[(item.type) === 0 ? 'warp' : 'weft'] = {
+          //     name: index.name,
+          //     value: index.value
+          //   }
+          //   obj.color_scheme.push(info)
+          //   this.color_data.push(obj)
+          // } else {
+          //   let flag = true
+          //   this.color_data.forEach((value, x) => {
+          //     if (value.product_color === item.product_color) {
+          //       flag = false
+          //       if (item.type === 0) {
+          //         value.color_scheme.push({
+          //           warp: {
+          //             'name': index.name,
+          //             'value': index.value
+          //           },
+          //           weft: {
+
+          //           }
+          //         })
+          //       } else if (item.type === 1) {
+          //         if (value.color_scheme[n]) {
+          //           value.color_scheme[n].weft = {
+          //             name: index.name,
+          //             value: index.value
+          //           }
+          //         }
+          //       }
+          //     } else if (x === this.color_data.length - 1 && value.product_color !== item.product_color && flag) {
+          //       let obj = {}
+          //       obj.product_color = item.product_color
+          //       obj.color_scheme = []
+          //       let info = {}
+          //       info[(item.type) === 0 ? 'warp' : 'weft'] = {
+          //         name: index.name,
+          //         value: index.value
+          //       }
+          //       obj.color_scheme.push(info)
+          //       this.color_data.push(obj)
+          //     }
+          //   })
+          // }
         })
       })
+      console.log(this.color_data)
       // 经纬向数据整理
       this.warp_data.warp_rank.forEach((item, key) => {
         item.forEach((val, ind) => {
@@ -775,7 +806,6 @@ export default {
       this.weft_data.weft_rank_bottom.forEach((item, key) => {
         let flag = this.weight_info[item]
         if (!flag) {
-          console.log(this.weight_info[item])
           this.weight_info[item] = {
             name: item,
             data: {
@@ -802,7 +832,7 @@ export default {
               }
               flag.data.weft.material = item.material_name
               let flag1 = data.yarn_coefficient.find(val => val.name === item.material_name)
-              console.log(flag1)
+              // console.log(flag1)
               flag.data.weft.weight = ((flag.data.weft.value ? flag.data.weft.value : 0) * flag1.value * (this.warp_data.reed_width / 100)).toFixed(2)
             } else {
               if (!flag.data.warp) {
@@ -810,14 +840,14 @@ export default {
               }
               flag.data.warp.material = item.material_name
               let flag1 = data.yarn_coefficient.find(val => val.name === item.material_name)
-              console.log(flag1)
+              // console.log(flag1)
               flag.data.warp.weight = ((flag.data.warp.value ? flag.data.warp.value : 0) * flag1.value * ((this.weft_data.neichang + this.weft_data.rangwei) / 100)).toFixed(2)
             }
           }
         })
       })
     })
-    console.log(this)
+    // console.log(this)
   },
   updated () {
     // window.print()

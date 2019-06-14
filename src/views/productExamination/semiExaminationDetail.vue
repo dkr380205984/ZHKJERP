@@ -101,7 +101,7 @@
         :key="key"
         :id="item.product_code">
         <div class="stepTitle"
-          id="product1">产品{{chinaNumber[key + 1] }}</div>
+          id="product1">产品{{chinaNumber(key + 1) }}</div>
         <div class="borderCtn">
           <div class="cicle"></div>
           <div class="border"
@@ -252,17 +252,6 @@ export default {
       order_time: '',
       group_name: '',
       productList: [],
-      chinaNumber: {
-        1: '一',
-        2: '二',
-        3: '三',
-        4: '四',
-        5: '五',
-        6: '六',
-        7: '七',
-        8: '八',
-        9: '九'
-      },
       flag: true
     }
   },
@@ -284,6 +273,26 @@ export default {
     },
     go (idName) {
       document.getElementById(idName).scrollIntoView(true)
+    },
+    chinaNumber (key) {
+      let obj = {
+        1: '一',
+        2: '二',
+        3: '三',
+        4: '四',
+        5: '五',
+        6: '六',
+        7: '七',
+        8: '八',
+        9: '九'
+      }
+      if (key / 10 > 1) {
+        let str = ''
+        str = obj[Math.floor(key / 10)] + '十' + obj[key % 10]
+        return str
+      } else {
+        return obj[key]
+      }
     }
   },
   created () {
