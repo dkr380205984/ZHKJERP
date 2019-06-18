@@ -946,7 +946,7 @@ export default {
             value: this.mainIngredient.color[0][0][0].value.map((item2) => {
               return {
                 size: item2.size,
-                number: 0,
+                number: '0',
                 unit: item2.unit
               }
             })
@@ -954,10 +954,10 @@ export default {
         })]
         let weightArr = []
         this.mainIngredient.color[0][0][0].value.forEach((item) => {
-          weightArr.push(0)
+          weightArr.push('0')
         })
         this.weight = weightArr
-        this.xishu = [0]
+        this.xishu = ['0']
       }
       console.log(this.mainIngredient)
     },

@@ -101,7 +101,8 @@
         <div class="mergeBody"
           v-for="(item ,index) in list"
           :key="index"
-          :style="{'height':(item.lineNum*60)+'px'}">
+          :style="{'height':(item.lineNum*60)+'px'}"
+          v-scroll="{fun:getOrderList,pageSize:5}">
           <div class="tableColumn">{{item.date}}</div>
           <div class="tableColumn">
             <div class="small"

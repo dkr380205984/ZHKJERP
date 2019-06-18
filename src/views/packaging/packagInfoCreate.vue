@@ -62,7 +62,7 @@
                       :key='index'
                       class="tableColumn">
                       <span class="tableRow">{{value.size}}{{'/'}}{{value.color}}</span>
-                      <span class="tableRow">{{value.plan_number}}{{'条'}}</span>
+                      <span class="tableRow">{{value.plan_number}}{{item.unit}}</span>
                     </span>
                   </span>
                 </li>
@@ -141,16 +141,16 @@
                           style="width:243px;font-size:10px;">
                           <el-option v-for="product in arrGeter(key)"
                             :key="product.value"
-                            :value="product">
+                            :value="product.value">
                           </el-option>
                         </el-select>
                         <em v-if="indPro === 0"
                           class="el-icon-plus"
-                          style="right:-35px;top:5px;"
+                          style="right:-35px;top:3px;"
                           @click="addProduct(key,index,indCode)"></em>
                         <em v-else
                           class="el-icon-delete"
-                          style="right:-35px;top:5px;"
+                          style="right:-35px;top:3px;"
                           @click="deleteProduct(key,index,indCode,indPro)"></em>
                       </div>
                       <div class="divInp"
@@ -174,7 +174,7 @@
                   </div>
                   <em v-if="index !== 0"
                     class="el-icon-delete"
-                    style="right:5px;top:30px;"
+                    style="right:0px;top:30px;"
                     @click="deletePackagLv(key,index)"></em>
                 </div>
                 <!-- </template> -->
@@ -187,7 +187,7 @@
           <div class="addBtn"
             @click="addLvInfo">
             <span>+</span>
-            <span>检验人员</span>
+            <span>添加级数</span>
           </div>
         </div>
       </div>
@@ -238,11 +238,135 @@
                         </div>
                       </span>
                       <span class="tableRow">{{value.size + '/' + value.color}}</span>
-                      <span class="tableRow">{{value.product_number ? value.product_number : 0}}</span>
-                      <span class="tableRow">{{value.number}}</span>
+                      <span class="tableRow">{{value.plan_number ? value.plan_number : 0}}{{value.unit}}</span>
+                      <span class="tableRow">{{value.number}}{{(value.unit ? value.unit : '条')+'/'+(item.unit ? item.unit : '包')}}</span>
                     </span>
                   </span>
                   <span class="tableRow flex17">{{item.packag_number}}{{item.unit}}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="stepCtn">
+        <div class="stepTitle">其他装箱辅料</div>
+        <div class="borderCtn">
+          <div class="cicle"></div>
+          <div class="border"></div>
+        </div>
+        <div class="lineCtn col">
+          <div class="addPackagInfo">
+            <ul class="addPackagFrom"
+              v-for="(item,key) in list.addPackagMaterialList"
+              :key="key"
+              style="height:230px;">
+              <li>
+                <span>产品/包装:</span>
+                <el-select v-model="item.packag_name"
+                  placeholder="请选择产品/包装"
+                  size="small"
+                  style="width:243px;">
+                  <el-option v-for="type in arrGeter()"
+                    :key="type.id"
+                    :value="type.value">
+                  </el-option>
+                </el-select>
+              </li>
+              <li style="flex-direction:column;align-items: flex-start;"
+                v-for="(value,index) in item.packag_material"
+                :key="index">
+                <div class="divInp">
+                  <span>包装辅料:</span>
+                  <el-select v-model="value.name"
+                    placeholder="请选择包装辅料"
+                    size="small"
+                    style="width:243px;">
+                    <el-option v-for="type in options.materialArr"
+                      :key="type.id"
+                      :label="type.value"
+                      :value="type.name">
+                    </el-option>
+                  </el-select>
+                </div>
+                <div class="divInp">
+                  <span>数量属性:</span>
+                  <el-input size="small"
+                    style="width:108px"
+                    placeholder="每包数量"
+                    v-model="value.number">
+                  </el-input>
+                  <strong>——</strong>
+                  <el-input size="small"
+                    style="width:108px"
+                    placeholder="属性"
+                    v-model="value.attr">
+                  </el-input>
+                </div>
+                <em v-if="index === 0"
+                  class="el-icon-plus"
+                  style="right:0px;top:13px;"
+                  @click="addMaterialPro(key)"></em>
+                <em v-else
+                  class="el-icon-delete"
+                  style="right:0px;top:13px;"
+                  @click="deleteMaterialPro(key,index)"></em>
+              </li>
+              <span class="el-icon-close"
+                @click="deleteMaterialInfo(key)"></span>
+            </ul>
+          </div>
+          <div class="addBtn"
+            @click="addMaterialInfo">
+            <span>+</span>
+            <span>添加辅料</span>
+          </div>
+        </div>
+      </div>
+      <div class="stepCtn">
+        <div class="stepTitle">其他辅料统计表</div>
+        <div class="borderCtn">
+          <div class="cicle"></div>
+          <!-- <div class="border"></div> -->
+        </div>
+        <div class="lineCtn">
+          <div class="inputCtn noPadding">
+            <div class="content">
+              <ul class="tablesCtn">
+                <li class="title">
+                  <span class="flex17">产品/包装</span>
+                  <span>尺码/颜色</span>
+                  <span class="flex5">
+                    <span>辅料名称</span>
+                    <span>辅料属性</span>
+                    <span>产品数量</span>
+                    <span>包装要求</span>
+                    <span>辅料数量</span>
+                  </span>
+                </li>
+                <li v-if="list.addPackagMaterialInfo.length === 0">暂无信息</li>
+                <li class="content"
+                  v-for="(item,key) in list.addPackagMaterialInfo"
+                  :key="key">
+                  <span class="tableRow flex17"
+                    style="line-height:1.5em;">
+                    <div>
+                      <span>{{item.code}}</span>
+                      <span>{{item.type}}</span>
+                    </div>
+                  </span>
+                  <span class="tableRow">{{item.size}}{{'/'}}{{item.color}}</span>
+                  <span class="tableRow flex5 col">
+                    <span v-for="(value,index) in item.material_info"
+                      :key='index'
+                      class="tableColumn">
+                      <span class="tableRow">{{value.name}}</span>
+                      <span class="tableRow">{{value.attr ? value.attr : '无'}}</span>
+                      <span class="tableRow">{{value.plan_number ? value.plan_number : 0}}{{item.unit}}</span>
+                      <span class="tableRow">{{value.number?value.number:0}}{{(value.unit ? value.unit : '条') + '/' + (item.unit ? item.unit : '包')}}</span>
+                      <span class="tableRow">{{(value.plan_number ? value.plan_number : 0) * value.number}}{{value.unit}}</span>
+                    </span>
+                  </span>
                 </li>
               </ul>
             </div>
@@ -271,7 +395,7 @@ export default {
       order_time: '',
       client_name: '',
       group_name: '',
-      productList: [],
+      productList: [], // 产品列表
       list: {
         addPackagList: [
           [{
@@ -287,9 +411,23 @@ export default {
               }]
             }]
           }]
-        ],
-        addPackagInfo: []
+        ], // 添加装箱辅料
+        addPackagInfo: [], // 装箱预计表
+        addPackagMaterialList: [
+          {
+            packag_name: '',
+            packag_material: [
+              {
+                name: '',
+                number: '',
+                attr: ''
+              }
+            ]
+          }
+        ], // 其他装箱辅料
+        addPackagMaterialInfo: [] // 其他辅料统计表
       },
+      surplus: [], // 产品结余
       chinaNumber: {
         1: '一',
         2: '二',
@@ -317,34 +455,40 @@ export default {
             name: '蛇皮袋 袋',
             value: '蛇皮袋'
           }
-        ],
-        productArr: [],
-        testType: ['倒纱', '裁剪', '染色'],
-        companyList: [],
-        colorList: {}
+        ], // 包装分类
+        productArr: [], // 产品列表
+        materialArr: [
+          {
+            name: '洗标 个',
+            value: '洗标'
+          }, {
+            name: '吊牌 个',
+            value: '吊牌'
+          }, {
+            name: '吊绳 条',
+            value: '吊绳'
+          }, {
+            name: '衣架 个',
+            value: '衣架'
+          }, {
+            name: '干燥剂 包',
+            value: '干燥剂'
+          }, {
+            name: '防盗扣 个',
+            value: '防盗扣'
+          }, {
+            name: '纸板 个',
+            value: '纸板'
+          }, {
+            name: '箱贴 个',
+            value: '箱贴'
+          }, {
+            name: '袋贴 个',
+            value: '袋贴'
+          }
+        ] // 辅料列表
       },
-      pickerOptions: {
-        shortcuts: [{
-          text: '今天',
-          onClick (picker) {
-            picker.$emit('pick', new Date())
-          }
-        }, {
-          text: '昨天',
-          onClick (picker) {
-            const date = new Date()
-            date.setTime(date.getTime() - 3600 * 1000 * 24)
-            picker.$emit('pick', date)
-          }
-        }, {
-          text: '一周前',
-          onClick (picker) {
-            const date = new Date()
-            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
-            picker.$emit('pick', date)
-          }
-        }]
-      }
+      flag: true
     }
   },
   filters: {
@@ -353,29 +497,16 @@ export default {
     }
   },
   watch: {
-    // list: {
-    //   deep: true,
-    //   handler: function () {
-    //     this.list.forEach((item, key) => {
-    //       let num = 0
-    //       item.testInfo.forEach(value => {
-    //         value.testSizeInfo.forEach(val => {
-    //           num += Number(val.valu
-    //         })
-    //       })
-    //       item.select_number = num
-    //     })
-    //   }
-    // }
+    // 监听装箱辅料统计装箱预计值
     'list.addPackagList': {
       deep: true,
       handler: function (newVal) {
-        // console.log(newVal)
         this.list.addPackagInfo = []
-        newVal.forEach(item => {
+        this.list.addPackagList.forEach(item => {
           item.forEach(value => {
             value.packag_info.forEach(valCode => {
-              valCode.product_info.forEach(valPro => {
+              valCode.product_info.forEach((valPro, indPro) => {
+                // 初始化装箱预计表
                 let flag = this.list.addPackagInfo.find(key => key.packag_code === valCode.packag_code)
                 if (!flag) {
                   this.list.addPackagInfo.push({
@@ -386,40 +517,116 @@ export default {
                     packag_attr: value.attr ? value.attr : '未输入',
                     packag_number: valCode.packag_number ? valCode.packag_number : '0',
                     product_info: [{
+                      name: valPro.name,
                       product_code: valPro.name ? valPro.name.split(' ')[0] : '未选择',
                       type: valPro.name ? valPro.name.split(' ')[1] : '未选择',
-                      size: valPro.name ? valPro.name.split(' ')[2].split('/')[0] : '',
-                      color: valPro.name ? valPro.name.split(' ')[2].split('/')[1] : '',
-                      number: valPro.number ? valPro.number : '0'
+                      size: valPro.name ? (valPro.name.split(' ')[2] ? valPro.name.split(' ')[2].split('/')[0] : '') : '',
+                      color: valPro.name ? (valPro.name.split(' ')[2] ? valPro.name.split(' ')[2].split('/')[1] : '') : '',
+                      number: valPro.number ? valPro.number : '0',
+                      plan_number: (valCode.packag_number && valPro.number) ? (valPro.number * valCode.packag_number) : 0
                     }]
                   })
                 } else {
                   flag.product_info.push({
+                    name: valPro.name,
                     product_code: valPro.name ? valPro.name.split(' ')[0] : '未选择',
                     type: valPro.name ? valPro.name.split(' ')[1] : '未选择',
-                    size: valPro.name ? valPro.name.split(' ')[2].split('/')[0] : '',
-                    color: valPro.name ? valPro.name.split(' ')[2].split('/')[1] : '',
-                    number: valPro.number ? valPro.number : '0'
+                    size: valPro.name ? (valPro.name.split(' ')[2] ? valPro.name.split(' ')[2].split('/')[0] : '') : '',
+                    color: valPro.name ? (valPro.name.split(' ')[2] ? valPro.name.split(' ')[2].split('/')[1] : '') : '',
+                    number: valPro.number ? valPro.number : '0',
+                    plan_number: (valCode.packag_number && valPro.number) ? (valPro.number * valCode.packag_number) : 0
                   })
                 }
               })
             })
           })
         })
-        // console.log(this.list.addPackagInfo)
+      }
+    },
+    // 监听装箱预计表计算产品或包装的结余
+    'list.addPackagInfo': {
+      // deep: true,
+      handler: function (newVal) {
+        this.surplus = JSON.parse(JSON.stringify(this.arrGeter()))
+        newVal.forEach(item => {
+          item.product_info.forEach(valPro => {
+            let flag = this.surplus.find(key => (key.value === valPro.name))
+            if (flag) {
+              flag.number -= valPro.plan_number
+            }
+          })
+        })
+        console.log(this.surplus)
+      }
+    },
+    // 监听其他装箱辅料统计辅料统计表
+    'list.addPackagMaterialList': {
+      deep: true,
+      handler: function (newVal) {
+        this.list.addPackagMaterialInfo = []
+        newVal.forEach(item => {
+          let obj = {}
+          obj.code = item.packag_name ? item.packag_name.split(' ')[0] : ''
+          obj.type = item.packag_name ? item.packag_name.split(' ')[1] : ''
+          obj.size = item.packag_name ? (item.packag_name.split(' ')[2] ? item.packag_name.split(' ')[2].split('/')[0] : '') : ''
+          obj.color = item.packag_name ? (item.packag_name.split(' ')[2] ? item.packag_name.split(' ')[2].split('/')[1] : '') : ''
+          obj.material_info = []
+          item.packag_material.forEach(val => {
+            let flag = obj.material_info.find(key => (key.name === val.name && key.attr === val.attr))
+            if (!flag) {
+              obj.material_info.push({
+                name: val.name ? val.name.split(' ')[0] : '',
+                unit: val.name ? val.name.split(' ')[1] : '',
+                attr: val.attr,
+                number: val.number
+              })
+            } else {
+              flag.number = Number(flag.number) + Number(val.number)
+            }
+          })
+          this.list.addPackagMaterialInfo.push({ ...obj })
+        })
       }
     }
   },
   methods: {
+    addMaterialPro (key) {
+      this.list.addPackagMaterialList[key].packag_material.push({
+        name: '',
+        number: '',
+        attr: ''
+      })
+    },
+    deleteMaterialPro (key, index) {
+      this.list.addPackagMaterialList[key].packag_material.splice(index, 1)
+    },
+    addMaterialInfo () {
+      this.list.addPackagMaterialList.push({
+        packag_name: '',
+        packag_material: [
+          {
+            name: '',
+            number: '',
+            attr: ''
+          }
+        ]
+      })
+    },
+    deleteMaterialInfo (key) {
+      this.list.addPackagMaterialList.splice(key, 1)
+    },
     arrGeter (key) {
       let arr = [...this.options.productArr]
       this.list.addPackagList.forEach((item, kay) => {
-        if (kay < key) {
+        if ((kay < key && key !== undefined) || key === undefined) {
           item.forEach(value => {
             value.packag_info.forEach(valCode => {
               let fleg = arr.find(key => key === (valCode.packag_code + ' ' + value.type))
               if (!fleg) {
-                arr.unshift(valCode.packag_code + ' ' + value.type.split(' ')[0])
+                arr.unshift({
+                  value: valCode.packag_code + ' ' + value.type.split(' ')[0],
+                  number: valCode.packag_number
+                })
               }
             })
           })
@@ -567,6 +774,7 @@ export default {
               this.productList.push({
                 product_code: value.productCode,
                 type: type,
+                unit: '条',
                 size_info: [{
                   size: val.name[0],
                   color: val.name[1],
@@ -588,46 +796,49 @@ export default {
             // 初始化产品下拉框数据
             let fleg = this.options.productArr.find(key => key === (value.productCode + ' ' + type + ' ' + val.name[0] + '/' + val.name[1]))
             if (!fleg) {
-              this.options.productArr.push(value.productCode + ' ' + type + ' ' + val.name[0] + '/' + val.name[1])
+              this.options.productArr.push({
+                value: value.productCode + ' ' + type + ' ' + val.name[0] + '/' + val.name[1],
+                number: val.numbers
+              })
             }
           })
         })
       })
       // 初始化装箱预计表
-      this.list.addPackagList.forEach(item => {
-        item.forEach(value => {
-          value.packag_info.forEach(valCode => {
-            valCode.product_info.forEach(valPro => {
-              let flag = this.list.addPackagInfo.find(key => key.packag_code === valCode.packag_code)
-              if (!flag) {
-                this.list.addPackagInfo.push({
-                  packag_code: valCode.packag_code,
-                  packag_type: value.type ? value.type.split(' ')[0] : '未选择',
-                  unit: value.type ? value.type.split(' ')[1] : '',
-                  packag_size: value.size ? value.size : '未输入',
-                  packag_attr: value.attr ? value.attr : '未输入',
-                  packag_number: valCode.packag_number ? valCode.packag_number : '0',
-                  product_info: [{
-                    product_code: valPro.name ? valPro.name.split(' ')[0] : '未选择',
-                    type: valPro.name ? valPro.name.split(' ')[1] : '未选择',
-                    size: valPro.name ? valPro.name.split(' ')[2].split('/')[0] : '',
-                    color: valPro.name ? valPro.name.split(' ')[2].split('/')[1] : '',
-                    number: valPro.number ? valPro.number : '0'
-                  }]
-                })
-              } else {
-                flag.product_info.push({
-                  product_code: valPro.name ? valPro.name.split(' ')[0] : '未选择',
-                  type: valPro.name ? valPro.name.split(' ')[1] : '未选择',
-                  size: valPro.name ? valPro.name.split(' ')[2].split('/')[0] : '',
-                  color: valPro.name ? valPro.name.split(' ')[2].split('/')[1] : '',
-                  number: valPro.number ? valPro.number : '0'
-                })
-              }
-            })
-          })
-        })
-      })
+      // this.list.addPackagList.forEach(item => {
+      //   item.forEach(value => {
+      //     value.packag_info.forEach(valCode => {
+      //       valCode.product_info.forEach(valPro => {
+      //         let flag = this.list.addPackagInfo.find(key => key.packag_code === valCode.packag_code)
+      //         if (!flag) {
+      //           this.list.addPackagInfo.push({
+      //             packag_code: valCode.packag_code,
+      //             packag_type: value.type ? value.type.split(' ')[0] : '未选择',
+      //             unit: value.type ? value.type.split(' ')[1] : '',
+      //             packag_size: value.size ? value.size : '未输入',
+      //             packag_attr: value.attr ? value.attr : '未输入',
+      //             packag_number: valCode.packag_number ? valCode.packag_number : '0',
+      //             product_info: [{
+      //               product_code: valPro.name ? valPro.name.split(' ')[0] : '未选择',
+      //               type: valPro.name ? valPro.name.split(' ')[1] : '未选择',
+      //               size: valPro.name ? valPro.name.split(' ')[2].split('/')[0] : '',
+      //               color: valPro.name ? valPro.name.split(' ')[2].split('/')[1] : '',
+      //               number: valPro.number ? valPro.number : '0'
+      //             }]
+      //           })
+      //         } else {
+      //           flag.product_info.push({
+      //             product_code: valPro.name ? valPro.name.split(' ')[0] : '未选择',
+      //             type: valPro.name ? valPro.name.split(' ')[1] : '未选择',
+      //             size: valPro.name ? valPro.name.split(' ')[2].split('/')[0] : '',
+      //             color: valPro.name ? valPro.name.split(' ')[2].split('/')[1] : '',
+      //             number: valPro.number ? valPro.number : '0'
+      //           })
+      //         }
+      //       })
+      //     })
+      //   })
+      // })
       this.loading = false
     })
   }

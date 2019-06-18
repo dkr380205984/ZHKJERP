@@ -49,7 +49,8 @@
         </div>
         <div class="tableRow bodyTableRow"
           v-for="(item,index) in list"
-          :key="index">
+          :key="index"
+          v-scroll="{fun:getList,pageSize:5}">
           <div class="tableColumn">{{item.name}}</div>
           <div class="tableColumn">{{item.abbreviation}}</div>
           <div class="tableColumn">{{item.type|filterType}}</div>
@@ -73,7 +74,7 @@
           layout="prev, pager, next,total"
           @current-change="getList"
           :page-size="5"
-          :current-page.sync="page"
+          :current-page.sync="pages"
           :total="total">
         </el-pagination>
       </div>
@@ -131,7 +132,7 @@ export default {
         }]
       },
       total: 0,
-      page: 1,
+      pages: 1,
       list: [],
       start_time: '',
       end_time: ''
@@ -145,7 +146,7 @@ export default {
         keyword: this.searchVal,
         status: this.status,
         limit: 5,
-        page: this.page,
+        page: this.pages,
         start_time: this.start_time,
         end_time: this.end_time
       }).then((res) => {

@@ -88,7 +88,8 @@
         </div>
         <div class="tableRow bodyTableRow"
           v-for="(item) in list"
-          :key="item.id">
+          :key="item.id"
+          v-scroll="{fun:getProductList,pageSize:5}">
           <div class="tableColumn"
             style="color:#1A95FF">{{item.product_info.product_code}}</div>
           <div class="tableColumn flex9">{{item.product_info|filterType}}</div>

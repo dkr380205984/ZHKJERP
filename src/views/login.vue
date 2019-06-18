@@ -67,7 +67,7 @@ export default {
       telephone: window.localStorage.getItem('zhUsername'),
       password: window.localStorage.getItem('zhPassword'),
       remPsd: true,
-      picArr: [require('../assets/image/login/rotation1.png'), require('../assets/image/login/rotation1.png'), require('../assets/image/login/rotation1.png')]
+      picArr: [require('../assets/image/login/rotation1.jpg'), require('../assets/image/login/rotation2.jpg'), require('../assets/image/login/rotation3.jpg')]
     }
   },
   methods: {

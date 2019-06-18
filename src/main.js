@@ -12,7 +12,28 @@ Vue.use(ElementUI)
 Vue.use(mycomponent)
 
 Vue.config.productionTip = false
-
+// 列表滚动指令
+Vue.directive('scroll', {
+  inserted: (el, x, y) => {
+    // console.log('已绑定scroll')
+    let self = y.context
+    el.addEventListener('mousewheel', function (e) {
+      // console.log(e.wheelDelta)
+      // console.log(self.pages)
+      if (e.wheelDelta > 0 && (self.pages > 1)) {
+        // console.log('下一页')
+        --self.pages
+        x.value.fun()
+      } else if (e.wheelDelta < 0 && (self.pages) < Math.ceil(self.total / x.value.pageSize)) {
+        // console.log('上一页')
+        ++self.pages
+        x.value.fun()
+      } else {
+        // console.log('没有触发')
+      }
+    }, false)
+  }
+})
 new Vue({
   router,
   store,

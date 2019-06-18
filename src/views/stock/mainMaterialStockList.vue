@@ -55,7 +55,8 @@
         </div>
         <div class="tableRow bodyTableRow"
           v-for="item in list"
-          :key="item.id">
+          :key="item.id"
+          v-scroll="{fun:getList,pageSize:5}">
           <div class="tableColumn flex9">{{item.material_name}}</div>
           <div class="tableColumn">{{item.material_color}}</div>
           <div class="tableColumn">{{item.material_attribute?item.material_attribute:'无'}}</div>

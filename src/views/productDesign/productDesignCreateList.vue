@@ -102,7 +102,8 @@
         </div>
         <div class="mergeBody"
           v-for="(item ,index) in list"
-          :key="index">
+          :key="index"
+          v-scroll="{fun:getOrderList,pageSize:5}">
           <div class="tableColumn">{{item.order_code}}</div>
           <div class="tableColumn">{{item.client_name}}</div>
           <div class="tableColumn"
