@@ -1,5 +1,6 @@
 <template>
-  <div id="rawMaterialOrderDetail">
+  <div id="rawMaterialOrderDetail"
+    v-loading="loading">
     <div class="head">
       <h2>半成品加工详情</h2>
     </div>
@@ -387,6 +388,7 @@ import { productionDetail, halfProductDetail, halfProductUpadate } from '@/asset
 export default {
   data () {
     return {
+      loading: true,
       showShade: false,
       order: {
         order_code: '',
@@ -668,6 +670,7 @@ export default {
       })
       console.log(materialList)
       this.materialList = materialList
+      this.loading = false
     })
   },
   methods: {

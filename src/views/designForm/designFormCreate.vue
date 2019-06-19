@@ -683,6 +683,7 @@ export default {
   },
   data () {
     return {
+      lock: false,
       ifgetCraft: false,
       gyd: '',
       gydArr: [],
@@ -1180,367 +1181,381 @@ export default {
     },
     // 添加
     saveAll () {
-      // 用户体验优化,判断表单必填字段是否填写
-      let flag = {
-        color: true,
-        colour: true,
-        color2: true,
-        mainIngredient: true,
-        mainIngredient2: true,
-        otherIngredient: true,
-        otherIngredient2: true,
-        jia: true,
-        jia2: true,
-        longSort: true,
-        longSort2: true,
-        hotSettings: true,
-        hotSettings2: true
-      }
-      // 检查配色方案
-      this.colour.forEach((item) => {
-        if (item === '') {
-          flag.colour = false
+      if (!this.lock) {
+        // 用户体验优化,判断表单必填字段是否填写
+        let flag = {
+          color: true,
+          colour: true,
+          color2: true,
+          mainIngredient: true,
+          mainIngredient2: true,
+          otherIngredient: true,
+          otherIngredient2: true,
+          jia: true,
+          jia2: true,
+          longSort: true,
+          longSort2: true,
+          hotSettings: true,
+          hotSettings2: true
         }
-      })
-      this.colour.forEach((item) => {
-        if (item === '') {
-          flag.colour = false
+        // 检查配色方案
+        this.colour.forEach((item) => {
+          if (item === '') {
+            flag.colour = false
+          }
+        })
+        this.colour.forEach((item) => {
+          if (item === '') {
+            flag.colour = false
+          }
+        })
+        // 检查纱线颜色
+        this.color.forEach((item, index) => {
+          for (let i = 0; i < this.colorNum[index]; i++) {
+            if (!item[i].name) {
+              flag.color = false
+            }
+          }
+        })
+        this.color2.forEach((item, index) => {
+          for (let i = 0; i < this.colorNum2[index]; i++) {
+            if (!item[i].name) {
+              flag.color2 = false
+            }
+          }
+        })
+        // 检查主要原料
+        if (!this.mainIngredient) {
+          flag.mainIngredient = false
         }
-      })
-      // 检查纱线颜色
-      this.color.forEach((item, index) => {
-        for (let i = 0; i < this.colorNum[index]; i++) {
-          if (!item[i].name) {
-            flag.color = false
+        if (!this.mainIngredient2) {
+          flag.mainIngredient2 = false
+        }
+        // 检查次要原料
+        for (let key in this.otherIngredient) {
+          if (!this.otherIngredient[key]) {
+            flag.otherIngredient = false
           }
         }
-      })
-      this.color2.forEach((item, index) => {
-        for (let i = 0; i < this.colorNum2[index]; i++) {
-          if (!item[i].name) {
-            flag.color2 = false
+        for (let key in this.otherIngredient2) {
+          if (!this.otherIngredient2[key]) {
+            flag.otherIngredient2 = false
           }
         }
-      })
-      // 检查主要原料
-      if (!this.mainIngredient) {
-        flag.mainIngredient = false
-      }
-      if (!this.mainIngredient2) {
-        flag.mainIngredient2 = false
-      }
-      // 检查次要原料
-      for (let key in this.otherIngredient) {
-        if (!this.otherIngredient[key]) {
-          flag.otherIngredient = false
-        }
-      }
-      for (let key in this.otherIngredient2) {
-        if (!this.otherIngredient2[key]) {
-          flag.otherIngredient2 = false
-        }
-      }
-      // 检查次要原料的夹
-      this.jia.forEach((item) => {
-        if (item.length === 0) {
-          flag.jia = false
-        }
-        item.forEach((item2) => {
-          if (item2 === '') {
+        // 检查次要原料的夹
+        this.jia.forEach((item) => {
+          if (item.length === 0) {
             flag.jia = false
           }
+          item.forEach((item2) => {
+            if (item2 === '') {
+              flag.jia = false
+            }
+          })
         })
-      })
-      this.jia2.forEach((item) => {
-        if (item.length === 0) {
-          flag.jia2 = false
-        }
-        item.forEach((item2) => {
-          if (item2 === '') {
+        this.jia2.forEach((item) => {
+          if (item.length === 0) {
             flag.jia2 = false
           }
+          item.forEach((item2) => {
+            if (item2 === '') {
+              flag.jia2 = false
+            }
+          })
         })
-      })
-      // 检查表格的夹
-      this.longSort.forEach((item) => {
-        if (item === '') {
-          flag.longSort = false
+        // 检查表格的夹
+        this.longSort.forEach((item) => {
+          if (item === '') {
+            flag.longSort = false
+          }
+        })
+        this.longSort2.forEach((item) => {
+          if (item === '') {
+            flag.longSort2 = false
+          }
+        })
+        // 检查表格第一行
+        this.hotSettings.data[0].forEach((item) => {
+          if (item === '') {
+            flag.hotSettings = false
+          }
+        })
+        this.hotSettings2.data[0].forEach((item) => {
+          if (item === '') {
+            flag.hotSettings2 = false
+          }
+        })
+        if (!flag.colour) {
+          this.$message.error({
+            message: '检测到有未选择的经向配色方案,请检查配色方案是否填写完整'
+          })
+          return
         }
-      })
-      this.longSort2.forEach((item) => {
-        if (item === '') {
-          flag.longSort2 = false
+        if (!flag.colour) {
+          this.$message.error({
+            message: '检测到有未选择的纬向配色方案,请检查配色方案是否填写完整'
+          })
+          return
         }
-      })
-      // 检查表格第一行
-      this.hotSettings.data[0].forEach((item) => {
-        if (item === '') {
-          flag.hotSettings = false
+        if (!flag.color) {
+          this.$message.error({
+            message: '检测到有未选择的经向纱线颜色,请检查纱线颜色是否填写完整'
+          })
+          return
         }
-      })
-      this.hotSettings2.data[0].forEach((item) => {
-        if (item === '') {
-          flag.hotSettings2 = false
+        if (!flag.color2) {
+          this.$message.error({
+            message: '检测到有未选择的纬向纱线颜色,请检查纱线颜色是否填写完整'
+          })
+          return
         }
-      })
-      if (!flag.colour) {
-        this.$message.error({
-          message: '检测到有未选择的经向配色方案,请检查配色方案是否填写完整'
+        if (!flag.mainIngredient) {
+          this.$message.error({
+            message: '检测到有未选择的经向主要原料,请检查主要原料是否填写完整'
+          })
+          return
+        }
+        if (!flag.mainIngredient2) {
+          this.$message.error({
+            message: '检测到有未选择的纬向主要原料,请检查主要原料是否填写完整'
+          })
+          return
+        }
+        if (!flag.otherIngredient) {
+          this.$message.error({
+            message: '检测到有未选择的经向次要原料,请检查次要原料是否填写完整'
+          })
+          return
+        }
+        if (!flag.otherIngredient2) {
+          this.$message.error({
+            message: '检测到有未选择的纬向次要原料,请检查次要原料是否填写完整'
+          })
+          return
+        }
+        if (!flag.jia) {
+          this.$message.error({
+            message: '检测到有未选择的经向次要原料,请检查次要原料是否填写完整'
+          })
+          return
+        }
+        if (!flag.jia2) {
+          this.$message.error({
+            message: '检测到有未选择的纬向次要原料,请检查次要原料是否填写完整'
+          })
+          return
+        }
+        if (!flag.longSort) {
+          this.$message.error({
+            message: '请检查经向列表表头是否填写完整'
+          })
+          return
+        }
+        if (!flag.longSort2) {
+          this.$message.error({
+            message: '请检查纬向列表表头是否填写完整'
+          })
+          return
+        }
+        if (!flag.hotSettings) {
+          this.$message.error({
+            message: '请检查经向列表第一行是否填写完整'
+          })
+          return
+        }
+        if (!flag.hotSettings2) {
+          this.$message.error({
+            message: '请检查纬向列表第一行是否填写完整'
+          })
+          return
+        }
+        if (this.warp_data.side_id === '') {
+          this.$message.error({
+            message: '请选择边型'
+          })
+          return
+        }
+        if (this.warp_data.machine_id === '') {
+          this.$message.error({
+            message: '请选择机型'
+          })
+          return
+        }
+        if (!this.warp_data.reed_width) {
+          this.$message.error({
+            message: '请填写筘幅'
+          })
+          return
+        }
+        if (this.weft_data.organization_id === '') {
+          this.$message.error({
+            message: '请选择组织法'
+          })
+          return
+        }
+        if (this.weft_data.peifu === '') {
+          this.$message.error({
+            message: '请输入机上坯幅'
+          })
+          return
+        }
+        if (this.weft_data.rangwei === '' || this.weft_data.neichang === '') {
+          this.$message.error({
+            message: '请填写让位要求'
+          })
+          return
+        }
+        if (this.coefficient.length < this.materialList.length) {
+          this.$message.error({
+            message: '请填写纱线系数'
+          })
+          return
+        }
+        // 经向主料获取name
+        let warpMaterialMain = this.mainIngredient
+        // 纬向主料获取name
+        let weftMaterialMain = this.mainIngredient2
+        // 经向次料获取
+        let warpMaterialOther = []
+        this.otherIngredient.forEach((item, index) => {
+          warpMaterialOther.push({
+            name: item,
+            value: this.jia[index]
+          })
         })
-        return
-      }
-      if (!flag.colour) {
-        this.$message.error({
-          message: '检测到有未选择的纬向配色方案,请检查配色方案是否填写完整'
+        // 纬向次料获取
+        let weftMaterialOther = []
+        this.otherIngredient2.forEach((item, index) => {
+          weftMaterialOther.push({
+            name: item,
+            value: this.jia2[index]
+          })
         })
-        return
-      }
-      if (!flag.color) {
-        this.$message.error({
-          message: '检测到有未选择的经向纱线颜色,请检查纱线颜色是否填写完整'
+        let materialData = {
+          'warpMaterialMain': warpMaterialMain,
+          'weftMaterialMain': weftMaterialMain,
+          'warpMaterialOther': warpMaterialOther,
+          'weftMaterialOther': weftMaterialOther
+        }
+        // 新版本数据格式改动 ---- 材料改动
+        let materialDataNew = []
+        // 过滤掉经向次要原料的夹
+        let warpMainArr = Array.from(Array(this.colorNum[0]), (v, k) => k)
+        materialData.warpMaterialOther.forEach((item) => {
+          materialDataNew.push({
+            material_name: item.name,
+            type: 0,
+            type_material: 1,
+            apply: item.value
+          })
+          item.value.forEach((item) => {
+            warpMainArr.splice(warpMainArr.findIndex(itemJia => itemJia === item), 1)
+          })
         })
-        return
-      }
-      if (!flag.color2) {
-        this.$message.error({
-          message: '检测到有未选择的纬向纱线颜色,请检查纱线颜色是否填写完整'
-        })
-        return
-      }
-      if (!flag.mainIngredient) {
-        this.$message.error({
-          message: '检测到有未选择的经向主要原料,请检查主要原料是否填写完整'
-        })
-        return
-      }
-      if (!flag.mainIngredient2) {
-        this.$message.error({
-          message: '检测到有未选择的纬向主要原料,请检查主要原料是否填写完整'
-        })
-        return
-      }
-      if (!flag.otherIngredient) {
-        this.$message.error({
-          message: '检测到有未选择的经向次要原料,请检查次要原料是否填写完整'
-        })
-        return
-      }
-      if (!flag.otherIngredient2) {
-        this.$message.error({
-          message: '检测到有未选择的纬向次要原料,请检查次要原料是否填写完整'
-        })
-        return
-      }
-      if (!flag.jia) {
-        this.$message.error({
-          message: '检测到有未选择的经向次要原料,请检查次要原料是否填写完整'
-        })
-        return
-      }
-      if (!flag.jia2) {
-        this.$message.error({
-          message: '检测到有未选择的纬向次要原料,请检查次要原料是否填写完整'
-        })
-        return
-      }
-      if (!flag.longSort) {
-        this.$message.error({
-          message: '请检查经向列表表头是否填写完整'
-        })
-        return
-      }
-      if (!flag.longSort2) {
-        this.$message.error({
-          message: '请检查纬向列表表头是否填写完整'
-        })
-        return
-      }
-      if (!flag.hotSettings) {
-        this.$message.error({
-          message: '请检查经向列表第一行是否填写完整'
-        })
-        return
-      }
-      if (!flag.hotSettings2) {
-        this.$message.error({
-          message: '请检查纬向列表第一行是否填写完整'
-        })
-        return
-      }
-      if (this.warp_data.side_id === '') {
-        this.$message.error({
-          message: '请选择边型'
-        })
-        return
-      }
-      if (this.warp_data.machine_id === '') {
-        this.$message.error({
-          message: '请选择机型'
-        })
-        return
-      }
-      if (!this.warp_data.reed_width) {
-        this.$message.error({
-          message: '请填写筘幅'
-        })
-        return
-      }
-      if (this.weft_data.organization_id === '') {
-        this.$message.error({
-          message: '请选择组织法'
-        })
-        return
-      }
-      if (this.weft_data.peifu === '') {
-        this.$message.error({
-          message: '请输入机上坯幅'
-        })
-        return
-      }
-      if (this.weft_data.rangwei === '' || this.weft_data.neichang === '') {
-        this.$message.error({
-          message: '请填写让位要求'
-        })
-        return
-      }
-      if (this.coefficient.length < this.materialList.length) {
-        this.$message.error({
-          message: '请填写纱线系数'
-        })
-        return
-      }
-      // 经向主料获取name
-      let warpMaterialMain = this.mainIngredient
-      // 纬向主料获取name
-      let weftMaterialMain = this.mainIngredient2
-      // 经向次料获取
-      let warpMaterialOther = []
-      this.otherIngredient.forEach((item, index) => {
-        warpMaterialOther.push({
-          name: item,
-          value: this.jia[index]
-        })
-      })
-      // 纬向次料获取
-      let weftMaterialOther = []
-      this.otherIngredient2.forEach((item, index) => {
-        weftMaterialOther.push({
-          name: item,
-          value: this.jia2[index]
-        })
-      })
-      let materialData = {
-        'warpMaterialMain': warpMaterialMain,
-        'weftMaterialMain': weftMaterialMain,
-        'warpMaterialOther': warpMaterialOther,
-        'weftMaterialOther': weftMaterialOther
-      }
-      // 新版本数据格式改动 ---- 材料改动
-      let materialDataNew = []
-      // 过滤掉经向次要原料的夹
-      let warpMainArr = Array.from(Array(this.colorNum[0]), (v, k) => k)
-      materialData.warpMaterialOther.forEach((item) => {
         materialDataNew.push({
-          material_name: item.name,
+          material_name: materialData.warpMaterialMain,
           type: 0,
-          type_material: 1,
-          apply: item.value
+          type_material: 0,
+          apply: warpMainArr
         })
-        item.value.forEach((item) => {
-          warpMainArr.splice(warpMainArr.findIndex(itemJia => itemJia === item), 1)
+        // 过滤纬向次要原料的夹
+        let weftMainArr = Array.from(Array(this.colorNum2[0]), (v, k) => k)
+        materialData.weftMaterialOther.forEach((item) => {
+          materialDataNew.push({
+            material_name: item.name,
+            type: 1,
+            type_material: 1,
+            apply: item.value
+          })
+          item.value.forEach((item) => {
+            weftMainArr.splice(weftMainArr.findIndex(itemJia => itemJia === item), 1)
+          })
         })
-      })
-      materialDataNew.push({
-        material_name: materialData.warpMaterialMain,
-        type: 0,
-        type_material: 0,
-        apply: warpMainArr
-      })
-      // 过滤纬向次要原料的夹
-      let weftMainArr = Array.from(Array(this.colorNum2[0]), (v, k) => k)
-      materialData.weftMaterialOther.forEach((item) => {
         materialDataNew.push({
-          material_name: item.name,
+          material_name: materialData.weftMaterialMain,
           type: 1,
-          type_material: 1,
-          apply: item.value
+          type_material: 0,
+          apply: weftMainArr
         })
-        item.value.forEach((item) => {
-          weftMainArr.splice(weftMainArr.findIndex(itemJia => itemJia === item), 1)
-        })
-      })
-      materialDataNew.push({
-        material_name: materialData.weftMaterialMain,
-        type: 1,
-        type_material: 0,
-        apply: weftMainArr
-      })
-      // 新版本数据格式改动 --- 配色方案
-      let colorData = []
-      this.colour.forEach((item, index) => {
-        let colorScheme = []
-        for (let i = 0; i < this.colorNum[index]; i++) {
-          colorScheme.push({
-            name: this.color[index][i].name,
-            value: this.color[index][i].color
+        // 新版本数据格式改动 --- 配色方案
+        let colorData = []
+        this.colour.forEach((item, index) => {
+          let colorScheme = []
+          for (let i = 0; i < this.colorNum[index]; i++) {
+            colorScheme.push({
+              name: this.color[index][i].name,
+              value: this.color[index][i].color
+            })
+          }
+          colorData.push({
+            'product_color': item,
+            'color_scheme': colorScheme,
+            'type': 0
           })
-        }
-        colorData.push({
-          'product_color': item,
-          'color_scheme': colorScheme,
-          'type': 0
         })
-      })
-      this.colour.forEach((item, index) => {
-        let colorScheme = []
-        for (let i = 0; i < this.colorNum2[index]; i++) {
-          colorScheme.push({
-            name: this.color2[index][i].name,
-            value: this.color2[index][i].color
+        this.colour.forEach((item, index) => {
+          let colorScheme = []
+          for (let i = 0; i < this.colorNum2[index]; i++) {
+            colorScheme.push({
+              name: this.color2[index][i].name,
+              value: this.color2[index][i].color
+            })
+          }
+          colorData.push({
+            'product_color': item,
+            'color_scheme': colorScheme,
+            'type': 1
           })
-        }
-        colorData.push({
-          'product_color': item,
-          'color_scheme': colorScheme,
-          'type': 1
         })
-      })
-      // 纱线系数拼接
-      let yarnCoefficient = this.materialList.map((item, index) => {
-        return {
-          name: item,
-          value: this.coefficient[index]
+        // 纱线系数拼接
+        let yarnCoefficient = this.materialList.map((item, index) => {
+          return {
+            name: item,
+            value: this.coefficient[index]
+          }
+        })
+        this.warp_data.warp_rank = this.hotSettings.data
+        this.warp_data.warp_rank_bottom = this.longSort
+        this.weft_data.weft_rank = this.hotSettings2.data
+        this.weft_data.weft_rank_bottom = this.longSort2
+        this.weft_data.weimi = this.weimi
+        let json = {
+          id: '',
+          is_draft: 0,
+          company_id: this.companyId,
+          product_id: this.$route.params.id,
+          user_id: window.sessionStorage.getItem('user_id'),
+          craft_code: null,
+          warp_data: this.warp_data,
+          weft_data: this.weft_data,
+          color_data: colorData,
+          material_data: materialDataNew,
+          weight: this.weight,
+          yarn_coefficient: yarnCoefficient
         }
-      })
-      this.warp_data.warp_rank = this.hotSettings.data
-      this.warp_data.warp_rank_bottom = this.longSort
-      this.weft_data.weft_rank = this.hotSettings2.data
-      this.weft_data.weft_rank_bottom = this.longSort2
-      this.weft_data.weimi = this.weimi
-      let json = {
-        id: '',
-        is_draft: 0,
-        company_id: this.companyId,
-        product_id: this.$route.params.id,
-        user_id: window.sessionStorage.getItem('user_id'),
-        craft_code: null,
-        warp_data: this.warp_data,
-        weft_data: this.weft_data,
-        color_data: colorData,
-        material_data: materialDataNew,
-        weight: this.weight,
-        yarn_coefficient: yarnCoefficient
+        console.log(json)
+        this.lock = true
+        this.loading = true
+        saveCraft(json).then((res) => {
+          if (res.data.status) {
+            this.$message.success({
+              message: '添加成功'
+            })
+            this.clearDraft(false)
+            this.$router.push('/index/productPlanCreate/' + this.$route.params.id)
+          } else {
+            this.$message.error({
+              message: res.data.message
+            })
+          }
+          this.lock = false
+          this.loading = false
+        })
+      } else {
+        this.$message.error({
+          message: '请勿频繁操作'
+        })
       }
-      console.log(json)
-      saveCraft(json).then((res) => {
-        if (res.data.status) {
-          this.$message.success({
-            message: '添加成功'
-          })
-          this.clearDraft(false)
-          this.$router.push('/index/productPlanCreate/' + this.$route.params.id)
-        }
-      })
     },
     // 清空
     clearAll () {

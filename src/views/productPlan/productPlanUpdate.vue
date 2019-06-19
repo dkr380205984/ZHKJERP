@@ -340,6 +340,7 @@ import { porductOne, YarnList, editList, materialList, saveProductPlan, craftPro
 export default {
   data () {
     return {
+      lock: false,
       loading: true,
       sizeKey: [],
       companyId: window.sessionStorage.getItem('company_id'),
@@ -783,179 +784,193 @@ export default {
     },
     // 添加
     saveAll () {
-      let state = false
-      this.mainIngredient.ingredient.forEach((itemMaterial) => {
-        if (!itemMaterial) {
-          state = true
-        }
-      })
-      if (state) {
-        this.$message.error({
-          message: '检测到有未填写的原料信息，请完善信息'
-        })
-        return
-      }
-      this.mainIngredient.colour.forEach((itemColour) => {
-        itemColour.forEach((item) => {
-          if (!item) {
+      if (!this.lock) {
+        let state = false
+        this.mainIngredient.ingredient.forEach((itemMaterial) => {
+          if (!itemMaterial) {
             state = true
           }
         })
-      })
-      if (state) {
-        this.$message.error({
-          message: '检测到有未填写的原料配色信息，请完善信息'
-        })
-        return
-      }
-      this.mainIngredient.color.forEach((itemColor) => {
-        itemColor.forEach((item) => {
-          item.forEach((item2) => {
-            if (!item2.colorCode.name) {
+        if (state) {
+          this.$message.error({
+            message: '检测到有未填写的原料信息，请完善信息'
+          })
+          return
+        }
+        this.mainIngredient.colour.forEach((itemColour) => {
+          itemColour.forEach((item) => {
+            if (!item) {
               state = true
             }
           })
         })
-      })
-      if (state) {
-        this.$message.error({
-          message: '检测到有未填写的原料纱线颜色信息，请完善信息'
-        })
-        return
-      }
-      this.otherIngredient.ingredient.forEach((itemMaterial) => {
-        if (!itemMaterial) {
-          state = true
+        if (state) {
+          this.$message.error({
+            message: '检测到有未填写的原料配色信息，请完善信息'
+          })
+          return
         }
-      })
-      if (state) {
-        this.$message.error({
-          message: '检测到有未填写的辅料信息，请完善信息'
-        })
-        return
-      }
-      this.otherIngredient.colour.forEach((itemColour) => {
-        itemColour.forEach((item) => {
-          if (!item) {
-            state = true
-          }
-        })
-      })
-      if (state) {
-        this.$message.error({
-          message: '检测到有未填写的辅料配色方案信息，请完善信息'
-        })
-        return
-      }
-      this.otherIngredient.color.forEach((itemColor) => {
-        itemColor.forEach((item) => {
-          item.forEach((item2) => {
-            if (!item2.name) {
-              state = true
-            }
-            item2.value.forEach((item3) => {
-              if (!item3.number) {
+        this.mainIngredient.color.forEach((itemColor) => {
+          itemColor.forEach((item) => {
+            item.forEach((item2) => {
+              if (!item2.colorCode.name) {
                 state = true
               }
             })
           })
         })
-      })
-      if (state) {
-        this.$message.error({
-          message: '检测到有未填写的辅料颜色或辅料数量信息，请完善信息'
-        })
-        return
-      }
-      this.weight.forEach((item) => {
-        if (!item) {
-          state = true
-        }
-      })
-      if (state || this.weight.length === 0) {
-        this.$message.error({
-          message: '检测到有未填写的净重信息，请完善信息'
-        })
-        return
-      }
-      if (this.xishu.length < this.ingredientCmp.length) {
-        this.$message.error({
-          message: '检测到有未填写的纱线系数，请完善信息'
-        })
-        return
-      }
-      this.process.forEach((item) => {
-        if (!item) {
-          state = true
-        }
-      })
-      if (state) {
-        this.$message.error({
-          message: '检测到有未填写的工序信息，请完善信息'
-        })
-        return
-      }
-      let materialData = []
-      this.mainIngredient.ingredient.forEach((itemMaterial, indexMaterial) => {
-        materialData.push({
-          material: itemMaterial,
-          colour: this.mainIngredient.colour[indexMaterial].map((itemColour, indexColour) => {
-            return {
-              name: itemColour,
-              color: this.mainIngredient.color[indexMaterial][indexColour].map((itemColor, indexColor) => {
-                return {
-                  name: itemColor.name,
-                  value: itemColor.colorCode.color,
-                  size: this.mainIngredient.color[indexMaterial][indexColour][indexColor].value
-                }
-              })
-            }
-          }),
-          type: 0
-        })
-      })
-      this.otherIngredient.ingredient.forEach((itemMaterial, indexMaterial) => {
-        materialData.push({
-          material: itemMaterial,
-          colour: this.otherIngredient.colour[indexMaterial].map((itemColour, indexColour) => {
-            return {
-              name: itemColour,
-              color: this.otherIngredient.color[indexMaterial][indexColour].map((itemColor, indexColor) => {
-                return {
-                  name: itemColor.name,
-                  value: itemColor.colorCode,
-                  size: this.otherIngredient.color[indexMaterial][indexColour][indexColor].value
-                }
-              })
-            }
-          }),
-          type: 1
-        })
-      })
-      let xishu = this.xishu.map((item, index) => {
-        return {
-          name: this.ingredientCmp[index],
-          value: item
-        }
-      })
-      saveProductPlan({
-        'is_update': true,
-        'id': this.$route.params.productId,
-        'company_id': this.companyId,
-        'product_id': this.product.id,
-        'user_id': window.sessionStorage.getItem('user_id'),
-        'material_data': materialData,
-        'outside_process': this.process,
-        'weight_group': this.weight,
-        'yarn_coefficient': xishu
-      }).then((res) => {
-        if (res.data.status) {
-          this.$message.success({
-            message: '修改成功'
+        if (state) {
+          this.$message.error({
+            message: '检测到有未填写的原料纱线颜色信息，请完善信息'
           })
-          this.$router.push('/index/productPlanList')
+          return
         }
-      })
+        this.otherIngredient.ingredient.forEach((itemMaterial) => {
+          if (!itemMaterial) {
+            state = true
+          }
+        })
+        if (state) {
+          this.$message.error({
+            message: '检测到有未填写的辅料信息，请完善信息'
+          })
+          return
+        }
+        this.otherIngredient.colour.forEach((itemColour) => {
+          itemColour.forEach((item) => {
+            if (!item) {
+              state = true
+            }
+          })
+        })
+        if (state) {
+          this.$message.error({
+            message: '检测到有未填写的辅料配色方案信息，请完善信息'
+          })
+          return
+        }
+        this.otherIngredient.color.forEach((itemColor) => {
+          itemColor.forEach((item) => {
+            item.forEach((item2) => {
+              if (!item2.name) {
+                state = true
+              }
+              item2.value.forEach((item3) => {
+                if (!item3.number) {
+                  state = true
+                }
+              })
+            })
+          })
+        })
+        if (state) {
+          this.$message.error({
+            message: '检测到有未填写的辅料颜色或辅料数量信息，请完善信息'
+          })
+          return
+        }
+        this.weight.forEach((item) => {
+          if (!item) {
+            state = true
+          }
+        })
+        if (state || this.weight.length === 0) {
+          this.$message.error({
+            message: '检测到有未填写的净重信息，请完善信息'
+          })
+          return
+        }
+        if (this.xishu.length < this.ingredientCmp.length) {
+          this.$message.error({
+            message: '检测到有未填写的纱线系数，请完善信息'
+          })
+          return
+        }
+        this.process.forEach((item) => {
+          if (!item) {
+            state = true
+          }
+        })
+        if (state) {
+          this.$message.error({
+            message: '检测到有未填写的工序信息，请完善信息'
+          })
+          return
+        }
+        let materialData = []
+        this.mainIngredient.ingredient.forEach((itemMaterial, indexMaterial) => {
+          materialData.push({
+            material: itemMaterial,
+            colour: this.mainIngredient.colour[indexMaterial].map((itemColour, indexColour) => {
+              return {
+                name: itemColour,
+                color: this.mainIngredient.color[indexMaterial][indexColour].map((itemColor, indexColor) => {
+                  return {
+                    name: itemColor.name,
+                    value: itemColor.colorCode.color,
+                    size: this.mainIngredient.color[indexMaterial][indexColour][indexColor].value
+                  }
+                })
+              }
+            }),
+            type: 0
+          })
+        })
+        this.otherIngredient.ingredient.forEach((itemMaterial, indexMaterial) => {
+          materialData.push({
+            material: itemMaterial,
+            colour: this.otherIngredient.colour[indexMaterial].map((itemColour, indexColour) => {
+              return {
+                name: itemColour,
+                color: this.otherIngredient.color[indexMaterial][indexColour].map((itemColor, indexColor) => {
+                  return {
+                    name: itemColor.name,
+                    value: itemColor.colorCode,
+                    size: this.otherIngredient.color[indexMaterial][indexColour][indexColor].value
+                  }
+                })
+              }
+            }),
+            type: 1
+          })
+        })
+        let xishu = this.xishu.map((item, index) => {
+          return {
+            name: this.ingredientCmp[index],
+            value: item
+          }
+        })
+        this.lock = true
+        this.loading = true
+        saveProductPlan({
+          'is_update': true,
+          'id': this.$route.params.productId,
+          'company_id': this.companyId,
+          'product_id': this.product.id,
+          'user_id': window.sessionStorage.getItem('user_id'),
+          'material_data': materialData,
+          'outside_process': this.process,
+          'weight_group': this.weight,
+          'yarn_coefficient': xishu
+        }).then((res) => {
+          if (res.data.status) {
+            this.$message.success({
+              message: '修改成功'
+            })
+            this.$router.push('/index/productPlanList')
+          } else {
+            this.$message.error({
+              message: res.data.message
+            })
+          }
+          this.lock = false
+          this.loading = false
+        })
+      } else {
+        this.$message.error({
+          message: '请勿频繁操作'
+        })
+      }
     },
     // 清空
     clearAll () {

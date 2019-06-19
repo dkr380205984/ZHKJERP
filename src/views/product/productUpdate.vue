@@ -192,6 +192,7 @@ import { getToken, productTppeList, flowerList, ingredientList, colorList, saveP
 export default {
   data () {
     return {
+      lock: false,
       has_next: false,
       product_code: '',
       postData: { token: '' },
@@ -384,155 +385,167 @@ export default {
     },
     // 保存操作
     saveAll () {
-      // 表单验证
-      if (this.types.length === 0) {
-        this.$message.error({
-          message: '请选择产品品类'
-        })
-        return
-      }
-      if (!this.flower) {
-        this.$message.error({
-          message: '请选择产品花型'
-        })
-        return
-      }
-      if (this.ingredient.length < this.ingredientNum) {
-        this.$message.error({
-          message: '检测到未填写的产品成分，请选择后保存'
-        })
-        return
-      }
-      for (let i = 0; i < this.ingredient.length; i++) {
-        if (!this.ingredient[i]) {
+      if (!this.lock) {
+        // 表单验证
+        if (this.types.length === 0) {
+          this.$message.error({
+            message: '请选择产品品类'
+          })
+          return
+        }
+        if (!this.flower) {
+          this.$message.error({
+            message: '请选择产品花型'
+          })
+          return
+        }
+        if (this.ingredient.length < this.ingredientNum) {
           this.$message.error({
             message: '检测到未填写的产品成分，请选择后保存'
           })
           return
         }
-      }
-      if (this.ingredientScale.length < this.ingredientNum) {
-        this.$message.error({
-          message: '检测到有未填写的产品占比，请输入后保存'
-        })
-        return
-      }
-      for (let i = 0; i < this.ingredientScale.length; i++) {
-        if (!this.ingredientScale[i]) {
+        for (let i = 0; i < this.ingredient.length; i++) {
+          if (!this.ingredient[i]) {
+            this.$message.error({
+              message: '检测到未填写的产品成分，请选择后保存'
+            })
+            return
+          }
+        }
+        if (this.ingredientScale.length < this.ingredientNum) {
           this.$message.error({
-            message: '检测到未填写的产品成分，请输入后保存'
+            message: '检测到有未填写的产品占比，请输入后保存'
           })
           return
         }
-      }
-      if (this.showError) {
-        this.$message.error({
-          message: '产品成分比例总和不等于100%，请重新输入占比'
-        })
-        return
-      }
-      if (this.footage.length < this.sizeNum) {
-        this.$message.error({
-          message: '检测到有未填写的产品尺码，请输入后保存'
-        })
-        return
-      }
-      for (let i = 0; i < this.footage.length; i++) {
-        if (!this.footage[i]) {
+        for (let i = 0; i < this.ingredientScale.length; i++) {
+          if (!this.ingredientScale[i]) {
+            this.$message.error({
+              message: '检测到未填写的产品成分，请输入后保存'
+            })
+            return
+          }
+        }
+        if (this.showError) {
           this.$message.error({
-            message: '检测到未填写的产品尺码，请选择后保存'
+            message: '产品成分比例总和不等于100%，请重新输入占比'
           })
           return
         }
-      }
-      console.log(this.$refs.uploada.uploadFiles)
-      const imgArr = this.$refs.uploada.uploadFiles.map((item) => {
-        if (item.response) {
-          return 'http://zhihui.tlkrzf.com/' + item.response.key
-        } else {
-          return item.url
+        if (this.footage.length < this.sizeNum) {
+          this.$message.error({
+            message: '检测到有未填写的产品尺码，请输入后保存'
+          })
+          return
         }
-      })
-      // const sizeArr = this.footage.map((item, index) => {
-      //   return this.sizeArr[index].map((item2, index2) => {
-      //     return {
-      //       'size_name': this.child_size[index2].name || null,
-      //       'size_value': item2 || null,
-      //       'footage': this.child_footage.find((item3) => item3.id === item).name || null,
-      //       'weight': this.weight[index]
-      //     }
-      //   })
-      // }).flat() // ES6二维数组转一维用不了 polyfill支持不来
-      // 获取多维sizeArr
-      const sizeArrErWei = this.footage.map((item, index) => {
-        return this.sizeArr[index].map((item2, index2) => {
-          return {
-            'size_name': this.child_size[index2].name || null,
-            'size_value': item2 || null,
-            'footage': this.child_footage.find((item3) => item3.name === item).name || null,
-            'weight': this.weight[index]
+        for (let i = 0; i < this.footage.length; i++) {
+          if (!this.footage[i]) {
+            this.$message.error({
+              message: '检测到未填写的产品尺码，请选择后保存'
+            })
+            return
+          }
+        }
+        console.log(this.$refs.uploada.uploadFiles)
+        const imgArr = this.$refs.uploada.uploadFiles.map((item) => {
+          if (item.response) {
+            return 'http://zhihui.tlkrzf.com/' + item.response.key
+          } else {
+            return item.url
           }
         })
-      })
-      let sizeArr = []
-      // 数组扁平化
-      sizeArrErWei.forEach((item) => {
-        if (Array.isArray(item)) {
-          item.forEach((itemChild) => {
-            sizeArr = sizeArr.concat(itemChild)
+        // const sizeArr = this.footage.map((item, index) => {
+        //   return this.sizeArr[index].map((item2, index2) => {
+        //     return {
+        //       'size_name': this.child_size[index2].name || null,
+        //       'size_value': item2 || null,
+        //       'footage': this.child_footage.find((item3) => item3.id === item).name || null,
+        //       'weight': this.weight[index]
+        //     }
+        //   })
+        // }).flat() // ES6二维数组转一维用不了 polyfill支持不来
+        // 获取多维sizeArr
+        const sizeArrErWei = this.footage.map((item, index) => {
+          return this.sizeArr[index].map((item2, index2) => {
+            return {
+              'size_name': this.child_size[index2].name || null,
+              'size_value': item2 || null,
+              'footage': this.child_footage.find((item3) => item3.name === item).name || null,
+              'weight': this.weight[index]
+            }
           })
-        } else {
-          sizeArr.push(item)
-        }
-      })
-      if (sizeArr.length < this.sizeNum * this.child_size.length) {
-        this.$message.error({
-          message: '检测到未填写的产品尺寸，请输入后保存'
         })
-      }
-      for (let i = 0; i < sizeArr.length; i++) {
-        if (!(sizeArr[i].size_name && sizeArr[i].size_value)) {
+        let sizeArr = []
+        // 数组扁平化
+        sizeArrErWei.forEach((item) => {
+          if (Array.isArray(item)) {
+            item.forEach((itemChild) => {
+              sizeArr = sizeArr.concat(itemChild)
+            })
+          } else {
+            sizeArr.push(item)
+          }
+        })
+        if (sizeArr.length < this.sizeNum * this.child_size.length) {
           this.$message.error({
             message: '检测到未填写的产品尺寸，请输入后保存'
           })
-          return
         }
-      }
-      if (this.color.length < this.colorNum) {
-        this.$message.error({
-          message: '检测到未填写的颜色，请选择后保存'
-        })
-      }
-      const materialsArr = this.ingredientScale.map((item, index) => {
-        return {
-          'ingredient_value': item,
-          'ingredient_name': this.ingredient[index]
+        for (let i = 0; i < sizeArr.length; i++) {
+          if (!(sizeArr[i].size_name && sizeArr[i].size_value)) {
+            this.$message.error({
+              message: '检测到未填写的产品尺寸，请输入后保存'
+            })
+            return
+          }
         }
-      })
-      saveProduct({
-        id: this.$route.params.id,
-        product_code: this.product_code,
-        company_id: window.sessionStorage.getItem('company_id'),
-        category_id: this.types[0],
-        type_id: this.types[1],
-        style_id: this.types[2] || null,
-        flower_id: this.flower,
-        description: this.textarea,
-        user_id: window.sessionStorage.getItem('user_id'),
-        img: imgArr,
-        color: this.color,
-        size: sizeArr,
-        materials: materialsArr
-      }).then((res) => {
-        if (res.data.status) {
-          this.$message.success({
-            message: '修改成功',
-            onClose: () => {
-              this.$router.push('/index/productList')
-            }
+        if (this.color.length < this.colorNum) {
+          this.$message.error({
+            message: '检测到未填写的颜色，请选择后保存'
           })
         }
-      })
+        const materialsArr = this.ingredientScale.map((item, index) => {
+          return {
+            'ingredient_value': item,
+            'ingredient_name': this.ingredient[index]
+          }
+        })
+        this.lock = true
+        this.loading = true
+        saveProduct({
+          id: this.$route.params.id,
+          product_code: this.product_code,
+          company_id: window.sessionStorage.getItem('company_id'),
+          category_id: this.types[0],
+          type_id: this.types[1],
+          style_id: this.types[2] || null,
+          flower_id: this.flower,
+          description: this.textarea,
+          user_id: window.sessionStorage.getItem('user_id'),
+          img: imgArr,
+          color: this.color,
+          size: sizeArr,
+          materials: materialsArr
+        }).then((res) => {
+          if (res.data.status) {
+            this.$message.success({
+              message: '修改成功'
+            })
+            this.$router.push('/index/productList')
+          } else {
+            this.$message.error({
+              message: res.data.message
+            })
+          }
+          this.lock = false
+          this.loading = false
+        })
+      } else {
+        this.$message.error({
+          message: '请勿频繁操作'
+        })
+      }
     },
     // 解决了vue数据类型检测的bug
     addSizeLine () {

@@ -309,7 +309,8 @@
                       </span>
                     </span>
                   </span>
-                  <span style="color:#1A95FF">补纱</span>
+                  <span style="color:#1A95FF"
+                    @click="$router.push('/index/rawMaterialSupply/'+$route.params.id+'/'+item.client_name + '/' +item.info[0].info[0].client_id )">补纱</span>
                 </li>
                 <li class="material_info"
                   v-if="materialList.length===0">
@@ -398,6 +399,8 @@ import { productionDetail, weaveDetail, weaveUpadate } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      loading: true,
+      lock: false,
       showShade: false,
       order: {
         order_code: '',
@@ -627,6 +630,7 @@ export default {
       })
       // 第二步，合并加工单位
       this.materialList = this.jsonMerge(materialList, ['client_name', 'product_code'])
+      console.log(this.materialList)
       // 统计生产分配信息
       // 先按生产单位合并，再按产品编号合并
       let fenpeiList = this.jsonMerge(this.logList.map((item) => {
@@ -646,7 +650,6 @@ export default {
           }, 0)
         }
       })
-      console.log(this.fenpeiList)
     })
   },
   methods: {
