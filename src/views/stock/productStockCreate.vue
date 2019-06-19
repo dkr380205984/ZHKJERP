@@ -1,5 +1,6 @@
 <template>
-  <div id="productStockCreate">
+  <div id="productStockCreate"
+    v-loading="loading">
     <div class="head">
       <h2>产品库存录入</h2>
     </div>
@@ -213,6 +214,8 @@ import { porductOne, productStockSave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      loading: true,
+      lock: false,
       defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
       product: {
         category_info: {
@@ -258,6 +261,7 @@ export default {
         this.material_data = res[0].data.data.product_plan.material_data
         this.outside_data = res[0].data.data.product_plan.outside_data
       }
+      this.loading = false
     })
   },
   filters: {
@@ -315,53 +319,67 @@ export default {
 
     },
     saveAll () {
-      if (!this.size) {
-        this.$message.error({
-          message: '检测到未选择产品尺码,请选择后提交'
-        })
-        return
-      }
-      if (!this.colour) {
-        this.$message.error({
-          message: '检测到未选择产品颜色,请选择后提交'
-        })
-        return
-      }
-      if (!this.date) {
-        this.$message.error({
-          message: '检测到未选择存放日期,请选择后提交'
-        })
-        return
-      }
-      if (!this.cost) {
-        this.$message.error({
-          message: '检测到未填写成本价,请填写后提交'
-        })
-        return
-      }
-      let json = {
-        user_id: window.sessionStorage.getItem('user_id'),
-        order_code: this.orderId,
-        company_id: window.sessionStorage.getItem('company_id'),
-        product_id: this.$route.params.id,
-        size: this.size,
-        color: this.colour,
-        stock_number: this.numbers,
-        rejects_product: this.inferior,
-        cost_price: this.cost,
-        total_price: this.totalPrice,
-        storage_time: this.date,
-        remark: this.otherInfo
-      }
-      productStockSave(json).then((res) => {
-        console.log(res)
-        if (res.data.status) {
-          this.$message.success({
-            message: '保存成功'
+      if (!this.lock) {
+        if (!this.size) {
+          this.$message.error({
+            message: '检测到未选择产品尺码,请选择后提交'
           })
+          return
         }
-      })
-      console.log(json)
+        if (!this.colour) {
+          this.$message.error({
+            message: '检测到未选择产品颜色,请选择后提交'
+          })
+          return
+        }
+        if (!this.date) {
+          this.$message.error({
+            message: '检测到未选择存放日期,请选择后提交'
+          })
+          return
+        }
+        if (!this.cost) {
+          this.$message.error({
+            message: '检测到未填写成本价,请填写后提交'
+          })
+          return
+        }
+        this.lock = true
+        this.loading = true
+        let json = {
+          user_id: window.sessionStorage.getItem('user_id'),
+          order_code: this.orderId,
+          company_id: window.sessionStorage.getItem('company_id'),
+          product_id: this.$route.params.id,
+          size: this.size,
+          color: this.colour,
+          stock_number: this.numbers,
+          rejects_product: this.inferior,
+          cost_price: this.cost,
+          total_price: this.totalPrice,
+          storage_time: this.date,
+          remark: this.otherInfo
+        }
+        productStockSave(json).then((res) => {
+          console.log(res)
+          if (res.data.status) {
+            this.$message.success({
+              message: '保存成功'
+            })
+            this.$router.push('/index/productStockList')
+          } else {
+            this.$message.error({
+              message: res.data.message
+            })
+          }
+          this.lock = false
+          this.loading = false
+        })
+      } else {
+        this.$message.error({
+          message: '请勿频繁操作'
+        })
+      }
     }
   }
 }

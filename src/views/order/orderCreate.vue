@@ -374,6 +374,7 @@ import { clientList, productList, productTppeList, flowerList, orderSave, getGro
 export default {
   data () {
     return {
+      lock: false,
       nomore: false,
       page: 1,
       timer: '', // 用于订单列表优化
@@ -608,137 +609,153 @@ export default {
     },
     // 保存
     saveAll () {
-      if (!this.orderId) {
-        this.$message.error({
-          message: '订单号未填写，请输入订单号'
-        })
-        return
-      }
-      if (!this.company) {
-        this.$message.error({
-          message: '外贸公司未选择，请选择外贸公司'
-        })
-        return
-      }
-      if (!this.contacts) {
-        this.$message.error({
-          message: '联系人未选择，请选择联系人'
-        })
-        return
-      }
-      if (!this.money) {
-        this.$message.error({
-          message: '结算单位未选择，请选择结算单位'
-        })
-        return
-      }
-      if (!this.exchangeRate) {
-        this.$message.error({
-          message: '汇率未填写，请填写汇率'
-        })
-        return
-      }
-      if (!this.taxRate) {
-        this.$message.error({
-          message: '税率未填写，请填写税率'
-        })
-        return
-      }
-      if (!this.date) {
-        this.$message.error({
-          message: '下单日期未选择，请选择下单日期'
-        })
-        return
-      }
-      if (!this.group) {
-        this.$message.error({
-          message: '负责小组未选择，请选择负责小组'
-        })
-        return
-      }
-      let timeState = true
-      let productState = true
-      let sizeState = true
-      this.orderArr.forEach((itemOrder) => {
-        if (!itemOrder.date) {
-          timeState = false
+      if (!this.lock) {
+        if (!this.orderId) {
+          this.$message.error({
+            message: '订单号未填写，请输入订单号'
+          })
+          return
         }
-        itemOrder.product.forEach((itemProduct) => {
-          if (!itemProduct.name) {
-            productState = false
+        if (!this.company) {
+          this.$message.error({
+            message: '外贸公司未选择，请选择外贸公司'
+          })
+          return
+        }
+        if (!this.contacts) {
+          this.$message.error({
+            message: '联系人未选择，请选择联系人'
+          })
+          return
+        }
+        if (!this.money) {
+          this.$message.error({
+            message: '结算单位未选择，请选择结算单位'
+          })
+          return
+        }
+        if (!this.exchangeRate) {
+          this.$message.error({
+            message: '汇率未填写，请填写汇率'
+          })
+          return
+        }
+        if (!this.taxRate) {
+          this.$message.error({
+            message: '税率未填写，请填写税率'
+          })
+          return
+        }
+        if (!this.date) {
+          this.$message.error({
+            message: '下单日期未选择，请选择下单日期'
+          })
+          return
+        }
+        if (!this.group) {
+          this.$message.error({
+            message: '负责小组未选择，请选择负责小组'
+          })
+          return
+        }
+        let timeState = true
+        let productState = true
+        let sizeState = true
+        this.orderArr.forEach((itemOrder) => {
+          if (!itemOrder.date) {
+            timeState = false
           }
-          itemProduct.size.forEach((itemSize, indexSize) => {
-            itemProduct.size.forEach((item, index) => {
-              if (itemSize.name.length > 0 && indexSize !== index) {
-                if (itemSize.name[0] === item.name[0] && itemSize.name[1] === item.name[1]) {
-                  sizeState = false
+          itemOrder.product.forEach((itemProduct) => {
+            if (!itemProduct.name) {
+              productState = false
+            }
+            itemProduct.size.forEach((itemSize, indexSize) => {
+              itemProduct.size.forEach((item, index) => {
+                if (itemSize.name.length > 0 && indexSize !== index) {
+                  if (itemSize.name[0] === item.name[0] && itemSize.name[1] === item.name[1]) {
+                    sizeState = false
+                  }
                 }
+              })
+              if (!itemSize.numbers) {
+                productState = false
+              }
+              if (!itemSize.unitPrice) {
+                productState = false
+              }
+              if (itemSize.name.length === 0) {
+                productState = false
               }
             })
-            if (!itemSize.numbers) {
-              productState = false
-            }
-            if (!itemSize.unitPrice) {
-              productState = false
-            }
-            if (itemSize.name.length === 0) {
-              productState = false
-            }
           })
         })
-      })
-      if (!timeState) {
-        this.$message.error({
-          message: '交货日期填写不完整，请检查'
-        })
-        return
-      }
-      if (!productState) {
-        this.$message.error({
-          message: '产品信息填写不完整，请检查'
-        })
-        return
-      }
-      if (!sizeState) {
-        this.$message.error({
-          message: '检测到同一批次中有相同的产品颜色和尺寸,请合并后提交'
-        })
-        return
-      }
-      let obj = {
-        company_id: this.companyId,
-        user_id: window.sessionStorage.getItem('user_id'),
-        order_code: this.orderId,
-        client_id: this.company,
-        contacts: this.contacts,
-        account_unit: this.money,
-        exchange_rate: this.exchangeRate,
-        tax_rate: this.taxRate,
-        order_time: this.date,
-        group_id: this.group,
-        order_info: this.orderArr.map((item, index) => {
-          return {
-            batch_info: item.product.map((item) => {
-              return {
-                productCode: item.name,
-                size: item.size,
-                productInfo: item.product_info
-              }
-            }),
-            delivery_time: item.date,
-            batch_id: parseInt(index + 1)
+        if (!timeState) {
+          this.$message.error({
+            message: '交货日期填写不完整，请检查'
+          })
+          return
+        }
+        if (!productState) {
+          this.$message.error({
+            message: '产品信息填写不完整，请检查'
+          })
+          return
+        }
+        if (!sizeState) {
+          this.$message.error({
+            message: '检测到同一批次中有相同的产品颜色和尺寸,请合并后提交'
+          })
+          return
+        }
+        let obj = {
+          company_id: this.companyId,
+          user_id: window.sessionStorage.getItem('user_id'),
+          order_code: this.orderId,
+          client_id: this.company,
+          contacts: this.contacts,
+          account_unit: this.money,
+          exchange_rate: this.exchangeRate,
+          tax_rate: this.taxRate,
+          order_time: this.date,
+          group_id: this.group,
+          order_info: this.orderArr.map((item, index) => {
+            return {
+              batch_info: item.product.map((item) => {
+                return {
+                  productCode: item.name,
+                  size: item.size,
+                  productInfo: item.product_info
+                }
+              }),
+              delivery_time: item.date,
+              batch_id: parseInt(index + 1)
+            }
+          }),
+          total_price: this.totalMoney,
+          remark: this.otherInfo
+        }
+        this.lock = false
+        this.loading = false
+        orderSave(obj).then((res) => {
+          console.log(res)
+          if (res.data.status) {
+            this.$message.success({
+              message: '添加订单成功'
+            })
+            this.$router.push('/index/orderList')
+          } else {
+            this.$message.error({
+              message: res.data.message
+            })
           }
-        }),
-        total_price: this.totalMoney,
-        remark: this.otherInfo
-      }
-      orderSave(obj).then((res) => {
-        console.log(res)
-        this.$message.success({
-          message: '添加订单成功'
+          this.lock = true
+          this.loading = true
         })
-        this.$router.push('/index/orderList')
-      })
+      } else {
+        this.$message.error({
+          message: '请勿频繁操作'
+        })
+      }
     },
     // 打开新页面
     openUrl (url) {

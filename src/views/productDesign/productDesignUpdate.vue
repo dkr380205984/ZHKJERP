@@ -137,6 +137,7 @@ import { productionDetail, productionSave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      lock: true,
       loading: true,
       order: {
         order_code: '',
@@ -162,64 +163,74 @@ export default {
 
     },
     saveAll () {
-      let stockState = true
-      let numberState = true
-      this.productInfo.forEach((item) => {
-        if ((parseInt(item.stock_pick_now) - parseInt(item.stock_pick)) > parseInt(item.stock_number)) {
-          stockState = false
-        }
-        if (!item.production_num) {
-          numberState = false
-        }
-      })
-      if (!stockState) {
-        this.$message.error({
-          message: '检测到库存调取数量大于库存数量,请修改后提交'
-        })
-        return
-      }
-      if (!numberState) {
-        this.$message.error({
-          message: '检测到有未填写的工厂生产数量,请输入后提交'
-        })
-        return
-      }
-      let json = {
-        id: this.$route.params.planId,
-        is_update: true,
-        company_id: window.sessionStorage.getItem('company_id'),
-        order_id: this.$route.params.id,
-        detail_info: this.productInfo.map((item) => {
-          return {
-            category_name: item.category_name,
-            style_name: item.style_name,
-            type_name: item.type_name,
-            unit_name: item.unit_name,
-            product_code: item.product_code,
-            size: item.size,
-            color: item.color,
-            order_num: item.order_num,
-            stock_pick: parseInt(item.stock_pick_now),
-            stock_pick_change: parseInt(item.stock_pick_now) - parseInt(item.stock_pick),
-            production_num: item.production_num,
-            total_num: parseInt(item.stock_pick_now) + parseInt(item.production_num),
-            production_sunhao: item.production_sunhao
+      if (!this.lock) {
+        let stockState = true
+        let numberState = true
+        this.productInfo.forEach((item) => {
+          if ((parseInt(item.stock_pick_now) - parseInt(item.stock_pick)) > parseInt(item.stock_number)) {
+            stockState = false
+          }
+          if (!item.production_num) {
+            numberState = false
           }
         })
-      }
-      productionSave(json).then((res) => {
-        console.log(res)
-        if (res.data.status) {
-          this.$message.success({
-            message: '修改成功'
-          })
-          this.$router.push('/index/productDesignList')
-        } else {
+        if (!stockState) {
           this.$message.error({
-            message: '库存变动,请刷新页面后重试'
+            message: '检测到库存调取数量大于库存数量,请修改后提交'
+          })
+          return
+        }
+        if (!numberState) {
+          this.$message.error({
+            message: '检测到有未填写的工厂生产数量,请输入后提交'
+          })
+          return
+        }
+        let json = {
+          id: this.$route.params.planId,
+          is_update: true,
+          company_id: window.sessionStorage.getItem('company_id'),
+          order_id: this.$route.params.id,
+          detail_info: this.productInfo.map((item) => {
+            return {
+              category_name: item.category_name,
+              style_name: item.style_name,
+              type_name: item.type_name,
+              unit_name: item.unit_name,
+              product_code: item.product_code,
+              size: item.size,
+              color: item.color,
+              order_num: item.order_num,
+              stock_pick: parseInt(item.stock_pick_now),
+              stock_pick_change: parseInt(item.stock_pick_now) - parseInt(item.stock_pick),
+              production_num: item.production_num,
+              total_num: parseInt(item.stock_pick_now) + parseInt(item.production_num),
+              production_sunhao: item.production_sunhao
+            }
           })
         }
-      })
+        this.loading = true
+        this.lock = true
+        productionSave(json).then((res) => {
+          console.log(res)
+          if (res.data.status) {
+            this.$message.success({
+              message: '修改成功'
+            })
+            this.$router.push('/index/productDesignList')
+          } else {
+            this.$message.error({
+              message: '库存变动,请刷新页面后重试'
+            })
+          }
+          this.loading = false
+          this.lock = false
+        })
+      } else {
+        this.$message.error({
+          message: '请勿频繁操作'
+        })
+      }
     }
   },
   filters: {

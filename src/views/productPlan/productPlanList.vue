@@ -171,7 +171,8 @@ export default {
         'style_id': this.styleVal,
         'page': this.pages,
         'start_time': this.start_time,
-        'end_time': this.end_time
+        'end_time': this.end_time,
+        'plan_code': this.searchVal
       }).then((res) => {
         this.loading = false
         this.total = res.data.meta.total
@@ -229,6 +230,12 @@ export default {
     },
     styleVal (newVal) {
       this.pages = 1
+      this.getCraftList()
+    },
+    searchVal (newVal) {
+      if (newVal) {
+        this.pages = 1
+      }
       this.getCraftList()
     }
   },

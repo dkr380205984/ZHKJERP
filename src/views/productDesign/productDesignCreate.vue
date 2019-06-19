@@ -109,6 +109,7 @@ import { orderStockDetail, productionSave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      lock: false,
       loading: true,
       order: {
         order_code: '',
@@ -134,76 +135,86 @@ export default {
 
     },
     saveAll () {
-      let stockState = true
-      let numberState = true
-      let sunhaoState = true
-      this.productInfo.forEach((item) => {
-        if (item.stock_pick > item.stock_num) {
-          stockState = false
-        }
-        if (!item.production_num) {
-          numberState = false
-        }
-        if (!item.production_sunhao) {
-          sunhaoState = false
-        }
-      })
-      if (!stockState) {
-        this.$message.error({
-          message: '检测到库存调取数量大于库存数量,请修改后提交'
-        })
-        return
-      }
-      if (!numberState) {
-        this.$message.error({
-          message: '检测到有未填写的工厂生产数量,请输入后提交'
-        })
-        return
-      }
-      if (!sunhaoState) {
-        this.$message.error({
-          message: '检测到有未填写的损耗比,请输入后提交'
-        })
-        return
-      }
-      let json = {
-        is_update: false,
-        company_id: window.sessionStorage.getItem('company_id'),
-        order_id: this.order.id,
-        id: null,
-        detail_info: this.productInfo.map((item) => {
-          return {
-            category_name: item.category_name,
-            style_name: item.style_name,
-            type_name: item.type_name,
-            unit_name: item.unit_name,
-            product_code: item.product_code,
-            size: item.size,
-            color: item.color,
-            order_num: item.numbers,
-            stock_pick_change: item.stock_pick,
-            // stock_num: item.stock_num, //库存总量不存储,让后台自己算
-            stock_pick: item.stock_pick,
-            production_num: item.production_num,
-            production_sunhao: item.production_sunhao,
-            total_num: parseInt(item.stock_pick) + parseInt(item.production_num)
+      if (!this.lock) {
+        let stockState = true
+        let numberState = true
+        let sunhaoState = true
+        this.productInfo.forEach((item) => {
+          if (item.stock_pick > item.stock_num) {
+            stockState = false
+          }
+          if (!item.production_num) {
+            numberState = false
+          }
+          if (!item.production_sunhao) {
+            sunhaoState = false
           }
         })
-      }
-      console.log(json)
-      productionSave(json).then((res) => {
-        console.log(res)
-        if (res.data.status) {
-          this.$message.success({
-            message: '添加成功'
-          })
-          this.$router.push('/index/productDesignList')
-        } else {
+        if (!stockState) {
           this.$message.error({
-            message: '库存变动,请刷新页面后重试'
+            message: '检测到库存调取数量大于库存数量,请修改后提交'
+          })
+          return
+        }
+        if (!numberState) {
+          this.$message.error({
+            message: '检测到有未填写的工厂生产数量,请输入后提交'
+          })
+          return
+        }
+        if (!sunhaoState) {
+          this.$message.error({
+            message: '检测到有未填写的损耗比,请输入后提交'
+          })
+          return
+        }
+        let json = {
+          is_update: false,
+          company_id: window.sessionStorage.getItem('company_id'),
+          order_id: this.order.id,
+          id: null,
+          detail_info: this.productInfo.map((item) => {
+            return {
+              category_name: item.category_name,
+              style_name: item.style_name,
+              type_name: item.type_name,
+              unit_name: item.unit_name,
+              product_code: item.product_code,
+              size: item.size,
+              color: item.color,
+              order_num: item.numbers,
+              stock_pick_change: item.stock_pick,
+              // stock_num: item.stock_num, //库存总量不存储,让后台自己算
+              stock_pick: item.stock_pick,
+              production_num: item.production_num,
+              production_sunhao: item.production_sunhao,
+              total_num: parseInt(item.stock_pick) + parseInt(item.production_num)
+            }
           })
         }
-      })
+        console.log(json)
+        this.lock = true
+        this.loading = true
+        productionSave(json).then((res) => {
+          console.log(res)
+          if (res.data.status) {
+            this.$message.success({
+              message: '添加成功'
+            })
+            this.$router.push('/index/productDesignList')
+          } else {
+            this.$message.error({
+              message: '库存变动,请刷新页面后重试'
+            })
+            this.lock = false
+            this.loading = false
+          }
+        })
+      } else {
+        this.$message.error({
+          message: '请勿频繁操作'
+        })
+      }
     }
   },
   mounted () {

@@ -1,5 +1,6 @@
 <template>
-  <div id="rawMaterialProcess">
+  <div id="rawMaterialProcess"
+    v-loading="loading">
     <div class="head">
       <h2>半成品加工分配</h2>
     </div>
@@ -339,6 +340,8 @@ import { productionDetail, clientList, halfProductSave, halfProductDetail } from
 export default {
   data () {
     return {
+      lock: false,
+      loading: true,
       order: {
         order_code: '',
         client_name: '',
@@ -525,6 +528,7 @@ export default {
         }
         this.formList.push(json)
       })
+      this.loading = false
     })
   },
   methods: {
@@ -621,73 +625,87 @@ export default {
       this.ingredientInfo.info = arr
     },
     saveAll () {
-      let state = false
-      let msg = ''
-      this.formList.forEach((item) => {
-        item.company.forEach((itemCompany) => {
-          if (!itemCompany.company_id) {
-            state = true
-            msg = '检测到加工单位信息缺失'
-            return
-          }
-          if (!itemCompany.machining) {
-            state = true
-            msg = '检测到加工类型信息缺失'
-            return
-          }
-          let priceState = false
-          itemCompany.price_number.forEach((item) => {
-            if (!item.number || !item.price || item.colorSize.length === 0) {
-              priceState = true
+      if (!this.lock) {
+        let state = false
+        let msg = ''
+        this.formList.forEach((item) => {
+          item.company.forEach((itemCompany) => {
+            if (!itemCompany.company_id) {
+              state = true
+              msg = '检测到加工单位信息缺失'
+              return
+            }
+            if (!itemCompany.machining) {
+              state = true
+              msg = '检测到加工类型信息缺失'
+              return
+            }
+            let priceState = false
+            itemCompany.price_number.forEach((item) => {
+              if (!item.number || !item.price || item.colorSize.length === 0) {
+                priceState = true
+              }
+            })
+            if (priceState) {
+              state = true
+              msg = '检测到价格数量信息缺失'
+              return
+            }
+            if (!itemCompany.complete_time) {
+              state = true
+              msg = '检测到完成时间信息缺失'
             }
           })
-          if (priceState) {
-            state = true
-            msg = '检测到价格数量信息缺失'
-            return
-          }
-          if (!itemCompany.complete_time) {
-            state = true
-            msg = '检测到完成时间信息缺失'
-          }
         })
-      })
-      if (state) {
-        this.$message.error({
-          message: msg
-        })
-      } else {
-        let formData = []
-        // 将数据处理成要提交的数据
-        this.formList.forEach((item, index) => {
-          item.company.forEach((itemCompany, indexCompany) => {
-            itemCompany.price_number.forEach((itemPrice, indexPrice) => {
-              formData.push({
-                company_id: window.sessionStorage.getItem('company_id'),
-                order_id: this.order.id,
-                product_code: item.product_code,
-                client_id: itemCompany.company_id,
-                // total_price: itemCompany.total_price,
-                complete_time: itemCompany.complete_time,
-                desc: itemCompany.desc,
-                price: itemPrice.price,
-                number: itemPrice.number,
-                size: itemPrice.colorSize[0],
-                color: itemPrice.colorSize[1],
-                user_id: window.sessionStorage.getItem('user_id'),
-                type: itemCompany.machining,
-                ingredients: JSON.stringify(itemCompany.otherMat)
+        if (state) {
+          this.$message.error({
+            message: msg
+          })
+        } else {
+          let formData = []
+          // 将数据处理成要提交的数据
+          this.formList.forEach((item, index) => {
+            item.company.forEach((itemCompany, indexCompany) => {
+              itemCompany.price_number.forEach((itemPrice, indexPrice) => {
+                formData.push({
+                  company_id: window.sessionStorage.getItem('company_id'),
+                  order_id: this.order.id,
+                  product_code: item.product_code,
+                  client_id: itemCompany.company_id,
+                  // total_price: itemCompany.total_price,
+                  complete_time: itemCompany.complete_time,
+                  desc: itemCompany.desc,
+                  price: itemPrice.price,
+                  number: itemPrice.number,
+                  size: itemPrice.colorSize[0],
+                  color: itemPrice.colorSize[1],
+                  user_id: window.sessionStorage.getItem('user_id'),
+                  type: itemCompany.machining,
+                  ingredients: JSON.stringify(itemCompany.otherMat)
+                })
               })
             })
           })
-        })
-        halfProductSave({ data: formData }).then((res) => {
-          if (res.status) {
-            this.$message.success({
-              message: '分配成功'
-            })
-          }
-          this.$router.push('/index/productDesignHalfDetail/' + this.$route.params.id)
+          this.loading = true
+          this.lock = true
+          halfProductSave({ data: formData }).then((res) => {
+            if (res.data.status) {
+              this.$message.success({
+                message: '分配成功'
+              })
+              this.$router.push('/index/productDesignHalfDetail/' + this.$route.params.id)
+            } else {
+              this.$message.error({
+                message: res.data.message
+              })
+            }
+            this.loading = false
+            this.lock = false
+          })
+        }
+      } else {
+        this.$message.error({
+          message: '请勿频繁操作'
         })
       }
     }
