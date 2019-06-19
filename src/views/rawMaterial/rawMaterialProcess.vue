@@ -418,8 +418,8 @@ export default {
                 }, 800)
               } else {
                 this.$message({
-                  message: '添加成功,即将跳转至详情页',
-                  type: 'success'
+                  message: '出问题了?',
+                  type: 'error'
                 })
               }
             })

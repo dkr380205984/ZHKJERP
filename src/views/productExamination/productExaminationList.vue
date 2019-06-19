@@ -64,7 +64,8 @@
           </div>
         </div>
       </div>
-      <div class="mergeTable">
+      <div class="mergeTable"
+        v-scroll="{fun:getOrderList,pageSize:5}">
         <div class="mergeHeader">
           <div class="tableColumn">订单号</div>
           <div class="tableColumn">外贸公司</div>
@@ -81,8 +82,7 @@
         </div>
         <div class="mergeBody"
           v-for="(item,key) in list"
-          :key="key"
-          v-scroll="{fun:getOrderList,pageSize:5}">
+          :key="key">
           <div class="tableColumn">{{item.order_code}}</div>
           <div class="tableColumn">{{item.client_name}}</div>
           <div class="tableColumn flex21">

@@ -43,7 +43,8 @@
           </div>
         </div>
       </div>
-      <div class="tableCtn">
+      <div class="tableCtn"
+        v-scroll="{fun:getList,pageSize:5}">
         <div class="tableRow titleTableRow">
           <div class="tableColumn flex9">原料名称</div>
           <div class="tableColumn">原料颜色</div>
@@ -55,8 +56,7 @@
         </div>
         <div class="tableRow bodyTableRow"
           v-for="item in list"
-          :key="item.id"
-          v-scroll="{fun:getList,pageSize:5}">
+          :key="item.id">
           <div class="tableColumn flex9">{{item.material_name}}</div>
           <div class="tableColumn">{{item.material_color}}</div>
           <div class="tableColumn">{{item.material_attribute?item.material_attribute:'无'}}</div>

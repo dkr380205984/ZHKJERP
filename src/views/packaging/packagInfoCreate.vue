@@ -204,14 +204,15 @@
                 <li class="title">
                   <span>包装编号</span>
                   <span>包装分类</span>
-                  <span class="flex17">规格/属性</span>
-                  <span class="flex5">
+                  <span class="flex12">规格/属性</span>
+                  <span class="flex12">包装数量</span>
+                  <span class="flex6">
                     <span class="flex2">产品/包装</span>
                     <span>尺码颜色</span>
                     <span>产品数量</span>
                     <span>每包数量</span>
+                    <span>结余情况</span>
                   </span>
-                  <span class="flex17">预计包装数量</span>
                 </li>
                 <li v-if="list.addPackagInfo.length === 0">暂无信息</li>
                 <li class="content"
@@ -219,14 +220,15 @@
                   :key="key">
                   <span class="tableRow">{{item.packag_code}}</span>
                   <span class="tableRow">{{item.packag_type}}</span>
-                  <span class="tableRow flex17"
+                  <span class="tableRow flex12"
                     style="line-height:1.5em;">
                     <div style="padding:5px 0;">
                       <span>{{item.packag_size}}</span>
                       <span>{{item.packag_attr}}</span>
                     </div>
                   </span>
-                  <span class="tableRow flex5 col">
+                  <span class="tableRow flex12">{{item.packag_number}}{{item.unit}}</span>
+                  <span class="tableRow flex6 col">
                     <span v-for="(value,index) in item.product_info"
                       :key='index'
                       class="tableColumn">
@@ -238,12 +240,19 @@
                         </div>
                       </span>
                       <span class="tableRow">{{value.size + '/' + value.color}}</span>
-                      <span class="tableRow">{{value.plan_number ? value.plan_number : 0}}{{value.unit}}</span>
+                      <span class="tableRow">{{value.plan_number ? value.plan_number : 0}}{{value.unit ? value.unit : '条'}}</span>
                       <span class="tableRow">{{value.number}}{{(value.unit ? value.unit : '条')+'/'+(item.unit ? item.unit : '包')}}</span>
+                      <span :class="{tableRow:true,warning:value.surplus_number > 0,error:value.surplus_number < 0,success:value.surplus_number === 0}">{{(value.surplus_number >= 0) ? '结余:' : '缺少:'}}{{value.surplus_number ? value.surplus_number : 0}}{{value.unit ? vlaue.unit : '条'}}</span>
                     </span>
                   </span>
-                  <span class="tableRow flex17">{{item.packag_number}}{{item.unit}}</span>
                 </li>
+                <!-- <li class="content">
+                  <span class="col">
+                    <span v-for="(item,key) in surplus"
+                      :key="key"
+                      class="tablecolumn">{{item.value}}{{((item.number ? item.number : 0) >= 0) ? '结余' : '缺少'}}{{item.number ? item.number : 0}}{{item.unit}}</span>
+                  </span>
+                </li> -->
               </ul>
             </div>
           </div>
@@ -260,7 +269,7 @@
             <ul class="addPackagFrom"
               v-for="(item,key) in list.addPackagMaterialList"
               :key="key"
-              style="height:230px;">
+              style="height:400px;">
               <li>
                 <span>产品/包装:</span>
                 <el-select v-model="item.packag_name"
@@ -506,6 +515,11 @@ export default {
           item.forEach(value => {
             value.packag_info.forEach(valCode => {
               valCode.product_info.forEach((valPro, indPro) => {
+                let num = ''
+                let fleg = this.arrGeter().find(key => key.value === valPro.name)
+                if (fleg) {
+                  num = fleg.number
+                }
                 // 初始化装箱预计表
                 let flag = this.list.addPackagInfo.find(key => key.packag_code === valCode.packag_code)
                 if (!flag) {
@@ -518,6 +532,7 @@ export default {
                     packag_number: valCode.packag_number ? valCode.packag_number : '0',
                     product_info: [{
                       name: valPro.name,
+                      plans_number: num,
                       product_code: valPro.name ? valPro.name.split(' ')[0] : '未选择',
                       type: valPro.name ? valPro.name.split(' ')[1] : '未选择',
                       size: valPro.name ? (valPro.name.split(' ')[2] ? valPro.name.split(' ')[2].split('/')[0] : '') : '',
@@ -529,6 +544,7 @@ export default {
                 } else {
                   flag.product_info.push({
                     name: valPro.name,
+                    plans_number: num,
                     product_code: valPro.name ? valPro.name.split(' ')[0] : '未选择',
                     type: valPro.name ? valPro.name.split(' ')[1] : '未选择',
                     size: valPro.name ? (valPro.name.split(' ')[2] ? valPro.name.split(' ')[2].split('/')[0] : '') : '',
@@ -548,14 +564,20 @@ export default {
       // deep: true,
       handler: function (newVal) {
         this.surplus = JSON.parse(JSON.stringify(this.arrGeter()))
+        this.flag = true
         newVal.forEach(item => {
           item.product_info.forEach(valPro => {
             let flag = this.surplus.find(key => (key.value === valPro.name))
             if (flag) {
               flag.number -= valPro.plan_number
+              valPro.surplus_number = flag.number
+              if (flag.number < 0) {
+                this.flag = false
+              }
             }
           })
         })
+        console.log(newVal)
         console.log(this.surplus)
       }
     },
@@ -565,6 +587,7 @@ export default {
       handler: function (newVal) {
         this.list.addPackagMaterialInfo = []
         newVal.forEach(item => {
+          let num = this.arrGeter().find(key => key.value === item.packag_name).number
           let obj = {}
           obj.code = item.packag_name ? item.packag_name.split(' ')[0] : ''
           obj.type = item.packag_name ? item.packag_name.split(' ')[1] : ''
@@ -578,7 +601,8 @@ export default {
                 name: val.name ? val.name.split(' ')[0] : '',
                 unit: val.name ? val.name.split(' ')[1] : '',
                 attr: val.attr,
-                number: val.number
+                number: val.number,
+                plan_number: num
               })
             } else {
               flag.number = Number(flag.number) + Number(val.number)

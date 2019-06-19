@@ -130,7 +130,8 @@
                   size="small">
                   <el-option v-for="value in options.clientList"
                     :key="value.value"
-                    :value="value">
+                    :label="value.name"
+                    :value="value.id">
                   </el-option>
                 </el-select>
               </li>
@@ -389,7 +390,7 @@ export default {
             }
             arr.size = value.color.split('/')[0]
             arr.color = value.color.split('/')[1]
-            arr.client_name = item.production_client
+            arr.client_id = item.production_client
             arr.user_inspection = item.tester_name
             arr.count = value.value
             arr.number = value.number
@@ -462,7 +463,7 @@ export default {
       let goStockInfo = res[4].data.data
       let outStockInfo = res[5].data.data
       // console.log('orderInfo', orderInfo)
-      // console.log('weaveInfo', weaveInfo)
+      console.log('weaveInfo', weaveInfo)
       // console.log('semiInfo', semiInfo)
       console.log('goStockInfo', goStockInfo)
       console.log('outStockInfo', outStockInfo)
@@ -507,19 +508,22 @@ export default {
             }
           }
           // 初始化生产单位数组
-          let client = this.options.clientList.find(key => key === item.client_name)
+          let client = this.options.clientList.find(key => key.id === item.client_id)
           if (!client) {
-            this.options.clientList.push(item.client_name)
+            this.options.clientList.push({
+              id: item.client_id,
+              name: item.client_name
+            })
           }
           // 初始化颜色尺码数组
-          if (!this.options.colorList[item.client_name]) {
+          if (!this.options.colorList[item.client_id]) {
             let str = item.size + '/' + item.color
-            this.options.colorList[item.client_name] = [str]
+            this.options.colorList[item.client_id] = [str]
           } else {
             let str = item.size + '/' + item.color
-            let sizeColor = this.options.colorList[item.client_name].find(key => key === str)
+            let sizeColor = this.options.colorList[item.client_id].find(key => key === str)
             if (!sizeColor) {
-              this.options.colorList[item.client_name].push(str)
+              this.options.colorList[item.client_id].push(str)
             }
           }
         }

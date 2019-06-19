@@ -1,8 +1,8 @@
 <template>
-  <div id="rawMaterialOrderList"
+  <div id="packagList"
     v-loading='loading'>
     <div class="head">
-      <h2>物料详情列表</h2>
+      <h2>包装资料列表</h2>
       <el-input placeholder="输入文字精确搜索"
         suffix-icon="el-icon-search"
         v-model="searchVal"></el-input>
@@ -78,7 +78,7 @@
           <div class="tableColumn flex08">负责小组</div>
           <div class="tableColumn">下单日期</div>
           <div class="tableColumn">交货日期</div>
-          <div class="tableColumn flex17">操作</div>
+          <div class="tableColumn">操作</div>
         </div>
         <div class="mergeBody"
           v-for="(item,key) in list"
@@ -107,12 +107,10 @@
               <span>{{itemTime}}</span>
             </div>
           </div>
-          <div class="tableColumn flex17"
+          <div class="tableColumn"
             style="flex-direction:row;">
             <span class="btns normal"
-              @click="$router.push('/index/rawMaterialOrderDetail/'+item.id + '/0')">原料详情</span>
-            <span class="btns normal"
-              @click="$router.push('/index/rawMaterialOrderDetail/' + item.id + '/1')">辅料详情</span>
+              @click="$router.push('/index/packagOutStockDetail/'+item.id )">装箱出库</span>
           </div>
         </div>
       </div>
@@ -339,10 +337,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@import "~@/assets/css/rawMaterialOrderList.less";
+@import "~@/assets/css/packagList.less";
 </style>
 <style lang="less">
-#rawMaterialOrderList {
+#packagList {
   .el-carousel__arrow {
     color: #fff;
     background: #1a95ff;

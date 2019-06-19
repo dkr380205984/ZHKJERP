@@ -278,6 +278,9 @@ const menu = [{
   children: [{
     name: '包装列表',
     url: '/index/packagList'
+  }, {
+    name: '装箱出库列表',
+    url: '/index/packagOutStockList'
   }]
 }, {
   name: '合作公司管理',

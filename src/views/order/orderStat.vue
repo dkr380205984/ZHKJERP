@@ -85,7 +85,8 @@
           </div>
         </div>
       </div>
-      <div class="mergeTable">
+      <div class="mergeTable"
+        v-scroll="{fun:getOrderList,pageSize:5}">
         <div class="mergeHeader">
           <div class="tableColumn">发货日期</div>
           <div class="tableColumn">订单号</div>
@@ -101,8 +102,7 @@
         <div class="mergeBody"
           v-for="(item ,index) in list"
           :key="index"
-          :style="{'height':(item.lineNum*60)+'px'}"
-          v-scroll="{fun:getOrderList,pageSize:5}">
+          :style="{'height':(item.lineNum*60)+'px'}">
           <div class="tableColumn">{{item.date}}</div>
           <div class="tableColumn">
             <div class="small"

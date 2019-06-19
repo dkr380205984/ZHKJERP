@@ -33,7 +33,7 @@
           </div>
         </div>
       </div>
-      <!-- <div class="stepCtn">
+      <div class="stepCtn">
         <div class="stepTitle">装箱预计表</div>
         <div class="borderCtn">
           <div class="cicle"></div>
@@ -55,17 +55,17 @@
                   </span>
                   <span class="flex17">预计包装数量</span>
                 </li>
-                <li v-if="list.addPackagInfo.length === 0">暂无信息</li>
+                <li v-if="list.packagList.length === 0">暂无信息</li>
                 <li class="content"
-                  v-for="(item,key) in list.addPackagInfo"
+                  v-for="(item,key) in list.packagList"
                   :key="key">
-                  <span class="tableRow">{{item.packag_code}}</span>
-                  <span class="tableRow">{{item.packag_type}}</span>
+                  <span class="tableRow">{{item.code}}</span>
+                  <span class="tableRow">{{item.type}}</span>
                   <span class="tableRow flex17"
                     style="line-height:1.5em;">
                     <div style="padding:5px 0;">
-                      <span>{{item.packag_size}}</span>
-                      <span>{{item.packag_attr}}</span>
+                      <span>{{item.size}}</span>
+                      <span>{{item.attr}}</span>
                     </div>
                   </span>
                   <span class="tableRow flex5 col">
@@ -75,13 +75,13 @@
                       <span class="tableRow flex2"
                         style="line-height:1.5em;">
                         <div style="padding:5px 0;">
-                          <span>{{value.product_code}}</span>
+                          <span>{{value.code}}</span>
                           <span>{{value.type}}</span>
                         </div>
                       </span>
                       <span class="tableRow">{{value.size + '/' + value.color}}</span>
                       <span class="tableRow">{{value.plan_number ? value.plan_number : 0}}{{value.unit}}</span>
-                      <span class="tableRow">{{value.number}}{{(value.unit ? value.unit : '条')+'/'+(item.unit ? item.unit : '包')}}</span>
+                      <span class="tableRow">{{value.one_number}}{{(value.unit ? value.unit : '条')+'/'+(item.unit ? item.unit : '包')}}</span>
                     </span>
                   </span>
                   <span class="tableRow flex17">{{item.packag_number}}{{item.unit}}</span>
@@ -90,85 +90,12 @@
             </div>
           </div>
         </div>
-      </div> -->
-      <!-- <div class="stepCtn">
-        <div class="stepTitle">其他装箱辅料</div>
-        <div class="borderCtn">
-          <div class="cicle"></div>
-          <div class="border"></div>
-        </div>
-        <div class="lineCtn col">
-          <div class="addPackagInfo">
-            <ul class="addPackagFrom"
-              v-for="(item,key) in list.addPackagMaterialList"
-              :key="key"
-              style="height:230px;">
-              <li>
-                <span>产品/包装:</span>
-                <el-select v-model="item.packag_name"
-                  placeholder="请选择产品/包装"
-                  size="small"
-                  style="width:243px;">
-                  <el-option v-for="type in arrGeter()"
-                    :key="type.id"
-                    :value="type">
-                  </el-option>
-                </el-select>
-              </li>
-              <li style="flex-direction:column;align-items: flex-start;"
-                v-for="(value,index) in item.packag_material"
-                :key="index">
-                <div class="divInp">
-                  <span>包装辅料:</span>
-                  <el-select v-model="value.name"
-                    placeholder="请选择包装辅料"
-                    size="small"
-                    style="width:243px;">
-                    <el-option v-for="type in options.materialArr"
-                      :key="type.id"
-                      :label="type.value"
-                      :value="type.name">
-                    </el-option>
-                  </el-select>
-                </div>
-                <div class="divInp">
-                  <span>数量属性:</span>
-                  <el-input size="small"
-                    style="width:108px"
-                    placeholder="每包数量"
-                    v-model="value.number">
-                  </el-input>
-                  <strong>——</strong>
-                  <el-input size="small"
-                    style="width:108px"
-                    placeholder="属性"
-                    v-model="value.attr">
-                  </el-input>
-                </div>
-                <em v-if="index === 0"
-                  class="el-icon-plus"
-                  style="right:0px;top:13px;"
-                  @click="addMaterialPro(key)"></em>
-                <em v-else
-                  class="el-icon-delete"
-                  style="right:0px;top:13px;"
-                  @click="deleteMaterialPro(key,index)"></em>
-              </li>
-              <span class="el-icon-close"
-                @click="deleteMaterialInfo(key)"></span>
-            </ul>
-          </div>
-          <div class="addBtn"
-            @click="addMaterialInfo">
-            <span>+</span>
-            <span>添加辅料</span>
-          </div>
-        </div>
-      </div> -->
-      <!-- <div class="stepCtn">
+      </div>
+      <div class="stepCtn">
         <div class="stepTitle">其他辅料统计表</div>
         <div class="borderCtn">
           <div class="cicle"></div>
+          <div class="border"></div>
         </div>
         <div class="lineCtn">
           <div class="inputCtn noPadding">
@@ -185,9 +112,9 @@
                     <span>辅料数量</span>
                   </span>
                 </li>
-                <li v-if="list.addPackagMaterialInfo.length === 0">暂无信息</li>
+                <li v-if="list.packagMaterialList.length === 0">暂无信息</li>
                 <li class="content"
-                  v-for="(item,key) in list.addPackagMaterialInfo"
+                  v-for="(item,key) in list.packagMaterialList"
                   :key="key">
                   <span class="tableRow flex17"
                     style="line-height:1.5em;">
@@ -203,9 +130,9 @@
                       class="tableColumn">
                       <span class="tableRow">{{value.name}}</span>
                       <span class="tableRow">{{value.attr ? value.attr : '无'}}</span>
-                      <span class="tableRow">{{value.plan_number ? value.plan_number : 0}}{{item.unit}}</span>
-                      <span class="tableRow">{{value.number?value.number:0}}{{(value.unit ? value.unit : '条') + '/' + (item.unit ? item.unit : '包')}}</span>
-                      <span class="tableRow">{{(value.plan_number ? value.plan_number : 0) * value.number}}{{value.unit}}</span>
+                      <span class="tableRow">{{item.number ? item.number : 0}}{{item.unit}}</span>
+                      <span class="tableRow">{{value.packag_number?value.packag_number:0}}{{(value.unit ? value.unit : '条') + '/' + (item.unit ? item.unit : '包')}}</span>
+                      <span class="tableRow">{{(item.number ? item.number : 0) * value.packag_number}}{{value.unit}}</span>
                     </span>
                   </span>
                 </li>
@@ -213,7 +140,104 @@
             </div>
           </div>
         </div>
-      </div> -->
+      </div>
+      <div class="stepCtn">
+        <div class="stepTitle">订购包装辅料</div>
+        <div class="borderCtn">
+          <div class="cicle"></div>
+        </div>
+        <div class="lineCtn col"
+          v-for="(item,key) in list.orderInfo"
+          :key="key">
+          <div class="tablePlan">
+            <div class="tableTitle">
+              <span>辅料名称</span>
+              <span>辅料规格</span>
+              <span>辅料属性</span>
+              <span>计划数量</span>
+              <span>已订数量</span>
+              <span>预计损耗</span>
+            </div>
+            <div class="tableInfo">
+              <span>{{item.name ? item.name : '无'}}</span>
+              <span>{{item.size ? item.size : '无'}}</span>
+              <span>{{item.attr ? item.attr : '无'}}</span>
+              <span>{{item.plan_number ? item.plan_number : 0}}{{item.unit}}</span>
+              <span>{{Number(item.select_number ?item.select_number : 0) + Number(item.selects_number ? item.selects_number : 0)}}{{item.unit}}</span>
+              <span>{{(((Number(item.select_number ?item.select_number : 0) + Number(item.selects_number ? item.selects_number : 0) - (item.plan_number ? item.plan_number : 0))/(item.plan_number ? item.plan_number : 0))*100).toFixed(2) > 0 ? (((Number(item.select_number ?item.select_number : 0) + Number(item.selects_number ? item.selects_number : 0) - (item.plan_number ? item.plan_number : 0))/(item.plan_number ? item.plan_number : 0))*100).toFixed(2) + '%' : '0%'}}</span>
+            </div>
+          </div>
+          <div class="addPackagInfo">
+            <ul class="addPackagFrom"
+              v-for="(iten,kay) in item.orderClientInfo"
+              :key="kay"
+              style="height:410px;">
+              <li>
+                <span>订购单位:</span>
+                <el-select v-model="iten.order_client"
+                  placeholder="请选择订购来源"
+                  size="small">
+                  <el-option v-for="value in options.companyList"
+                    :key="value.id"
+                    :label="value.name"
+                    :value="value.id">
+                  </el-option>
+                </el-select>
+              </li>
+              <li>
+                <span>订购数量:</span>
+                <el-input size="small"
+                  placeholder="请输入订购数量"
+                  v-model="iten.order_number"
+                  style="width:243px;">
+                </el-input>
+              </li>
+              <li>
+                <span>单价:</span>
+                <el-input size="small"
+                  placeholder="请输入单价"
+                  v-model="iten.price">
+                </el-input>
+                <i>元</i>
+              </li>
+              <li>
+                <span>总价:</span>
+                <el-input size="small"
+                  placeholder="总价"
+                  :disabled="true"
+                  v-model="iten.total_price">
+                </el-input>
+                <i>元</i>
+              </li>
+              <li>
+                <span>订购日期:</span>
+                <el-date-picker v-model="iten.order_time"
+                  type="date"
+                  placeholder="选择日期"
+                  value-format="yyyy-MM-dd"
+                  size="small"
+                  style="width:243px">
+                </el-date-picker>
+              </li>
+              <li>
+                <span>备注:</span>
+                <el-input type="textarea"
+                  placeholder="请输入内容"
+                  style="width:243px;margin: 0 0 0 15px;height:45px;"
+                  v-model="iten.remark">
+                </el-input>
+              </li>
+              <span class="el-icon-close"
+                @click="deleteOrderClient(key,kay)"></span>
+            </ul>
+          </div>
+          <div class="addBtn"
+            @click="addOrderClient(key)">
+            <span>+</span>
+            <span>订购单位</span>
+          </div>
+        </div>
+      </div>
       <div class="btnCtn">
         <div class="cancleBtn"
           @click="$router.go(-1)">返回</div>
@@ -240,6 +264,30 @@ export default {
           {
             code: '1A1',
             type: '袋子',
+            size: '60*40*60cm',
+            attr: '印字',
+            unit: '袋',
+            packag_number: '2000',
+            product_info: [{
+              code: 'ES5623134',
+              type: '围巾/针织/长巾',
+              size: '均码',
+              color: '黄色',
+              plan_number: '4000',
+              one_number: '2',
+              unit: '条'
+            }, {
+              code: 'ES5623144',
+              type: '围巾/针织/长巾',
+              size: '均码',
+              color: '黑色',
+              plan_number: '2000',
+              one_number: '1',
+              unit: '条'
+            }]
+          }, {
+            code: '1A2',
+            type: '袋子',
             size: '60*40*80cm',
             attr: '印字',
             unit: '袋',
@@ -249,7 +297,7 @@ export default {
               type: '围巾/针织/长巾',
               size: '均码',
               color: '黄色',
-              number: '4000',
+              plan_number: '4000',
               one_number: '2',
               unit: '条'
             }, {
@@ -257,12 +305,36 @@ export default {
               type: '围巾/针织/长巾',
               size: '均码',
               color: '黑色',
-              number: '2000',
+              plan_number: '2000',
               one_number: '1',
               unit: '条'
             }]
           }
-        ]
+        ],
+        packagMaterialList: [
+          {
+            code: '19abcde122',
+            type: '围巾/针织/帽子/素色',
+            size: '均码',
+            color: '黄色',
+            number: 2000,
+            material_info: [
+              {
+                name: '吊牌',
+                attr: '',
+                packag_number: '2',
+                unit: '个'
+              }, {
+                name: '衣架',
+                attr: '',
+                packag_number: '1',
+                unit: '个'
+              }
+            ]
+
+          }
+        ],
+        orderInfo: []
       },
       options: {
         productArr: []
@@ -275,145 +347,34 @@ export default {
     }
   },
   watch: {
+    'list.orderInfo': {
+      handler: function (newVal) {
+        newVal.forEach(item => {
+          let num = 0 // 已选数量统计
+          item.orderClientInfo.forEach(val => {
+            num += Number(val.order_number)
+            val.total_price = val.price * val.order_number
+          })
+          item.select_number = num
+        })
+      },
+      deep: true
+    }
   },
   methods: {
-    addMaterialPro (key) {
-      this.list.addPackagMaterialList[key].packag_material.push({
-        name: '',
-        number: '',
-        attr: ''
+    addOrderClient (key) {
+      this.list.orderInfo[key].orderClientInfo.push({
+        order_client: '',
+        order_number: '',
+        price: '',
+        total_price: '',
+        order_time: this.now_time,
+        remark: ''
       })
+      console.log(this.list.orderInfo)
     },
-    deleteMaterialPro (key, index) {
-      this.list.addPackagMaterialList[key].packag_material.splice(index, 1)
-    },
-    addMaterialInfo () {
-      this.list.addPackagMaterialList.push({
-        packag_name: '',
-        packag_material: [
-          {
-            name: '',
-            number: '',
-            attr: ''
-          }
-        ]
-      })
-    },
-    deleteMaterialInfo (key) {
-      this.list.addPackagMaterialList.splice(key, 1)
-    },
-    arrGeter (key) {
-      let arr = [...this.options.productArr]
-      this.list.addPackagList.forEach((item, kay) => {
-        if ((kay < key && key !== undefined) || key === undefined) {
-          item.forEach(value => {
-            value.packag_info.forEach(valCode => {
-              let fleg = arr.find(key => key === (valCode.packag_code + ' ' + value.type))
-              if (!fleg) {
-                arr.unshift(valCode.packag_code + ' ' + value.type.split(' ')[0])
-              }
-            })
-          })
-        }
-      })
-      return arr
-    },
-    addProduct (key, index, indCode) {
-      this.list.addPackagList[key][index].packag_info[indCode].product_info.push({
-        name: '',
-        number: ''
-      })
-    },
-    deleteProduct (key, index, indCode, indPro) {
-      let len = this.list.addPackagList[key][index].packag_info[indCode].product_info.length
-      if (indPro === len - 1) {
-        this.list.addPackagList[key][index].packag_info[indCode].product_info.splice(indPro, 1)
-      } else {
-        this.$message({
-          type: 'error',
-          message: `请逐级删除！！！`
-        })
-      }
-    },
-    addPackagCode (key, index) {
-      let len = this.list.addPackagList[key][index].packag_info.length
-      let str = (key + 1) + this.letterArr[key] + (len + 1)
-      this.list.addPackagList[key][index].packag_info.push({
-        packag_code: str,
-        packag_number: '',
-        product_info: [{
-          name: '',
-          number: ''
-        }]
-      })
-    },
-    deletePackagCode (key, index, indCode) {
-      let len = this.list.addPackagList[key][index].packag_info.length
-      if (indCode === len - 1) {
-        this.list.addPackagList[key][index].packag_info.splice(indCode, 1)
-      } else {
-        this.$message({
-          type: 'error',
-          message: `请逐级删除！！！`
-        })
-      }
-    },
-    addPackagLv (key) {
-      let len = this.list.addPackagList[key].length
-      let str = (key + 1) + this.letterArr[len] + '1'
-      this.list.addPackagList[key].push({
-        type: '',
-        size: '',
-        attr: '',
-        packag_info: [{
-          packag_code: str,
-          packag_number: '',
-          product_info: [{
-            name: '',
-            number: ''
-          }]
-        }]
-      })
-    },
-    deletePackagLv (key, index) {
-      let len = this.list.addPackagList[key].length
-      if (index === len - 1) {
-        this.list.addPackagList[key].splice(index, 1)
-      } else {
-        this.$message({
-          type: 'error',
-          message: `请逐级删除！！！`
-        })
-      }
-    },
-    addLvInfo () {
-      let len = this.list.addPackagList.length
-      let str = (len + 1) + this.letterArr[0] + '1'
-      this.list.addPackagList.push([{
-        type: '',
-        size: '',
-        attr: '',
-        packag_info: [{
-          packag_code: str,
-          packag_number: '',
-          product_info: [{
-            name: '',
-            number: ''
-          }]
-        }]
-      }])
-      // console.log(this.list.addPackagList)
-    },
-    deleteLvInfo (key) {
-      let len = this.list.addPackagList.length
-      if (key === len - 1) {
-        this.list.addPackagList.splice(key, 1)
-      } else {
-        this.$message({
-          type: 'error',
-          message: `请逐级删除！！！`
-        })
-      }
+    deleteOrderClient (key, index) {
+      this.list.orderInfo[key].orderClientInfo.splice(index, 1)
     },
     saveAll () {
       if (this.save) {
@@ -434,6 +395,8 @@ export default {
     }
   },
   created () {
+    let nowDate = new Date()
+    this.now_time = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1 < 10 ? '0' + (nowDate.getMonth() + 1) : (nowDate.getMonth() + 1)) + '-' + (nowDate.getDate() < 10 ? '0' + nowDate.getDate() : nowDate.getDate())
     Promise.all([
       orderDetail({
         id: this.$route.params.id
@@ -446,7 +409,39 @@ export default {
       this.client_name = orderInfo.client_name
       this.order_time = orderInfo.order_time
       this.group_name = orderInfo.group_name
-      // 初始化装箱预计表
+      // 初始化订购信息
+      this.list.packagList.forEach(item => {
+        let flag = this.list.orderInfo.find(key => (key.name === item.type && key.size === item.size && key.attr === item.attr))
+        if (!flag) {
+          this.list.orderInfo.push({
+            name: item.type,
+            size: item.size,
+            attr: item.attr,
+            unit: item.unit,
+            plan_number: item.packag_number,
+            orderClientInfo: []
+          })
+        } else {
+          flag.plan_number = Number(flag.plan_number) + Number(item.packag_number)
+        }
+      })
+      this.list.packagMaterialList.forEach(item => {
+        item.material_info.forEach(val => {
+          let flag = this.list.orderInfo.find(key => (key.name === val.name && key.attr === val.attr))
+          if (!flag) {
+            this.list.orderInfo.push({
+              name: val.name,
+              attr: val.attr,
+              unit: val.unit,
+              plan_number: val.packag_number * item.number,
+              orderClientInfo: []
+            })
+          } else {
+            flag.plan_number = Number(flag.plan_number) + (val.packag_number * item.number)
+          }
+        })
+      })
+      console.log(this.list.orderInfo)
       this.loading = false
     })
   }

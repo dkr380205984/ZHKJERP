@@ -64,7 +64,8 @@
           </div>
         </div>
       </div>
-      <div class="tableCtn">
+      <div class="tableCtn"
+        v-scroll="{fun:getCraftList,pageSize:5}">
         <div class="tableRow titleTableRow">
           <div class="tableColumn">计划单编号</div>
           <div class="tableColumn">产品编号</div>
@@ -78,8 +79,7 @@
         </div>
         <div class="tableRow bodyTableRow"
           v-for="(item) in list"
-          :key="item.id"
-          v-scroll="{fun:getCraftList,pageSize:5}">
+          :key="item.id">
           <div class="tableColumn"
             style="color: rgb(26, 149, 255);">{{item.plan_code}}</div>
           <div class="tableColumn">{{item.product_info.product_code}}</div>

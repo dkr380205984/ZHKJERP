@@ -372,6 +372,18 @@ let router = new Router({
       path: 'packagMaterialPage/:id',
       name: 'packagMaterialPage',
       component: () => import('./views/packaging/packagMaterialPage.vue')
+    }, {
+      path: 'packagOutStockList',
+      name: 'packagOutStockList',
+      component: () => import('./views/packaging/packagOutStockList.vue')
+    }, {
+      path: 'packagOutStockDetail/:id',
+      name: 'packagOutStockDetail',
+      component: () => import('./views/packaging/packagOutStockDetail.vue')
+    }, {
+      path: 'packagOutStock/:id/:batchId',
+      name: 'packagOutStock',
+      component: () => import('./views/packaging/packagOutStock.vue')
     }]
   }
   ]

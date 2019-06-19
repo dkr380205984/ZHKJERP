@@ -275,6 +275,32 @@ ul {
             }
           }
         }
+        .tablePlan {
+          margin-left: 40px;
+          width: 900px;
+          border: 1px solid #DDD;
+          box-sizing: border-box;
+          &>.tableInfo {
+            font-size: @fontMid;
+          }
+          &>div {
+            width: 100%;
+            height: 40px;
+            display: flex;
+            border-bottom: 1px solid #DDD;
+            &:last-child {
+              border: none;
+            }
+            &:first-child {
+              background-color: #F6F6F6;
+            }
+            &>span {
+              flex: 1;
+              text-align: center;
+              line-height: 40px;
+            }
+          }
+        }
       }
     }
     .btnCtn{
@@ -298,6 +324,18 @@ ul {
 .flex17 {
   flex: 1.7!important;
 }
+.flex6{
+  flex: 6!important;
+}
 .flex5{
-  flex: 5!important;
+  flex:5!important;
+}
+.error{
+  color: @error
+}
+.warning{
+  color:@warning
+}
+.success{
+  color:@success
 }

@@ -74,7 +74,8 @@
           </div>
         </div>
       </div>
-      <div class="tableCtn">
+      <div class="tableCtn"
+        v-scroll="{fun:getProductList,pageSize:5}">
         <div class="tableRow titleTableRow">
           <div class="tableColumn">产品编号</div>
           <div class="tableColumn flex9">产品类别</div>
@@ -88,8 +89,7 @@
         </div>
         <div class="tableRow bodyTableRow"
           v-for="(item) in list"
-          :key="item.id"
-          v-scroll="{fun:getProductList,pageSize:5}">
+          :key="item.id">
           <div class="tableColumn"
             style="color:#1A95FF">{{item.product_info.product_code}}</div>
           <div class="tableColumn flex9">{{item.product_info|filterType}}</div>

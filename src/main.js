@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
@@ -17,19 +18,18 @@ Vue.directive('scroll', {
   inserted: (el, x, y) => {
     // console.log('已绑定scroll')
     let self = y.context
-    el.addEventListener('mousewheel', function (e) {
-      // console.log(e.wheelDelta)
-      // console.log(self.pages)
-      if (e.wheelDelta > 0 && (self.pages > 1)) {
-        // console.log('下一页')
+    window.addEventListener('keydown', function (e) {
+      // console.log(e.target.tagName, e.keyCode, self.pages)
+      if (e.target.tagName !== 'INPUT' && e.keyCode === 37 && self.pages > 1) {
+        // console.log('上一页')
         --self.pages
         x.value.fun()
-      } else if (e.wheelDelta < 0 && (self.pages) < Math.ceil(self.total / x.value.pageSize)) {
-        // console.log('上一页')
+      } else if (e.target.tagName !== 'INPUT' && e.keyCode === 39 && (self.pages < Math.ceil(self.total / x.value.pageSize))) {
+        // console.log('下一页')
         ++self.pages
         x.value.fun()
       } else {
-        // console.log('没有触发')
+        // console.log('不换页')
       }
     }, false)
   }

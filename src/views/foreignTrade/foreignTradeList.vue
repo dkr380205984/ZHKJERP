@@ -35,7 +35,8 @@
           </div>
         </div>
       </div>
-      <div class="tableCtn">
+      <div class="tableCtn"
+        v-scroll="{fun:getList,pageSize:5}">
         <div class="tableRow titleTableRow">
           <div class="tableColumn">公司名称</div>
           <div class="tableColumn">公司简称</div>
@@ -49,8 +50,7 @@
         </div>
         <div class="tableRow bodyTableRow"
           v-for="(item,index) in list"
-          :key="index"
-          v-scroll="{fun:getList,pageSize:5}">
+          :key="index">
           <div class="tableColumn">{{item.name}}</div>
           <div class="tableColumn">{{item.abbreviation}}</div>
           <div class="tableColumn">{{item.type|filterType}}</div>
