@@ -234,7 +234,16 @@ const storeIn = (params) => http.post(`${baseUrl}/product/order/push`, params, '
 const storeInList = (params) => http.get(`${baseUrl}/product/order/pop/list`, params)
 // 入库日志修改
 const storeInUpdate = (params) => http.post(`${baseUrl}/product/order/push/edit`, params, 'application/json')
+// 补纱
+const replenishYarnSave = (params) => http.post(`${baseUrl}/production/yarn/replenish/save`, params, 'application/json')
+// 补纱列表
+const replenishYarnList = (params) => http.get(`${baseUrl}/production/yarn/replenish/list`, params)
+// 承担公司
+const bearClient = (params) => http.get(`${baseUrl}/production/order/client/list`, params)
 export {
+  bearClient,
+  replenishYarnSave,
+  replenishYarnList,
   finishedExaminationDetail,
   semiExaminationDetail,
   finishedExamination,

@@ -3,7 +3,7 @@
     style="overflow:auto"
     v-loading="loading">
     <div class="head">
-      <h2>原料补充</h2>
+      <h2>辅料补充</h2>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -25,31 +25,29 @@
         </div>
       </div>
       <div class="stepCtn">
-        <div class="stepTitle">原料补充</div>
+        <div class="stepTitle">辅料补充</div>
         <div class="borderCtn">
           <div class="cicle"></div>
           <div class="border"></div>
         </div>
         <div class="lineCtn">
           <div class="inputCtn">
-            <span class="label">选择纱线:</span>
+            <span class="label">选择辅料:</span>
             <div class="casInput"
               v-for="(item,index) in materialColor"
               :key="index">
               <el-cascader class="cas"
                 v-model="materialColor[index]"
-                placeholder="请选择辅料信息"
                 :options="materialColorArr"></el-cascader>
-              <el-input placeholder="请输入纱线重量"
+              <el-input placeholder="请输入辅料数量"
                 v-model="weight[index]">
-                <template slot="append">kg</template>
               </el-input>
               <i :style="{visibility:index===0?'hidden':'visible'}"
                 @click="deleteShaxian(index)"
                 class="el-icon-delete"></i>
             </div>
             <div class="addBtn"
-              @click="materialColor.push([])"><span>添加纱线</span><span>+</span></div>
+              @click="materialColor.push([])"><span>添加辅料</span><span>+</span></div>
           </div>
         </div>
         <div class="lineCtn">
@@ -82,11 +80,11 @@
         </div>
         <div class="lineCtn">
           <div class="inputCtn">
-            <span class="label">补纱原因:</span>
+            <span class="label">补充原因:</span>
             <div class="casInput">
               <el-input type="textarea"
                 :rows="3"
-                placeholder="请输入补纱原因（必填项）"
+                placeholder="请输入补辅料原因（必填项）"
                 v-model="des">
               </el-input>
             </div>
@@ -104,7 +102,7 @@
 </template>
 
 <script>
-import { productionDetail, weaveDetail, bearClient, replenishYarnSave } from '@/assets/js/api.js'
+import { productionDetail, halfProductDetail, bearClient, replenishYarnSave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -136,7 +134,7 @@ export default {
   mounted () {
     Promise.all([productionDetail({
       order_id: this.$route.params.id
-    }), weaveDetail({
+    }), halfProductDetail({
       order_id: this.$route.params.id
     }), bearClient({
       order_id: this.$route.params.id
@@ -147,53 +145,34 @@ export default {
       for (let i in companyArr) {
         this.companyArr.push(companyArr[i])
       }
-      let productPlan = res[0].data.data.product_plan
+      // let productPlan = res[0].data.data.product_plan
       // 筛选出跟当前公司相关的日志信息
       let clientInfo = res[1].data.data.filter((item) => item.client_id === parseInt(this.$route.params.companyId))
-      let colourInfo = []
-      clientInfo.forEach((itemClient) => {
-        let finded = colourInfo.find((itemFind) => itemFind.colour === itemClient.color && itemFind.size === itemClient.size && itemFind.product_code === itemClient.product_info.product_code)
-        if (!finded) {
-          colourInfo.push({
-            'colour': itemClient.color,
-            'size': itemClient.size,
-            'product_code': itemClient.product_info.product_code
-          })
-        }
-      })
+      console.log(clientInfo)
       let colorInfo = []
-      colourInfo.forEach((itemColour) => {
-        if (productPlan[itemColour.product_code]) {
-          productPlan[itemColour.product_code].forEach((itemColor) => {
-            if (itemColor.color_match_name === itemColour.colour && itemColor.size === itemColour.size && itemColor.product_code === itemColour.product_code && itemColor.type === 0) {
-              let finded = colorInfo.find((itemFind) => itemFind.color === itemColor.color_name && itemFind.material_name === itemColor.material_name)
-              if (!finded) {
-                colorInfo.push({
-                  'color': itemColor.color_name,
-                  'material_name': itemColor.material_name
-                })
-              }
-            }
-          })
-        }
+      clientInfo.forEach((itemClient) => {
+        itemClient.ingredients.forEach((itemIng) => {
+          let finded = colorInfo.find((itemFind) => itemFind.color === itemClient.color && itemFind.name === itemIng)
+          if (!finded) {
+            colorInfo.push({
+              name: itemIng,
+              color: itemClient.color
+            })
+          }
+        })
       })
-      this.materialColorArr = this.jsonMerge(colorInfo, ['material_name']).map((item) => {
+      let materialColorArr = this.jsonMerge(colorInfo, ['name'])
+      this.materialColorArr = materialColorArr.map((item) => {
         return {
-          value: item.material_name,
-          label: item.material_name,
+          label: item.name,
+          value: item.name,
           children: item.info.map((item2) => {
             return {
-              value: item2.color,
-              label: item2.color
+              label: item2.color,
+              value: item2.color
             }
           })
         }
-      })
-      this.materialColorArr.forEach((item, index) => {
-        this.materialColorArr[index].children.unshift({
-          value: '白胚',
-          label: '白胚'
-        })
       })
     })
   },
@@ -260,7 +239,7 @@ export default {
     },
     saveAll () {
       let json = {
-        type: 1,
+        type: 2,
         id: null,
         order_id: this.$route.params.id,
         user_id: window.sessionStorage.getItem('user_id'),

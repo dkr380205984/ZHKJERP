@@ -75,7 +75,8 @@
           </div>
         </div>
       </div>
-      <div class="tableCtn">
+      <div class="tableCtn"
+        v-scroll="{fun:getProductList,pageSize:5}">
         <div class="tableRow titleTableRow">
           <div class="tableColumn">编号</div>
           <div class="tableColumn flex9">品类</div>
