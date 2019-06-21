@@ -2,7 +2,7 @@
   <div id="packagList"
     v-loading='loading'>
     <div class="head">
-      <h2>包装资料列表</h2>
+      <h2>包装资料列表(未启用)</h2>
       <el-input placeholder="输入文字精确搜索"
         suffix-icon="el-icon-search"
         v-model="searchVal"></el-input>

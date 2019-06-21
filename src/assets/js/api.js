@@ -234,7 +234,19 @@ const storeIn = (params) => http.post(`${baseUrl}/product/order/push`, params, '
 const storeInList = (params) => http.get(`${baseUrl}/product/order/pop/list`, params)
 // 入库日志修改
 const storeInUpdate = (params) => http.post(`${baseUrl}/product/order/push/edit`, params, 'application/json')
+// 包装统计
+const packagCreate = (params) => http.post(`${baseUrl}/pack/statistics/save`, params, 'application/json')
+// 包装统计详情
+const packagDetail = (params) => http.get(`${baseUrl}/pack/statistics/list`, params)
+// 包装辅料订购
+const packagMaterialpage = (params) => http.post(`${baseUrl}/pack/order/save`, params, 'application/json')
+// 包装辅料订购详情
+const packagMaterialDetail = (params) => http.get(`${baseUrl}/pack/order/list`, params)
 export {
+  packagCreate,
+  packagDetail,
+  packagMaterialpage,
+  packagMaterialDetail,
   finishedExaminationDetail,
   semiExaminationDetail,
   finishedExamination,

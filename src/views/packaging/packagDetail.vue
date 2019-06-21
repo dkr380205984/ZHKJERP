@@ -2,7 +2,7 @@
   <div id="packagDetail"
     v-loading="loading">
     <div class="head">
-      <h2>包装详情</h2>
+      <h2>包装订购详情</h2>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -76,7 +76,7 @@
             class="inputCtn">暂无信息</div>
         </div>
       </div>
-      <div class="stepCtn">
+      <!-- <div class="stepCtn">
         <div class="stepTitle">装箱预计表</div>
         <div class="borderCtn">
           <div class="cicle"></div>
@@ -128,7 +128,7 @@
                   <span class="tableRow">{{item.updated_time}}</span>
                   <span class="tableRow">{{item.user_name}}</span>
                   <span class="tableRow blue">修改</span>
-                  <!-- <span class="tableRow"
+                  <span class="tableRow"
                     style="line-height:1.5em;">
                     <div>
                       <span class="blue"
@@ -153,12 +153,12 @@
                         </span>
                       </span>
                     </span>
-                  </span> -->
+                  </span>
                 </li>
-                <!-- <div class="logList"
-                  @click="packagFlag = !packagFlag">{{ packagFlag ? '收起' : '展开'}}详情</div> -->
+                <div class="logList"
+                  @click="packagFlag = !packagFlag">{{ packagFlag ? '收起' : '展开'}}详情</div>
               </ul>
-              <!-- <ul class="log"
+              <ul class="log"
                 v-if="packagFlag">
                 <div>
                   <li>
@@ -200,7 +200,7 @@
                     <span class="flexMid">{{item.user}}</span>
                   </li>
                 </div>
-              </ul> -->
+              </ul>
               <div class="handle">
                 <div :class="{'disabled':!flag}"
                   @click="$router.push('/index/packagInfoCreate/' + $route.params.id )">
@@ -282,7 +282,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
       <div class="stepCtn">
         <div class="stepTitle">订购包装辅料</div>
         <div class="borderCtn">

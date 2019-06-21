@@ -2,7 +2,7 @@
   <div id="packagInfoCreate"
     v-loading="loading">
     <div class="head">
-      <h2>包装辅料订购</h2>
+      <h2>包装辅料订购(未启用)</h2>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -34,6 +34,160 @@
         </div>
       </div>
       <div class="stepCtn">
+        <div class="stepTitle">产品信息</div>
+        <div class="borderCtn">
+          <div class="cicle"></div>
+          <div class="border"></div>
+        </div>
+        <div class="lineCtn">
+          <template v-if="productList.length > 0">
+            <div class="inputCtn noPadding">
+              <div class="content">
+                <ul class="tablesCtn"
+                  style="width:900px;">
+                  <li class="title">
+                    <span>产品编号</span>
+                    <span class="flex17">产品类别</span>
+                    <span class="flex17">
+                      <span>尺码颜色</span>
+                      <span>发货数量</span>
+                    </span>
+                  </li>
+                  <li class="content"
+                    v-for="(item,key) in productList"
+                    :key="key">
+                    <span class="tableRow blue"
+                      @click="$router.push('/index/productDetail/' + item.product_code)">{{item.product_code}}</span>
+                    <span class="tableRow flex17">{{item.type}}</span>
+                    <span class="tableRow col flex17">
+                      <span v-for="(val,ind) in item.size_info"
+                        :key="ind"
+                        class="tableColumn">
+                        <span class="tableRow">{{val.size}}{{'/'}}{{val.color}}</span>
+                        <span class="tableRow">{{val.plan_number ? val.plan_number : 0}}{{'条'}}</span>
+                      </span>
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </template>
+          <div v-else
+            class="inputCtn">暂无信息</div>
+        </div>
+      </div>
+      <div class="stepCtn">
+        <div class="stepTitle">订购包装辅料</div>
+        <div class="borderCtn">
+          <div class="cicle"></div>
+        </div>
+        <div class="lineCtn col">
+          <div class="addPackagInfo">
+            <ul class="addPackagFrom"
+              v-for="(item,key) in list"
+              :key="key"
+              style="height:470px">
+              <li>
+                <span>订购单位:</span>
+                <el-select v-model="item.order_client"
+                  placeholder="请选择订购来源"
+                  size="small">
+                  <el-option v-for="value in options.companyList"
+                    :key="value.id"
+                    :label="value.name"
+                    :value="value.id">
+                  </el-option>
+                </el-select>
+              </li>
+              <template v-for="(val,ind) in item.pack_info">
+                <li :key="ind + 'name'">
+                  <span>包装辅料:</span>
+                  <el-select v-model="val.pack_name"
+                    placeholder="请选择包装"
+                    size="small">
+                    <el-option v-for="value in options.packList"
+                      :key="value.id"
+                      :label="value.name"
+                      :value="value.id">
+                    </el-option>
+                  </el-select>
+                  <em class="el-icon-plus"
+                    style="top:15px;"
+                    v-if="ind === 0"
+                    @click="addPackInfo(key)"></em>
+                  <em class="el-icon-minus"
+                    v-else
+                    style="top:15px"
+                    @click="deletePackInfo(key,ind)"></em>
+                </li>
+                <li :key="ind + 'attr'">
+                  <span>辅料属性:</span>
+                  <div style="margin-left:15px;padding-left:15px;width:228px;position: relative;height:32px;line-height:32px;">
+                    <span>{{val.pack_name}}</span>
+                    <el-popover placement="top-end"
+                      width="200"
+                      trigger="click"
+                      class="clickWatch"
+                      content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
+                      <span slot="reference">点击查看</span>
+                    </el-popover>
+                  </div>
+                </li>
+                <li :key="ind + 'price'">
+                  <span>数量单价:</span>
+                  <el-input size="small"
+                    placeholder="请输入数量"
+                    v-model="val.number"
+                    style="width:108px;">
+                  </el-input>
+                  <strong style="color:#BBB;font-weight:400;">——</strong>
+                  <el-input size="small"
+                    placeholder="请输入单价"
+                    v-model="val.price"
+                    style="width:108px;margin-left:0;">
+                  </el-input>
+                </li>
+              </template>
+              <li>
+                <span>总价:</span>
+                <el-input size="small"
+                  placeholder="总价"
+                  :disabled="true"
+                  v-model="item.total_price"
+                  style="width:243px;">
+                  <template slot="append">元</template>
+                </el-input>
+              </li>
+              <li>
+                <span>订购日期:</span>
+                <el-date-picker v-model="item.order_time"
+                  type="date"
+                  placeholder="选择日期"
+                  value-format="yyyy-MM-dd"
+                  size="small"
+                  style="width:243px">
+                </el-date-picker>
+              </li>
+              <li>
+                <span>备注:</span>
+                <el-input type="textarea"
+                  placeholder="请输入内容"
+                  style="width:243px;margin: 0 0 0 15px;height:45px;"
+                  v-model="item.remark">
+                </el-input>
+              </li>
+              <span class="el-icon-close"
+                @click="deleteOrderPage(key)"></span>
+            </ul>
+          </div>
+          <div class="addBtn"
+            @click="addOrderPage()">
+            <span>+</span>
+            <span>添加订购</span>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="stepCtn">
         <div class="stepTitle">装箱预计表</div>
         <div class="borderCtn">
           <div class="cicle"></div>
@@ -169,7 +323,7 @@
           </div>
           <div class="addPackagInfo">
             <ul class="addPackagFrom"
-              v-for="(iten,kay) in item.orderClientInfo"
+              v-for="(iten,key) in item.orderClientInfo"
               :key="kay"
               style="height:410px;">
               <li>
@@ -237,7 +391,7 @@
             <span>订购单位</span>
           </div>
         </div>
-      </div>
+      </div> -->
       <div class="btnCtn">
         <div class="cancleBtn"
           @click="$router.go(-1)">返回</div>
@@ -259,85 +413,12 @@ export default {
       order_time: '',
       client_name: '',
       group_name: '',
-      list: {
-        packagList: [
-          {
-            code: '1A1',
-            type: '袋子',
-            size: '60*40*60cm',
-            attr: '印字',
-            unit: '袋',
-            packag_number: '2000',
-            product_info: [{
-              code: 'ES5623134',
-              type: '围巾/针织/长巾',
-              size: '均码',
-              color: '黄色',
-              plan_number: '4000',
-              one_number: '2',
-              unit: '条'
-            }, {
-              code: 'ES5623144',
-              type: '围巾/针织/长巾',
-              size: '均码',
-              color: '黑色',
-              plan_number: '2000',
-              one_number: '1',
-              unit: '条'
-            }]
-          }, {
-            code: '1A2',
-            type: '袋子',
-            size: '60*40*80cm',
-            attr: '印字',
-            unit: '袋',
-            packag_number: '2000',
-            product_info: [{
-              code: 'ES5623134',
-              type: '围巾/针织/长巾',
-              size: '均码',
-              color: '黄色',
-              plan_number: '4000',
-              one_number: '2',
-              unit: '条'
-            }, {
-              code: 'ES5623144',
-              type: '围巾/针织/长巾',
-              size: '均码',
-              color: '黑色',
-              plan_number: '2000',
-              one_number: '1',
-              unit: '条'
-            }]
-          }
-        ],
-        packagMaterialList: [
-          {
-            code: '19abcde122',
-            type: '围巾/针织/帽子/素色',
-            size: '均码',
-            color: '黄色',
-            number: 2000,
-            material_info: [
-              {
-                name: '吊牌',
-                attr: '',
-                packag_number: '2',
-                unit: '个'
-              }, {
-                name: '衣架',
-                attr: '',
-                packag_number: '1',
-                unit: '个'
-              }
-            ]
-
-          }
-        ],
-        orderInfo: []
-      },
+      productList: [],
+      total_price: 0,
+      list: [],
       options: {
-        productArr: []
+        companyList: [],
+        packList: []
       }
     }
   },
@@ -347,34 +428,39 @@ export default {
     }
   },
   watch: {
-    'list.orderInfo': {
+    list: {
+      deep: true,
       handler: function (newVal) {
-        newVal.forEach(item => {
-          let num = 0 // 已选数量统计
-          item.orderClientInfo.forEach(val => {
-            num += Number(val.order_number)
-            val.total_price = val.price * val.order_number
-          })
-          item.select_number = num
-        })
-      },
-      deep: true
+
+      }
     }
   },
   methods: {
-    addOrderClient (key) {
-      this.list.orderInfo[key].orderClientInfo.push({
+    addPackInfo (key) {
+      this.list[key].pack_info.push({
+        number: '',
+        pack_name: '',
+        price: ''
+      })
+    },
+    deletePackInfo (key, ind) {
+      this.list[key].pack_info.splice(ind, 1)
+    },
+    addOrderPage () {
+      this.list.push({
         order_client: '',
-        order_number: '',
-        price: '',
+        pack_info: [{
+          number: '',
+          pack_name: '',
+          price: ''
+        }],
         total_price: '',
         order_time: this.now_time,
         remark: ''
       })
-      console.log(this.list.orderInfo)
     },
-    deleteOrderClient (key, index) {
-      this.list.orderInfo[key].orderClientInfo.splice(index, 1)
+    deleteOrderPage (key) {
+      this.list.splice(key, 1)
     },
     saveAll () {
       if (this.save) {
@@ -409,39 +495,37 @@ export default {
       this.client_name = orderInfo.client_name
       this.order_time = orderInfo.order_time
       this.group_name = orderInfo.group_name
-      // 初始化订购信息
-      this.list.packagList.forEach(item => {
-        let flag = this.list.orderInfo.find(key => (key.name === item.type && key.size === item.size && key.attr === item.attr))
-        if (!flag) {
-          this.list.orderInfo.push({
-            name: item.type,
-            size: item.size,
-            attr: item.attr,
-            unit: item.unit,
-            plan_number: item.packag_number,
-            orderClientInfo: []
+      // 初始化产品信息
+      orderInfo.order_batch.forEach(item => {
+        item.batch_info.forEach(value => {
+          value.size.forEach(val => {
+            let flag = this.productList.find(key => key.product_code === value.productCode)
+            if (!flag) {
+              let type = value.productInfo.category_info.product_category + '/' + value.productInfo.type_name + '/' + value.productInfo.style_name + (value.productInfo.flower_id ? '/' + value.productInfo.flower_id : '')
+              this.productList.push({
+                product_code: value.productCode,
+                type: type,
+                size_info: [{
+                  size: val.name[0],
+                  color: val.name[1],
+                  plan_number: val.numbers
+                }]
+              })
+            } else {
+              let flag1 = flag.size_info.find(key => (key.size === val.name[0] && key.color === val.name[1]))
+              if (!flag1) {
+                flag.size_info.push({
+                  size: val.name[0],
+                  color: val.name[1],
+                  plan_number: val.numbers
+                })
+              } else {
+                flag1.plan_number = Number(flag1.plan_number) + Number(val.numbers)
+              }
+            }
           })
-        } else {
-          flag.plan_number = Number(flag.plan_number) + Number(item.packag_number)
-        }
-      })
-      this.list.packagMaterialList.forEach(item => {
-        item.material_info.forEach(val => {
-          let flag = this.list.orderInfo.find(key => (key.name === val.name && key.attr === val.attr))
-          if (!flag) {
-            this.list.orderInfo.push({
-              name: val.name,
-              attr: val.attr,
-              unit: val.unit,
-              plan_number: val.packag_number * item.number,
-              orderClientInfo: []
-            })
-          } else {
-            flag.plan_number = Number(flag.plan_number) + (val.packag_number * item.number)
-          }
         })
       })
-      console.log(this.list.orderInfo)
       this.loading = false
     })
   }

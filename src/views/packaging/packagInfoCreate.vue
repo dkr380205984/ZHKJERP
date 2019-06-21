@@ -2,7 +2,7 @@
   <div id="packagInfoCreate"
     v-loading="loading">
     <div class="head">
-      <h2>添加包装辅料</h2>
+      <h2>添加包装辅料(未启用)</h2>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -95,6 +95,7 @@
                     <el-select v-model="value.type"
                       placeholder="请选择包装类型"
                       size="small"
+                      :disabled="value.flag"
                       style="width:243px;">
                       <el-option v-for="type in options.packagType"
                         :key="type.id"
@@ -107,6 +108,7 @@
                     <span>包装规格:</span>
                     <el-input size="small"
                       style="width:243px;"
+                      :disabled="value.flag"
                       placeholder="请输入包装规格"
                       v-model="value.size">
                     </el-input>
@@ -115,6 +117,7 @@
                     <span>包装属性:</span>
                     <el-input size="small"
                       style="width:243px;"
+                      :disabled="value.flag"
                       placeholder="请输入包装属性"
                       v-model="value.attr">
                     </el-input>
@@ -126,6 +129,7 @@
                       <span>包装编号:</span>
                       <el-input size="small"
                         style="width:243px;"
+                        :disabled="valCode.flag"
                         placeholder="请输入预计包装数量"
                         v-model="valCode.packag_number">
                         <template slot="prepend">{{key+1}}{{letterArr[index]}}{{indCode+1}}</template>
@@ -138,6 +142,7 @@
                         <el-select v-model="valPro.name"
                           :placeholder="'产品' + (indPro + 1)"
                           size="small"
+                          :disabled="valPro.flag"
                           style="width:243px;font-size:10px;">
                           <el-option v-for="product in arrGeter(key)"
                             :key="product.value"
@@ -151,7 +156,7 @@
                         <em v-else
                           class="el-icon-delete"
                           style="right:-35px;top:3px;"
-                          @click="deleteProduct(key,index,indCode,indPro)"></em>
+                          @click="valPro.flag ? noDelete() : deleteProduct(key,index,indCode,indPro)"></em>
                       </div>
                       <div class="divInp"
                         style="margin-left:6em;font-size:14px;flex-direction:column"
@@ -159,6 +164,7 @@
                         <el-input size="small"
                           style="width:243px"
                           placeholder="每包数量"
+                          :disabled="valPro.flag"
                           v-model="valPro.number">
                         </el-input>
                       </div>
@@ -170,18 +176,18 @@
                     <div class="addLv"
                       v-else
                       style="width:6em;margin-left:6em;font-size:14px;margin-top:20px;"
-                      @click="deletePackagCode(key,index,indCode)">删除{{key+1}}{{letterArr[index]}}</div>
+                      @click="valCode.flag ? noDelete() :deletePackagCode(key,index,indCode)">删除{{key+1}}{{letterArr[index]}}</div>
                   </div>
                   <em v-if="index !== 0"
                     class="el-icon-delete"
                     style="right:0px;top:30px;"
-                    @click="deletePackagLv(key,index)"></em>
+                    @click="value.flag ? noDelete() : deletePackagLv(key,index)"></em>
                 </div>
                 <!-- </template> -->
                 <span class="tag">{{chinaNumber[key+1]}}级{{letterArr[index]}}</span>
               </li>
               <span class="el-icon-close"
-                @click="deleteLvInfo(key)"></span>
+                @click="item.flag ? noDelete() : deleteLvInfo(key)"></span>
             </ul>
           </div>
           <div class="addBtn"
@@ -394,7 +400,7 @@
 
 <script>
 import { letterArr } from '@/assets/js/dictionary.js'
-import { orderDetail } from '@/assets/js/api.js'
+import { orderDetail, packagCreate, packagDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -497,7 +503,8 @@ export default {
           }
         ] // 辅料列表
       },
-      flag: true
+      flag: true,
+      save: true
     }
   },
   filters: {
@@ -577,8 +584,6 @@ export default {
             }
           })
         })
-        console.log(newVal)
-        console.log(this.surplus)
       }
     },
     // 监听其他装箱辅料统计辅料统计表
@@ -587,33 +592,41 @@ export default {
       handler: function (newVal) {
         this.list.addPackagMaterialInfo = []
         newVal.forEach(item => {
-          let num = this.arrGeter().find(key => key.value === item.packag_name).number
-          let obj = {}
-          obj.code = item.packag_name ? item.packag_name.split(' ')[0] : ''
-          obj.type = item.packag_name ? item.packag_name.split(' ')[1] : ''
-          obj.size = item.packag_name ? (item.packag_name.split(' ')[2] ? item.packag_name.split(' ')[2].split('/')[0] : '') : ''
-          obj.color = item.packag_name ? (item.packag_name.split(' ')[2] ? item.packag_name.split(' ')[2].split('/')[1] : '') : ''
-          obj.material_info = []
-          item.packag_material.forEach(val => {
-            let flag = obj.material_info.find(key => (key.name === val.name && key.attr === val.attr))
-            if (!flag) {
-              obj.material_info.push({
-                name: val.name ? val.name.split(' ')[0] : '',
-                unit: val.name ? val.name.split(' ')[1] : '',
-                attr: val.attr,
-                number: val.number,
-                plan_number: num
-              })
-            } else {
-              flag.number = Number(flag.number) + Number(val.number)
-            }
-          })
-          this.list.addPackagMaterialInfo.push({ ...obj })
+          if (item.packag_name) {
+            let num = this.arrGeter().find(key => key.value === item.packag_name).number
+            let obj = {}
+            obj.code = item.packag_name ? item.packag_name.split(' ')[0] : ''
+            obj.type = item.packag_name ? item.packag_name.split(' ')[1] : ''
+            obj.size = item.packag_name ? (item.packag_name.split(' ')[2] ? item.packag_name.split(' ')[2].split('/')[0] : '') : ''
+            obj.color = item.packag_name ? (item.packag_name.split(' ')[2] ? item.packag_name.split(' ')[2].split('/')[1] : '') : ''
+            obj.material_info = []
+            item.packag_material.forEach(val => {
+              let flag = obj.material_info.find(key => ((key.name + ' ' + key.unit) === val.name) && key.attr === val.attr)
+              if (!flag) {
+                obj.material_info.push({
+                  name: val.name ? val.name.split(' ')[0] : '',
+                  unit: val.name ? val.name.split(' ')[1] : '',
+                  attr: val.attr,
+                  number: val.number,
+                  plan_number: num
+                })
+              } else {
+                flag.number = Number(flag.number) + Number(val.number)
+              }
+            })
+            this.list.addPackagMaterialInfo.push({ ...obj })
+          }
         })
       }
     }
   },
   methods: {
+    noDelete () {
+      this.$message({
+        type: 'error',
+        message: `不可对已有数据进行删除`
+      })
+    },
     addMaterialPro (key) {
       this.list.addPackagMaterialList[key].packag_material.push({
         name: '',
@@ -758,8 +771,130 @@ export default {
     saveAll () {
       if (this.save) {
         this.save = false
-      } else {
+        let arr = []
+        let flag = true
+        // console.log(this.list.addPackagList)
+        // console.log(this.list.addPackagMaterialList)
+        this.list.addPackagList.forEach(item => {
+          item.forEach(value => {
+            value.packag_info.forEach(valPack => {
+              valPack.product_info.forEach(valPro => {
+                console.log(valPro.name, valPro.flag)
+                if (valPro.name && valPro.flag !== true) {
+                  if (!value.type) {
+                    this.$message({
+                      type: 'error',
+                      message: `请选择包装类型`
+                    })
+                    flag = false
+                    return
+                  }
+                  if (!value.size) {
+                    this.$message({
+                      type: 'error',
+                      message: `请输入包装规格`
+                    })
+                    flag = false
+                    return
+                  }
+                  if (!valPack.packag_number) {
+                    this.$message({
+                      type: 'error',
+                      message: `请输入包装数量`
+                    })
+                    flag = false
+                    return
+                  }
+                  if (!valPro.number) {
+                    this.$message({
+                      type: 'error',
+                      message: `请输入产品每包数量`
+                    })
+                    flag = false
+                    return
+                  }
+                  console.log(flag)
+                  if (flag) {
+                    arr.push({
+                      order_id: this.$route.params.id,
+                      product_code: valPro.name.split(' ')[0],
+                      company_id: window.sessionStorage.getItem('company_id'),
+                      user_id: window.sessionStorage.getItem('user_id'),
+                      pack_type: value.type.split(' ')[0],
+                      pack_size: value.size,
+                      pack_attribute: value.attr,
+                      pack_code: valPack.packag_code,
+                      number: valPro.number,
+                      count: valPack.packag_number,
+                      size: valPro.name.split(' ')[2].split('/')[0],
+                      color: valPro.name.split(' ')[2].split('/')[1],
+                      ingredients_info: ''
+                    })
+                  }
+                }
+              })
+            })
+          })
+        })
+        this.list.addPackagMaterialList.forEach(item => {
+          if (item.packag_name) {
+            item.packag_material.forEach(val => {
+              if (!val.name) {
+                this.$message({
+                  type: 'error',
+                  message: `请最少选择一种包装辅料`
+                })
+                flag = false
+                return
+              }
+              if (!val.number) {
+                this.$message({
+                  type: 'error',
+                  message: `请输入包装辅料每包数量`
+                })
+                flag = false
+              }
+            })
+            // console.log(flag)
+            if (flag) {
+              arr.push({
+                order_id: this.$route.params.id,
+                product_code: '',
+                company_id: window.sessionStorage.getItem('company_id'),
+                user_id: window.sessionStorage.getItem('user_id'),
+                pack_type: '',
+                pack_size: '',
+                pack_attribute: '',
+                pack_code: '',
+                number: null,
+                count: null,
+                size: '',
+                color: '',
+                ingredients_info: JSON.stringify(item)
+              })
+            }
+          }
+        })
+        console.log(arr)
+        if (flag && arr.length !== 0) {
+          packagCreate({
+            data: arr
+          }).then(res => {
+            console.log(res)
+            this.$message({
+              type: 'success',
+              message: `添加成功`
+            })
+          })
+        } else {
+          this.$message({
+            type: 'warning',
+            message: `无可提交的数据`
+          })
+        }
         let self = this
+        setTimeout(() => { self.save = true }, 1000)
+      } else {
         this.$alert('请求速度过于频繁', '提醒', {
           confirmButtonText: '确定',
           callback: action => {
@@ -769,7 +904,6 @@ export default {
             })
           }
         })
-        setTimeout(() => { self.save = true }, 1000)
       }
     }
   },
@@ -777,12 +911,16 @@ export default {
     Promise.all([
       orderDetail({
         id: this.$route.params.id
+      }),
+      packagDetail({
+        order_id: this.$route.params.id
       })
     ]).then(res => {
       let orderInfo = res[0].data.data
-      // let weaveInfo = res[1].data.data
+      let packagInfo = res[1].data.data
       // console.log('orderInfo', orderInfo)
-      // console.log('weaveInfo', weaveInfo)
+      console.log('packagInfo', packagInfo)
+      // console.log(this.list.addPackagList)
       // 初始化订单信息
       this.order_code = orderInfo.order_code
       this.client_name = orderInfo.client_name
@@ -829,40 +967,52 @@ export default {
         })
       })
       // 初始化装箱预计表
-      // this.list.addPackagList.forEach(item => {
-      //   item.forEach(value => {
-      //     value.packag_info.forEach(valCode => {
-      //       valCode.product_info.forEach(valPro => {
-      //         let flag = this.list.addPackagInfo.find(key => key.packag_code === valCode.packag_code)
-      //         if (!flag) {
-      //           this.list.addPackagInfo.push({
-      //             packag_code: valCode.packag_code,
-      //             packag_type: value.type ? value.type.split(' ')[0] : '未选择',
-      //             unit: value.type ? value.type.split(' ')[1] : '',
-      //             packag_size: value.size ? value.size : '未输入',
-      //             packag_attr: value.attr ? value.attr : '未输入',
-      //             packag_number: valCode.packag_number ? valCode.packag_number : '0',
-      //             product_info: [{
-      //               product_code: valPro.name ? valPro.name.split(' ')[0] : '未选择',
-      //               type: valPro.name ? valPro.name.split(' ')[1] : '未选择',
-      //               size: valPro.name ? valPro.name.split(' ')[2].split('/')[0] : '',
-      //               color: valPro.name ? valPro.name.split(' ')[2].split('/')[1] : '',
-      //               number: valPro.number ? valPro.number : '0'
-      //             }]
-      //           })
-      //         } else {
-      //           flag.product_info.push({
-      //             product_code: valPro.name ? valPro.name.split(' ')[0] : '未选择',
-      //             type: valPro.name ? valPro.name.split(' ')[1] : '未选择',
-      //             size: valPro.name ? valPro.name.split(' ')[2].split('/')[0] : '',
-      //             color: valPro.name ? valPro.name.split(' ')[2].split('/')[1] : '',
-      //             number: valPro.number ? valPro.number : '0'
-      //           })
-      //         }
-      //       })
-      //     })
-      //   })
-      // })
+      let packagList = [] // 添加装箱辅料数据
+      let materialList = [] // 其他装箱辅料数据
+      packagInfo.forEach(item => {
+        if (item.pack_code) {
+          let num1 = item.pack_code.split('')[0] - 1
+          let num2 = this.letterArr.indexOf(item.pack_code.split('')[1])
+          let num3 = item.pack_code.split('')[2] - 1
+          // console.log(num1, num2, num3)
+          if (!packagList[num1]) {
+            packagList[num1] = []
+            packagList[num1].flag = true
+          }
+          if (!packagList[num1][num2]) {
+            packagList[num1][num2] = {
+              attr: item.pack_attribute,
+              size: item.pack_size,
+              type: item.pack_type,
+              flag: true,
+              packag_info: []
+            }
+          }
+          if (!packagList[num1][num2].packag_info) {
+            packagList[num1][num2].packag_info = []
+          }
+          if (!packagList[num1][num2].packag_info[num3]) {
+            packagList[num1][num2].packag_info[num3] = {
+              packag_code: item.pack_code,
+              flag: true,
+              packag_number: item.count,
+              product_info: []
+            }
+          }
+          packagList[num1][num2].packag_info[num3].product_info.push({
+            name: item.product_info.product_code + ' ' + item.size + '/' + item.color,
+            flag: true,
+            number: item.number
+          })
+        } else if (item.ingredients_info) {
+
+        }
+      })
+      // console.log(packagList)
+      if (packagList.length !== 0) {
+        this.list.addPackagList = packagList
+        // console.log(this.list.addPackagList)
+      }
       this.loading = false
     })
   }

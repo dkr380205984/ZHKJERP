@@ -2,7 +2,7 @@
   <div id="semiExaminationDetail"
     v-loading="loading">
     <div class="head">
-      <h2>装箱出库详情</h2>
+      <h2>装箱出库详情(未启用)</h2>
     </div>
     <div class="body">
       <div class="stepCtn">

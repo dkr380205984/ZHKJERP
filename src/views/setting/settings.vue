@@ -42,6 +42,10 @@ export default {
         name: '账号设置',
         img: require('../../assets/image/setting/账号设置-蓝.png'),
         url: '/index/accountSetting'
+      }, {
+        name: '包装设置',
+        img: require('../../assets/image/setting/包装设置-蓝.png'),
+        url: '/index/packagMaterialList'
       }]
     }
   }

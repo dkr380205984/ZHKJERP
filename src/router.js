@@ -368,10 +368,10 @@ let router = new Router({
       path: 'packagDetail/:id',
       name: 'packagDetail',
       component: () => import('./views/packaging/packagDetail.vue')
-    }, {
-      path: 'packagInfoCreate/:id',
-      name: 'packagInfoCreate',
-      component: () => import('./views/packaging/packagInfoCreate.vue')
+      // }, {
+      //   path: 'packagInfoCreate/:id',
+      //   name: 'packagInfoCreate',
+      //   component: () => import('./views/packaging/packagInfoCreate.vue')
     }, {
       path: 'packagMaterialPage/:id',
       name: 'packagMaterialPage',
@@ -388,6 +388,14 @@ let router = new Router({
       path: 'packagOutStock/:id/:batchId',
       name: 'packagOutStock',
       component: () => import('./views/packaging/packagOutStock.vue')
+    }, {
+      path: 'packagMaterialList',
+      name: 'packagMaterialList',
+      component: () => import('./views/setting/packagMaterialList.vue')
+    }, {
+      path: 'packagMaterialSetting',
+      name: 'packagMaterialSetting',
+      component: () => import('./views/setting/packagMaterialSetting.vue')
     }]
   }
   ]

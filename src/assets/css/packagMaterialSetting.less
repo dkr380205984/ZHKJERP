@@ -1,0 +1,85 @@
+@import './common.less';
+#packagMaterialSetting{
+  height: 100%;
+  font-family: 'systemfont';
+  font-weight: 300;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  .head{
+    min-height: 60px;
+    border-bottom: 1px solid #ECF0F1;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    h2{
+      line-height: 60px;
+      margin: 0;
+      font-size: 24px;
+      color:@fontNormal;
+      font-weight: 400;
+    }
+  }
+  .body{
+    padding: 20px 40px;
+    flex: 1;
+    .lineCtn{
+      display: flex;
+      flex-wrap: wrap;
+      background: #ECF0F1;
+      max-width: 1000px;
+      max-height: 64px;
+      margin-bottom: 24px;
+      overflow: hidden;
+      transition: 0.8s;
+      .inputCtn{
+        min-height: 40px;
+        display: flex;
+        flex-wrap: wrap;
+        padding:24px 280px 0px 6em;
+        width: 100%;
+        position: relative;
+        align-items: center;
+        background: #fff;
+        border-bottom: 12px solid #fff;
+        .label{
+          position: absolute;
+          width: 6em;
+          line-height: 40px;
+          text-align: right;
+          font-size:@fontBig;
+          color: #666666;
+          left: 0;
+        }
+        .icon{
+          margin-left: 15px;
+          cursor: pointer;
+          border-radius: 50%;
+          padding: 5px;
+          transition: all 0.1s ease-in-out;
+          &:hover {
+            color:#fff;
+            background: @normalBlue;
+          }
+        }
+      }
+      &.bigLine{
+        max-height: 130px;
+      }
+    }
+    .btnCtn{
+      display: flex;
+      padding-left: 60px;
+      justify-content: space-between;
+      width: 300px;
+      margin-bottom: 40px;
+    }
+    .elInput{
+      line-height: 38px;
+      margin-left: 15px;
+      width: 290px;
+      color: @fontNormal;
+    }
+  }
+}
