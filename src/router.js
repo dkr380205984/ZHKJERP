@@ -313,6 +313,10 @@ let router = new Router({
       name: 'rawMaterialSupply',
       component: () => import('./views/rawMaterial/rawMaterialSupply.vue')
     }, {
+      path: 'otherMaterialSupply/:id/:companyName/:companyId',
+      name: 'otherMaterialSupply',
+      component: () => import('./views/rawMaterial/otherMaterialSupply.vue')
+    }, {
       path: 'rawMaterialOutStock/:id/:type',
       name: 'rawMaterialOutStock',
       component: () => import('./views/rawMaterial/rawMaterialOutStock.vue')

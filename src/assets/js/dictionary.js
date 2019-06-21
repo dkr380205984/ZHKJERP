@@ -161,6 +161,12 @@ let machiningType = [{
 }, {
   name: '手缝',
   id: 17
+}, {
+  name: '打结',
+  id: 18
+}, {
+  name: '砂洗',
+  id: 19
 }]
 // 菜单栏在做中的页面
 const menu = [{

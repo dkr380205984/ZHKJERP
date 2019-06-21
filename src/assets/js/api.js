@@ -242,11 +242,20 @@ const packagDetail = (params) => http.get(`${baseUrl}/pack/statistics/list`, par
 const packagMaterialpage = (params) => http.post(`${baseUrl}/pack/order/save`, params, 'application/json')
 // 包装辅料订购详情
 const packagMaterialDetail = (params) => http.get(`${baseUrl}/pack/order/list`, params)
+// 补纱
+const replenishYarnSave = (params) => http.post(`${baseUrl}/production/yarn/replenish/save`, params, 'application/json')
+// 补纱列表
+const replenishYarnList = (params) => http.get(`${baseUrl}/production/yarn/replenish/list`, params)
+// 承担公司
+const bearClient = (params) => http.get(`${baseUrl}/production/order/client/list`, params)
 export {
   packagCreate,
   packagDetail,
   packagMaterialpage,
   packagMaterialDetail,
+  bearClient,
+  replenishYarnSave,
+  replenishYarnList,
   finishedExaminationDetail,
   semiExaminationDetail,
   finishedExamination,

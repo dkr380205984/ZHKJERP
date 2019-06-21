@@ -321,6 +321,62 @@
           </div>
         </div>
       </div>
+      <div class="stepCtn"
+        v-if="bushaList.length>0">
+        <div class="stepTitle">原料补纱信息</div>
+        <div class="borderCtn">
+          <div class="cicle"></div>
+          <div class="border"></div>
+        </div>
+        <div class="lineCtn col">
+          <div class="inputCtn noPadding">
+            <div class="content">
+              <ul class="tablesCtn">
+                <li class="title">
+                  <span>补纱次数</span>
+                  <span>纱线</span>
+                  <span>颜色</span>
+                  <span>补纱重量(kg)</span>
+                  <span>总重量(kg)</span>
+                  <span>承担单位/比例</span>
+                  <span>补纱原因</span>
+                  <span>操作时间</span>
+                  <span>操作</span>
+                </li>
+                <li class="material_info"
+                  v-for="(item,index) in bushaList"
+                  :key="index">
+                  <span>第 {{index+1}} 次</span>
+                  <span class="col"
+                    style="flex:4">
+                    <span v-for="(itemYarn,indexYarn) in item.yarn_info"
+                      :key="indexYarn">
+                      <span>{{itemYarn.name}}</span>
+                      <span class="col"
+                        style="flex:2">
+                        <span v-for="(itemColor,indexColor) in itemYarn.info"
+                          :key="indexColor">
+                          <span>{{itemColor.color}}</span>
+                          <span>{{itemColor.weight}}</span>
+                        </span>
+                      </span>
+                      <span>{{itemYarn.total}}</span>
+                    </span>
+                  </span>
+                  <span style="display:flex;flex-direction:column;justify-content: space-around;">
+                    <span style="border:0"
+                      v-for="(itemClient,indexClient) in item.client_info"
+                      :key="indexClient">{{itemClient.client_name}}({{itemClient.percent}}%)</span>
+                  </span>
+                  <span>{{item.desc}}</span>
+                  <span>{{item.created_at.slice(0,10)}}</span>
+                  <span style="color:#1A95FF">去订购</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="btnCtn">
         <div class="cancleBtn"
           @click="$router.go(-1)">返回</div>
@@ -395,7 +451,7 @@
 </template>
 
 <script>
-import { productionDetail, weaveDetail, weaveUpadate } from '@/assets/js/api.js'
+import { productionDetail, weaveDetail, weaveUpadate, replenishYarnList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -441,7 +497,8 @@ export default {
         price: '',
         complete_time: ''
       },
-      fenpeiList: []
+      fenpeiList: [],
+      bushaList: []
     }
   },
   mounted () {
@@ -450,8 +507,12 @@ export default {
         order_id: this.$route.params.id
       }), weaveDetail({
         order_id: this.$route.params.id
+      }), replenishYarnList({
+        order_id: this.$route.params.id,
+        type: 1
       })
     ]).then(res => {
+      console.log(res[2])
       this.order = res[0].data.data.production_detail.order_info
       this.productInfo = res[0].data.data.production_detail.product_info.map((item) => {
         let json = item
@@ -630,7 +691,6 @@ export default {
       })
       // 第二步，合并加工单位
       this.materialList = this.jsonMerge(materialList, ['client_name', 'product_code'])
-      console.log(this.materialList)
       // 统计生产分配信息
       // 先按生产单位合并，再按产品编号合并
       let fenpeiList = this.jsonMerge(this.logList.map((item) => {
@@ -650,6 +710,19 @@ export default {
           }, 0)
         }
       })
+      // 补纱信息合并
+      this.bushaList = res[2].data.data.map((item) => {
+        let json = item
+        json.yarn_info = this.jsonMerge(json.yarn_info, ['name'])
+        json.yarn_info.map((itemYarn) => {
+          itemYarn.total = itemYarn.info.reduce((total, current) => {
+            return total + parseInt(current.weight)
+          }, 0)
+          return itemYarn
+        })
+        return json
+      })
+      console.log(this.bushaList)
     })
   },
   methods: {

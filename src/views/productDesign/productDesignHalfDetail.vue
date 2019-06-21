@@ -293,11 +293,68 @@
                       </span>
                     </span>
                   </span>
-                  <span style="color:#1A95FF">补充原料</span>
+                  <span style="color:#1A95FF;cursor:pointer;"
+                    @click="$router.push('/index/otherMaterialSupply/'+$route.params.id+'/'+itemCompany.client_name + '/' +itemCompany.client_id)">补充辅料</span>
                 </li>
                 <li class="material_info"
                   v-if="materialList.length===0">
                   <span>还未进行任何分配</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="stepCtn"
+        v-if="bushaList.length>0">
+        <div class="stepTitle">辅料补充信息</div>
+        <div class="borderCtn">
+          <div class="cicle"></div>
+          <div class="border"></div>
+        </div>
+        <div class="lineCtn col">
+          <div class="inputCtn noPadding">
+            <div class="content">
+              <ul class="tablesCtn">
+                <li class="title">
+                  <span>补充次数</span>
+                  <span>纱线</span>
+                  <span>颜色</span>
+                  <span>补充数量</span>
+                  <span>总数量</span>
+                  <span>承担单位/比例</span>
+                  <span>补纱原因</span>
+                  <span>操作时间</span>
+                  <span>操作</span>
+                </li>
+                <li class="material_info"
+                  v-for="(item,index) in bushaList"
+                  :key="index">
+                  <span>第 {{index+1}} 次</span>
+                  <span class="col"
+                    style="flex:4">
+                    <span v-for="(itemYarn,indexYarn) in item.yarn_info"
+                      :key="indexYarn">
+                      <span>{{itemYarn.name}}</span>
+                      <span class="col"
+                        style="flex:2">
+                        <span v-for="(itemColor,indexColor) in itemYarn.info"
+                          :key="indexColor">
+                          <span>{{itemColor.color}}</span>
+                          <span>{{itemColor.weight}}</span>
+                        </span>
+                      </span>
+                      <span>{{itemYarn.total}}</span>
+                    </span>
+                  </span>
+                  <span style="display:flex;flex-direction:column;justify-content: space-around;">
+                    <span style="border:0;align-items:center"
+                      v-for="(itemClient,indexClient) in item.client_info"
+                      :key="indexClient">{{itemClient.client_name}}({{itemClient.percent}}%)</span>
+                  </span>
+                  <span>{{item.desc}}</span>
+                  <span>{{item.created_at.slice(0,10)}}</span>
+                  <span style="color:#1A95FF">去订购</span>
                 </li>
               </ul>
             </div>
@@ -384,7 +441,7 @@
 </template>
 
 <script>
-import { productionDetail, halfProductDetail, halfProductUpadate } from '@/assets/js/api.js'
+import { productionDetail, halfProductDetail, halfProductUpadate, replenishYarnList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -428,7 +485,8 @@ export default {
         price: '',
         complete: '',
         type: ''
-      }
+      },
+      bushaList: []
     }
   },
   mounted () {
@@ -437,6 +495,9 @@ export default {
         order_id: this.$route.params.id
       }), halfProductDetail({
         order_id: this.$route.params.id
+      }), replenishYarnList({
+        order_id: this.$route.params.id,
+        type: 2
       })
     ]).then(res => {
       this.order = res[0].data.data.production_detail.order_info
@@ -611,11 +672,11 @@ export default {
       // 半成品分配价格统计完成，开始统计半成品分配辅料信息
       // 第一步，先按加工单位合并，再按加工类型合并
       let materialList = this.jsonMerge(logList, ['client_name', 'type'])
-      console.log(materialList)
       // 对于加工类型里的辅料需要合并一些数值
       materialList = materialList.map((itemCompany) => {
         return {
           client_name: itemCompany.client_name,
+          client_id: itemCompany.info[0].info[0].client_id,
           info: itemCompany.info.map((itemType) => {
             let arr = []
             // 先按辅料相同的进行合并
@@ -642,7 +703,6 @@ export default {
                 }
               })
             })
-            console.log(arr)
             // 将数据和配料单的数据合并
             arr.map((itemInfo) => {
               let json = itemInfo
@@ -660,7 +720,6 @@ export default {
                 return json
               })
             })
-            console.log(arr)
             return {
               type: itemType.type,
               info: arr
@@ -668,8 +727,20 @@ export default {
           })
         }
       })
-      console.log(materialList)
       this.materialList = materialList
+      // 补辅料信息合并
+      this.bushaList = res[2].data.data.map((item) => {
+        let json = item
+        json.yarn_info = this.jsonMerge(json.yarn_info, ['name'])
+        json.yarn_info.map((itemYarn) => {
+          itemYarn.total = itemYarn.info.reduce((total, current) => {
+            return total + parseInt(current.weight)
+          }, 0)
+          return itemYarn
+        })
+        return json
+      })
+      console.log(this.bushaList)
       this.loading = false
     })
   },
@@ -729,7 +800,6 @@ export default {
     },
     // 点击修改
     updateLog (item) {
-      console.log(item)
       this.updateInfo = item
       this.showShade = true
     },

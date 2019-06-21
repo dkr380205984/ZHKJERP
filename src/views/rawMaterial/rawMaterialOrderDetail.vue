@@ -214,6 +214,7 @@
         <div class="stepTitle">{{type === '0' ? '原': '辅'}}料加工信息</div>
         <div class="borderCtn">
           <div class="cicle"></div>
+          <div class="border"></div>
         </div>
         <div class="lineCtn">
           <div class="inputCtn noPadding">
@@ -325,6 +326,62 @@
           </div>
         </div>
       </div>
+      <div class="stepCtn"
+        v-if="bushaList.length>0">
+        <div class="stepTitle">{{type===0?'补纱信息':'辅料补充信息'}}</div>
+        <div class="borderCtn">
+          <div class="cicle"></div>
+          <div class="border"></div>
+        </div>
+        <div class="lineCtn col">
+          <div class="inputCtn noPadding">
+            <div class="content">
+              <ul class="tablesCtn">
+                <li class="title">
+                  <span>次数</span>
+                  <span>{{type===0?'纱线':'辅料'}}</span>
+                  <span>颜色</span>
+                  <span>{{type===0?'重量':'数量'}}</span>
+                  <span>{{type===0?'总重量':'总数量'}}</span>
+                  <span>承担单位/比例</span>
+                  <span>原因</span>
+                  <span>操作时间</span>
+                  <span>操作</span>
+                </li>
+                <li class="material_info"
+                  v-for="(item,index) in bushaList"
+                  :key="index">
+                  <span>第 {{index+1}} 次</span>
+                  <span class="col"
+                    style="flex:4">
+                    <span v-for="(itemYarn,indexYarn) in item.yarn_info"
+                      :key="indexYarn">
+                      <span>{{itemYarn.name}}</span>
+                      <span class="col"
+                        style="flex:2">
+                        <span v-for="(itemColor,indexColor) in itemYarn.info"
+                          :key="indexColor">
+                          <span>{{itemColor.color}}</span>
+                          <span>{{itemColor.weight}}</span>
+                        </span>
+                      </span>
+                      <span>{{itemYarn.total}}</span>
+                    </span>
+                  </span>
+                  <span style="display:flex;flex-direction:column;justify-content: space-around;">
+                    <span style="border:0;align-items:center"
+                      v-for="(itemClient,indexClient) in item.client_info"
+                      :key="indexClient">{{itemClient.client_name}}({{itemClient.percent}}%)</span>
+                  </span>
+                  <span>{{item.desc}}</span>
+                  <span>{{item.created_at.slice(0,10)}}</span>
+                  <span style="color:#1A95FF">去订购</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="btnCtn">
         <div class="cancleBtn"
           @click="$router.go(-1)">返回</div>
@@ -336,7 +393,7 @@
 </template>
 
 <script>
-import { rawMaterialOrderList, orderDetail, rawMaterialOrderInit, rawMaterialProcessList, productionDetail } from '@/assets/js/api.js'
+import { rawMaterialOrderList, orderDetail, rawMaterialOrderInit, rawMaterialProcessList, productionDetail, replenishYarnList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -358,7 +415,8 @@ export default {
       orderLogFlag: false,
       orderLoading: false,
       orderLog: [],
-      flag: true
+      flag: true,
+      bushaList: []
     }
   },
   filters: {
@@ -367,6 +425,56 @@ export default {
     }
   },
   methods: {
+    jsonMerge (jsonArr, keyArr) {
+      let newJson = [] // 合并好的数据都放在这个数组里
+      jsonArr.forEach((itemJson, indexJson) => {
+        let mark = -1
+        let finded = newJson.find((itemFind, indexFind) => {
+          if (itemFind[keyArr[0]] === itemJson[keyArr[0]]) {
+            mark = indexFind
+            return itemFind[keyArr[0]] === itemJson[keyArr[0]]
+          }
+        })
+        if (!finded) {
+          let value = {}
+          value[keyArr[0]] = itemJson[keyArr[0]]
+          value['info'] = []
+          let info = {}
+          for (let i in itemJson) {
+            if (i !== keyArr[0]) {
+              info[i] = itemJson[i]
+            }
+          }
+          value['info'].push(info)
+          newJson.push(value)
+        } else {
+          let info = {}
+          for (let i in itemJson) {
+            if (i !== keyArr[0]) {
+              info[i] = itemJson[i]
+            }
+          }
+          newJson[mark]['info'].push(info)
+        }
+      })
+      // 递归的条件是不断的缩减keyArr的length，每次都去除第零个，直到为0
+      if (keyArr.length === 1) {
+        return newJson
+      } else {
+        return newJson.map((itemInfo) => {
+          let newKeyArr = []
+          keyArr.forEach((item, index) => {
+            if (index > 0) {
+              newKeyArr.push(item)
+            }
+          })
+          return {
+            [keyArr[0]]: itemInfo[keyArr[0]],
+            'info': this.jsonMerge(itemInfo['info'], newKeyArr)
+          }
+        })
+      }
+    },
     charCodeLength (item) {
       if (!item) {
         return 0
@@ -436,6 +544,10 @@ export default {
       }),
       productionDetail({
         order_id: this.$route.params.id
+      }),
+      replenishYarnList({
+        order_id: this.$route.params.id,
+        type: parseInt(this.type) + 1
       })
     ]).then(res => {
       let info = res[0].data.data.material_info
@@ -680,6 +792,18 @@ export default {
             })
           }
         })
+      })
+      // 补纱信息合并
+      this.bushaList = res[5].data.data.map((item) => {
+        let json = item
+        json.yarn_info = this.jsonMerge(json.yarn_info, ['name'])
+        json.yarn_info.map((itemYarn) => {
+          itemYarn.total = itemYarn.info.reduce((total, current) => {
+            return total + parseInt(current.weight)
+          }, 0)
+          return itemYarn
+        })
+        return json
       })
       this.loading = false
     })
