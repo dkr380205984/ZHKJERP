@@ -237,6 +237,7 @@
               <li>
                 <span>加工类型:</span>
                 <el-select v-model="itemCompany.machining"
+                  multiple
                   placeholder="请选择加工类型"
                   size="small">
                   <el-option v-for="item in machiningType"
@@ -591,7 +592,7 @@ export default {
       this.formList[index].company.push({
         company_id: '',
         otherMat: [],
-        machining: '',
+        machining: [],
         price_number: [{
           price: '',
           number: '',
@@ -635,7 +636,7 @@ export default {
               msg = '检测到加工单位信息缺失'
               return
             }
-            if (!itemCompany.machining) {
+            if (itemCompany.machining.length === 0) {
               state = true
               msg = '检测到加工类型信息缺失'
               return
@@ -667,25 +668,28 @@ export default {
           this.formList.forEach((item, index) => {
             item.company.forEach((itemCompany, indexCompany) => {
               itemCompany.price_number.forEach((itemPrice, indexPrice) => {
-                formData.push({
-                  company_id: window.sessionStorage.getItem('company_id'),
-                  order_id: this.order.id,
-                  product_code: item.product_code,
-                  client_id: itemCompany.company_id,
-                  // total_price: itemCompany.total_price,
-                  complete_time: itemCompany.complete_time,
-                  desc: itemCompany.desc,
-                  price: itemPrice.price,
-                  number: itemPrice.number,
-                  size: itemPrice.colorSize[0],
-                  color: itemPrice.colorSize[1],
-                  user_id: window.sessionStorage.getItem('user_id'),
-                  type: itemCompany.machining,
-                  ingredients: JSON.stringify(itemCompany.otherMat)
+                itemCompany.machining.forEach((itemMach) => {
+                  formData.push({
+                    company_id: window.sessionStorage.getItem('company_id'),
+                    order_id: this.order.id,
+                    product_code: item.product_code,
+                    client_id: itemCompany.company_id,
+                    // total_price: itemCompany.total_price,
+                    complete_time: itemCompany.complete_time,
+                    desc: itemCompany.desc,
+                    price: itemPrice.price,
+                    number: itemPrice.number,
+                    size: itemPrice.colorSize[0],
+                    color: itemPrice.colorSize[1],
+                    user_id: window.sessionStorage.getItem('user_id'),
+                    type: itemMach,
+                    ingredients: JSON.stringify(itemCompany.otherMat)
+                  })
                 })
               })
             })
           })
+          console.log(formData)
           this.loading = true
           this.lock = true
           halfProductSave({ data: formData }).then((res) => {

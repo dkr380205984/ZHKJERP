@@ -2,7 +2,7 @@
   <div id="rawMaterialOrderPage"
     v-loading="loading">
     <div class="head">
-      <h2>{{type === '0' ? '原': '辅'}}料订购</h2>
+      <h2>{{type === '0' ? '原料补充': '辅料补充'}}订购</h2>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -60,7 +60,7 @@
         <div class="lineCtn">
           <div class="table">
             <div class="tableTitle">
-              <span>计划{{type === '0' ? '原': '辅'}}料信息</span>
+              <span>补充{{type === '0' ? '原': '辅'}}料信息</span>
               <span>库存信息</span>
             </div>
             <template v-if="rawMaterialPlanList.length !== 0">
@@ -222,10 +222,11 @@
 </template>
 
 <script>
-import { rawMaterialOrderInit, clientList, rawMaterialOrder } from '@/assets/js/api.js'
+import { rawMaterialOrderInit, clientList, rawMaterialOrder, replenishYarnList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      bushaId: 0,
       loading: true,
       now_time: '',
       type: '',
@@ -265,7 +266,6 @@ export default {
     list: {
       deep: true,
       handler: function (newVal) {
-        console.log(newVal)
         this.list.forEach((item, key) => {
           let num = 0
           item.buyInfo.forEach(value => {
@@ -295,7 +295,6 @@ export default {
       this.list[key].buyInfo[kay].buyMaterialInfo.splice(index, 1)
     },
     addBuyInfo (key) {
-      console.log(this.list)
       if (!this.list[key].material) {
         this.$message({
           message: '无' + (this.type === '0' ? '原' : '辅') + '料信息，不可添加订购',
@@ -308,7 +307,7 @@ export default {
           company: '仓库',
           money: '',
           orderTime: this.now_time,
-          remark: '',
+          remark: this.$route.params.type === '0' ? '补纱' : '补充辅料',
           buyMaterialInfo: [
             {
               color: '',
@@ -366,7 +365,7 @@ export default {
             return
           }
           obj.client_id = (value.company === '仓库' ? 0 : value.company)
-          obj.desc = value.remark
+          obj.desc = '(第' + (parseInt(this.$route.params.times) + 1) + '次)' + value.remark
           if (!value.orderTime) {
             this.$message({
               message: '请选择订购时间',
@@ -441,6 +440,7 @@ export default {
             obj.total_weight = Math.ceil(Number(val.value))
             obj.attribute = val.attr ? val.attr : ''
             obj.vat_code = val.vat_code
+            obj.replenish_id = this.bushaId
             arr.push({ ...obj })
             if (value.company === 0 || value.company === '仓库') {
               stockObj.material_name = item.material
@@ -455,7 +455,6 @@ export default {
           })
         })
       })
-      console.log(arr)
       this.loading = false
       if (flag) {
         if (nums === 0) {
@@ -500,34 +499,37 @@ export default {
       }),
       clientList({
         company_id: sessionStorage.company_id
+      }), replenishYarnList({
+        order_id: this.$route.params.id,
+        type: parseInt(this.$route.params.type) + 1
       })
     ]).then(res => {
-      console.log(res)
-      // 计划物料信息初始化
-      res[0].data.data.material_info.forEach((item, key) => {
-        for (let prop in item) {
-          for (let val in item[prop]) {
-            if (val !== 'total_number' && val !== 'type' && val !== 'unit') {
-              if (item[prop].type === Number(this.type)) {
-                this.rawMaterialPlanList.push({
-                  material: prop,
-                  need: {
-                    name: val,
-                    value: (item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][val]) / 1000 : item[prop][val],
-                    unit: (item[prop].unit === '克' || item[prop].unit === 'g') ? 'kg' : item[prop].unit === '千克' ? 'kg' : item[prop].unit
-                  },
-                  have: {
-                    name: val,
-                    value: '',
-                    unit: ''
-                  },
-                  whiteHave: ''
-                })
-              }
-            }
-          }
+      // Id存一下，提交的时候要用
+      this.bushaId = res[2].data.data[this.$route.params.times].id
+      res[2].data.data[this.$route.params.times].yarn_info.forEach((item) => {
+        let finded = this.rawMaterialPlanList.find((itemFind) => {
+          return itemFind.material === item.name && itemFind.need.name === item.color
+        })
+        if (!finded) {
+          this.rawMaterialPlanList.push({
+            material: item.name,
+            need: {
+              name: item.color,
+              value: item.weight,
+              unit: this.$route.params.type === '0' ? 'kg' : ''
+            },
+            have: {
+              name: item.color,
+              value: '',
+              unit: this.$route.params.type === '0' ? 'kg' : ''
+            },
+            whiteHave: ''
+          })
+        } else {
+          finded.need.value += item.weight
         }
       })
+
       this.rawMaterialPlanList.forEach((item, key) => {
         let flag = this.list.find(val => val.material === item.material)
         if (!flag) {

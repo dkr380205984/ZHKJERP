@@ -256,7 +256,7 @@ const menu = [{
     url: '/index/productDesignList2'
   }]
 }, {
-  name: '原料管理',
+  name: '物料管理',
   children: [{
     name: '原料预订购',
     url: '/index/rawMaterialPurchase'

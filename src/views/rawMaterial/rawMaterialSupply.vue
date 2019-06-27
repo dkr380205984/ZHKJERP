@@ -38,7 +38,7 @@
               :key="index">
               <el-cascader class="cas"
                 v-model="materialColor[index]"
-                placeholder="请选择辅料信息"
+                placeholder="请选择原料信息"
                 :options="materialColorArr"></el-cascader>
               <el-input placeholder="请输入纱线重量"
                 v-model="weight[index]">
@@ -108,6 +108,7 @@ import { productionDetail, weaveDetail, bearClient, replenishYarnSave } from '@/
 export default {
   data () {
     return {
+      lock: false,
       loading: false,
       order: {
         order_code: '',
@@ -124,8 +125,8 @@ export default {
         user_name: '',
         id: ''
       },
-      weight: [],
-      rate: [],
+      weight: [''],
+      rate: [''],
       materialColor: [[]],
       materialColorArr: [],
       companyArr: [],
@@ -259,39 +260,93 @@ export default {
       this.rate.splice(index, 1)
     },
     saveAll () {
-      let json = {
-        type: 1,
-        id: null,
-        order_id: this.$route.params.id,
-        user_id: window.sessionStorage.getItem('user_id'),
-        yarn_info: this.materialColor.map((item, index) => {
-          return {
-            weight: this.weight[index],
-            name: item[0],
-            color: item[1]
+      if (!this.lock) {
+        let state = true
+        let msg = ''
+        // 验证数据完整性
+        if (!this.des) {
+          state = false
+          msg = '补纱原因必填！'
+        }
+        const total = this.rate.reduce((total, item) => {
+          return total + parseInt(item)
+        }, 0)
+        if (total !== 100) {
+          state = false
+          msg = '承担比例相加不是100%，请重填'
+        }
+        this.rate.forEach((item) => {
+          if (!item) {
+            state = false
+            msg = '承担比例信息不完整'
           }
-        }),
-        client_info: this.company.map((item, index) => {
-          return {
-            percent: this.rate[index],
-            client_name: item
+        })
+        this.company.forEach((item) => {
+          if (!item) {
+            state = false
+            msg = '单位信息不完整'
           }
-        }),
-        desc: this.des,
-        replenish_client: this.$route.params.companyId
-      }
-      replenishYarnSave(json).then((res) => {
-        if (res.data.status) {
-          this.$message.success({
-            message: '保存成功'
+        })
+        this.weight.forEach((item) => {
+          if (!item) {
+            state = false
+            msg = '纱线重量信息不完整'
+          }
+        })
+        this.materialColor.forEach((item) => {
+          if (item.length === 0) {
+            state = false
+            msg = '原料信息不完整'
+          }
+        })
+        if (state) {
+          let json = {
+            type: 1,
+            id: null,
+            order_id: this.$route.params.id,
+            user_id: window.sessionStorage.getItem('user_id'),
+            yarn_info: this.materialColor.map((item, index) => {
+              return {
+                weight: this.weight[index],
+                name: item[0],
+                color: item[1]
+              }
+            }),
+            client_info: this.company.map((item, index) => {
+              return {
+                percent: this.rate[index],
+                client_name: item
+              }
+            }),
+            desc: this.des,
+            replenish_client: this.$route.params.companyId
+          }
+          this.lock = true
+          this.loading = true
+          replenishYarnSave(json).then((res) => {
+            if (res.data.status) {
+              this.$message.success({
+                message: '保存成功'
+              })
+              this.$router.go(-1)
+            } else {
+              this.$message.error({
+                message: res.data.message
+              })
+            }
+            this.lock = false
+            this.loading = false
           })
-          this.$router.go(-1)
         } else {
           this.$message.error({
-            message: res.data.message
+            message: msg
           })
         }
-      })
+      } else {
+        this.$message.error({
+          message: '请勿频繁操作'
+        })
+      }
     }
   }
 }

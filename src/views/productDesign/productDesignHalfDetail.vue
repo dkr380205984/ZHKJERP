@@ -325,7 +325,6 @@
                   <span>承担单位/比例</span>
                   <span>补纱原因</span>
                   <span>操作时间</span>
-                  <span>操作</span>
                 </li>
                 <li class="material_info"
                   v-for="(item,index) in bushaList"
@@ -354,7 +353,6 @@
                   </span>
                   <span>{{item.desc}}</span>
                   <span>{{item.created_at.slice(0,10)}}</span>
-                  <span style="color:#1A95FF">去订购</span>
                 </li>
               </ul>
             </div>

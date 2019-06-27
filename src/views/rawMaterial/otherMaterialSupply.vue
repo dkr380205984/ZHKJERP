@@ -106,6 +106,7 @@ import { productionDetail, halfProductDetail, bearClient, replenishYarnSave } fr
 export default {
   data () {
     return {
+      lock: false,
       loading: false,
       order: {
         order_code: '',
@@ -145,10 +146,10 @@ export default {
       for (let i in companyArr) {
         this.companyArr.push(companyArr[i])
       }
+      console.log(this.companyArr)
       // let productPlan = res[0].data.data.product_plan
       // 筛选出跟当前公司相关的日志信息
       let clientInfo = res[1].data.data.filter((item) => item.client_id === parseInt(this.$route.params.companyId))
-      console.log(clientInfo)
       let colorInfo = []
       clientInfo.forEach((itemClient) => {
         itemClient.ingredients.forEach((itemIng) => {
@@ -238,39 +239,93 @@ export default {
       this.rate.splice(index, 1)
     },
     saveAll () {
-      let json = {
-        type: 2,
-        id: null,
-        order_id: this.$route.params.id,
-        user_id: window.sessionStorage.getItem('user_id'),
-        yarn_info: this.materialColor.map((item, index) => {
-          return {
-            weight: this.weight[index],
-            name: item[0],
-            color: item[1]
+      if (!this.lock) {
+        let state = true
+        let msg = ''
+        // 验证数据完整性
+        if (!this.des) {
+          state = false
+          msg = '补充原因必填！'
+        }
+        const total = this.rate.reduce((total, item) => {
+          return total + parseInt(item)
+        }, 0)
+        if (total !== 100) {
+          state = false
+          msg = '承担比例相加不是100%，请重填'
+        }
+        this.rate.forEach((item) => {
+          if (!item) {
+            state = false
+            msg = '承担比例信息不完整'
           }
-        }),
-        client_info: this.company.map((item, index) => {
-          return {
-            percent: this.rate[index],
-            client_name: item
+        })
+        this.company.forEach((item) => {
+          if (!item) {
+            state = false
+            msg = '单位信息不完整'
           }
-        }),
-        desc: this.des,
-        replenish_client: this.$route.params.companyId
-      }
-      replenishYarnSave(json).then((res) => {
-        if (res.data.status) {
-          this.$message.success({
-            message: '保存成功'
+        })
+        this.weight.forEach((item) => {
+          if (!item) {
+            state = false
+            msg = '纱线重量信息不完整'
+          }
+        })
+        this.materialColor.forEach((item) => {
+          if (item.length === 0) {
+            state = false
+            msg = '原料信息不完整'
+          }
+        })
+        this.lock = true
+        this.loading = true
+        if (state) {
+          let json = {
+            type: 2,
+            id: null,
+            order_id: this.$route.params.id,
+            user_id: window.sessionStorage.getItem('user_id'),
+            yarn_info: this.materialColor.map((item, index) => {
+              return {
+                weight: this.weight[index],
+                name: item[0],
+                color: item[1]
+              }
+            }),
+            client_info: this.company.map((item, index) => {
+              return {
+                percent: this.rate[index],
+                client_name: item
+              }
+            }),
+            desc: this.des,
+            replenish_client: this.$route.params.companyId
+          }
+          replenishYarnSave(json).then((res) => {
+            if (res.data.status) {
+              this.$message.success({
+                message: '保存成功'
+              })
+              this.$router.go(-1)
+            } else {
+              this.$message.error({
+                message: res.data.message
+              })
+            }
+            this.lock = false
+            this.loading = false
           })
-          this.$router.go(-1)
         } else {
           this.$message.error({
-            message: res.data.message
+            message: msg
           })
         }
-      })
+      } else {
+        this.$message.error({
+          message: '请勿频繁操作'
+        })
+      }
     }
   }
 }
