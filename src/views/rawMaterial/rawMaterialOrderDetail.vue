@@ -155,6 +155,7 @@
                 v-if="orderLogFlag">
                 <div>
                   <li>
+                    <span class="flexMid">订购属性</span>
                     <span class="flexBig">下单日期</span>
                     <span class="flexBig">订购公司</span>
                     <span>{{type === '0' ? '原' : '辅'}}料名称</span>
@@ -170,6 +171,8 @@
                   <li v-if="orderLog.length === 0">暂无信息</li>
                   <li v-for="(item,key) in orderLog"
                     :key="item.time + key">
+                    <span class="flexMid"
+                      :style="{'color':item.replenish_id?'#F56C6C':'#67c23a'}">{{item.replenish_id?'补充':'常规'}}</span>
                     <span class="flexBig">{{item.order_time}}</span>
                     <span class="flexBig">{{item.client_name}}</span>
                     <span>{{item.material}}</span>
@@ -328,7 +331,7 @@
       </div>
       <div class="stepCtn"
         v-if="bushaList.length>0">
-        <div class="stepTitle">{{type===0?'补纱信息':'辅料补充信息'}}</div>
+        <div class="stepTitle">{{type==='0'?'补纱信息':'辅料补充信息'}}</div>
         <div class="borderCtn">
           <div class="cicle"></div>
           <div class="border"></div>
@@ -339,10 +342,11 @@
               <ul class="tablesCtn">
                 <li class="title">
                   <span>次数</span>
-                  <span>{{type===0?'纱线':'辅料'}}</span>
+                  <span>{{type==='0'?'纱线':'辅料'}}</span>
                   <span>颜色</span>
-                  <span>{{type===0?'重量':'数量'}}</span>
-                  <span>{{type===0?'总重量':'总数量'}}</span>
+                  <span>{{type==='0'?'重量':'数量'}}</span>
+                  <span>已补量</span>
+                  <span>订购总价</span>
                   <span>承担单位/比例</span>
                   <span>原因</span>
                   <span>操作时间</span>
@@ -353,19 +357,20 @@
                   :key="index">
                   <span>第 {{index+1}} 次</span>
                   <span class="col"
-                    style="flex:4">
+                    style="flex:5">
                     <span v-for="(itemYarn,indexYarn) in item.yarn_info"
                       :key="indexYarn">
                       <span>{{itemYarn.name}}</span>
                       <span class="col"
-                        style="flex:2">
+                        style="flex:3">
                         <span v-for="(itemColor,indexColor) in itemYarn.info"
                           :key="indexColor">
                           <span>{{itemColor.color}}</span>
-                          <span>{{itemColor.weight}}</span>
+                          <span>{{itemColor.weight}}{{type==='0'?'kg':''}}</span>
+                          <span>{{itemColor.buchong?itemColor.buchong:0}}{{type==='0'?'kg':''}}</span>
                         </span>
                       </span>
-                      <span>{{itemYarn.total}}</span>
+                      <span>{{itemYarn.total_price}}元</span>
                     </span>
                   </span>
                   <span style="display:flex;flex-direction:column;justify-content: space-around;">
@@ -375,7 +380,9 @@
                   </span>
                   <span>{{item.desc}}</span>
                   <span>{{item.created_at.slice(0,10)}}</span>
-                  <span style="color:#1A95FF">去订购</span>
+                  <span style="color:#1A95FF;cursor:pointer"
+                    @click="$router.push('/index/rawMaterialOrderPageBu/'+$route.params.id+'/'+$route.params.type + '/' + index)">去订购
+                  </span>
                 </li>
               </ul>
             </div>
@@ -603,7 +610,6 @@ export default {
           flag.number = Math.ceil(Number(flag.number) + Number(item.number))
         }
       })
-      // console.log(this.productList)
       // 初始化物料信息
       info.forEach((item, key) => {
         for (let prop in item) {
@@ -639,7 +645,6 @@ export default {
         }
       })
       // 初始化订购信息
-      // console.log(materialInfo)
       materialInfo.forEach(item => {
         if ((this.type === '0' && item.type === 1) || (this.type === '1' && item.type === 2)) {
           // 初始化订购信息
@@ -699,6 +704,7 @@ export default {
             order_time: item.order_time.split(' ')[0],
             remark: item.desc,
             user: item.user_name,
+            replenish_id: item.replenish_id,
             unit: (item.unit ? item.unit : 'kg')
           })
         }
@@ -804,6 +810,27 @@ export default {
           return itemYarn
         })
         return json
+      })
+      console.log(res[5].data.data)
+      console.log(this.orderLog)
+      console.log(this.bushaList)
+      this.bushaList.forEach((item) => {
+        item.yarn_info.forEach((itemYarn) => {
+          itemYarn.total_price = itemYarn.info.reduce((total, itemColor) => {
+            let finded = this.orderLog.find((itemFind) => itemFind.replenish_id === item.id && itemFind.material === itemYarn.name && itemFind.color === itemColor.color)
+            if (finded) {
+              return total + parseInt(finded.total_price)
+            } else {
+              return total
+            }
+          }, 0)
+          itemYarn.info.forEach((itemColor) => {
+            let finded = this.orderLog.find((itemFind) => itemFind.replenish_id === item.id && itemFind.material === itemYarn.name && itemFind.color === itemColor.color)
+            if (finded) {
+              itemColor['buchong'] = itemColor['buchong'] ? itemColor['buchong'] + finded.weight : finded.weight
+            }
+          })
+        })
       })
       this.loading = false
     })

@@ -285,6 +285,10 @@ let router = new Router({
       name: 'rawMaterialOrderPage',
       component: () => import('./views/rawMaterial/rawMaterialOrderPage.vue')
     }, {
+      path: 'rawMaterialOrderPageBu/:id/:type/:times',
+      name: 'rawMaterialOrderPageBu',
+      component: () => import('./views/rawMaterial/rawMaterialOrderPageBu.vue')
+    }, {
       path: 'rawMaterialOrderList',
       name: 'rawMaterialOrderList',
       component: () => import('./views/rawMaterial/rawMaterialOrderList.vue')

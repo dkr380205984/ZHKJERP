@@ -15,23 +15,26 @@ Vue.use(mycomponent)
 Vue.config.productionTip = false
 // 列表滚动指令
 Vue.directive('scroll', {
-  inserted: (el, x, y) => {
-    // console.log('已绑定scroll')
-    let self = y.context
+  // 执行window监听事件因此只要绑定一次
+  bind: (el, binding, vnode) => {
+    let self = vnode.context
     window.addEventListener('keydown', function (e) {
-      // console.log(e.target.tagName, e.keyCode, self.pages)
       if (e.target.tagName !== 'INPUT' && e.keyCode === 37 && self.pages > 1) {
-        // console.log('上一页')
         --self.pages
-        x.value.fun()
-      } else if (e.target.tagName !== 'INPUT' && e.keyCode === 39 && (self.pages < Math.ceil(self.total / x.value.pageSize))) {
-        // console.log('下一页')
+        binding.value.fun()
+      } else if (e.target.tagName !== 'INPUT' && e.keyCode === 39 && (self.pages < Math.ceil(self.total / binding.value.pageSize))) {
         ++self.pages
-        x.value.fun()
-      } else {
-        // console.log('不换页')
+        binding.value.fun()
       }
     }, false)
+  }
+})
+Vue.directive('getHash', {
+  // 当被绑定的元素插入到 DOM 中时……
+  update: function (el, binding, vnode) {
+    // 聚焦元素
+    console.log(JSON.stringify(binding.value))
+    window.location.hash = JSON.stringify(binding.value)
   }
 })
 new Vue({

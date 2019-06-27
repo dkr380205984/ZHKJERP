@@ -94,6 +94,8 @@
           <div class="tableColumn"
             style="flex:2">产品信息</div>
           <div class="tableColumn"
+            style="flex:0.7">产品图片</div>
+          <div class="tableColumn"
             style="flex:0.7">下单数</div>
           <div class="tableColumn"
             style="flex:0.7">负责小组</div>
@@ -117,9 +119,25 @@
               :key="indexProduct"
               style="height:60px;text-align:center;justify-content:space-around">
               <span style="display:inline-block">
-                <span style="margin:0 5px">{{itemProduct.productCode}}</span>
+                <span class="hoverBlue"
+                  style="margin:0 5px;cursor:pointer"
+                  @click="open('/index/productDetail/'+itemProduct.productInfo.id)">{{itemProduct.productCode}}</span>
                 <span style="margin:0 5px">{{itemProduct.productInfo.category_info.product_category}}/{{itemProduct.productInfo.type_name}}/{{itemProduct.productInfo.style_name}}/{{itemProduct.productInfo.flower_id}}</span>
               </span>
+            </div>
+          </div>
+          <div class="tableColumn"
+            style="flex:0.7">
+            <div class="imgCtn small"
+              v-for="(itemProduct,indexProduct) in item.productList"
+              :key="indexProduct">
+              <img class="img"
+                :src="itemProduct.productInfo.img.length>0?itemProduct.productInfo.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
+                :onerror="defaultImg" />
+              <div class="toolTips"
+                v-if="itemProduct.productInfo.img.length>0"><span @click="showImg(itemProduct.productInfo.img)">点击查看大图</span></div>
+              <div class="toolTips"
+                v-if="itemProduct.productInfo.img.length===0"><span>没有预览图</span></div>
             </div>
           </div>
           <div class="tableColumn"
@@ -173,6 +191,22 @@
         </el-pagination>
       </div>
     </div>
+    <div class="shade"
+      v-show="showShade">
+      <div class="main">
+        <div class="closeBtn"
+          @click="showShade=false">点此退出预览</div>
+        <el-carousel indicator-position="outside"
+          height="550px"
+          arrow="always">
+          <el-carousel-item v-for="item in imgList"
+            :key="item.image_url">
+            <img :src="item.image_url"
+              class="imgList" />
+          </el-carousel-item>
+        </el-carousel>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -181,6 +215,9 @@ import { orderList, productTppeList, clientList, getGroup, orderDelete } from '@
 export default {
   data () {
     return {
+      defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
+      showShade: false,
+      imgList: [],
       loading: true,
       searchVal: '',
       date: '',
@@ -230,6 +267,14 @@ export default {
     }
   },
   methods: {
+    showImg (imgList) {
+      this.imgList = imgList
+      this.showShade = true
+      console.log(imgList)
+    },
+    open (url) {
+      window.open(url)
+    },
     getOrderList () {
       this.loading = true
       orderList({
@@ -463,6 +508,80 @@ export default {
     background: #1a95ff;
     &:hover {
       background: #48aaff;
+    }
+  }
+}
+.hoverBlue {
+  &:hover {
+    color: #1a95ff;
+  }
+}
+.imgCtn {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  &:hover {
+    .toolTips {
+      display: block;
+    }
+  }
+  .img {
+    width: 48px;
+    padding: 6px;
+    height: 48px;
+    margin: auto;
+  }
+  .toolTips {
+    display: none;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    line-height: 60px;
+    background: rgba(0, 0, 0, 0.7);
+    text-align: center;
+    cursor: pointer;
+    span {
+      color: #fff;
+      &:hover {
+        color: #1a95ff;
+      }
+    }
+  }
+}
+.shade {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  .main {
+    width: 1000px;
+    height: 600px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    margin: auto;
+    .imgList {
+      max-height: 550px;
+      margin: auto;
+      display: block;
+    }
+    .closeBtn {
+      position: absolute;
+      right: 0;
+      top: -78px;
+      color: #fff;
+      width: 100%;
+      text-align: center;
+      font-size: 26px;
+      cursor: pointer;
+      &:hover {
+        color: #1a95ff;
+      }
     }
   }
 }
