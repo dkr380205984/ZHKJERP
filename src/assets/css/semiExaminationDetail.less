@@ -102,6 +102,9 @@ ul {
               color: @normalBlue;
               cursor: pointer;
             }
+            .noDate{
+              color: #BBB;
+            }
             .compiled {
               color: @success
             }
@@ -221,6 +224,110 @@ ul {
       width: 300px;
       margin-bottom: 40px;
     }
+  }
+  .confirm{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.2);
+    color: @fontNormal;
+    font-size: 14px;
+    .box{
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      border-radius: 10px;
+      transform: translate(-50%,-50%);
+      width: 400px;
+      height:auto;
+      background: #FFF;
+      overflow: hidden;
+      padding: 15px 45px;
+      .content{
+        margin-top:30px;
+        .tishi{
+          &::before{
+            content: '';
+            display: inline-block;
+            background: url('../../assets/image/icon/tishi.png') no-repeat;
+            height: 1em;
+            width: 1em;
+            background-size: cover;
+            vertical-align: text-bottom;
+            margin-right: 0.5em;
+          }
+        }
+        ul{
+          max-height: 250px;
+          overflow-y: scroll;
+          li{
+            display: flex;
+            padding: 5px 10px;
+            &>span{
+              display: flex;
+              align-items: center;
+              &::before{
+                content: '';
+                display: inline-block;
+                border-radius: 50%;
+                background: @normalBlue;
+                width: 0.8em;
+                height: 0.8em;
+                margin-right: 0.5em;
+              }
+            }
+          }
+        }
+        .btn{
+          margin-top: 30px;
+          text-align: center;
+          padding: 0 3em;
+          display: flex;
+          justify-content: space-between;
+          &>span{
+            display: inline-block;
+            width: 5em;
+            height: 30px;
+            border: 1px solid #DDD;
+            line-height: 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            &.yes{
+              background: @normalBlue;
+              color: #FFF;
+              border: none;
+            }
+          }
+        }
+      }
+      .close{
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        padding: 5px;
+        cursor: pointer;
+        &:hover{
+          background: @normalBlue;
+          color: #FFF;
+          border-radius: 50%;
+        }
+      }
+    }
+  }
+}
+.tablesCtn,.log{
+  position: relative;
+  .handle{
+    position: absolute;
+    font-size: 14px!important;
+    top: 0;
+    right: 0;
+    transform: translateY(-100%);
+    cursor: pointer;
+    color: @normalBlue;
+    line-height: 25px;
   }
 }
 .flex45{

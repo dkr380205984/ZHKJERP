@@ -372,10 +372,10 @@ let router = new Router({
       path: 'packagDetail/:id',
       name: 'packagDetail',
       component: () => import('./views/packaging/packagDetail.vue')
-      // }, {
-      //   path: 'packagInfoCreate/:id',
-      //   name: 'packagInfoCreate',
-      //   component: () => import('./views/packaging/packagInfoCreate.vue')
+    }, {
+      path: 'packagInfoCreate/:id/:batchId',
+      name: 'packagInfoCreate',
+      component: () => import('./views/packaging/packagInfoCreate.vue')
     }, {
       path: 'packagMaterialPage/:id',
       name: 'packagMaterialPage',

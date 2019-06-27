@@ -19,10 +19,21 @@
           <div class="tableColumn flexSamll">重量</div>
           <div class="tableColumn flex9">属性</div>
           <div class="tableColumn">备注</div>
-          <div class="tableColumn">更新时间</div>
-          <div class="tableColumn flex9">操作</div>
+          <div class="tableColumn flex9">更新时间</div>
+          <div class="tableColumn">操作</div>
         </div>
-        <div class="tableRow bodyTableRow">
+        <div class="tableRow bodyTableRow"
+          v-for="(item,key) in list"
+          :key="key">
+          <div class="tableColumn flex9">{{item.id}}</div>
+          <div class="tableColumn flex9">{{item.name}}</div>
+          <div class="tableColumn flex9">{{item.size ? item.size : '无'}}</div>
+          <div class="tableColumn flexSamll">{{item.weight !== '0' ? item.weight : '无'}}</div>
+          <div class="tableColumn flex9"><template v-for="(val,ind) in item.attribute">{{((ind !== 0) ? '，' : '') + val.pack_attr}}</template></div>
+          <div class="tableColumn">{{item.desc ? item.desc : '暂无备注'}}</div>
+          <div class="tableColumn flex9">{{item.updated_at}}</div>
+          <div class="tableColumn blue"
+            @click="$router.push('/index/packagMaterialSetting?id=' + item.id  )">修改</div>
         </div>
       </div>
       <div class="pageCtn">
@@ -39,14 +50,15 @@
 </template>
 
 <script>
-import { } from '@/assets/js/api.js'
+import { packagMaterialList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
       loading: true,
       searchVal: '',
       pages: 1,
-      total: 0
+      total: 0,
+      list: []
     }
   },
   methods: {
@@ -54,6 +66,15 @@ export default {
     }
   },
   created () {
+    packagMaterialList({
+      company_id: window.sessionStorage.getItem('company_id')
+    }).then(res => {
+      console.log(res)
+      this.list = res.data.data
+      this.list.map(res => {
+        res.attribute = JSON.parse(res.attribute)
+      })
+    })
     this.loading = false
   }
 }

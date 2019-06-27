@@ -305,7 +305,7 @@
                   <span>操作人</span>
                   <span>操作</span>
                 </li>
-                <li v-if="packagList.length === 0">暂无信息</li>
+                <li v-if="packagMaterialPageList.length === 0">暂无信息</li>
                 <li class="content"
                   v-for="(item,key) in packagMaterialPageList"
                   :key="key">
@@ -315,14 +315,14 @@
                       v-for="(value,index) in item.material_info"
                       :key="index">
                       <span class="tableRow flex15">{{value.name}}{{value.attr ? '/' + value.attr : ''}}</span>
-                      <span class="tableRow">{{value.price}}{{'元/' + value.unit}}</span>
-                      <span class="tableRow">{{value.number}}{{value.unit}}</span>
+                      <span class="tableRow">{{value.price}}元/个</span>
+                      <span class="tableRow">{{value.number}}个</span>
                       <span class="tableRow">{{Math.ceil(value.price*value.number)}}{{'元'}}</span>
                     </span>
                   </span>
                   <span class="tableRow">{{item.time}}</span>
                   <span class="tableRow">{{item.user_name}}</span>
-                  <span class="tableRow blue">修改</span>
+                  <span class="tableRow blue">打印</span>
                 </li>
                 <div class="logList"
                   @click="packagMaterialPageLogFlag = !packagMaterialPageLogFlag">{{ packagMaterialPageLogFlag ? '收起' : '展开'}}详情</div>
@@ -350,9 +350,11 @@
                     <span>{{item.time}}</span>
                     <span class="flexBig">{{item.client_name}}</span>
                     <span>{{item.material_name}}</span>
-                    <span>{{item.attr ? item.attr : '无'}}</span>
-                    <span class="flexMid">{{item.price|fixedFilter}}{{'元/' + item.unit}}</span>
-                    <span class="flexMid">{{Math.ceil(item.number)}}{{item.unit}}</span>
+                    <span>
+                      <template v-for="(valAttr,indAttr) in item.attr">{{(indAttr !== 0 ? ',' : '') + valAttr.pack_attr}}</template>
+                    </span>
+                    <span class="flexMid">{{item.price|fixedFilter}}{{'元/个'}}</span>
+                    <span class="flexMid">{{Math.ceil(item.number)}}个</span>
                     <span class="flexMid">{{Math.ceil(item.price * item.number)}}{{'元'}}</span>
                     <span class="flexBig remark">
                       <i>
@@ -399,7 +401,7 @@
 </template>
 
 <script>
-import { orderDetail } from '@/assets/js/api.js'
+import { orderDetail, packagMaterialDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -409,165 +411,8 @@ export default {
       order_time: '',
       group_name: '',
       productList: [],
-      chinaNumber: {
-        1: '一',
-        2: '二',
-        3: '三',
-        4: '四',
-        5: '五',
-        6: '六',
-        7: '七',
-        8: '八',
-        9: '九'
-      },
-      packagList: [
-        {
-          packag_code: '1A1',
-          packag_type: '袋子',
-          packag_size: '60*50*40',
-          packag_attr: '印字',
-          unit: '袋',
-          packag_info: [{
-            code: '19ASS451',
-            type: '围巾/针织/长巾',
-            number: 2000,
-            unit: '条',
-            one_packag: 1
-          },
-          {
-            code: '19ASS452',
-            type: '手套/针织/常规',
-            number: 2000,
-            unit: '只',
-            one_packag: 1
-          }],
-          packag_number: 2000,
-          updated_time: '2019-03-04',
-          user_name: '老王'
-        }, {
-          packag_code: '2A1',
-          packag_type: '箱子',
-          packag_size: '60*50*40',
-          packag_attr: '三瓦',
-          unit: '箱',
-          packag_info: [{
-            code: '1A1',
-            type: '袋子',
-            number: 2000,
-            unit: '袋',
-            one_packag: 20
-          }],
-          packag_number: 2000,
-          updated_time: '2019-03-04',
-          user_name: '老王'
-        }
-      ],
-      materialList: [
-        {
-          code: '19ABC022',
-          type: '围巾/针织/帽子/素色',
-          unit: '条',
-          material_info: [
-            {
-              name: '吊牌',
-              attr: '产品吊牌',
-              number: 2000,
-              one_packag: 1,
-              unit: '个',
-              material_number: 2000
-            }, {
-              name: '干燥剂',
-              attr: '',
-              number: 2000,
-              unit: '包',
-              one_packag: 1,
-              material_number: 2000
-            }
-          ],
-          updated_time: '2019-03-06',
-          user_name: '老王'
-        }, {
-          code: '1A1',
-          type: '袋子',
-          unit: '袋',
-          material_info: [
-            {
-              name: '吊牌',
-              attr: '产品吊牌',
-              number: 2000,
-              one_packag: 1,
-              unit: '个',
-              material_number: 2000
-            }, {
-              name: '干燥剂',
-              attr: '',
-              number: 2000,
-              unit: '包',
-              one_packag: 1,
-              material_number: 2000
-            }
-          ],
-          updated_time: '2019-03-06',
-          user_name: '老王'
-        }, {
-          code: '2A1',
-          type: '箱子',
-          unit: '箱',
-          material_info: [
-            {
-              name: '衣架',
-              attr: '',
-              unit: '个',
-              number: 2000,
-              one_packag: 5,
-              material_number: 10000
-            }, {
-              name: '干燥剂',
-              attr: '',
-              unit: '包',
-              number: 2000,
-              one_packag: 1,
-              material_number: 2000
-            }
-          ],
-          updated_time: '2019-03-06',
-          user_name: '老王'
-        }
-      ],
       packagMaterialPageList: [],
-      packagMaterialPageLog: [
-        {
-          time: '2019-03-22',
-          client_name: '飞泰',
-          material_name: '吊牌',
-          attr: '',
-          price: 4,
-          unit: '个',
-          number: 2000,
-          remark: '我是备注',
-          user_name: '老王'
-        }, {
-          time: '2019-03-22',
-          client_name: '力欧',
-          material_name: '干燥剂',
-          attr: '',
-          price: 1,
-          unit: '包',
-          number: 2000,
-          remark: '',
-          user_name: '老王'
-        }, {
-          time: '2019-03-22',
-          client_name: '飞泰',
-          material_name: '礼盒',
-          attr: '礼盒1',
-          price: 4,
-          unit: '个',
-          number: 2000,
-          remark: '我是备注',
-          user_name: '老王'
-        }
-      ],
+      packagMaterialPageLog: [],
       packagMaterialPageLogFlag: false,
       flag: true
     }
@@ -598,10 +443,15 @@ export default {
     Promise.all([
       orderDetail({
         id: this.$route.params.id
+      }),
+      packagMaterialDetail({
+        order_id: this.$route.params.id
       })
     ]).then(res => {
       let orderInfo = res[0].data.data
+      let packagPageInfo = res[1].data.data
       // console.log('orderInfo', orderInfo)
+      console.log('packagPageInfo', packagPageInfo)
       // 初始化订单信息
       this.order_code = orderInfo.order_code
       this.client_name = orderInfo.client_name
@@ -638,6 +488,18 @@ export default {
           })
         })
       })
+      packagPageInfo.forEach(item => {
+        this.packagMaterialPageLog.push({
+          time: item.order_time.split(' ')[0],
+          client_name: item.client_name,
+          material_name: item.material_name,
+          attr: JSON.parse(item.attribute),
+          price: item.price,
+          number: item.number,
+          remark: item.desc,
+          user_name: item.user_name
+        })
+      })
       // console.log('productList', this.productList)
       console.log('log', this.packagMaterialPageLog)
       this.packagMaterialPageLog.forEach(item => {
@@ -650,17 +512,19 @@ export default {
             material_info: [{
               name: item.material_name,
               price: item.price,
-              unit: item.unit,
               number: item.number
             }]
           })
         } else {
+          if (!(new Date(flag.time).getTime() > new Date(item.time).getTime())) {
+            flag.time = item.time
+            flag.user_name = item.user_name
+          }
           let flag1 = flag.material_info.find(key => (key.name === item.material_name && key.price === item.price))
           if (!flag1) {
             flag.material_info.push({
               name: item.material_name,
               price: item.price,
-              unit: item.unit,
               number: item.number
             })
           } else {

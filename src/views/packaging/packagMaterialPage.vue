@@ -103,7 +103,7 @@
                 <li :key="ind + 'name'">
                   <span>包装辅料:</span>
                   <el-select v-model="val.pack_name"
-                    placeholder="请选择包装"
+                    placeholder="请选择辅料"
                     size="small">
                     <el-option v-for="value in options.packList"
                       :key="value.id"
@@ -123,12 +123,24 @@
                 <li :key="ind + 'attr'">
                   <span>辅料属性:</span>
                   <div style="margin-left:15px;padding-left:15px;width:228px;position: relative;height:32px;line-height:32px;">
-                    <span>{{val.pack_name}}</span>
-                    <el-popover placement="top-end"
+                    <span>{{val.pack_attr ? val.pack_attr.name : ''}}</span>
+                    <el-popover placement="top"
                       width="200"
                       trigger="click"
-                      class="clickWatch"
-                      content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
+                      class="clickWatch">
+                      <ul>
+                        <template v-if="val.pack_attr">
+                          <li>编号:{{val.pack_attr.id}}</li>
+                          <li>名称:{{val.pack_attr.name}}</li>
+                          <li>规格:{{val.pack_attr.size ? val.pack_attr.size : '暂无'}}</li>
+                          <li>属性:
+                            <!-- {{val.pack_attr}} -->
+                            <template v-for="(valAttr,indAttr) in val.pack_attr.attribute">{{((indAttr !== 0) ? ',' : '') + valAttr.pack_attr }}</template>
+                          </li>
+                          <li>备注:{{val.pack_attr.desc ? val.pack_attr.desc : '暂无'}}</li>
+                        </template>
+                        <li v-else>暂无</li>
+                      </ul>
                       <span slot="reference">点击查看</span>
                     </el-popover>
                   </div>
@@ -136,13 +148,13 @@
                 <li :key="ind + 'price'">
                   <span>数量单价:</span>
                   <el-input size="small"
-                    placeholder="请输入数量"
+                    placeholder="数量"
                     v-model="val.number"
                     style="width:108px;">
                   </el-input>
                   <strong style="color:#BBB;font-weight:400;">——</strong>
                   <el-input size="small"
-                    placeholder="请输入单价"
+                    placeholder="单价"
                     v-model="val.price"
                     style="width:108px;margin-left:0;">
                   </el-input>
@@ -184,6 +196,20 @@
             @click="addOrderPage()">
             <span>+</span>
             <span>添加订购</span>
+          </div>
+        </div>
+        <div class="lineCtn"
+          style="margin-top:40px;">
+          <div class="inputCtn noPadding">
+            <div class="content">
+              <el-input placeholder="总计"
+                v-model="total_price"
+                :disabled="true"
+                style="width:300px;">
+                <template slot="prepend">共计</template>
+                <template slot="append">元</template>
+              </el-input>
+            </div>
           </div>
         </div>
       </div>
@@ -403,19 +429,30 @@
 </template>
 
 <script>
-import { orderDetail } from '@/assets/js/api.js'
+import { orderDetail, clientList, packagMaterialList, packagMaterialPage } from '@/assets/js/api.js'
 export default {
   data () {
     return {
       loading: true,
-      now_time: '',
+      save: true,
+      // now_time: '',
       order_code: '',
       order_time: '',
       client_name: '',
       group_name: '',
       productList: [],
       total_price: 0,
-      list: [],
+      list: [{
+        order_client: '',
+        pack_info: [{
+          number: '',
+          pack_name: '',
+          price: ''
+        }],
+        total_price: '',
+        order_time: this.now_time,
+        remark: ''
+      }],
       options: {
         companyList: [],
         packList: []
@@ -431,7 +468,19 @@ export default {
     list: {
       deep: true,
       handler: function (newVal) {
-
+        console.log(newVal)
+        this.total_price = 0
+        newVal.forEach(item => {
+          let price = 0
+          item.pack_info.forEach(value => {
+            if (value.pack_name) {
+              value.pack_attr = this.options.packList.find(key => key.id === value.pack_name)
+            }
+            this.total_price += (value.number ? value.number : 0) * (value.price ? value.price : 0)
+            price += (value.number ? value.number : 0) * (value.price ? value.price : 0)
+          })
+          item.total_price = price
+        })
       }
     }
   },
@@ -465,8 +514,83 @@ export default {
     saveAll () {
       if (this.save) {
         this.save = false
+        let data = []
+        let flag = true
+        this.list.forEach(item => {
+          if (!item.order_client) {
+            this.$message({
+              type: 'error',
+              message: `请选择订购单位`
+            })
+            flag = false
+            return
+          }
+          if (!item.order_time) {
+            this.$message({
+              type: 'error',
+              message: `请选择订购日期`
+            })
+            flag = false
+            return
+          }
+          item.pack_info.forEach(valPack => {
+            if (!valPack.pack_name) {
+              this.$message({
+                type: 'error',
+                message: `请选择包装辅料`
+              })
+              flag = false
+              return
+            }
+            if (!valPack.number) {
+              this.$message({
+                type: 'error',
+                message: `请输入订购数量`
+              })
+              flag = false
+              return
+            }
+            if (!valPack.price) {
+              this.$message({
+                type: 'error',
+                message: `请输入订购单价`
+              })
+              flag = false
+              return
+            }
+            data.push({
+              user_id: window.sessionStorage.getItem('user_id'),
+              order_id: this.$route.params.id,
+              material_id: valPack.pack_name,
+              client_id: item.order_client,
+              number: valPack.number,
+              price: valPack.price,
+              order_time: item.order_time,
+              desc: item.remark,
+              attribute: JSON.stringify(valPack.pack_attr.attribute)
+            })
+          })
+        })
+        if (flag) {
+          if (this.list.length !== 0) {
+            packagMaterialPage({
+              data: data
+            }).then(res => {
+              this.$message({
+                type: 'success',
+                message: `添加成功`
+              })
+            })
+          } else {
+            this.$message({
+              type: 'warning',
+              message: `无可提交的数据`
+            })
+          }
+        }
+        setTimeout(() => { this.save = true }, 1000)
+        console.log(data)
       } else {
-        let self = this
         this.$alert('请求速度过于频繁', '提醒', {
           confirmButtonText: '确定',
           callback: action => {
@@ -476,20 +600,37 @@ export default {
             })
           }
         })
-        setTimeout(() => { self.save = true }, 1000)
       }
     }
   },
-  created () {
+  beforeCreate () {
     let nowDate = new Date()
     this.now_time = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1 < 10 ? '0' + (nowDate.getMonth() + 1) : (nowDate.getMonth() + 1)) + '-' + (nowDate.getDate() < 10 ? '0' + nowDate.getDate() : nowDate.getDate())
+    // console.log(this.now_time)
+  },
+  created () {
     Promise.all([
       orderDetail({
         id: this.$route.params.id
+      }),
+      clientList({
+        company_id: window.sessionStorage.getItem('company_id')
+      }),
+      packagMaterialList({
+        company_id: window.sessionStorage.getItem('company_id')
       })
     ]).then(res => {
       let orderInfo = res[0].data.data
+      let clientInfo = res[1].data.data
+      let packagMaterialInfo = res[2].data.data
       // console.log('orderInfo', orderInfo)
+      // console.log('clientInfo', clientInfo)
+      // 初始化包装辅料数组
+      this.options.packList = packagMaterialInfo
+      this.options.packList.map(res => {
+        res.attribute = JSON.parse(res.attribute)
+      })
+      // console.log(this.options.packList)
       // 初始化订单信息
       this.order_code = orderInfo.order_code
       this.client_name = orderInfo.client_name
@@ -526,6 +667,9 @@ export default {
           })
         })
       })
+      // 初始化包装辅料订购单位
+      let arr = clientInfo.filter(key => key.type === 7)
+      this.options.companyList = arr
       this.loading = false
     })
   }

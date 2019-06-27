@@ -234,24 +234,45 @@ const storeIn = (params) => http.post(`${baseUrl}/product/order/push`, params, '
 const storeInList = (params) => http.get(`${baseUrl}/product/order/pop/list`, params)
 // 入库日志修改
 const storeInUpdate = (params) => http.post(`${baseUrl}/product/order/push/edit`, params, 'application/json')
-// 包装统计
-const packagCreate = (params) => http.post(`${baseUrl}/pack/statistics/save`, params, 'application/json')
-// 包装统计详情
-const packagDetail = (params) => http.get(`${baseUrl}/pack/statistics/list`, params)
-// 包装辅料订购
-const packagMaterialpage = (params) => http.post(`${baseUrl}/pack/order/save`, params, 'application/json')
-// 包装辅料订购详情
-const packagMaterialDetail = (params) => http.get(`${baseUrl}/pack/order/list`, params)
 // 补纱
 const replenishYarnSave = (params) => http.post(`${baseUrl}/production/yarn/replenish/save`, params, 'application/json')
 // 补纱列表
 const replenishYarnList = (params) => http.get(`${baseUrl}/production/yarn/replenish/list`, params)
 // 承担公司
 const bearClient = (params) => http.get(`${baseUrl}/production/order/client/list`, params)
+// 包装辅料添加
+const packagMaterialAdd = (params) => http.post(`${baseUrl}/pack/material/save`, params, 'application/json')
+// 包装辅料详情
+const packagMaterialdetail = (params) => http.get(`${baseUrl}/pack/material/one`, params)
+// 包装辅料列表
+const packagMaterialList = (params) => http.get(`${baseUrl}/pack/material/list`, params)
+// 包装辅料订购
+const packagMaterialPage = (params) => http.post(`${baseUrl}/pack/order/save`, params, 'application/json')
+// 包装辅料订购详情
+const packagMaterialDetail = (params) => http.get(`${baseUrl}/pack/order/list`, params)
+// 添加包装资料
+const packagCreate = (params) => http.post(`${baseUrl}/pack/info/save`, params, 'application/json')
+// 包装资料详情
+const packagDetail = (params) => http.get(`${baseUrl}/pack/info/list`, params)
+// 装箱出库
+const outStockAdd = (params) => http.post(`${baseUrl}/stock/out/save`, params, 'application/json')
+// 装箱出库详情 stock/out/list'
+const outStockDetail = (params) => http.get(`${baseUrl}/stock/out/list`, params)
+// 添加实际装箱数 pack/real/save
+const packagNumberAdd = (params) => http.post(`${baseUrl}/pack/real/save`, params, 'application/json')
+// 实际装箱详情
+const packagNumberDetail = (params) => http.get(`${baseUrl}/pack/real/list`, params)
 export {
+  packagNumberDetail,
+  packagNumberAdd,
+  outStockDetail,
+  outStockAdd,
+  packagMaterialList,
+  packagMaterialdetail,
+  packagMaterialAdd,
   packagCreate,
   packagDetail,
-  packagMaterialpage,
+  packagMaterialPage,
   packagMaterialDetail,
   bearClient,
   replenishYarnSave,
