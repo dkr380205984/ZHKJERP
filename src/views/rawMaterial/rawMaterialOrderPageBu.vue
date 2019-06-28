@@ -552,11 +552,12 @@ export default {
       this.group_name = res[0].data.data.order_info.group_name
       this.company_name = res[0].data.data.order_info.client_name
       // 订购公司列表初始化
-      res[1].data.data.forEach(item => {
-        if (item.type === 2) {
-          this.options.companyList.push(item)
-        }
-      })
+      // res[1].data.data.forEach(item => {
+      //   if (item.type === 2) {
+      //     this.options.companyList.push(item)
+      //   }
+      // })
+      this.options.companyList.push(...res[1].data.data.filter((item) => (item.type.indexOf(2) !== -1)))
       // 产品信息初始化
       let arr = []
       res[0].data.data.order_info.order_batch.forEach((item, key) => {

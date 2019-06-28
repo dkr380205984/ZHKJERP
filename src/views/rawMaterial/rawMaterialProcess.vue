@@ -408,20 +408,13 @@ export default {
             rawMaterialProcessPage({
               data: arr
             }).then(res => {
-              if (res.data.status) {
-                this.$message({
-                  message: '添加成功,即将跳转至详情页',
-                  type: 'success'
-                })
-                setTimeout(() => {
-                  this.$router.push('/index/rawMaterialOrderDetail/' + this.$route.params.id + '/' + this.type)
-                }, 800)
-              } else {
-                this.$message({
-                  message: '出问题了?',
-                  type: 'error'
-                })
-              }
+              this.$message({
+                message: '添加成功,即将跳转至详情页',
+                type: 'success'
+              })
+              setTimeout(() => {
+                this.$router.push('/index/rawMaterialOrderDetail/' + this.$route.params.id + '/' + this.type)
+              }, 800)
             })
           }
         }
@@ -550,11 +543,7 @@ export default {
         }
       })
       // 加工公司列表初始化
-      res[3].data.data.forEach((item, key) => {
-        if (item.type === 3) {
-          this.options.companyList.push(item)
-        }
-      })
+      this.options.companyList = res[3].data.data.filter(item => (item.type.indexOf(3) !== -1))
       // 已加工数量初始化
       let selectWeight = res[0].data.data.total_weight_process
       for (let prop in selectWeight) {

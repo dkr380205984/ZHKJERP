@@ -386,11 +386,12 @@ export default {
         return json
       })
       let productPlan = res[0].data.data.product_plan
-      res[1].data.data.forEach(item => {
-        if (item.type === 5) {
-          this.companyArr.push(item)
-        }
-      })
+      // res[1].data.data.forEach(item => {
+      //   if (item.type === 5) {
+      //     this.companyArr.push(item)
+      //   }
+      // })
+      this.companyArr = res[1].data.data.filter((item) => (item.type.indexOf(5) !== -1))
       // 将半成品分配的数据 初步 整合到原来的数据中
       res[2].data.data.forEach((item) => {
         productInfo.forEach((itemPro, indexPro) => {

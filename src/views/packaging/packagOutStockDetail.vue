@@ -194,9 +194,6 @@
                 </li>
                 <li class="handle"
                   @click="appendPack(key)">添加实际装箱</li>
-                <li class="handle"
-                  style="right:8em"
-                  @click="$router.push('/index/packagInfoCreate/' + $route.params.id + '/' + item.id )">添加装箱资料</li>
                 <li class="content">
                   <span style="line-height:1.5em;"
                     class="tableRow">
@@ -225,7 +222,7 @@
                           <span class="tableRow">{{valSize.size}}/{{valSize.color}}</span>
                           <span class="tableRow">{{valSize.number}}条</span>
                           <span :class="{tableRow:true,noDate:!valSize.pack_number}">{{valSize.pack_number ? valSize.pack_number + '条' : '暂无数据'}}</span>
-                          <span :class="{tableRow:true,noDate:!valSize.pack_number,compiled:(valSize.number - valSize.pack_number) === 0,unCompiled:(valSize.number - valSize.pack_number) !== 0}">{{chazhi(valSize.number,valSize.pack_number)}}</span>
+                          <span :class="{tableRow:true,noDate:!valSize.pack_number,compiled:(valSize.number - valSize.pack_number) === 0,unCompiled:valSize.pack_number ? (valSize.number - valSize.pack_number) !== 0 : false}">{{chazhi(valSize.number,valSize.pack_number)}}</span>
                           <!-- <span class="tableRow">{{(valPro.plan_number - valPro.packag_number) !== 0 ? (((valPro.plan_number - valPro.packag_number) > 0) ? ('少装:' + (valPro.plan_number - valPro.packag_number) + valPro.unit) : ('多装:' + ((valPro.plan_number - valPro.packag_number)*-1) + valPro.unit)) : '正常装箱'}}</span> -->
                         </span>
                       </span>
@@ -249,7 +246,10 @@
                   </span>
                   <span>备注信息</span>
                 </li>
-                <li class="handle">打印</li>
+                <li class="handle"
+                  @click="$router.push('/index/packagInfoCreate/' + $route.params.id + '/' + item.id )">添加装箱资料</li>
+                <li class="handle"
+                  style="right:7em">打印</li>
                 <li v-if="item.packagInfoList.length === 0">暂无信息</li>
                 <li v-for="(value,index) in item.packagInfoList"
                   :key="index"
@@ -501,7 +501,11 @@ export default {
       console.log(nowTime, packTime)
       let times = (nowTime - (new Date(time).getTime())) / 1000 / 60 / 60 / 24
       if (times > 0) {
-        return '延期' + Math.floor(times) + '天'
+        if (packTime) {
+          return '超时' + Math.floor(times) + '天'
+        } else {
+          return '延期' + Math.floor(times) + '天'
+        }
       } else {
         if (packTime) {
           return '正常出库'

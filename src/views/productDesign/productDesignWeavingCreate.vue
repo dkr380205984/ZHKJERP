@@ -256,11 +256,7 @@ export default {
         json.fenpei = 0
         return json
       })
-      res[1].data.data.forEach(item => {
-        if (item.type === 4) {
-          this.companyArr.push(item)
-        }
-      })
+      this.companyArr = res[1].data.data.filter((item) => (item.type.indexOf(4) !== -1))
       // 将织造分配的数据整合到原来的数据中
       res[2].data.data.forEach((item) => {
         productInfo.forEach((itemPro, indexPro) => {

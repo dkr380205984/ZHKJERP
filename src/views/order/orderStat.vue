@@ -489,7 +489,7 @@ export default {
         }
       })
       this.total = res[3].data.data.count
-      this.companyArrS = res[1].data.data.filter((item) => item.type === 1)
+      this.companyArrS = res[1].data.data.filter((item) => (item.type.indexOf(1) !== -1))
       this.loading = false
     })
   }

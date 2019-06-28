@@ -389,7 +389,7 @@ export default {
           })
         })
       })
-      this.ship_client = shipClientInfo.filter(res => res.type === 8)
+      this.ship_client = shipClientInfo.filter(res => (res.type.indexOf(8) !== -1))
       console.log(this.ship_client)
       this.loading = false
     })

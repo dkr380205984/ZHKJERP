@@ -125,14 +125,19 @@
               :key="kay">
               <li>
                 <span>检验人员</span>:
-                <el-select v-model="item.tester_name"
+                <!-- <el-select v-model="item.tester_name"
                   placeholder="请选择检验人员"
                   size="small">
                   <el-option v-for="tester in options.testerList"
                     :key="tester.value"
                     :value="tester">
                   </el-option>
-                </el-select>
+                </el-select> -->
+                <el-input size="small"
+                  style="margin-left:15px;width:243px;"
+                  placeholder="请输入检验人员"
+                  v-model="item.tester_name">
+                </el-input>
               </li>
               <li v-for="(value,index) in item.testSizeInfo"
                 :key="index"
@@ -200,9 +205,11 @@
                 <span class="tag">颜色/尺码{{index + 1}}</span>
                 <em v-if="index === 0"
                   class="el-icon-plus"
+                  style="top:35px"
                   @click="appendTestSizeInfo(kay)"></em>
                 <em v-else
                   class="el-icon-delete"
+                  style="top:35px"
                   @click="deleteTestSizeInfo(kay,index)"></em>
               </li>
               <li>

@@ -19,6 +19,7 @@
       <div class="inputCtn">
         <span class="label must">公司类型:</span>
         <el-select class="elInput"
+          multiple
           placeholder="请选择公司类型"
           v-model="type">
           <el-option v-for="item in companyType"
@@ -153,6 +154,7 @@ export default {
         })
         return
       }
+      console.log(this.type)
       clientAdd({
         id: '',
         company_id: window.sessionStorage.getItem('company_id'),

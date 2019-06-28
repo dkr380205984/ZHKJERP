@@ -282,7 +282,7 @@ const menu = [{
 }, {
   name: '装箱出库管理',
   children: [{
-    name: '包装列表',
+    name: '包装订购列表',
     url: '/index/packagList'
   }, {
     name: '装箱出库列表',

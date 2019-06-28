@@ -137,14 +137,20 @@
               </li>
               <li>
                 <span>检验人员</span>:
-                <el-select v-model="item.tester_name"
+                <!-- <el-select v-model="item.tester_name"
                   placeholder="请选择检验人员"
                   size="small">
                   <el-option v-for="value in options.testerList"
                     :key="value.value"
                     :value="value">
                   </el-option>
-                </el-select>
+                </el-select> -->
+
+                <el-input size="small"
+                  placeholder="请输入检验人员"
+                  v-model="item.tester_name"
+                  style="margin-left:15px;width:243px;">
+                </el-input>
               </li>
               <li v-for="(value,index) in item.testSizeInfo"
                 :key="index"

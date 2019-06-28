@@ -358,11 +358,7 @@ export default {
         name: '白胚'
       },
       ...res[0].data.data, ...res[1].data.data]
-      res[2].data.data.forEach((item, key) => {
-        if (item.type === 2) {
-          this.companyList.push(item)
-        }
-      })
+      this.companyList = res[2].data.data.filter((item) => (item.type.indexOf(2) !== -1))
       this.materialList.material = res[3].data.data
     })
   }

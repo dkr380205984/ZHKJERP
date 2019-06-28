@@ -578,8 +578,12 @@ export default {
             }).then(res => {
               this.$message({
                 type: 'success',
-                message: `添加成功`
+                message: `添加成功,即将跳转至详情页`
               })
+              setTimeout(() => {
+                console.log('跳转')
+                this.$router.push('/index/packagDetail/' + this.$route.params.id)
+              }, 800)
             })
           } else {
             this.$message({
@@ -668,7 +672,8 @@ export default {
         })
       })
       // 初始化包装辅料订购单位
-      let arr = clientInfo.filter(key => key.type === 7)
+      console.log(clientInfo)
+      let arr = clientInfo.filter(key => (key.type.indexOf(7) !== -1))
       this.options.companyList = arr
       this.loading = false
     })

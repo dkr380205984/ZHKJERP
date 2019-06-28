@@ -19,7 +19,7 @@
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">公司类型：</span>
-          <span class="content">{{companyInfo.type|filterType}}</span>
+          <span class="content"><template v-for="(val,ind) in companyInfo.type">{{( ind !== 0 ? ',' : '' ) + val}}</template></span>
         </div>
       </div>
       <div class="lineCtn">
@@ -100,7 +100,7 @@ export default {
         phone: '',
         create_time: '',
         update_time: '',
-        type: ''
+        type: []
       }
     }
   },
@@ -112,13 +112,6 @@ export default {
 
     }
   },
-  filters: {
-    filterType (value) {
-      if (value) {
-        return companyType.find((item) => item.value === value).name
-      }
-    }
-  },
   mounted () {
     clientDetail({
       id: this.$route.params.id
@@ -126,6 +119,11 @@ export default {
       console.log(res)
       if (res.data.status) {
         this.companyInfo = res.data.data
+        let arr = []
+        this.companyInfo.type.map(res => {
+          arr.push(companyType.find((item) => item.value === res).name)
+        })
+        this.companyInfo.type = arr
       }
     })
   }

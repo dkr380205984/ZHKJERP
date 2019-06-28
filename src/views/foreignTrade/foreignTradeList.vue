@@ -53,7 +53,7 @@
           :key="index">
           <div class="tableColumn">{{item.name}}</div>
           <div class="tableColumn">{{item.abbreviation}}</div>
-          <div class="tableColumn">{{item.type|filterType}}</div>
+          <div class="tableColumn"><template v-for="(val,ind) in item.type">{{(ind !== 0 ? ',' : '') + val}}</template></div>
           <div class="tableColumn">{{item.contacts.length}}</div>
           <div class="tableColumn">{{item.phone?item.phone:'暂无'}}</div>
           <div class="tableColumn">{{item.address?item.address:'暂无'}}</div>
@@ -153,6 +153,13 @@ export default {
         console.log(res)
         this.total = res.data.meta.total
         this.list = res.data.data
+        this.list.map(item => {
+          let arr = []
+          item.type.map(value => {
+            arr.push(companyType.find(key => key.value === value).name)
+          })
+          item.type = arr
+        })
         this.loading = false
       })
     },
@@ -180,7 +187,11 @@ export default {
   },
   filters: {
     filterType (value) {
-      return companyType.find((item) => item.value === value).name
+      let arr = []
+      value.map(res => {
+        arr.push(companyType.find((item) => item.value === res).name)
+      })
+      return arr
     }
   },
   mounted () {

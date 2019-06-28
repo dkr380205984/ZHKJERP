@@ -12,11 +12,17 @@
         <div class="filterLine">
           <span class="label">筛选列表:</span>
           <el-tag closable
-            v-show="clientValCmp"
-            @close="clear('clientVal')">{{clientValCmp}}</el-tag>
-          <el-tag closable
             v-show="categoryCmp"
             @close="clear('category')">{{categoryCmp}}</el-tag>
+          <el-tag closable
+            v-show="typesValCmp"
+            @close="clear('typesVal')">{{typesValCmp}}</el-tag>
+          <el-tag closable
+            v-show="styleValCmp"
+            @close="clear('styleVal')">{{styleValCmp}}</el-tag>
+          <el-tag closable
+            v-show="clientValCmp"
+            @close="clear('clientVal')">{{clientValCmp}}</el-tag>
           <el-tag closable
             v-show="groupValCmp"
             @close="clear('groupVal')">{{groupValCmp}}</el-tag>
@@ -24,17 +30,33 @@
         <div class="selectLine">
           <span class="label">筛选条件:</span>
           <div class="leftFilter">
-            <el-select v-model="clientVal"
-              placeholder="筛选公司">
-              <el-option v-for="item in client"
+            <el-select v-model="categoryVal"
+              placeholder="筛选品类">
+              <el-option v-for="item in category"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id">
               </el-option>
             </el-select>
-            <el-select v-model="categoryVal"
-              placeholder="筛选品类">
-              <el-option v-for="item in category"
+            <el-select v-model="typesVal"
+              placeholder="筛选类型">
+              <el-option v-for="item in types"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
+            <el-select v-model="styleVal"
+              placeholder="筛选款型">
+              <el-option v-for="item in style"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
+            <el-select v-model="clientVal"
+              placeholder="筛选公司">
+              <el-option v-for="item in client"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id">
@@ -171,6 +193,10 @@ export default {
       clientVal: '',
       category: [], // 分类
       categoryVal: '',
+      types: [], // 二级分类
+      typesVal: '',
+      style: [], // 三级分类
+      styleVal: '',
       group: [], // 小组
       groupVal: '',
       timer: '',
@@ -187,6 +213,8 @@ export default {
         'page': this.pages,
         'client_id': this.clientVal,
         'category_id': this.categoryVal,
+        'type_id': this.typesVal,
+        'style_id': this.styleVal,
         'group_id': this.groupVal,
         'order_code': this.searchVal,
         'start_time': this.start_time,
@@ -256,6 +284,16 @@ export default {
         this.clientVal = ''
       } else if (item === 'category') {
         this.categoryVal = ''
+        this.typesVal = ''
+        this.types = []
+        this.styleVal = ''
+        this.style = []
+      } else if (item === 'typesVal') {
+        this.typesVal = ''
+        this.styleVal = ''
+        this.style = []
+      } else if (item === 'styleVal') {
+        this.styleVal = ''
       } else if (item === 'groupVal') {
         this.groupVal = ''
       }
@@ -270,8 +308,24 @@ export default {
     },
     categoryVal (newVal) {
       if (newVal) {
+        this.types = this.category.find((item) => item.id === newVal).child
+        this.typesVal = ''
+        this.styleVal = ''
+        this.style = []
         this.pages = 1
       }
+      this.getOrderList()
+    },
+    typesVal (newVal) {
+      if (newVal) {
+        this.style = this.types.find((item) => item.id === newVal).child
+        this.styleVal = ''
+        this.pages = 1
+      }
+      this.getOrderList()
+    },
+    styleVal (newVal) {
+      this.pages = 1
       this.getOrderList()
     },
     groupVal (newVal) {
@@ -279,9 +333,9 @@ export default {
       this.getOrderList()
     },
     searchVal (newVal) {
-      this.pages = 1
       this.timer = ''
       this.timer = setTimeout(() => {
+        this.pages = 1
         this.getOrderList()
       }, 800)
     }
@@ -291,12 +345,26 @@ export default {
       if (this.clientVal) {
         return this.client.find((item) => item.id === this.clientVal).name
       } else {
-        return '所有分类'
+        return ''
       }
     },
     categoryCmp () {
       if (this.categoryVal) {
         return this.category.find((item) => item.id === this.categoryVal).name
+      } else {
+        return '所有分类'
+      }
+    },
+    typesValCmp () {
+      if (this.typesVal) {
+        return this.types.find((item) => item.id === this.typesVal).name
+      } else {
+        return ''
+      }
+    },
+    styleValCmp () {
+      if (this.styleVal) {
+        return this.style.find((item) => item.id === this.styleVal).name
       } else {
         return ''
       }
@@ -315,11 +383,7 @@ export default {
       company_id: window.sessionStorage.getItem('company_id')
     }).then((res) => {
       if (res.status === 200) {
-        res.data.data.forEach(item => {
-          if (item.type === 1) {
-            this.client.push(item)
-          }
-        })
+        this.client = res.data.data.filter((item) => (item.type.indexOf(1) !== -1))
       }
     })
     productTppeList({
