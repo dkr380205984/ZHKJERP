@@ -1,6 +1,7 @@
 <template>
   <div id="productList"
-    v-loading="loading">
+    v-loading="loading"
+    v-getHash="{'categoryVal':categoryVal,'typesVal':typesVal,'styleVal':styleVal,'flowerVal':flowerVal,'searchVal':searchVal,'pages':pages}">
     <div class="head">
       <h2>添加配料单</h2>
       <el-input placeholder="输入产品编号精确搜索"
@@ -157,6 +158,7 @@ import { productList, productTppeList, flowerList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      first: true, // 判断是不是第一次进入页面
       loading: true,
       defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
       searchVal: '',
@@ -225,6 +227,7 @@ export default {
         this.loading = false
         this.total = res.data.meta.total
         this.list = res.data.data
+        this.first = false
       })
     },
     showImg (imgList) {
@@ -263,34 +266,56 @@ export default {
   },
   watch: {
     categoryVal (newVal) {
-      if (newVal) {
-        this.types = this.category.find((item) => item.id === newVal).child
-        this.typesVal = ''
-        this.styleVal = ''
-        this.style = []
-        this.pages = 1
+      if (this.first) {
+        const finded = this.category.find((item) => item.id === newVal)
+        this.types = finded ? finded.child : []
+      } else {
+        if (newVal) {
+          this.types = this.category.find((item) => item.id === newVal).child
+          this.typesVal = ''
+          this.styleVal = ''
+          this.style = []
+          this.pages = 1
+        }
+        this.getProductList()
       }
-      this.getProductList()
     },
     typesVal (newVal) {
-      if (newVal) {
-        this.style = this.types.find((item) => item.id === newVal).child
-        this.styleVal = ''
-        this.pages = 1
+      if (this.first) {
+        const finded = this.types.find((item) => item.id === newVal)
+        this.style = finded ? finded.child : []
+      } else {
+        if (newVal) {
+          this.style = this.types.find((item) => item.id === newVal).child
+          this.styleVal = ''
+          this.pages = 1
+        }
+        this.getProductList()
       }
-      this.getProductList()
     },
     styleVal (newVal) {
-      this.pages = 1
-      this.getProductList()
+      if (!this.first) {
+        if (newVal) {
+          this.pages = 1
+        }
+        this.getProductList()
+      }
     },
     flowerVal (newVal) {
-      this.pages = 1
-      this.getProductList()
+      if (!this.first) {
+        if (newVal) {
+          this.pages = 1
+        }
+        this.getProductList()
+      }
     },
     searchVal (newVal) {
-      this.pages = 1
-      this.getProductList()
+      if (!this.first) {
+        if (newVal) {
+          this.pages = 1
+        }
+        this.getProductList()
+      }
     }
   },
   computed: {
@@ -345,20 +370,21 @@ export default {
 
   },
   created () {
-    this.getProductList()
-    productTppeList({
+    const hash = window.location.hash ? JSON.parse(decodeURIComponent(window.location.hash).slice(1)) : {}
+    // 分页的特殊性单独处理
+    this.pages = hash.pages
+    // 初始化
+    Promise.all([productTppeList({
       company_id: window.sessionStorage.getItem('company_id')
-    }).then((res) => {
-      if (res.data.status) {
-        this.category = res.data.data
-      }
-    })
-    flowerList({
+    }), flowerList({
       company_id: window.sessionStorage.getItem('company_id')
-    }).then((res) => {
-      if (res.data.status) {
-        this.flower = res.data.data
+    })]).then((res) => {
+      this.category = res[0].data.data
+      this.flower = res[1].data.data
+      for (let key in hash) {
+        this[key] = hash[key]
       }
+      this.getProductList()
     })
   }
 }

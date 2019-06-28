@@ -33,8 +33,7 @@ Vue.directive('getHash', {
   // 当被绑定的元素插入到 DOM 中时……
   update: function (el, binding, vnode) {
     // 聚焦元素
-    console.log(JSON.stringify(binding.value))
-    window.location.hash = JSON.stringify(binding.value)
+    window.location.hash = encodeURIComponent(JSON.stringify(binding.value))
   }
 })
 new Vue({

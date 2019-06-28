@@ -129,7 +129,7 @@ export default {
       rate: [''],
       materialColor: [[]],
       materialColorArr: [],
-      companyArr: [],
+      companyArr: ['本厂'],
       company: [''],
       des: ''
     }
