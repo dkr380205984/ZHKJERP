@@ -1,5 +1,6 @@
 <template>
   <div id="orderList"
+    v-getHash="{'categoryVal':categoryVal,'typesVal':typesVal,'styleVal':styleVal,'company':company,'searchVal':searchVal,'group':group,'pages':pages}"
     v-loading="loading">
     <div class="head">
       <h2>订单发货列表</h2>
@@ -55,6 +56,7 @@
               </el-option>
             </el-select>
             <el-select v-model="company"
+              filterable
               placeholder="外贸公司">
               <el-option v-for="item in companyArrS"
                 :key="item.id"
@@ -196,6 +198,7 @@ import { orderBatchList, productTppeList, clientList, getGroup } from '@/assets/
 export default {
   data () {
     return {
+      first: true, // 判断是不是第一次进入页面
       loading: true,
       searchVal: '',
       date: '',
@@ -305,6 +308,7 @@ export default {
         })
         this.total = res.data.data.count
         this.loading = false
+        this.first = false
       })
     },
     pickTime (date) {
@@ -337,53 +341,68 @@ export default {
       } else if (item === 'group') {
         this.group = ''
       }
-    },
-    // 修改产品
-    goUpdata (id) {
-
-    },
-    // 查看产品
-    goDetail (id) {
-
     }
   },
   watch: {
     categoryVal (newVal) {
-      if (newVal) {
-        this.types = this.category.find((item) => item.id === newVal).child
-        this.typesVal = ''
-        this.styleVal = ''
-        this.style = []
-        this.pages = 1
+      if (this.first) {
+        const finded = this.category.find((item) => item.id === newVal)
+        this.types = finded ? finded.child : []
+      } else {
+        if (newVal) {
+          this.types = this.category.find((item) => item.id === newVal).child
+          this.typesVal = ''
+          this.styleVal = ''
+          this.style = []
+          this.pages = 1
+        }
+        this.getOrderList()
       }
-      this.getOrderList()
     },
     typesVal (newVal) {
-      if (newVal) {
-        this.style = this.types.find((item) => item.id === newVal).child
-        this.styleVal = ''
-        this.pages = 1
+      if (this.first) {
+        const finded = this.types.find((item) => item.id === newVal)
+        this.style = finded ? finded.child : []
+      } else {
+        if (newVal) {
+          this.style = this.types.find((item) => item.id === newVal).child
+          this.styleVal = ''
+          this.pages = 1
+        }
         this.getOrderList()
       }
     },
     styleVal (newVal) {
-      this.pages = 1
-      this.getOrderList()
-    },
-    company (newVal) {
-      this.pages = 1
-      this.getOrderList()
-    },
-    group (newVal) {
-      this.pages = 1
-      this.getOrderList()
+      if (!this.first) {
+        if (newVal) {
+          this.pages = 1
+        }
+        this.getOrderList()
+      }
     },
     searchVal (newVal) {
-      this.pages = 1
-      this.timer = ''
-      this.timer = setTimeout(() => {
+      if (!this.first) {
+        if (newVal) {
+          this.pages = 1
+        }
         this.getOrderList()
-      }, 800)
+      }
+    },
+    company (newVal) {
+      if (!this.first) {
+        if (newVal) {
+          this.pages = 1
+        }
+        this.getOrderList()
+      }
+    },
+    group (newVal) {
+      if (!this.first) {
+        if (newVal) {
+          this.pages = 1
+        }
+        this.getOrderList()
+      }
     }
   },
   computed: {
@@ -423,7 +442,10 @@ export default {
       }
     }
   },
-  mounted () {
+  created () {
+    const hash = window.location.hash ? JSON.parse(decodeURIComponent(window.location.hash).slice(1)) : {}
+    // 分页的特殊性单独处理
+    this.pages = hash.pages
     Promise.all([productTppeList({
       company_id: window.sessionStorage.getItem('company_id')
     }), clientList({
@@ -432,65 +454,14 @@ export default {
       status: 1
     }), getGroup({
       company_id: window.sessionStorage.getItem('company_id')
-    }), orderBatchList({
-      'company_id': window.sessionStorage.getItem('company_id'),
-      'limit': 5,
-      'page': this.pages,
-      'category_id': this.categoryVal,
-      'type_id': this.typesVal,
-      'style_id': this.styleVal,
-      'client_id': this.company,
-      'group_id': this.group,
-      'product_code': this.searchVal
     })]).then((res) => {
-      console.log(res)
       this.category = res[0].data.data
-      this.companyArr = res[1].data.data
+      this.companyArr = res[1].data.data.filter((item) => (item.type.indexOf(1) !== -1))
       this.groupArr = res[2].data.data
-      let json = res[3].data.data.data
-      this.list = Object.keys(json).map((key) => {
-        let arr = []
-        json[key].forEach((item) => {
-          let productList = []
-          JSON.parse(item.batch_info).forEach((itemBatch) => {
-            if (productList.find((itemFind) => itemFind.productCode === itemBatch.productCode)) {
-              let mark = -1
-              productList.forEach((itemFind, index) => {
-                if (itemFind.productCode === itemBatch.productCode) {
-                  mark = index
-                }
-              })
-              productList[mark].sum = productList[mark].sum + itemBatch.size.reduce((total, current) => {
-                return total + parseInt(current.numbers)
-              }, 0)
-            } else {
-              productList.push({
-                productInfo: itemBatch.productInfo,
-                productCode: itemBatch.productCode,
-                sum: itemBatch.size.reduce((total, current) => {
-                  return total + parseInt(current.numbers)
-                }, 0)
-              })
-            }
-          })
-          arr.push({
-            order_id: item.order_id,
-            batch_info: productList,
-            group_name: this.groupArr.find((itemGroup) => itemGroup.id === item.group_id).name,
-            company_name: this.companyArr.find((itemCompany) => { return parseInt(itemCompany.id) === item.client_id }).name,
-            order_code: item.order_code,
-            lineNum: JSON.parse(item.batch_info).length
-          })
-        })
-        return {
-          lineNum: arr.reduce((total, current) => total + current.lineNum, 0),
-          date: key,
-          orderInfo: arr
-        }
-      })
-      this.total = res[3].data.data.count
-      this.companyArrS = res[1].data.data.filter((item) => (item.type.indexOf(1) !== -1))
-      this.loading = false
+      for (let key in hash) {
+        this[key] = hash[key]
+      }
+      this.getOrderList()
     })
   }
 }

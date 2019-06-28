@@ -1,5 +1,6 @@
 <template>
   <div id="productList"
+    v-getHash="{'categoryVal':categoryVal,'typesVal':typesVal,'styleVal':styleVal,'searchVal':searchVal,'pages':pages}"
     v-loading="loading">
     <div class="head">
       <h2>工艺单列表</h2>
@@ -132,6 +133,7 @@ import { productTppeList, craftList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      first: true, // 判断是不是第一次进入页面
       loading: true,
       defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
       searchVal: '',
@@ -197,6 +199,7 @@ export default {
         this.loading = false
         this.total = res.data.meta.total
         this.list = res.data.data
+        this.first = false
       })
     },
     showImg (imgList) {
@@ -252,30 +255,48 @@ export default {
   },
   watch: {
     categoryVal (newVal) {
-      if (newVal) {
-        this.types = this.category.find((item) => item.id === newVal).child
-        this.typesVal = ''
-        this.styleVal = ''
-        this.style = []
-        this.pages = 1
+      if (this.first) {
+        const finded = this.category.find((item) => item.id === newVal)
+        this.types = finded ? finded.child : []
+      } else {
+        if (newVal) {
+          this.types = this.category.find((item) => item.id === newVal).child
+          this.typesVal = ''
+          this.styleVal = ''
+          this.style = []
+          this.pages = 1
+        }
+        this.getCraftList()
       }
-      this.getCraftList()
     },
     typesVal (newVal) {
-      if (newVal) {
-        this.style = this.types.find((item) => item.id === newVal).child
-        this.styleVal = ''
-        this.pages = 1
+      if (this.first) {
+        const finded = this.types.find((item) => item.id === newVal)
+        this.style = finded ? finded.child : []
+      } else {
+        if (newVal) {
+          this.style = this.types.find((item) => item.id === newVal).child
+          this.styleVal = ''
+          this.pages = 1
+        }
+        this.getCraftList()
       }
-      this.getCraftList()
     },
     styleVal (newVal) {
-      this.pages = 1
-      this.getCraftList()
+      if (!this.first) {
+        if (newVal) {
+          this.pages = 1
+        }
+        this.getCraftList()
+      }
     },
     searchVal (newVal) {
-      this.pages = 1
-      this.getCraftList()
+      if (!this.first) {
+        if (newVal) {
+          this.pages = 1
+        }
+        this.getCraftList()
+      }
     }
   },
   computed: {
@@ -345,13 +366,18 @@ export default {
     }
   },
   created () {
-    this.getCraftList()
-    productTppeList({
+    const hash = window.location.hash ? JSON.parse(decodeURIComponent(window.location.hash).slice(1)) : {}
+    // 分页的特殊性单独处理
+    this.pages = hash.pages
+    // 初始化
+    Promise.all([productTppeList({
       company_id: window.sessionStorage.getItem('company_id')
-    }).then((res) => {
-      if (res.data.status) {
-        this.category = res.data.data
+    })]).then((res) => {
+      this.category = res[0].data.data
+      for (let key in hash) {
+        this[key] = hash[key]
       }
+      this.getCraftList()
     })
   }
 }

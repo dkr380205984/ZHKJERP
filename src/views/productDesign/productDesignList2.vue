@@ -1,5 +1,6 @@
 <template>
   <div id="productDesignList"
+    v-getHash="{'categoryVal':categoryVal,'typesVal':typesVal,'styleVal':styleVal,'company':company,'searchVal':searchVal,'group':group,'pages':pages}"
     v-loading="loading">
     <div class="head">
       <h2>织造加工列表</h2>
@@ -55,6 +56,7 @@
               </el-option>
             </el-select>
             <el-select v-model="company"
+              filterable
               placeholder="外贸公司">
               <el-option v-for="item in companyArr"
                 :key="item.id"
@@ -192,6 +194,7 @@ import { productionList, productTppeList, clientList, getGroup } from '@/assets/
 export default {
   data () {
     return {
+      first: true, // 判断是不是第一次进入页面
       loading: true,
       searchVal: '',
       date: '',
@@ -319,7 +322,7 @@ export default {
             lineNum: productList.length
           }
         })
-        console.log(this.list)
+        this.first = false
       })
     },
     pickTime (date) {
@@ -356,41 +359,64 @@ export default {
   },
   watch: {
     categoryVal (newVal) {
-      if (newVal) {
-        this.types = this.category.find((item) => item.id === newVal).child
-        this.typesVal = ''
-        this.styleVal = ''
-        this.style = []
-        this.pages = 1
+      if (this.first) {
+        const finded = this.category.find((item) => item.id === newVal)
+        this.types = finded ? finded.child : []
+      } else {
+        if (newVal) {
+          this.types = this.category.find((item) => item.id === newVal).child
+          this.typesVal = ''
+          this.styleVal = ''
+          this.style = []
+          this.pages = 1
+        }
+        this.getProductionList()
       }
-      this.getProductionList()
     },
     typesVal (newVal) {
-      if (newVal) {
-        this.style = this.types.find((item) => item.id === newVal).child
-        this.styleVal = ''
-        this.pages = 1
+      if (this.first) {
+        const finded = this.types.find((item) => item.id === newVal)
+        this.style = finded ? finded.child : []
+      } else {
+        if (newVal) {
+          this.style = this.types.find((item) => item.id === newVal).child
+          this.styleVal = ''
+          this.pages = 1
+        }
+        this.getProductionList()
       }
-      this.getProductionList()
     },
     styleVal (newVal) {
-      this.pages = 1
-      this.getProductionList()
-    },
-    company (newVal) {
-      this.pages = 1
-      this.getProductionList()
-    },
-    group (newVal) {
-      this.pages = 1
-      this.getProductionList()
+      if (!this.first) {
+        if (newVal) {
+          this.pages = 1
+        }
+        this.getProductionList()
+      }
     },
     searchVal (newVal) {
-      this.timer = ''
-      this.timer = setTimeout(() => {
-        this.pages = 1
+      if (!this.first) {
+        if (newVal) {
+          this.pages = 1
+        }
         this.getProductionList()
-      }, 800)
+      }
+    },
+    company (newVal) {
+      if (!this.first) {
+        if (newVal) {
+          this.pages = 1
+        }
+        this.getProductionList()
+      }
+    },
+    group (newVal) {
+      if (!this.first) {
+        if (newVal) {
+          this.pages = 1
+        }
+        this.getProductionList()
+      }
     }
   },
   computed: {
@@ -430,26 +456,26 @@ export default {
       }
     }
   },
-  mounted () {
-    this.getProductionList()
-    productTppeList({
+  created () {
+    const hash = window.location.hash ? JSON.parse(decodeURIComponent(window.location.hash).slice(1)) : {}
+    // 分页的特殊性单独处理
+    this.pages = hash.pages
+    Promise.all([productTppeList({
       company_id: window.sessionStorage.getItem('company_id')
-    }).then((res) => {
-      if (res.data.status) {
-        this.category = res.data.data
-      }
-    })
-    clientList({
+    }), clientList({
       company_id: window.sessionStorage.getItem('company_id'),
       keyword: '',
       status: 1
-    }).then((res) => {
-      this.companyArr = res.data.data.filter((item) => (item.type.indexOf(1) !== -1))
-    })
-    getGroup({
+    }), getGroup({
       company_id: window.sessionStorage.getItem('company_id')
-    }).then((res) => {
-      this.groupArr = res.data.data
+    })]).then((res) => {
+      this.category = res[0].data.data
+      this.groupArr = res[2].data.data
+      this.companyArr = res[1].data.data.filter((item) => (item.type.indexOf(1) !== -1))
+      for (let key in hash) {
+        this[key] = hash[key]
+      }
+      this.getProductionList()
     })
   }
 }
