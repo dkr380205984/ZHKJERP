@@ -1,5 +1,6 @@
 <template>
   <div id="rawMaterialOrderList"
+    v-getHash="{'categoryVal':categoryVal,'typesVal':typesVal,'styleVal':styleVal,'clientVal':clientVal,'searchVal':searchVal,'group':group,'pages':pages}"
     v-loading='loading'>
     <div class="head">
       <h2>物料详情列表</h2>
@@ -201,7 +202,8 @@ export default {
       groupVal: '',
       timer: '',
       start_time: '',
-      end_time: ''
+      end_time: '',
+      first: true // 判断是不是第一次进入页面
     }
   },
   methods: {
@@ -265,6 +267,7 @@ export default {
           }
         })
         this.loading = false
+        this.first = false
       })
     },
     pickTime (date) {
@@ -300,44 +303,65 @@ export default {
     }
   },
   watch: {
-    clientVal (newVal) {
-      if (newVal) {
-        this.pages = 1
-      }
-      this.getOrderList()
-    },
     categoryVal (newVal) {
-      if (newVal) {
-        this.types = this.category.find((item) => item.id === newVal).child
-        this.typesVal = ''
-        this.styleVal = ''
-        this.style = []
-        this.pages = 1
+      if (this.first) {
+        const finded = this.category.find((item) => item.id === newVal)
+        this.types = finded ? finded.child : []
+      } else {
+        if (newVal) {
+          this.types = this.category.find((item) => item.id === newVal).child
+          this.typesVal = ''
+          this.styleVal = ''
+          this.style = []
+          this.pages = 1
+        }
+        this.getOrderList()
       }
-      this.getOrderList()
     },
     typesVal (newVal) {
-      if (newVal) {
-        this.style = this.types.find((item) => item.id === newVal).child
-        this.styleVal = ''
-        this.pages = 1
+      if (this.first) {
+        const finded = this.types.find((item) => item.id === newVal)
+        this.style = finded ? finded.child : []
+      } else {
+        if (newVal) {
+          this.style = this.types.find((item) => item.id === newVal).child
+          this.styleVal = ''
+          this.pages = 1
+        }
+        this.getOrderList()
       }
-      this.getOrderList()
     },
     styleVal (newVal) {
-      this.pages = 1
-      this.getOrderList()
-    },
-    groupVal (newVal) {
-      this.pages = 1
-      this.getOrderList()
+      if (!this.first) {
+        if (newVal) {
+          this.pages = 1
+        }
+        this.getOrderList()
+      }
     },
     searchVal (newVal) {
-      this.pages = 1
-      this.timer = ''
-      this.timer = setTimeout(() => {
+      if (!this.first) {
+        if (newVal) {
+          this.pages = 1
+        }
         this.getOrderList()
-      }, 800)
+      }
+    },
+    clientVal (newVal) {
+      if (!this.first) {
+        if (newVal) {
+          this.pages = 1
+        }
+        this.getOrderList()
+      }
+    },
+    group (newVal) {
+      if (!this.first) {
+        if (newVal) {
+          this.pages = 1
+        }
+        this.getOrderList()
+      }
     }
   },
   computed: {
@@ -378,30 +402,25 @@ export default {
     }
   },
   created () {
-    this.getOrderList()
-    clientList({
+    const hash = window.location.hash ? JSON.parse(decodeURIComponent(window.location.hash).slice(1)) : {}
+    // 分页的特殊性单独处理
+    this.pages = hash.pages
+    Promise.all([productTppeList({
       company_id: window.sessionStorage.getItem('company_id')
-    }).then((res) => {
-      if (res.status === 200) {
-        // res.data.data.forEach(item => {
-        //   if (item.type === 1) {
-        //     this.client.push(item)
-        //   }
-        // })
-        this.client = res.data.data.filter((item) => (item.type.indexOf(1) !== -1))
+    }), clientList({
+      company_id: window.sessionStorage.getItem('company_id'),
+      keyword: '',
+      status: 1
+    }), getGroup({
+      company_id: window.sessionStorage.getItem('company_id')
+    })]).then((res) => {
+      this.category = res[0].data.data
+      this.client = res[1].data.data.filter((item) => (item.type.indexOf(1) !== -1))
+      this.groupArr = res[2].data.data
+      for (let key in hash) {
+        this[key] = hash[key]
       }
-    })
-    productTppeList({
-      company_id: window.sessionStorage.getItem('company_id')
-    }).then((res) => {
-      if (res.status === 200) {
-        this.category = res.data.data
-      }
-    })
-    getGroup({
-      company_id: window.sessionStorage.getItem('company_id')
-    }).then((res) => {
-      this.group = res.data.data
+      this.getOrderList()
     })
   }
 }

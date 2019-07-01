@@ -68,7 +68,7 @@
       <div class="tableCtn"
         v-scroll="{fun:getCraftList,pageSize:5}">
         <div class="tableRow titleTableRow">
-          <div class="tableColumn">计划单编号</div>
+          <div class="tableColumn">配料单编号</div>
           <div class="tableColumn">产品编号</div>
           <div class="tableColumn">产品类别</div>
           <div class="tableColumn">产品规格</div>
@@ -88,7 +88,7 @@
           <div class="tableColumn">{{item.product_info.size|filterSize}}</div>
           <div class="tableColumn">{{item.material_data|filterMaterial}}</div>
           <div class="tableColumn">{{item.material_data|filterOtherMaterial}}</div>
-          <div class="tableColumn">{{item.product_info.user_name}}</div>
+          <div class="tableColumn">{{item.user_name}}</div>
           <div class="tableColumn">{{item.product_info.create_time}}</div>
           <div class="tableColumn flex9">
             <span class="btns warning"

@@ -180,7 +180,7 @@
             </el-input>
           </div>
         </div>
-        <div class="lineCtn">
+        <!-- <div class="lineCtn">
           <div class="inputCtn oneLine">
             <span class="label must">纱线系数:</span>
             <el-input :disabled="!state"
@@ -194,7 +194,7 @@
               <template slot="append">克/厘米</template>
             </el-input>
           </div>
-        </div>
+        </div> -->
       </div>
       <div class="stepCtn">
         <div class="stepTitle">辅料信息</div>
@@ -291,7 +291,7 @@
           </div>
         </div>
       </div>
-      <div class="stepCtn">
+      <!-- <div class="stepCtn">
         <div class="stepTitle">生产流程</div>
         <div class="borderCtn">
           <div class="cicle"></div>
@@ -324,7 +324,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
       <div class="btnCtn">
         <div class="cancleBtn"
           @click="$router.go(-1)">返回</div>
@@ -880,12 +880,12 @@ export default {
           })
           return
         }
-        if (this.xishu.length < this.ingredientCmp.length) {
-          this.$message.error({
-            message: '检测到有未填写的纱线系数，请完善信息'
-          })
-          return
-        }
+        // if (this.xishu.length < this.ingredientCmp.length) {
+        //   this.$message.error({
+        //     message: '检测到有未填写的纱线系数，请完善信息'
+        //   })
+        //   return
+        // }
         this.process.forEach((item) => {
           if (!item) {
             state = true
@@ -934,12 +934,12 @@ export default {
             type: 1
           })
         })
-        let xishu = this.xishu.map((item, index) => {
-          return {
-            name: this.ingredientCmp[index],
-            value: item
-          }
-        })
+        // let xishu = this.xishu.map((item, index) => {
+        //   return {
+        //     name: this.ingredientCmp[index],
+        //     value: item
+        //   }
+        // })
         this.lock = true
         this.loading = true
         saveProductPlan({
@@ -949,9 +949,9 @@ export default {
           'product_id': this.product.id,
           'user_id': window.sessionStorage.getItem('user_id'),
           'material_data': materialData,
-          'outside_process': this.process,
+          'outside_process': [],
           'weight_group': this.weight,
-          'yarn_coefficient': xishu
+          'yarn_coefficient': []
         }).then((res) => {
           if (res.data.status) {
             this.$message.success({
@@ -971,10 +971,6 @@ export default {
           message: '请勿频繁操作'
         })
       }
-    },
-    // 清空
-    clearAll () {
-
     }
   },
   computed: {

@@ -121,6 +121,7 @@
           </div>
           <div class="testInfo">
             <ul class="testFrom"
+              style="height: 375px;"
               v-for="(item,kay) in this.list.testInfo"
               :key="kay">
               <li>
@@ -135,23 +136,22 @@
                   </el-option>
                 </el-select>
               </li>
-              <li>
+              <!-- <li>
                 <span>检验人员</span>:
-                <!-- <el-select v-model="item.tester_name"
+                <el-select v-model="item.tester_name"
                   placeholder="请选择检验人员"
                   size="small">
                   <el-option v-for="value in options.testerList"
                     :key="value.value"
                     :value="value">
                   </el-option>
-                </el-select> -->
-
-                <el-input size="small"
-                  placeholder="请输入检验人员"
-                  v-model="item.tester_name"
-                  style="margin-left:15px;width:243px;">
-                </el-input>
-              </li>
+                </el-select>
+              <el-input size="small"
+                placeholder="请输入检验人员"
+                v-model="item.tester_name"
+                style="margin-left:15px;width:243px;">
+              </el-input>
+              </li> -->
               <li v-for="(value,index) in item.testSizeInfo"
                 :key="index"
                 class="col"
@@ -362,14 +362,14 @@ export default {
               flag = false
               return
             }
-            if (!item.tester_name) {
-              this.$message({
-                type: 'error',
-                message: `请选择检验人员`
-              })
-              flag = false
-              return
-            }
+            // if (!item.tester_name) {
+            //   this.$message({
+            //     type: 'error',
+            //     message: `请选择检验人员`
+            //   })
+            //   flag = false
+            //   return
+            // }
             if (!value.color) {
               this.$message({
                 type: 'error',
@@ -397,7 +397,8 @@ export default {
             arr.size = value.color.split('/')[0]
             arr.color = value.color.split('/')[1]
             arr.client_id = item.production_client
-            arr.user_inspection = item.tester_name
+            // arr.user_inspection = item.tester_name
+            arr.user_inspection = window.sessionStorage.getItem('user_id')
             arr.count = value.value
             arr.number = value.number
             arr.rejects_info = JSON.stringify(value.defective_info)

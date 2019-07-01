@@ -196,7 +196,7 @@
             </el-input>
           </div>
         </div>
-        <div class="lineCtn">
+        <!-- <div class="lineCtn">
           <div class="inputCtn oneLine">
             <span class="label">纱线系数:</span>
             <el-input :disabled="!state||hasIngredient==='0'"
@@ -210,7 +210,7 @@
               <template slot="append">克/厘米</template>
             </el-input>
           </div>
-        </div>
+        </div> -->
       </div>
       <div class="stepCtn">
         <div class="stepTitle">辅料信息</div>
@@ -308,7 +308,7 @@
           </div>
         </div>
       </div>
-      <div class="stepCtn">
+      <!-- <div class="stepCtn">
         <div class="stepTitle">生产流程</div>
         <div class="borderCtn">
           <div class="cicle"></div>
@@ -341,7 +341,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
       <div class="btnCtn">
         <div class="cancleBtn"
           @click="$router.go(-1)">返回</div>
@@ -398,8 +398,8 @@ export default {
       },
       colourArr: [],
       colorArr: [],
-      process: [''],
-      processArr: [],
+      // process: [''],
+      // processArr: [],
       materialArr: [],
       weight: [],
       xishu: [],
@@ -425,7 +425,7 @@ export default {
       this.sizeKey = Object.keys(res[0].data.data.size)
       this.colourArr = res[0].data.data.color
       this.colorArr = res[5].data.data
-      this.processArr = res[2].data.data.process
+      // this.processArr = res[2].data.data.process
       this.ingredientArr = res[1].data.data
       let value = []
       Object.keys(this.product.size).forEach((key) => {
@@ -726,13 +726,13 @@ export default {
       this.otherIngredient.color[index][index2][index3].name = json.name
     },
     // 添加工序
-    addProcess () {
-      this.process.push('')
-    },
+    // addProcess () {
+    //   this.process.push('')
+    // },
     // 删除工序
-    deleteProcess () {
-      this.process.pop()
-    },
+    // deleteProcess () {
+    //   this.process.pop()
+    // },
     // 添加
     saveAll () {
       if (!this.lock) {
@@ -843,11 +843,6 @@ export default {
             this.xishu[index] = [0]
           }
         })
-        this.process.forEach((item) => {
-          if (!item) {
-            state = true
-          }
-        })
         if (state) {
           this.$message.error({
             message: '检测到有未填写的工序信息，请完善信息'
@@ -891,12 +886,12 @@ export default {
             type: 1
           })
         })
-        let xishu = this.xishu.map((item, index) => {
-          return {
-            name: this.ingredientCmp[index],
-            value: item
-          }
-        })
+        // let xishu = this.xishu.map((item, index) => {
+        //   return {
+        //     name: this.ingredientCmp[index],
+        //     value: item
+        //   }
+        // })
         this.lock = true
         this.loading = true
         saveProductPlan({
@@ -905,9 +900,9 @@ export default {
           'product_id': this.product.id,
           'user_id': window.sessionStorage.getItem('user_id'),
           'material_data': materialData,
-          'outside_process': this.process,
+          'outside_process': [], // 外道加工去了
           'weight_group': this.weight,
-          'yarn_coefficient': xishu
+          'yarn_coefficient': [] // 纱线系数去了
         }).then((res) => {
           if (res.data.status) {
             this.$message.success({

@@ -295,7 +295,7 @@ export default {
               order_id: item.order_id,
               batch_info: productList,
               group_name: this.groupArr.find((itemGroup) => itemGroup.id === item.group_id).name,
-              company_name: this.companyArr.find((itemCompany) => { return parseInt(itemCompany.id) === item.client_id }).name,
+              company_name: this.companyArrS.find((itemCompany) => { return parseInt(itemCompany.id) === item.client_id }).name,
               order_code: item.order_code,
               lineNum: JSON.parse(item.batch_info).length
             })
@@ -456,7 +456,7 @@ export default {
       company_id: window.sessionStorage.getItem('company_id')
     })]).then((res) => {
       this.category = res[0].data.data
-      this.companyArr = res[1].data.data.filter((item) => (item.type.indexOf(1) !== -1))
+      this.companyArrS = res[1].data.data.filter((item) => (item.type.indexOf(1) !== -1))
       this.groupArr = res[2].data.data
       for (let key in hash) {
         this[key] = hash[key]

@@ -28,17 +28,23 @@
         <div class="inputCtn">
           <span class="label">产品规格:</span>
           <span class="content contentLine"
-            v-for="(item,key) in product_info.size"
+            v-for="(item,key,index) in product_info.size"
             :key="key">
-            <span class="size">{{key}}</span>
+            <span class="size"
+              style="margin-right:15px">{{key}}</span>
             <span class="sizeDetail">
               <span class="sizeOnce"
+                style="margin-right:15px"
                 v-for="itemChild in item"
                 :key="itemChild.id">{{itemChild.size_name + '：' + itemChild.size_value + (itemChild.size_name == '克重' ? 'g' : 'cm')}}</span>
+              <span class="sizeOnce"
+                style="margin-right:20px">{{'克重：'+item[index].weight+'g'}}</span>
+              <span class="sizeOnce"
+                style="margin-right:20px">{{'净重：'+weight_group[index]+'g'}}</span>
               <template v-for="(value,index) in weight">
                 <span :key="index"
                   v-if="(key === index) || index === '均码'">
-                  {{'净重：' + value.toFixed(2) + 'g'}}
+                  {{'原料：' + value.toFixed(2) + 'g'}}
                 </span>
               </template>
             </span>
@@ -98,7 +104,7 @@
           </div>
         </div>
       </div>
-      <div class="lineCtn">
+      <!-- <div class="lineCtn">
         <div class="inputCtn">
           <span class="label change">外道加工流程:</span>
           <ul class="liucheng content">
@@ -106,7 +112,7 @@
               :key="index">{{item}}</li>
           </ul>
         </div>
-      </div>
+      </div> -->
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="content btn">
@@ -142,7 +148,8 @@ export default {
         main_ingredients: []
       },
       weight: {},
-      loss: {}
+      loss: {},
+      weight_group: []
     }
   },
   filters: {
