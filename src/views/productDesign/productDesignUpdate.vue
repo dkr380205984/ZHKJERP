@@ -137,7 +137,7 @@ import { productionDetail, productionSave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
-      lock: true,
+      lock: false,
       loading: true,
       order: {
         order_code: '',

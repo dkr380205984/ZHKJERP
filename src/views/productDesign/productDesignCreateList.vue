@@ -95,6 +95,8 @@
           <div class="tableColumn"
             style="flex:2">产品信息</div>
           <div class="tableColumn"
+            style="flex:0.7">产品图片</div>
+          <div class="tableColumn"
             style="flex:0.7">下单数</div>
           <div class="tableColumn"
             style="flex:0.7">负责小组</div>
@@ -118,6 +120,23 @@
                 <span style="margin:0 5px">{{itemProduct.productCode}}</span>
                 <span style="margin:0 5px">{{itemProduct.productInfo.category_info.product_category}}/{{itemProduct.productInfo.type_name}}/{{itemProduct.productInfo.style_name}}/{{itemProduct.productInfo.flower_id}}</span>
               </span>
+            </div>
+          </div>
+          <div class="tableColumn"
+            style="flex:0.7">
+            <div class="small"
+              v-for="(itemProduct,indexProduct) in item.productList"
+              :key="indexProduct"
+              style="height:60px;text-align:center;justify-content:space-around">
+              <div class="imgCtn">
+                <img class="img"
+                  :src="itemProduct.productInfo.img.length>0?itemProduct.productInfo.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
+                  :onerror="defaultImg" />
+                <div class="toolTips"
+                  v-if="itemProduct.productInfo.img.length>0"><span @click="showImg(itemProduct.productInfo.img)">点击查看大图</span></div>
+                <div class="toolTips"
+                  v-if="itemProduct.productInfo.img.length===0"><span>没有预览图</span></div>
+              </div>
             </div>
           </div>
           <div class="tableColumn"
@@ -166,6 +185,22 @@
         </el-pagination>
       </div>
     </div>
+    <div class="shade"
+      v-show="showShade">
+      <div class="main">
+        <div class="closeBtn"
+          @click="showShade=false">点此退出预览</div>
+        <el-carousel indicator-position="outside"
+          height="550px"
+          arrow="always">
+          <el-carousel-item v-for="item in imgList"
+            :key="item.image_url">
+            <img :src="item.image_url"
+              class="imgList" />
+          </el-carousel-item>
+        </el-carousel>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -174,6 +209,9 @@ import { orderList, productTppeList, clientList, getGroup } from '@/assets/js/ap
 export default {
   data () {
     return {
+      defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
+      showShade: false,
+      imgList: [],
       first: true, // 判断是不是第一次进入页面
       loading: true,
       searchVal: '',
@@ -314,6 +352,10 @@ export default {
       } else if (item === 'group') {
         this.group = ''
       }
+    },
+    showImg (imgList) {
+      this.imgList = imgList
+      this.showShade = true
     }
   },
   watch: {
@@ -450,6 +492,38 @@ export default {
     background: #1a95ff;
     &:hover {
       background: #48aaff;
+    }
+  }
+}
+.imgCtn {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  &:hover {
+    .toolTips {
+      display: block;
+    }
+  }
+  .img {
+    width: 48px;
+    padding: 6px;
+    height: 48px;
+  }
+  .toolTips {
+    display: none;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    text-align: center;
+    line-height: 60px;
+    cursor: pointer;
+    span {
+      color: #fff;
+      &:hover {
+        color: #1a95ff;
+      }
     }
   }
 }

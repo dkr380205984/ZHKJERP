@@ -445,3 +445,39 @@
     }
   }
 }
+.shade{
+  position: fixed;
+  top:0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0,0,0,0.8);
+  .main{
+    width: 1000px;
+    height: 600px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    margin: auto;
+    .imgList{
+      max-height: 550px;
+      margin: auto;
+      display: block;
+    }
+    .closeBtn{
+      position: absolute;
+      right: 0;
+      top: -78px;
+      color: #fff;
+      width: 100%;
+      text-align: center;
+      font-size: 26px;
+      cursor: pointer;
+      &:hover{
+        color: @normalBlue;
+      }
+    }
+  }
+}

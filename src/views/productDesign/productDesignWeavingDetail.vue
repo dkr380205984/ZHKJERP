@@ -510,7 +510,6 @@ export default {
         type: 1
       })
     ]).then(res => {
-      console.log(res[2])
       this.order = res[0].data.data.production_detail.order_info
       this.productInfo = res[0].data.data.production_detail.product_info.map((item) => {
         let json = item
@@ -679,9 +678,20 @@ export default {
       // 第一步，把纱线和颜色信息取出来
       let materialList = this.logList.map((itemLog, indexLog) => {
         let newItem = itemLog
-        let finded = this.product.find((itemPro, indexPro) => itemPro.product_code === itemLog.product_info.product_code)
+        let find = this.product.find((itemPro, indexPro) => itemPro.product_code === itemLog.product_info.product_code)
+        let finded = JSON.parse(JSON.stringify(find))
         let colorArr = finded.state === 2 ? finded.info.find((itemInfo, indexInfo) => itemInfo.color === itemLog.color && itemInfo.size === itemLog.size).colorArr : []
-        newItem.colorArr = colorArr
+        if (finded.state === 2) {
+          newItem.colorArr = colorArr.map((itemMat) => {
+            itemMat.colorWeight = itemMat.colorWeight.map((itemColor) => {
+              itemColor.weight = (itemColor.weight * itemLog.number / finded.info.find((itemInfo, indexInfo) => itemInfo.color === itemLog.color && itemInfo.size === itemLog.size).production_num).toFixed(2)
+              return itemColor
+            })
+            return itemMat
+          })
+        } else {
+          newItem.colorArr = colorArr
+        }
         newItem.production_num = finded.info.find((itemInfo, indexInfo) => itemInfo.color === itemLog.color && itemInfo.size === itemLog.size).production_num
         newItem.production_sunhao = finded.info.find((itemInfo, indexInfo) => itemInfo.color === itemLog.color && itemInfo.size === itemLog.size).production_sunhao
         newItem.product_code = itemLog.product_info.product_code
@@ -720,7 +730,6 @@ export default {
         })
         return json
       })
-      console.log(this.bushaList)
     })
   },
   methods: {

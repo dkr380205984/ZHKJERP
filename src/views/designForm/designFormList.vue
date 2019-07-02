@@ -70,6 +70,7 @@
           <div class="tableColumn">总根数(经/纬)</div>
           <div class="tableColumn flex9">主料(经/纬)</div>
           <div class="tableColumn flexSamll">产品净重(克)</div>
+          <div class="tableColumn">产品图片</div>
           <div class="tableColumn flexSamll">创建人</div>
           <div class="tableColumn flexSamll">创建时间</div>
           <div class="tableColumn flex9">操作</div>
@@ -83,6 +84,17 @@
           <div class="tableColumn">{{item|filterWeft}}</div>
           <div class="tableColumn flex9">{{item.material_data|filterMaterial}}</div>
           <div class="tableColumn flexSamll">{{item.weight}}</div>
+          <div class="tableColumn">
+            <div class="imgCtn">
+              <img class="img"
+                :src="item.product_info.img.length>0?item.product_info.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
+                :onerror="defaultImg" />
+              <div class="toolTips"
+                v-if="item.product_info.img.length>0"><span @click="showImg(item.product_info.img)">点击查看大图</span></div>
+              <div class="toolTips"
+                v-if="item.product_info.img.length===0"><span>没有预览图</span></div>
+            </div>
+          </div>
           <div class="tableColumn flexSamll">{{item.user_name}}</div>
           <div class="tableColumn flexSamll">{{item.create_time}}</div>
           <div class="tableColumn flex9">

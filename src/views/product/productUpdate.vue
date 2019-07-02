@@ -81,7 +81,7 @@
         <div class="lineCtn"
           v-for="(itemf,indexf) in sizeNum"
           :key="indexf">
-          <el-select :disabled="has_next"
+          <el-select :disabled="has_next && itemf<=haveSizeNum"
             clearable
             class="elInput"
             v-model="footage[indexf]"
@@ -93,7 +93,7 @@
               :value="item.id">
             </el-option>
           </el-select>
-          <el-input :disabled="has_next"
+          <el-input :disabled="has_next && itemf<=haveSizeNum"
             v-for="(item,index) in child_size"
             class="elInputAp"
             placeholder="请输入数字"
@@ -102,7 +102,7 @@
             <template slot="prepend">{{item.name}}</template>
             <template slot="append">厘米</template>
           </el-input>
-          <el-input :disabled="has_next"
+          <el-input :disabled="has_next && itemf<=haveSizeNum"
             class="elInputAp"
             style="width:200px"
             placeholder="请输入产品克重"
@@ -124,7 +124,7 @@
         <div class="cancleCtn"
           v-for="item in colorNum"
           :key="item">
-          <el-select :disabled="has_next"
+          <el-select :disabled="has_next && item<=haveColorNum"
             clearable
             filterable
             class="elSelect"
@@ -158,7 +158,7 @@
           :on-success="handleSuccess"
           :before-upload="beforeAvatarUpload"
           :file-list="fileArr"
-          :data=postData
+          :data="postData"
           ref="uploada"
           list-type="picture">
           <el-button size="small"
@@ -219,7 +219,9 @@ export default {
       }],
       child_size: [],
       weight: [],
-      showError: false
+      showError: false,
+      haveSizeNum: 1, // 用于记录已有的尺码和配色信息
+      haveColorNum: 1
     }
   },
   mounted () {
@@ -284,7 +286,6 @@ export default {
       })
       // 尺码
       this.footage = Object.keys(product.size)
-      console.log(this.footage)
       this.footage.forEach((key) => {
         this.sizeArr.push(product.size[key].map((item) => {
           return item.size_value
@@ -315,8 +316,9 @@ export default {
       // 如果产品有后续信息，则只能修改图片
       if (product.has_craft !== 0 || product.has_plan !== 0 || product.in_order !== 0) {
         this.has_next = true
+        this.haveSizeNum = this.sizeNum
+        this.haveColorNum = this.colorNum
       }
-      console.log(this.has_next)
       this.loading = false
     })
   },
@@ -549,14 +551,8 @@ export default {
     },
     // 解决了vue数据类型检测的bug
     addSizeLine () {
-      if (!this.has_next) {
-        this.sizeArr.push([])
-        this.sizeNum++
-      } else {
-        this.$message.error({
-          message: '不能添加尺寸'
-        })
-      }
+      this.sizeArr.push([])
+      this.sizeNum++
     },
     // 添加成分
     addingredientNum () {
@@ -588,13 +584,7 @@ export default {
     },
     // 添加颜色
     addcolorNum () {
-      if (!this.has_next) {
-        this.colorNum++
-      } else {
-        this.$message.error({
-          message: '不能添加配色'
-        })
-      }
+      this.colorNum++
     },
     // 删除颜色
     deleteColor (index) {
@@ -608,9 +598,14 @@ export default {
           })
         }
       } else {
-        this.$message.error({
-          message: '不能删除配色'
-        })
+        if (index > this.haveColorNum) {
+          this.color.splice(index - 1, 1)
+          this.colorNum--
+        } else {
+          this.$message.error({
+            message: '不能删除已有配色'
+          })
+        }
       }
     },
     // 删除尺寸
@@ -626,9 +621,15 @@ export default {
           })
         }
       } else {
-        this.$message.error({
-          message: '不能删除尺寸'
-        })
+        if (index > this.haveSizeNum) {
+          this.footage.splice(index - 1, 1)
+          this.sizeArr.splice(index - 1, 1)
+          this.sizeNum--
+        } else {
+          this.$message.error({
+            message: '不能删除已有尺寸'
+          })
+        }
       }
     }
   }

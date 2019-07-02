@@ -1,6 +1,6 @@
 <template>
   <div id="rawMaterialOrderList"
-    v-getHash="{'categoryVal':categoryVal,'typesVal':typesVal,'styleVal':styleVal,'clientVal':clientVal,'searchVal':searchVal,'group':group,'pages':pages}"
+    v-getHash="{'categoryVal':categoryVal,'typesVal':typesVal,'styleVal':styleVal,'clientVal':clientVal,'searchVal':searchVal,'groupVal':groupVal,'pages':pages}"
     v-loading='loading'>
     <div class="head">
       <h2>物料详情列表</h2>
@@ -92,14 +92,16 @@
         <div class="mergeHeader">
           <div class="tableColumn">订单号</div>
           <div class="tableColumn">外贸公司</div>
-          <div class="tableColumn flex21"
-            style="flex-direction:row;">
+          <div class="tableColumn"
+            style="flex-direction:row;flex:3.5">
             <span class='flex2'
               style="border-right:1px solid #DDD;">产品信息</span>
-            <span class="flex06">数量</span>
+            <span style="border-right:1px solid #DDD;"
+              class="flex06">数量</span>
+            <span class="flex06">图片</span>
           </div>
           <div class="tableColumn flex08">负责小组</div>
-          <div class="tableColumn">下单日期</div>
+          <div class="tableColumn flex08">下单日期</div>
           <div class="tableColumn">交货日期</div>
           <div class="tableColumn flex17">操作</div>
         </div>
@@ -108,7 +110,8 @@
           :key="key">
           <div class="tableColumn">{{item.order_code}}</div>
           <div class="tableColumn">{{item.client_name}}</div>
-          <div class="tableColumn flex21">
+          <div class="tableColumn"
+            style="flex:3.5">
             <div class="once onces"
               v-for="(itemProduct,indexProduct) in item.productList"
               :key="indexProduct">
@@ -117,11 +120,24 @@
                 <span>{{itemProduct.productCode}}</span>
                 <span>{{itemProduct.productType}}</span>
               </span>
-              <span class="flex06">{{itemProduct.sum + '条'}}</span>
+              <span style="border-right:1px solid #DDD;"
+                class="flex06">{{itemProduct.sum + '条'}}</span>
+              <span class="flex06"
+                style="height:60px;">
+                <div class="imgCtn">
+                  <img class="img"
+                    :src="itemProduct.img.length>0?itemProduct.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
+                    :onerror="defaultImg" />
+                  <div class="toolTips"
+                    v-if="itemProduct.img.length>0"><span @click="showImg(itemProduct.img)">点击查看大图</span></div>
+                  <div class="toolTips"
+                    v-if="itemProduct.img.length===0"><span>没有预览图</span></div>
+                </div>
+              </span>
             </div>
           </div>
           <div class="tableColumn flex08">{{item.group_name}}</div>
-          <div class="tableColumn">{{item.order_time}}</div>
+          <div class="tableColumn flex08">{{item.order_time}}</div>
           <div class="tableColumn">
             <div class="once"
               v-for="(itemTime,indexTime) in item.delivery_time"
@@ -149,6 +165,22 @@
         </el-pagination>
       </div>
     </div>
+    <div class="shade"
+      v-show="showShade">
+      <div class="main">
+        <div class="closeBtn"
+          @click="showShade=false">点此退出预览</div>
+        <el-carousel indicator-position="outside"
+          height="550px"
+          arrow="always">
+          <el-carousel-item v-for="item in imgList"
+            :key="item.image_url">
+            <img :src="item.image_url"
+              class="imgList" />
+          </el-carousel-item>
+        </el-carousel>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -157,6 +189,9 @@ import { productionList, productTppeList, clientList, getGroup } from '@/assets/
 export default {
   data () {
     return {
+      defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
+      showShade: false,
+      imgList: [],
       loading: true,
       searchVal: '',
       date: '',
@@ -251,6 +286,7 @@ export default {
           // 统计产品库存调取数量
           productList = productList.map((itemProduct) => {
             return {
+              img: itemProduct.productInfo.img,
               productCode: itemProduct.productCode,
               productType: (itemProduct.productInfo.category_info.product_category ? itemProduct.productInfo.category_info.product_category + '/' : '') + (itemProduct.productInfo.type_name ? itemProduct.productInfo.type_name + '/' : '') + (itemProduct.productInfo.style_name ? itemProduct.productInfo.style_name : '') + (itemProduct.productInfo.flower_id ? '/' + itemProduct.productInfo.flower_id : ''),
               sum: itemProduct.sum
@@ -300,6 +336,10 @@ export default {
       } else if (item === 'groupVal') {
         this.groupVal = ''
       }
+    },
+    showImg (imgList) {
+      this.imgList = imgList
+      this.showShade = true
     }
   },
   watch: {
@@ -355,7 +395,7 @@ export default {
         this.getOrderList()
       }
     },
-    group (newVal) {
+    groupVal (newVal) {
       if (!this.first) {
         if (newVal) {
           this.pages = 1
@@ -416,11 +456,12 @@ export default {
     })]).then((res) => {
       this.category = res[0].data.data
       this.client = res[1].data.data.filter((item) => (item.type.indexOf(1) !== -1))
-      this.groupArr = res[2].data.data
+      this.group = res[2].data.data
       for (let key in hash) {
         this[key] = hash[key]
       }
       this.getOrderList()
+      console.log(this.group)
     })
   }
 }
@@ -436,6 +477,38 @@ export default {
     background: #1a95ff;
     &:hover {
       background: #48aaff;
+    }
+  }
+}
+.imgCtn {
+  position: relative;
+  height: 60px;
+  width: 100%;
+  &:hover {
+    .toolTips {
+      display: block;
+    }
+  }
+  .img {
+    width: 48px;
+    padding: 6px;
+    height: 48px;
+  }
+  .toolTips {
+    display: none;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    text-align: center;
+    line-height: 60px;
+    cursor: pointer;
+    span {
+      color: #fff;
+      &:hover {
+        color: #1a95ff;
+      }
     }
   }
 }

@@ -72,6 +72,7 @@
           <div class="tableColumn">产品编号</div>
           <div class="tableColumn">产品类别</div>
           <div class="tableColumn">产品规格</div>
+          <div class="tableColumn">产品图片</div>
           <div class="tableColumn">主要原料</div>
           <div class="tableColumn">主要辅料</div>
           <div class="tableColumn">创建人</div>
@@ -86,10 +87,21 @@
           <div class="tableColumn">{{item.product_info.product_code}}</div>
           <div class="tableColumn">{{item.product_info|filterType}}</div>
           <div class="tableColumn">{{item.product_info.size|filterSize}}</div>
+          <div class="tableColumn">
+            <div class="imgCtn">
+              <img class="img"
+                :src="item.product_info.img.length>0?item.product_info.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
+                :onerror="defaultImg" />
+              <div class="toolTips"
+                v-if="item.product_info.img.length>0"><span @click="showImg(item.product_info.img)">点击查看大图</span></div>
+              <div class="toolTips"
+                v-if="item.product_info.img.length===0"><span>没有预览图</span></div>
+            </div>
+          </div>
           <div class="tableColumn">{{item.material_data|filterMaterial}}</div>
           <div class="tableColumn">{{item.material_data|filterOtherMaterial}}</div>
           <div class="tableColumn">{{item.user_name}}</div>
-          <div class="tableColumn">{{item.product_info.create_time}}</div>
+          <div class="tableColumn">{{item.create_time}}</div>
           <div class="tableColumn flex9">
             <span class="btns warning"
               @click="$router.push('/index/productPlanUpdate/'+item.product_info.product_code)">修改</span>
@@ -108,6 +120,22 @@
         </el-pagination>
       </div>
     </div>
+    <div class="shade"
+      v-show="showShade">
+      <div class="main">
+        <div class="closeBtn"
+          @click="showShade=false">点此退出预览</div>
+        <el-carousel indicator-position="outside"
+          height="550px"
+          arrow="always">
+          <el-carousel-item v-for="item in imgList"
+            :key="item.image_url">
+            <img :src="item.image_url"
+              class="imgList" />
+          </el-carousel-item>
+        </el-carousel>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -116,9 +144,11 @@ import { productPlanList, productTppeList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      showShade: false,
       first: true, // 判断是不是第一次进入页面
       loading: true,
       defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
+      imgList: [],
       searchVal: '',
       value: '',
       date: '',
@@ -210,6 +240,10 @@ export default {
       }
       this.pages = 1
       this.getCraftList()
+    },
+    showImg (imgList) {
+      this.imgList = imgList
+      this.showShade = true
     }
   },
   watch: {
