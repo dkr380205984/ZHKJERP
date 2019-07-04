@@ -144,8 +144,10 @@
                       <span class="labeled">{{mainIngredient.color[index][index2][index3].value[index4].size}}</span>
                       <input class="input1"
                         placeholder="数量"
+                        :disabled="!state"
                         v-model="mainIngredient.color[index][index2][index3].value[index4].number" />
                       <input class="input2"
+                        :disabled="!state"
                         @blur="commonUnit1=mainIngredient.color[index][index2][index3].value[index4].unit"
                         placeholder="单位"
                         v-model="mainIngredient.color[index][index2][index3].value[index4].unit" />

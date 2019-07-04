@@ -262,7 +262,16 @@ const outStockDetail = (params) => http.get(`${baseUrl}/stock/out/list`, params)
 const packagNumberAdd = (params) => http.post(`${baseUrl}/pack/real/save`, params, 'application/json')
 // 实际装箱详情
 const packagNumberDetail = (params) => http.get(`${baseUrl}/pack/real/list`, params)
+// 原料预订购
+const rawMaterialPurchaseList = (params) => http.get(`${baseUrl}/material/reserve/list`, params)
+// 原料预订购详情
+const rawMaterialPurchaseDetail = (params) => http.get(`${baseUrl}/material/reserve/one`, params)
+// 原料预定购入库
+const rawMaterialPurchaseIn = (params) => http.post(`${baseUrl}/material/reserve/push`, params, 'application/json')
 export {
+  rawMaterialPurchaseIn,
+  rawMaterialPurchaseDetail,
+  rawMaterialPurchaseList,
   packagNumberDetail,
   packagNumberAdd,
   outStockDetail,

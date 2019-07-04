@@ -261,6 +261,9 @@ const menu = [{
     name: '原料预订购',
     url: '/index/rawMaterialPurchase'
   }, {
+    name: '预订购列表',
+    url: '/index/rawMaterialPurchaseList'
+  }, {
     name: '物料详情列表',
     url: '/index/rawMaterialOrderList'
   }, {

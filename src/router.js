@@ -273,6 +273,14 @@ let router = new Router({
       name: 'rawMaterialPurchase',
       component: () => import('./views/rawMaterial/rawMaterialPurchase.vue')
     }, {
+      path: 'rawMaterialPurchaseList',
+      name: 'rawMaterialPurchaseList',
+      component: () => import('./views/rawMaterial/rawMaterialPurchaseList.vue')
+    }, {
+      path: 'rawMaterialPurchaseDetail/:id',
+      name: 'rawMaterialPurchaseDetail',
+      component: () => import('./views/rawMaterial/rawMaterialPurchaseDetail.vue')
+    }, {
       path: 'rawMaterialPlan/:orderId/:productId',
       name: 'rawMaterialPlan',
       component: () => import('./views/rawMaterial/rawMaterialPlan.vue')

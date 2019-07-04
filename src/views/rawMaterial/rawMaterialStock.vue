@@ -238,7 +238,7 @@
           <div class="addBtn"
             @click="addStockInfo(key)">
             <span>+</span>
-            <span>添加公司</span>
+            <span>添加原料</span>
           </div>
         </div>
       </div>
