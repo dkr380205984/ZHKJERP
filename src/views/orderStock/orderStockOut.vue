@@ -93,6 +93,7 @@
                   <span>{{indexCompany===0?'出库工序:':''}}</span>
                   <el-select filterable
                     v-model="itemCompany.type"
+                    multiple
                     placeholder="工序"
                     size="small"
                     style="width:114px">
@@ -239,7 +240,7 @@ export default {
     }), storeOutList({
       order_id: this.$route.params.orderId
     })]).then((res) => {
-      this.companyArr = res[0].data.data.filter((item) => { return (item.type === 4 || item.type === 5 || item.type === 6) })
+      this.companyArr = res[0].data.data.filter((item) => { return (item.type.indexOf(4) !== -1 || item.type.indexOf(5) !== -1 || item.type.indexOf(6) !== -1) })
       this.order = res[1].data.data.production_detail.order_info
       let productList = res[1].data.data.production_detail.product_info.filter((item) => item.product_code === this.$route.params.productId)
       let logListOut = res[2].data.data
@@ -344,6 +345,7 @@ export default {
     saveAll () {
       let state = false
       let msg = ''
+      // console.log(this.formList)
       this.formList.forEach((item) => {
         item.typeCompany.forEach((itemCompany) => {
           if (!itemCompany.company || !itemCompany.type) {
@@ -383,7 +385,7 @@ export default {
                 order_id: this.$route.params.orderId,
                 user_id: window.sessionStorage.getItem('user_id'),
                 product_code: this.$route.params.productId,
-                type: itemCompany.type,
+                type: JSON.stringify(itemCompany.type),
                 client_id: itemCompany.company,
                 size: itemPackNumber.colorSize[0],
                 color: itemPackNumber.colorSize[1],

@@ -212,6 +212,18 @@
                   class="el-icon-delete"
                   @click="deleteStockWeightInfo(key,kay,index)"></em>
               </li>
+              <!-- <li>
+                <span>仓库</span>:
+                <el-select v-model="iten.stock_name"
+                  :placeholder="'请选择入库仓库'"
+                  size="small">
+                  <el-option v-for="value in companyArr"
+                    :key="value.id"
+                    :label="value.name"
+                    :value="value.id">
+                  </el-option>
+                </el-select>
+              </li> -->
               <li>
                 <span>入库时间</span>:
                 <el-date-picker v-model="iten.stock_time"
@@ -219,6 +231,7 @@
                   type="date"
                   placeholder="选择入库时间"
                   size="small"
+                  value-format="yyyy-MM-dd"
                   style="width:243px"
                   :picker-options="pickerOptions">
                 </el-date-picker>
@@ -253,7 +266,7 @@
 </template>
 
 <script>
-import { orderDetail, rawMaterialOrderList, rawMaterialProcessList, rawMaterialGoStock, rawMaterialGoStockDetail } from '@/assets/js/api.js'
+import { orderDetail, rawMaterialOrderList, rawMaterialProcessList, rawMaterialGoStock, rawMaterialGoStockDetail, clientList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -289,7 +302,8 @@ export default {
             picker.$emit('pick', date)
           }
         }]
-      }
+      },
+      companyArr: []
     }
   },
   filters: {
@@ -396,6 +410,7 @@ export default {
             obj.complete_time = val.stock_time
             obj.desc = val.remark
             obj.attribute = val.materialAtr
+            obj.stock_id = null
             date.push({ ...obj })
           })
         })
@@ -459,6 +474,9 @@ export default {
       }),
       rawMaterialGoStockDetail({
         order_id: this.$route.params.id
+      }),
+      clientList({
+        company_id: window.sessionStorage.getItem('company_id')
       })
     ]).then(res => {
       console.log('init:', res)
@@ -610,6 +628,11 @@ export default {
         if (flag) {
           flag.goStocks_number = Number(flag.goStocks_number ? flag.goStocks_number : 0) + Number(item.total_weight)
         }
+      })
+      this.companyArr = res[4].data.data.filter((item) => { return (item.type.find((finded) => finded === 3)) })
+      this.companyArr.unshift({
+        id: null,
+        name: '本厂仓库'
       })
       this.loading = false
       console.log(this.list)

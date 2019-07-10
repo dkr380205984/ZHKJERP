@@ -14,8 +14,12 @@ let router = new Router({
     path: '/rawMaterialProcessTable/:id/:companyName/:type',
     name: 'rawMaterialProcessTable',
     component: () => import('./views/rawMaterial/rawMaterialProcessTable.vue')
-  },
-  {
+  }, {
+    //   path: '/yhw/:id',
+    //   name: 'yhw',
+    //   component: () => import('./views/yhw.vue')
+    // },
+    // {
     path: '/productDesignWeavingTable/:id/:clientName/:product_code/:type',
     name: 'productDesignWeavingTable',
     component: () => import('./views/productDesign/productDesignWeavingTable.vue')
@@ -412,6 +416,10 @@ let router = new Router({
       path: 'packagMaterialSetting',
       name: 'packagMaterialSetting',
       component: () => import('./views/setting/packagMaterialSetting.vue')
+    }, {
+      path: 'sampleAdd',
+      name: 'sampleAdd',
+      component: () => import('./views/order/sampleAdd.vue')
     }]
   }
   ]

@@ -213,14 +213,17 @@ const menu = [{
   }, {
     name: '订单发货列表',
     url: '/index/orderStat'
+  },
+  {
+    name: '添加样品订单(未完成)',
+    url: '/index/sampleCreate'
+  }, {
+    name: '样单列表(未完成)',
+    url: '/index/sampleList'
+  }, {
+    name: '添加样品',
+    url: '/index/sampleAdd'
   }
-    // {
-    //   name: '添加样品订单(未完成)',
-    //   url: '/index/sampleCreate'
-    // }, {
-    //   name: '样单列表(未完成)',
-    //   url: '/index/sampleList'
-    // }
   ]
 }, {
   name: '库存管理',

@@ -444,6 +444,7 @@ export default {
             arr.push({ ...obj })
             if (value.company === 0 || value.company === '仓库') {
               stockObj.material_name = item.material
+              stockObj.stock_id = null
               stockObj.color_code = val.color
               stockObj.user_id = sessionStorage.user_id
               stockObj.weight = Number(val.value)

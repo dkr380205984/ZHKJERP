@@ -116,7 +116,7 @@
                           class="tableColumn">
                           <span class="tableRow">{{value.dyelot_number === 'vat_null' ? '默认' : value.dyelot_number}}</span>
                           <span class="tableRow">{{value.value|fixedFilter}}{{item.unit}}</span>
-                          <span class="tableRow">{{value.attr}}</span>
+                          <span class="tableRow">{{value.attr ? value.attr : '无'}}</span>
                         </span>
                       </span>
                     </span>
@@ -149,7 +149,7 @@
                     <span class="flexBig">{{item.material}}</span>
                     <span>{{item.color}}</span>
                     <span>{{item.dyelot_number === 'vat_null' ? '默认' : item.dyelot_number}}</span>
-                    <span>{{item.attr}}</span>
+                    <span>{{item.attr ? item.attr : '无'}}</span>
                     <span>{{item.goStock_number|fixedFilter}}{{item.unit}}</span>
                     <span class="flexBig remark">
                       <i>
@@ -315,6 +315,9 @@
                     <span>操作</span>
                   </li>
                 </div>
+                <div v-if="surplus.length === 0">
+                  <li>暂无信息</li>
+                </div>
                 <div>
                   <li v-for="(val,ind) in surplus"
                     :key="ind">
@@ -430,7 +433,6 @@ export default {
         order_id: this.$route.params.id
       })
     ]).then(res => {
-      // console.log(res)
       this.order_code = res[0].data.data.order_code
       this.client_name = res[0].data.data.client_name
       this.order_time = res[0].data.data.order_time
@@ -562,7 +564,6 @@ export default {
       })
       // 出库信息初始化
       let outStockInfo = res[3].data.data
-      console.log(outStockInfo)
       outStockInfo.forEach(item => {
         if ((this.type === '0' && item.type === 1) || (this.type === '1' && item.type === 2)) {
           // 初始化出库信息
@@ -686,7 +687,6 @@ export default {
       })
       // 所需原料初始化
       let productsInfo = res[5].data.data
-      console.log(productsInfo)
       let materials = []
       for (let prop in productsInfo.product_plan) {
         materials.push(...productsInfo.product_plan[prop])
@@ -730,8 +730,8 @@ export default {
           })
         })
       })
-      console.log(this.productionList)
       // 将该单位所需物料插入出库信息
+      console.log(this.outStockInfo)
       this.outStockInfo.forEach(item => {
         item.client_list.forEach(value => {
           value.color_list.forEach(color => {

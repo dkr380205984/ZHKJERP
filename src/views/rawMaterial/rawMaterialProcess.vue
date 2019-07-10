@@ -101,7 +101,13 @@
               <span>{{type === '0' ? '原' : '辅'}}料名称</span>
               <span>{{type === '0' ? '原' : '辅'}}料颜色</span>
               <span>合计重量</span>
-              <span>已选重量</span>
+              <span>
+                已选重量(
+                <template v-if="selectList.length === 0 || !selectList.find(key=>key.material === item.material)">无</template>
+                <template v-else
+                  v-for="(val,ind) in selectList.find(key=> key.material === item.material).selectArr">{{((ind !== 0 && val.type !== '') ? '/' : '') + val.type}}</template>
+                )
+              </span>
             </div>
             <div class="tableInfo">
               <span>{{item.material}}</span>
@@ -111,7 +117,12 @@
                 </template>
               </span>
               <span>{{item.total_number|fixedFilter}}{{item.unit}}</span>
-              <span>{{(Number(item.selectNums ? item.selectNums : 0) + Number(item.select_number))|fixedFilter}}{{item.unit}}</span>
+              <span>
+                <template v-if="selectList.length === 0 || !selectList.find(key=>key.material === item.material)">0</template>
+                <template v-else
+                  v-for="(val,ind) in selectList.find(key=> key.material === item.material).selectArr">{{(ind !== 0 ? '/' : '')}}{{(Number(val.number ? val.number : 0) + Number(val.select_number))|fixedFilter}}</template>
+                {{item.unit}}
+              </span>
             </div>
           </div>
           <div class="processInfo">
@@ -217,7 +228,7 @@
 </template>
 
 <script>
-import { orderDetail, rawMaterialProcessPage, clientList, rawMaterialOrderList, rawMaterialOrderInit } from '@/assets/js/api.js'
+import { orderDetail, rawMaterialProcessPage, clientList, rawMaterialOrderList, rawMaterialOrderInit, rawMaterialProcessList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -230,6 +241,7 @@ export default {
       group_name: '',
       productList: [],
       materialList: [],
+      selectList: [],
       list: [],
       options: {
         processType: ['倒纱', '裁剪', '染色', '扦经', '拼线'],
@@ -270,15 +282,42 @@ export default {
     list: {
       deep: true,
       handler: function () {
-        this.list.forEach((item, key) => {
-          let num = 0
+        console.log(this.list)
+        this.selectList.forEach(res => {
+          // if (!res.selectArr) {
+          //   res.selectArr = []
+          // }
+          res.selectArr.forEach(item => {
+            item.select_number = 0
+          })
+        })
+        this.list.forEach(item => {
           item.processInfo.forEach(value => {
             value.processMaterialInfo.forEach(val => {
-              num += Number(val.value)
+              let flag = this.selectList.find(key => key.material === item.material)
+              if (flag) {
+                let flag1 = flag.selectArr.find(key => key.type === value.process_type)
+                if (flag1) {
+                  flag1.select_number = Number(flag1.select_number) + Number(val.value)
+                } else {
+                  flag.selectArr.push({
+                    type: value.process_type,
+                    select_number: val.value
+                  })
+                }
+              }
             })
           })
-          item.select_number = num
         })
+        this.selectList.forEach(res => {
+          res.selectArr.forEach((item, key) => {
+            if (!item.select_number && !item.number) {
+              console.log(key)
+              res.selectArr.splice(key, 1)
+            }
+          })
+        })
+        console.log(this.selectList)
       }
     }
   },
@@ -333,10 +372,22 @@ export default {
         let nums = 0
         let flag = true
         this.list.forEach((item, key) => {
-          if (Number(item.total_number) < (Number(item.select_number) + Number(item.selectNums ? item.selectNums : 0))) {
-            alert('已选数量超出订购数量，请重新输入。')
-            flag = false
-            return
+          // if (Number(item.total_number) < (Number(item.select_number) + Number(item.selectNums ? item.selectNums : 0))) {
+          //   alert('已选数量超出订购数量，请重新输入。')
+          //   flag = false
+          //   return
+          // }
+          let king = this.selectList.find(vals => vals.material === item.material)
+          if (king) {
+            king.selectArr.forEach(keys => {
+              if (Number(keys.select_number ? keys.select_number : 0) + Number(keys.number ? keys.number : 0) > Number(item.total_number) && flag) {
+                alert('已选数量超出订购数量，请重新输入。')
+                flag = false
+              }
+            })
+            if (!flag) {
+              return
+            }
           }
           let obj = {}
           obj.company_id = sessionStorage.company_id
@@ -383,6 +434,14 @@ export default {
               }
             }
             obj.material_info = JSON.stringify(value.processMaterialInfo)
+            if (!value.money) {
+              this.$message({
+                message: '请输入总价',
+                type: 'error'
+              })
+              flag = false
+              return
+            }
             obj.total_price = value.money
             if (!value.orderTime) {
               this.$message({
@@ -397,6 +456,7 @@ export default {
             arr.push({ ...obj })
           })
         })
+
         this.loading = false
         if (flag) {
           if (nums === 0) {
@@ -418,8 +478,8 @@ export default {
             })
           }
         }
+        setTimeout(() => { this.save = true }, 1000)
       } else {
-        let self = this
         this.$alert('请求速度过于频繁', '提醒', {
           confirmButtonText: '确定',
           callback: action => {
@@ -429,7 +489,6 @@ export default {
             })
           }
         })
-        setTimeout(() => { self.save = true }, 1000)
       }
     }
   },
@@ -451,9 +510,13 @@ export default {
       }),
       clientList({
         company_id: sessionStorage.company_id
+      }),
+      rawMaterialProcessList({
+        company_id: sessionStorage.company_id,
+        order_id: this.$route.params.id
       })
     ]).then(res => {
-      console.log(res)
+      // console.log(res)
       let materialInfo = res[0].data.data.material_info
       let orderInfo = res[2].data.data
       // 初始化订单信息
@@ -545,13 +608,43 @@ export default {
       // 加工公司列表初始化
       this.options.companyList = res[3].data.data.filter(item => (item.type.indexOf(3) !== -1))
       // 已加工数量初始化
-      let selectWeight = res[0].data.data.total_weight_process
-      for (let prop in selectWeight) {
-        let flag = this.list.find(item => item.material === prop)
-        if (flag) {
-          flag.selectNums = selectWeight[prop] ? selectWeight[prop] : 0
-        }
-      }
+      // let selectWeight = res[0].data.data.total_weight_process
+      // for (let prop in selectWeight) {
+      //   let flag = this.list.find(item => item.material === prop)
+      //   if (flag) {
+      //     flag.selectNums = selectWeight[prop] ? selectWeight[prop] : 0
+      //   }
+      // }
+      let processDate = res[4].data.data
+      processDate.map(item => {
+        item.material_info = JSON.parse(item.material_info)
+        item.material_info.map(val => {
+          let flag = this.selectList.find(key => key.material === item.material_name)
+          if (flag) {
+            if (!flag.selectArr) {
+              flag.selectArr = []
+            }
+            let flag1 = flag.selectArr.find(key => key.type === item.process_type)
+            if (!flag1) {
+              flag.selectArr.push({
+                type: item.process_type,
+                number: val.value
+              })
+            } else {
+              flag1.number = Number(flag1.number) + Number(val.value)
+            }
+          } else {
+            this.selectList.push({
+              material: item.material_name,
+              selectArr: [{
+                type: item.process_type,
+                number: val.value
+              }]
+            })
+          }
+        })
+      })
+      console.log(this.selectList)
       this.loading = false
     })
   }

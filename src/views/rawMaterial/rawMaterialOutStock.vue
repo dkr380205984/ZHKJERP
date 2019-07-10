@@ -202,7 +202,7 @@
                   <el-select v-model="value.dyelot_number"
                     placeholder="请选择批/缸号"
                     size="small">
-                    <el-option v-for="value in item.vatList[iten.materialColor]"
+                    <el-option v-for="value in item.vatList[iten.materialColor] ? item.vatList[iten.materialColor] : []"
                       :key="value.value"
                       :value="value">
                     </el-option>
@@ -235,6 +235,7 @@
                   type="date"
                   placeholder="选择出库时间"
                   size="small"
+                  value-format="yyyy-MM-dd"
                   style="width:243px"
                   :picker-options="pickerOptions">
                 </el-date-picker>
@@ -330,9 +331,17 @@ export default {
   },
   methods: {
     update (item, key) {
+      if (!key) {
+        console.log(222)
+        return []
+      }
       let arr = item.client_name.find(val => val.id === key)
       if (arr) {
+        console.log(111)
         return item.colors[arr.name]
+      } else {
+        console.log(333)
+        return []
       }
     },
     appendStockWeightInfo (key, kay) {
@@ -346,11 +355,12 @@ export default {
       this.list[key].stockInfo[kay].stockWeightInfo.splice(index, 1)
     },
     addStockInfo (key) {
+      console.log(this.list[key].stockInfo)
       this.list[key].stockInfo.push({
         materialColor: '',
         remark: '',
-        outStockClient: '',
-        stock_time: this.now_time,
+        // outStockClient: '',
+        // stock_time: this.now_time,
         stockWeightInfo: [
           {
             dyelot_number: '',
@@ -432,6 +442,7 @@ export default {
               weight: val.weight,
               complete_time: value.stock_time,
               desc: value.remark,
+              stock_id: null,
               type: (this.type === '0' ? 1 : 2)
             })
           })
@@ -448,6 +459,7 @@ export default {
           rawMaterialOutStock({
             data: arr
           }).then(res => {
+            console.log(res)
             if (res.data.code === 200) {
               this.$message({
                 message: '添加成功,即将跳转至详情页',
@@ -456,6 +468,11 @@ export default {
               setTimeout(() => {
                 this.$router.push('/index/rawMaterialStockDetail/' + this.$route.params.id + '/' + this.$route.params.type)
               }, 800)
+            } else if (res.data.code === 500) {
+              this.$message({
+                message: res.data.message,
+                type: 'error'
+              })
             }
           })
         }
@@ -486,7 +503,7 @@ export default {
         order_id: this.$route.params.id
       })
     ]).then(res => {
-      // console.log(res)
+      console.log(res)
       this.order_code = res[0].data.data.order_code
       this.client_name = res[0].data.data.client_name
       this.order_time = res[0].data.data.order_time
@@ -574,12 +591,12 @@ export default {
       })
       // 所需原料初始化
       let productsInfo = res[3].data.data
-      console.log(productsInfo)
+      // console.log(productsInfo)
       let materials = []
       for (let prop in productsInfo.product_plan) {
         materials.push(...productsInfo.product_plan[prop])
       }
-      console.log(materials)
+      // console.log(materials)
       this.productionList.forEach(item => {
         item.production.forEach(value => {
           value.product_detail.forEach(val => {
@@ -619,7 +636,7 @@ export default {
           })
         })
       })
-      console.log(this.productionList)
+      // console.log(this.productionList)
       // 初始化出库信息
       this.productionList.forEach(item => {
         item.materials.forEach(value => {
@@ -638,7 +655,8 @@ export default {
                 total_number: val.number,
                 unit: val.unit,
                 stock_number: 0,
-                stockInfo: []
+                stockInfo: [],
+                vatList: {}
               })
             } else {
               flag.total_number = Number(flag.total_number) + Number(val.number)
@@ -663,6 +681,7 @@ export default {
       })
       // 初始化原料缸号信息
       let vatInfo = res[4].data.data
+      console.log(vatInfo)
       vatInfo.forEach(item => {
         let flag = this.list.find(val => val.material === item.material_name)
         if (flag) {
@@ -670,7 +689,7 @@ export default {
             flag.vatList = {}
           }
           if (!flag.vatList[item.color_code]) {
-            flag.vatList[item.color_code] = [item.vat_code]
+            flag.vatList[item.color_code] = [(item.vat_code === 'vat_null' ? '默认' : item.vat_code)]
           } else {
             let flag1 = flag.vatList[item.color_code].find(val => (val === item.vat_code || (val === '默认' && item.vat_code === 'vat_null')))
             if (!flag1) {
@@ -678,13 +697,23 @@ export default {
             }
           }
         }
+        let fleg = this.materialList.find(val => val.material === item.material_name)
+        if (fleg) {
+          fleg.goStock_number = Number(fleg.goStock_number ? fleg.goStock_number : 0) + Number(item.total_weight)
+        }
       })
+      // console.log(this.list)
       // 初始化原料出库数量
       let outStockInfo = res[5].data.data
+      console.log(outStockInfo, this.materialList)
       outStockInfo.forEach(item => {
         let flag = this.list.find(val => val.material === item.material_name)
         if (flag) {
-          flag.stocks_number = Number(flag.stocks_number ? flag.stocks_number : 0) + item.weight
+          flag.stocks_number = Number(flag.stocks_number ? flag.stocks_number : 0) + Number(item.weight)
+        }
+        let fleg = this.materialList.find(val => val.material === item.material_name)
+        if (fleg) {
+          fleg.outStock_number = Number(fleg.outStock_number ? fleg.outStock_number : 0) + Number(item.weight)
         }
       })
     })

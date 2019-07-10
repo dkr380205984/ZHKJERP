@@ -148,7 +148,7 @@
                           <span class="tableRow flex13">{{val.plan_number}}{{'条'}}</span>
                           <span class="tableRow">{{val.test_number ? val.test_number : 0}}{{'条'}}</span>
                           <span class="tableRow">{{val.defective_number ? val.defective_number : 0}}{{'条'}}</span>
-                          <span class="tableRow">{{((val.defective_number ? val.defective_number : 0)/(val.test_number ? val.test_number : 0)) ? ((val.defective_number ? val.defective_number : 0)/(val.test_number ? val.test_number : 0)) : 0}}{{'%'}}</span>
+                          <span class="tableRow">{{((val.defective_number ? val.defective_number : 0)/(val.test_number ? val.test_number : 0)) ? ((val.defective_number ? val.defective_number : 0)/(val.test_number ? val.test_number : 0)*100) : 0}}{{'%'}}</span>
                           <span :class="{'tableRow':true,'compiled':(val.test_number ? val.test_number : 0) >= val.plan_number,'unCompiled':val.plan_number > (val.test_number ? val.test_number : 0)}">{{(val.test_number ? val.test_number : 0) >= val.plan_number ? '完成' : '未完成'}}</span>
                         </span>
                       </span>

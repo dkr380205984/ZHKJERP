@@ -569,7 +569,7 @@ export default {
       this.client_name = orderInfo.client_name
       this.group_name = orderInfo.group_name
       // 初始化产品信息
-      // console.log(productInfo)
+      console.log(info)
       let arr = []
       orderInfo.order_batch.forEach((item, key) => {
         item.batch_info.forEach((value, index) => {
@@ -710,6 +710,7 @@ export default {
         }
       })
       // 初始化加工信息
+      // console.log(processInfo)
       processInfo.forEach(item => {
         item.material_info = JSON.parse(item.material_info)
         item.material_info.forEach(value => {
@@ -782,19 +783,17 @@ export default {
               arr.process_weight = arr.process_weight ? (Number(arr.process_weight) + Number(value.value)) : value.value
             }
             // 日志初始化
-            item.material_info.forEach(val => {
-              this.processLog.unshift({
-                time: item.create_time,
-                client_name: item.client_name,
-                process_type: item.process_type,
-                material: item.material_name,
-                color: val.color,
-                weight: val.value,
-                order_time: item.order_time.split(' ')[0],
-                remark: item.desc,
-                user: item.user_name,
-                unit: item.unit ? item.unit : 'kg'
-              })
+            this.processLog.unshift({
+              time: item.create_time,
+              client_name: item.client_name,
+              process_type: item.process_type,
+              material: item.material_name,
+              color: value.color,
+              weight: value.value,
+              order_time: item.order_time.split(' ')[0],
+              remark: item.desc,
+              user: item.user_name,
+              unit: item.unit ? item.unit : 'kg'
             })
           }
         })
@@ -811,9 +810,9 @@ export default {
         })
         return json
       })
-      console.log(res[5].data.data)
-      console.log(this.orderLog)
-      console.log(this.bushaList)
+      // console.log(res[5].data.data)
+      // console.log(this.orderLog)
+      // console.log(this.bushaList)
       this.bushaList.forEach((item) => {
         item.yarn_info.forEach((itemYarn) => {
           itemYarn.total_price = itemYarn.info.reduce((total, itemColor) => {

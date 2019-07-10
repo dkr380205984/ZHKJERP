@@ -541,7 +541,9 @@ export default {
         })
       })
       // 初始化次品承担单位数组
+      console.log(clientInfo)
       clientInfo.forEach(item => {
+        // console.log(item)
         if (item.product_info.product_code === this.list.product_code) {
           let flag = this.options.clientList.find(key => key === item.client_name)
           if (!flag) {
@@ -549,7 +551,7 @@ export default {
           }
         }
       })
-      console.log(this.list)
+      // console.log(this.list)
       // 初始化检验数量与次品数量
       finishedInfo.forEach(item => {
         if (item.product_info.product_code === this.list.product_code) {
