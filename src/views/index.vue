@@ -30,7 +30,7 @@
           <!-- <span class="break">/</span>
           <span class="now">添加产品</span> -->
         </div>
-        <div class="mainCtn">
+        <div class="mainCtn2">
           <div class="mainCtnForScroll">
             <router-view />
           </div>

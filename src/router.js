@@ -420,6 +420,10 @@ let router = new Router({
       path: 'sampleAdd',
       name: 'sampleAdd',
       component: () => import('./views/order/sampleAdd.vue')
+    }, {
+      path: 'orderDetailTest',
+      name: 'orderDetailTest',
+      component: () => import('./views/order/orderDetailTest.vue')
     }]
   }
   ]

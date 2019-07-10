@@ -722,6 +722,10 @@ export default {
           'mergeCells', // 合并单元格菜单
           'col_right',
           'col_left',
+          'copy',
+          'cut',
+          'undo',
+          'redo',
           'remove_col'
         ],
         licenseKey: 'non-commercial-and-evaluation', // 申明非商业用途
@@ -746,6 +750,10 @@ export default {
           'mergeCells', // 合并单元格菜单
           'col_right',
           'col_left',
+          'copy',
+          'cut',
+          'undo',
+          'redo',
           'remove_col'
         ],
         licenseKey: 'non-commercial-and-evaluation', // 申明非商业用途

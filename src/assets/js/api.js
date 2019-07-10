@@ -150,6 +150,10 @@ const sampleSave = (params) => http.post(`${baseUrl}/order/sample/save`, params,
 const orderSave = (params) => http.post(`${baseUrl}/order/save`, params, 'application/json')
 // 订单详情
 const orderDetail = (params) => http.get(`${baseUrl}/order/one`, params)
+// 订单详情新
+const orderDetailNew = (params) => http.get(`${baseUrl}/order/detail`, params)
+// 修改订单状态
+const orderCheck = (params) => http.post(`${baseUrl}/order/status/check`, params, 'application/json')
 // 订单列表
 const orderList = (params) => http.get(`${baseUrl}/order/list`, params)
 // 订单删除
@@ -269,6 +273,8 @@ const rawMaterialPurchaseDetail = (params) => http.get(`${baseUrl}/material/rese
 // 原料预定购入库
 const rawMaterialPurchaseIn = (params) => http.post(`${baseUrl}/material/reserve/push`, params, 'application/json')
 export {
+  orderDetailNew,
+  orderCheck,
   rawMaterialPurchaseIn,
   rawMaterialPurchaseDetail,
   rawMaterialPurchaseList,
