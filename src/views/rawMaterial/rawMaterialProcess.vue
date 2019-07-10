@@ -282,7 +282,7 @@ export default {
     list: {
       deep: true,
       handler: function () {
-        console.log(this.list)
+        console.log('1', this.selectList)
         this.selectList.forEach(res => {
           // if (!res.selectArr) {
           //   res.selectArr = []
@@ -291,6 +291,7 @@ export default {
             item.select_number = 0
           })
         })
+        console.log('list', this.list)
         this.list.forEach(item => {
           item.processInfo.forEach(value => {
             value.processMaterialInfo.forEach(val => {
@@ -305,19 +306,31 @@ export default {
                     select_number: val.value
                   })
                 }
+              } else {
+                this.selectList.push({
+                  material: item.material,
+                  selectArr: [{
+                    type: value.process_type,
+                    select_number: val.value
+                  }]
+                })
               }
             })
           })
         })
-        this.selectList.forEach(res => {
+        console.log('2', this.selectList)
+        this.selectList.forEach((res, ind) => {
           res.selectArr.forEach((item, key) => {
             if (!item.select_number && !item.number) {
-              console.log(key)
+              console.log(item)
               res.selectArr.splice(key, 1)
             }
           })
+          if (res.selectArr.length === 0) {
+            this.selectList.splice(ind, 1)
+          }
         })
-        console.log(this.selectList)
+        console.log('3', this.selectList)
       }
     }
   },
@@ -377,9 +390,11 @@ export default {
           //   flag = false
           //   return
           // }
+          // console.log(this.selectList)
           let king = this.selectList.find(vals => vals.material === item.material)
           if (king) {
             king.selectArr.forEach(keys => {
+              // console.log(Number(keys.select_number ? keys.select_number : 0) + Number(keys.number ? keys.number : 0) > Number(item.total_number))
               if (Number(keys.select_number ? keys.select_number : 0) + Number(keys.number ? keys.number : 0) > Number(item.total_number) && flag) {
                 alert('已选数量超出订购数量，请重新输入。')
                 flag = false
@@ -616,9 +631,10 @@ export default {
       //   }
       // }
       let processDate = res[4].data.data
-      processDate.map(item => {
+      console.log(processDate)
+      processDate.forEach(item => {
         item.material_info = JSON.parse(item.material_info)
-        item.material_info.map(val => {
+        item.material_info.forEach(val => {
           let flag = this.selectList.find(key => key.material === item.material_name)
           if (flag) {
             if (!flag.selectArr) {
@@ -644,7 +660,7 @@ export default {
           }
         })
       })
-      console.log(this.selectList)
+      // console.log(this.selectList)
       this.loading = false
     })
   }

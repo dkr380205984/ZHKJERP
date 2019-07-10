@@ -445,6 +445,7 @@ export default {
             if (value.company === 0 || value.company === '仓库') {
               stockObj.material_name = item.material
               stockObj.color_code = val.color
+              stockObj.stock_id = null
               stockObj.user_id = sessionStorage.user_id
               stockObj.weight = Number(val.value)
               stockObj.vat_code = val.vat_code

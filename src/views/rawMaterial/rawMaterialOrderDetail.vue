@@ -611,6 +611,7 @@ export default {
         }
       })
       // 初始化物料信息
+      console.log(info)
       info.forEach((item, key) => {
         for (let prop in item) {
           for (let value in item[prop]) {

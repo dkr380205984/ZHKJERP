@@ -148,7 +148,6 @@
         <div class="stepTitle">{{type === '0' ? '原' : '辅'}}料出库</div>
         <div class="borderCtn">
           <div class="cicle"></div>
-          <!-- <div class="border"></div> -->
         </div>
         <div class="lineCtn col"
           v-for="(item,key) in list"
@@ -218,7 +217,7 @@
                   <el-input size="small"
                     placeholder="数量"
                     v-model="value.weight">
-                    <template slot="append">kg</template>
+                    <template slot="append">{{item.unit}}</template>
                   </el-input>
                 </div>
                 <em v-if="index === 0"
@@ -503,7 +502,7 @@ export default {
         order_id: this.$route.params.id
       })
     ]).then(res => {
-      console.log(res)
+      // console.log(res)
       this.order_code = res[0].data.data.order_code
       this.client_name = res[0].data.data.client_name
       this.order_time = res[0].data.data.order_time
@@ -545,6 +544,8 @@ export default {
       })
       // 生产信息初始化
       let productionInfo = res[2].data.data
+      let productsInfo = res[3].data.data
+      console.log(productsInfo)
       // 分配信息初始化
       productionInfo.forEach(item => {
         let types = item.product_info.category_info.product_category + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_id ? ('/' + item.product_info.flower_id) : '')
@@ -589,14 +590,25 @@ export default {
           }
         }
       })
+      console.log(this.productionList)
+      // 分配信息插入总计划生产数量与订单数量
+      this.productionList.forEach(item => {
+        item.production.forEach(val => {
+          val.product_detail.forEach(valPro => {
+            let flag = productsInfo.production_detail.product_info.find(key => (key.product_code === val.product_code && key.color === valPro.color && key.size === valPro.size))
+            if (flag) {
+              valPro.plan_number = flag.total_num
+              valPro.order_number = flag.order_num
+            }
+          })
+        })
+      })
       // 所需原料初始化
-      let productsInfo = res[3].data.data
-      // console.log(productsInfo)
       let materials = []
       for (let prop in productsInfo.product_plan) {
         materials.push(...productsInfo.product_plan[prop])
       }
-      // console.log(materials)
+      // console.log(this.productionList)
       this.productionList.forEach(item => {
         item.production.forEach(value => {
           value.product_detail.forEach(val => {
@@ -615,7 +627,7 @@ export default {
                     material: vals.material_name,
                     colors: [{
                       color: vals.color_name,
-                      number: (vals.unit === '克' || vals.unit === 'g') ? ((vals.number * val.number * (1 + Number(value.product_sunhao) / 100)) / 1000) : (vals.number * val.number * (1 + Number(value.product_sunhao) / 100)),
+                      number: (vals.unit === '克' || vals.unit === 'g') ? ((vals.number * val.order_number * (val.number / val.plan_number) * (1 + Number(value.product_sunhao) / 100)) / 1000) : (vals.number * val.order_number * (val.number / val.plan_number) * (1 + Number(value.product_sunhao) / 100)),
                       unit: (vals.unit === '克' || vals.unit === 'g') ? 'kg' : vals.unit
                     }]
                   })
@@ -624,11 +636,11 @@ export default {
                   if (!flag1) {
                     flag.colors.push({
                       color: vals.color_name,
-                      number: (vals.unit === '克' || vals.unit === 'g') ? ((vals.number * val.number * (1 + Number(value.product_sunhao) / 100)) / 1000) : (vals.number * val.number * (1 + Number(value.product_sunhao) / 100)),
+                      number: (vals.unit === '克' || vals.unit === 'g') ? ((vals.number * val.order_number * (val.number / val.plan_number) * (1 + Number(value.product_sunhao) / 100)) / 1000) : (vals.number * val.order_number * (val.number / val.plan_number) * (1 + Number(value.product_sunhao) / 100)),
                       unit: (vals.unit === '克' || vals.unit === 'g') ? 'kg' : vals.unit
                     })
                   } else {
-                    flag1.number += (vals.unit === '克' || vals.unit === 'g') ? ((vals.number * val.number * (1 + Number(value.product_sunhao) / 100)) / 1000) : (vals.number * val.number * (1 + Number(value.product_sunhao) / 100))
+                    flag1.number += (vals.unit === '克' || vals.unit === 'g') ? ((vals.number * val.order_number * (val.number / val.plan_number) * (1 + Number(value.product_sunhao) / 100)) / 1000) : (vals.number * val.order_number * (val.number / val.plan_number) * (1 + Number(value.product_sunhao) / 100))
                   }
                 }
               }
@@ -681,7 +693,7 @@ export default {
       })
       // 初始化原料缸号信息
       let vatInfo = res[4].data.data
-      console.log(vatInfo)
+      // console.log(vatInfo)
       vatInfo.forEach(item => {
         let flag = this.list.find(val => val.material === item.material_name)
         if (flag) {
@@ -705,7 +717,7 @@ export default {
       // console.log(this.list)
       // 初始化原料出库数量
       let outStockInfo = res[5].data.data
-      console.log(outStockInfo, this.materialList)
+      // console.log(outStockInfo, this.materialList)
       outStockInfo.forEach(item => {
         let flag = this.list.find(val => val.material === item.material_name)
         if (flag) {

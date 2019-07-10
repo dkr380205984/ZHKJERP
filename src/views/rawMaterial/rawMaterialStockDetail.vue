@@ -326,7 +326,7 @@
                     <span>{{val.dyelot_number}}</span>
                     <span>{{val.surplu|fixedFilter}}{{val.unit}}</span>
                     <span @click="goStock(val)"
-                      class="important">暂无</span>
+                      class="important">存入本厂仓库</span>
                   </li>
                 </div>
               </ul>
@@ -470,6 +470,7 @@ export default {
           }
         }
       })
+      console.log(this.materialList)
       // 入库信息初始化
       let goStockInfo = res[2].data.data
       goStockInfo.forEach(item => {
@@ -641,6 +642,7 @@ export default {
       })
       // 生产信息初始化
       let productionInfo = res[4].data.data
+      let productsInfo = res[5].data.data
       // 分配信息初始化
       productionInfo.forEach(item => {
         let types = item.product_info.category_info.product_category + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_id ? ('/' + item.product_info.flower_id) : '')
@@ -685,8 +687,19 @@ export default {
           }
         }
       })
+      // 分配信息插入总计划生产数量与订单数量
+      this.productionList.forEach(item => {
+        item.production.forEach(val => {
+          val.product_detail.forEach(valPro => {
+            let flag = productsInfo.production_detail.product_info.find(key => (key.product_code === val.product_code && key.color === valPro.color && key.size === valPro.size))
+            if (flag) {
+              valPro.plan_number = flag.total_num
+              valPro.order_number = flag.order_num
+            }
+          })
+        })
+      })
       // 所需原料初始化
-      let productsInfo = res[5].data.data
       let materials = []
       for (let prop in productsInfo.product_plan) {
         materials.push(...productsInfo.product_plan[prop])
@@ -709,7 +722,7 @@ export default {
                     material: vals.material_name,
                     colors: [{
                       color: vals.color_name,
-                      number: (vals.unit === '克' || vals.unit === 'g') ? ((vals.number * val.number * (1 + Number(value.product_sunhao) / 100)) / 1000) : (vals.number * val.number * (1 + Number(value.product_sunhao) / 100)),
+                      number: (vals.unit === '克' || vals.unit === 'g') ? ((vals.number * val.order_number * (val.number / val.plan_number) * (1 + Number(value.product_sunhao) / 100)) / 1000) : (vals.number * val.order_number * (val.number / val.plan_number) * (1 + Number(value.product_sunhao) / 100)),
                       unit: (vals.unit === '克' || vals.unit === 'g') ? 'kg' : vals.unit
                     }]
                   })
@@ -718,11 +731,11 @@ export default {
                   if (!flag1) {
                     flag.colors.push({
                       color: vals.color_name,
-                      number: (vals.unit === '克' || vals.unit === 'g') ? ((vals.number * val.number * (1 + Number(value.product_sunhao) / 100)) / 1000) : (vals.number * val.number * (1 + Number(value.product_sunhao) / 100)),
+                      number: (vals.unit === '克' || vals.unit === 'g') ? ((vals.number * val.order_number * (val.number / val.plan_number) * (1 + Number(value.product_sunhao) / 100)) / 1000) : (vals.number * val.order_number * (val.number / val.plan_number) * (1 + Number(value.product_sunhao) / 100)),
                       unit: (vals.unit === '克' || vals.unit === 'g') ? 'kg' : vals.unit
                     })
                   } else {
-                    flag1.number += (vals.unit === '克' || vals.unit === 'g') ? ((vals.number * val.number * (1 + Number(value.product_sunhao) / 100)) / 1000) : (vals.number * val.number * (1 + Number(value.product_sunhao) / 100))
+                    flag1.number += (vals.unit === '克' || vals.unit === 'g') ? ((vals.number * val.order_number * (val.number / val.plan_number) * (1 + Number(value.product_sunhao) / 100)) / 1000) : (vals.number * val.order_number * (val.number / val.plan_number) * (1 + Number(value.product_sunhao) / 100))
                   }
                 }
               }
