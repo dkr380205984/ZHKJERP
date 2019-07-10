@@ -656,13 +656,13 @@ export default {
                       material: itemPlan.material_name,
                       colorWeight: [{
                         color: itemPlan.color_name,
-                        weight: (itemPlan.number * itemInfo.production_num * (1 + itemInfo.production_sunhao / 100) / 1000).toFixed(2)
+                        weight: (itemPlan.number * itemInfo.order_num * (1 + itemInfo.production_sunhao / 100) / 1000).toFixed(2)
                       }]
                     })
                   } else {
                     json.colorArr[mark].colorWeight.push({
                       color: itemPlan.color_name,
-                      weight: (itemPlan.number * itemInfo.production_num * (1 + itemInfo.production_sunhao / 100) / 1000).toFixed(2)
+                      weight: (itemPlan.number * itemInfo.order_num * (1 + itemInfo.production_sunhao / 100) / 1000).toFixed(2)
                     })
                   }
                 }
@@ -675,6 +675,7 @@ export default {
         }
       })
       // 所需原料信息和织造信息全部都放在product中，整理完毕之后，开始整理原料分配信息
+      console.log(this.logList)
       // 第一步，把纱线和颜色信息取出来
       let materialList = this.logList.map((itemLog, indexLog) => {
         let newItem = itemLog
@@ -697,8 +698,10 @@ export default {
         newItem.product_code = itemLog.product_info.product_code
         return newItem
       })
+      console.log(materialList)
       // 第二步，合并加工单位
       this.materialList = this.jsonMerge(materialList, ['client_name', 'product_code'])
+      console.log(this.materialList)
       // 统计生产分配信息
       // 先按生产单位合并，再按产品编号合并
       let fenpeiList = this.jsonMerge(this.logList.map((item) => {

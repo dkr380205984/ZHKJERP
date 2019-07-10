@@ -864,9 +864,9 @@ export default {
       }
       data.warp_data.warp_rank_bottom.forEach((item, index) => {
         if (!this.warpWeightArr[item]) {
-          this.warpWeightArr[item] = warpWeight[item] * newWarpData[0][index] * newWarpData[1][index] * newWarpData[2][index]
+          this.warpWeightArr[item] = warpWeight[item] * newWarpData[0][index] * newWarpData[1][index] * newWarpData[2][index] * (this.weft_data.neichang + this.weft_data.rangwei) / 100
         } else {
-          this.warpWeightArr[item] += warpWeight[item] * newWarpData[0][index] * newWarpData[1][index] * newWarpData[2][index]
+          this.warpWeightArr[item] += warpWeight[item] * newWarpData[0][index] * newWarpData[1][index] * newWarpData[2][index] * (this.weft_data.neichang + this.weft_data.rangwei) / 100
         }
       })
       data.weft_data.weft_rank_bottom.forEach((item, index) => {

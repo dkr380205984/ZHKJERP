@@ -152,7 +152,7 @@
                       </span>
                     </span>
                   </span>
-                  <span>{{itemCompany.sum}}元</span>
+                  <span>{{parseInt(itemCompany.sum)}}元</span>
                   <span class="col">
                     <span v-for="(itemType,indexType) in itemCompany.info"
                       :key="indexType">
@@ -208,7 +208,7 @@
                         <span v-if="index2<item.ingredients.length-1">/</span>
                       </span>
                     </span>
-                    <span>{{item.price*item.number}}元</span>
+                    <span>{{parseInt(item.price*item.number)}}元</span>
                     <span>{{item.user_name}}</span>
                     <span>{{item.desc?item.desc:'暂无信息'}}</span>
                     <span style="color:#1A95FF;cursor:pointer"
@@ -622,14 +622,14 @@ export default {
                       material: itemPlan.material_name,
                       colorWeight: [{
                         color: itemPlan.color_name,
-                        weight: parseInt((itemPlan.number * itemInfo.production_num * (1 + itemInfo.production_sunhao / 100))),
+                        weight: parseInt((itemPlan.number * itemInfo.order_num * (1 + itemInfo.production_sunhao / 100))),
                         unit: itemPlan.unit
                       }]
                     })
                   } else {
                     json.colorArr[mark].colorWeight.push({
                       color: itemPlan.color_name,
-                      weight: parseInt(itemPlan.number * itemInfo.production_num * (1 + itemInfo.production_sunhao / 100)),
+                      weight: parseInt(itemPlan.number * itemInfo.order_num * (1 + itemInfo.production_sunhao / 100)),
                       unit: itemPlan.unit
                     })
                   }
@@ -670,6 +670,7 @@ export default {
       // 半成品分配价格统计完成，开始统计半成品分配辅料信息
       // 第一步，先按加工单位合并，再按加工类型合并
       let materialList = this.jsonMerge(logList, ['client_name', 'type'])
+      console.log(materialList)
       // 对于加工类型里的辅料需要合并一些数值
       materialList = materialList.map((itemCompany) => {
         return {
@@ -682,7 +683,7 @@ export default {
               itemPro.ingredients.forEach((itemIng) => {
                 let mark = -1
                 let finded = arr.find((itemFind, indexFind) => {
-                  if (itemFind.name === itemIng) {
+                  if (itemFind.name === itemIng && itemFind.color === itemPro.color && itemFind.size === itemPro.size) {
                     mark = indexFind
                     return itemFind.name === itemIng
                   }
@@ -702,7 +703,7 @@ export default {
               })
             })
             // 将数据和配料单的数据合并
-            arr.map((itemInfo) => {
+            arr.forEach((itemInfo) => {
               let json = itemInfo
               json.number = []
               productPlan[itemInfo.product_code].forEach((itemPlan) => {
@@ -726,6 +727,7 @@ export default {
         }
       })
       this.materialList = materialList
+      console.log(materialList)
       // 补辅料信息合并
       this.bushaList = res[2].data.data.map((item) => {
         let json = item
@@ -738,7 +740,6 @@ export default {
         })
         return json
       })
-      console.log(this.bushaList)
       this.loading = false
     })
   },

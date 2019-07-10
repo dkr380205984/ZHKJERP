@@ -666,26 +666,25 @@ export default {
         } else {
           let formData = []
           // 将数据处理成要提交的数据
+          console.log(this.formList)
           this.formList.forEach((item, index) => {
             item.company.forEach((itemCompany, indexCompany) => {
               itemCompany.price_number.forEach((itemPrice, indexPrice) => {
-                itemCompany.machining.forEach((itemMach) => {
-                  formData.push({
-                    company_id: window.sessionStorage.getItem('company_id'),
-                    order_id: this.order.id,
-                    product_code: item.product_code,
-                    client_id: itemCompany.company_id,
-                    // total_price: itemCompany.total_price,
-                    complete_time: itemCompany.complete_time,
-                    desc: itemCompany.desc,
-                    price: itemPrice.price,
-                    number: itemPrice.number,
-                    size: itemPrice.colorSize[0],
-                    color: itemPrice.colorSize[1],
-                    user_id: window.sessionStorage.getItem('user_id'),
-                    type: itemMach,
-                    ingredients: JSON.stringify(itemCompany.otherMat)
-                  })
+                formData.push({
+                  company_id: window.sessionStorage.getItem('company_id'),
+                  order_id: this.order.id,
+                  product_code: item.product_code,
+                  client_id: itemCompany.company_id,
+                  // total_price: itemCompany.total_price,
+                  complete_time: itemCompany.complete_time,
+                  desc: itemCompany.desc,
+                  price: itemPrice.price,
+                  number: itemPrice.number,
+                  size: itemPrice.colorSize[0],
+                  color: itemPrice.colorSize[1],
+                  user_id: window.sessionStorage.getItem('user_id'),
+                  type: itemCompany.machining.join('/'),
+                  ingredients: JSON.stringify(itemCompany.otherMat)
                 })
               })
             })

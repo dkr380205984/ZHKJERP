@@ -173,6 +173,7 @@
               <span class="btns success"
                 @click="$router.push('/index/orderDetail/' + item.id)">详情</span>
               <span class="btns error"
+                style="display:none"
                 @click="deleteOrder(item.id)">删除</span>
             </div>
           </div>

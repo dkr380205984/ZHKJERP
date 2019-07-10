@@ -333,9 +333,17 @@
             <span class="label must">筘幅:</span>
             <el-input class="elInput"
               placeholder="请输入数字"
+              @focus="showMore=true"
+              @blur="$refs.moreInfo.$refs.input.focus()"
               v-model="warp_data.reed_width">
               <template slot="append">厘米</template>
             </el-input>
+            <el-input ref="moreInfo"
+              class="moreInfo"
+              v-show="showMore||warp_data.reed_detail"
+              v-model="warp_data.reed_detail"
+              @blur="warp_data.reed_detail?showMore=true:showMore=false"
+              placeholder="筘幅详细信息(选填)"></el-input>
           </div>
         </div>
         <div class="lineCtn">
@@ -683,6 +691,8 @@ export default {
   },
   data () {
     return {
+      editFlag: false,
+      showMore: false,
       lock: false,
       ifgetCraft: false,
       gyd: '',
@@ -713,11 +723,15 @@ export default {
         ],
         colWidths: 62, // 列宽
         rowHeights: [47, 34, 34],
-        className: 'htCenter htMiddle ',
+        className: 'htCenter htMiddle',
         contextMenu: [
           'mergeCells', // 合并单元格菜单
           'col_right',
           'col_left',
+          'copy',
+          'cut',
+          'undo',
+          'redo',
           'remove_col'
         ],
         licenseKey: 'non-commercial-and-evaluation', // 申明非商业用途
@@ -742,8 +756,21 @@ export default {
           'mergeCells', // 合并单元格菜单
           'col_right',
           'col_left',
+          'copy',
+          'cut',
+          'undo',
+          'redo',
           'remove_col'
         ],
+        // cells: (row, col) => {
+        //   let cellMeta = {}
+        //   if (row === 0) {
+
+        //   } else {
+        //     cellMeta.type = 'numeric'
+        //   }
+        //   return cellMeta
+        // },
         licenseKey: 'non-commercial-and-evaluation', // 申明非商业用途
         mergeCells: true,
         minCols: 1,
@@ -796,7 +823,8 @@ export default {
         reed_method: null,
         reed_width: null,
         sum_up: null,
-        drafting_method: null
+        drafting_method: null,
+        reed_detail: null
       },
       weft_data: {
         organization_id: null,
@@ -858,6 +886,20 @@ export default {
       },
       deep: true
     }
+    // colorNum2 (newVal) {
+    //   this.hotSettings2.cells = (row, col) => {
+    //     let cellMeta = {}
+    //     if (row === 0) {
+    //       cellMeta.type = 'dropdown'
+    //       cellMeta.source = []
+    //       for (let i = 0; i < newVal[0]; i++) { cellMeta.source.push('夹' + (i + 1)) }
+    //       console.log(cellMeta.source)
+    //     } else {
+    //       cellMeta.type = 'numeric'
+    //     }
+    //     return cellMeta
+    //   }
+    // }
   },
   mounted () {
     // 初始化接口
@@ -1962,5 +2004,11 @@ export default {
     font-size: 10px;
     width: 15px;
   }
+}
+.moreInfo {
+  position: absolute;
+  top: calc(100% + 10px);
+  width: 173px;
+  margin-left: 15px;
 }
 </style>

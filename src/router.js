@@ -412,6 +412,10 @@ let router = new Router({
       path: 'packagMaterialSetting',
       name: 'packagMaterialSetting',
       component: () => import('./views/setting/packagMaterialSetting.vue')
+    }, {
+      path: 'orderDetailTest',
+      name: 'orderDetailTest',
+      component: () => import('./views/order/orderDetailTest.vue')
     }]
   }
   ]
