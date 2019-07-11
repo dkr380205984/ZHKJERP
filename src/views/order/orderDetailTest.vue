@@ -268,8 +268,8 @@
                   <span>{{itemType.number}}{{item.unit}}</span>
                 </span>
               </span>
-              <span>还没统计</span>
-              <span>还没统计</span>
+              <span>{{item.in_stock_number ? item.in_stock_number : 0}}{{item.unit}}</span>
+              <span>{{item.out_stock_number ? item.out_stock_number : 0}}{{item.unit}}</span>
               <span>{{item.replenish_number?item.replenish_number:0}}{{item.unit}}</span>
               <span>还没统计</span>
             </li>
@@ -368,11 +368,17 @@
                     v-if="item.img.length===0"><span>没有预览图</span></div>
                 </div>
               </span>
-              <span>工序</span>
-              <span>出库捆数</span>
-              <span>出库数量</span>
-              <span>入库捆数</span>
-              <span>入库数量</span>
+              <span class="col"
+                style="flex:5">
+                <span v-for="(val,ind) in item.store"
+                  :key="ind">
+                  <span>{{val.type}}</span>
+                  <span>{{val.store_out_count ? val.store_out_count : 0}}</span>
+                  <span>{{val.store_out_number ? val.store_out_number : 0}}{{item.unit}}</span>
+                  <span>{{val.store_in_count ? val.store_in_count : 0}}</span>
+                  <span>{{val.store_in_number ? val.store_in_number : 0}}{{item.unit}}</span>
+                </span>
+              </span>
               <span>收发状态</span>
             </li>
           </div>
@@ -391,22 +397,38 @@
           </div>
           <div class="table">
             <li class="title">
-              <span>生产单位</span>
-              <span>加工类型</span>
-              <span>所需辅料</span>
-              <span>颜色</span>
-              <span>数量</span>
-              <span>操作</span>
+              <span style="flex:2">产品信息</span>
+              <span>产品图片</span>
+              <span>半成品检验</span>
+              <span>半成品次品数</span>
+              <span>半成品次品率</span>
+              <span>成品检验数</span>
+              <span>成品次品数</span>
+              <span>成品次品率</span>
+              <span>检验状态</span>
             </li>
             <li class="material_info"
               v-for="(item,index) in designList"
               :key="index">
-              <span>生产单位</span>
-              <span>加工类型</span>
-              <span>所需辅料</span>
-              <span>颜色</span>
-              <span>数量</span>
-              <span>操作</span>
+              <span style="flex:2">{{item.product_code}}({{item.type}})</span>
+              <span>
+                <div class="imgCtn">
+                  <img class="img"
+                    :src="item.img.length>0?item.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
+                    :onerror="defaultImg" />
+                  <div class="toolTips"
+                    v-if="item.img.length>0"><span @click="showImg(item.img)">点击查看大图</span></div>
+                  <div class="toolTips"
+                    v-if="item.img.length===0"><span>没有预览图</span></div>
+                </div>
+              </span>
+              <span>{{item.semi_number ? item.semi_number : 0}}{{item.unit}}</span>
+              <span>{{item.semi_defective ? item.semi_defective : 0}}{{item.unit}}</span>
+              <span>{{(item.semi_defective ? item.semi_defective : 0)/(item.semi_number ? item.semi_number : 0) ? (item.semi_defective ? item.semi_defective : 0)/(item.semi_number ? item.semi_number : 0) : 0}}%</span>
+              <span>{{item.finished_number ? item.finished_number : 0}}{{item.unit}}</span>
+              <span>{{item.finished_defective ? item.finished_defective : 0}}{{item.unit}}</span>
+              <span>{{((item.finished_defective ? item.finished_defective : 0)/(item.finished_number ? item.finished_number : 0)) ? ((item.finished_defective ? item.finished_defective : 0)/(item.finished_number ? item.finished_number : 0)) : 0}}%</span>
+              <span>还没统计</span>
             </li>
           </div>
         </div>
@@ -424,28 +446,44 @@
           </div>
           <div class="table">
             <li class="title">
-              <span>生产单位</span>
-              <span>加工类型</span>
-              <span>所需辅料</span>
-              <span>颜色</span>
-              <span>数量</span>
-              <span>操作</span>
+              <span style="flex:1.7">发货批次</span>
+              <span style="flex:7">
+                <span style="flex:2">产品信息</span>
+                <span>产品图片</span>
+                <span>发货数量</span>
+                <span>装箱数量</span>
+                <span>装箱状态</span>
+              </span>
+              <span>装箱出库</span>
+              <span>发货状态</span>
             </li>
-            <li class="material_info">
-              <span>生产单位</span>
-              <span>加工类型</span>
-              <span>所需辅料</span>
-              <span>颜色</span>
-              <span>数量</span>
-              <span>操作</span>
-            </li>
-            <li class="material_info">
-              <span>生产单位</span>
-              <span>加工类型</span>
-              <span>所需辅料</span>
-              <span>颜色</span>
-              <span>数量</span>
-              <span>操作</span>
+            <li class="material_info"
+              v-for="(item,key) in outStockList"
+              :key="key">
+              <span style="flex:1.7">第{{item.batch_id}}批({{item.delivery_time}})</span>
+              <span class="col"
+                style="flex:7">
+                <span v-for="(valPro,indPro) in item.product_info"
+                  :key="indPro">
+                  <span style="flex:2">{{valPro.product_code}}{{valPro.product_type}}</span>
+                  <span>
+                    <div class="imgCtn">
+                      <img class="img"
+                        :src="valPro.img.length>0?valPro.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
+                        :onerror="defaultImg" />
+                      <div class="toolTips"
+                        v-if="valPro.img.length>0"><span @click="showImg(valPro.img)">点击查看大图</span></div>
+                      <div class="toolTips"
+                        v-if="valPro.img.length===0"><span>没有预览图</span></div>
+                    </div>
+                  </span>
+                  <span>{{valPro.number}}</span>
+                  <span>{{valPro.product_number}}</span>
+                  <span>{{valPro.product_number > valPro.number ? '多装' + (valPro.product_number - valPro.number) + '条' : '少装' + (valPro.number - valPro.product_number) + '条'}}</span>
+                </span>
+              </span>
+              <span>{{item.pack_number}}</span>
+              <span>还没统计</span>
             </li>
           </div>
         </div>
@@ -461,30 +499,141 @@
               <span class="opration">一键完成</span>
             </div>
           </div>
-          <div class="table">
+          <div class="tablesCtn"
+            style="line-height:40px;width:1220px;box-sizing:border-box">
             <li class="title">
-              <span>生产单位</span>
-              <span>加工类型</span>
-              <span>所需辅料</span>
-              <span>颜色</span>
-              <span>数量</span>
-              <span>操作</span>
+              <span style="flex:1.7">物料名称</span>
+              <span>合计费用</span>
+              <span>订购公司</span>
+              <span>订购数量</span>
+              <span>订购费用</span>
+              <span style="flex:4">
+                <span>加工公司</span>
+                <span>加工类型</span>
+                <span>加工数量</span>
+                <span>加工费用</span>
+              </span>
             </li>
-            <li class="material_info">
-              <span>生产单位</span>
-              <span>加工类型</span>
-              <span>所需辅料</span>
-              <span>颜色</span>
-              <span>数量</span>
-              <span>操作</span>
+            <li class="content"
+              v-for="(item,key) in materialList"
+              :key="key">
+              <span class="tableRow"
+                style="flex:1.7">{{item.material_name}}</span>
+              <span class="tableRow">{{item|filterTotal}}元</span>
+              <span class="tableRow">{{item.order_client}}</span>
+              <span class="tableRow">{{item.order_number}}{{item.unit}}</span>
+              <span class="tableRow">{{item.total_price_order}}元</span>
+              <span class="tableRow col"
+                style="flex:4">
+                <span class="tableColumn"
+                  v-for="(valType,indType) in item.processType"
+                  :key="indType">
+                  <span class="tableRow">{{valType.process_client}}</span>
+                  <span class="tableRow">{{valType.type}}</span>
+                  <span class="tableRow">{{valType.number}}{{item.unit}}</span>
+                  <span class="tableRow">{{valType.total_price_process}}元</span>
+                </span>
+              </span>
             </li>
-            <li class="material_info">
-              <span>生产单位</span>
+          </div>
+          <div class="tablesCtn"
+            style="line-height:40px;width:1220px;box-sizing:border-box;margin-top:30px;">
+            <li class="title">
+              <span style="flex:2">产品名称</span>
+              <span>产品图片</span>
+              <span>合计费用</span>
+              <span>织造单位</span>
+              <span>织造数量</span>
+              <span>织造费用</span>
+              <span>加工单位</span>
               <span>加工类型</span>
-              <span>所需辅料</span>
-              <span>颜色</span>
-              <span>数量</span>
-              <span>操作</span>
+              <span>加工数量</span>
+              <span>加工费用</span>
+            </li>
+            <li class="content"
+              v-for="(item,key) in designList"
+              :key="key">
+              <span class="tableRow"
+                style="flex:2">{{item.product_code}}{{item.type}}</span>
+              <span class="tableRow">
+                <div class="imgCtn">
+                  <img class="img"
+                    :src="item.img.length>0?item.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
+                    :onerror="defaultImg" />
+                  <div class="toolTips"
+                    v-if="item.img.length>0"><span @click="showImg(item.img)">点击查看大图</span></div>
+                  <div class="toolTips"
+                    v-if="item.img.length===0"><span>没有预览图</span></div>
+                </div>
+              </span>
+              <span class="tableRow">{{item|filterPrice}}</span>
+              <span class="tableRow">{{item.weave_client}}</span>
+              <span class="tableRow">{{item.weave_number}}{{item.unit}}</span>
+              <span class="tableRow">{{item.total_price_weave}}元</span>
+              <span class="tableRow col"
+                style="flex:4">
+                <span class="tableColumn"
+                  v-for="(valType,indType) in item.processType"
+                  :key="indType">
+                  <span class="tableRow">{{valType.process_client}}</span>
+                  <span class="tableRow">{{valType.type}}</span>
+                  <span class="tableRow">{{valType.number}}{{item.unit}}</span>
+                  <span class="tableRow">{{valType.total_price_semiProcess}}元</span>
+                </span>
+              </span>
+            </li>
+          </div>
+          <div class="tablesCtn"
+            style="line-height:40px;width:1220px;box-sizing:border-box;margin-top:30px;">
+            <li class="title">
+              <span style="flex:1.7">发货日期</span>
+              <span style="flex:7">
+                <span style="flex:2">产品品类</span>
+                <span>产品图片</span>
+                <span style="flex:4">
+                  <span>尺码颜色</span>
+                  <span>发货数量</span>
+                  <span>单价</span>
+                  <span>总价</span>
+                </span>
+              </span>
+            </li>
+            <li class="content"
+              v-for="(item,key) in productPriceList"
+              :key="key">
+              <span class="tableRow"
+                style="flex:1.7">第{{item.batch_id}}批{{item.delivery_time}}</span>
+              <span class="tableRow col"
+                style="flex:7">
+                <span class="tableColumn"
+                  v-for="(valPro,indPro) in item.batch_info"
+                  :key="indPro">
+                  <span class="tableRow"
+                    style="flex:2">{{valPro.productCode}}({{valPro.productInfo.category_info.product_category + '/' + valPro.productInfo.type_name + '/' + valPro.productInfo.style_name}})</span>
+                  <span class="tableRow">
+                    <div class="imgCtn">
+                      <img class="img"
+                        :src="valPro.productInfo.img.length>0?valPro.productInfo.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
+                        :onerror="defaultImg" />
+                      <div class="toolTips"
+                        v-if="valPro.productInfo.img.length>0"><span @click="showImg(valPro.productInfo.img)">点击查看大图</span></div>
+                      <div class="toolTips"
+                        v-if="valPro.productInfo.img.length===0"><span>没有预览图</span></div>
+                    </div>
+                  </span>
+                  <span class="tableRow col"
+                    style="flex:4">
+                    <span class="tableColumn"
+                      v-for="(valSize,indSize) in valPro.size"
+                      :key="indSize">
+                      <span class="tableRow">{{valSize.name[0] + '/' + valSize.name[1]}}</span>
+                      <span class="tableRow">{{valSize.numbers}}条</span>
+                      <span class="tableRow">{{valSize.unitPrice}}元/条</span>
+                      <span class="tableRow">{{valSize.numbers * valSize.unitPrice}}元</span>
+                    </span>
+                  </span>
+                </span>
+              </span>
             </li>
           </div>
         </div>
@@ -511,7 +660,7 @@
 </template>
 
 <script>
-import { orderDetailNew, rawMaterialOrderInit, productionDetail } from '@/assets/js/api.js'
+import { orderDetailNew, rawMaterialOrderInit, productionDetail, packagNumberDetail } from '@/assets/js/api.js'
 import { moneyArr } from '@/assets/js/dictionary.js'
 export default {
   data () {
@@ -660,6 +809,22 @@ export default {
       }
     }
   },
+  filters: {
+    // 物料合计费用
+    filterTotal (item) {
+      let price = 0
+      item.processType.forEach(val => {
+        price += Number(val.total_price_process)
+      })
+      price += Number(item.total_price_order)
+      return price
+    },
+    // 生产合计费用
+    filterPrice (item) {
+      let price = 0
+      return price
+    }
+  },
   mounted () {
     Promise.all([orderDetailNew({
       id: 20
@@ -667,8 +832,10 @@ export default {
       order_id: 20
     }), productionDetail({
       order_id: 20
+    }), packagNumberDetail({
+      order_id: 20
     })]).then((res) => {
-      console.log(res)
+      // console.log(res)
       const data = res[0].data.data
       this.order_info = data.order_info
       this.order_log = data.order_log
@@ -709,8 +876,8 @@ export default {
       // 物料概述
       let materialInfo = res[1].data.data
       let processInfo = this.order_log.material_production
-      // let outStockInfo = [].concat(this.order_log.material_push_z, this.order_log.material_push_f)
-      // let inStockInfo = [].concat(this.order_log.material_pop_z, this.order_log.material_pop_f)
+      let outStockInfo = [].concat(this.order_log.material_push_z, this.order_log.material_push_f)
+      let inStockInfo = [].concat(this.order_log.material_pop_z, this.order_log.material_pop_f)
       let materialPageInfo = this.order_log.material_order
       // 物料计划值
       materialInfo.material_info.forEach(item => {
@@ -734,19 +901,19 @@ export default {
         }
       })
       // 物料入库值
-      for (let prop in materialInfo.stock_info) {
-        let ind = materialInfo.stock_info[prop]
-        let num = 0
-        ind.map(res => {
-          num += Number(res.total_weight)
-        })
-        let flag = this.materialList.find(keys => keys.material_name === prop)
+      inStockInfo.forEach(item => {
+        let flag = this.materialList.find(keys => keys.material_name === item.material_name)
         if (flag) {
-          flag.stock_number = num
+          flag.in_stock_number = Number(flag.in_stock_number ? flag.in_stock_number : 0) + Number(item.weight)
         }
-      }
+      })
       // 物料出库值
-
+      outStockInfo.forEach(item => {
+        let flag = this.materialList.find(keys => keys.material_name === item.material_name)
+        if (flag) {
+          flag.out_stock_number = Number(flag.out_stock_number ? flag.out_stock_number : 0) + Number(item.total_weight)
+        }
+      })
       // 物料订购值
       materialPageInfo.forEach(item => {
         let flag = this.materialList.find(keys => keys.material_name === item.material_name)
@@ -793,7 +960,6 @@ export default {
         }
       })
       // console.log(this.materialList)
-
       // 生产概述
       let designInfo = res[2].data.data
       let weaveInfo = this.order_log.product_weave
@@ -829,6 +995,7 @@ export default {
           flag.total_price_weave = Number(flag.total_price_weave ? flag.total_price_weave : 0) + Number(item.price * item.number)
         }
       })
+      console.log(halfProductInfo)
       halfProductInfo.forEach(item => {
         let flag = this.designList.find(key => key.product_code === item.product_info.product_code)
         if (flag) {
@@ -839,12 +1006,18 @@ export default {
           if (!flag1) {
             flag.processType.push({
               type: item.type,
-              number: item.number
+              number: item.number,
+              process_client: [item.client_name],
+              total_price_semiProcess: item.price * item.number
             })
           } else {
+            if (flag1.process_client.indexOf(item.client_name) === -1) {
+              flag1.process_client.push(item.client_name)
+            }
+            flag1.total_price_semiProcess = Number(flag1.total_price_semiProcess ? flag1.total_price_semiProcess : 0) + Number(item.price * item.number)
             flag1.number = Number(flag1.number ? flag1.number : 0) + Number(item.number)
           }
-          flag.total_price_semiProcess = Number(flag.total_price_semiProcess ? flag.total_price_semiProcess : 0) + Number(item.price * item.number)
+          // flag.total_price_semiProcess = Number(flag.total_price_semiProcess ? flag.total_price_semiProcess : 0) + Number(item.price * item.number)
         }
       })
       // 收发概述
@@ -855,19 +1028,30 @@ export default {
         if (!flag) {
           this.designList.push({
             product_code: item.product_info.product_code,
-            store_in: [item.type],
-            store_in_count: item.count,
-            store_in_number: item.number
+            store: [{
+              type: item.type,
+              store_in_count: item.count,
+              store_in_number: item.number
+            }]
           })
         } else {
-          if (!flag.store_in) {
-            flag.store_in = []
+          if (!flag.store) {
+            flag.store = []
           }
-          if (flag.store_in.indexOf(item.type) === -1) {
-            flag.store_in.push(item.type)
+          let flag1 = flag.store.find(key => key.type === item.type)
+          if (!flag1) {
+            flag.store.push({
+              type: item.type,
+              store_in_count: item.count,
+              store_in_number: item.number
+            })
+          } else {
+            flag1.store_in_number = Number(flag1.store_in_number ? flag.store_in_number : 0) + Number(item.number)
+            flag1.store_in_count = Number(flag1.store_in_count ? flag.store_in_count : 0) + Number(item.count)
           }
-          flag.store_in_number = Number(flag.store_in_number ? flag.store_in_number : 0) + Number(item.number)
-          flag.store_in_count = Number(flag.store_in_count ? flag.store_in_count : 0) + Number(item.count)
+          // if (flag.store_in.indexOf(item.type) === -1) {
+          //   flag.store_in.push(item.type)
+          // }
         }
       })
       storeOut.forEach(item => {
@@ -875,22 +1059,34 @@ export default {
         if (!flag) {
           this.designList.push({
             product_code: item.product_info.product_code,
-            store_out: [item.type],
-            store_out_count: item.count,
-            store_out_number: item.number
+            store: [{
+              type: item.type,
+              store_out_count: item.count,
+              store_out_number: item.number
+            }]
           })
         } else {
-          if (!flag.store_out) {
-            flag.store_out = []
+          if (!flag.store) {
+            flag.store = []
           }
-          if (flag.store_out.indexOf(item.type) === -1) {
-            flag.store_out.push(item.type)
+          let flag1 = flag.store.find(key => key.type === item.type)
+          if (!flag1) {
+            flag.store.push({
+              type: item.type,
+              store_out_count: item.count,
+              store_out_number: item.number
+            })
+          } else {
+            flag1.store_out_number = Number(flag1.store_out_number ? flag.store_out_number : 0) + Number(item.number)
+            flag1.store_out_count = Number(flag1.store_out_count ? flag.store_out_count : 0) + Number(item.count)
           }
-          flag.store_out_number = Number(flag.store_out_number ? flag.store_out_number : 0) + Number(item.number)
-          flag.store_out_count = Number(flag.store_out_count ? flag.store_out_count : 0) + Number(item.count)
+          // if (flag.store_out.indexOf(item.type) === -1) {
+          //   flag.store_out.push(item.type)
+          // }
+          // flag.store_out_number = Number(flag.store_out_number ? flag.store_out_number : 0) + Number(item.number)
+          // flag.store_out_count = Number(flag.store_out_count ? flag.store_out_count : 0) + Number(item.count)
         }
       })
-      console.log(this.designList)
       // 检验概述
       let semiInfo = this.order_log.semi_product_inspection
       let finishedInfo = this.order_log.product_inspection
@@ -900,10 +1096,10 @@ export default {
         item.rejects_info.map(keys => {
           num += Number(keys.number ? keys.number : 0)
         })
-        let flag = this.designList.find(key => key.product_code === item.product_info.product_code)
+        let flag = this.designList.find(key => key.product_code === item.product_code)
         if (!flag) {
           this.designList.push({
-            product_code: item.product_info.product_code,
+            product_code: item.product_code,
             img: [],
             semi_number: item.number,
             semi_defective: num
@@ -932,7 +1128,73 @@ export default {
           flag.finished_defective = Number(flag.finished_defective ? flag.finished_defective : 0) + Number(num)
         }
       })
+      // console.log(this.designList)
+      // 出库概述
+      let orderInfo = this.order_info
+      orderInfo.order_batch.forEach(item => {
+        item.batch_info.forEach(val => {
+          val.size.forEach(valSize => {
+            let flag = this.outStockList.find(key => key.batch_id === item.batch_id)
+            if (!flag) {
+              this.outStockList.push({
+                batch_id: item.batch_id,
+                delivery_time: item.delivery_time,
+                product_info: [{
+                  product_code: val.productCode,
+                  product_type: val.productInfo.category_info.product_category + '/' + val.productInfo.type_name + '/' + val.productInfo.style_name,
+                  number: valSize.numbers,
+                  img: [...val.productInfo.img]
+                }]
+              })
+            } else {
+              let flag1 = flag.product_info.find(key => key.product_code === val.productCode)
+              if (!flag1) {
+                flag.product_info.push({
+                  product_code: val.productCode,
+                  product_type: val.productInfo.category_info.product_category + '/' + val.productInfo.type_name + '/' + val.productInfo.style_name,
+                  number: valSize.numbers,
+                  img: [...val.productInfo.img]
+                })
+              } else {
+                flag1.number = Number(flag1.number) + Number(valSize.numbers)
+                flag1.img.push(...val.productInfo.img)
+              }
+            }
+            let fleg = this.designList.find(key => key.product_code === val.productCode)
+            if (fleg) {
+              fleg.img = val.productInfo.img
+            }
+          })
+        })
+      })
+      this.productPriceList = orderInfo.order_batch
+      let stockOutInfo = this.order_log.stock_out_info // 订单出库日志
+      stockOutInfo.forEach(item => {
+        let flag = this.outStockList.find(key => key.batch_id === item.batch_id)
+        if (flag) {
+          flag.pack_number = Number(flag.pack_number ? flag.pack_number : 0) + Number(item.number)
+        }
+      })
+      // console.log(this.outStockList)
+      // 出库概述添加装箱实际数量
+      let outStockNumberInfo = res[3].data.data
+      outStockNumberInfo.forEach(item => {
+        let flag = this.outStockList.find(key => key.batch_id === item.batch_id)
+        if (flag) {
+          item.product_info = JSON.parse(item.product_info)
+          item.product_info.forEach(valPro => {
+            let flag1 = flag.product_info.find(key => key.product_code === valPro.product_code)
+            if (flag1) {
+              let num = 0
+              valPro.size_info.forEach(key => { num += Number(key.pack_number) })
+              flag1.product_number = num
+            }
+          })
+        }
+      })
+      console.log(this.materialList)
       console.log(this.designList)
+      console.log(this.productPriceList)
     })
   }
 }

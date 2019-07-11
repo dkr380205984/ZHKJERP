@@ -325,8 +325,8 @@
                     <span>{{val.color}}</span>
                     <span>{{val.dyelot_number}}</span>
                     <span>{{val.surplu|fixedFilter}}{{val.unit}}</span>
-                    <span @click="goStock(val)"
-                      class="important">存入本厂仓库</span>
+                    <span @click="showShadeInfo(val)"
+                      class="important">存入仓库</span>
                   </li>
                 </div>
               </ul>
@@ -339,6 +339,62 @@
           @click="$router.go(-1)">返回</div>
         <div class="okBtn"
           @click="$router.go(-1)">确定</div>
+      </div>
+    </div>
+    <div class="shade"
+      v-show="showShade">
+      <div class="main">
+        <div class="close"
+          @click="showShade=false">
+          <span class="icon">x</span>
+        </div>
+        <div class="title">结余存入</div>
+        <div class="inputCtn">
+          <span class="label"><em>*</em>{{type === '0' ? '原' : '辅'}}料名称:</span>
+          <div class="elCtn">
+            {{surplusGoStockInfo.material}}
+          </div>
+        </div>
+        <div class="inputCtn">
+          <span class="label"><em>*</em>原料颜色:</span>
+          <div class="elCtn">
+            {{surplusGoStockInfo.color}}
+          </div>
+        </div>
+        <div class="inputCtn">
+          <span class="label">缸号:</span>
+          <div class="elCtn">
+            {{surplusGoStockInfo.dyelot_number ==='vat_null' ? '默认' : surplusGoStockInfo.dyelot_number}}
+          </div>
+        </div>
+        <div class="inputCtn">
+          <span class="label">结余数量:</span>
+          <div class="elCtn">
+            {{surplusGoStockInfo.surplu}}{{surplusGoStockInfo.unit}}
+          </div>
+        </div>
+        <div class="inputCtn">
+          <span class="label"><em>*</em>存入数量:</span>
+          <div class="elCtn">
+            <el-input v-model="surplusGoStockInfo.number"
+              placeholder="请输入数量">
+              <template slot="append">{{surplusGoStockInfo.unit}}</template>
+            </el-input>
+          </div>
+        </div>
+        <div class="inputCtn">
+          <span class="label">备注:</span>
+          <div class="elCtn">
+            <el-input v-model="updateInfo.desc"
+              placeholder="请输入其他信息"></el-input>
+          </div>
+        </div>
+        <div class="btnCtn">
+          <div class="okBtn"
+            @click="goStock()">提交</div>
+          <div class="cancleBtn"
+            @click="showShade=false">取消</div>
+        </div>
       </div>
     </div>
   </div>
@@ -363,7 +419,10 @@ export default {
       goStockList: [],
       outStockInfo: [],
       productionList: [],
-      surplus: []
+      surplus: [],
+      showShade: false,
+      updateInfo: {},
+      surplusGoStockInfo: {}
     }
   },
   filters: {
@@ -372,6 +431,11 @@ export default {
     }
   },
   methods: {
+    showShadeInfo (item) {
+      this.surplusGoStockInfo = item
+      console.log(this.surplusGoStockInfo)
+      this.showShade = true
+    },
     charCodeLength (item) {
       if (!item) {
         return 0
@@ -408,7 +472,14 @@ export default {
       }
     },
     goStock () {
-      console.log('goStock')
+      if (this.surplusGoStockInfo.surplu < this.surplusGoStockInfo.number) {
+        this.$message({
+          type: 'error',
+          message: '数量超出结余,请重新输入!'
+        })
+      } else {
+
+      }
     }
   },
   created () {
@@ -769,4 +840,98 @@ export default {
 
 <style scoped lang='less'>
 @import "~@/assets/css/rawMaterialStockDetail.less";
+</style>
+<style lang="less" scoped>
+#rawMaterialStockDetail {
+  .shade {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    .main {
+      position: absolute;
+      width: 640px;
+      height: 580px;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      margin: auto;
+      background: #ffffff;
+      overflow: hidden;
+      border-radius: 4px;
+      .close {
+        position: absolute;
+        right: -30px;
+        top: -30px;
+        width: 60px;
+        height: 60px;
+        background: #1a95ff;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: 0.1s;
+        color: #ecf0f1;
+        &:hover {
+          transform: scale(1.1);
+          color: #ffffff;
+          background: #48aaff;
+        }
+        .icon {
+          position: absolute;
+          left: 15px;
+          bottom: 7px;
+          font-size: 16px;
+          font-weight: bold;
+        }
+      }
+      .title {
+        line-height: 66px;
+        font-size: 22px;
+        padding: 0 20px;
+        background: linear-gradient(to right, #1a95ff, #ceddef);
+        border-radius: 4px;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        color: #ffffff;
+        margin-bottom: 40px;
+      }
+      .inputCtn {
+        margin: 20px;
+        position: relative;
+        font-size: 16px;
+        padding-left: 5em;
+        height: 40px;
+        line-height: 40px;
+        color: #666;
+        .label {
+          position: absolute;
+          left: 0;
+          text-align: right;
+          width: 5em;
+          color: #666;
+          em {
+            color: #f56c6c;
+            line-height: 40px;
+            margin-right: 2px;
+            vertical-align: -4px;
+          }
+        }
+        .elCtn {
+          margin-left: 15px;
+          width: 400px;
+        }
+      }
+      .btnCtn {
+        margin-top: 40px;
+        display: flex;
+        justify-content: center;
+        .okBtn {
+          margin: 0 30px;
+        }
+      }
+    }
+  }
+}
 </style>
