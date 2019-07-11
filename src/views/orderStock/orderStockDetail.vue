@@ -133,7 +133,7 @@
                         <span v-for="(itemType,indexType) in itemColour.out"
                           :key="indexType">
                           <span>
-                            <template v-for="(valType,indType) in itemType.type">{{indType === 0 ? '' : '/'}}{{valType}}</template>
+                            {{itemType.type}}
                           </span>
                           <span class="col"
                             style="flex:5">
@@ -248,7 +248,7 @@
                         <span v-for="(itemType,indexType) in itemColour.in"
                           :key="indexType">
                           <span>
-                            <template v-for="(valType,indType) in itemType.type">{{indType === 0 ? '' : '/'}}{{valType}}</template>
+                            {{itemType.type}}
                           </span>
                           <span class="col"
                             style="flex:5">
@@ -519,14 +519,14 @@ export default {
         // 第一步把日志信息记录到inLog 和 outLog数组里
         logListIn.forEach((itemLog) => {
           if (itemLog.product_info.product_code === item.product_code) {
-            itemLog.type = JSON.parse(itemLog.type)
+            // itemLog.type = JSON.parse(itemLog.type)
             // console.log(itemLog.type)
             json.inLog.push(itemLog)
           }
         })
         logListOut.forEach((itemLog) => {
           if (itemLog.product_info.product_code === item.product_code) {
-            itemLog.type = JSON.parse(itemLog.type)
+            // itemLog.type = JSON.parse(itemLog.type)
             // console.log(itemLog.type)
             json.outLog.push(itemLog)
           }
