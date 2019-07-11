@@ -384,7 +384,7 @@ export default {
                 order_id: this.$route.params.orderId,
                 user_id: window.sessionStorage.getItem('user_id'),
                 product_code: this.$route.params.productId,
-                type: JSON.stringify(itemCompany.type),
+                type: itemCompany.type.join('/'),
                 client_id: itemCompany.company,
                 size: itemPackNumber.colorSize[0],
                 color: itemPackNumber.colorSize[1],
