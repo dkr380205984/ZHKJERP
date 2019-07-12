@@ -161,7 +161,7 @@
                   @click="deleteBuyMaterialInfo(key,kay,index)"></em>
               </li>
               <li>
-                <span cl>订购公司:</span>
+                <span cl>订购来源:</span>
                 <el-select v-model="iten.company"
                   placeholder="请选择订购来源"
                   size="small">
@@ -556,7 +556,7 @@ export default {
       //     this.options.companyList.push(item)
       //   }
       // })
-      this.options.companyList.push(...res[1].data.data.filter((item) => (item.type.indexOf(2) !== -1)))
+      this.options.companyList.push(...res[1].data.data.filter((item) => (item.type.indexOf(2) !== -1 || item.type.indexOf(3) !== -1)))
       // 产品信息初始化
       let arr = []
       res[0].data.data.order_info.order_batch.forEach((item, key) => {

@@ -96,10 +96,6 @@ ul {
             position: relative;
             font-size: @fontMid;
             margin-left: 40px;
-            &.important{
-              color:@normalBlue;
-              cursor: pointer;
-            }
             .logList {
               display: inline-block;
               position: absolute;
@@ -170,10 +166,6 @@ ul {
                   &.flexMid {
                     flex: 0.7;
                   }
-                  &.important{
-                    color:@normalBlue;
-                    cursor: pointer;
-                  }
                 }
               }
             }
@@ -199,6 +191,10 @@ ul {
                 }
               }
             }
+          }
+          .important{
+            color:@normalBlue;
+            cursor: pointer;
           }
           &.noPadding {
             padding-left: 0px;

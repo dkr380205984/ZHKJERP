@@ -249,27 +249,6 @@ const menu = [{
   }
   ]
 }, {
-  name: '库存管理',
-  children: [{
-    name: '添加产品库存',
-    url: '/index/stockProductList'
-  }, {
-    name: '产品库存列表',
-    url: '/index/productStockList'
-  }, {
-    name: '原料库存列表',
-    url: '/index/mainMaterialStockList'
-    // }, {
-    //   name: '添加原料库存',
-    //   url: '/index/mainMaterialStockCreate'
-    // }, {
-    //   name: '添加辅料库存',
-    //   url: '/index/otherMaterialStockCreate'
-    // }, {
-    //   name: '辅料库存列表',
-    //   url: '/index/otherMaterialStockList'
-  }]
-}, {
   name: '生产管理',
   children: [{
     name: '新建生产计划单',
@@ -316,6 +295,27 @@ const menu = [{
   }, {
     name: '装箱出库列表',
     url: '/index/packagOutStockList'
+  }]
+}, {
+  name: '库存管理',
+  children: [{
+    name: '添加产品库存',
+    url: '/index/stockProductList'
+  }, {
+    name: '产品库存列表',
+    url: '/index/productStockList'
+  }, {
+    name: '物料库存列表',
+    url: '/index/materialStockList'
+    // }, {
+    //   name: '添加原料库存',
+    //   url: '/index/mainMaterialStockCreate'
+    // }, {
+    //   name: '添加辅料库存',
+    //   url: '/index/otherMaterialStockCreate'
+    // }, {
+    //   name: '辅料库存列表',
+    //   url: '/index/otherMaterialStockList'
   }]
 }, {
   name: '合作公司管理',

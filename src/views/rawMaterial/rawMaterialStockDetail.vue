@@ -321,12 +321,18 @@
                 <div>
                   <li v-for="(val,ind) in surplus"
                     :key="ind">
-                    <span>{{val.material}}</span>
-                    <span>{{val.color}}</span>
-                    <span>{{val.dyelot_number}}</span>
-                    <span>{{val.surplu|fixedFilter}}{{val.unit}}</span>
-                    <span @click="showShadeInfo(val)"
-                      class="important">存入仓库</span>
+                    <span>{{val.material_name}}</span>
+                    <span>{{val.material_color}}</span>
+                    <span>{{val.vat_code}}</span>
+                    <span>{{val.total_weight|fixedFilter}}{{val.unit}}</span>
+                    <span>
+                      <span @click="(Number(val.total_weight) <= 0) ? '' : showShadeInfo(val)"
+                        class="important"
+                        :style="{'color':(Number(val.total_weight) <= 0) ? '#999' : false,'cursor':(Number(val.total_weight) <= 0) ? 'not-allowed' : false}">存入仓库</span>
+                      <span class="important"
+                        style="margin-left:20px;"
+                        @click="surplusDelete(val)">清空</span>
+                    </span>
                   </li>
                 </div>
               </ul>
@@ -352,25 +358,25 @@
         <div class="inputCtn">
           <span class="label"><em>*</em>{{type === '0' ? '原' : '辅'}}料名称:</span>
           <div class="elCtn">
-            {{surplusGoStockInfo.material}}
+            {{surplusGoStockInfo.material_name}}
           </div>
         </div>
         <div class="inputCtn">
           <span class="label"><em>*</em>原料颜色:</span>
           <div class="elCtn">
-            {{surplusGoStockInfo.color}}
+            {{surplusGoStockInfo.material_color}}
           </div>
         </div>
         <div class="inputCtn">
           <span class="label">缸号:</span>
           <div class="elCtn">
-            {{surplusGoStockInfo.dyelot_number ==='vat_null' ? '默认' : surplusGoStockInfo.dyelot_number}}
+            {{surplusGoStockInfo.vat_code ==='vat_null' ? '默认' : surplusGoStockInfo.vat_code}}
           </div>
         </div>
         <div class="inputCtn">
           <span class="label">结余数量:</span>
           <div class="elCtn">
-            {{surplusGoStockInfo.surplu}}{{surplusGoStockInfo.unit}}
+            {{surplusGoStockInfo.total_weight}}{{surplusGoStockInfo.unit}}
           </div>
         </div>
         <div class="inputCtn">
@@ -385,7 +391,7 @@
         <div class="inputCtn">
           <span class="label">备注:</span>
           <div class="elCtn">
-            <el-input v-model="updateInfo.desc"
+            <el-input v-model="surplusGoStockInfo.remark"
               placeholder="请输入其他信息"></el-input>
           </div>
         </div>
@@ -401,7 +407,7 @@
 </template>
 
 <script>
-import { orderDetail, rawMaterialOrderInit, rawMaterialGoStockDetail, rawMaterialOutStockDetail, weaveDetail, productionDetail } from '@/assets/js/api.js'
+import { orderDetail, rawMaterialOrderInit, rawMaterialGoStockDetail, rawMaterialOutStockDetail, weaveDetail, productionDetail, materialSurplusPush, orderMaterialSotckDetail, surplusDelete } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -472,14 +478,84 @@ export default {
       }
     },
     goStock () {
-      if (this.surplusGoStockInfo.surplu < this.surplusGoStockInfo.number) {
+      if (Number(this.surplusGoStockInfo.total_weight) < Number(this.surplusGoStockInfo.number)) {
         this.$message({
           type: 'error',
           message: '数量超出结余,请重新输入!'
         })
+      } else if (Number(this.surplusGoStockInfo.total_weight) <= 0) {
+        this.$message({
+          type: 'error',
+          message: '该物料无结余，无法操作'
+        })
       } else {
-
+        console.log(this.surplusGoStockInfo)
+        let obj = {}
+        obj.type = this.type === '0' ? 1 : 2
+        obj.company_id = Number(window.sessionStorage.getItem('company_id'))
+        obj.user_id = window.sessionStorage.getItem('user_id')
+        obj.order_id = Number(this.$route.params.id)
+        obj.material_name = this.surplusGoStockInfo.material_name
+        obj.vat_code = this.surplusGoStockInfo.vat_code
+        obj.color_code = this.surplusGoStockInfo.material_color
+        obj.number = null
+        obj.total_weight = Number(this.surplusGoStockInfo.number)
+        obj.complete_time = null
+        obj.desc = this.surplusGoStockInfo.remark
+        obj.attribute = null
+        obj.stock_id = this.surplusGoStockInfo.stock_id
+        console.log(obj)
+        materialSurplusPush({
+          data: [obj]
+        }).then(res => {
+          if (res.data.status) {
+            this.$message({
+              message: '添加成功。',
+              type: 'success'
+            })
+          } else if (!res.data.status) {
+            let str = res.data.message
+            this.$message({
+              message: str,
+              type: 'error'
+            })
+          }
+          orderMaterialSotckDetail({
+            order_id: this.$route.params.id
+          }).then(data => {
+            this.surplus = data.data.data.filter(key => (key.type === (this.type === '0' ? 1 : 2) || key.type === null))
+          })
+        })
+        this.showShade = false
       }
+    },
+    surplusDelete (item) {
+      this.$confirm('此操作将永久清空"' + item.material_name + '"，无法恢复, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        surplusDelete({
+          id: item.id
+        }).then(res => {
+          if (res.data.status) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+          }
+          orderMaterialSotckDetail({
+            order_id: this.$route.params.id
+          }).then(res => {
+            this.surplus = res.data.data.filter(res => (res.type === (this.type === '0' ? 1 : 2) || res.type === null))
+          })
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
   },
   created () {
@@ -501,6 +577,9 @@ export default {
         order_id: this.$route.params.id
       }),
       productionDetail({
+        order_id: this.$route.params.id
+      }),
+      orderMaterialSotckDetail({
         order_id: this.$route.params.id
       })
     ]).then(res => {
@@ -604,18 +683,20 @@ export default {
             user: item.user_name
           })
           // 初始化结余信息
-          let surplu = this.surplus.find(val => ((val.material === item.material_name) && (val.color === item.color_code) && (val.dyelot_number === item.vat_code)))
-          if (!surplu) {
-            this.surplus.push({
-              material: item.material_name,
-              color: item.color_code,
-              dyelot_number: item.vat_code,
-              surplu: item.total_weight,
-              unit: (item.unit === null ? 'kg' : item.unit)
-            })
-          } else {
-            surplu.number = Number(surplu.number) + Number(item.total_weight)
-          }
+          // console.log(item)
+          // let surplu = this.surplus.find(val => ((val.material === item.material_name) && (val.color === item.color_code) && (val.dyelot_number === item.vat_code)))
+          // if (!surplu) {
+          //   this.surplus.push({
+          //     material: item.material_name,
+          //     color: item.color_code,
+          //     dyelot_number: item.vat_code,
+          //     surplu: item.total_weight,
+          //     stock_id: item.stock_id,
+          //     unit: (item.unit === null ? 'kg' : item.unit)
+          //   })
+          // } else {
+          //   surplu.number = Number(surplu.number) + Number(item.total_weight)
+          // }
         }
       })
       this.materialList.forEach(item => {
@@ -705,10 +786,10 @@ export default {
             user: item.user_name
           })
           // 结余信息计算
-          let surplu = this.surplus.find(val => ((val.material === item.material_name) && (val.color === item.color_code) && (val.dyelot_number === item.vat_code)))
-          if (surplu) {
-            surplu.surplu -= item.weight
-          }
+          // let surplu = this.surplus.find(val => ((val.material === item.material_name) && (val.color === item.color_code) && (val.dyelot_number === item.vat_code)))
+          // if (surplu) {
+          //   surplu.surplu -= item.weight
+          // }
         }
       })
       // 生产信息初始化
@@ -815,7 +896,7 @@ export default {
         })
       })
       // 将该单位所需物料插入出库信息
-      console.log(this.outStockInfo)
+      // console.log(this.outStockInfo)
       this.outStockInfo.forEach(item => {
         item.client_list.forEach(value => {
           value.color_list.forEach(color => {
@@ -832,6 +913,8 @@ export default {
           })
         })
       })
+      this.surplus = res[6].data.data.filter(res => (res.type === (this.type === '0' ? 1 : 2) || res.type === null))
+      console.log(this.surplus)
       this.loading = false
     })
   }

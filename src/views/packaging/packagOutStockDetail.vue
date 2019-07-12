@@ -320,7 +320,7 @@
         <div class="content">
           <span class="tishi">请输入以下产品实际装箱数量</span>
           <ul>
-            <template v-for="(item,key) in batchList[id].product_info">
+            <template v-for="(item,key) in addPackNumberList[id].product_info">
               <li v-for="(val,ind) in item.size_info"
                 :key="ind+ '' +key"
                 style="flex-direction:column">
@@ -337,7 +337,7 @@
           <div class="btn">
             <span @click="closeConfirm(false)">取消</span>
             <span class="yes"
-              @click="closeConfirm(true,batchList[id].product_info,batchList[id].id)">确认</span>
+              @click="closeConfirm(true,addPackNumberList[id].product_info,addPackNumberList[id].id)">确认</span>
           </div>
         </div>
         <em class="el-icon-close close"
@@ -361,7 +361,8 @@ export default {
       show: false,
       flag: true,
       id: 1,
-      confirmLoading: false
+      confirmLoading: false,
+      addPackNumberList: []
     }
   },
   methods: {
@@ -401,81 +402,8 @@ export default {
           })
         }
       }
-      this.getDate()
-    },
-    getDate () {
-      Promise.all([
-        orderDetail({
-          id: this.$route.params.id
-        }),
-        packagNumberDetail({
-          order_id: this.$route.params.id
-        })
-      ]).then(res => {
-        let orderInfo = res[0].data.data
-        let packagNumberInfo = res[1].data.data
-        this.batchList.map(res => {
-          res.product_info = []
-        })
-        orderInfo.order_batch.forEach(valBatch => {
-          valBatch.batch_info.forEach(valPro => {
-            valPro.size.forEach(valSize => {
-              let flag = this.batchList.find(key => key.id === valBatch.batch_id)
-              if (flag) {
-                //   this.batchList.push({
-                //     id: valBatch.batch_id,
-                //     delivery_time: valBatch.delivery_time,
-                //     logFlag: false,
-                //     log: [],
-                //     packagInfoList: [],
-                //     outStockInfoList: [],
-                //     product_info: [{
-                //       product_code: valPro.productCode,
-                //       product_type: valPro.productInfo.category_info.product_category + '/' + valPro.productInfo.type_name + '/' + valPro.productInfo.style_name + (valPro.productInfo.flower_id ? '/' + valPro.productInfo.flower_id : ''),
-                //       size_info: [{
-                //         size: valSize.name[0],
-                //         color: valSize.name[1],
-                //         number: valSize.numbers
-                //       }]
-                //     }]
-                //   })
-                // } else {
-                let flag1 = flag.product_info.find(key => key.product_code === valPro.productCode)
-                if (!flag1) {
-                  flag.product_info.push({
-                    product_code: valPro.productCode,
-                    product_type: valPro.productInfo.category_info.product_category + '/' + valPro.productInfo.type_name + '/' + valPro.productInfo.style_name + (valPro.productInfo.flower_id ? '/' + valPro.productInfo.flower_id : ''),
-                    size_info: [{
-                      size: valSize.name[0],
-                      color: valSize.name[1],
-                      number: valSize.numbers
-                    }]
-                  })
-                } else {
-                  let flag2 = flag1.size_info.find(key => (key.size === valSize.name[0] && key.color === valSize.name[1]))
-                  if (!flag2) {
-                    flag1.size_info.push({
-                      size: valSize.name[0],
-                      color: valSize.name[1],
-                      number: valSize.numbers
-                    })
-                  } else {
-                    flag2.number = Number(flag2.number) + Number(valSize.numbers)
-                  }
-                }
-              }
-            })
-          })
-        })
-        // 初始化实际装箱数量
-        packagNumberInfo.forEach(item => {
-          let flag = this.batchList.find(key => key.id === item.batch_id)
-          if (flag) {
-            flag.product_info = JSON.parse(item.product_info)
-            flag.packag_time = item.updated_at.split(' ')[0]
-          }
-        })
-      })
+      this.getPackNumberDate()
+      console.log(this)
     },
     chazhi (planNumber, packNumber) {
       if (!packNumber) {
@@ -498,7 +426,6 @@ export default {
     },
     timeGet (time, packTime) {
       let nowTime = packTime ? new Date(packTime).getTime() : new Date().getTime()
-      console.log(nowTime, packTime)
       let times = (nowTime - (new Date(time).getTime())) / 1000 / 60 / 60 / 24
       if (times > 0) {
         if (packTime) {
@@ -552,6 +479,40 @@ export default {
       } else {
         return obj[key]
       }
+    },
+    getPackNumberDate () {
+      packagNumberDetail({
+        order_id: this.$route.params.id
+      }).then(res => {
+        let packagNumberInfo = res.data.data
+        console.log(packagNumberInfo)
+        this.batchList.forEach(item => {
+          item.product_info.forEach(val => {
+            val.size_info.forEach(valSize => {
+              valSize.pack_number = 0
+            })
+          })
+        })
+        packagNumberInfo.forEach(item => {
+          item.product_info = JSON.parse(item.product_info)
+          item.product_info.forEach(valPro => {
+            valPro.size_info.forEach(valSize => {
+              let flag = this.batchList.find(key => key.id === item.batch_id)
+              if (flag) {
+                let flag1 = flag.product_info.find(key => key.product_code === valPro.product_code)
+                flag.packag_time = item.updated_at.split(' ')[0]
+                if (flag1) {
+                  let flag2 = flag1.size_info.find(key => (key.size === valSize.size && key.color === valSize.color))
+                  if (flag2) {
+                    flag2.pack_number = Number(flag2.pack_number ? flag2.pack_number : 0) + Number(valSize.pack_number)
+                  }
+                }
+              }
+            })
+          })
+        })
+        console.log(this.batchList)
+      })
     }
   },
   created () {
@@ -574,10 +535,6 @@ export default {
       let packagInfo = res[1].data.data
       let outStockInfo = res[2].data.data
       let packagNumberInfo = res[3].data.data
-      // console.log('orderInfo', orderInfo)
-      console.log('packagInfo', packagInfo)
-      console.log('outStockInfo', outStockInfo)
-      console.log('packagNumberInfo', packagNumberInfo)
       // 初始化订单信息
       this.order_code = orderInfo.order_code
       this.client_name = orderInfo.client_name
@@ -633,20 +590,14 @@ export default {
           })
         })
       })
-      // 初始化实际装箱数量
-      packagNumberInfo.forEach(item => {
-        let flag = this.batchList.find(key => key.id === item.batch_id)
-        if (flag) {
-          flag.product_info = JSON.parse(item.product_info)
-          flag.packag_time = item.updated_at.split(' ')[0]
-        }
-      })
+      this.addPackNumberList = JSON.parse(JSON.stringify(this.batchList))
+      console.log(this.addPackNumberList)
       // 初始化包装信息
       packagInfo.forEach(item => {
         let flag = this.batchList.find(key => key.id === item.bacth_id)
         if (flag) {
           item.product_info = JSON.parse(item.product_info)
-          console.log(item)
+          // console.log(item)
           flag.packagInfoList.push(item)
         }
       })
@@ -657,7 +608,25 @@ export default {
           flag.outStockInfoList.push(item)
         }
       })
-      console.log('batchList', this.batchList)
+      // 初始化装箱数量
+      packagNumberInfo.forEach(item => {
+        item.product_info = JSON.parse(item.product_info)
+        item.product_info.forEach(valPro => {
+          valPro.size_info.forEach(valSize => {
+            let flag = this.batchList.find(key => key.id === item.batch_id)
+            if (flag) {
+              let flag1 = flag.product_info.find(key => key.product_code === valPro.product_code)
+              flag.packag_time = item.updated_at.split(' ')[0]
+              if (flag1) {
+                let flag2 = flag1.size_info.find(key => (key.size === valSize.size && key.color === valSize.color))
+                if (flag2) {
+                  flag2.pack_number = Number(flag2.pack_number ? flag2.pack_number : 0) + Number(valSize.pack_number)
+                }
+              }
+            }
+          })
+        })
+      })
       this.loading = false
     })
   }
