@@ -190,7 +190,7 @@
               :style="{'height':(itemOrder.lineNum*60)+'px'}">
               <div style="margin:auto">
                 <span class="btns success"
-                  @click="$router.push('/index/orderDetail/'+itemOrder.order_id)">详情</span>
+                  @click="$router.push('/index/orderDetailNew/'+itemOrder.order_id)">详情</span>
               </div>
             </div>
           </div>

@@ -219,130 +219,134 @@
         .cardTransform{
           white-space: nowrap;
           .card{
-            max-width:500px;
+            width:500px;
             height: 240px;
             box-shadow:0px 2px 12px rgba(26,148,255,0.22);
             margin: 5px 20px;
-            display: flex;
-            flex-direction: column;
-            .title{
-              position: absolute;
-              line-height: 40px;
-              padding-left: 16px;
-              font-size: @fontSmall;
-              color: @fontNormal;
-              span{
-                margin-right: 10px;
-                &.blue{
-                  color: @normalBlue;
+            display: inline-block;
+            vertical-align: middle;
+            .flexCtn{
+              display: flex;
+              flex-direction: column;
+              .title{
+                position: absolute;
+                line-height: 40px;
+                padding-left: 16px;
+                font-size: @fontSmall;
+                color: @fontNormal;
+                span{
+                  margin-right: 10px;
+                  &.blue{
+                    color: @normalBlue;
+                  }
                 }
               }
-            }
-            .content{
-              padding-top: 40px;
-              height: 100%;
-              display: flex;
-              white-space: nowrap;
-              vertical-align: middle;
-              overflow: hidden;
-              .model1{
-                min-width: 100%;
-                display: inline-block;
+              .content{
+                padding-top: 40px;
+                height: 100%;
                 display: flex;
-                flex-direction: column;
-                .rectCtn{
-                  font-size: @fontSmall;
-                  flex: 1;
-                  position: relative;
-                  .tips{
-                    position: absolute;
-                    right: 15px;
-                    .tip{
-                      float: right;
+                white-space: nowrap;
+                vertical-align: middle;
+                overflow: hidden;
+                .model1{
+                  min-width: 100%;
+                  display: inline-block;
+                  display: flex;
+                  flex-direction: column;
+                  .rectCtn{
+                    font-size: @fontSmall;
+                    flex: 1;
+                    position: relative;
+                    .tips{
+                      position: absolute;
+                      right: 15px;
+                      .tip{
+                        float: right;
+                        display: flex;
+                        align-items: center;
+                        margin-left:5px;
+                        .circle{
+                          border-radius: 50%;
+                          width:7px;
+                          height:7px; 
+                          background:rgb(160, 207, 255);
+                          margin: 0 4px;
+                        }
+                        span{
+                          font-size: @fontSmall;
+                          line-height: 16px;
+                          color: rgba(0,0,0,.45);
+                        }
+                      }
+                    }
+                    .rect{
+                      box-sizing: border-box;
+                      padding-top: 16px;
+                      padding-bottom: 12px;
+                      height: 100%;
                       display: flex;
                       align-items: center;
-                      margin-left:5px;
-                      .circle{
-                        border-radius: 50%;
-                        width:7px;
-                        height:7px; 
-                        background:rgb(160, 207, 255);
-                        margin: 0 4px;
+                      .rectLabel{
+                        width: 6em;
+                        font-size: @fontMid;
+                        text-align: right;
                       }
-                      span{
-                        font-size: @fontSmall;
-                        line-height: 16px;
-                        color: rgba(0,0,0,.45);
-                      }
-                    }
-                  }
-                  .rect{
-                    box-sizing: border-box;
-                    padding-top: 16px;
-                    padding-bottom: 12px;
-                    height: 100%;
-                    display: flex;
-                    align-items: center;
-                    .rectLabel{
-                      width: 6em;
-                      font-size: @fontMid;
-                      text-align: right;
-                    }
-                    .rectOut{
-                      height: 16px;
-                      flex:1;
-                      margin: 0 5px;
-                      border-radius: 8px;
-                      background: #F5F5F5;
-                      position: relative;
-                      .rectIn1{
-                        position: absolute;
-                        height: 100%;
+                      .rectOut{
+                        height: 16px;
+                        flex:1;
+                        margin: 0 5px;
                         border-radius: 8px;
-                        background: rgb(160, 207, 255);
-                        width:0;
-                        // &::after{
-                        //   content: attr(rate);
-                        //   position: absolute;
-                        //   line-height: 16px;
-                        //   right: 5px;
-                        //   color: #fff;
-                        //   font-size: @fontSmall;
-                        //   z-index: 2;
-                        // }
+                        background: #F5F5F5;
+                        position: relative;
+                        .rectIn1{
+                          position: absolute;
+                          height: 100%;
+                          border-radius: 8px;
+                          background: rgb(160, 207, 255);
+                          width:0;
+                          // &::after{
+                          //   content: attr(rate);
+                          //   position: absolute;
+                          //   line-height: 16px;
+                          //   right: 5px;
+                          //   color: #fff;
+                          //   font-size: @fontSmall;
+                          //   z-index: 2;
+                          // }
+                        }
+                        .rectIn2{
+                          position: absolute;
+                          height: 100%;
+                          border-radius: 8px;
+                          width: 0;
+                          // &::after{
+                          //   content: attr(rate);
+                          //   position: absolute;
+                          //   line-height: 16px;
+                          //   right: 5px;
+                          //   color: #fff;
+                          //   font-size: @fontSmall;
+                          //   z-index: 2;
+                          // }
+                        }
                       }
-                      .rectIn2{
-                        position: absolute;
-                        height: 100%;
-                        border-radius: 8px;
-                        width: 0;
-                        // &::after{
-                        //   content: attr(rate);
-                        //   position: absolute;
-                        //   line-height: 16px;
-                        //   right: 5px;
-                        //   color: #fff;
-                        //   font-size: @fontSmall;
-                        //   z-index: 2;
-                        // }
+                      .rectContent{
+                        padding-right: 15px;
                       }
-                    }
-                    .rectContent{
-                      padding-right: 15px;
                     }
                   }
                 }
-              }
-              .line{
-                width: 1px;
-                height:154px;
-                background: #F0F0F0;
-                display: none;
-              }
-              .model2{
-                min-width: 440px;
-                display: none;
-                height: 100%;
+                .line{
+                  width: 1px;
+                  height:154px;
+                  background: #F0F0F0;
+                  display: none;
+                }
+                .model2{
+                  min-width: 440px;
+                  display: none;
+                  height: 100%;
+                }
               }
             }
           }

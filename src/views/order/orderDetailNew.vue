@@ -124,121 +124,123 @@
             <div class="card"
               v-for="(item,index) in productRate"
               :key="index">
-              <div class="title">
-                <span class="blue">{{item.product_code}}</span>
-                <span>{{item.product_type}}</span>
-                <span>下单数:{{item.order_num}}{{item.unit}}</span>
-                <span>计划生产数:{{item.production_num}}{{item.unit}}</span>
-              </div>
-              <div class="content">
-                <div class="model1">
-                  <div class="rectCtn">
-                    <div class="tips">
-                      <div class="tip">
-                        <div class="circle"></div>
-                        <span>分配 ({{parseInt((item.weaveInfo.weaveNum/item.production_num).toFixed(2) * 100) + '%'}})</span>
-                      </div>
-                      <div class="tip">
-                        <div class="circle"
-                          style="background:#36CBCB"></div>
-                        <span>织造 ({{parseInt((item.weaveInfo.weavePushNum/item.production_num).toFixed(2) * 100) + '%'}})</span>
-                      </div>
-                    </div>
-                    <div class="rect">
-                      <span class="rectLabel">织造进度:</span>
-                      <div class="rectOut">
-                        <div class="rectIn1"
-                          :style="{'width':rateChange(item.weaveInfo.weaveNum,item.production_num)}"
-                          :rate="(item.weaveInfo.weaveNum/item.production_num).toFixed(2) * 100 + '%'"></div>
-                        <div class="rectIn2"
-                          style="background:#36CBCB"
-                          :style="{'width':rateChange(item.weaveInfo.weavePushNum,item.production_num)}"
-                          :rate="(item.weaveInfo.weavePushNum/item.production_num).toFixed(2) * 100 + '%'"></div>
-                      </div>
-                      <span class="rectContent"></span>
-                    </div>
-                  </div>
-                  <div class="rectCtn">
-                    <div class="tips">
-                      <div class="tip">
-                        <div class="circle"></div>
-                        <span>分配 ({{parseInt(item.semiInfo.semiNum>item.production_num?'100%':(item.semiInfo.semiNum/item.production_num).toFixed(2) * 100) + '%'}})</span>
-                      </div>
-                      <div class="tip">
-                        <div class="circle"
-                          style="background:#4DCB73"></div>
-                        <span>加工 ({{parseInt((item.semiInfo.semiPushNum/item.semiInfo.semiNum).toFixed(2) * 100)?parseInt((item.semiInfo.semiPushNum/item.semiInfo.semiNum).toFixed(2) * 100):0 + '%'}})</span>
-                      </div>
-                    </div>
-                    <div class="rect">
-                      <span class="rectLabel">加工进度:</span>
-                      <div class="rectOut">
-                        <div class="rectIn1"
-                          :style="{'width':rateChange(item.semiInfo.semiNum,item.production_num)}"
-                          :rate="item.semiInfo.semiNum>item.production_num?'100%':(item.semiInfo.semiNum/item.production_num).toFixed(2) * 100 + '%'"></div>
-                        <div class="rectIn2"
-                          style="background:#4DCB73"
-                          :style="{'width':rateChange(item.semiInfo.semiPushNum,item.semiInfo.semiNum)}"
-                          :rate="(item.semiInfo.semiPushNum/item.semiInfo.semiNum).toFixed(2) * 100 + '%'"></div>
-                      </div>
-                      <span class="rectContent"></span>
-                    </div>
-                  </div>
-                  <div class="rectCtn">
-                    <div class="tips">
-                      <div class="tip">
-                        <div class="circle"></div>
-                        <span>半成品 ({{parseInt((item.inspInfo.inspSemiNum/item.production_num).toFixed(2) * 100) + '%'}})</span>
-                      </div>
-                      <div class="tip">
-                        <div class="circle"
-                          style="background:#FAD336"></div>
-                        <span>成品 ({{parseInt((item.inspInfo.inspProNum/item.production_num).toFixed(2) * 100) + '%'}})</span>
-                      </div>
-                    </div>
-                    <div class="rect">
-                      <span class="rectLabel">检验进度:</span>
-                      <div class="rectOut">
-                        <div class="rectIn1"
-                          :style="{'width':rateChange(item.inspInfo.inspSemiNum,item.production_num)}"
-                          :rate="(item.inspInfo.inspSemiNum/item.production_num).toFixed(2) * 100 + '%'"></div>
-                        <div class="rectIn2"
-                          style="background:#FAD336"
-                          :style="{'width':rateChange(item.inspInfo.inspProNum,item.order_num)}"
-                          :rate="(item.inspInfo.inspProNum/item.production_num).toFixed(2) * 100 + '%'"></div>
-                      </div>
-                      <span class="rectContent"></span>
-                    </div>
-                  </div>
-                  <div class="rectCtn">
-                    <div class="tips">
-                      <div class="tip">
-                        <div class="circle"></div>
-                        <span>装箱 ({{parseInt((item.packInfo.packNum/item.order_num).toFixed(2) * 100) + '%'}})</span>
-                      </div>
-                      <div class="tip">
-                        <div class="circle"
-                          style="background:#F2637B"></div>
-                        <span>出库 ({{parseInt((item.packInfo.proOutNum/item.order_num).toFixed(2) * 100) + '%'}})</span>
-                      </div>
-                    </div>
-                    <div class="rect">
-                      <span class="rectLabel">装箱进度:</span>
-                      <div class="rectOut">
-                        <div class="rectIn1"
-                          :style="{'width':rateChange(item.packInfo.packNum,item.order_num)}"
-                          :rate="(item.packInfo.packNum/item.order_num).toFixed(2) * 100 + '%'"></div>
-                        <div class="rectIn2"
-                          :style="{'width':rateChange(item.packInfo.proOutNum,item.order_num)}"
-                          :rate="(item.packInfo.proOutNum/item.order_num).toFixed(2) * 100 + '%'"
-                          style="background:#F2637B"></div>
-                      </div>
-                      <span class="rectContent"></span>
-                    </div>
-                  </div>
+              <div class="flexCtn">
+                <div class="title">
+                  <span class="blue">{{item.product_code}}</span>
+                  <span>{{item.product_type}}</span>
+                  <span>下单数:{{item.order_num}}{{item.unit}}</span>
+                  <span>计划生产数:{{item.production_num}}{{item.unit}}</span>
                 </div>
-                <i class="line"></i>
-                <div class="model2"></div>
+                <div class="content">
+                  <div class="model1">
+                    <div class="rectCtn">
+                      <div class="tips">
+                        <div class="tip">
+                          <div class="circle"></div>
+                          <span>分配 ({{parseInt((item.weaveInfo.weaveNum/item.production_num).toFixed(2) * 100) + '%'}})</span>
+                        </div>
+                        <div class="tip">
+                          <div class="circle"
+                            style="background:#36CBCB"></div>
+                          <span>织造 ({{parseInt((item.weaveInfo.weavePushNum/item.production_num).toFixed(2) * 100) + '%'}})</span>
+                        </div>
+                      </div>
+                      <div class="rect">
+                        <span class="rectLabel">织造进度:</span>
+                        <div class="rectOut">
+                          <div class="rectIn1"
+                            :style="{'width':rateChange(item.weaveInfo.weaveNum,item.production_num)}"
+                            :rate="(item.weaveInfo.weaveNum/item.production_num).toFixed(2) * 100 + '%'"></div>
+                          <div class="rectIn2"
+                            style="background:#36CBCB"
+                            :style="{'width':rateChange(item.weaveInfo.weavePushNum,item.production_num)}"
+                            :rate="(item.weaveInfo.weavePushNum/item.production_num).toFixed(2) * 100 + '%'"></div>
+                        </div>
+                        <span class="rectContent"></span>
+                      </div>
+                    </div>
+                    <div class="rectCtn">
+                      <div class="tips">
+                        <div class="tip">
+                          <div class="circle"></div>
+                          <span>分配 ({{parseInt(item.semiInfo.semiNum>item.production_num?'100%':(item.semiInfo.semiNum/item.production_num).toFixed(2) * 100) + '%'}})</span>
+                        </div>
+                        <div class="tip">
+                          <div class="circle"
+                            style="background:#4DCB73"></div>
+                          <span>加工 ({{parseInt((item.semiInfo.semiPushNum/item.semiInfo.semiNum).toFixed(2) * 100)?parseInt((item.semiInfo.semiPushNum/item.semiInfo.semiNum).toFixed(2) * 100):0 + '%'}})</span>
+                        </div>
+                      </div>
+                      <div class="rect">
+                        <span class="rectLabel">加工进度:</span>
+                        <div class="rectOut">
+                          <div class="rectIn1"
+                            :style="{'width':rateChange(item.semiInfo.semiNum,item.production_num)}"
+                            :rate="item.semiInfo.semiNum>item.production_num?'100%':(item.semiInfo.semiNum/item.production_num).toFixed(2) * 100 + '%'"></div>
+                          <div class="rectIn2"
+                            style="background:#4DCB73"
+                            :style="{'width':rateChange(item.semiInfo.semiPushNum,item.semiInfo.semiNum)}"
+                            :rate="(item.semiInfo.semiPushNum/item.semiInfo.semiNum).toFixed(2) * 100 + '%'"></div>
+                        </div>
+                        <span class="rectContent"></span>
+                      </div>
+                    </div>
+                    <div class="rectCtn">
+                      <div class="tips">
+                        <div class="tip">
+                          <div class="circle"></div>
+                          <span>半成品 ({{parseInt((item.inspInfo.inspSemiNum/item.production_num).toFixed(2) * 100) + '%'}})</span>
+                        </div>
+                        <div class="tip">
+                          <div class="circle"
+                            style="background:#FAD336"></div>
+                          <span>成品 ({{parseInt((item.inspInfo.inspProNum/item.production_num).toFixed(2) * 100) + '%'}})</span>
+                        </div>
+                      </div>
+                      <div class="rect">
+                        <span class="rectLabel">检验进度:</span>
+                        <div class="rectOut">
+                          <div class="rectIn1"
+                            :style="{'width':rateChange(item.inspInfo.inspSemiNum,item.production_num)}"
+                            :rate="(item.inspInfo.inspSemiNum/item.production_num).toFixed(2) * 100 + '%'"></div>
+                          <div class="rectIn2"
+                            style="background:#FAD336"
+                            :style="{'width':rateChange(item.inspInfo.inspProNum,item.order_num)}"
+                            :rate="(item.inspInfo.inspProNum/item.production_num).toFixed(2) * 100 + '%'"></div>
+                        </div>
+                        <span class="rectContent"></span>
+                      </div>
+                    </div>
+                    <div class="rectCtn">
+                      <div class="tips">
+                        <div class="tip">
+                          <div class="circle"></div>
+                          <span>装箱 ({{parseInt((item.packInfo.packNum/item.order_num).toFixed(2) * 100) + '%'}})</span>
+                        </div>
+                        <div class="tip">
+                          <div class="circle"
+                            style="background:#F2637B"></div>
+                          <span>出库 ({{parseInt((item.packInfo.proOutNum/item.order_num).toFixed(2) * 100) + '%'}})</span>
+                        </div>
+                      </div>
+                      <div class="rect">
+                        <span class="rectLabel">装箱进度:</span>
+                        <div class="rectOut">
+                          <div class="rectIn1"
+                            :style="{'width':rateChange(item.packInfo.packNum,item.order_num)}"
+                            :rate="(item.packInfo.packNum/item.order_num).toFixed(2) * 100 + '%'"></div>
+                          <div class="rectIn2"
+                            :style="{'width':rateChange(item.packInfo.proOutNum,item.order_num)}"
+                            :rate="(item.packInfo.proOutNum/item.order_num).toFixed(2) * 100 + '%'"
+                            style="background:#F2637B"></div>
+                        </div>
+                        <span class="rectContent"></span>
+                      </div>
+                    </div>
+                  </div>
+                  <i class="line"></i>
+                  <div class="model2"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -404,8 +406,8 @@
               v-for="(item,index) in materialList"
               :key="index">
               <span style="flex:2">{{item.material_name}}</span>
-              <span>{{item.plan_number}}{{item.unit}}</span>
-              <span>{{item.order_number?item.order_number:0}}{{item.unit}}</span>
+              <span>{{parseInt(item.plan_number)}}{{item.unit}}</span>
+              <span>{{item.order_number?parseInt(item.order_number):0}}{{item.unit}}</span>
               <span class="col"
                 v-if="item.processType"
                 style="flex:2">
@@ -436,7 +438,8 @@
               <i class="border"></i>
             </div>
             <div class="oprationCtn">
-              <el-dropdown trigger="click">
+              <el-dropdown trigger="click"
+                @command="openWin">
                 <span class="el-dropdown-link opration"
                   style="color:#1A95FF">
                   生产详情<i class="el-icon-arrow-down el-icon--right"></i>
@@ -457,7 +460,6 @@
           <div class="table">
             <li class="title">
               <span style="flex:2">产品信息</span>
-              <span>产品图片</span>
               <span>下单数量</span>
               <span>库存调取</span>
               <span>计划生产</span>
@@ -470,17 +472,6 @@
               v-for="(item,index) in designList"
               :key="index">
               <span style="flex:2">{{item.product_code}}({{item.type}})</span>
-              <span>
-                <div class="imgCtn">
-                  <img class="img"
-                    :src="item.img.length>0?item.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
-                    :onerror="defaultImg" />
-                  <div class="toolTips"
-                    v-if="item.img.length>0"><span @click="showImg(item.img)">点击查看大图</span></div>
-                  <div class="toolTips"
-                    v-if="item.img.length===0"><span>没有预览图</span></div>
-                </div>
-              </span>
               <span>{{item.order_num}}{{item.unit}}</span>
               <span>{{item.stock_pick}}{{item.unit}}</span>
               <span>{{item.plan_num}}{{item.unit}}</span>
@@ -512,7 +503,8 @@
               <i class="border"></i>
             </div>
             <div class="oprationCtn">
-              <el-dropdown trigger="click">
+              <el-dropdown trigger="click"
+                @command="openWin">
                 <span class="el-dropdown-link opration"
                   style="color:#1A95FF">
                   收发详情<i class="el-icon-arrow-down el-icon--right"></i>
@@ -532,7 +524,6 @@
           <div class="table">
             <li class="title">
               <span style="flex:2">产品信息</span>
-              <span>产品图片</span>
               <span>工序</span>
               <span>出库捆数</span>
               <span>出库数量</span>
@@ -544,17 +535,6 @@
               v-for="(item,index) in designList"
               :key="index">
               <span style="flex:2">{{item.product_code}}({{item.type}})</span>
-              <span>
-                <div class="imgCtn">
-                  <img class="img"
-                    :src="item.img.length>0?item.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
-                    :onerror="defaultImg" />
-                  <div class="toolTips"
-                    v-if="item.img.length>0"><span @click="showImg(item.img)">点击查看大图</span></div>
-                  <div class="toolTips"
-                    v-if="item.img.length===0"><span>没有预览图</span></div>
-                </div>
-              </span>
               <span class="col"
                 v-if="item.store"
                 style="flex:5">
@@ -585,7 +565,8 @@
               <i class="border"></i>
             </div>
             <div class="oprationCtn">
-              <el-dropdown trigger="click">
+              <el-dropdown trigger="click"
+                @command="openWin">
                 <span class="el-dropdown-link opration"
                   style="color:#1A95FF">
                   检验详情<i class="el-icon-arrow-down el-icon--right"></i>
@@ -606,7 +587,6 @@
           <div class="table">
             <li class="title">
               <span style="flex:2">产品信息</span>
-              <span>产品图片</span>
               <span>半成品检验</span>
               <span>半成品次品数</span>
               <span>半成品次品率</span>
@@ -619,17 +599,6 @@
               v-for="(item,index) in designList"
               :key="index">
               <span style="flex:2">{{item.product_code}}({{item.type}})</span>
-              <span>
-                <div class="imgCtn">
-                  <img class="img"
-                    :src="item.img.length>0?item.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
-                    :onerror="defaultImg" />
-                  <div class="toolTips"
-                    v-if="item.img.length>0"><span @click="showImg(item.img)">点击查看大图</span></div>
-                  <div class="toolTips"
-                    v-if="item.img.length===0"><span>没有预览图</span></div>
-                </div>
-              </span>
               <span>{{item.semi_number ? item.semi_number : 0}}{{item.unit}}</span>
               <span>{{item.semi_defective ? item.semi_defective : 0}}{{item.unit}}</span>
               <span>{{(item.semi_defective ? item.semi_defective : 0)/(item.semi_number ? item.semi_number : 0) ? ((item.semi_defective ? item.semi_defective : 0)/(item.semi_number ? item.semi_number : 0)).toFixed(2) : 0}}%</span>
@@ -649,7 +618,8 @@
               <i class="border"></i>
             </div>
             <div class="oprationCtn">
-              <el-dropdown trigger="click">
+              <el-dropdown trigger="click"
+                @command="openWin">
                 <span class="el-dropdown-link opration"
                   style="color:#1A95FF">
                   出库详情<i class="el-icon-arrow-down el-icon--right"></i>
@@ -671,8 +641,7 @@
               <span style="flex:1.7">发货批次</span>
               <span style="flex:7">
                 <span style="flex:2">产品信息</span>
-                <span>产品图片</span>
-                <span>发货数量</span>
+                <span>下单数量</span>
                 <span>装箱数量</span>
                 <span>装箱状态</span>
               </span>
@@ -688,17 +657,6 @@
                 <span v-for="(valPro,indPro) in item.product_info"
                   :key="indPro">
                   <span style="flex:2">{{valPro.product_code}}{{valPro.product_type}}</span>
-                  <span>
-                    <div class="imgCtn">
-                      <img class="img"
-                        :src="valPro.img.length>0?valPro.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
-                        :onerror="defaultImg" />
-                      <div class="toolTips"
-                        v-if="valPro.img.length>0"><span @click="showImg(valPro.img)">点击查看大图</span></div>
-                      <div class="toolTips"
-                        v-if="valPro.img.length===0"><span>没有预览图</span></div>
-                    </div>
-                  </span>
                   <span>{{valPro.number?valPro.number:0}}</span>
                   <span>{{valPro.product_number?valPro.product_number:0}}</span>
                   <span>{{valPro.product_number ? valPro.product_number > valPro.number ? '多装' + (valPro.product_number - valPro.number) + '条' : '少装' + (valPro.number - valPro.product_number) + '条':'暂无信息'}}</span>
@@ -861,7 +819,7 @@
                       <span class="tableRow">{{valSize.name[0] + '/' + valSize.name[1]}}</span>
                       <span class="tableRow">{{valSize.numbers}}条</span>
                       <span class="tableRow">{{valSize.unitPrice}}元/条</span>
-                      <span class="tableRow">{{valSize.numbers * valSize.unitPrice}}元</span>
+                      <span class="tableRow">{{parseInt(valSize.numbers * valSize.unitPrice)}}元</span>
                     </span>
                   </span>
                 </span>
@@ -889,6 +847,23 @@
         <a href="#top"
           style="color: rgb(255, 255, 255); text-decoration: none;">回到顶部</a>
       </span>
+    </div>
+    <div class="shade"
+      style="z-index:99"
+      v-show="showShade">
+      <div class="main">
+        <div class="closeBtn"
+          @click="showShade=false">点此退出预览</div>
+        <el-carousel indicator-position="outside"
+          height="550px"
+          arrow="always">
+          <el-carousel-item v-for="item in imgList"
+            :key="item.image_url">
+            <img :src="item.image_url"
+              class="imgList" />
+          </el-carousel-item>
+        </el-carousel>
+      </div>
     </div>
   </div>
 </template>
@@ -1337,6 +1312,7 @@ export default {
           }
         })
       })
+      console.log(productPlanMerge)
       // 物料概述
       let materialInfo = res[1].data.data
       let processInfo = this.order_log.material_production

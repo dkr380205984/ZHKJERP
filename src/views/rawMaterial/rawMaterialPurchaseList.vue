@@ -138,8 +138,6 @@ export default {
         company_id: window.sessionStorage.getItem('company_id'),
         limit: 5
       }).then((res) => {
-        console.log(res)
-        console.log(JSON.parse(res.data.data[0].material_info))
         this.list = res.data.data.map((item) => {
           item.material_info = JSON.parse(item.material_info)
           return item
