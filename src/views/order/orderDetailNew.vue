@@ -1,5 +1,6 @@
 <template>
-  <div id="orderDetail">
+  <div id="orderDetail"
+    v-loading="loading">
     <div class="head"
       style="overflow:auto"
       id="top">
@@ -14,17 +15,15 @@
         </div>
         <div class="appendInfo">
           <div class="keyBtn">
-            <!-- <span class="btns">一键完成</span> -->
+            <!-- <span class="btns">确认完成</span> -->
             <el-dropdown size="medium"
+              @click="orderStatus(1)"
               split-button
               type="primary">
-              一键完成
+              确认完成
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>黄金糕</el-dropdown-item>
-                <el-dropdown-item>狮子头</el-dropdown-item>
-                <el-dropdown-item>螺蛳粉</el-dropdown-item>
-                <el-dropdown-item>双皮奶</el-dropdown-item>
-                <el-dropdown-item>蚵仔煎</el-dropdown-item>
+                <el-dropdown-item>订单异常</el-dropdown-item>
+                <el-dropdown-item>取消订单</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
@@ -32,7 +31,17 @@
             <div class="labelInfo">
               <span class="label">订单状态</span>
               <span class="info"
-                :style="{'color':orderStateColor}">{{orderState}}</span>
+                :style="{'color':orderStateColor}">
+                {{orderState}}
+                <el-tooltip class="item"
+                  v-show="!hasPlan"
+                  effect="dark"
+                  content="该订单还未填写生产计划单,点击按钮前往填写"
+                  placement="top">
+                  <i class="el-icon-question"
+                    @click="$router.push('/index/productDesignCreate/'+$route.params.id)"></i>
+                </el-tooltip>
+              </span>
             </div>
             <div class="labelInfo">
               <span class="label">订单金额</span>
@@ -87,8 +96,10 @@
           </div>
           <div class="processOuter">
             <div class="processInner"
-              :style="{'width':process.product_ins_pre+'%'}"></div>
-            <div class="processInfo">成品检验完成度：{{process.product_ins_pre+'%'}}</div>
+              style="z-index:1"
+              :style="{'width':process.product_ins_pre+'%',background:process.product_ins_pre<parseInt(useTimeRate)?'#F56C6C':'#67c23a'}"></div>
+            <div class="processInfo"
+              :style="{background:process.product_ins_pre<parseInt(useTimeRate)?'#F56C6C':'#67c23a'}">成品检验完成度：{{process.product_ins_pre+'%'}}</div>
             <div class="timeCtn"
               v-for="(item,index) in timeAxis"
               :key="index"
@@ -97,22 +108,139 @@
               <div class="line"></div>
               <div class="info">{{item.name}}</div>
             </div>
+            <div class="processInner todoy"
+              :style="{'width':useTimeRate}">
+            </div>
           </div>
         </div>
-        <div class="cardCtn">
+        <div class="cardCtn"
+          v-show="hasPlan"
+          :class="{'needScroll':productRate.length>3}">
           <div class="transformBtn leftBtn"
             @mousedown="translated('left')"
             @mouseup="clearTimer"><i class="el-icon-arrow-left"></i></div>
           <div class="cardTransform"
             ref="cardTransform">
-            <div class="card">
-              <div class="model1"></div>
-              <i class="line"></i>
-              <div class="model2"></div>
+            <div class="card"
+              v-for="(item,index) in productRate"
+              :key="index">
+              <div class="title">
+                <span class="blue">{{item.product_code}}</span>
+                <span>{{item.product_type}}</span>
+                <span>下单数:{{item.order_num}}{{item.unit}}</span>
+                <span>计划生产数:{{item.production_num}}{{item.unit}}</span>
+              </div>
+              <div class="content">
+                <div class="model1">
+                  <div class="rectCtn">
+                    <div class="tips">
+                      <div class="tip">
+                        <div class="circle"></div>
+                        <span>分配 ({{parseInt((item.weaveInfo.weaveNum/item.production_num).toFixed(2) * 100) + '%'}})</span>
+                      </div>
+                      <div class="tip">
+                        <div class="circle"
+                          style="background:#36CBCB"></div>
+                        <span>织造 ({{parseInt((item.weaveInfo.weavePushNum/item.production_num).toFixed(2) * 100) + '%'}})</span>
+                      </div>
+                    </div>
+                    <div class="rect">
+                      <span class="rectLabel">织造进度:</span>
+                      <div class="rectOut">
+                        <div class="rectIn1"
+                          :style="{'width':rateChange(item.weaveInfo.weaveNum,item.production_num)}"
+                          :rate="(item.weaveInfo.weaveNum/item.production_num).toFixed(2) * 100 + '%'"></div>
+                        <div class="rectIn2"
+                          style="background:#36CBCB"
+                          :style="{'width':rateChange(item.weaveInfo.weavePushNum,item.production_num)}"
+                          :rate="(item.weaveInfo.weavePushNum/item.production_num).toFixed(2) * 100 + '%'"></div>
+                      </div>
+                      <span class="rectContent"></span>
+                    </div>
+                  </div>
+                  <div class="rectCtn">
+                    <div class="tips">
+                      <div class="tip">
+                        <div class="circle"></div>
+                        <span>分配 ({{parseInt(item.semiInfo.semiNum>item.production_num?'100%':(item.semiInfo.semiNum/item.production_num).toFixed(2) * 100) + '%'}})</span>
+                      </div>
+                      <div class="tip">
+                        <div class="circle"
+                          style="background:#4DCB73"></div>
+                        <span>加工 ({{parseInt((item.semiInfo.semiPushNum/item.semiInfo.semiNum).toFixed(2) * 100)?parseInt((item.semiInfo.semiPushNum/item.semiInfo.semiNum).toFixed(2) * 100):0 + '%'}})</span>
+                      </div>
+                    </div>
+                    <div class="rect">
+                      <span class="rectLabel">加工进度:</span>
+                      <div class="rectOut">
+                        <div class="rectIn1"
+                          :style="{'width':rateChange(item.semiInfo.semiNum,item.production_num)}"
+                          :rate="item.semiInfo.semiNum>item.production_num?'100%':(item.semiInfo.semiNum/item.production_num).toFixed(2) * 100 + '%'"></div>
+                        <div class="rectIn2"
+                          style="background:#4DCB73"
+                          :style="{'width':rateChange(item.semiInfo.semiPushNum,item.semiInfo.semiNum)}"
+                          :rate="(item.semiInfo.semiPushNum/item.semiInfo.semiNum).toFixed(2) * 100 + '%'"></div>
+                      </div>
+                      <span class="rectContent"></span>
+                    </div>
+                  </div>
+                  <div class="rectCtn">
+                    <div class="tips">
+                      <div class="tip">
+                        <div class="circle"></div>
+                        <span>半成品 ({{parseInt((item.inspInfo.inspSemiNum/item.production_num).toFixed(2) * 100) + '%'}})</span>
+                      </div>
+                      <div class="tip">
+                        <div class="circle"
+                          style="background:#FAD336"></div>
+                        <span>成品 ({{parseInt((item.inspInfo.inspProNum/item.production_num).toFixed(2) * 100) + '%'}})</span>
+                      </div>
+                    </div>
+                    <div class="rect">
+                      <span class="rectLabel">检验进度:</span>
+                      <div class="rectOut">
+                        <div class="rectIn1"
+                          :style="{'width':rateChange(item.inspInfo.inspSemiNum,item.production_num)}"
+                          :rate="(item.inspInfo.inspSemiNum/item.production_num).toFixed(2) * 100 + '%'"></div>
+                        <div class="rectIn2"
+                          style="background:#FAD336"
+                          :style="{'width':rateChange(item.inspInfo.inspProNum,item.order_num)}"
+                          :rate="(item.inspInfo.inspProNum/item.production_num).toFixed(2) * 100 + '%'"></div>
+                      </div>
+                      <span class="rectContent"></span>
+                    </div>
+                  </div>
+                  <div class="rectCtn">
+                    <div class="tips">
+                      <div class="tip">
+                        <div class="circle"></div>
+                        <span>装箱 ({{parseInt((item.packInfo.packNum/item.order_num).toFixed(2) * 100) + '%'}})</span>
+                      </div>
+                      <div class="tip">
+                        <div class="circle"
+                          style="background:#F2637B"></div>
+                        <span>出库 ({{parseInt((item.packInfo.proOutNum/item.order_num).toFixed(2) * 100) + '%'}})</span>
+                      </div>
+                    </div>
+                    <div class="rect">
+                      <span class="rectLabel">装箱进度:</span>
+                      <div class="rectOut">
+                        <div class="rectIn1"
+                          :style="{'width':rateChange(item.packInfo.packNum,item.order_num)}"
+                          :rate="(item.packInfo.packNum/item.order_num).toFixed(2) * 100 + '%'"></div>
+                        <div class="rectIn2"
+                          :style="{'width':rateChange(item.packInfo.proOutNum,item.order_num)}"
+                          :rate="(item.packInfo.proOutNum/item.order_num).toFixed(2) * 100 + '%'"
+                          style="background:#F2637B"></div>
+                      </div>
+                      <span class="rectContent"></span>
+                    </div>
+                  </div>
+                </div>
+                <i class="line"></i>
+                <div class="model2"></div>
+              </div>
             </div>
-            <div class="card"></div>
-            <div class="card"></div>
-            <div class="card"></div>
           </div>
           <div class="transformBtn rightBtn"
             @mousedown="translated('right')"
@@ -140,17 +268,17 @@
           </div>
           <div class="iconOnce">
             <div class="imgCtn">
-              <div class="shadeInfo"><span>{{'原料:'+process.main_material_pre + '%'}}<br />{{'辅料:'+process.assist_material_pre+ '%'}}</span></div>
-              <div :style="{height:(100-process.main_material_pre) + '%'}"
+              <div class="shadeInfo"><span>原料:{{ order_info.status_material_order===1?'100%':process.main_material_pre + '%'}}<br />辅料:{{order_info.status_material_order===1?'100%':process.assist_material_pre+ '%'}}</span></div>
+              <div :style="{height:order_info.status_material_order===0?(100-process.main_material_pre) + '%':'0%'}"
                 class="backTop halfL"></div>
-              <div :style="{height:(100-process.assist_material_pre) + '%'}"
+              <div :style="{height:order_info.status_material_order===0?(100-process.assist_material_pre) + '%':'0%'}"
                 class="backTop halfR"></div>
               <div class="lineMid"></div>
-              <div :style="{height:process.main_material_pre + '%'}"
-                :class="{'complete':process.main_material_pre>=100}"
+              <div :style="{height:order_info.status_material_order===0?process.main_material_pre + '%':'100%'}"
+                :class="{'complete':process.main_material_pre>=100 || order_info.status_material_order===1}"
                 class="backBottom halfL"></div>
-              <div :style="{height:process.assist_material_pre + '%'}"
-                :class="{'complete':process.assist_material_pre>=100}"
+              <div :style="{height:order_info.status_material_order===0?process.assist_material_pre + '%':'100%'}"
+                :class="{'complete':process.assist_material_pre>=100 || order_info.status_material_order===1}"
                 class="backBottom halfR"></div>
               <img class="icon"
                 src="@/assets/image/icon/订单物料.png" />
@@ -159,43 +287,43 @@
           </div>
           <div class="iconOnce">
             <div class="imgCtn">
-              <div class="shadeInfo"><span>{{process.weave_pre + '%'}}</span></div>
-              <div :style="{height:(100-process.weave_pre) + '%'}"
+              <div class="shadeInfo"><span>{{order_info.status_weave===0?process.weave_pre + '%':'100%'}}</span></div>
+              <div :style="{height:order_info.status_weave===0?(100-process.weave_pre) + '%':'0%'}"
                 class="backTop"></div>
               <img class="icon"
                 src="@/assets/image/icon/订单生产.png" />
-              <div :style="{height:process.weave_pre + '%'}"
-                :class="{'complete':process.weave_pre>=100}"
+              <div :style="{height:order_info.status_weave===0?process.weave_pre + '%':'100%'}"
+                :class="{'complete':process.weave_pre>=100||order_info.status_weave===1}"
                 class="backBottom"></div>
             </div>
             <div class="label">生产织造</div>
           </div>
           <div class="iconOnce">
             <div class="imgCtn">
-              <div class="shadeInfo"><span>{{process.product_pop_push + '%'}}</span></div>
-              <div :style="{height:(100-process.product_pop_push) + '%'}"
+              <div class="shadeInfo"><span>{{order_info.status_pop_push===0?process.product_pop_push + '%':'100%'}}</span></div>
+              <div :style="{height:order_info.status_pop_push===0?(100-process.product_pop_push) + '%':'0%'}"
                 class="backTop"></div>
               <img class="icon"
                 src="@/assets/image/icon/订单收发.png" />
-              <div :style="{height:process.product_pop_push + '%'}"
-                :class="{'complete':process.product_pop_push>=100}"
+              <div :style="{height:order_info.status_pop_push===0?process.product_pop_push + '%':'100%'}"
+                :class="{'complete':process.product_pop_push>=100 || order_info.status_pop_push===1}"
                 class="backBottom"></div>
             </div>
             <div class="label">产品收发</div>
           </div>
           <div class="iconOnce">
             <div class="imgCtn">
-              <div class="shadeInfo"><span>{{'成品:'+process.product_ins_pre + '%'}}<br />{{'半成品:'+process.semi_product_ins_pre+ '%'}}</span></div>
-              <div :style="{height:(100-process.semi_product_ins_pre) + '%'}"
+              <div class="shadeInfo"><span>成品:{{order_info.status_inspection===0?process.product_ins_pre + '%':'100%'}}<br />半成品:{{order_info.status_inspection===0?process.semi_product_ins_pre+ '%':'100%'}}</span></div>
+              <div :style="{height:order_info.status_inspection===0?(100-process.semi_product_ins_pre) + '%':'0%'}"
                 class="backTop halfL"></div>
-              <div :style="{height:(100-process.product_ins_pre) + '%'}"
+              <div :style="{height:order_info.status_inspection===0?(100-process.product_ins_pre) + '%':'0%'}"
                 class="backTop halfR"></div>
               <div class="lineMid"></div>
-              <div :style="{height:process.semi_product_ins_pre + '%'}"
-                :class="{'complete':process.semi_product_ins_pre>=100}"
+              <div :style="{height:order_info.status_inspection===0?process.semi_product_ins_pre + '%':'100%'}"
+                :class="{'complete':process.semi_product_ins_pre>=100||order_info.status_inspection===1}"
                 class="backBottom halfL"></div>
-              <div :style="{height:process.product_ins_pre + '%'}"
-                :class="{'complete':process.product_ins_pre>=100}"
+              <div :style="{height:order_info.status_inspection===0?process.product_ins_pre + '%':'100%'}"
+                :class="{'complete':process.product_ins_pre>=100||order_info.status_inspection===1}"
                 class="backBottom halfR"></div>
               <img class="icon"
                 src="@/assets/image/icon/订单检验.png" />
@@ -204,13 +332,13 @@
           </div>
           <div class="iconOnce">
             <div class="imgCtn">
-              <div class="shadeInfo"><span>{{process.pack_pre + '%'}}</span></div>
-              <div :style="{height:(100-process.pack_pre) + '%'}"
+              <div class="shadeInfo"><span>{{order_info.status_stock_out===0?process.pack_pre + '%':'100%'}}</span></div>
+              <div :style="{height:order_info.status_stock_out===0?(100-process.pack_pre) + '%':'0%'}"
                 class="backTop"></div>
               <img class="icon"
                 src="@/assets/image/icon/订单出库.png" />
-              <div :style="{height:process.pack_pre + '%'}"
-                :class="{'complete':process.pack_pre>=100}"
+              <div :style="{height:order_info.status_stock_out===0?process.pack_pre + '%':'100%'}"
+                :class="{'complete':process.pack_pre>=100||order_info.status_stock_out===1}"
                 class="backBottom"></div>
             </div>
             <div class="label">产品出库</div>
@@ -218,17 +346,18 @@
           <div class="iconOnce">
             <div class="imgCtn">
               <div class="shadeInfo"><span>暂无</span></div>
-              <div style="height:100%"
+              <div :style="{height:order_info.status===0?'100%':'0%'}"
                 class="backTop"></div>
               <img class="icon"
                 src="@/assets/image/icon/财务结算.png" />
-              <div style="height:0%"
-                class="backBottom"></div>
+              <div :style="{height:order_info.status===1?'100%':'0%'}"
+                class="backBottom complete"></div>
             </div>
             <div class="label">财务结算</div>
           </div>
         </div>
-        <div class="hrefCtn"
+        <div v-show="hasPlan"
+          class="hrefCtn"
           id="href1">
           <div class="titleLine">
             <div class="titleCtn">
@@ -236,8 +365,25 @@
               <i class="border"></i>
             </div>
             <div class="oprationCtn">
-              <span class="opration">物料详情</span>
-              <span class="opration">一键完成</span>
+              <el-dropdown @command="openWin"
+                trigger="click">
+                <span class="el-dropdown-link opration"
+                  style="color:#1A95FF">
+                  物料详情<i class="el-icon-arrow-down el-icon--right"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="原料详情">原料详情</el-dropdown-item>
+                  <el-dropdown-item command="辅料详情">辅料详情</el-dropdown-item>
+                  <el-dropdown-item command="原料出入库">原料出入库</el-dropdown-item>
+                  <el-dropdown-item command="辅料出入库">辅料出入库</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+              <span class="opration"
+                v-if="order_info.status_material_order===0"
+                @click="orderStatus(3)">确认完成</span>
+              <span class="opration"
+                style="color:#67c23a"
+                v-else>已完成</span>
             </div>
           </div>
           <div class="table">
@@ -259,8 +405,9 @@
               :key="index">
               <span style="flex:2">{{item.material_name}}</span>
               <span>{{item.plan_number}}{{item.unit}}</span>
-              <span>{{item.order_number}}{{item.unit}}</span>
+              <span>{{item.order_number?item.order_number:0}}{{item.unit}}</span>
               <span class="col"
+                v-if="item.processType"
                 style="flex:2">
                 <span v-for="(itemType,indexType) in item.processType"
                   :key="indexType">
@@ -268,14 +415,20 @@
                   <span>{{itemType.number}}{{item.unit}}</span>
                 </span>
               </span>
+              <span class="col"
+                v-else
+                style="flex:2;text-align:center">
+                暂无加工信息
+              </span>
               <span>{{item.in_stock_number ? item.in_stock_number : 0}}{{item.unit}}</span>
               <span>{{item.out_stock_number ? item.out_stock_number : 0}}{{item.unit}}</span>
               <span>{{item.replenish_number?item.replenish_number:0}}{{item.unit}}</span>
-              <span>还没统计</span>
+              <span :style="{'color':item.order_number/item.plan_number>1||order_info.status_material_order===1?'#67C23A':'#E6A23C'}">{{item.order_number/item.plan_number>1||order_info.status_material_order===1?'完成':'未完成'}}</span>
             </li>
           </div>
         </div>
-        <div class="hrefCtn"
+        <div v-show="hasPlan"
+          class="hrefCtn"
           id="href2">
           <div class="titleLine">
             <div class="titleCtn">
@@ -283,8 +436,22 @@
               <i class="border"></i>
             </div>
             <div class="oprationCtn">
-              <span class="opration">生产详情</span>
-              <span class="opration">一键完成</span>
+              <el-dropdown trigger="click">
+                <span class="el-dropdown-link opration"
+                  style="color:#1A95FF">
+                  生产详情<i class="el-icon-arrow-down el-icon--right"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="织造详情">织造详情</el-dropdown-item>
+                  <el-dropdown-item command="半成品加工详情">半成品加工详情</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+              <span class="opration"
+                v-if="order_info.status_weave===0"
+                @click="orderStatus(2)">确认完成</span>
+              <span class="opration"
+                style="color:#67c23a"
+                v-else>已完成</span>
             </div>
           </div>
           <div class="table">
@@ -317,20 +484,27 @@
               <span>{{item.order_num}}{{item.unit}}</span>
               <span>{{item.stock_pick}}{{item.unit}}</span>
               <span>{{item.plan_num}}{{item.unit}}</span>
-              <span>{{item.weave_number}}{{item.unit}}</span>
+              <span>{{item.weave_number?item.weave_number:0}}{{item.unit}}</span>
               <span class="col"
-                style="flex:2">
+                style="flex:2"
+                v-if="item.processType">
                 <span v-for="(itemType,indexType) in item.processType"
                   :key="indexType">
                   <span>{{itemType.type}}</span>
                   <span>{{itemType.number}}{{item.unit}}</span>
                 </span>
               </span>
-              <span>还没统计</span>
+              <span class="col"
+                v-else
+                style="flex:2;text-align:center">
+                暂无加工信息
+              </span>
+              <span :style="{'color':order_info.status_weave===1?'#67C23A':'#E6A23C'}">{{order_info.status_weave===1?'完成':'未完成'}}</span>
             </li>
           </div>
         </div>
-        <div class="hrefCtn"
+        <div v-show="hasPlan"
+          class="hrefCtn"
           id="href3">
           <div class="titleLine">
             <div class="titleCtn">
@@ -338,8 +512,21 @@
               <i class="border"></i>
             </div>
             <div class="oprationCtn">
-              <span class="opration">收发详情</span>
-              <span class="opration">一键完成</span>
+              <el-dropdown trigger="click">
+                <span class="el-dropdown-link opration"
+                  style="color:#1A95FF">
+                  收发详情<i class="el-icon-arrow-down el-icon--right"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="收发详情">收发详情</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+              <span v-if="order_info.status_pop_push===0"
+                class="opration"
+                @click="orderStatus(5)">确认完成</span>
+              <span class="opration"
+                style="color:#67c23a"
+                v-else>已完成</span>
             </div>
           </div>
           <div class="table">
@@ -369,6 +556,7 @@
                 </div>
               </span>
               <span class="col"
+                v-if="item.store"
                 style="flex:5">
                 <span v-for="(val,ind) in item.store"
                   :key="ind">
@@ -379,11 +567,17 @@
                   <span>{{val.store_in_number ? val.store_in_number : 0}}{{item.unit}}</span>
                 </span>
               </span>
-              <span>收发状态</span>
+              <span class="col"
+                v-else
+                style="flex:5;text-align:center">
+                暂无收发信息
+              </span>
+              <span :style="{'color':order_info.status_pop_push===1?'#67C23A':'#E6A23C'}">{{order_info.status_pop_push===1?'完成':'未完成'}}</span>
             </li>
           </div>
         </div>
-        <div class="hrefCtn"
+        <div v-show="hasPlan"
+          class="hrefCtn"
           id="href4">
           <div class="titleLine">
             <div class="titleCtn">
@@ -391,8 +585,22 @@
               <i class="border"></i>
             </div>
             <div class="oprationCtn">
-              <span class="opration">检验详情</span>
-              <span class="opration">一键完成</span>
+              <el-dropdown trigger="click">
+                <span class="el-dropdown-link opration"
+                  style="color:#1A95FF">
+                  检验详情<i class="el-icon-arrow-down el-icon--right"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="半成品检验">半成品检验</el-dropdown-item>
+                  <el-dropdown-item command="成品检验">成品检验</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+              <span class="opration"
+                v-if="order_info.status_inspection===0"
+                @click="orderStatus(4)">确认完成</span>
+              <span class="opration"
+                style="color:#67c23a"
+                v-else>已完成</span>
             </div>
           </div>
           <div class="table">
@@ -424,15 +632,16 @@
               </span>
               <span>{{item.semi_number ? item.semi_number : 0}}{{item.unit}}</span>
               <span>{{item.semi_defective ? item.semi_defective : 0}}{{item.unit}}</span>
-              <span>{{(item.semi_defective ? item.semi_defective : 0)/(item.semi_number ? item.semi_number : 0) ? (item.semi_defective ? item.semi_defective : 0)/(item.semi_number ? item.semi_number : 0) : 0}}%</span>
+              <span>{{(item.semi_defective ? item.semi_defective : 0)/(item.semi_number ? item.semi_number : 0) ? ((item.semi_defective ? item.semi_defective : 0)/(item.semi_number ? item.semi_number : 0)).toFixed(2) : 0}}%</span>
               <span>{{item.finished_number ? item.finished_number : 0}}{{item.unit}}</span>
               <span>{{item.finished_defective ? item.finished_defective : 0}}{{item.unit}}</span>
-              <span>{{((item.finished_defective ? item.finished_defective : 0)/(item.finished_number ? item.finished_number : 0)) ? ((item.finished_defective ? item.finished_defective : 0)/(item.finished_number ? item.finished_number : 0)) : 0}}%</span>
-              <span>还没统计</span>
+              <span>{{((item.finished_defective ? item.finished_defective : 0)/(item.finished_number ? item.finished_number : 0)) ? ((item.finished_defective ? item.finished_defective : 0)/(item.finished_number ? item.finished_number : 0)).toFixed(2) : 0}}%</span>
+              <span :style="{'color':(item.semi_number - item.semi_defective)/item.plan_number>1&&(item.finished_number - item.finished_defective)/item.order_num>1||order_info.status_inspection===1?'#67C23A':'#E6A23C'}">{{(item.semi_number - item.semi_defective)/item.plan_number>1&&(item.finished_number - item.finished_defective)/item.order_num>1||order_info.status_inspection===1?'完成':'未完成'}}</span>
             </li>
           </div>
         </div>
-        <div class="hrefCtn"
+        <div v-show="hasPlan"
+          class="hrefCtn"
           id="href5">
           <div class="titleLine">
             <div class="titleCtn">
@@ -440,8 +649,21 @@
               <i class="border"></i>
             </div>
             <div class="oprationCtn">
-              <span class="opration">出库详情</span>
-              <span class="opration">一键完成</span>
+              <el-dropdown trigger="click">
+                <span class="el-dropdown-link opration"
+                  style="color:#1A95FF">
+                  出库详情<i class="el-icon-arrow-down el-icon--right"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="装箱出库">装箱出库</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+              <span class="opration"
+                v-if="order_info.status_stock_out===0"
+                @click="orderStatus(6)">确认完成</span>
+              <span class="opration"
+                style="color:#67c23a"
+                v-else>已完成</span>
             </div>
           </div>
           <div class="table">
@@ -477,17 +699,18 @@
                         v-if="valPro.img.length===0"><span>没有预览图</span></div>
                     </div>
                   </span>
-                  <span>{{valPro.number}}</span>
-                  <span>{{valPro.product_number}}</span>
-                  <span>{{valPro.product_number > valPro.number ? '多装' + (valPro.product_number - valPro.number) + '条' : '少装' + (valPro.number - valPro.product_number) + '条'}}</span>
+                  <span>{{valPro.number?valPro.number:0}}</span>
+                  <span>{{valPro.product_number?valPro.product_number:0}}</span>
+                  <span>{{valPro.product_number ? valPro.product_number > valPro.number ? '多装' + (valPro.product_number - valPro.number) + '条' : '少装' + (valPro.number - valPro.product_number) + '条':'暂无信息'}}</span>
                 </span>
               </span>
-              <span>{{item.pack_number}}</span>
-              <span>还没统计</span>
+              <span>{{item.pack_number?item.pack_number:0}}</span>
+              <span :style="{'color':order_info.status_stock_out===1?'#67C23A':'#E6A23C'}">{{order_info.status_stock_out===1?'完成':'未完成'}}</span>
             </li>
           </div>
         </div>
-        <div class="hrefCtn"
+        <div v-show="false"
+          class="hrefCtn"
           id="href6">
           <div class="titleLine">
             <div class="titleCtn">
@@ -496,7 +719,6 @@
             </div>
             <div class="oprationCtn">
               <span class="opration">财务详情</span>
-              <span class="opration">一键完成</span>
             </div>
           </div>
           <div class="tablesCtn"
@@ -520,9 +742,9 @@
               <span class="tableRow"
                 style="flex:1.7">{{item.material_name}}</span>
               <span class="tableRow">{{item|filterTotal}}元</span>
-              <span class="tableRow">{{item.order_client}}</span>
-              <span class="tableRow">{{item.order_number}}{{item.unit}}</span>
-              <span class="tableRow">{{item.total_price_order}}元</span>
+              <span class="tableRow">{{item.order_client?item.order_client:'暂无'}}</span>
+              <span class="tableRow">{{item.order_number?item.order_number:0}}{{item.unit}}</span>
+              <span class="tableRow">{{item.total_price_order?item.total_price_order:0}}元</span>
               <span class="tableRow col"
                 style="flex:4">
                 <span class="tableColumn"
@@ -583,6 +805,16 @@
               </span>
             </li>
           </div>
+        </div>
+      </div>
+      <div class="stepCtn">
+        <div class="stepTitle">发货信息</div>
+        <div class="borderCtn">
+          <div class="cicle"></div>
+          <div class="border"></div>
+        </div>
+        <div class="hrefCtn"
+          id="href7">
           <div class="tablesCtn"
             style="line-height:40px;width:1220px;box-sizing:border-box;margin-top:30px;">
             <li class="title">
@@ -640,14 +872,16 @@
       </div>
     </div>
     <!-- 目录 -->
-    <div class="catalogue">
+    <div class="catalogue"
+      v-show="hasPlan">
       <div class="title">详情目录</div>
       <li class="ahref"><a href="#href1">物料概述</a></li>
       <li class="ahref"><a href="#href2">生产概述</a></li>
       <li class="ahref"><a href="#href3">收发概述</a></li>
       <li class="ahref"><a href="#href4">检验概述</a></li>
       <li class="ahref"><a href="#href5">出库概述</a></li>
-      <li class="ahref"><a href="#href6">财务概述</a></li>
+      <!-- <li class="ahref"><a href="#href6">财务概述</a></li> -->
+      <li class="ahref"><a href="#href7">发货信息</a></li>
     </div>
     <div class="suspend">
       <span class="blue"
@@ -660,11 +894,12 @@
 </template>
 
 <script>
-import { orderDetailNew, rawMaterialOrderInit, productionDetail, packagNumberDetail } from '@/assets/js/api.js'
+import { orderDetailNew, rawMaterialOrderInit, productionDetail, packagNumberDetail, orderCheck } from '@/assets/js/api.js'
 import { moneyArr } from '@/assets/js/dictionary.js'
 export default {
   data () {
     return {
+      loading: true,
       defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
       showShade: false,
       imgList: [],
@@ -693,6 +928,8 @@ export default {
         semi_product_ins_pre: 0,
         weave_pre: 0
       },
+      hasPlan: false,
+      productRate: [], // 流程详情
       materialList: [], // 物料概述
       designList: [], //  生产概述
       outStockList: [], // 出库概述
@@ -755,6 +992,131 @@ export default {
     },
     clearTimer () {
       clearInterval(this.timer)
+    },
+    // 合并函数
+    jsonMerge (jsonArr, keyArr) {
+      let newJson = [] // 合并好的数据都放在这个数组里
+      jsonArr.forEach((itemJson, indexJson) => {
+        let mark = -1
+        let finded = newJson.find((itemFind, indexFind) => {
+          if (itemFind[keyArr[0]] === itemJson[keyArr[0]]) {
+            mark = indexFind
+            return itemFind[keyArr[0]] === itemJson[keyArr[0]]
+          }
+        })
+        if (!finded) {
+          let value = {}
+          value[keyArr[0]] = itemJson[keyArr[0]]
+          value['info'] = []
+          let info = {}
+          for (let i in itemJson) {
+            if (i !== keyArr[0]) {
+              info[i] = itemJson[i]
+            }
+          }
+          value['info'].push(info)
+          newJson.push(value)
+        } else {
+          let info = {}
+          for (let i in itemJson) {
+            if (i !== keyArr[0]) {
+              info[i] = itemJson[i]
+            }
+          }
+          newJson[mark]['info'].push(info)
+        }
+      })
+      // 递归的条件是不断的缩减keyArr的length，每次都去除第零个，直到为0
+      if (keyArr.length === 1) {
+        return newJson
+      } else {
+        return newJson.map((itemInfo) => {
+          let newKeyArr = []
+          keyArr.forEach((item, index) => {
+            if (index > 0) {
+              newKeyArr.push(item)
+            }
+          })
+          return {
+            [keyArr[0]]: itemInfo[keyArr[0]],
+            'info': this.jsonMerge(itemInfo['info'], newKeyArr)
+          }
+        })
+      }
+    },
+    // 百分比转化成宽度
+    rateChange (numSamll, numBig) {
+      let rate = numSamll / numBig * 100
+      if (rate < 5) {
+
+      } else if (rate > 100) {
+        rate = 100
+      }
+      return parseInt(rate) + '%'
+    },
+    orderStatus (state) {
+      let filterArr = ['', '订单状态', '订单生产状态', '订单物料状态', '订单检验状态', '订单收发状态', '订单出库状态']
+      this.$confirm('该操作将直接修改' + filterArr[state] + ',你无法再对该订单的相关步骤进行操作, 请确认是否修改?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        orderCheck({
+          id: this.$route.params.id,
+          type: state
+        }).then((res) => {
+          if (res.data.status) {
+            this.$message.success({
+              message: '修改成功'
+            })
+            if (state === 1) {
+              this.status = 1
+              this.order_info.status_weave = 1
+              this.order_info.status_material_order = 1
+              this.order_info.status_inspection = 1
+              this.order_info.status_pop_push = 1
+              this.order_info.status_stock_out = 1
+            } else if (state === 2) {
+              this.order_info.status_weave = 1
+            } else if (state === 3) {
+              this.order_info.status_material_order = 1
+            } else if (state === 4) {
+              this.order_info.status_inspection = 1
+            } else if (state === 5) {
+              this.order_info.status_pop_push = 1
+            } else if (state === 6) {
+              this.order_info.status_stock_out = 1
+            }
+          } else {
+            this.$message.error({
+              message: res.data.message
+            })
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消操作'
+        })
+      })
+    },
+    // 打开详情页
+    openWin (cmd) {
+      console.log(cmd)
+      const orderId = this.$route.params.id
+      let urlJson = {
+        '原料详情': '/index/rawMaterialOrderDetail/' + orderId + '/0',
+        '辅料详情': '/index/rawMaterialOrderDetail/' + orderId + '/1',
+        '原料出入库': '/index/rawMaterialStockDetail/' + orderId + '/0',
+        '辅料出入库': '/index/rawMaterialStockDetail/' + orderId + '/1',
+        '织造详情': '/index/productDesignWeavingDetail/' + orderId,
+        '半成品加工详情': '/index/productDesignHalfDetail/' + orderId,
+        '收发详情': '/index/orderStockDetail/' + orderId,
+        '半成品检验': '/index/semiExaminationDetail/' + orderId,
+        '成品检验': '/index/finishedExaminationDetail/' + orderId,
+        '装箱出库': '/index/packagOutStockDetail/' + orderId
+      }
+      window.open(urlJson[cmd])
     }
   },
   computed: {
@@ -807,16 +1169,26 @@ export default {
       } else {
         return 0
       }
+    },
+    // 使用时间百分比
+    useTimeRate () {
+      if (this.timeAxis.length > 0) {
+        return this.getTimeDif((new Date().getTime()), new Date(this.timeAxis[0].time)) / this.getTimeDif(new Date(this.timeAxis[this.timeAxis.length - 1].time), new Date(this.timeAxis[0].time)) * 100 + '%'
+      } else {
+        return 0
+      }
     }
   },
   filters: {
     // 物料合计费用
     filterTotal (item) {
       let price = 0
-      item.processType.forEach(val => {
-        price += Number(val.total_price_process)
-      })
-      price += Number(item.total_price_order)
+      if (item.processType) {
+        item.processType.forEach(val => {
+          price += Number(val.total_price_process)
+        })
+        price += Number(item.total_price_order)
+      }
       return price
     },
     // 生产合计费用
@@ -827,13 +1199,13 @@ export default {
   },
   mounted () {
     Promise.all([orderDetailNew({
-      id: 20
+      id: this.$route.params.id
     }), rawMaterialOrderInit({
-      order_id: 20
+      order_id: this.$route.params.id
     }), productionDetail({
-      order_id: 20
+      order_id: this.$route.params.id
     }), packagNumberDetail({
-      order_id: 20
+      order_id: this.$route.params.id
     })]).then((res) => {
       // console.log(res)
       const data = res[0].data.data
@@ -872,6 +1244,98 @@ export default {
       const allTime = this.getTimeDif(new Date(this.timeAxis[this.timeAxis.length - 1].time), new Date(this.timeAxis[0].time))
       this.timeAxis.forEach((item) => {
         item.rate = (this.getTimeDif(new Date(item.time), new Date(this.timeAxis[0].time)) / allTime).toFixed(2) * 100 + '%'
+      })
+
+      // 流程进度,按产品
+      const productPlan = res[2].data.status ? res[2].data.data.production_detail.product_info : []
+      this.hasPlan = res[2].data.status
+      // 合并下产品编号相同的产品
+      const productPlanMerge = this.jsonMerge(productPlan, ['product_code'])
+      productPlanMerge.forEach((itemProduct, indexPorduct) => {
+        // 统计织造
+        let weaveNum = 0 // 织造分配数量
+        let weavePushNum = 0 // 织造入库数量
+        this.order_log.product_weave.forEach((itemWeave, indexWeave) => {
+          if (itemWeave.product_info.product_code === itemProduct.product_code) {
+            weaveNum += itemWeave.number
+          }
+        })
+        this.order_log.product_push.forEach((itemProPush, indexProPush) => {
+          if (itemProPush.product_info.product_code === itemProduct.product_code && itemProPush.type === '织造') {
+            weavePushNum += itemProPush.number
+          }
+        })
+        // 统计半成品加工
+        let semiNum = 0 // 半成品加工分配数量
+        let semiPushNum = 0 // 半成品加工入库数量
+        this.order_log.semi_finished_production.forEach((itemSemi, indexSemi) => {
+          if (itemSemi.product_info.product_code === itemProduct.product_code) {
+            semiNum += itemSemi.number
+          }
+        })
+        this.order_log.product_push.forEach((itemProPush, indexProPush) => {
+          if (itemProPush.product_info.product_code === itemProduct.product_code && itemProPush.type !== '织造') {
+            semiPushNum += itemProPush.number
+          }
+        })
+        // 统计检验
+        let inspSemiNum = 0 // 半成品检验
+        let inspProNum = 0 // 成品检验
+        this.order_log.semi_product_inspection.forEach((itemInspSemi, indexInspSemi) => {
+          if (itemInspSemi.product_code === itemProduct.product_code) {
+            inspSemiNum += itemInspSemi.number
+          }
+        })
+        this.order_log.product_inspection.forEach((itemInspPro, indexInspPro) => {
+          if (itemInspPro.product_code === itemProduct.product_code) {
+            inspProNum += itemInspPro.number
+          }
+        })
+        // 装箱统计
+        let packNum = 0
+        let proOutNum = 0
+        this.order_log.pack_info.forEach((itemPack, indexPack) => {
+          JSON.parse(itemPack.product_info).forEach((itemNum, indexNum) => {
+            if (itemNum.product_code === itemProduct.product_code) {
+              packNum += itemNum.size_info.reduce((total, current) => {
+                return total + Number(current.pack_number)
+              }, 0)
+            }
+          })
+        })
+        // 出库数值统计不了,根据订单状态来确定
+        if (res[0].data.data.order_info.status || res[0].data.data.order_info.status_stock_out) {
+          proOutNum = itemProduct.info.reduce((total, current) => {
+            return total + Number(current.production_num)
+          }, 0)
+        }
+        this.productRate.push({
+          product_code: itemProduct.product_code,
+          product_type: itemProduct.info[0].category_name + '/' + itemProduct.info[0].type_name + '/' + itemProduct.info[0].style_name,
+          unit: itemProduct.info[0].unit_name,
+          production_num: itemProduct.info.reduce((total, current) => {
+            return total + Number(current.production_num)
+          }, 0),
+          order_num: itemProduct.info.reduce((total, current) => {
+            return total + Number(current.order_num)
+          }, 0),
+          weaveInfo: {
+            weaveNum: weaveNum,
+            weavePushNum: weavePushNum
+          },
+          semiInfo: {
+            semiNum: semiNum,
+            semiPushNum: semiPushNum
+          },
+          inspInfo: {
+            inspSemiNum: inspSemiNum,
+            inspProNum: inspProNum
+          },
+          packInfo: {
+            packNum: packNum,
+            proOutNum: proOutNum
+          }
+        })
       })
       // 物料概述
       let materialInfo = res[1].data.data
@@ -961,7 +1425,11 @@ export default {
       })
       // console.log(this.materialList)
       // 生产概述
-      let designInfo = res[2].data.data
+      let designInfo = res[2].data.status ? res[2].data.data : {
+        production_detail: {
+          product_info: []
+        }
+      }
       let weaveInfo = this.order_log.product_weave
       let halfProductInfo = this.order_log.semi_finished_production
       designInfo.production_detail.product_info.forEach(item => {
@@ -995,7 +1463,6 @@ export default {
           flag.total_price_weave = Number(flag.total_price_weave ? flag.total_price_weave : 0) + Number(item.price * item.number)
         }
       })
-      console.log(halfProductInfo)
       halfProductInfo.forEach(item => {
         let flag = this.designList.find(key => key.product_code === item.product_info.product_code)
         if (flag) {
@@ -1192,9 +1659,7 @@ export default {
           })
         }
       })
-      console.log(this.materialList)
-      console.log(this.designList)
-      console.log(this.productPriceList)
+      this.loading = false
     })
   }
 }
