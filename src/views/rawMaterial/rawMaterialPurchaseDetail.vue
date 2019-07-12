@@ -374,6 +374,7 @@ export default {
         item.stockInfo.forEach(val => {
           val.stockWeightInfo.forEach(value => {
             let obj = {}
+            obj.type = 1
             obj.price = item.info.find((itemFind) => itemFind.color_code === val.materialColor).price
             obj.company_id = window.sessionStorage.getItem('company_id')
             obj.user_id = window.sessionStorage.getItem('user_id')

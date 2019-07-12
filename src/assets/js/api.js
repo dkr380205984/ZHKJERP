@@ -272,7 +272,16 @@ const rawMaterialPurchaseList = (params) => http.get(`${baseUrl}/material/reserv
 const rawMaterialPurchaseDetail = (params) => http.get(`${baseUrl}/material/reserve/one`, params)
 // 原料预定购入库
 const rawMaterialPurchaseIn = (params) => http.post(`${baseUrl}/material/reserve/push`, params, 'application/json')
+// 物料结余入库
+const materialSurplusPush = (params) => http.post(`${baseUrl}/order/material/surplus/push`, params, 'application/json')
+// 订单物料库存
+const orderMaterialSotckDetail = (params) => http.get(`${baseUrl}/order/material/list`, params)
+// 结余清空
+const surplusDelete = (params) => http.post(`${baseUrl}/order/material/surplus/delete`, params, 'application/json')
 export {
+  surplusDelete,
+  orderMaterialSotckDetail,
+  materialSurplusPush,
   orderDetailNew,
   orderCheck,
   rawMaterialPurchaseIn,

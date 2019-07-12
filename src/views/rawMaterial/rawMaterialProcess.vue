@@ -188,7 +188,7 @@
                 <i>元</i>
               </li>
               <li>
-                <span>订购日期</span>:
+                <span>加工日期</span>:
                 <el-date-picker v-model="iten.orderTime"
                   align="right"
                   type="date"
@@ -449,18 +449,18 @@ export default {
               }
             }
             obj.material_info = JSON.stringify(value.processMaterialInfo)
-            if (!value.money) {
-              this.$message({
-                message: '请输入总价',
-                type: 'error'
-              })
-              flag = false
-              return
-            }
-            obj.total_price = value.money
+            // if (!value.money) {
+            //   this.$message({
+            //     message: '请输入总价',
+            //     type: 'error'
+            //   })
+            //   flag = false
+            //   return
+            // }
+            obj.total_price = value.money ? value.money : 0
             if (!value.orderTime) {
               this.$message({
-                message: '请选择订购日期',
+                message: '请选择加工日期',
                 type: 'error'
               })
               flag = false

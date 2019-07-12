@@ -1,7 +1,7 @@
 <template>
   <div id="mainMaterialStockList">
     <div class="head">
-      <h2>原料库存列表</h2>
+      <h2>物料库存列表</h2>
       <el-input style="width:250px"
         placeholder="输入原料名称搜索"
         suffix-icon="el-icon-search"

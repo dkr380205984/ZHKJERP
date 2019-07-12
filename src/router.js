@@ -193,9 +193,13 @@ let router = new Router({
       name: 'mainMaterialStockCreate',
       component: () => import('./views/stock/mainMaterialStockCreate.vue')
     }, {
-      path: 'mainMaterialStockList',
-      name: 'mainMaterialStockList',
-      component: () => import('./views/stock/mainMaterialStockList.vue')
+      path: 'materialStockList',
+      name: 'materialStockList',
+      component: () => import('./views/stock/materialStockList.vue')
+    }, {
+      path: 'materialStockDetail/:stockId',
+      name: 'materialStockDetail',
+      component: () => import('./views/stock/materialStockDetail.vue')
     }, {
       path: 'mainMaterialStockChange/:id',
       name: 'mainMaterialStockChange',
