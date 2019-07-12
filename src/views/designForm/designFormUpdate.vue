@@ -664,7 +664,7 @@ export default {
           'col_right',
           'col_left',
           'copy',
-          'cut',
+          '粘贴(Ctrl + V)',
           'undo',
           'redo',
           'remove_col'
@@ -692,7 +692,7 @@ export default {
           'col_right',
           'col_left',
           'copy',
-          'cut',
+          '粘贴(Ctrl + V)',
           'undo',
           'redo',
           'remove_col'

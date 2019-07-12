@@ -421,13 +421,9 @@ let router = new Router({
       name: 'sampleAdd',
       component: () => import('./views/order/sampleAdd.vue')
     }, {
-      path: 'orderDetailTest',
-      name: 'orderDetailTest',
-      component: () => import('./views/order/orderDetailTest.vue')
-    }, {
-      path: 'test',
-      name: 'test',
-      component: () => import('./views/setting/test.vue')
+      path: 'orderDetailNew/:id',
+      name: 'orderDetailNew',
+      component: () => import('./views/order/orderDetailNew.vue')
     }]
   }
   ]

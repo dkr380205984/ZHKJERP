@@ -171,7 +171,7 @@
             style="flex-direction:row;flex:1.3">
             <div style="margin:auto">
               <span class="btns success"
-                @click="$router.push('/index/orderDetail/' + item.id)">详情</span>
+                @click="$router.push('/index/orderDetailNew/' + item.id)">详情</span>
               <span class="btns error"
                 style="display:none"
                 @click="deleteOrder(item.id)">删除</span>
