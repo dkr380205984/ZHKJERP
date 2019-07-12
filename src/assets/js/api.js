@@ -172,6 +172,8 @@ const productStockOne = (params) => http.get(`${baseUrl}/product/stock/one`, par
 const materialStockList = (params) => http.get(`${baseUrl}/material/stock/list`, params)
 // 原料库存详情
 const materialStockDetail = (params) => http.get(`${baseUrl}/material/stock/detail`, params)
+// 原料库存内详情
+const stockMaterialDetail = (params) => http.get(`${baseUrl}/stock/material/detail`, params)
 // 订单库存详情
 const orderStockDetail = (params) => http.get(`${baseUrl}/product/stock/order`, params)
 // 添加生产计划单
@@ -279,6 +281,7 @@ const orderMaterialSotckDetail = (params) => http.get(`${baseUrl}/order/material
 // 结余清空
 const surplusDelete = (params) => http.post(`${baseUrl}/order/material/surplus/delete`, params, 'application/json')
 export {
+  stockMaterialDetail,
   surplusDelete,
   orderMaterialSotckDetail,
   materialSurplusPush,

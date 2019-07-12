@@ -410,7 +410,7 @@ export default {
             obj.complete_time = val.stock_time
             obj.desc = val.remark
             obj.attribute = val.materialAtr
-            obj.stock_id = null
+            obj.stock_id = 0
             date.push({ ...obj })
           })
         })

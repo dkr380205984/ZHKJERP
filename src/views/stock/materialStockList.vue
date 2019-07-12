@@ -19,29 +19,37 @@
 </template>
 
 <script>
+import { clientList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
       list: [{
         name: '本厂',
-        id: null
-      }, {
-        name: '仓库1',
-        id: 1
-      }, {
-        name: '仓库2',
-        id: 2
-      }, {
-        name: '仓库3',
-        id: 3
-      }, {
-        name: '仓库4',
-        id: 4
-      }, {
-        name: '仓库5',
-        id: 5
+        id: 0
       }]
     }
+  },
+  created () {
+    // materialStockList({
+    //   company_id: window.sessionStorage.getItem('company_id')
+    // }).then(res => {
+    //   console.log(res)
+    // })
+    clientList({
+      company_id: window.sessionStorage.getItem('company_id')
+    }).then(res => {
+      let stockList = res.data.data.filter(key => (key.type.indexOf(2) !== -1 || key.type.indexOf(3) !== -1))
+      console.log(stockList)
+      stockList.forEach(item => {
+        let flag = this.list.find(key => key.name === item.name)
+        if (!flag) {
+          this.list.push({
+            name: item.name,
+            id: item.id
+          })
+        }
+      })
+    })
   }
 }
 </script>

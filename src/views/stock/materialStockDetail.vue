@@ -1,5 +1,6 @@
 <template>
-  <div id="mainMaterialStockList">
+  <div id="mainMaterialStockList"
+    v-loading='loading'>
     <div class="head">
       <h2>物料库存列表</h2>
       <el-input style="width:250px"
@@ -65,7 +66,7 @@
           <div class="tableColumn">{{item.updated_at}}</div>
           <div class="tableColumn flex9">
             <span class="btns success"
-              @click="$router.push('./mainMaterialStockDetail/' + item.id)">详情</span>
+              @click="$router.push('/index/mainMaterialStockDetail/' + $route.params.stockId  + '/' + item.id)">详情</span>
           </div>
         </div>
       </div>
@@ -83,10 +84,11 @@
 </template>
 
 <script>
-import { materialStockList, YarnColorList, pantongList } from '@/assets/js/api.js'
+import { materialStockDetail, YarnColorList, pantongList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      loading: true,
       searchVal: '',
       color: '',
       colorList: [{
@@ -166,18 +168,22 @@ export default {
     }
   },
   mounted () {
-    Promise.all([pantongList({
-      keyword: ''
-    }), YarnColorList({
-      company_id: window.sessionStorage.getItem('company_id')
-    }), materialStockList({
-      company_id: window.sessionStorage.getItem('company_id'),
-      page: this.pages,
-      limit: 5
-    })]).then((resArr) => {
-      this.colorList = this.colorList.concat(resArr[1].data.data).concat(resArr[0].data.data)
-      this.total = resArr[2].data.data.total
-      this.list = resArr[2].data.data.data
+    Promise.all([
+      pantongList({
+        keyword: ''
+      }),
+      YarnColorList({
+        company_id: window.sessionStorage.getItem('company_id')
+      }),
+      materialStockDetail({
+        stock_id: this.$route.params.stockId
+        // limit: 5
+      })]).then((resArr) => {
+      this.colorList = this.colorList.concat(resArr[0].data.data).concat(resArr[1].data.data)
+      this.total = resArr[2].data.data.length
+      this.list = resArr[2].data.data
+      this.loading = false
+      console.log(resArr[2].data.data)
     })
   }
 }

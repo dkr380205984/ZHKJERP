@@ -91,7 +91,7 @@
 </template>
 
 <script>
-import { materialStockDetail } from '@/assets/js/api.js'
+import { materialStockDetail, stockMaterialDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -113,13 +113,21 @@ export default {
   methods: {
   },
   mounted () {
-    materialStockDetail({
-      stock_id: this.$route.params.id,
-      action: null
-    }).then((res) => {
+    Promise.all([
+      materialStockDetail({
+        stock_id: this.$route.params.stockId
+        // limit: 5
+      }),
+      stockMaterialDetail({
+        stock_id: this.$route.params.stockId,
+        material_id: this.$route.params.id,
+        action: null
+      })
+    ]).then((res) => {
       console.log(res)
-      this.materialInfo = res.data.data.data_stock
-      this.list = res.data.data.data_detail.map((item) => {
+      this.materialInfo = res[0].data.data.filter(key => key.id === Number(this.$route.params.id))[0]
+      console.log(this.materialInfo)
+      this.list = res[1].data.data.map((item) => {
         return {
           time: item.create_time,
           unit: '千克',

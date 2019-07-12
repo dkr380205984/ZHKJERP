@@ -205,7 +205,7 @@ let router = new Router({
       name: 'mainMaterialStockChange',
       component: () => import('./views/stock/mainMaterialStockChange.vue')
     }, {
-      path: 'mainMaterialStockDetail/:id',
+      path: 'mainMaterialStockDetail/:stockId/:id',
       name: 'mainMaterialStockDetail',
       component: () => import('./views/stock/mainMaterialStockDetail.vue')
     }, {

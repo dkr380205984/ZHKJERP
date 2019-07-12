@@ -742,7 +742,7 @@ export default {
             this.$message.success({
               message: '添加订单成功'
             })
-            this.$router.push('/index/orderList')
+            this.$router.push('/index/orderDetailNew/' + res.data.data.id)
           } else {
             this.$message.error({
               message: res.data.message

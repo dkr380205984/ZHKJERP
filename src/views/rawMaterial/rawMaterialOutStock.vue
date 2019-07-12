@@ -441,7 +441,7 @@ export default {
               weight: val.weight,
               complete_time: value.stock_time,
               desc: value.remark,
-              stock_id: null,
+              stock_id: 0,
               type: (this.type === '0' ? 1 : 2)
             })
           })
