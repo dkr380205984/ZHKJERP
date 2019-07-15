@@ -21,7 +21,7 @@
         <el-select class="elInput"
           placeholder="请选择公司类型"
           v-model="type"
-          disabled>
+          multiple>
           <el-option v-for="item in companyType"
             :key="item.value"
             :value="item.value"
@@ -111,8 +111,25 @@ export default {
       contactsName: '',
       contactsStation: '',
       contactsPhone: '',
-      type: '',
+      type: [],
+      notDeletType: [],
       companyType: companyType
+    }
+  },
+  watch: {
+    type: {
+      deep: true,
+      handler (e) {
+        this.notDeletType.forEach(item => {
+          if (e.indexOf(item) === -1) {
+            this.type.unshift(item)
+            this.$message({
+              type: 'warning',
+              message: '不可删除原有类型！'
+            })
+          }
+        })
+      }
     }
   },
   methods: {
@@ -175,9 +192,6 @@ export default {
         })
         this.$router.push('/index/foreignTradeList')
       })
-    },
-    clearAll () {
-
     }
   },
   mounted () {
@@ -191,6 +205,8 @@ export default {
         this.address = data.address
         this.abbreviation = data.abbreviation
         this.phone = data.phone
+        this.type = data.type
+        this.notDeletType = JSON.parse(JSON.stringify(data.type))
         this.contacts = data.contacts.map((item) => {
           return {
             name: item.name,
@@ -199,13 +215,9 @@ export default {
           }
         })
         this.status = data.status.toString()
-        this.companyType.forEach((item) => {
-          if (item.value === data.type) {
-            this.type = item.value
-          }
-        })
       }
     })
+    console.log(this.type)
   }
 }
 </script>

@@ -233,7 +233,7 @@ const menu = [{
   }, {
     name: '订单发货列表',
     url: '/index/orderStat'
-  }
+    // },
     // {
     //   name: '添加样品订单(未完成)',
     //   url: '/index/sampleCreate'
@@ -244,7 +244,7 @@ const menu = [{
     // {
     //   name: '添加样品',
     //   url: '/index/sampleAdd'
-    // }
+  }
   ]
 }, {
   name: '生产管理',

@@ -141,20 +141,20 @@ export default {
     clear (item) {
 
     },
-    getList () {
-      materialStockList({
-        company_id: window.sessionStorage.getItem('company_id'),
-        page: this.pages,
-        limit: 5,
-        material_color: this.color,
-        start_time: this.start_time,
-        end_time: this.end_time
-      }).then((res) => {
-        console.log(res)
-        this.total = res.data.data.total
-        this.list = res.data.data.data
-      })
-    },
+    // getList () {
+    //   materialStockList({
+    //     company_id: window.sessionStorage.getItem('company_id'),
+    //     page: this.pages,
+    //     limit: 5,
+    //     material_color: this.color,
+    //     start_time: this.start_time,
+    //     end_time: this.end_time
+    //   }).then((res) => {
+    //     console.log(res)
+    //     this.total = res.data.data.total
+    //     this.list = res.data.data.data
+    //   })
+    // },
     pickTime (date) {
       if (date) {
         this.start_time = date[0]
