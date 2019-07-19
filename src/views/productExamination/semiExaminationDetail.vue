@@ -148,7 +148,7 @@
                           <span class="tableRow flex13">{{val.plan_number}}{{'条'}}</span>
                           <span class="tableRow">{{val.test_number ? val.test_number : 0}}{{'条'}}</span>
                           <span class="tableRow">{{val.defective_number ? val.defective_number : 0}}{{'条'}}</span>
-                          <span class="tableRow">{{((val.defective_number ? val.defective_number : 0)/(val.test_number ? val.test_number : 0)) ? ((val.defective_number ? val.defective_number : 0)/(val.test_number ? val.test_number : 0)*100) : 0}}{{'%'}}</span>
+                          <span class="tableRow">{{((val.defective_number ? val.defective_number : 0)/(val.test_number ? val.test_number : 0)) ? (((val.defective_number ? val.defective_number : 0)/(val.test_number ? val.test_number : 0)*100)).toFixed(2) : 0}}{{'%'}}</span>
                           <span :class="{'tableRow':true,'compiled':(val.test_number ? val.test_number : 0) >= val.plan_number,'unCompiled':val.plan_number > (val.test_number ? val.test_number : 0)}">{{(val.test_number ? val.test_number : 0) >= val.plan_number ? '完成' : '未完成'}}</span>
                         </span>
                       </span>
@@ -211,7 +211,8 @@
                       </i>
                     </span>
                     <span class="flexMid">{{value.tester}}</span>
-                    <span class="flexMid blue">修改</span>
+                    <span class="flexMid blue"
+                      @click="changeData(item,index)">修改</span>
                   </li>
                 </div>
               </ul>
@@ -238,24 +239,122 @@
           @click="$router.go(-1)">确认</div>
       </div>
     </div>
+    <div class="shade"
+      v-show='showShade'>
+      <div class="main">
+        <div class="close"
+          @click="showShade=false">
+          <span class="icon">x</span>
+        </div>
+        <div class="title">{{showShade === 'add' ? '添加新' : '修改'}}角色权限</div>
+        <div class="content">
+          <div class="inputCtn">
+            <span class="label">产品名称:</span>
+            <div class="elCtn">{{changeDataInfo.product_code}}({{changeDataInfo.product_type}})</div>
+          </div>
+          <div class="inputCtn">
+            <span class="label">尺码/颜色:</span>
+            <div class="elCtn">{{changeDataInfo.sizeColor}}</div>
+          </div>
+          <div class="inputCtn">
+            <span class="label">生产单位:</span>
+            <div class="elCtn">{{changeDataInfo.client_name}}</div>
+          </div>
+          <div class="inputCtn">
+            <span class="label"><em>*</em>件数:</span>
+            <div class="elCtn">
+              <el-input placeholder="请输入件数"
+                v-model="changeDataInfo.count"
+                style="width:300px">
+              </el-input>
+            </div>
+          </div>
+          <div class="inputCtn">
+            <span class="label"><em>*</em>检验数量:</span>
+            <div class="elCtn">
+              <el-input placeholder="请输入检验数量"
+                v-model="changeDataInfo.number"
+                style="width:300px">
+              </el-input>
+            </div>
+          </div>
+          <div class="inputCtn">
+            <span class="label"><em>*</em>次品信息:</span>
+            <div class="elCtn">
+              <div v-for="(val,ind) in changeDataInfo.rejects_info"
+                :key="ind"
+                :style="{'margin-top':(ind !== 0) ? '20px' : false}">
+                <el-input placeholder="数量"
+                  v-model="val.number"
+                  style="width:100px;">
+                </el-input>
+                <span>—</span>
+                <el-select v-model="val.defective_why"
+                  placeholder="次品原因"
+                  style="width:186px;">
+                  <el-option v-for="color in defectiveType"
+                    :key="color.value"
+                    :value="color">
+                  </el-option>
+                </el-select>
+                <em v-if="ind === 0"
+                  class="el-icon-plus"
+                  @click="appendDefectiveInfo"></em>
+                <em v-else
+                  class="el-icon-delete"
+                  @click="deleteDefectiveInfo(ind)"></em>
+              </div>
+            </div>
+          </div>
+          <div class="inputCtn">
+            <span class="label">备注信息:</span>
+            <div class="elCtn">
+              <el-input placeholder="请输入备注信息"
+                v-model="changeDataInfo.remark"
+                style="width:300px">
+              </el-input>
+            </div>
+          </div>
+          <div class="btnCtn">
+            <div class="okBtn"
+              @click="submit">修改</div>
+            <div class="cancleBtn"
+              @click="showShade=false">取消</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { orderDetail, weaveDetail, semiExaminationDetail, storeInList, storeOutList } from '@/assets/js/api.js'
+import { defectiveType } from '@/assets/js/dictionary.js'
+import { orderDetail, weaveDetail, semiExaminationDetail, storeInList, storeOutList, semiExamination } from '@/assets/js/api.js'
 export default {
   data () {
     return {
       loading: true,
+      flag: true,
       order_code: '',
       client_name: '',
       order_time: '',
       group_name: '',
       productList: [],
-      flag: true
+      changeDataInfo: {},
+      showShade: false,
+      defectiveType: defectiveType
     }
   },
   methods: {
+    appendDefectiveInfo () {
+      this.changeDataInfo.rejects_info.push({
+        number: null,
+        defective_why: ''
+      })
+    },
+    deleteDefectiveInfo (ind) {
+      this.changeDataInfo.rejects_info.splice(ind, 1)
+    },
     charCodeLength (item) {
       if (!item) {
         return 0
@@ -293,153 +392,323 @@ export default {
       } else {
         return obj[key]
       }
-    }
-  },
-  created () {
-    Promise.all([
-      orderDetail({
-        id: this.$route.params.id
-      }),
-      weaveDetail({
-        order_id: this.$route.params.id
-      }),
-      semiExaminationDetail({
-        order_id: this.$route.params.id
-      }),
-      storeInList({
-        order_id: this.$route.params.id
-      }),
-      storeOutList({
-        order_id: this.$route.params.id
+    },
+    changeData (item, index) {
+      console.log(item, index)
+      this.showShade = true
+      this.changeDataInfo = JSON.parse(JSON.stringify(item.log[index]))
+      this.changeDataInfo.product_code = item.product_code
+      this.changeDataInfo.product_type = item.product_class
+    },
+    submit () {
+      console.log(this.changeDataInfo)
+      let data = []
+      let flag = true
+      if (!this.changeDataInfo.count) {
+        this.$message.error('请输入件数')
+      }
+      if (!this.changeDataInfo.number) {
+        this.$message.error('请输入检验数量')
+      }
+      this.changeDataInfo.rejects_info.forEach(item => {
+        if (item.number && !item.defective_why) {
+          this.$message.error('请选择次品原因')
+          flag = false
+        }
       })
-    ]).then(res => {
-      let orderInfo = res[0].data.data
-      let weaveInfo = res[1].data.data
-      let semiInfo = res[2].data.data
-      let goStockInfo = res[3].data.data
-      let outStockInfo = res[4].data.data
-      // console.log('orderInfo', orderInfo)
-      // console.log('weaveInfo', weaveInfo)
-      // console.log('semiInfo', semiInfo)
-      console.log('goStockInfo', goStockInfo)
-      console.log('outStockInfo', outStockInfo)
-      // 初始化订单信息
-      this.order_code = orderInfo.order_code
-      this.client_name = orderInfo.client_name
-      this.order_time = orderInfo.order_time
-      this.group_name = orderInfo.group_name
-      // 匹配产品织造信息
-      weaveInfo.forEach(item => {
-        let flag = this.productList.find(key => key.product_code === item.product_info.product_code)
-        if (!flag) {
-          let type = item.product_info.category_info.product_category + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_id ? '/' + item.product_info.flower_id : '')
-          this.productList.push({
-            product_code: item.product_info.product_code,
-            product_class: type,
-            flag: false,
-            log: [],
-            size_info: [{
-              size: item.size,
-              color: item.color,
-              production_info: [{
-                plan_number: item.number,
-                client_id: item.client_id,
-                production_client: item.client_name,
-                compiled_time: item.complete_time.split(' ')[0]
-              }]
-            }]
-          })
-        } else {
-          let flag1 = flag.size_info.find(key => (key.size === item.size && key.color === item.color))
-          if (!flag1) {
-            flag.size_info.push({
-              size: item.size,
-              color: item.color,
-              production_info: [{
-                plan_number: item.number,
-                client_id: item.client_id,
-                production_client: item.client_name,
-                compiled_time: item.complete_time.split(' ')[0]
+      data.push({
+        order_id: this.$route.params.id,
+        user_id: window.sessionStorage.getItem('user_id'),
+        product_code: this.changeDataInfo.product_code,
+        size: this.changeDataInfo.sizeColor.split('/')[0],
+        color: this.changeDataInfo.sizeColor.split(this.changeDataInfo.sizeColor.split('/')[0] + '/')[1],
+        client_id: this.changeDataInfo.client_id,
+        user_inspection: window.sessionStorage.getItem('user_id'),
+        count: this.changeDataInfo.count,
+        number: this.changeDataInfo.number,
+        rejects_info: JSON.stringify(this.changeDataInfo.rejects_info.filter(item => item.number !== null)),
+        desc: this.changeDataInfo.remark
+      })
+      console.log(data)
+      if (flag) {
+        semiExamination({
+          data: data,
+          id: this.changeDataInfo.id
+        }).then(res => {
+          console.log(res)
+          if (res.data.status) {
+            this.$message({
+              type: 'success',
+              message: `修改成功!`
+            })
+            this.showShade = false
+            this.getData()
+          }
+        })
+      }
+    },
+    getData () {
+      this.loading = true
+      this.productList = []
+      Promise.all([
+        orderDetail({
+          id: this.$route.params.id
+        }),
+        weaveDetail({
+          order_id: this.$route.params.id
+        }),
+        semiExaminationDetail({
+          order_id: this.$route.params.id
+        }),
+        storeInList({
+          order_id: this.$route.params.id
+        }),
+        storeOutList({
+          order_id: this.$route.params.id
+        })
+      ]).then(res => {
+        let orderInfo = res[0].data.data
+        let weaveInfo = res[1].data.data
+        let semiInfo = res[2].data.data
+        let goStockInfo = res[3].data.data
+        let outStockInfo = res[4].data.data
+        // console.log('orderInfo', orderInfo)
+        // console.log('weaveInfo', weaveInfo)
+        console.log('semiInfo', semiInfo)
+        // console.log('goStockInfo', goStockInfo)
+        // console.log('outStockInfo', outStockInfo)
+        // 初始化订单信息
+        this.order_code = orderInfo.order_code
+        this.client_name = orderInfo.client_name
+        this.order_time = orderInfo.order_time
+        this.group_name = orderInfo.group_name
+        // 匹配产品织造信息
+        weaveInfo.forEach(item => {
+          let flag = this.productList.find(key => key.product_code === item.product_info.product_code)
+          if (!flag) {
+            let type = item.product_info.category_info.product_category + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_id ? '/' + item.product_info.flower_id : '')
+            this.productList.push({
+              product_code: item.product_info.product_code,
+              product_class: type,
+              flag: false,
+              log: [],
+              size_info: [{
+                size: item.size,
+                color: item.color,
+                production_info: [{
+                  plan_number: item.number,
+                  client_id: item.client_id,
+                  production_client: item.client_name,
+                  compiled_time: item.complete_time.split(' ')[0]
+                }]
               }]
             })
           } else {
-            let flag2 = flag1.production_info.find(key => key.production_client === item.client_name)
-            if (!flag2) {
-              flag1.production_info.push({
-                plan_number: item.number,
-                client_id: item.client_id,
-                production_client: item.client_name,
-                compiled_time: item.complete_time.split(' ')[0]
+            let flag1 = flag.size_info.find(key => (key.size === item.size && key.color === item.color))
+            if (!flag1) {
+              flag.size_info.push({
+                size: item.size,
+                color: item.color,
+                production_info: [{
+                  plan_number: item.number,
+                  client_id: item.client_id,
+                  production_client: item.client_name,
+                  compiled_time: item.complete_time.split(' ')[0]
+                }]
               })
             } else {
-              flag2.plan_number = Number(flag2.plan_number) + Number(item.number)
+              let flag2 = flag1.production_info.find(key => key.production_client === item.client_name)
+              if (!flag2) {
+                flag1.production_info.push({
+                  plan_number: item.number,
+                  client_id: item.client_id,
+                  production_client: item.client_name,
+                  compiled_time: item.complete_time.split(' ')[0]
+                })
+              } else {
+                flag2.plan_number = Number(flag2.plan_number) + Number(item.number)
+              }
             }
           }
-        }
-      })
-      console.log('productList', this.productList)
-      // 初始化已检验数量与次品数量
-      semiInfo.forEach(item => {
-        let flag = this.productList.find(key => key.product_code === item.product_info.product_code)
-        if (flag) {
-          let log = {}
-          log.time = item.created_at
-          log.client_name = item.client_name
-          log.sizeColor = item.size + '/' + item.color
-          log.count = item.count
-          log.number = item.number
-          log.remark = item.desc
-          log.tester = item.user_inspection
-          let flag1 = flag.size_info.find(key => (key.size === item.size && key.color === item.color))
-          if (flag1) {
-            let flag2 = flag1.production_info.find(key => key.production_client === item.client_name)
-            if (flag2) {
-              flag2.test_number = Number(flag2.test_number ? flag2.test_number : 0) + Number(item.number)
-              item.rejects_info = JSON.parse(item.rejects_info)
-              item.rejects_info.forEach((value, index) => {
-                log.defective_number = Number(log.defective_number ? log.defective_number : 0) + Number(value.number)
-                if (!log.defective_why) {
-                  log.defective_why = ''
-                }
-                log.defective_why += (value.number ? ((index !== 0 ? '，' : '') + value.number + '条' + value.defective_why) : '')
-                flag2.defective_number = Number(flag2.defective_number ? flag2.defective_number : 0) + Number(value.number)
-              })
+        })
+        // console.log('productList', this.productList)
+        // 初始化已检验数量与次品数量
+        semiInfo.forEach(item => {
+          let flag = this.productList.find(key => key.product_code === item.product_info.product_code)
+          if (flag) {
+            let log = {}
+            log.time = item.created_at
+            log.client_name = item.client_name
+            log.client_id = item.client_id
+            log.sizeColor = item.size + '/' + item.color
+            log.count = item.count
+            log.number = item.number
+            log.remark = item.desc
+            log.tester = item.user_inspection
+            log.id = item.id
+            log.rejects_info = JSON.parse(item.rejects_info)
+            let flag1 = flag.size_info.find(key => (key.size === item.size && key.color === item.color))
+            if (flag1) {
+              let flag2 = flag1.production_info.find(key => key.production_client === item.client_name)
+              if (flag2) {
+                flag2.test_number = Number(flag2.test_number ? flag2.test_number : 0) + Number(item.number)
+                item.rejects_info = JSON.parse(item.rejects_info)
+                item.rejects_info.forEach((value, index) => {
+                  log.defective_number = Number(log.defective_number ? log.defective_number : 0) + Number(value.number)
+                  if (!log.defective_why) {
+                    log.defective_why = ''
+                  }
+                  log.defective_why += (value.number ? ((index !== 0 ? '，' : '') + value.number + '条' + value.defective_why) : '')
+                  flag2.defective_number = Number(flag2.defective_number ? flag2.defective_number : 0) + Number(value.number)
+                })
+              }
+            }
+            flag.log.push(log)
+          }
+        })
+        // 统计入库数量
+        goStockInfo.forEach(item => {
+          let flag = this.productList.find(key => key.product_code === item.product_info.product_code)
+          if (flag) {
+            let flag1 = flag.size_info.find(key => (key.size === item.size && key.color === item.color))
+            if (flag1) {
+              let flag2 = flag1.production_info.find(key => key.production_client === item.client_name)
+              if (flag2) {
+                flag2.goStock_number = Number(flag2.goStock_number ? flag2.goStock_number : 0) + Number(item.number)
+              }
             }
           }
-          flag.log.push(log)
-        }
-      })
-      // 统计入库数量
-      goStockInfo.forEach(item => {
-        let flag = this.productList.find(key => key.product_code === item.product_info.product_code)
-        if (flag) {
-          let flag1 = flag.size_info.find(key => (key.size === item.size && key.color === item.color))
-          if (flag1) {
-            let flag2 = flag1.production_info.find(key => key.production_client === item.client_name)
-            if (flag2) {
-              flag2.goStock_number = Number(flag2.goStock_number ? flag2.goStock_number : 0) + Number(item.number)
+        })
+        outStockInfo.forEach(item => {
+          let flag = this.productList.find(key => key.product_code === item.product_info.product_code)
+          if (flag) {
+            let flag1 = flag.size_info.find(key => (key.size === item.size && key.color === item.color))
+            if (flag1) {
+              let flag2 = flag1.production_info.find(key => key.production_client === item.client_name)
+              if (flag2) {
+                flag2.goStock_number = Number(flag2.goStock_number ? flag2.goStock_number : 0) - item.number
+              }
             }
           }
-        }
+        })
+        this.loading = false
       })
-      outStockInfo.forEach(item => {
-        let flag = this.productList.find(key => key.product_code === item.product_info.product_code)
-        if (flag) {
-          let flag1 = flag.size_info.find(key => (key.size === item.size && key.color === item.color))
-          if (flag1) {
-            let flag2 = flag1.production_info.find(key => key.production_client === item.client_name)
-            if (flag2) {
-              flag2.goStock_number = Number(flag2.goStock_number ? flag2.goStock_number : 0) - item.number
-            }
-          }
-        }
-      })
-      this.loading = false
-    })
+    }
+  },
+  created () {
+    this.getData()
   }
 }
 </script>
 
 <style scoped lang='less'>
 @import "~@/assets/css/semiExaminationDetail.less";
+</style>
+<style lang="less" scoped>
+#semiExaminationDetail {
+  .shade {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    .main {
+      position: absolute;
+      width: 640px;
+      height: 580px;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      margin: auto;
+      background: #ffffff;
+      overflow: hidden;
+      border-radius: 4px;
+      .close {
+        position: absolute;
+        right: -30px;
+        top: -30px;
+        width: 60px;
+        height: 60px;
+        background: #1a95ff;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: 0.1s;
+        color: #ecf0f1;
+        &:hover {
+          transform: scale(1.1);
+          color: #ffffff;
+          background: #48aaff;
+        }
+        .icon {
+          position: absolute;
+          left: 15px;
+          bottom: 7px;
+          font-size: 16px;
+          font-weight: bold;
+        }
+      }
+      .title {
+        line-height: 66px;
+        font-size: 22px;
+        padding: 0 20px;
+        background: linear-gradient(to right, #1a95ff, #ceddef);
+        border-radius: 4px;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        color: #ffffff;
+      }
+      .content {
+        height: 514px;
+        overflow-y: scroll;
+        .inputCtn {
+          margin: 20px;
+          position: relative;
+          font-size: 16px;
+          padding-left: 5em;
+          height: auto;
+          line-height: 40px;
+          color: #666;
+          .label {
+            position: absolute;
+            left: 0;
+            text-align: right;
+            width: 5em;
+            color: #666;
+            & > em {
+              color: #f56c6c;
+              line-height: 40px;
+              margin-right: 2px;
+              vertical-align: -4px;
+            }
+          }
+          .elCtn {
+            margin-left: 15px;
+            width: 400px;
+            height: auto;
+            em {
+              padding: 5px;
+              margin-left: 20px;
+              cursor: pointer;
+              &:hover {
+                background-color: #1a95ff;
+                color: #fff;
+                border-radius: 50%;
+              }
+            }
+          }
+        }
+        .btnCtn {
+          margin: 40px 0;
+          display: flex;
+          justify-content: center;
+          .okBtn {
+            margin: 0 30px;
+          }
+        }
+      }
+    }
+  }
+}
 </style>

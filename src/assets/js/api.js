@@ -280,7 +280,19 @@ const materialSurplusPush = (params) => http.post(`${baseUrl}/order/material/sur
 const orderMaterialSotckDetail = (params) => http.get(`${baseUrl}/order/material/list`, params)
 // 结余清空
 const surplusDelete = (params) => http.post(`${baseUrl}/order/material/surplus/delete`, params, 'application/json')
+// 添加权限 permission/save
+const permissionAdd = (params) => http.post(`${baseUrl}/permission/save`, params, 'application/json')
+// 权限列表
+const permissionList = (params) => http.get(`${baseUrl}/permission/company/all`, params)
+// 添加角色权限
+const rolePermissionAdd = (params) => http.post(`${baseUrl}/permission/group/save`, params, 'application/json')
+// 岗位权限列表
+const stationPermissionList = (params) => http.get(`${baseUrl}/permission/group/all`, params)
 export {
+  stationPermissionList,
+  rolePermissionAdd,
+  permissionList,
+  permissionAdd,
   stockMaterialDetail,
   surplusDelete,
   orderMaterialSotckDetail,

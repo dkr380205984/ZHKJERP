@@ -49,6 +49,10 @@ let router = new Router({
     name: 'changePsd',
     component: () => import('./views/changePsd.vue')
   }, {
+    path: '/screenShipments',
+    name: 'screenShipments',
+    component: () => import('./views/order/screenShipments.vue')
+  }, {
     path: '/index',
     name: 'index',
     component: () => import('./views/index.vue'),
@@ -428,6 +432,14 @@ let router = new Router({
       path: 'orderDetailNew/:id',
       name: 'orderDetailNew',
       component: () => import('./views/order/orderDetailNew.vue')
+    }, {
+      path: 'permissionsAdd',
+      name: 'permissionsAdd',
+      component: () => import('./views/permissions/permissionsAdd.vue')
+    }, {
+      path: 'permissionsAppend',
+      name: 'permissionsAppend',
+      component: () => import('./views/permissions/permissionsAppend.vue')
     }]
   }
   ]

@@ -102,7 +102,7 @@
                   </span>
                 </li>
                 <li v-if="productionList.length === 0">
-                  <span @click="$route">暂无生产信息(添加)</span>
+                  <span @click="$router.push('/index/productDesignWeavingCreate/' + $route.params.id)">暂无生产信息(添加)</span>
                 </li>
                 <li class="content"
                   v-for="(item,key) in productionList"

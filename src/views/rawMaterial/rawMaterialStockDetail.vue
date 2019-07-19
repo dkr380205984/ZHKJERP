@@ -473,7 +473,11 @@ export default {
         if (flag !== 0) {
           this.$router.push('/index/rawMaterialOutStock/' + id + '/' + this.type)
         } else {
-
+          let str = this.type === '0' ? '原' : '辅'
+          this.$message({
+            message: '请先订购' + str + '料',
+            type: 'error'
+          })
         }
       }
     },
@@ -589,6 +593,7 @@ export default {
       this.group_name = res[0].data.data.group_name
       // 物料信息初始化
       let materialInfo = res[1].data.data
+      console.log(materialInfo)
       materialInfo.material_info.forEach((item, key) => {
         for (let prop in item) {
           for (let value in item[prop]) {
@@ -896,12 +901,13 @@ export default {
         })
       })
       // 将该单位所需物料插入出库信息
-      // console.log(this.outStockInfo)
+      console.log(this.productionList)
       this.outStockInfo.forEach(item => {
         item.client_list.forEach(value => {
           value.color_list.forEach(color => {
             let flag = this.productionList.find(val => val.name === value.client_name)
             if (flag) {
+              // console.log(flag)
               let flag1 = flag.materials.find(val => val.material === item.material)
               if (flag1) {
                 let flag2 = flag1.colors.find(val => val.color === color.color)
@@ -914,7 +920,7 @@ export default {
         })
       })
       this.surplus = res[6].data.data.filter(res => (res.type === (this.type === '0' ? 1 : 2) || res.type === null))
-      console.log(this.surplus)
+      // console.log(this.surplus)
       this.loading = false
     })
   }

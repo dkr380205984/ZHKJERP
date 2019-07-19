@@ -164,7 +164,7 @@
                 <div>
                   <li>
                     <span class="flexBig">检验日期</span>
-                    <span class="flexMid">检验人员</span>
+                    <!-- <span class="flexMid">检验人员</span> -->
                     <span class="flexMid">尺码颜色</span>
                     <span class="flexMid">检验数量</span>
                     <span class="flexMid">次品数量</span>
@@ -180,7 +180,7 @@
                   <li v-for="(value,index) in item.log"
                     :key="index">
                     <span class="flexBig">{{value.time}}</span>
-                    <span class="flexMid">{{value.tester}}</span>
+                    <!-- <span class="flexMid">{{value.tester}}</span> -->
                     <span class="flexMid">{{value.sizeColor}}</span>
                     <span class="flexMid">{{value.number}}{{'条'}}</span>
                     <span class="flexMid">{{value.defective_number}}{{'条'}}</span>
@@ -224,7 +224,8 @@
                       </i>
                     </span>
                     <span class="flexMid">{{value.user}}</span>
-                    <span class="flexMid blue">修改</span>
+                    <span class="flexMid blue"
+                      @click="changeData(item,index)">修改</span>
                   </li>
                 </div>
               </ul>
@@ -251,21 +252,124 @@
           @click="$router.go(-1)">确认</div>
       </div>
     </div>
+    <div class="shade"
+      v-show='showShade'>
+      <div class="main">
+        <div class="close"
+          @click="showShade=false">
+          <span class="icon">x</span>
+        </div>
+        <div class="title">{{showShade === 'add' ? '添加新' : '修改'}}角色权限</div>
+        <div class="content">
+          <div class="inputCtn">
+            <span class="label">产品名称:</span>
+            <div class="elCtn">{{changeDataInfo.product_code}}({{changeDataInfo.product_type}})</div>
+          </div>
+          <div class="inputCtn">
+            <span class="label">尺码/颜色:</span>
+            <div class="elCtn">{{changeDataInfo.sizeColor}}</div>
+          </div>
+
+          <!-- <div class="inputCtn">
+            <span class="label"><em>*</em>件数:</span>
+            <div class="elCtn">
+              <el-input placeholder="请输入件数"
+                v-model="changeDataInfo.count"
+                style="width:300px">
+              </el-input>
+            </div>
+          </div> -->
+          <div class="inputCtn">
+            <span class="label"><em>*</em>检验数量:</span>
+            <div class="elCtn">
+              <el-input placeholder="请输入检验数量"
+                v-model="changeDataInfo.number"
+                style="width:300px">
+              </el-input>
+            </div>
+          </div>
+          <div class="inputCtn">
+            <span class="label"><em>*</em>次品信息:</span>
+            <div class="elCtn">
+              <template v-for="(val,ind) in changeDataInfo.rejects_info">
+                <div :key="ind"
+                  :style="{'margin-top':(ind !== 0) ? '20px' : false}">
+                  <el-input placeholder="数量"
+                    v-model="val.number"
+                    style="width:100px;">
+                  </el-input>
+                  <span>—</span>
+                  <el-select v-model="val.defective_why"
+                    placeholder="次品原因"
+                    style="width:186px;">
+                    <el-option v-for="color in defectiveType"
+                      :key="color.value"
+                      :value="color">
+                    </el-option>
+                  </el-select>
+                  <em v-if="ind === 0"
+                    class="el-icon-plus"
+                    @click="appendDefectiveInfo"></em>
+                  <em v-else
+                    class="el-icon-delete"
+                    @click="deleteDefectiveInfo(ind)"></em>
+                </div>
+                <div :key="ind + 'x'"
+                  style="margin-top:20px;">
+                  <!-- <el-input placeholder="请输入检验数量"
+                    v-model="val.assume_client"
+                    style="width:300px">
+                  </el-input> -->
+                  <el-select v-model="val.assume_client"
+                    placeholder="请选择次品承担单位"
+                    style="width:300px;">
+                    <el-option v-for="color in clientList"
+                      :key="color.value"
+                      :value="color">
+                    </el-option>
+                  </el-select>
+                </div>
+              </template>
+            </div>
+          </div>
+          <div class="inputCtn">
+            <span class="label">备注信息:</span>
+            <div class="elCtn">
+              <el-input placeholder="请输入备注信息"
+                v-model="changeDataInfo.remark"
+                style="width:300px">
+              </el-input>
+            </div>
+          </div>
+          <div class="btnCtn">
+            <div class="okBtn"
+              @click="submit">修改</div>
+            <div class="cancleBtn"
+              @click="showShade=false">取消</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { orderDetail, finishedExaminationDetail, storeInList, storeOutList } from '@/assets/js/api.js'
+import { defectiveType } from '@/assets/js/dictionary.js'
+import { orderDetail, finishedExaminationDetail, storeInList, storeOutList, halfProductDetail, finishedExamination } from '@/assets/js/api.js'
 export default {
   data () {
     return {
       loading: true,
+      showShade: false,
       order_code: '',
       client_name: '',
       order_time: '',
       group_name: '',
       productList: [],
-      flag: true
+      flag: true,
+      defectiveType: defectiveType,
+      changeDataInfo: {},
+      clientList: []
     }
   },
   methods: {
@@ -310,144 +414,338 @@ export default {
       } else {
         return obj[key]
       }
-    }
-  },
-  created () {
-    Promise.all([
-      orderDetail({
-        id: this.$route.params.id
-      }),
-      finishedExaminationDetail({
-        order_id: this.$route.params.id
-      }),
-      storeInList({
-        order_id: this.$route.params.id
-      }),
-      storeOutList({
-        order_id: this.$route.params.id
+    },
+    appendDefectiveInfo () {
+      this.changeDataInfo.rejects_info.push({
+        assume_client: '',
+        defective_why: '',
+        number: ''
       })
-    ]).then(res => {
-      let orderInfo = res[0].data.data
-      let finishedInfo = res[1].data.data
-      let goStockInfo = res[2].data.data
-      let outStockInfo = res[3].data.data
-      // console.log('orderInfo', orderInfo)
-      // console.log('finishedInfo', finishedInfo)
-      console.log('goStockInfo', goStockInfo)
-      console.log('outStockInfo', outStockInfo)
-      // 初始化订单信息
-      this.order_code = orderInfo.order_code
-      this.client_name = orderInfo.client_name
-      this.order_time = orderInfo.order_time
-      this.group_name = orderInfo.group_name
-      // 初始化产品信息
-      orderInfo.order_batch.forEach(item => {
-        item.batch_info.forEach(value => {
-          value.size.forEach(val => {
-            let flag = this.productList.find(key => key.product_code === value.productCode)
-            if (!flag) {
-              let type = value.productInfo.category_info.product_category + '/' + value.productInfo.type_name + '/' + value.productInfo.style_name + (value.productInfo.flower_id ? '/' + value.productInfo.flower_id : '')
-              this.productList.push({
-                product_code: value.productCode,
-                type: type,
-                flag: false,
-                log: [],
-                size_info: [{
-                  size: val.name[0],
-                  color: val.name[1],
-                  batch_info: [{
-                    batch_id: item.batch_id,
-                    delivery_time: item.delivery_time,
-                    number: val.numbers
-                  }]
-                }]
-              })
-            } else {
-              let flag1 = flag.size_info.find(key => (key.size === val.name[0] && key.color === val.name[1]))
-              if (!flag1) {
-                flag.size_info.push({
-                  size: val.name[0],
-                  color: val.name[1],
-                  batch_info: [{
-                    batch_id: item.batch_id,
-                    delivery_time: item.delivery_time,
-                    number: val.numbers
+    },
+    deleteDefectiveInfo (index) {
+      this.changeDataInfo.rejects_info.splice(index, 1)
+    },
+    changeData (item, index) {
+      console.log(item, index)
+      this.showShade = true
+      this.changeDataInfo = JSON.parse(JSON.stringify(item.log[index]))
+      this.changeDataInfo.product_code = item.product_code
+      this.changeDataInfo.product_type = item.type
+      console.log(this.changeDataInfo)
+    },
+    submit () {
+      console.log(this.changeDataInfo)
+      let data = []
+      let flag = true
+      if (!this.changeDataInfo.number) {
+        this.$message.error('请输入检验数量')
+      }
+      this.changeDataInfo.rejects_info.forEach(item => {
+        if (item.number && !item.defective_why) {
+          this.$message.error('请选择次品原因')
+          flag = false
+        } else if (item.number && !item.assume_client) {
+          this.$message.error('请选择次品承担单位')
+          flag = false
+        }
+      })
+      data.push({
+        order_id: this.$route.params.id,
+        user_id: window.sessionStorage.getItem('user_id'),
+        product_code: this.changeDataInfo.product_code,
+        size: this.changeDataInfo.sizeColor.split('/')[0],
+        color: this.changeDataInfo.sizeColor.split(this.changeDataInfo.sizeColor.split('/')[0] + '/')[1],
+        // client_id: this.changeDataInfo.client_id,
+        // user_inspection: this.changeDataInfo.tester,
+        // count: this.changeDataInfo.count,
+        number: this.changeDataInfo.number,
+        rejects_info: JSON.stringify(this.changeDataInfo.rejects_info.filter(item => item.number !== null)),
+        desc: this.changeDataInfo.remark
+      })
+      console.log(data)
+      if (flag) {
+        finishedExamination({
+          data: data,
+          id: this.changeDataInfo.id
+        }).then(res => {
+          console.log(res)
+          if (res.data.status) {
+            this.$message({
+              type: 'success',
+              message: `修改成功!`
+            })
+            this.showShade = false
+            this.getData()
+          }
+        })
+      }
+    },
+    getData () {
+      this.loading = true
+      this.productList = []
+      Promise.all([
+        orderDetail({
+          id: this.$route.params.id
+        }),
+        finishedExaminationDetail({
+          order_id: this.$route.params.id
+        }),
+        storeInList({
+          order_id: this.$route.params.id
+        }),
+        storeOutList({
+          order_id: this.$route.params.id
+        }),
+        halfProductDetail({
+          order_id: this.$route.params.id
+        })
+      ]).then(res => {
+        let orderInfo = res[0].data.data
+        let finishedInfo = res[1].data.data
+        let goStockInfo = res[2].data.data
+        let outStockInfo = res[3].data.data
+        let clientInfo = res[4].data.data
+        // console.log('orderInfo', orderInfo)
+        console.log('finishedInfo', finishedInfo)
+        // console.log('goStockInfo', goStockInfo)
+        // console.log('outStockInfo', outStockInfo)
+        // 初始化订单信息
+        this.order_code = orderInfo.order_code
+        this.client_name = orderInfo.client_name
+        this.order_time = orderInfo.order_time
+        this.group_name = orderInfo.group_name
+        // 初始化产品信息
+        orderInfo.order_batch.forEach(item => {
+          item.batch_info.forEach(value => {
+            value.size.forEach(val => {
+              let flag = this.productList.find(key => key.product_code === value.productCode)
+              if (!flag) {
+                let type = value.productInfo.category_info.product_category + '/' + value.productInfo.type_name + '/' + value.productInfo.style_name + (value.productInfo.flower_id ? '/' + value.productInfo.flower_id : '')
+                this.productList.push({
+                  product_code: value.productCode,
+                  type: type,
+                  flag: false,
+                  log: [],
+                  size_info: [{
+                    size: val.name[0],
+                    color: val.name[1],
+                    batch_info: [{
+                      batch_id: item.batch_id,
+                      delivery_time: item.delivery_time,
+                      number: val.numbers
+                    }]
                   }]
                 })
               } else {
-                let flag2 = flag1.batch_info.find(key => key.batch_id === item.batch_id)
-                if (!flag2) {
-                  flag1.batch_info.push({
-                    batch_id: item.batch_id,
-                    delivery_time: item.delivery_time,
-                    number: val.numbers
+                let flag1 = flag.size_info.find(key => (key.size === val.name[0] && key.color === val.name[1]))
+                if (!flag1) {
+                  flag.size_info.push({
+                    size: val.name[0],
+                    color: val.name[1],
+                    batch_info: [{
+                      batch_id: item.batch_id,
+                      delivery_time: item.delivery_time,
+                      number: val.numbers
+                    }]
                   })
                 } else {
-                  flag2.number = Number(flag2.number) + Number(val.numbers)
+                  let flag2 = flag1.batch_info.find(key => key.batch_id === item.batch_id)
+                  if (!flag2) {
+                    flag1.batch_info.push({
+                      batch_id: item.batch_id,
+                      delivery_time: item.delivery_time,
+                      number: val.numbers
+                    })
+                  } else {
+                    flag2.number = Number(flag2.number) + Number(val.numbers)
+                  }
                 }
               }
-            }
+            })
           })
         })
-      })
-      // 初始化检验数量
-      finishedInfo.forEach(item => {
-        let flag = this.productList.find(key => key.product_code === item.product_info.product_code)
-        if (flag) {
-          let log = {}
-          log.time = item.created_at
-          log.tester = item.user_inspection
-          log.sizeColor = item.size + '/' + item.color
-          log.number = item.number
-          log.remark = item.desc
-          log.user = item.user_name
-          let flag1 = flag.size_info.find(key => (key.size === item.size && key.color === item.color))
-          if (flag1) {
-            flag1.test_number = Number(flag1.test_number ? flag1.test_number : 0) + Number(item.number)
-            flag1.number = Number(flag1.number ? flag1.number : 0) + Number(item.number)
-            JSON.parse(item.rejects_info).forEach((value, index) => {
-              log.defective_number = Number(log.defective_number ? log.defective_number : 0) + Number(value.number)
-              if (!log.defective_why) {
-                log.defective_why = ''
-              }
-              log.defective_why += (value.number ? ((index !== 0 ? '，' : '') + value.number + '条' + value.defective_why) : '')
-              if (!log.assume_client) {
-                log.assume_client = ''
-              }
-              log.assume_client += (value.number ? ((index !== 0 ? '，' : '') + value.number + '条' + value.defective_why + '-' + value.assume_client) : '')
-              flag1.defective_number = Number(flag1.defective_number ? flag1.defective_number : 0) + Number(value.number)
-              flag1.number -= value.number
-            })
+        // 初始化检验数量
+        finishedInfo.forEach(item => {
+          let flag = this.productList.find(key => key.product_code === item.product_info.product_code)
+          if (flag) {
+            let log = {}
+            log.id = item.id
+            log.time = item.created_at
+            // log.tester = item.user_inspection
+            log.sizeColor = item.size + '/' + item.color
+            log.number = item.number
+            log.remark = item.desc
+            log.user = item.user_name
+            log.rejects_info = JSON.parse(item.rejects_info)
+            let flag1 = flag.size_info.find(key => (key.size === item.size && key.color === item.color))
+            if (flag1) {
+              flag1.test_number = Number(flag1.test_number ? flag1.test_number : 0) + Number(item.number)
+              flag1.number = Number(flag1.number ? flag1.number : 0) + Number(item.number)
+              JSON.parse(item.rejects_info).forEach((value, index) => {
+                log.defective_number = Number(log.defective_number ? log.defective_number : 0) + Number(value.number)
+                if (!log.defective_why) {
+                  log.defective_why = ''
+                }
+                log.defective_why += (value.number ? ((index !== 0 ? '，' : '') + value.number + '条' + value.defective_why) : '')
+                if (!log.assume_client) {
+                  log.assume_client = ''
+                }
+                log.assume_client += (value.number ? ((index !== 0 ? '，' : '') + value.number + '条' + value.defective_why + '-' + value.assume_client) : '')
+                flag1.defective_number = Number(flag1.defective_number ? flag1.defective_number : 0) + Number(value.number)
+                flag1.number -= value.number
+              })
+            }
+            flag.log.push(log)
           }
-          flag.log.push(log)
-        }
-      })
-      // 初始化入库数量
-      goStockInfo.forEach(item => {
-        let flag = this.productList.find(key => key.product_code === item.product_info.product_code)
-        if (flag) {
-          let flag1 = flag.size_info.find(key => (key.size === item.size && key.color === item.color))
-          if (flag1) {
-            flag1.goStock_number = Number(flag1.goStock_number ? flag1.goStock_number : 0) + Number(item.number)
+        })
+        // 初始化入库数量
+        goStockInfo.forEach(item => {
+          let flag = this.productList.find(key => key.product_code === item.product_info.product_code)
+          if (flag) {
+            let flag1 = flag.size_info.find(key => (key.size === item.size && key.color === item.color))
+            if (flag1) {
+              flag1.goStock_number = Number(flag1.goStock_number ? flag1.goStock_number : 0) + Number(item.number)
+            }
           }
-        }
-      })
-      outStockInfo.forEach(item => {
-        let flag = this.productList.find(key => key.product_code === item.product_info.product_code)
-        if (flag) {
-          let flag1 = flag.size_info.find(key => (key.size === item.size && key.color === item.color))
-          if (flag1) {
-            flag1.goStock_number = Number(flag1.goStock_number ? flag1.goStock_number : 0) - item.number
+        })
+        outStockInfo.forEach(item => {
+          let flag = this.productList.find(key => key.product_code === item.product_info.product_code)
+          if (flag) {
+            let flag1 = flag.size_info.find(key => (key.size === item.size && key.color === item.color))
+            if (flag1) {
+              flag1.goStock_number = Number(flag1.goStock_number ? flag1.goStock_number : 0) - item.number
+            }
           }
-        }
+        })
+        // 初始化次品承担单位数组
+        console.log(clientInfo)
+        clientInfo.forEach(item => {
+          //   if (item.product_info.product_code === this.list.product_code) {
+          let flag = this.clientList.find(key => key === item.client_name)
+          if (!flag) {
+            this.clientList.push(item.client_name)
+          }
+          //   }
+        })
+        this.loading = false
+        console.log('productList', this.productList)
       })
-      this.loading = false
-      console.log('productList', this.productList)
-    })
+    }
+  },
+  created () {
+    this.getData()
   }
 }
 </script>
 
 <style scoped lang='less'>
 @import "~@/assets/css/finishedExaminationDetail.less";
+</style>
+<style lang="less" scoped>
+#finishedExaminationDetail {
+  .shade {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    .main {
+      position: absolute;
+      width: 640px;
+      height: 580px;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      margin: auto;
+      background: #ffffff;
+      overflow: hidden;
+      border-radius: 4px;
+      .close {
+        position: absolute;
+        right: -30px;
+        top: -30px;
+        width: 60px;
+        height: 60px;
+        background: #1a95ff;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: 0.1s;
+        color: #ecf0f1;
+        &:hover {
+          transform: scale(1.1);
+          color: #ffffff;
+          background: #48aaff;
+        }
+        .icon {
+          position: absolute;
+          left: 15px;
+          bottom: 7px;
+          font-size: 16px;
+          font-weight: bold;
+        }
+      }
+      .title {
+        line-height: 66px;
+        font-size: 22px;
+        padding: 0 20px;
+        background: linear-gradient(to right, #1a95ff, #ceddef);
+        border-radius: 4px;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        color: #ffffff;
+      }
+      .content {
+        height: 514px;
+        overflow-y: scroll;
+        .inputCtn {
+          margin: 20px;
+          position: relative;
+          font-size: 16px;
+          padding-left: 5em;
+          height: auto;
+          line-height: 40px;
+          color: #666;
+          .label {
+            position: absolute;
+            left: 0;
+            text-align: right;
+            width: 5em;
+            color: #666;
+            & > em {
+              color: #f56c6c;
+              line-height: 40px;
+              margin-right: 2px;
+              vertical-align: -4px;
+            }
+          }
+          .elCtn {
+            margin-left: 15px;
+            width: 400px;
+            height: auto;
+            em {
+              padding: 5px;
+              margin-left: 20px;
+              cursor: pointer;
+              &:hover {
+                background-color: #1a95ff;
+                color: #fff;
+                border-radius: 50%;
+              }
+            }
+          }
+        }
+        .btnCtn {
+          margin: 40px 0;
+          display: flex;
+          justify-content: center;
+          .okBtn {
+            margin: 0 30px;
+          }
+        }
+      }
+    }
+  }
+}
 </style>

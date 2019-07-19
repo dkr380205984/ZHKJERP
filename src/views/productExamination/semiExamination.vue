@@ -395,7 +395,7 @@ export default {
               return
             }
             arr.size = value.color.split('/')[0]
-            arr.color = value.color.split('/')[1]
+            arr.color = value.color.split(value.color.split('/')[0] + '/')[1]
             arr.client_id = item.production_client
             // arr.user_inspection = item.tester_name
             arr.user_inspection = window.sessionStorage.getItem('user_id')

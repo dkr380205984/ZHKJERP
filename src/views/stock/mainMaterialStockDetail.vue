@@ -125,7 +125,7 @@ export default {
       })
     ]).then((res) => {
       console.log(res)
-      this.materialInfo = res[0].data.data.filter(key => key.id === Number(this.$route.params.id))[0]
+      this.materialInfo = res[0].data.data.data.filter(key => key.id === Number(this.$route.params.id))[0]
       console.log(this.materialInfo)
       this.list = res[1].data.data.map((item) => {
         return {
