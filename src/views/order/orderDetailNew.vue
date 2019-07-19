@@ -17,13 +17,14 @@
           <div class="keyBtn">
             <!-- <span class="btns">确认完成</span> -->
             <el-dropdown size="medium"
-              @click="orderStatus(1)"
+              @click="order_info.status===0?orderStatus(1):''"
+              @command="orderStatus"
               split-button
               type="primary">
-              确认完成
+              {{orderStateOpr}}
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>订单异常</el-dropdown-item>
-                <el-dropdown-item>取消订单</el-dropdown-item>
+                <!-- <el-dropdown-item>订单异常</el-dropdown-item> -->
+                <el-dropdown-item command="8">取消订单</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
@@ -115,7 +116,7 @@
         </div>
         <div class="cardCtn"
           v-show="hasPlan"
-          :class="{'needScroll':productRate.length>3}">
+          :class="{'needScroll':productRate.length>2}">
           <div class="transformBtn leftBtn"
             @mousedown="translated('left')"
             @mouseup="clearTimer"><i class="el-icon-arrow-left"></i></div>
@@ -352,7 +353,7 @@
                 class="backTop"></div>
               <img class="icon"
                 src="@/assets/image/icon/财务结算.png" />
-              <div :style="{height:order_info.status===1?'100%':'0%'}"
+              <div :style="{height:order_info.status===1||order_info.status===2?'100%':'0%'}"
                 class="backBottom complete"></div>
             </div>
             <div class="label">财务结算</div>
@@ -422,10 +423,10 @@
                 style="flex:2;text-align:center">
                 暂无加工信息
               </span>
-              <span>{{item.in_stock_number ? item.in_stock_number : 0}}{{item.unit}}</span>
               <span>{{item.out_stock_number ? item.out_stock_number : 0}}{{item.unit}}</span>
+              <span>{{item.in_stock_number ? item.in_stock_number : 0}}{{item.unit}}</span>
               <span>{{item.replenish_number?item.replenish_number:0}}{{item.unit}}</span>
-              <span :style="{'color':item.order_number/item.plan_number>1||order_info.status_material_order===1?'#67C23A':'#E6A23C'}">{{item.order_number/item.plan_number>1||order_info.status_material_order===1?'完成':'未完成'}}</span>
+              <span :style="{'color':parseInt(item.order_number)/parseInt(item.plan_number)>=1||order_info.status_material_order===1?'#67C23A':'#E6A23C'}">{{parseInt(item.order_number)/parseInt(item.plan_number)>=1||order_info.status_material_order===1?'完成':'未完成'}}</span>
             </li>
           </div>
         </div>
@@ -605,7 +606,7 @@
               <span>{{item.finished_number ? item.finished_number : 0}}{{item.unit}}</span>
               <span>{{item.finished_defective ? item.finished_defective : 0}}{{item.unit}}</span>
               <span>{{((item.finished_defective ? item.finished_defective : 0)/(item.finished_number ? item.finished_number : 0)) ? ((item.finished_defective ? item.finished_defective : 0)/(item.finished_number ? item.finished_number : 0)).toFixed(2) : 0}}%</span>
-              <span :style="{'color':(item.semi_number - item.semi_defective)/item.plan_number>1&&(item.finished_number - item.finished_defective)/item.order_num>1||order_info.status_inspection===1?'#67C23A':'#E6A23C'}">{{(item.semi_number - item.semi_defective)/item.plan_number>1&&(item.finished_number - item.finished_defective)/item.order_num>1||order_info.status_inspection===1?'完成':'未完成'}}</span>
+              <span :style="{'color':(item.semi_number - item.semi_defective)/item.plan_number>=1&&(item.finished_number - item.finished_defective)/item.order_num>=1||order_info.status_inspection===1?'#67C23A':'#E6A23C'}">{{(item.semi_number - item.semi_defective)/item.plan_number>=1&&(item.finished_number - item.finished_defective)/item.order_num>1||order_info.status_inspection===1?'完成':'未完成'}}</span>
             </li>
           </div>
         </div>
@@ -865,6 +866,65 @@
         </el-carousel>
       </div>
     </div>
+    <div class="shade2"
+      style="z-index:99;"
+      v-show="showStep">
+      <div class="main">
+        <div class="close">
+          <span class="icon"
+            @click="showStep=false">x</span>
+        </div>
+        <div class="title">{{stepTitle[step]}}</div>
+        <div class="content"><i class="el-icon-info"
+            style="margin-right:5px;"></i>
+          <span>{{materialDetail.length===0&&step===0?'检测到该产品还未订购过任何原料，请直接跳过本步骤':stepContent[step]}}</span></div>
+        <div class="inputCtn"
+          v-show="step===0">
+          <el-input v-for="item in materialDetail"
+            :key="item.material_name+item.color_code"
+            class="inputs"
+            v-model="item.number"
+            placeholder="请填写剩余数量">
+            <template slot="prepend">{{item.material_name}}({{item.color_code}})</template>
+            <template slot="append">{{item.unit}}</template>
+          </el-input>
+        </div>
+        <div class="inputCtn"
+          v-show="step===1">
+          <el-input v-for="(item,index) in productDetail"
+            :key="index"
+            class="inputs"
+            v-model="item.number"
+            placeholder="请填写剩余数量">
+            <template slot="prepend">{{item.productCode}} {{item.type}}({{item.size}})</template>
+            <template slot="append">{{item.unit}}</template>
+          </el-input>
+        </div>
+        <div class="loading"
+          v-show="step===2">
+          <div class="spinner"
+            v-show="showLoading">
+            <div class="rect1"></div>
+            <div class="rect2"></div>
+            <div class="rect3"></div>
+            <div class="rect4"></div>
+            <div class="rect5"></div>
+          </div>
+          <div class="success"
+            v-show="showMsg">
+            <i class="el-icon-check"></i>
+            <span class="des">订单取消成功</span>
+          </div>
+        </div>
+        <div class="btnCtn">
+          <div class="btn1 btn"
+            @click="step--"
+            v-show="step>0">{{step===0?'':'上一步'}}</div>
+          <div class="btn2 btn"
+            @click="step===2?orderCancle():step++">{{step===2?(order_info.status===2?'关闭窗口':'确认提交'):'下一步'}}</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -874,6 +934,12 @@ import { moneyArr } from '@/assets/js/dictionary.js'
 export default {
   data () {
     return {
+      showMsg: false,
+      showLoading: false,
+      showStep: false,
+      stepTitle: ['物料结余', '产品结余', '确认提交'],
+      stepContent: ['该订单已经订购过以下物料，请按实际情况填写物料剩余数量。', '该订单包含以下产品，请按实际情况填写需要入库的产品数量。', '警告！执行取消订单操作后会导致该订单无法继续执行相关生产操作，是否确认取消订单？'],
+      step: 0,
       loading: true,
       defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
       showShade: false,
@@ -904,6 +970,8 @@ export default {
         weave_pre: 0
       },
       hasPlan: false,
+      materialDetail: [], // 物料详细信息
+      productDetail: [], // 产品详细信息
       productRate: [], // 流程详情
       materialList: [], // 物料概述
       designList: [], //  生产概述
@@ -1031,53 +1099,64 @@ export default {
     },
     orderStatus (state) {
       let filterArr = ['', '订单状态', '订单生产状态', '订单物料状态', '订单检验状态', '订单收发状态', '订单出库状态']
-      this.$confirm('该操作将直接修改' + filterArr[state] + ',你无法再对该订单的相关步骤进行操作, 请确认是否修改?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        orderCheck({
-          id: this.$route.params.id,
-          type: state
-        }).then((res) => {
-          if (res.data.status) {
-            this.$message.success({
-              message: '修改成功'
-            })
-            if (state === 1) {
-              this.status = 1
-              this.order_info.status_weave = 1
-              this.order_info.status_material_order = 1
-              this.order_info.status_inspection = 1
-              this.order_info.status_pop_push = 1
-              this.order_info.status_stock_out = 1
-            } else if (state === 2) {
-              this.order_info.status_weave = 1
-            } else if (state === 3) {
-              this.order_info.status_material_order = 1
-            } else if (state === 4) {
-              this.order_info.status_inspection = 1
-            } else if (state === 5) {
-              this.order_info.status_pop_push = 1
-            } else if (state === 6) {
-              this.order_info.status_stock_out = 1
+      if (state < 8) {
+        this.$confirm('该操作将直接修改' + filterArr[state] + ',你无法再对该订单的相关步骤进行操作, 请确认是否修改?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          orderCheck({
+            id: this.$route.params.id,
+            type: state,
+            product_data: [],
+            material_data: []
+          }).then((res) => {
+            if (res.data.status) {
+              this.$message.success({
+                message: '修改成功'
+              })
+              if (state === 1) {
+                this.status = 1
+                this.order_info.status_weave = 1
+                this.order_info.status_material_order = 1
+                this.order_info.status_inspection = 1
+                this.order_info.status_pop_push = 1
+                this.order_info.status_stock_out = 1
+              } else if (state === 2) {
+                this.order_info.status_weave = 1
+              } else if (state === 3) {
+                this.order_info.status_material_order = 1
+              } else if (state === 4) {
+                this.order_info.status_inspection = 1
+              } else if (state === 5) {
+                this.order_info.status_pop_push = 1
+              } else if (state === 6) {
+                this.order_info.status_stock_out = 1
+              }
+            } else {
+              this.$message.error({
+                message: res.data.message
+              })
             }
-          } else {
-            this.$message.error({
-              message: res.data.message
-            })
-          }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消操作'
+          })
         })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消操作'
-        })
-      })
+      } else {
+        if (this.order_info.status !== 2) {
+          this.showStep = true
+        } else {
+          this.$message.error({
+            message: '该订单已取消，请勿重复操作'
+          })
+        }
+      }
     },
     // 打开详情页
     openWin (cmd) {
-      console.log(cmd)
       const orderId = this.$route.params.id
       let urlJson = {
         '原料详情': '/index/rawMaterialOrderDetail/' + orderId + '/0',
@@ -1092,6 +1171,65 @@ export default {
         '装箱出库': '/index/packagOutStockDetail/' + orderId
       }
       window.open(urlJson[cmd])
+    },
+    // 取消订单
+    orderCancle () {
+      if (this.order_info.status === 2) {
+        this.showStep = false
+      } else {
+        this.showMsg = false
+        this.showLoading = true
+        const materialDetail = this.materialDetail.map((item) => {
+          return {
+            company_id: window.sessionStorage.getItem('company_id'),
+            order_id: this.$route.params.id,
+            material_name: item.material_name,
+            vat_code: 'vat_null',
+            color_code: item.color_code,
+            number: 0,
+            total_weight: item.number === '' ? 0 : item.number,
+            complete_time: this.getTime(new Date()),
+            desc: '原料结余',
+            attribute: item.attribute,
+            type: item.type,
+            stock_id: 0,
+            user_id: window.sessionStorage.getItem('user_id')
+          }
+        })
+        const productDetail = this.productDetail.map((item) => {
+          return {
+            user_id: window.sessionStorage.getItem('user_id'),
+            order_code: this.order_info.order_code,
+            company_id: window.sessionStorage.getItem('company_id'),
+            product_id: item.id,
+            size: item.size.split('/')[0],
+            color: item.size.split('/')[1],
+            stock_number: item.number ? item.number : 0,
+            rejects_product: '',
+            cost_price: item.cost,
+            total_price: parseInt(item.cost * (item.number ? item.number : 0)),
+            store_id: 0,
+            storage_time: this.getTime(new Date()),
+            remark: '订单取消结余'
+          }
+        })
+        orderCheck({
+          id: this.$route.params.id,
+          type: 8,
+          product_data: productDetail,
+          material_data: materialDetail
+        }).then((res) => {
+          if (res.data.status) {
+            this.showLoading = false
+            this.showMsg = true
+            this.order_info.status = 2
+          } else {
+            this.$message.error({
+              message: res.data.message
+            })
+          }
+        })
+      }
     }
   },
   computed: {
@@ -1104,7 +1242,7 @@ export default {
       if (this.order_info.status === 1) {
         return '已完成'
       } else if (this.order_info.status === 2) {
-        return '订单异常'
+        return '已取消'
       } else {
         for (let key in this.order_log) {
           if (this.order_log[key].length > 0) {
@@ -1128,6 +1266,11 @@ export default {
         }
         return '#E6A23C'
       }
+    },
+    // 订单状态操作
+    orderStateOpr () {
+      const state = ['确认完成', '已完成', '已取消']
+      return state[this.order_info.status]
     },
     // (今天 + 1) - 下单日期
     useTime () {
@@ -1182,7 +1325,6 @@ export default {
     }), packagNumberDetail({
       order_id: this.$route.params.id
     })]).then((res) => {
-      // console.log(res)
       const data = res[0].data.data
       this.order_info = data.order_info
       this.order_log = data.order_log
@@ -1235,7 +1377,7 @@ export default {
             weaveNum += itemWeave.number
           }
         })
-        this.order_log.product_push.forEach((itemProPush, indexProPush) => {
+        this.order_log.product_pop.forEach((itemProPush, indexProPush) => {
           if (itemProPush.product_info.product_code === itemProduct.product_code && itemProPush.type === '织造') {
             weavePushNum += itemProPush.number
           }
@@ -1248,7 +1390,7 @@ export default {
             semiNum += itemSemi.number
           }
         })
-        this.order_log.product_push.forEach((itemProPush, indexProPush) => {
+        this.order_log.product_pop.forEach((itemProPush, indexProPush) => {
           if (itemProPush.product_info.product_code === itemProduct.product_code && itemProPush.type !== '织造') {
             semiPushNum += itemProPush.number
           }
@@ -1312,7 +1454,6 @@ export default {
           }
         })
       })
-      console.log(productPlanMerge)
       // 物料概述
       let materialInfo = res[1].data.data
       let processInfo = this.order_log.material_production
@@ -1399,7 +1540,6 @@ export default {
           }
         }
       })
-      // console.log(this.materialList)
       // 生产概述
       let designInfo = res[2].data.status ? res[2].data.data : {
         production_detail: {
@@ -1464,8 +1604,8 @@ export default {
         }
       })
       // 收发概述
-      let storeIn = this.order_log.product_push
-      let storeOut = this.order_log.product_pop
+      let storeIn = this.order_log.product_pop
+      let storeOut = this.order_log.product_push
       storeIn.forEach(item => {
         let flag = this.designList.find(key => key.product_code === item.product_info.product_code)
         if (!flag) {
@@ -1571,7 +1711,6 @@ export default {
           flag.finished_defective = Number(flag.finished_defective ? flag.finished_defective : 0) + Number(num)
         }
       })
-      // console.log(this.designList)
       // 出库概述
       let orderInfo = this.order_info
       orderInfo.order_batch.forEach(item => {
@@ -1618,7 +1757,6 @@ export default {
           flag.pack_number = Number(flag.pack_number ? flag.pack_number : 0) + Number(item.number)
         }
       })
-      // console.log(this.outStockList)
       // 出库概述添加装箱实际数量
       let outStockNumberInfo = res[3].data.data
       outStockNumberInfo.forEach(item => {
@@ -1634,6 +1772,41 @@ export default {
             }
           })
         }
+      })
+
+      // 订单取消的时候需要拿物料订购日志（分颜色），下单产品信息（分尺码颜色）
+      this.order_log.material_order.forEach((item) => {
+        const finded = this.materialDetail.find((itemFind) => itemFind.material_name === item.material_name && itemFind.color_code === item.color_code)
+        if (!finded) {
+          this.materialDetail.push({
+            material_name: item.material_name,
+            color_code: item.color_code,
+            unit: item.unit || 'kg',
+            type: item.type,
+            number: '',
+            attribute: item.attribute,
+            stock_id: item.stock_id,
+            vat_code: item.vat_code
+          })
+        }
+      })
+      this.order_info.order_batch.forEach((itemBacth) => {
+        itemBacth.batch_info.forEach((itemPro) => {
+          itemPro.size.forEach((itemSize) => {
+            const finded = this.productDetail.find((itemFind) => itemFind.productCode === itemPro.productCode && itemFind.size === itemSize.name.join('/'))
+            if (!finded) {
+              this.productDetail.push({
+                id: itemPro.productInfo.id,
+                number: '',
+                cost: itemSize.unitPrice,
+                productCode: itemPro.productCode,
+                size: itemSize.name.join('/'),
+                unit: itemPro.productInfo.category_info.name,
+                type: itemPro.productInfo.category_info.product_category + '/' + itemPro.productInfo.type_name + '/' + itemPro.productInfo.style_name
+              })
+            }
+          })
+        })
       })
       this.loading = false
     })
@@ -1656,40 +1829,45 @@ export default {
     padding: 5px !important;
   }
 }
-.imgCtn {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  &:hover {
-    .toolTips {
-      display: flex;
-      align-items: center;
-    }
-  }
-  .img {
-    width: 48px;
-    padding: 6px;
-    height: 48px;
-  }
-  .toolTips {
-    display: none;
-    position: absolute;
-    top: 0;
+#orderDetail {
+  .imgCtn {
+    position: relative;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    text-align: center;
-    line-height: 1;
-    cursor: pointer;
-    span {
-      color: #fff;
-      &:hover {
-        color: #1a95ff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &:hover {
+      .toolTips {
+        display: flex;
+        align-items: center;
       }
     }
+    .img {
+      width: 48px;
+      padding: 6px;
+      height: 48px;
+    }
+    .toolTips {
+      display: none;
+      position: absolute;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      text-align: center;
+      line-height: 1;
+      cursor: pointer;
+      span {
+        color: #fff;
+        &:hover {
+          color: #1a95ff;
+        }
+      }
+    }
+  }
+  .el-carousel__arrow {
+    background: #1a95ff;
   }
 }
 </style>

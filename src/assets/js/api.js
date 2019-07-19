@@ -276,6 +276,8 @@ const rawMaterialPurchaseDetail = (params) => http.get(`${baseUrl}/material/rese
 const rawMaterialPurchaseIn = (params) => http.post(`${baseUrl}/material/reserve/push`, params, 'application/json')
 // 物料结余入库
 const materialSurplusPush = (params) => http.post(`${baseUrl}/order/material/surplus/push`, params, 'application/json')
+// 产品结余入库
+const productSurplusPush = (params) => http.post(`${baseUrl}/product/stock/save`, params, 'application/json')
 // 订单物料库存
 const orderMaterialSotckDetail = (params) => http.get(`${baseUrl}/order/material/list`, params)
 // 结余清空
@@ -289,6 +291,7 @@ const rolePermissionAdd = (params) => http.post(`${baseUrl}/permission/group/sav
 // 岗位权限列表
 const stationPermissionList = (params) => http.get(`${baseUrl}/permission/group/all`, params)
 export {
+  productSurplusPush,
   stationPermissionList,
   rolePermissionAdd,
   permissionList,

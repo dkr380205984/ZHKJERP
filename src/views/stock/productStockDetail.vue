@@ -118,9 +118,9 @@ export default {
       return str.substring(0, str.length - 2)
     },
     filterReject (arr) {
-      return arr.reduce((total, current) => {
+      return (arr && arr.reduce((total, current) => {
         return total + current.num
-      }, 0)
+      }, 0)) || '0'
     }
   },
   mounted () {

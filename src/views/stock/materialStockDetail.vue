@@ -186,7 +186,6 @@ export default {
       this.total = resArr[0].data.data.total
       this.list = resArr[0].data.data.data
       this.loading = false
-      // console.log(resArr[2].data.data)
     })
   }
 }

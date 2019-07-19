@@ -251,16 +251,13 @@ const menu = [{
   }
   ]
 }, {
-  name: '生产管理',
+  name: '计划单管理',
   children: [{
     name: '新建生产计划单',
     url: '/index/productDesignCreateList'
   }, {
     name: '生产计划单列表',
     url: '/index/productDesignList'
-  }, {
-    name: '织造加工列表',
-    url: '/index/productDesignList2'
   }]
 }, {
   name: '物料管理',
@@ -278,16 +275,22 @@ const menu = [{
     url: '/index/rawMaterialStockList'
   }]
 }, {
-  name: '检验管理',
+  name: '生产管理',
   children: [{
-    name: '产品检验列表',
-    url: '/index/productExaminationList'
+    name: '织造加工列表',
+    url: '/index/productDesignList2'
   }]
 }, {
   name: '收发管理',
   children: [{
     name: '产品出入库列表',
     url: '/index/orderStockList'
+  }]
+}, {
+  name: '检验管理',
+  children: [{
+    name: '产品检验列表',
+    url: '/index/productExaminationList'
   }]
 }, {
   name: '装箱出库管理',
@@ -306,8 +309,13 @@ const menu = [{
   }, {
     name: '产品库存列表',
     url: '/index/productStockList'
-  }, {
-    name: '物料库存列表',
+  },
+  // {
+  //   name: '添加物料库存',
+  //   url: '/index/mainMaterialStockCreate'
+  // },
+  {
+    name: '物料仓库',
     url: '/index/materialStockList'
     // }, {
     //   name: '添加原料库存',

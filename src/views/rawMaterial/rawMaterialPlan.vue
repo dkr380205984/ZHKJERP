@@ -159,7 +159,7 @@ export default {
           productBySize[mark].product.push({
             production_sunhao: item.production_sunhao,
             color: item.color,
-            number: item.order_num - item.stock_pick
+            number: (item.order_num - item.stock_pick) > 0 ? (item.order_num - item.stock_pick) : item.production_num
           })
         } else {
           productBySize.push({
@@ -167,7 +167,7 @@ export default {
             product: [{
               production_sunhao: item.production_sunhao,
               color: item.color,
-              number: item.order_num - item.stock_pick
+              number: (item.order_num - item.stock_pick) > 0 ? (item.order_num - item.stock_pick) : item.production_num
             }]
           })
         }

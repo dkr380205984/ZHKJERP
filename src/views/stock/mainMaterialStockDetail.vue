@@ -107,7 +107,7 @@ export default {
         updated_at: '',
         vat_code: ''
       },
-      actionArr: ['全部', '预定购入库', '加工出库', '订购入库', '生产出库', '订购入库']
+      actionArr: ['全部', '预定购入库', '加工出库', '订购入库', '生产出库', '订购入库', '', '', '取消订单']
     }
   },
   methods: {
@@ -132,7 +132,7 @@ export default {
           time: item.create_time,
           unit: '千克',
           action: this.actionArr[item.action],
-          style: item.action === 1 || item.action === 3 || item.action === 5 ? '#67c23a' : '#F56C6C',
+          style: item.action === 1 || item.action === 3 || item.action === 5 || item.action === 8 ? '#67c23a' : '#F56C6C',
           weight: item.action_weight,
           user_name: item.user_name
         }

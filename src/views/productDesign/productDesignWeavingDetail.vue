@@ -136,9 +136,11 @@
                     </span>
                   </span>
                 </li>
-                <!-- <div class="logList">展开日志</div> -->
+                <div class="logList"
+                  @click="showZhizao=!showZhizao">{{showZhizao?'收起':'展开'}}日志</div>
               </ul>
-              <ul class="log">
+              <ul class="log"
+                v-show="showZhizao">
                 <div>
                   <li>
                     <span>完成时间</span>
@@ -453,6 +455,7 @@ import { productionDetail, weaveDetail, weaveUpadate, replenishYarnList } from '
 export default {
   data () {
     return {
+      showZhizao: false,
       loading: true,
       lock: false,
       showShade: false,
@@ -656,13 +659,13 @@ export default {
                       material: itemPlan.material_name,
                       colorWeight: [{
                         color: itemPlan.color_name,
-                        weight: (itemPlan.number * itemInfo.order_num * (1 + itemInfo.production_sunhao / 100) / 1000).toFixed(2)
+                        weight: (itemPlan.number * (itemInfo.order_num - itemInfo.stock_pick > 0 ? (itemInfo.order_num - itemInfo.stock_pick) : itemInfo.production_num) * (1 + itemInfo.production_sunhao / 100) / 1000).toFixed(2)
                       }]
                     })
                   } else {
                     json.colorArr[mark].colorWeight.push({
                       color: itemPlan.color_name,
-                      weight: (itemPlan.number * itemInfo.order_num * (1 + itemInfo.production_sunhao / 100) / 1000).toFixed(2)
+                      weight: (itemPlan.number * (itemInfo.order_num - itemInfo.stock_pick > 0 ? (itemInfo.order_num - itemInfo.stock_pick) : itemInfo.production_num) * (1 + itemInfo.production_sunhao / 100) / 1000).toFixed(2)
                     })
                   }
                 }

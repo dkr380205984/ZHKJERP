@@ -133,6 +133,10 @@ let router = new Router({
       name: 'orderCreate',
       component: () => import('./views/order/orderCreate.vue')
     }, {
+      path: 'orderUpdate/:id',
+      name: 'orderUpdate',
+      component: () => import('./views/order/orderUpdate.vue')
+    }, {
       path: 'orderDetail/:id',
       name: 'orderDetail',
       component: () => import('./views/order/orderDetail.vue')

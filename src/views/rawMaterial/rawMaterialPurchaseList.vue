@@ -1,5 +1,6 @@
 <template>
   <div id="rawMaterialOrderList"
+    v-getHash="{'clientVal':clientVal,'pages':pages}"
     v-loading='loading'>
     <div class="head">
       <h2>原料预订购列表</h2>
@@ -69,7 +70,7 @@
           </div>
           <div class="tableColumn">{{item.total_weight}}kg</div>
           <div class="tableColumn">{{item.total_price}}元</div>
-          <div class="tableColumn">{{item.remark?item.remark:'无'}}</div>
+          <div class="tableColumn">{{item.desc?item.desc:'无'}}</div>
           <div class="tableColumn">
             <span class="btns normal"
               @click="$router.push('/index/rawMaterialPurchaseDetail/'+item.id)">原料入库</span>
@@ -90,10 +91,11 @@
 </template>
 
 <script>
-import { rawMaterialPurchaseList } from '@/assets/js/api.js'
+import { rawMaterialPurchaseList, clientList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      first: true, // 判断是不是第一次进入页面
       loading: true,
       client: [],
       clientVal: '',
@@ -135,14 +137,20 @@ export default {
   methods: {
     getList () {
       rawMaterialPurchaseList({
-        company_id: window.sessionStorage.getItem('company_id'),
-        limit: 5
+        'company_id': window.sessionStorage.getItem('company_id'),
+        'limit': 5,
+        'page': this.pages,
+        'client_id': this.clientVal,
+        'start_time': this.start_time,
+        'end_time': this.end_time
       }).then((res) => {
+        this.total = res.data.meta.total
         this.list = res.data.data.map((item) => {
           item.material_info = JSON.parse(item.material_info)
           return item
         })
         this.loading = false
+        this.first = false
       })
     },
     pickTime (date) {
@@ -157,8 +165,33 @@ export default {
       this.getList()
     }
   },
+  watch: {
+    clientVal (newVal) {
+      if (!this.first) {
+        if (newVal) {
+          this.pages = 1
+        }
+      }
+      this.getList()
+    }
+  },
   created () {
-    this.getList()
+    const hash = window.location.hash ? JSON.parse(decodeURIComponent(window.location.hash).slice(1)) : {}
+    // 分页的特殊性单独处理
+    this.pages = hash.pages
+    clientList({
+      company_id: window.sessionStorage.getItem('company_id')
+    }).then((res) => {
+      this.client = res.data.data.filter((item) => { return (item.type.find((finded) => finded === 3)) })
+      this.client.unshift({
+        id: null,
+        name: '本厂仓库'
+      })
+      for (let key in hash) {
+        this[key] = hash[key]
+      }
+      this.getList()
+    })
   }
 }
 </script>

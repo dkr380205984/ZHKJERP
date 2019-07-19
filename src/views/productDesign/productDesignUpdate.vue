@@ -133,7 +133,7 @@
 </template>
 
 <script>
-import { productionDetail, productionSave } from '@/assets/js/api.js'
+import { productionDetail, productionSave, orderStockDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -243,16 +243,46 @@ export default {
     }
   },
   mounted () {
-    productionDetail({
+    Promise.all([productionDetail({
       order_id: this.$route.params.id
-    }).then((res) => {
-      console.log(res)
-      this.order = res.data.data.production_detail.order_info
-      this.productInfo = res.data.data.production_detail.product_info.map((item) => {
+    }), orderStockDetail({
+      order_id: this.$route.params.id,
+      company_id: window.sessionStorage.getItem('company_id')
+    })]).then((res) => {
+      this.order = res[0].data.data.production_detail.order_info
+      this.productInfo = res[0].data.data.production_detail.product_info.map((item) => {
         item.stock_pick_now = item.stock_pick
         item.stock_pick_real = 0
         return item
       })
+      // 订单更新后把订单数据更新到生产计划单里
+      for (let key in res[1].data.data.stock_data) {
+        res[1].data.data.stock_data[key].forEach((item) => {
+          let finded = this.productInfo.find((itemFind) => { return itemFind.product_code === key && itemFind.size === item.size && itemFind.color === item.color })
+          if (finded) {
+            finded.order_num = item.numbers
+          } else {
+            this.productInfo.push({
+              category_name: item.category_name,
+              color: item.color,
+              size: item.size,
+              production_num: 0,
+              production_sunhao: 10,
+              stock_number: 0,
+              stock_pick: 0,
+              stock_pick_change: 0,
+              stock_pick_now: 0,
+              stock_pick_real: 0,
+              total_num: item.numbers,
+              order_num: item.numbers,
+              unit_name: item.unit_name,
+              type_name: item.type_name,
+              style_name: item.style_name,
+              product_code: key
+            })
+          }
+        })
+      }
       // 合并相同编号的产品数据
       this.productInfo.forEach((item) => {
         let finded = this.product.find((itemFind, index) => itemFind.product_code === item.product_code)
@@ -280,6 +310,7 @@ export default {
           })
         }
       })
+      console.log(res[1])
       this.loading = false
     })
   }
