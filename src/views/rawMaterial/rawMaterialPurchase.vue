@@ -131,7 +131,7 @@
 </template>
 
 <script>
-import { rawMaterialPurchase, pantongList, YarnColorList, clientList, YarnList } from '@/assets/js/api.js'
+import { rawMaterialPurchase, YarnColorList, clientList, YarnList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -341,9 +341,9 @@ export default {
       YarnColorList({
         company_id: sessionStorage.company_id
       }),
-      pantongList({
-        company_id: sessionStorage.company_id
-      }),
+      // pantongList({
+      //   company_id: sessionStorage.company_id
+      // }),
       clientList({
         company_id: sessionStorage.company_id
       }),
@@ -357,9 +357,9 @@ export default {
         color_code: '',
         name: '白胚'
       },
-      ...res[0].data.data, ...res[1].data.data]
-      this.companyList = res[2].data.data.filter((item) => (item.type.indexOf(2) !== -1))
-      this.materialList.material = res[3].data.data
+      ...res[0].data.data]
+      this.companyList = res[1].data.data.filter((item) => (item.type.indexOf(2) !== -1))
+      this.materialList.material = res[2].data.data
     })
   }
 }

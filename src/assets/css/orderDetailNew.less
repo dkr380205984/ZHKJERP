@@ -689,4 +689,165 @@
       }
     }
   }
+  .shade2{
+    position: fixed;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0,0,0,0.8);
+    .main{
+      position: absolute;
+      width: 640px;
+      height: 540px;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      margin: auto;
+      background: #ffffff;
+      overflow: hidden;
+      border-radius: 4px;
+      .close{
+        position: absolute;
+        right: -30px;
+        top: -30px;
+        width: 60px;
+        height: 60px;
+        background: @normalBlue;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: 0.1s;
+        color: #ECF0F1;
+        &:hover{
+          transform: scale(1.1);
+          color: #ffffff;
+          background: @hoverBlue;
+        }
+        .icon{
+          position: absolute;
+          left: 15px;
+          bottom: 7px;
+          font-size: 16px;
+          font-weight: bold;
+        }
+      }
+      .title{
+        line-height: 66px;
+        font-size: @fontSubhead;
+        padding: 0 20px;
+        background: linear-gradient(to right,#1A95FF,#CEDDEF);
+        border-radius: 4px;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        color: #ffffff;
+        margin-bottom: 40px;
+      }
+      .content{
+        margin: 20px;
+        background: #F5F5F5;
+        padding: 15px;
+        border-radius: 4px;
+        color: @fontNormal;
+      }
+      .loading{
+        margin: 100px auto 0 auto;
+        position: relative;
+        z-index: 0;
+        .spinner {
+          margin:auto;
+          width: 100px;
+          height: 60px;
+          text-align: center;
+          /* 设置加载条的间距 */
+          font-size: 10px;
+          div {
+            background-color: @normalBlue;
+            height: 100%;
+            width: 10px;
+            display: inline-block;
+            animation: stretchdelay 1.2s infinite ease-in-out;
+            margin:0 5px;
+          }
+          .rect2 {
+            animation-delay: -1.1s;
+          }
+          .rect3 {
+            animation-delay: -1.0s;
+          }
+          .rect4 {
+            animation-delay: -0.9s;
+          }
+          .rect5 {
+            animation-delay: -0.8s;
+          }
+          @keyframes stretchdelay {
+            0%, 40% {
+              background-color: @normalBlue;
+              transform: scaleY(.7);
+             }  
+            20% {
+              background-color: #DDD;
+              transform: scaleY(1.7);
+            }
+            100% {
+              background-color: #DDD;
+              transform: scaleY(.7);
+            }
+           }
+        } 
+        .success{
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          .el-icon-check{
+            font-size: 70px;
+            font-weight: 500;
+            color:  @success;
+            border: 3px solid;
+            border-radius: 50%;
+            padding: 5px;
+          }
+          .des{
+            font-size: @fontBig;
+            margin: 10px;
+            color: @fontNormal;
+          }
+        }
+      }
+      .inputCtn{
+        max-height: 260px;
+        overflow: auto;
+        position: relative;
+        font-size: @fontBig;
+        color: @fontNormal;
+        .inputs{
+          box-sizing: border-box;
+          width: 100%;
+          padding:10px 20px;
+        }
+      }
+      .btnCtn{
+        position: absolute;
+        bottom: 20px;
+        left: 0;
+        right: 0;
+        margin: auto;
+        font-size: @fontBig;
+        line-height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .btn{
+          cursor: pointer;
+          text-align: center;
+          background: @normalBlue;
+          color: #fff;
+          margin: 0 15px;
+          border-radius: 2px;
+          padding: 0 15px;
+        }
+      }
+    }
+  }
 }

@@ -166,12 +166,15 @@
             </div>
           </div>
           <div class="tableColumn"
-            style="flex:0.7">暂无状态</div>
+            style="flex:0.7"
+            :style="{'color':statusStyle(item.status,item.has_log)}">{{orderStatus(item.status,item.has_log)}}</div>
           <div class="tableColumn"
             style="flex-direction:row;flex:1.3">
             <div style="margin:auto">
               <span class="btns success"
                 @click="$router.push('/index/orderDetailNew/' + item.id)">详情</span>
+              <span class="btns warning"
+                @click="$router.push('/index/orderUpdate/' + item.id)">修改</span>
               <span class="btns error"
                 style="display:none"
                 @click="deleteOrder(item.id)">删除</span>
@@ -271,6 +274,31 @@ export default {
     }
   },
   methods: {
+    // 订单状态
+    orderStatus (val, hasLog) {
+      if (val === 1) {
+        return '已完成'
+      } else if (val === 2) {
+        return '已取消'
+      } else {
+        if (hasLog !== 0) {
+          return '进行中'
+        }
+      }
+      return '已创建'
+    },
+    statusStyle (val, hasLog) {
+      if (val === 1) {
+        return '#67c23a'
+      } else if (val === 2) {
+        return '#F56C6C'
+      } else {
+        if (hasLog !== 0) {
+          return '#1a95ff'
+        }
+      }
+      return '#E6A23C'
+    },
     showImg (imgList) {
       this.imgList = imgList
       this.showShade = true
@@ -323,6 +351,8 @@ export default {
           })
           return {
             id: item.id,
+            has_log: item.has_log,
+            status: item.status,
             group_name: item.group_name,
             order_code: item.order_code,
             order_time: item.order_time,
@@ -333,6 +363,7 @@ export default {
             lineNum: productList.length // 这个参数用于计算每行的高度
           }
         })
+        console.log(this.list)
         this.first = false
       })
     },

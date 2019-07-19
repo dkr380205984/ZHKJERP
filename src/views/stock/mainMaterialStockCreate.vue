@@ -1,73 +1,67 @@
 <template>
   <div id="mainMaterialStockCreate">
     <div class="head">
-      <h2>添加原料库存</h2>
+      <h2>添加物料库存</h2>
     </div>
     <div class="body">
       <div class="lineCtn">
         <div class="inputCtn oneLine">
-          <span class="label">原料名称</span>
-          <el-select class="elInput"
-            v-model="value"
-            placeholder="请选择原料名称">
-            <el-option v-for="(item,index) in arr"
-              :key="index"
-              :value="item"
-              :label="item"></el-option>
-          </el-select>
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn oneLine">
-          <span class="label">原料名称:</span>
-          <el-select class="elInput"
-            v-model="value"
-            placeholder="请选择原料名称">
-            <el-option v-for="(item,index) in arr"
-              :key="index"
-              :value="item"
-              :label="item"></el-option>
-          </el-select>
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn oneLine">
-          <span class="label">原料颜色:</span>
-          <el-select class="elInput"
-            v-model="value"
-            placeholder="请选择原料颜色">
-            <el-option v-for="(item,index) in arr"
-              :key="index"
-              :value="item"
-              :label="item"></el-option>
-          </el-select>
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn oneLine">
-          <span class="label">原料属性:</span>
-          <el-select class="elInput"
-            v-model="value"
-            placeholder="请选择原料属性">
-            <el-option v-for="(item,index) in arr"
-              :key="index"
-              :value="item"
-              :label="item"></el-option>
-          </el-select>
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn oneLine">
-          <span class="label">原料缸号:</span>
+          <span class="label">订单号:</span>
           <el-input class="elInput"
-            placeholder="请输入原料缸号" />
+            placeholder="请输入来源订单号"></el-input>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn oneLine">
-          <span class="label">原料重量:</span>
+          <span class="label">物料名称:</span>
+          <el-select class="elInput"
+            v-model="value"
+            placeholder="请选择物料名称">
+            <el-option v-for="(item,index) in arr"
+              :key="index"
+              :value="item"
+              :label="item"></el-option>
+          </el-select>
+        </div>
+      </div>
+      <div class="lineCtn">
+        <div class="inputCtn oneLine">
+          <span class="label">物料颜色:</span>
+          <el-select class="elInput"
+            v-model="value"
+            placeholder="请选择物料颜色">
+            <el-option v-for="(item,index) in arr"
+              :key="index"
+              :value="item"
+              :label="item"></el-option>
+          </el-select>
+        </div>
+      </div>
+      <div class="lineCtn">
+        <div class="inputCtn oneLine">
+          <span class="label">物料属性:</span>
+          <el-select class="elInput"
+            v-model="value"
+            placeholder="请选择物料属性">
+            <el-option v-for="(item,index) in arr"
+              :key="index"
+              :value="item"
+              :label="item"></el-option>
+          </el-select>
+        </div>
+      </div>
+      <div class="lineCtn">
+        <div class="inputCtn oneLine">
+          <span class="label">物料缸号:</span>
           <el-input class="elInput"
-            placeholder="请输入原料重量">
+            placeholder="请输入物料缸号" />
+        </div>
+      </div>
+      <div class="lineCtn">
+        <div class="inputCtn oneLine">
+          <span class="label">物料重量:</span>
+          <el-input class="elInput"
+            placeholder="请输入物料重量">
             <template slot="append">千克</template>
           </el-input>
         </div>

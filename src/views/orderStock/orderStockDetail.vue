@@ -97,12 +97,10 @@
           <div class="inputCtn noPadding">
             <div class="content">
               <div class="handle">
-                <div @click="$router.push('/index/orderStockOut/' + $route.params.id + '/' + item.product_code)">
+                <div @click="item.canOut?$router.push('/index/orderStockOut/' + $route.params.id + '/' + item.product_code):''">
                   <img class="icon"
-                    src="@/assets/image/icon/outStock.png">
-                  <!-- <img class="icon"
-                    src="@/assets/image/icon/outStock_disabled.png"> -->
-                  <span>去出库</span>
+                    :src="item.canOut?require('@/assets/image/icon/outStock.png'):require('@/assets/image/icon/outStock_disabled.png')">
+                  <span :style="{'color':item.canOut?'#1A95FF':'#ddd','cursor':item.canOut?'pointer':'not-allowed'}">去出库</span>
                 </div>
               </div>
               <ul class="tablesCtn">
@@ -165,7 +163,7 @@
                           </span>
                           <span>{{itemType.total}}{{item.unit_name}}</span>
                         </span>
-                        <span style="flex:7;color:#F56C6C"
+                        <span style="flex:7;"
                           v-if="itemColour.out.length === 0">暂无出库信息</span>
                       </span>
                     </span>
@@ -212,12 +210,10 @@
                 </li>
               </ul>
               <div class="handle">
-                <div @click="$router.push('/index/orderStockIn/' + $route.params.id + '/' + item.product_code)">
+                <div @click="item.canIn?$router.push('/index/orderStockIn/' + $route.params.id + '/' + item.product_code):''">
                   <img class="icon"
-                    src="@/assets/image/icon/goStock.png">
-                  <!-- <img class="icon"
-                    src="@/assets/image/icon/goStock_disabled.png"> -->
-                  <span>去入库</span>
+                    :src="item.canIn?require('@/assets/image/icon/goStock.png'):require('@/assets/image/icon/goStock_disabled.png')">
+                  <span :style="{'color':item.canIn?'#1A95FF':'#ddd','cursor':item.canIn?'pointer':'not-allowed'}">去入库</span>
                 </div>
               </div>
               <ul class="tablesCtn">
@@ -280,7 +276,7 @@
                           </span>
                           <span>{{itemType.total}}{{item.unit_name}}</span>
                         </span>
-                        <span style="flex:7;color:#F56C6C"
+                        <span style="flex:7;"
                           v-if="itemColour.in.length === 0">暂无入库信息</span>
                       </span>
                     </span>
@@ -415,7 +411,7 @@
 </template>
 
 <script>
-import { productionDetail, storeInList, storeOutList, storeInUpdate, storeOutUpdate } from '@/assets/js/api.js'
+import { productionDetail, storeInList, storeOutList, storeInUpdate, storeOutUpdate, weaveDetail, halfProductDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -466,6 +462,10 @@ export default {
       order_id: this.$route.params.id
     }), storeOutList({
       order_id: this.$route.params.id
+    }), weaveDetail({
+      order_id: this.$route.params.id
+    }), halfProductDetail({
+      order_id: this.$route.params.id
     })]).then((res) => {
       this.order = res[0].data.data.production_detail.order_info
       let productInfo = res[0].data.data.production_detail.product_info
@@ -509,25 +509,26 @@ export default {
       })
       let logListIn = res[1].data.data
       let logListOut = res[2].data.data
+      let logListWeave = res[3].data.data
+      let logListHalf = res[4].data.data
       // 把日志信息整合到产品信息里去
       this.productInfo = this.productInfo.map((item) => {
         let json = item
         json.inLog = []
         json.outLog = []
-        json.inLogFlag = false
+        json.inLogFlag = false // 用于日志展开收起管理
         json.outLogFlag = false
+        json.canOut = !!logListHalf.find((itemFind) => itemFind.product_info.product_code === item.product_code) // 必须要有半成品分配信息才能出库
+        json.canIn = !!logListWeave.find((itemFind) => itemFind.product_info.product_code === item.product_code) || logListHalf.find((itemFind) => itemFind.product_info.product_code === item.product_code) // 用于判断是否可以执行出入库操作
+        // 先根据是否有制造分配信息或者半成品分配信息判断该产品能否进行出入库操作
         // 第一步把日志信息记录到inLog 和 outLog数组里
         logListIn.forEach((itemLog) => {
           if (itemLog.product_info.product_code === item.product_code) {
-            // itemLog.type = JSON.parse(itemLog.type)
-            // console.log(itemLog.type)
             json.inLog.push(itemLog)
           }
         })
         logListOut.forEach((itemLog) => {
           if (itemLog.product_info.product_code === item.product_code) {
-            // itemLog.type = JSON.parse(itemLog.type)
-            // console.log(itemLog.type)
             json.outLog.push(itemLog)
           }
         })
@@ -536,6 +537,7 @@ export default {
           let jsonSize = itemSize
           jsonSize.in = []
           jsonSize.out = []
+
           logListIn.forEach((itemLog) => {
             if (itemLog.product_info.product_code === item.product_code && itemLog.color === itemSize.color && itemLog.size === itemSize.size) {
               let mark = -1
@@ -626,7 +628,6 @@ export default {
         })
         return json
       })
-      console.log(this.productInfo)
     })
   },
   methods: {

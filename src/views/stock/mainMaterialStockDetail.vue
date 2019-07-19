@@ -107,7 +107,7 @@ export default {
         updated_at: '',
         vat_code: ''
       },
-      actionArr: ['全部', '预定购入库', '加工出库', '订购入库', '生产出库', '订购入库']
+      actionArr: ['全部', '预定购入库', '加工出库', '订购入库', '生产出库', '订购入库', '', '', '取消订单']
     }
   },
   methods: {
@@ -125,14 +125,14 @@ export default {
       })
     ]).then((res) => {
       console.log(res)
-      this.materialInfo = res[0].data.data.filter(key => key.id === Number(this.$route.params.id))[0]
+      this.materialInfo = res[0].data.data.data.filter(key => key.id === Number(this.$route.params.id))[0]
       console.log(this.materialInfo)
       this.list = res[1].data.data.map((item) => {
         return {
           time: item.create_time,
           unit: '千克',
           action: this.actionArr[item.action],
-          style: item.action === 1 || item.action === 3 || item.action === 5 ? '#67c23a' : '#F56C6C',
+          style: item.action === 1 || item.action === 3 || item.action === 5 || item.action === 8 ? '#67c23a' : '#F56C6C',
           weight: item.action_weight,
           user_name: item.user_name
         }

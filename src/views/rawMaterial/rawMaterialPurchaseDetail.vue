@@ -33,6 +33,10 @@
         </div>
         <div class="lineCtn">
           <div class="inputCtn">
+            <span class="label">剩余总量:</span>
+            <span class="content">{{otherInfo.total_weight - otherInfo.leaveWeight}}千克</span>
+          </div>
+          <div class="inputCtn">
             <span class="label">备注信息:</span>
             <span class="content">{{otherInfo.desc?otherInfo.desc:'暂无备注'}}</span>
           </div>
@@ -100,10 +104,14 @@
                   </li>
                   <li>
                     <span>包装属性</span>:
-                    <el-input v-model="iten.materialAtr"
-                      :placeholder="'请输入包装属性'"
+                    <el-select v-model="iten.materialAtr"
+                      placeholder="请选择包装属性"
                       size="small">
-                    </el-input>
+                      <el-option v-for="item in attr"
+                        :key="item.name"
+                        :label="item.name"
+                        :value="item.name"></el-option>
+                    </el-select>
                   </li>
                   <li v-for="(value,index) in iten.stockWeightInfo"
                     :key="index"
@@ -139,6 +147,7 @@
                   <li>
                     <span>仓库</span>:
                     <el-select v-model="iten.company"
+                      size="small"
                       placeholder="请选择仓库">
                       <el-option v-for="item in companyArr"
                         :key="item.id"
@@ -243,6 +252,7 @@ export default {
     return {
       loading: true,
       companyArr: [],
+      attr: [{ name: '足斤包装' }, { name: '98包装' }, { name: '95包装' }],
       company: '',
       defaultStock: '桐庐凯瑞针纺有限公司',
       materialList: [],
@@ -275,7 +285,8 @@ export default {
         total_price: '',
         total_weight: '',
         desc: '',
-        order_time: ''
+        order_time: '',
+        leaveWeight: ''
       },
       logList: []
     }
@@ -374,7 +385,6 @@ export default {
         item.stockInfo.forEach(val => {
           val.stockWeightInfo.forEach(value => {
             let obj = {}
-            obj.type = 1
             obj.price = item.info.find((itemFind) => itemFind.color_code === val.materialColor).price
             obj.company_id = window.sessionStorage.getItem('company_id')
             obj.user_id = window.sessionStorage.getItem('user_id')
@@ -440,12 +450,25 @@ export default {
           })
         })
       })
+      const totalWeight = this.list.reduce((total1, current1) => {
+        return total1 + Number(current1.stockInfo.reduce((total2, current2) => {
+          return total2 + Number(current2.stockWeightInfo.reduce((total3, current3) => {
+            return total3 + Number(current3.weight)
+          }, 0))
+        }, 0))
+      }, 0)
+      if (totalWeight > (this.otherInfo.total_weight - this.otherInfo.leaveWeight)) {
+        flag = false
+        this.$message.error({
+          message: '入库总量已超过与订购数量，请重新输入'
+        })
+      }
       if (flag) {
         rawMaterialPurchaseIn({
           data: formArray
         }).then((res) => {
           if (res.data.status) {
-            this.$message.scucess({
+            this.$message.success({
               message: '添加成功'
             })
             this.$router.go(-1)
@@ -472,7 +495,6 @@ export default {
       this.logList = res.data.data.data_stock
       let stock = res.data.data.data_stock
       let materialList = JSON.parse(res.data.data.data_one.material_info)
-      console.log(materialList)
       // 对同种类型的纱线进行合并
       this.list = this.jsonMerge(materialList, ['material_name']).map((item) => {
         item.colors = item.info.map((itemColor) => {
@@ -497,6 +519,9 @@ export default {
         item.unit = 'kg'
         return item
       })
+      this.otherInfo.leaveWeight = this.list.reduce((total, current) => {
+        return total + parseInt(current.allNumber)
+      }, 0)
       console.log(this.list)
     })
     clientList({
@@ -504,7 +529,7 @@ export default {
     }).then((res) => {
       this.companyArr = res.data.data.filter((item) => { return (item.type.find((finded) => finded === 3)) })
       this.companyArr.unshift({
-        id: null,
+        id: 0,
         name: '本厂仓库'
       })
     })

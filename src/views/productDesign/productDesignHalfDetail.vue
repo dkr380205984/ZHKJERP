@@ -170,8 +170,11 @@
                   v-if="mergeLogList.length===0">
                   <span>还未进行任何分配</span>
                 </li>
+                <div class="logList"
+                  @click="showJiagong=!showJiagong">{{showJiagong?'收起':'展开'}}日志</div>
               </ul>
-              <ul class="log">
+              <ul class="log"
+                v-show="showJiagong">
                 <div>
                   <li>
                     <span>完成时间</span>
@@ -443,6 +446,7 @@ import { productionDetail, halfProductDetail, halfProductUpadate, replenishYarnL
 export default {
   data () {
     return {
+      showJiagong: false,
       loading: true,
       showShade: false,
       order: {
@@ -622,14 +626,14 @@ export default {
                       material: itemPlan.material_name,
                       colorWeight: [{
                         color: itemPlan.color_name,
-                        weight: parseInt((itemPlan.number * itemInfo.order_num * (1 + itemInfo.production_sunhao / 100))),
+                        weight: parseInt((itemPlan.number * (itemInfo.order_num - itemInfo.stock_pick > 0 ? (itemInfo.order_num - itemInfo.stock_pick) : itemInfo.production_num) * (1 + itemInfo.production_sunhao / 100))),
                         unit: itemPlan.unit
                       }]
                     })
                   } else {
                     json.colorArr[mark].colorWeight.push({
                       color: itemPlan.color_name,
-                      weight: parseInt(itemPlan.number * itemInfo.order_num * (1 + itemInfo.production_sunhao / 100)),
+                      weight: parseInt((itemPlan.number * (itemInfo.order_num - itemInfo.stock_pick > 0 ? (itemInfo.order_num - itemInfo.stock_pick) : itemInfo.production_num) * (1 + itemInfo.production_sunhao / 100))),
                       unit: itemPlan.unit
                     })
                   }

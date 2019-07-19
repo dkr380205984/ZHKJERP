@@ -141,20 +141,20 @@ export default {
     clear (item) {
 
     },
-    // getList () {
-    //   materialStockList({
-    //     company_id: window.sessionStorage.getItem('company_id'),
-    //     page: this.pages,
-    //     limit: 5,
-    //     material_color: this.color,
-    //     start_time: this.start_time,
-    //     end_time: this.end_time
-    //   }).then((res) => {
-    //     console.log(res)
-    //     this.total = res.data.data.total
-    //     this.list = res.data.data.data
-    //   })
-    // },
+    getList () {
+      materialStockDetail({
+        stock_id: this.$route.params.stockId,
+        company_id: window.sessionStorage.getItem('company_id'),
+        page: this.pages,
+        limit: 5,
+        material_color: this.color,
+        start_time: this.start_time,
+        end_time: this.end_time
+      }).then((res) => {
+        this.total = res.data.data.total
+        this.list = res.data.data.data
+      })
+    },
     pickTime (date) {
       if (date) {
         this.start_time = date[0]
@@ -176,14 +176,14 @@ export default {
         company_id: window.sessionStorage.getItem('company_id')
       }),
       materialStockDetail({
-        stock_id: this.$route.params.stockId
-        // limit: 5
+        stock_id: this.$route.params.stockId,
+        page: this.pages,
+        limit: 5
       })]).then((resArr) => {
       this.colorList = this.colorList.concat(resArr[0].data.data).concat(resArr[1].data.data)
-      this.total = resArr[2].data.data.length
-      this.list = resArr[2].data.data
+      this.total = resArr[2].data.data.total
+      this.list = resArr[2].data.data.data
       this.loading = false
-      console.log(resArr[2].data.data)
     })
   }
 }

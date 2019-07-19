@@ -44,35 +44,39 @@
                 <li class="title">
                   <span>产品编号</span>
                   <span>产品品类</span>
-                  <span style="flex:7;">
+                  <span style="flex:6;">
                     <span>配色/尺码</span>
-                    <span>下单数</span>
-                    <span>库存调取数</span>
                     <span>生产计划数</span>
-                    <span>入库工序</span>
+                    <span>工序</span>
+                    <span>分配工厂</span>
+                    <span>分配数量</span>
                     <span>入库数量</span>
                   </span>
                 </li>
                 <li class="material_info">
                   <span style="color:#1A95FF">{{productList[0]?productList[0].product_code:''}}</span>
                   <span>{{productList[0]?productList[0].category_name:''}}/{{productList[0]?productList[0].type_name:''}}/{{productList[0]?productList[0].style_name:''}}</span>
-                  <span style="flex:7;"
+                  <span style="flex:6;"
                     class="col">
                     <span v-for="(item,index) in productList"
                       :key="index">
                       <span>{{item.color}}/{{item.size}}</span>
-                      <span>{{item.order_num}}{{item.unit_name}}</span>
-                      <span>{{item.stock_pick}}{{item.unit_name}}</span>
                       <span>{{item.production_num}}{{item.unit_name}}</span>
-                      <span class="col"
-                        style="flex:2">
-                        <span v-for="(itemIn,indexIn) in item.in"
-                          :key="indexIn">
-                          <span>{{itemIn.type}}</span>
-                          <span>{{itemIn.number}}{{item.unit_name}}</span>
+                      <span style="flex:4;"
+                        class="col">
+                        <span v-for="(itemType,indexType) in item.machiningType"
+                          :key="indexType">
+                          <span>{{itemType.name}}</span>
+                          <span style="flex:3;"
+                            class="col">
+                            <span v-for="(itemCmp,indexCmp) in itemType.companyArr"
+                              :key="indexCmp">
+                              <span style="border-right:1px solid #ddd">{{itemCmp.name}}</span>
+                              <span style="border-right:1px solid #ddd">{{itemCmp.num}}{{item.unit_name}}</span>
+                              <span>{{itemCmp.inNum}}{{item.unit_name}}</span>
+                            </span>
+                          </span>
                         </span>
-                        <span style="align-items:center"
-                          v-if="item.in.length===0">暂无入库信息</span>
                       </span>
                     </span>
                   </span>
@@ -94,10 +98,10 @@
                   <el-select filterable
                     v-model="itemCompany.type"
                     placeholder="工序"
-                    multiple
                     size="small"
-                    style="width:114px">
-                    <el-option v-for="item in machiningType"
+                    style="width:114px"
+                    @change="getCompanyArr(index,indexCompany)">
+                    <el-option v-for="item in productList[0].machiningType"
                       :key="item.name"
                       :label="item.name"
                       :value="item.name">
@@ -109,7 +113,7 @@
                     placeholder="加工单位"
                     size="small"
                     style="width:114px;margin-left:0">
-                    <el-option v-for="item in companyArr"
+                    <el-option v-for="item in itemCompany.companyArr"
                       :key="item.id"
                       :label="item.name"
                       :value="item.id">
@@ -194,7 +198,7 @@
 
 <script>
 import { machiningType } from '@/assets/js/dictionary.js'
-import { clientList, productionDetail, storeIn, storeInList } from '@/assets/js/api.js'
+import { clientList, productionDetail, storeIn, storeInList, weaveDetail, halfProductDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -215,21 +219,9 @@ export default {
       },
       productList: [],
       companyArr: [],
-      machiningType: machiningType,
+      machiningType: JSON.parse(JSON.stringify(machiningType)), // 洗白对象
       colorSizeArr: [],
-      formList: [{
-        typeCompany: [{
-          type: '',
-          company: ''
-        }],
-        packNumber: [{
-          colorSize: [],
-          pack: '',
-          number: ''
-        }],
-        complete_time: '',
-        desc: ''
-      }]
+      formList: []
     }
   },
   mounted () {
@@ -239,11 +231,18 @@ export default {
       order_id: this.$route.params.orderId
     }), storeInList({
       order_id: this.$route.params.orderId
+    }), weaveDetail({
+      order_id: this.$route.params.orderId
+    }), halfProductDetail({
+      order_id: this.$route.params.orderId
     })]).then((res) => {
       this.companyArr = res[0].data.data.filter((item) => { return (item.type.indexOf(4) !== -1 || item.type.indexOf(5) !== -1 || item.type.indexOf(6) !== -1) })
       this.order = res[1].data.data.production_detail.order_info
       let productList = res[1].data.data.production_detail.product_info.filter((item) => item.product_code === this.$route.params.productId)
-      let logListIn = res[2].data.data
+      const logListIn = res[2].data.data
+      const logListWeave = res[3].data.data
+      const logListHalf = res[4].data.data
+      console.log(logListIn)
       // 产品尺码和颜色筛选框数据整合
       productList.forEach((itemInfo) => {
         let mark = -1
@@ -269,36 +268,81 @@ export default {
           })
         }
       })
-      // 入库入库数量统计
-      productList.map((item) => {
-        let json = item
-        json.in = []
-        logListIn.forEach((itemLog) => {
-          if (itemLog.product_info.product_code === item.product_code && itemLog.color === item.color && itemLog.size === item.size) {
-            let mark = -1
-            let finded = json.in.find((itemFind, indexFind) => {
-              if (itemFind.type === itemLog.type) {
-                mark = indexFind
-                return itemFind.type === itemLog.type
-              }
-            })
-            if (!finded) {
-              json.in.push({
-                'type': itemLog.type,
-                'number': itemLog.number
+      // 织造分配信息统计
+      productList.forEach((item) => {
+        item.machiningType = []
+        logListWeave.forEach((itemFind) => {
+          if (itemFind.color === item.color && itemFind.size === item.size && itemFind.product_info.product_code === item.product_code) {
+            if (item.machiningType.length === 0) {
+              item.machiningType.push({
+                name: '织造',
+                id: null,
+                companyArr: [{
+                  name: itemFind.client_name,
+                  id: this.companyArr.find((itemCmp) => itemCmp.name === itemFind.client_name).id,
+                  num: itemFind.number
+                }]
               })
             } else {
-              json.in[mark].number += itemLog.number
+              let finded = item.machiningType[0].companyArr.find((itemCmp) => itemCmp.name === itemFind.client_name)
+              if (!finded) {
+                item.machiningType[0].companyArr.push({
+                  name: itemFind.client_name,
+                  id: this.companyArr.find((itemCmp) => itemCmp.name === itemFind.client_name).id,
+                  num: itemFind.number
+                })
+              } else {
+                finded.num += itemFind.number
+              }
             }
           }
         })
-        return json
       })
+      // 半成品加工分配信息统计
+      productList.forEach((item) => {
+        logListHalf.forEach((itemFind) => {
+          if (itemFind.color === item.color && itemFind.size === item.size && itemFind.product_info.product_code === item.product_code) {
+            let finded = item.machiningType.find((itemName) => itemName.name === itemFind.type)
+            if (!finded) {
+              item.machiningType.push({
+                name: itemFind.type,
+                id: itemFind.type,
+                companyArr: [{
+                  name: itemFind.client_name,
+                  id: this.companyArr.find((itemCmp) => itemCmp.name === itemFind.client_name).id,
+                  num: itemFind.number
+                }]
+              })
+            } else {
+              finded.companyArr.push({
+                name: itemFind.client_name,
+                id: this.companyArr.find((itemCmp) => itemCmp.name === itemFind.client_name).id,
+                num: itemFind.number
+              })
+            }
+          }
+        })
+      })
+      productList[0].machiningType.forEach((item) => {
+        item.companyArr.forEach((itemCmp) => {
+          itemCmp.inNum = 0
+          logListIn.forEach((itemFind) => {
+            if (itemFind.product_info.product_code === productList[0].product_code && itemFind.color === productList[0].color && itemFind.size === productList[0].size && itemFind.type === item.name && itemFind.client_name === itemCmp.name) {
+              itemCmp.inNum += itemFind.number
+            }
+          })
+        })
+      })
+      // 入库数量统计
       this.productList = productList
       console.log(this.productList)
     })
   },
   methods: {
+    // 工序改变的时候，填写相应的单位
+    getCompanyArr (index, indexCompany) {
+      this.formList[index].typeCompany[indexCompany].companyArr = this.productList[0].machiningType.find((item) => item.name === this.formList[index].typeCompany[indexCompany].type).companyArr
+    },
     // 添加工序
     addTypeCompany (index) {
       this.formList[index].typeCompany.push({
@@ -315,7 +359,8 @@ export default {
       this.formList.push({
         typeCompany: [{
           type: '',
-          company: ''
+          company: '',
+          companyArr: []
         }],
         packNumber: [{
           colorSize: [],
@@ -347,7 +392,7 @@ export default {
       let msg = ''
       this.formList.forEach((item) => {
         item.typeCompany.forEach((itemCompany) => {
-          if (!itemCompany.company || !itemCompany.type) {
+          if (!itemCompany.company || itemCompany.type === '') {
             state = true
             msg = '检测到入库工序信息缺失'
           }
@@ -384,7 +429,7 @@ export default {
                 order_id: this.$route.params.orderId,
                 user_id: window.sessionStorage.getItem('user_id'),
                 product_code: this.$route.params.productId,
-                type: itemCompany.type.join('/'),
+                type: itemCompany.type,
                 client_id: itemCompany.company,
                 size: itemPackNumber.colorSize[0],
                 color: itemPackNumber.colorSize[1],
@@ -402,6 +447,7 @@ export default {
             this.$message.success({
               message: '保存成功'
             })
+            window.location.reload()
           } else {
             this.$message.error({
               message: res.data.message
