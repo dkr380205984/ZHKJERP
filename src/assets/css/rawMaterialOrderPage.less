@@ -96,6 +96,25 @@ ul {
          &.col {
            flex-direction: column;
          }
+         .materialInfoBox{
+          flex:3;
+          justify-content:right;
+          flex-wrap:wrap;
+          em{
+            box-sizing: border-box;
+            padding-left: 5em;
+            position: relative;
+            font-style: normal;
+            .label{
+              display: inline-block;
+              position: absolute;
+              top: 0;
+              left:0;
+              width: 5em;
+              text-align: right;
+            }
+          }
+         }
         .inputCtn{  
           display: flex;
           width: 450px;

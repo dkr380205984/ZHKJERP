@@ -162,9 +162,10 @@
                   <span>包装序号:</span>
                   <el-input size="small"
                     style="width:108px"
-                    :disabled="true"
                     placeholder="起始箱号"
-                    v-model="item.pack_start">
+                    v-model="item.pack_start"
+                    :disabled="key !== 0"
+                    @input="changeCounts(key,item.pack_start)">
                   </el-input>
                   <strong>——</strong>
                   <el-input size="small"
@@ -182,7 +183,7 @@
                   size="small">
                   <el-option v-for="value in packList"
                     :key="value.id"
-                    :label="value.name"
+                    :label="value.name + '(' + value.size + ')'"
                     :value="value.id">
                   </el-option>
                 </el-select>
@@ -223,6 +224,7 @@
                   <strong>——</strong>
                   <el-input size="small"
                     style="width:108px;"
+                    disabled
                     placeholder="合计数量"
                     v-model="valPro.all_number">
                   </el-input>
@@ -266,7 +268,7 @@
 </template>
 
 <script>
-import { orderDetail, clientList, packagMaterialList, packagCreate, packagDetail } from '@/assets/js/api.js'
+import { orderDetail, clientList, packagMaterialList, packagCreate } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -277,6 +279,7 @@ export default {
       order_time: '',
       group_name: '',
       count: 0,
+      counts: 0,
       batchList: {
         product_info: []
       },
@@ -296,11 +299,11 @@ export default {
       handler: function (newVal) {
         this.list.packagList = []
         this.count = this.counts ? this.counts : 0
-        newVal.forEach(item => {
+        newVal.forEach((item, key) => {
           item.pack_start = Number(this.count) + 1
           this.count = (item.pack_end ? item.pack_end : item.pack_start)
           let obj = {
-            packag_code: (item.pack_start ? item.pack_start : this.count) + '-' + (item.pack_end ? item.pack_end : this.count),
+            packag_code: item.pack_start + '-' + (item.pack_end ? item.pack_end : item.pack_start),
             product_info: []
           }
           item.product_info.forEach(valPro => {
@@ -311,6 +314,10 @@ export default {
               product_color: valPro.product[2] ? valPro.product[2] : '',
               number: valPro.all_number ? valPro.all_number : 0
             })
+            console.log(valPro)
+            if (item.pack_end || valPro.one_number) {
+              valPro.all_number = valPro.one_number * ((item.pack_end > item.pack_start ? item.pack_end : item.pack_start) - item.pack_start + 1)
+            }
           })
           this.list.packagList.push(JSON.parse(JSON.stringify(obj)))
         })
@@ -318,6 +325,12 @@ export default {
     }
   },
   methods: {
+    changeCounts (key, value) {
+      console.log(this.counts)
+      if (key === 0 && value !== this.counts + 1) {
+        this.counts = value - 1
+      }
+    },
     chinaNumber (key) {
       let obj = {
         1: '一',
@@ -478,14 +491,10 @@ export default {
       }),
       packagMaterialList({
         company_id: window.sessionStorage.getItem('company_id')
-      }),
-      packagDetail({
-        order_id: this.$route.params.id
       })
     ]).then(res => {
       let orderInfo = res[0].data.data
       let shipClientInfo = res[1].data.data
-      let packagDetailInfo = res[3].data.data
       // 初始化订单信息
       this.order_code = orderInfo.order_code
       this.client_name = orderInfo.client_name
@@ -529,7 +538,6 @@ export default {
               this.list.packagInfo.delivery_time = valBatch.delivery_time
               // 初始化装箱信息产品
               let str = valPro.productCode + ' ' + valPro.productInfo.category_info.product_category + '/' + valPro.productInfo.type_name + '/' + valPro.productInfo.style_name + (valPro.productInfo.flower_id ? '/' + valPro.productInfo.flower_id : '')
-              // let sizeColor = valSize.name[0] + '/' + valSize.name[1]
               let fleg = this.productList.find(key => key.value === str)
               if (!fleg) {
                 this.productList.push({
@@ -573,16 +581,6 @@ export default {
       })
       this.ship_client = shipClientInfo.filter(res => res.type === 7)
       this.packList = res[2].data.data
-      // console.log(this.packList)
-      console.log(packagDetailInfo)
-      packagDetailInfo.map(res => {
-        if (res.bacth_id === Number(this.$route.params.batchId)) {
-          if (Number(res.pack_code.split('-')[1]) > Number(this.count)) {
-            this.counts = Number(res.pack_code.split('-')[1])
-            this.count = Number(res.pack_code.split('-')[1])
-          }
-        }
-      })
       this.loading = false
     })
   }

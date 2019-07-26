@@ -78,7 +78,8 @@ export default {
       pack_weight: '',
       pack_attrs: [{ pack_attr: '' }],
       remark: '',
-      id: ''
+      id: '',
+      timer: true
     }
   },
   created () {
@@ -117,22 +118,33 @@ export default {
         })
         return
       }
-      packagMaterialAdd({
-        id: this.id ? this.id : null,
-        company_id: window.sessionStorage.getItem('company_id'),
-        name: this.pack_name,
-        size: this.pack_size,
-        attribute: JSON.stringify(this.pack_attrs),
-        weight: this.pack_weight,
-        desc: this.remark
-      }).then(res => {
-        console.log(res)
-        let str = this.id ? '修改' : '添加'
-        this.$message({
-          type: 'success',
-          message: str + `成功`
+      if (this.timer) {
+        this.timer = false
+        packagMaterialAdd({
+          id: this.id ? this.id : null,
+          company_id: window.sessionStorage.getItem('company_id'),
+          name: this.pack_name,
+          size: this.pack_size,
+          attribute: JSON.stringify(this.pack_attrs),
+          weight: this.pack_weight,
+          desc: this.remark
+        }).then(res => {
+          console.log(res)
+          let str = this.id ? '修改' : '添加'
+          this.$message({
+            type: 'success',
+            message: str + `成功` + (this.id ? '，即将跳转至列表页！' : '')
+          })
+          if (this.id) {
+            setTimeout(() => { this.$router.push('/index/packagMaterialList') }, 800)
+          }
         })
-      })
+        setTimeout(() => {
+          this.timer = true
+        }, 2000)
+      } else {
+        this.$message.error('请勿频繁点击！')
+      }
     }
   }
 }

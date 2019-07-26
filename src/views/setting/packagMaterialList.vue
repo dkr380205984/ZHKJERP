@@ -63,19 +63,24 @@ export default {
   },
   methods: {
     getPackList () {
+      this.loading = true
+      packagMaterialList({
+        company_id: window.sessionStorage.getItem('company_id'),
+        limit: 5,
+        page: this.pages
+      }).then(res => {
+        console.log(res)
+        this.list = res.data.data
+        this.list.forEach(res => {
+          res.attribute = JSON.parse(res.attribute)
+        })
+        this.total = res.data.data.length
+        this.loading = false
+      })
     }
   },
   created () {
-    packagMaterialList({
-      company_id: window.sessionStorage.getItem('company_id')
-    }).then(res => {
-      console.log(res)
-      this.list = res.data.data
-      this.list.map(res => {
-        res.attribute = JSON.parse(res.attribute)
-      })
-    })
-    this.loading = false
+    this.getPackList()
   }
 }
 </script>

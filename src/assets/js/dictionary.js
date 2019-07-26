@@ -44,6 +44,9 @@ const companyType = [
   }, {
     value: 8,
     name: '运输单位'
+  }, {
+    value: 9,
+    name: '物料存储单位'
   }
 ]
 
@@ -234,9 +237,13 @@ const menu = [{
     name: '订单发货列表',
     url: '/index/orderStat'
   },
+  // {
+  //   name: '大屏发货列表',
+  //   url: '/screenShipments'
+  // },
   {
     name: '大屏发货列表',
-    url: '/screenShipments'
+    url: '/screenShipmentsList'
     // },
     // {
     //   name: '添加样品订单(未完成)',
@@ -315,14 +322,14 @@ const menu = [{
   //   url: '/index/mainMaterialStockCreate'
   // },
   {
-    name: '物料仓库',
+    name: '物料仓库(仓库=>物料)',
     url: '/index/materialStockList'
     // }, {
     //   name: '添加原料库存',
     //   url: '/index/mainMaterialStockCreate'
-    // }, {
-    //   name: '添加辅料库存',
-    //   url: '/index/otherMaterialStockCreate'
+  }, {
+    name: '物料仓库(物料=>仓库)',
+    url: '/index/otherMaterialStockList'
     // }, {
     //   name: '辅料库存列表',
     //   url: '/index/otherMaterialStockList'

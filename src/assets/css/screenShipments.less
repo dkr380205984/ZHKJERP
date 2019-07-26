@@ -1,6 +1,12 @@
 @import './common.less';
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
 #screenShipments{
   width: 100%;
+  min-width: 2200px;
   height: 100%;
   padding: 40px 60px;
   font-family: 'systemfont';
@@ -9,6 +15,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  color: @fontNormal;
   .head{
     height: 7%;
     width: 100%;
@@ -21,12 +28,12 @@
       display: flex;
       align-items: center;
       font-size: 2rem;
+      font-weight: 500;
     }
     .info{
       display: flex;
       flex-direction: column;
       text-align: right;
-      color: @fontNormal;
     }
   }
   .DVbox{
@@ -34,8 +41,10 @@
     width: 100%;
     border: 1px solid #DDD;
     display: flex;
+    box-shadow: 0 5px 3px  #efefef;
     .explain{
       flex:1;
+      min-width: 150px;
       // background: #DDD;
       display: flex;
       flex-direction: column;
@@ -45,7 +54,6 @@
         display: flex;
         flex-direction: column;
         width: 70%;
-        color: @fontNormal;
         &.title{
           font-size: 1.3rem;
           font-weight: 500;
@@ -81,16 +89,131 @@
     }
     .ImgBox{
       flex:10;
+      min-width: 1950px;
+      display: flex;
+      justify-content: space-between;
+      .DVBox{
+        flex:1;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        .DVImg{
+          width: 100%;
+          height: 75%;
+        }
+        span{
+          flex: 1;
+          display: flex;
+          justify-content: center;
+          line-height: 40px;
+          font-size: 1.4rem;
+          font-weight: 500;
+        }
+      }
     }
   }
   .label{
-    height: 55%;
+    height:1042px;
     width: 100%;
     border: 1px solid #DDD;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    .title {
+      // flex:1;
+      height: 80px;
+      box-sizing: border-box;
+      display: flex;
+      background-color: #E3F2FF;
+      border-bottom: 1px solid #DDD;
+      span{
+        flex: 1;
+        display: flex;
+        height: 100%;
+        border-right: 1px solid #DDD;
+        border-bottom: 1px solid #DDD;
+        justify-content: center;
+        align-items: center;
+        &:last-child{
+          border-right: none;
+        }
+      }
+    }
+    &>.content{
+      flex: auto;
+      .table{
+        height: inherit;
+        .tablesCtn{
+          width: 100%;
+          line-height: 80px;
+          height: inherit;
+          border: none;
+          box-sizing: border-box !important;
+          .content {
+            box-sizing: border-box !important;
+            .tableColumn {
+              box-sizing: border-box !important;
+            }
+            .tableRow {
+              box-sizing: border-box !important;
+              &>em{
+                flex:1;
+                font-style: normal;
+                padding: 0 5%;
+                text-align: left;
+              }
+            }
+          }
+        }
+        .sizeWrap{
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 50%;
+          font-style: normal;
+          border-right: 1px solid #DDD;
+          box-sizing: border-box;
+          border-bottom: 1px solid #DDD;
+          &:nth-child(2n){
+            border-right: none;
+          }
+          &:nth-last-child(1),
+          &:nth-last-child(2){
+            border-bottom: none;
+          }
+        }
+        em{
+          &.rateOfProgress{
+          position: relative;
+          margin: 0 10px;
+          }
+        }
+      }
+    }
   }
   .footed{
     height: 6%;
     width: 100%;
-    background: #DDD;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    .logo{
+      position: absolute;
+      top: 50%;
+      left: 0;
+      height: 30px;
+      display: flex;
+      transform: translateY(-50%);
+      align-items: center;
+      cursor: pointer;
+      img{
+        width: 30px;
+      }
+      span{
+        color: #E0364F;
+        margin-left: 1rem;
+      }
+    }
   }
 }

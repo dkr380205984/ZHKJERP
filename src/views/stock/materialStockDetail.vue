@@ -2,9 +2,9 @@
   <div id="mainMaterialStockList"
     v-loading='loading'>
     <div class="head">
-      <h2>物料库存列表</h2>
+      <h2>{{stock_name}}-物料库存列表</h2>
       <el-input style="width:250px"
-        placeholder="输入原料名称搜索"
+        placeholder="输入物料名称搜索"
         suffix-icon="el-icon-search"
         v-model="searchVal"></el-input>
     </div>
@@ -47,11 +47,11 @@
       <div class="tableCtn"
         v-scroll="{fun:getList,pageSize:5}">
         <div class="tableRow titleTableRow">
-          <div class="tableColumn flex9">原料名称</div>
-          <div class="tableColumn">原料颜色</div>
-          <div class="tableColumn">原料属性</div>
+          <div class="tableColumn flex9">物料名称</div>
+          <div class="tableColumn">物料颜色</div>
+          <div class="tableColumn">物料属性</div>
           <div class="tableColumn">库存量(千克)</div>
-          <div class="tableColumn">原料缸号</div>
+          <div class="tableColumn">物料缸号</div>
           <div class="tableColumn">更新时间</div>
           <div class="tableColumn flex9">操作</div>
         </div>
@@ -62,7 +62,7 @@
           <div class="tableColumn">{{item.material_color}}</div>
           <div class="tableColumn">{{item.material_attribute?item.material_attribute:'无'}}</div>
           <div class="tableColumn">{{item.total_weight}}</div>
-          <div class="tableColumn">{{item.vat_code?item.vat_code:'无'}}</div>
+          <div class="tableColumn">{{item.vat_code ? item.vat_code : '无'}}</div>
           <div class="tableColumn">{{item.updated_at}}</div>
           <div class="tableColumn flex9">
             <span class="btns success"
@@ -84,12 +84,12 @@
 </template>
 
 <script>
-// , YarnColorList, pantongList
-import { materialStockDetail } from '@/assets/js/api.js'
+import { materialStockDetail, clientList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
       loading: true,
+      stock_name: '',
       searchVal: '',
       color: '',
       colorList: [{
@@ -171,21 +171,22 @@ export default {
   },
   mounted () {
     Promise.all([
-      // pantongList({
-      //   keyword: ''
-      // }),
-      // YarnColorList({
-      //   company_id: window.sessionStorage.getItem('company_id')
-      // }),
       materialStockDetail({
         stock_id: this.$route.params.stockId,
         limit: 5
-      })]).then((resArr) => {
-      console.log(resArr)
-      // this.colorList = this.colorList.concat(resArr[1].data.data).concat(resArr[0].data.data)
+      }),
+      clientList({
+        company_id: window.sessionStorage.getItem('company_id')
+      })
+    ]).then((resArr) => {
       this.total = resArr[0].data.data.total
       this.list = resArr[0].data.data.data
       this.loading = false
+      if (this.$route.params.stockId === '0') {
+        this.stock_name = '本厂'
+      } else {
+        this.stock_name = resArr[1].data.data.find(item => item.id === this.$route.params.stockId).name
+      }
     })
   }
 }

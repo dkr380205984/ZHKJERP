@@ -61,7 +61,7 @@ axios.defaults.timeout = 30000
  */
 async function get (url, params) {
   try {
-    let response = await axios({ method: 'get', url: url, params: params })
+    let response = await axios({ method: 'get', url: url, params: { 'user_id': window.sessionStorage.getItem('user_id'), ...params } })
     return Promise.resolve(response)
   } catch (error) {
     return Promise.reject(error)
@@ -88,7 +88,7 @@ async function post (url, params, contentType, responseType) {
     let response = await axios({
       method: 'post',
       url: url,
-      data: params,
+      data: { 'user_id': window.sessionStorage.getItem('user_id'), ...params },
       headers: headers,
       responseType: responseType
     })

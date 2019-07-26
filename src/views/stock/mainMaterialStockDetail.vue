@@ -2,24 +2,30 @@
   <div id="mainMaterialStockDetail"
     v-loading='loading'>
     <div class="head">
-      <h2>原料库存详情</h2>
+      <h2>物料库存详情</h2>
     </div>
     <div class="body">
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">原料名称:</span>
+          <span class="label">所在仓库:</span>
+          <span class="content">{{stock_name}}</span>
+        </div>
+      </div>
+      <div class="lineCtn">
+        <div class="inputCtn">
+          <span class="label">物料名称:</span>
           <span class="content">{{materialInfo.material_name}}</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">原料颜色:</span>
+          <span class="label">物料颜色:</span>
           <span class="content">{{materialInfo.material_color}}</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">原料属性:</span>
+          <span class="label">物料属性:</span>
           <span class="content">{{materialInfo.material_attribute?materialInfo.material_attribute:'无'}}</span>
         </div>
       </div>
@@ -31,7 +37,7 @@
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">原料库存:</span>
+          <span class="label">物料库存:</span>
           <span class="content">{{materialInfo.total_weight}}千克</span>
         </div>
       </div>
@@ -91,11 +97,12 @@
 </template>
 
 <script>
-import { materialStockDetail, stockMaterialDetail } from '@/assets/js/api.js'
+import { materialStockDetail, stockMaterialDetail, clientList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
       loading: true,
+      stock_name: '',
       list: [],
       weight: 5000,
       materialInfo: {
@@ -122,6 +129,9 @@ export default {
         stock_id: this.$route.params.stockId,
         material_id: this.$route.params.id,
         action: null
+      }),
+      clientList({
+        company_id: window.sessionStorage.getItem('company_id')
       })
     ]).then((res) => {
       console.log(res)
@@ -137,6 +147,11 @@ export default {
           user_name: item.user_name
         }
       })
+      if (this.$route.params.stockId === '0') {
+        this.stock_name = '本厂'
+      } else {
+        this.stock_name = res[2].data.data.find(item => item.id === this.$route.params.stockId).name
+      }
       this.loading = false
     })
   }

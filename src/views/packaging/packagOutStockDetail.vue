@@ -100,70 +100,6 @@
             class="inputCtn">暂无信息</div>
         </div>
       </div>
-      <!-- <div class="stepCtn">
-        <div class="stepTitle">包装信息</div>
-        <div class="borderCtn">
-          <div class="cicle"></div>
-          <div class="border"></div>
-        </div>
-        <div class="lineCtn">
-          <template v-if="packag_info.length > 0">
-            <div class="inputCtn noPadding">
-              <div class="content">
-                <ul class="tablesCtn">
-                  <li class="title">
-                    <span>包装编号</span>
-                    <span>包装分类</span>
-                    <span class="flex13">规格</span>
-                    <span>属性</span>
-                    <span class="flex55">
-                      <span class="flex17">产品/包装</span>
-                      <span>尺码/颜色</span>
-                      <span>产品数量</span>
-                      <span>每包数量</span>
-                    </span>
-                    <span class="flex17">包装数量</span>
-                  </li>
-                  <li class="content"
-                    v-for="(item,key) in packag_info"
-                    :key="key">
-                    <span style="line-height:1.5em"
-                      class="tableRow">
-                      <div>
-                        <span>{{'第' + chinaNumber(item.id) + '批'}}</span>
-                        <span>{{item.delivery_time}}</span>
-                      </div>
-                    </span>
-                    <span class="tableRow">{{item.packag_code}}</span>
-                    <span class="tableRow">{{item.packag_type}}</span>
-                    <span class="tableRow flex13">{{item.packag_size}}</span>
-                    <span class="tableRow">{{item.packag_attr}}</span>
-                    <span class="tableRow col flex55">
-                      <span v-for="(val,ind) in item.packag_in_info"
-                        :key="ind"
-                        class="tableColumn">
-                        <span style="line-height:1.5em"
-                          class="tableRow flex17">
-                          <div>
-                            <span>{{val.code}}</span>
-                            <span>{{val.type}}</span>
-                          </div>
-                        </span>
-                        <span class="tableRow">{{val.size}}/{{val.color}}</span>
-                        <span class="tableRow">{{val.number}}{{val.unit}}</span>
-                        <span class="tableRow">{{val.one_number}}{{val.unit}}</span>
-                      </span>
-                    </span>
-                    <span class="tableRow flex17">{{item.packag_number}}{{item.unit}}</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </template>
-          <div v-else
-            class="inputCtn">暂无信息</div>
-        </div>
-      </div> -->
       <div class="stepCtn"
         v-for="(item,key) in batchList"
         :key="key">
@@ -245,6 +181,7 @@
                     <span>装箱数量</span>
                   </span>
                   <span>备注信息</span>
+                  <span>操作</span>
                 </li>
                 <li class="handle"
                   @click="$router.push('/index/packagInfoCreate/' + $route.params.id + '/' + item.id )">添加装箱资料</li>
@@ -268,6 +205,8 @@
                     </span>
                   </span>
                   <span :class="{tableRow:true,noDate:!value.desc}">{{value.desc ? value.desc : '暂无备注'}}</span>
+                  <span class="tableRow blue"
+                    @click="changeLog(value,true)">修改</span>
                 </li>
               </ul>
               <ul class="tablesCtn"
@@ -283,6 +222,7 @@
                   <span>运输地址</span>
                   <span>到达港口</span>
                   <span>备注</span>
+                  <span>操作</span>
                 </li>
                 <li class="handle"
                   @click="$router.push('/index/packagOutStock/' + $route.params.id + '/' +item.id)">添加出库</li>
@@ -298,6 +238,8 @@
                   <span :class="{tableRow:true,noDate:!val.address}">{{val.address ? val.address : '暂无数据'}}</span>
                   <span :class="{tableRow:true,noDate:!val.port}">{{val.port ? val.port : '暂无数据'}}</span>
                   <span :class="{tableRow:true,noDate:!val.desc}">{{val.desc ? val.desc : '暂无备注'}}</span>
+                  <span class="tableRow blue"
+                    @click="changeLog(val)">修改</span>
                 </li>
               </ul>
             </div>
@@ -344,11 +286,194 @@
           @click="closeConfirm(false)"></em>
       </div>
     </div>
+    <div class="shade"
+      v-show='changeOutStockShow'>
+      <div class="main"
+        style="height:600px;">
+        <div class="close"
+          @click="changeOutStockShow=false">
+          <span class="icon">x</span>
+        </div>
+        <div class="title">修改出库信息</div>
+        <div class="content"
+          style="height:550px;">
+          <div class="inputCtn">
+            <span class="label"><em>*</em>运输单位</span>:
+            <el-select v-model="changeOutStockInfo.client_id"
+              placeholder="请选择运输单位"
+              style="width:300px;">
+              <el-option v-for="client in clientList"
+                :key="client.id"
+                :label="client.name"
+                :value="client.id">
+              </el-option>
+            </el-select>
+          </div>
+          <div class="inputCtn">
+            <span class="label"><em>*</em>出库箱数</span>:
+            <el-input placeholder="请输入数量"
+              v-model="changeOutStockInfo.number"
+              style="width:300px">
+            </el-input>
+          </div>
+          <div class="inputCtn">
+            <span class="label"><em>*</em>出库立方</span>:
+            <el-input placeholder="请输入出库立方数"
+              v-model="changeOutStockInfo.cubic_number"
+              style="width:300px">
+            </el-input>
+          </div>
+          <div class="inputCtn">
+            <span class="label">出库国家</span>:
+            <el-select v-model="changeOutStockInfo.country"
+              placeholder="请选择出库国家"
+              filterable
+              style="width:300px;">
+              <el-option v-for="country in country"
+                :key="country.value"
+                :value="country">
+              </el-option>
+            </el-select>
+          </div>
+          <div class="inputCtn">
+            <span class="label">运输地址</span>:
+            <el-input placeholder="请输入运输地址"
+              v-model="changeOutStockInfo.address"
+              style="width:300px">
+            </el-input>
+          </div>
+          <div class="inputCtn">
+            <span class="label">到达港口</span>:
+            <el-input placeholder="请输入港口"
+              v-model="changeOutStockInfo.port"
+              style="width:300px">
+            </el-input>
+          </div>
+          <div class="inputCtn">
+            <span class="label">备注</span>:
+            <el-input placeholder="请输入备注信息"
+              v-model="changeOutStockInfo.desc"
+              style="width:300px">
+            </el-input>
+          </div>
+          <div class="btnCtn">
+            <div class="okBtn"
+              @click="submit('outStock')">修改</div>
+            <div class="cancleBtn"
+              @click="changeOutStockShow=false">取消</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="shade"
+      v-show='changePackShow'>
+      <div class="main">
+        <div class="close"
+          @click="changePackShow=false">
+          <span class="icon">x</span>
+        </div>
+        <div class="title">修改装箱信息</div>
+        <div class="content">
+          <div class="inputCtn">
+            <span class="label"><em>*</em>包装序号:</span>
+            <div class="elCtn">
+              <el-input placeholder="请输入起始序号"
+                v-model="changePackInfo.pack_start"
+                style="width:143px">
+              </el-input>
+              <span>—</span>
+              <el-input placeholder="请输入末尾序号"
+                v-model="changePackInfo.pack_end"
+                style="width:143px">
+              </el-input>
+            </div>
+          </div>
+          <div class="inputCtn">
+            <span class="label"><em>*</em>包装类型:</span>
+            <div class="elCtn">
+              <el-select v-model="changePackInfo.pack_type"
+                placeholder="请选择包装类型"
+                filterable
+                style="width:300px;">
+                <el-option v-for="packType in packTypeList"
+                  :key="packType.id"
+                  :label="packType.name"
+                  :value="packType.id">
+                </el-option>
+              </el-select>
+            </div>
+          </div>
+          <div class="inputCtn">
+            <span class="label"><em>*</em>包装重量:</span>
+            <div class="elCtn">
+              <el-input placeholder="请输入毛重"
+                v-model="changePackInfo.weight"
+                style="width:143px">
+              </el-input>
+              <span>—</span>
+              <el-input placeholder="请输入净重"
+                v-model="changePackInfo.net_weight"
+                style="width:143px">
+              </el-input>
+            </div>
+          </div>
+          <template v-for="(item,key) in changePackInfo.product_info">
+            <div class="inputCtn"
+              :key="key">
+              <span class="label">产品数量:</span>
+              <div class="elCtn">
+                <el-cascader v-model="item.product"
+                  :options="productList"
+                  placeholder="请选择产品"
+                  style="width:300px;"></el-cascader>
+                <em class="el-icon-plus"
+                  v-if="key === 0"
+                  style="top:13px;"
+                  @click="addProduct()"></em>
+                <em class="el-icon-minus"
+                  style="top:13px;"
+                  v-else
+                  @click="deleteProduct(key)"></em>
+              </div>
+              <div class="elCtn"
+                style="margin-top:20px;">
+                <el-input placeholder="请输入单箱数量"
+                  v-model="item.one_number"
+                  style="width:143px">
+                </el-input>
+                <span>—</span>
+                <el-input placeholder="合计数量"
+                  v-model="item.all_number"
+                  disabled
+                  style="width:143px">
+                </el-input>
+              </div>
+            </div>
+          </template>
+          <div class="inputCtn">
+            <span class="label">备注:</span>
+            <div class="elCtn">
+              <el-input placeholder="请输入备注信息"
+                v-model="changePackInfo.desc"
+                style="width:300px">
+              </el-input>
+            </div>
+          </div>
+          <div class="btnCtn">
+            <div class="okBtn"
+              @click="submit('pack')">修改</div>
+            <div class="cancleBtn"
+              @click="changePackShow=false">取消</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { orderDetail, packagDetail, outStockDetail, packagNumberAdd, packagNumberDetail } from '@/assets/js/api.js'
+import { countries } from '@/assets/js/dictionary.js'
+import { orderDetail, packagDetail, outStockDetail, packagNumberAdd, packagNumberDetail, clientList, packagMaterialList, packagCreate, outStockAdd } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -362,10 +487,204 @@ export default {
       flag: true,
       id: 1,
       confirmLoading: false,
-      addPackNumberList: []
+      addPackNumberList: [],
+      changePackInfo: {},
+      changePackShow: false,
+      changeOutStockInfo: {},
+      changeOutStockShow: false,
+      clientList: [],
+      country: countries.split('、'),
+      productList: [],
+      packTypeList: []
+    }
+  },
+  watch: {
+    'changePackInfo': {
+      deep: true,
+      handler (newVal) {
+        newVal.product_info.forEach(item => {
+          item.all_number = item.one_number * ((newVal.pack_end > newVal.pack_start ? newVal.pack_end : newVal.pack_start) - newVal.pack_start + 1)
+        })
+        console.log(newVal.start, newVal.end)
+      }
     }
   },
   methods: {
+    addProduct () {
+      this.changePackInfo.product_info.push({
+        all_number: '',
+        one_number: '',
+        product: []
+      })
+    },
+    deleteProduct (key) {
+      this.changePackInfo.product_info.splice(key, 1)
+    },
+    changeLog (item, type) {
+      console.log(item)
+      if (type) {
+        this.changePackInfo = JSON.parse(JSON.stringify(item))
+        // this.changePackInfo.pack_start = item.pack_code.split('-')[0]
+        // this.changePackInfo.pack_end = item.pack_code.split('-')[1]
+        this.changePackInfo.pack_type = this.packTypeList.find(key => this.changePackInfo.pack_material === key.name).id
+        this.changePackShow = true
+      } else {
+        this.changeOutStockInfo = JSON.parse(JSON.stringify(item))
+        this.changeOutStockInfo.client_id = this.changeOutStockInfo.client_id.toString()
+        this.changeOutStockShow = true
+        console.log('outStock')
+      }
+    },
+    submit (type) {
+      let data = []
+      if (type === 'outStock') {
+        let flag = true
+        if (!this.changeOutStockInfo.client_name) {
+          this.$message({
+            type: 'error',
+            message: `请选择运输单位`
+          })
+          flag = false
+          return
+        }
+        if (!this.changeOutStockInfo.number) {
+          this.$message({
+            type: 'error',
+            message: `请输入出库箱数`
+          })
+          flag = false
+          return
+        }
+        if (!this.changeOutStockInfo.cubic_number) {
+          this.$message({
+            type: 'error',
+            message: `请输入出库立方数`
+          })
+          flag = false
+          return
+        }
+        data.push({
+          company_id: window.sessionStorage.getItem('company_id'),
+          order_id: this.$route.params.id,
+          batch_id: this.changeOutStockInfo.batch_id,
+          user_id: window.sessionStorage.getItem('user_id'),
+          client_id: this.changeOutStockInfo.client_id,
+          number: this.changeOutStockInfo.number,
+          cubic_number: this.changeOutStockInfo.cubic_number,
+          country: this.changeOutStockInfo.country,
+          address: this.changeOutStockInfo.address,
+          port: this.changeOutStockInfo.port,
+          desc: this.changeOutStockInfo.desc
+        })
+        if (flag) {
+          outStockAdd({
+            id: this.changeOutStockInfo.id,
+            data: data
+          }).then(res => {
+            if (res.data.code === 200 && res.data.status) {
+              this.$message.success('修改成功')
+              this.changeOutStockShow = false
+            } else {
+              this.$message.error(res.data.message)
+            }
+          })
+        }
+        console.log(this.changeOutStockInfo)
+      } else if (type === 'pack') {
+        let flag = true
+        if (!this.changePackInfo.pack_start) {
+          this.$message({
+            type: 'error',
+            message: `请输入起始序号`
+          })
+          flag = false
+          return
+        }
+        if (!this.changePackInfo.pack_end) {
+          this.$message({
+            type: 'error',
+            message: `请输入末尾序号`
+          })
+          flag = false
+          return
+        }
+        if (!this.changePackInfo.pack_material_id) {
+          this.$message({
+            type: 'error',
+            message: `请选择包装类型`
+          })
+          flag = false
+          return
+        }
+        if (!this.changePackInfo.weight) {
+          this.$message({
+            type: 'error',
+            message: `请输入毛重`
+          })
+          flag = false
+          return
+        }
+        if (!this.changePackInfo.net_weight) {
+          this.$message({
+            type: 'error',
+            message: `请输入净重`
+          })
+          flag = false
+          return
+        }
+        this.changePackInfo.product_info.forEach(valPro => {
+          if (valPro.product.length === 0) {
+            this.$message({
+              type: 'error',
+              message: `请选择产品`
+            })
+            flag = false
+            return
+          }
+          if (!valPro.one_number) {
+            this.$message({
+              type: 'error',
+              message: `请输入单箱产品数量`
+            })
+            flag = false
+            return
+          }
+          if (!valPro.all_number) {
+            this.$message({
+              type: 'error',
+              message: `请检查序号与单箱数量数据类型是否正确(数值)`
+            })
+            flag = false
+          }
+        })
+        data.push({
+          order_id: this.$route.params.id,
+          user_id: window.sessionStorage.getItem('user_id'),
+          pack_code: this.changePackInfo.pack_start + '-' + (this.changePackInfo.pack_end ? this.changePackInfo.pack_end : this.changePackInfo.pack_start),
+          pack_material: this.changePackInfo.pack_material_id,
+          weight: this.changePackInfo.weight,
+          net_weight: this.changePackInfo.net_weight,
+          product_info: JSON.stringify(this.changePackInfo.product_info),
+          desc: this.changePackInfo.desc,
+          batch_id: this.changePackInfo.bacth_id
+        })
+        if (flag) {
+          packagCreate({
+            id: this.changePackInfo.id,
+            data: data
+          }).then(res => {
+            if (res.data.code === 200 && res.data.status) {
+              this.$message.success('修改成功')
+              this.changePackShow = false
+            } else {
+              this.$message.error(res.data.message)
+            }
+          })
+        }
+        console.log(this.changePackInfo)
+      }
+      this.getData()
+    },
     closeConfirm (key, item, batchId) {
       if (!key) {
         this.show = false
@@ -399,11 +718,10 @@ export default {
               type: 'success',
               message: '添加成功'
             })
+            this.getData()
           })
         }
       }
-      this.getPackNumberDate()
-      console.log(this)
     },
     chazhi (planNumber, packNumber) {
       if (!packNumber) {
@@ -480,19 +798,142 @@ export default {
         return obj[key]
       }
     },
-    getPackNumberDate () {
-      packagNumberDetail({
-        order_id: this.$route.params.id
-      }).then(res => {
-        let packagNumberInfo = res.data.data
-        console.log(packagNumberInfo)
-        this.batchList.forEach(item => {
-          item.product_info.forEach(val => {
-            val.size_info.forEach(valSize => {
-              valSize.pack_number = 0
+    getData () {
+      this.loading = true
+      this.batchList = []
+      Promise.all([
+        orderDetail({
+          id: this.$route.params.id
+        }),
+        packagDetail({
+          order_id: this.$route.params.id
+        }),
+        outStockDetail({
+          order_id: this.$route.params.id
+        }),
+        packagNumberDetail({
+          order_id: this.$route.params.id
+        })
+      ]).then(res => {
+        this.loading = true
+        let orderInfo = res[0].data.data
+        let packagInfo = res[1].data.data
+        let outStockInfo = res[2].data.data
+        let packagNumberInfo = res[3].data.data
+        console.log(res)
+        // 初始化订单信息
+        this.order_code = orderInfo.order_code
+        this.client_name = orderInfo.client_name
+        this.order_time = orderInfo.order_time
+        this.group_name = orderInfo.group_name
+        // 初始化发货批次信息
+        orderInfo.order_batch.forEach(valBatch => {
+          valBatch.batch_info.forEach(valPro => {
+            valPro.size.forEach(valSize => {
+              let flag = this.batchList.find(key => key.id === valBatch.batch_id)
+              if (!flag) {
+                this.batchList.push({
+                  id: valBatch.batch_id,
+                  delivery_time: valBatch.delivery_time,
+                  logFlag: false,
+                  packagInfoList: [],
+                  outStockInfoList: [],
+                  product_info: [{
+                    product_code: valPro.productCode,
+                    product_type: valPro.productInfo.category_info.product_category + '/' + valPro.productInfo.type_name + '/' + valPro.productInfo.style_name + (valPro.productInfo.flower_id ? '/' + valPro.productInfo.flower_id : ''),
+                    size_info: [{
+                      size: valSize.name[0],
+                      color: valSize.name[1],
+                      number: valSize.numbers
+                    }]
+                  }]
+                })
+              } else {
+                let flag1 = flag.product_info.find(key => key.product_code === valPro.productCode)
+                if (!flag1) {
+                  flag.product_info.push({
+                    product_code: valPro.productCode,
+                    product_type: valPro.productInfo.category_info.product_category + '/' + valPro.productInfo.type_name + '/' + valPro.productInfo.style_name + (valPro.productInfo.flower_id ? '/' + valPro.productInfo.flower_id : ''),
+                    size_info: [{
+                      size: valSize.name[0],
+                      color: valSize.name[1],
+                      number: valSize.numbers
+                    }]
+                  })
+                } else {
+                  let flag2 = flag1.size_info.find(key => (key.size === valSize.name[0] && key.color === valSize.name[1]))
+                  if (!flag2) {
+                    flag1.size_info.push({
+                      size: valSize.name[0],
+                      color: valSize.name[1],
+                      number: valSize.numbers
+                    })
+                  } else {
+                    flag2.number = Number(flag2.number) + Number(valSize.numbers)
+                  }
+                }
+              }
+              // 初始化装箱产品信息
+              let str = valPro.productCode + ' ' + valPro.productInfo.category_info.product_category + '/' + valPro.productInfo.type_name + '/' + valPro.productInfo.style_name + (valPro.productInfo.flower_id ? '/' + valPro.productInfo.flower_id : '')
+              let fleg = this.productList.find(key => key.value === str)
+              if (!fleg) {
+                this.productList.push({
+                  value: str,
+                  label: str,
+                  children: [
+                    {
+                      label: valSize.name[0],
+                      value: valSize.name[0],
+                      children: [{
+                        label: valSize.name[1],
+                        value: valSize.name[1]
+                      }]
+                    }
+                  ]
+                })
+              } else {
+                let fleg1 = fleg.children.find(key => key.value === valSize.name[0])
+                if (!fleg1) {
+                  fleg.children.push({
+                    value: valSize.name[0],
+                    label: valSize.name[0],
+                    children: [{
+                      value: valSize.name[1],
+                      label: valSize.name[1]
+                    }]
+                  })
+                } else {
+                  let fleg2 = fleg1.children.find(key => key.value === valSize.name[1])
+                  if (!fleg2) {
+                    fleg1.children.push({
+                      value: valSize.name[1],
+                      label: valSize.name[1]
+                    })
+                  }
+                }
+              }
             })
           })
         })
+        this.addPackNumberList = JSON.parse(JSON.stringify(this.batchList))
+        console.log(this.addPackNumberList)
+        // 初始化包装信息
+        packagInfo.forEach(item => {
+          let flag = this.batchList.find(key => key.id === item.bacth_id)
+          if (flag) {
+            item.product_info = JSON.parse(item.product_info)
+            // console.log(item)
+            flag.packagInfoList.push(item)
+          }
+        })
+        // 初始化出库信息
+        outStockInfo.forEach(item => {
+          let flag = this.batchList.find(key => key.id === item.batch_id)
+          if (flag) {
+            flag.outStockInfoList.push(item)
+          }
+        })
+        // 初始化装箱数量
         packagNumberInfo.forEach(item => {
           item.product_info = JSON.parse(item.product_info)
           item.product_info.forEach(valPro => {
@@ -511,123 +952,22 @@ export default {
             })
           })
         })
-        console.log(this.batchList)
+        this.loading = false
       })
     }
   },
   created () {
-    Promise.all([
-      orderDetail({
-        id: this.$route.params.id
-      }),
-      packagDetail({
-        order_id: this.$route.params.id
-      }),
-      outStockDetail({
-        order_id: this.$route.params.id
-      }),
-      packagNumberDetail({
-        order_id: this.$route.params.id
-      })
-    ]).then(res => {
-      this.loading = true
-      let orderInfo = res[0].data.data
-      let packagInfo = res[1].data.data
-      let outStockInfo = res[2].data.data
-      let packagNumberInfo = res[3].data.data
-      // 初始化订单信息
-      this.order_code = orderInfo.order_code
-      this.client_name = orderInfo.client_name
-      this.order_time = orderInfo.order_time
-      this.group_name = orderInfo.group_name
-      // 初始化发货批次信息
-      orderInfo.order_batch.forEach(valBatch => {
-        valBatch.batch_info.forEach(valPro => {
-          valPro.size.forEach(valSize => {
-            let flag = this.batchList.find(key => key.id === valBatch.batch_id)
-            if (!flag) {
-              this.batchList.push({
-                id: valBatch.batch_id,
-                delivery_time: valBatch.delivery_time,
-                logFlag: false,
-                packagInfoList: [],
-                outStockInfoList: [],
-                product_info: [{
-                  product_code: valPro.productCode,
-                  product_type: valPro.productInfo.category_info.product_category + '/' + valPro.productInfo.type_name + '/' + valPro.productInfo.style_name + (valPro.productInfo.flower_id ? '/' + valPro.productInfo.flower_id : ''),
-                  size_info: [{
-                    size: valSize.name[0],
-                    color: valSize.name[1],
-                    number: valSize.numbers
-                  }]
-                }]
-              })
-            } else {
-              let flag1 = flag.product_info.find(key => key.product_code === valPro.productCode)
-              if (!flag1) {
-                flag.product_info.push({
-                  product_code: valPro.productCode,
-                  product_type: valPro.productInfo.category_info.product_category + '/' + valPro.productInfo.type_name + '/' + valPro.productInfo.style_name + (valPro.productInfo.flower_id ? '/' + valPro.productInfo.flower_id : ''),
-                  size_info: [{
-                    size: valSize.name[0],
-                    color: valSize.name[1],
-                    number: valSize.numbers
-                  }]
-                })
-              } else {
-                let flag2 = flag1.size_info.find(key => (key.size === valSize.name[0] && key.color === valSize.name[1]))
-                if (!flag2) {
-                  flag1.size_info.push({
-                    size: valSize.name[0],
-                    color: valSize.name[1],
-                    number: valSize.numbers
-                  })
-                } else {
-                  flag2.number = Number(flag2.number) + Number(valSize.numbers)
-                }
-              }
-            }
-          })
-        })
-      })
-      this.addPackNumberList = JSON.parse(JSON.stringify(this.batchList))
-      console.log(this.addPackNumberList)
-      // 初始化包装信息
-      packagInfo.forEach(item => {
-        let flag = this.batchList.find(key => key.id === item.bacth_id)
-        if (flag) {
-          item.product_info = JSON.parse(item.product_info)
-          // console.log(item)
-          flag.packagInfoList.push(item)
-        }
-      })
-      // 初始化出库信息
-      outStockInfo.forEach(item => {
-        let flag = this.batchList.find(key => key.id === item.batch_id)
-        if (flag) {
-          flag.outStockInfoList.push(item)
-        }
-      })
-      // 初始化装箱数量
-      packagNumberInfo.forEach(item => {
-        item.product_info = JSON.parse(item.product_info)
-        item.product_info.forEach(valPro => {
-          valPro.size_info.forEach(valSize => {
-            let flag = this.batchList.find(key => key.id === item.batch_id)
-            if (flag) {
-              let flag1 = flag.product_info.find(key => key.product_code === valPro.product_code)
-              flag.packag_time = item.updated_at.split(' ')[0]
-              if (flag1) {
-                let flag2 = flag1.size_info.find(key => (key.size === valSize.size && key.color === valSize.color))
-                if (flag2) {
-                  flag2.pack_number = Number(flag2.pack_number ? flag2.pack_number : 0) + Number(valSize.pack_number)
-                }
-              }
-            }
-          })
-        })
-      })
-      this.loading = false
+    this.getData()
+    packagMaterialList({
+      company_id: window.sessionStorage.getItem('company_id')
+    }).then(res => {
+      this.packTypeList = res.data.data
+    })
+
+    clientList({
+      company_id: window.sessionStorage.getItem('company_id')
+    }).then(res => {
+      this.clientList = res.data.data.filter(res => res.type.indexOf(8) !== -1)
     })
   }
 }

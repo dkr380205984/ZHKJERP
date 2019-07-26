@@ -446,6 +446,7 @@ export default {
             obj.complete_time = val.stock_time
             obj.desc = val.remark
             obj.attribute = val.materialAtr
+            obj.type = 1
             formArray.push({ ...obj })
           })
         })
