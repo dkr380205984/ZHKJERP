@@ -69,7 +69,7 @@
                             :key="indSize">
                             <span class="tableRow">
                               <em style="flex:1.5;">{{valSize.size + '/' + valSize.color}}</em>
-                              <em>{{valSize.number + '件'}}</em>
+                              <em>{{valSize.number + valPro.unit}}</em>
                             </span>
                             <span class="tableRow">
                               <el-progress :class="setColor(item.delivery_time) ? 'success' : 'warning'"
@@ -84,7 +84,7 @@
                       :style="{color:((value.compiled_number / value.total_number) >= 1)? '#67c23a' : (computedTime(item.timer,value.order_time)[1] === '未完成' ? false : '#E0364F')}">
                       <div style="line-height:1.5rem;">
                         <span style="font-size:1.3rem;">{{((value.compiled_number / value.total_number)*100).toFixed(2) + '%'}}</span>
-                        <span>{{value.compiled_number + '/' + value.total_number + '件'}}</span>
+                        <span>{{value.compiled_number + '/' + value.total_number}}</span>
                       </div>
                     </span>
                     <span class="tableRow"
@@ -160,7 +160,7 @@ export default {
         this.nowTime = data.getFullYear() + '年' + (Number(data.getMonth()) + 1) + '月' + data.getDate() + '日' + ' ' + (data.getHours() / 12 > 1 ? '下午' + (data.getHours() - 12) : '上午' + data.getHours()) + '点' + data.getMinutes() + '分' + data.getSeconds() + '秒'
         this.getTime()
         this.total = this.pagingList.length
-        this.end_time = new Date(new Date().getTime() + (180 * 24 * 60 * 60 * 1000)).toISOString()
+        this.end_time = new Date(new Date().getTime() + (7 * 24 * 60 * 60 * 1000)).toISOString()
       })
     },
     // 更新pages
@@ -369,13 +369,13 @@ export default {
                 order_client: val.order_client,
                 group_name: val.group_name,
                 total_number: val.total_number,
-                unit: val.unit,
                 compiled_number: (val.compiled_number ? val.compiled_number : 0),
                 product_info: [
                   {
                     product_code: val.product_code,
                     product_type: val.product_type,
                     img: [...val.img],
+                    unit: val.unit,
                     size_info: [
                       {
                         size: val.size,
@@ -400,13 +400,13 @@ export default {
               order_client: val.order_client,
               group_name: val.group_name,
               total_number: val.total_number,
-              unit: val.unit,
               compiled_number: (val.compiled_number ? val.compiled_number : 0),
               product_info: [
                 {
                   product_code: val.product_code,
                   product_type: val.product_type,
                   img: [...val.img],
+                  unit: val.unit,
                   size_info: [
                     {
                       size: val.size,
@@ -428,6 +428,7 @@ export default {
                 product_code: val.product_code,
                 product_type: val.product_type,
                 img: [...val.img],
+                unit: val.unit,
                 size_info: [
                   {
                     size: val.size,

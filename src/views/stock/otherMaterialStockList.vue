@@ -13,19 +13,16 @@
         <div class="selectLine">
           <span class="label">筛选条件:</span>
           <div class="leftFilter">
-            <el-select v-model="color"
+            <el-select v-model="material_name"
               placeholder="可输入颜色进行筛选"
               style="width:230px"
               clearable
               filterable
               @change="getList">
-              <el-option v-for="item in colorList"
-                :key="item.id + item.name"
-                :label="item.name"
-                :value="item.name">
-                <div class="bgBlock"
-                  :style="{'background':item.color_code}"></div>
-                <div class="desc">{{item.name}}</div>
+              <el-option v-for="item in list"
+                :key="item.id + item.material_name"
+                :label="item.material_name"
+                :value="item.id">
               </el-option>
             </el-select>
           </div>
@@ -52,16 +49,7 @@
           <div class="tableColumn">更新时间</div>
           <div class="tableColumn flex9">操作</div>
         </div>
-        <div class="tableRow bodyTableRow">
-          <div class="tableColumn flex9">52支上光晴纶</div>
-          <div class="tableColumn">300</div>
-          <div class="tableColumn">2019-07-24 10:35</div>
-          <div class="tableColumn flex9">
-            <span class="btns success"
-              @click="$router.push('/index/otherMaterialStockDetail/' + '1')">详情</span>
-          </div>
-        </div>
-        <!-- <div class="tableRow bodyTableRow"
+        <div class="tableRow bodyTableRow"
           v-for="item in list"
           :key="item.id">
           <div class="tableColumn flex9">{{item.material_name}}</div>
@@ -69,9 +57,9 @@
           <div class="tableColumn">{{item.updated_at}}</div>
           <div class="tableColumn flex9">
             <span class="btns success"
-              @click="$router.push('/index/mainMaterialStockDetail/' + $route.params.stockId  + '/' + item.id)">详情</span>
+              @click="$router.push('/index/otherMaterialStockDetail/' + item.id)">详情</span>
           </div>
-        </div> -->
+        </div>
       </div>
       <div class="pageCtn">
         <el-pagination background
@@ -87,18 +75,13 @@
 </template>
 
 <script>
-import { materialStockDetail, clientList } from '@/assets/js/api.js'
+import { materialStockList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
       loading: true,
-      stock_name: '',
       searchVal: '',
-      color: '',
-      colorList: [{
-        color_code: '#fff',
-        name: '白胚'
-      }],
+      material_name: '',
       date: '',
       pickerOptions: {
         shortcuts: [{
@@ -146,18 +129,21 @@ export default {
 
     },
     getList () {
-      materialStockDetail({
-        stock_id: this.$route.params.stockId,
-        // company_id: window.sessionStorage.getItem('company_id'),
-        page: this.pages,
+      materialStockList({
+        company_id: window.sessionStorage.getItem('company_id'),
         limit: 5,
+        page: this.pages,
         material_color: this.color,
+        material_name: this.material_name,
         start_time: this.start_time,
         end_time: this.end_time
       }).then((res) => {
-        console.log(res)
-        this.total = res.data.data.total
+        console.log(res.data.data)
         this.list = res.data.data.data
+        this.total = res.data.data.total
+        this.loading = false
+        // this.total = res.data.data.total
+        // this.list = res.data.data.data
       })
     },
     pickTime (date) {
@@ -173,24 +159,7 @@ export default {
     }
   },
   mounted () {
-    Promise.all([
-      materialStockDetail({
-        stock_id: this.$route.params.stockId,
-        limit: 5
-      }),
-      clientList({
-        company_id: window.sessionStorage.getItem('company_id')
-      })
-    ]).then((resArr) => {
-      this.total = resArr[0].data.data.total
-      this.list = resArr[0].data.data.data
-      this.loading = false
-      if (this.$route.params.stockId === '0') {
-        this.stock_name = '本厂'
-      } else {
-        this.stock_name = resArr[1].data.data.find(item => item.id === this.$route.params.stockId).name
-      }
-    })
+    this.getList()
   }
 }
 </script>
