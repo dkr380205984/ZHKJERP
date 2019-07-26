@@ -281,7 +281,7 @@ export default {
       } else if (val === 2) {
         return '已取消'
       } else {
-        if (hasLog !== 0) {
+        if (hasLog) {
           return '进行中'
         }
       }
@@ -293,7 +293,7 @@ export default {
       } else if (val === 2) {
         return '#F56C6C'
       } else {
-        if (hasLog !== 0) {
+        if (hasLog) {
           return '#1a95ff'
         }
       }

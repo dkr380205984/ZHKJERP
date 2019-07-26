@@ -86,7 +86,7 @@
         <div class="inputCtn">
           <span class="label">预付款:</span>
           <span class="content">
-            <el-input placeholder="请输入此订单预付款"
+            <el-input placeholder="请输入预付款"
               v-model="total_price">
               <span slot="append">元</span>
             </el-input>

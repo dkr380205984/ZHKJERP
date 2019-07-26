@@ -208,10 +208,14 @@ export default {
         'craft_code': this.searchVal,
         'is_draft': 0
       }).then((res) => {
+        console.log(res)
         this.loading = false
         this.total = res.data.meta.total
         this.list = res.data.data
         this.first = false
+      }).catch((error) => {
+        // do nothing
+        console.log(error)
       })
     },
     showImg (imgList) {

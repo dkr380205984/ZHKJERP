@@ -24,7 +24,10 @@
               {{orderStateOpr}}
               <el-dropdown-menu slot="dropdown">
                 <!-- <el-dropdown-item>订单异常</el-dropdown-item> -->
-                <el-dropdown-item command="8">取消订单</el-dropdown-item>
+                <el-dropdown-item v-show="order_info.status!==2"
+                  command="8">取消订单</el-dropdown-item>
+                <el-dropdown-item v-show="order_info.status===2"
+                  command="9">物料产品入库</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
@@ -382,11 +385,14 @@
                 </el-dropdown-menu>
               </el-dropdown>
               <span class="opration"
-                v-if="order_info.status_material_order===0"
+                v-if="order_info.status_material_order===0&&order_info.status!==2"
                 @click="orderStatus(3)">确认完成</span>
               <span class="opration"
                 style="color:#67c23a"
-                v-else>已完成</span>
+                v-else-if="order_info.status_material_order===1||order_info.status===1">已完成</span>
+              <span class="opration"
+                style="color:#ddd;cursor:not-allowed"
+                v-else-if="order_info.status===2">已取消</span>
             </div>
           </div>
           <div class="table">
@@ -451,11 +457,14 @@
                 </el-dropdown-menu>
               </el-dropdown>
               <span class="opration"
-                v-if="order_info.status_weave===0"
+                v-if="order_info.status_weave===0 && order_info.status!==2"
                 @click="orderStatus(2)">确认完成</span>
               <span class="opration"
                 style="color:#67c23a"
-                v-else>已完成</span>
+                v-else-if="order_info.status_weave===1||order_info.status===1">已完成</span>
+              <span class="opration"
+                style="color:#ddd;cursor:not-allowed"
+                v-else-if="order_info.status===2">已取消</span>
             </div>
           </div>
           <div class="table">
@@ -514,12 +523,15 @@
                   <el-dropdown-item command="收发详情">收发详情</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
-              <span v-if="order_info.status_pop_push===0"
+              <span v-if="order_info.status_pop_push===0&&order_info.status!==2"
                 class="opration"
                 @click="orderStatus(5)">确认完成</span>
               <span class="opration"
                 style="color:#67c23a"
-                v-else>已完成</span>
+                v-else-if="order_info.status_pop_push===1||order_info.status===1">已完成</span>
+              <span class="opration"
+                style="color:#ddd;cursor:not-allowed"
+                v-else-if="order_info.status===2">已取消</span>
             </div>
           </div>
           <div class="table">
@@ -578,11 +590,14 @@
                 </el-dropdown-menu>
               </el-dropdown>
               <span class="opration"
-                v-if="order_info.status_inspection===0"
+                v-if="order_info.status_inspection===0&&order_info.status!==2"
                 @click="orderStatus(4)">确认完成</span>
               <span class="opration"
                 style="color:#67c23a"
-                v-else>已完成</span>
+                v-else-if="order_info.status===1||order_info.status_inspection===1">已完成</span>
+              <span class="opration"
+                style="color:#ddd;cursor:not-allowed"
+                v-else-if="order_info.status===2">已取消</span>
             </div>
           </div>
           <div class="table">
@@ -630,11 +645,14 @@
                 </el-dropdown-menu>
               </el-dropdown>
               <span class="opration"
-                v-if="order_info.status_stock_out===0"
+                v-if="order_info.status_stock_out===0&&order_info.status!==2"
                 @click="orderStatus(6)">确认完成</span>
               <span class="opration"
                 style="color:#67c23a"
-                v-else>已完成</span>
+                v-else-if="order_info.status===1||order_info.status_stock_out===1">已完成</span>
+              <span class="opration"
+                style="color:#ddd;cursor:not-allowed"
+                v-else-if="order_info.status===2">已取消</span>
             </div>
           </div>
           <div class="table">
@@ -829,6 +847,79 @@
           </div>
         </div>
       </div>
+      <div class="stepCtn"
+        v-show="order_info.status===2">
+        <div class="stepTitle">订单取消日志</div>
+        <div class="borderCtn">
+          <div class="cicle"></div>
+          <div class="border"></div>
+        </div>
+        <div class="hrefCtn"
+          id="href8">
+          <div class="tablesCtn"
+            style="line-height:40px;width:1220px;box-sizing:border-box;margin-top:30px;">
+            <li class="title">
+              <span>入库时间</span>
+              <span>产品信息</span>
+              <span>尺码颜色</span>
+              <span>入库数量</span>
+            </li>
+            <li class="content"
+              v-for="(item,index) in logList"
+              :key="index">
+              <span class="tableRow">{{item.created_at.slice(0,10)}}</span>
+              <span class="tableRow col"
+                style="flex:3">
+                <span class="tableColumn"
+                  v-for="itemPro in item.product_info"
+                  :key="itemPro.product_id">
+                  <span class="tableRow">{{itemPro.info[0].product_info.product_code}}({{itemPro.info[0].product_info.category_info.product_category}}/{{itemPro.info[0].product_info.type_name}}/{{itemPro.info[0].product_info.style_name}})</span>
+                  <span class="tableRow col"
+                    style="flex:2">
+                    <span class="tableColumn"
+                      v-for="(itemColor,indexColor) in itemPro.info"
+                      :key="indexColor">
+                      <span class="tableRow">{{itemColor.size}}/{{itemColor.color}}</span>
+                      <span class="tableRow">{{itemColor.stock_number}}{{itemColor.product_info.category_info.name}}</span>
+                    </span>
+                  </span>
+                </span>
+              </span>
+            </li>
+          </div>
+          <div class="tablesCtn"
+            style="line-height:40px;width:1220px;box-sizing:border-box;margin-top:30px;">
+            <li class="title">
+              <span>入库时间</span>
+              <span>纱线名称</span>
+              <span>纱线颜色</span>
+              <span>入库数量</span>
+            </li>
+            <li class="content"
+              v-for="(item,index) in logList"
+              :key="index">
+              <span class="tableRow">{{item.created_at.slice(0,10)}}</span>
+              <span class="tableRow col"
+                style="flex:3">
+                <span class="tableColumn"
+                  v-for="itemPro in item.material_info"
+                  :key="itemPro.material_name">
+                  <span class="tableRow">{{itemPro.material_name}}</span>
+                  <span class="tableRow col"
+                    style="flex:2">
+                    <span class="tableColumn"
+                      v-for="(itemColor,indexColor) in itemPro.info"
+                      :key="indexColor">
+                      <span class="tableRow">{{itemColor.color_code}}</span>
+                      <span class="tableRow">{{itemColor.total_weight}}kg</span>
+                    </span>
+                  </span>
+                </span>
+              </span>
+            </li>
+          </div>
+        </div>
+      </div>
     </div>
     <!-- 目录 -->
     <div class="catalogue"
@@ -841,6 +932,8 @@
       <li class="ahref"><a href="#href5">出库概述</a></li>
       <!-- <li class="ahref"><a href="#href6">财务概述</a></li> -->
       <li class="ahref"><a href="#href7">发货信息</a></li>
+      <li class="ahref"
+        v-show="order_info.status===2"><a href="#href8">订单取消日志</a></li>
     </div>
     <div class="suspend">
       <span class="blue"
@@ -921,7 +1014,7 @@
             @click="step--"
             v-show="step>0">{{step===0?'':'上一步'}}</div>
           <div class="btn2 btn"
-            @click="step===2?orderCancle():step++">{{step===2?(order_info.status===2?'关闭窗口':'确认提交'):'下一步'}}</div>
+            @click="step===2?orderCancle():step++">{{step===2?(order_info.status===2&&firstCancle?'关闭窗口':'确认提交'):'下一步'}}</div>
         </div>
       </div>
     </div>
@@ -929,11 +1022,13 @@
 </template>
 
 <script>
-import { orderDetailNew, rawMaterialOrderInit, productionDetail, packagNumberDetail, orderCheck } from '@/assets/js/api.js'
+import { orderDetailNew, rawMaterialOrderInit, productionDetail, packagNumberDetail, orderCheck, orderCancleLog } from '@/assets/js/api.js'
 import { moneyArr } from '@/assets/js/dictionary.js'
 export default {
   data () {
     return {
+      logList: [],
+      firstCancle: false,
       showMsg: false,
       showLoading: false,
       showStep: false,
@@ -1107,6 +1202,7 @@ export default {
         }).then(() => {
           orderCheck({
             id: this.$route.params.id,
+            company_id: window.sessionStorage.getItem('company_id'),
             type: state,
             product_data: [],
             material_data: []
@@ -1146,12 +1242,17 @@ export default {
           })
         })
       } else {
-        if (this.order_info.status !== 2) {
+        if (state === '8') {
+          if (this.order_info.status !== 2) {
+            this.showStep = true
+          } else {
+            this.$message.error({
+              message: '该订单已取消，请勿重复操作'
+            })
+          }
+        }
+        if (state === '9') {
           this.showStep = true
-        } else {
-          this.$message.error({
-            message: '该订单已取消，请勿重复操作'
-          })
         }
       }
     },
@@ -1174,7 +1275,7 @@ export default {
     },
     // 取消订单
     orderCancle () {
-      if (this.order_info.status === 2) {
+      if (this.order_info.status === 2 && this.firstCancle) {
         this.showStep = false
       } else {
         this.showMsg = false
@@ -1202,6 +1303,7 @@ export default {
             order_code: this.order_info.order_code,
             company_id: window.sessionStorage.getItem('company_id'),
             product_id: item.id,
+            product_info: item.product_info,
             size: item.size.split('/')[0],
             color: item.size.split('/')[1],
             stock_number: item.number ? item.number : 0,
@@ -1215,6 +1317,7 @@ export default {
         })
         orderCheck({
           id: this.$route.params.id,
+          company_id: window.sessionStorage.getItem('company_id'),
           type: 8,
           product_data: productDetail,
           material_data: materialDetail
@@ -1223,6 +1326,7 @@ export default {
             this.showLoading = false
             this.showMsg = true
             this.order_info.status = 2
+            this.firstCancle = true
           } else {
             this.$message.error({
               message: res.data.message
@@ -1324,11 +1428,20 @@ export default {
       order_id: this.$route.params.id
     }), packagNumberDetail({
       order_id: this.$route.params.id
+    }), orderCancleLog({
+      id: this.$route.params.id,
+      company_id: window.sessionStorage.getItem('company_id')
     })]).then((res) => {
       const data = res[0].data.data
       this.order_info = data.order_info
       this.order_log = data.order_log
       this.process = data.order_schedule
+      this.logList = res[4].data.data.map((item) => {
+        item.material_info = this.jsonMerge(item.material_info, ['material_name'])
+        item.product_info = this.jsonMerge(item.product_info, ['product_id'])
+        return item
+      })
+      console.log(this.logList)
       for (let key in this.process) {
         this.process[key] = this.process[key] > 100 ? 100 : this.process[key].toFixed(1)
       }
@@ -1796,6 +1909,7 @@ export default {
             const finded = this.productDetail.find((itemFind) => itemFind.productCode === itemPro.productCode && itemFind.size === itemSize.name.join('/'))
             if (!finded) {
               this.productDetail.push({
+                product_info: itemPro.productInfo,
                 id: itemPro.productInfo.id,
                 number: '',
                 cost: itemSize.unitPrice,

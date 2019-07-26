@@ -9,7 +9,7 @@ const register = (params) => http.post(`${baseUrl}/auth/register`, params, 'appl
 // 发送验证码
 const sendCode = (params) => http.post(`${baseUrl}/auth/send_code`, params, 'application/json')
 // 获取图片上传验证
-const getToken = () => http.get(`${baseUrl}/upload/token`)
+const getToken = (params) => http.get(`${baseUrl}/upload/token`, params)
 // 修改密码
 const updatePsd = (params) => http.post(`${baseUrl}/auth/reset_pass`, params, 'application/json')
 // 添加岗位
@@ -148,6 +148,8 @@ const clientAdd = (params) => http.post(`${baseUrl}/client/save`, params, 'appli
 const sampleSave = (params) => http.post(`${baseUrl}/order/sample/save`, params, 'application/json')
 // 创建订单
 const orderSave = (params) => http.post(`${baseUrl}/order/save`, params, 'application/json')
+// 订单取消
+const orderCancleLog = (params) => http.get(`${baseUrl}/order/cancel/list`, params)
 // 订单详情
 const orderDetail = (params) => http.get(`${baseUrl}/order/one`, params)
 // 订单详情新
@@ -290,7 +292,20 @@ const permissionList = (params) => http.get(`${baseUrl}/permission/company/all`,
 const rolePermissionAdd = (params) => http.post(`${baseUrl}/permission/group/save`, params, 'application/json')
 // 岗位权限列表
 const stationPermissionList = (params) => http.get(`${baseUrl}/permission/group/all`, params)
+// 添加报价单
+const priceListCreate = (params) => http.post(`${baseUrl}/product/quotation/save`, params, 'application/json')
+// 报价单列表
+const priceListList = (params) => http.get(`${baseUrl}/product/quotation/list`, params)
+// 报价单详情
+const priceListDetail = (params) => http.get(`${baseUrl}/product/quotation/detail`, params)
+// 报价单审核
+const priceListCheck = (params) => http.post(`${baseUrl}/product/quotation/check`, params, 'application/json')
 export {
+  priceListCheck,
+  priceListDetail,
+  priceListList,
+  priceListCreate,
+  orderCancleLog,
   productSurplusPush,
   stationPermissionList,
   rolePermissionAdd,

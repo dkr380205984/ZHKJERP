@@ -236,6 +236,7 @@ export default {
     }), colorList({
       company_id: companyId
     }), getToken()]).then((res) => {
+      console.log(res)
       this.flowerArr = res[0].data.data
       this.treeData = res[1].data.data.map((item) => {
         return {
