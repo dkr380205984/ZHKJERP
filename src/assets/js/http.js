@@ -1,5 +1,6 @@
 import axios from 'axios'
 import router from '../../router'
+import Message from 'element-ui'
 let qs = require('qs')
 
 /*
@@ -59,9 +60,19 @@ axios.defaults.timeout = 30000
  * @param {String} url [请求的url地址]
  * @param {Object} params [请求时携带的参数]
  */
+
 async function get (url, params) {
+  params = typeof (params) === 'object' ? params : {}
+  params.user_id = window.sessionStorage.getItem('user_id')
   try {
     let response = await axios({ method: 'get', url: url, params: params })
+    if (response.data.code === 999) {
+      Message.Message.error({
+        message: response.data.message
+      })
+      router.push('/index')
+      return Promise.reject(response)
+    }
     return Promise.resolve(response)
   } catch (error) {
     return Promise.reject(error)
@@ -74,6 +85,8 @@ async function get (url, params) {
  * @param {Object} params [请求时携带的参数]
  */
 async function post (url, params, contentType, responseType) {
+  params = typeof (params) === 'object' ? params : {}
+  params.user_id = window.sessionStorage.getItem('user_id')
   // 设置请求头
   let headers = {}
   if (contentType && contentType === 'application/json') {
@@ -92,6 +105,13 @@ async function post (url, params, contentType, responseType) {
       headers: headers,
       responseType: responseType
     })
+    if (response.data.code === 999) {
+      Message.Message.error({
+        message: response.data.message
+      })
+      router.push('/index')
+      return Promise.reject(response)
+    }
     return Promise.resolve(response)
   } catch (error) {
     return Promise.reject(error)

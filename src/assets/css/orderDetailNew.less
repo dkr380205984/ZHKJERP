@@ -850,4 +850,65 @@
       }
     }
   }
+  .log {
+    position: relative;
+    width: 1180px;
+    border: 1px solid #DDD;
+    margin-top: 30px;
+    padding-top: 40px;
+    &>div:first-child {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: rgb(240,240,240);
+    }
+    &>div {
+      max-height: 240px;
+      overflow-y: scroll;
+    }
+      li {
+        justify-content: center;
+        font-size: @fontSmall;
+        display: flex;
+        &>span {
+          flex: 1;
+          text-align: center;
+          font-size: 12px;
+          &.remark {
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            &>i {
+              display: inline-block;
+              font-style: normal;
+              width: inherit;
+              padding: 0 30px;
+              margin: 0 auto;
+              height: 1.3rem;
+              overflow: hidden;
+              max-width: inherit;
+              position: relative;
+              line-height: 1.3rem;
+              &>span {
+                position: absolute;
+                top: 0;
+                right: 0;
+                line-height: 1.3rem;
+                cursor: pointer;
+                color: @normalBlue;
+                padding-left: 1em;
+                background:linear-gradient(90deg,rgba(255,255,255,0.56) 0%,rgba(255,255,255,1) 30%);
+              }
+            }
+          }
+          &.flexBig {
+            flex: 1.2;
+          }
+          &.flexMid {
+            flex: 0.7;
+          }
+        }
+      }
+  }
 }

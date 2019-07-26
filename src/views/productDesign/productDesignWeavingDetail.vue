@@ -678,7 +678,7 @@ export default {
         }
       })
       // 所需原料信息和织造信息全部都放在product中，整理完毕之后，开始整理原料分配信息
-      console.log(this.logList)
+      console.log(this.product)
       // 第一步，把纱线和颜色信息取出来
       let materialList = this.logList.map((itemLog, indexLog) => {
         let newItem = itemLog

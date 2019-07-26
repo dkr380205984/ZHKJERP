@@ -197,6 +197,12 @@ const menu = [{
   }, {
     name: '产品列表',
     url: '/index/productList'
+  }, {
+    name: '添加产品报价单',
+    url: '/index/priceListCreate'
+  }, {
+    name: '产品报价单列表',
+    url: '/index/priceListList'
   }]
 }, {
   name: '工艺单管理',
@@ -265,7 +271,7 @@ const menu = [{
     name: '原料预订购',
     url: '/index/rawMaterialPurchase'
   }, {
-    name: '预订购列表',
+    name: '预定购入库',
     url: '/index/rawMaterialPurchaseList'
   }, {
     name: '物料详情列表',

@@ -57,6 +57,22 @@ let router = new Router({
     name: 'index',
     component: () => import('./views/index.vue'),
     children: [{
+      path: 'priceListCreate',
+      name: 'priceListCreate',
+      component: () => import('./views/product/priceListCreate.vue')
+    }, {
+      path: 'priceListDetail/:id',
+      name: 'priceListDetail',
+      component: () => import('./views/product/priceListDetail.vue')
+    }, {
+      path: 'priceListList',
+      name: 'priceListList',
+      component: () => import('./views/product/priceListList.vue')
+    }, {
+      path: 'priceListUpdate/:id',
+      name: 'priceListUpdate',
+      component: () => import('./views/product/priceListUpdate.vue')
+    }, {
       path: 'productDetail/:id',
       name: 'productDetail',
       component: () => import('./views/product/productDetail.vue')
