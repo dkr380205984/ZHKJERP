@@ -27,7 +27,7 @@
             <span class="content">{{otherInfo.total_weight}}千克</span>
           </div>
           <div class="inputCtn">
-            <span class="label">订购总价:</span>
+            <span class="label">预付款:</span>
             <span class="content">{{otherInfo.total_price}}元</span>
           </div>
         </div>
@@ -36,6 +36,13 @@
             <span class="label">剩余总量:</span>
             <span class="content">{{otherInfo.total_weight - otherInfo.leaveWeight}}千克</span>
           </div>
+          <div class="inputCtn">
+            <span class="label">入库原料总价:</span>
+            <span class="content">{{parseInt(cost)}}元<span v-if="cost - otherInfo.total_price>0"
+                style="color:#F56C6C">（还须支付{{parseInt(cost - otherInfo.total_price)}}元）</span></span>
+          </div>
+        </div>
+        <div class="lineCtn">
           <div class="inputCtn">
             <span class="label">备注信息:</span>
             <span class="content">{{otherInfo.desc?otherInfo.desc:'暂无备注'}}</span>
@@ -211,6 +218,7 @@
                     <span>入库重量</span>
                     <span>备注</span>
                     <span>操作人</span>
+                    <span>操作</span>
                   </li>
                 </div>
                 <div v-for="(item,index) in logList"
@@ -225,6 +233,8 @@
                     <span>{{item.total_weight}}kg</span>
                     <span>{{item.desc}}</span>
                     <span>{{item.user_name}}</span>
+                    <span style="cursor:pointer;color:#1A95FF"
+                      @click="updateLog(item)">修改</span>
                   </li>
                 </div>
                 <li v-if="logList.length===0">
@@ -242,6 +252,57 @@
           @click="saveAll">保存</div>
       </div>
     </div>
+    <div class="shade"
+      v-show="showShade">
+      <div class="main">
+        <div class="close"
+          @click="showShade=false">
+          <span class="icon">x</span>
+        </div>
+        <div class="title">修改日志信息</div>
+        <div class="inputCtn">
+          <span class="label">原料信息:</span>
+          <div class="elCtn">
+            {{updateInfo.material_name}} （{{updateInfo.color_code}}）
+          </div>
+        </div>
+        <div class="inputCtn">
+          <span class="label">入库仓库:</span>
+          <div class="elCtn">
+            {{updateInfo.stock_name?updateInfo.stock_name:'本厂仓库'}}
+          </div>
+        </div>
+        <div class="inputCtn">
+          <span class="label">包装属性:</span>
+          <div class="elCtn">
+            {{updateInfo.attribute}}
+          </div>
+        </div>
+        <div class="inputCtn">
+          <span class="label"><em>*</em>入库数量:</span>
+          <div class="elCtn">
+            <el-input v-model="updateInfo.total_weight"
+              placeholder="请输入入库数量">
+              <template slot="append">kg</template>
+            </el-input>
+          </div>
+        </div>
+        <div class="inputCtn">
+          <span class="label"><em>*</em>备注信息:</span>
+          <div class="elCtn">
+            <el-input v-model="updateInfo.desc"
+              placeholder="请输入备注信息（该项必填）">
+            </el-input>
+          </div>
+        </div>
+        <div class="btnCtn">
+          <div class="okBtn"
+            @click="updateLogFn">修改</div>
+          <div class="cancleBtn"
+            @click="showShade=false">取消</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -250,8 +311,23 @@ import { rawMaterialPurchaseDetail, clientList, rawMaterialPurchaseIn } from '@/
 export default {
   data () {
     return {
+      updateInfo: {
+        stock_id: '',
+        material_order_id: '',
+        material_name: '',
+        vat_code: '',
+        color_code: '',
+        attribute: '',
+        price: '',
+        desc: '',
+        total_weight: '',
+        complete_time: '',
+        number: ''
+      },
+      showShade: false,
       loading: true,
       companyArr: [],
+      cost: 0,
       attr: [{ name: '足斤包装' }, { name: '98包装' }, { name: '95包装' }],
       company: '',
       defaultStock: '桐庐凯瑞针纺有限公司',
@@ -377,6 +453,39 @@ export default {
     },
     deleteStockInfo (key, kay) {
       this.list[key].stockInfo.splice(kay, 1)
+    },
+    // 点击修改日志
+    updateLog (item) {
+      this.updateInfo = item
+      this.updateInfo.company_id = window.sessionStorage.getItem('company_id')
+      this.updateInfo.user_id = window.sessionStorage.getItem('user_id')
+      this.showShade = true
+    },
+    // 预定购日志修改
+    updateLogFn () {
+      delete this.updateInfo.user_name
+      delete this.updateInfo.stock_name
+      if (!this.updateInfo.desc) {
+        this.$message.error({
+          message: '请填写本次修改日志原因'
+        })
+      }
+      this.updateInfo.material_order_id = this.updateInfo.id
+      rawMaterialPurchaseIn({
+        id: this.updateInfo.id,
+        data: [this.updateInfo]
+      }).then((res) => {
+        if (res.data.status) {
+          this.$message.success({
+            message: '修改成功'
+          })
+          this.$router.go(-1)
+        } else {
+          this.$message.error({
+            message: res.data.message
+          })
+        }
+      })
     },
     saveAll () {
       let flag = true
@@ -523,7 +632,11 @@ export default {
       this.otherInfo.leaveWeight = this.list.reduce((total, current) => {
         return total + parseInt(current.allNumber)
       }, 0)
-      console.log(this.list)
+      // 算总价
+      this.cost = stock.reduce((total, current) => {
+        return total + current.price * current.total_weight
+      }, 0)
+      console.log(this.cost)
     })
     clientList({
       company_id: window.sessionStorage.getItem('company_id')
@@ -657,6 +770,98 @@ export default {
     &:nth-child(2) {
       margin-left: 5px;
       font-size: 16px;
+    }
+  }
+}
+#rawMaterialOrderDetail {
+  .shade {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    .main {
+      position: absolute;
+      width: 640px;
+      height: 560px;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      margin: auto;
+      background: #ffffff;
+      overflow: hidden;
+      border-radius: 4px;
+      .close {
+        position: absolute;
+        right: -30px;
+        top: -30px;
+        width: 60px;
+        height: 60px;
+        background: #1a95ff;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: 0.1s;
+        color: #ecf0f1;
+        &:hover {
+          transform: scale(1.1);
+          color: #ffffff;
+          background: #48aaff;
+        }
+        .icon {
+          position: absolute;
+          left: 15px;
+          bottom: 7px;
+          font-size: 16px;
+          font-weight: bold;
+        }
+      }
+      .title {
+        line-height: 66px;
+        font-size: 22px;
+        padding: 0 20px;
+        background: linear-gradient(to right, #1a95ff, #ceddef);
+        border-radius: 4px;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        color: #ffffff;
+        margin-bottom: 40px;
+      }
+      .inputCtn {
+        margin: 20px;
+        position: relative;
+        font-size: 16px;
+        padding-left: 5em;
+        height: 40px;
+        line-height: 40px;
+        color: #666;
+        .label {
+          position: absolute;
+          left: 0;
+          text-align: right;
+          width: 5em;
+          color: #666;
+          em {
+            color: #f56c6c;
+            line-height: 40px;
+            margin-right: 2px;
+            vertical-align: -4px;
+          }
+        }
+        .elCtn {
+          margin-left: 15px;
+          width: 400px;
+        }
+      }
+      .btnCtn {
+        margin-top: 40px;
+        display: flex;
+        justify-content: center;
+        .okBtn {
+          margin: 0 30px;
+        }
+      }
     }
   }
 }

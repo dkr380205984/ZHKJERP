@@ -11,6 +11,7 @@ ul {
   padding: 40px 60px;
   font-family: 'systemfont';
   font-weight: 300;
+  font-size: 20px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -29,11 +30,44 @@ ul {
       align-items: center;
       font-size: 2rem;
       font-weight: 500;
+      position: relative;
+      .client{
+        font-size: 20px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        transform: translateY(-20%)
+      }
     }
     .info{
       display: flex;
       flex-direction: column;
-      text-align: right;
+      position: relative;
+      background: linear-gradient(132deg,rgba(96,178,251,1) 0%,rgba(101,126,245,1) 100%);
+      padding: 10px;
+      border-radius: 10px;
+      .timeBox {
+        height: inherit;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        color:#FFF;
+        .big{
+          font-size: 60px;
+          line-height: 60px;
+        }
+        .small{
+          font-size: 40px;
+          margin-left: 10px;
+          line-height: 40px;
+        }
+        .yearInfo {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          margin-left: 10px;
+        }
+      }
     }
   }
   .DVbox{
@@ -136,6 +170,14 @@ ul {
         align-items: center;
         &:last-child{
           border-right: none;
+        }
+      }
+      .warp{
+        flex-direction: column;
+        &>span{
+          flex:0;
+          border: none;
+          line-height: 20px;
         }
       }
     }
