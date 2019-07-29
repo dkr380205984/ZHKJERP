@@ -3,10 +3,17 @@
     v-loading='loading'>
     <!-- 头部 -->
     <div class="head">
-      <h1>订单发货详情表</h1>
+      <h1>订单发货详情表
+        <span class="client">{{'桐庐凯瑞针纺有限公司'}}</span></h1>
       <div class="info">
-        <span>{{'桐庐凯瑞针纺有限公司'}}</span>
-        <span style="margin-top:10px">当前时间：{{nowTime}}</span>
+        <div class="timeBox">
+          <span class="big">{{hours+ ':' + minutes}}</span>
+          <span class="small">{{seconds}}</span>
+          <span class="yearInfo">
+            <span>星期{{day}}</span>
+            <span>{{year}}年{{month}}月{{date}}日</span>
+          </span>
+        </div>
       </div>
     </div>
     <!-- 轮播区域 -->
@@ -16,7 +23,10 @@
         <span>订单号</span>
         <span>负责小组</span>
         <span style="flex:5">产品详情</span>
-        <span>数量合计(已完成/总和)</span>
+        <span class="warp">
+          <span>数量合计</span>
+          <span>(已完成/总和)</span>
+        </span>
         <span>已用工时</span>
         <span>当前状态</span>
       </div>
@@ -36,7 +46,8 @@
               <li class="content"
                 v-for="(item,key) in items.data"
                 :key="key">
-                <span class="tableRow">{{item.delivery_time}}</span>
+                <span class="tableRow"
+                  style="font-size:24px;">{{item.delivery_time}}</span>
                 <span class="tableRow col"
                   style="flex:10">
                   <span class="tableColumn"
@@ -45,8 +56,12 @@
                     :style="{background:(value.id % 2 === 1 ? 'rgb(250,250,250)' : false)}">
                     <span class="tableRow">
                       <div style="line-height:1.4rem;">
-                        <span>{{value.order_code}}</span>
-                        <span>{{value.order_client}}</span>
+                        <em class="textOverflow"
+                          style="max-width:170px;">{{value.order_code}}</em>
+                        <em style="font-size:16px;max-width:170px;"
+                          class="textOverflow">{{value.order_client}}</em>
+                        <!-- <span ></span>
+                        <span></span> -->
                       </div>
                     </span>
                     <span class="tableRow">{{value.group_name}}</span>
@@ -61,15 +76,19 @@
                             <span>{{valPro.product_type}}</span>
                           </div>
                         </span>
-                        <span class="tableRow imgBox">图片</span>
+                        <span class="tableRow imgBox">
+                          <img :src="(valPro.img.length > 0 ? valPro.img[0].thumb : require('@/assets/image/index/noPic.jpg'))"
+                            alt="">
+                        </span>
                         <span class="tableRow col"
                           style="flex:2;">
                           <span class="tableColumn"
                             v-for="(valSize,indSize) in valPro.size_info"
                             :key="indSize">
                             <span class="tableRow">
-                              <em style="flex:1.5;">{{valSize.size + '/' + valSize.color}}</em>
-                              <em>{{valSize.number + '件'}}</em>
+                              <em style="flex:1.5;max-width:130px;"
+                                class="textOverflow">{{valSize.size + '/' + valSize.color}}</em>
+                              <em>{{valSize.number + valPro.unit}}</em>
                             </span>
                             <span class="tableRow">
                               <el-progress :class="setColor(item.delivery_time) ? 'success' : 'warning'"
@@ -81,16 +100,16 @@
                       </span>
                     </span>
                     <span class="tableRow"
-                      :style="{color:((value.compiled_number / value.total_number) >= 1)? '#67c23a' : (computedTime(item.timer,value.order_time)[1] === '未完成' ? false : '#E0364F')}">
+                      :style="{color:((value.compiled_number / value.total_number) >= 1)? '#67c23a' : (computedTime(item.delivery_time,value.order_time)[1] === '未完成' ? false : '#E0364F')}">
                       <div style="line-height:1.5rem;">
                         <span style="font-size:1.3rem;">{{((value.compiled_number / value.total_number)*100).toFixed(2) + '%'}}</span>
-                        <span>{{value.compiled_number + '/' + value.total_number + '件'}}</span>
+                        <span>{{value.compiled_number + '/' + value.total_number}}</span>
                       </div>
                     </span>
                     <span class="tableRow"
-                      :style="{color:((value.compiled_number / value.total_number) >= 1)? '#67c23a' : (computedTime(item.timer,value.order_time)[1] === '未完成' ? false : '#E0364F')}">{{computedTime(item.timer,value.order_time)[0]}}天</span>
+                      :style="{color:((value.compiled_number / value.total_number) >= 1)? '#67c23a' : (computedTime(item.delivery_time,value.order_time)[1] === '未完成' ? false : '#E0364F')}">{{computedTime(item.delivery_time,value.order_time)[0]}}天</span>
                     <span class="tableRow"
-                      :style="{color:((value.compiled_number / value.total_number) >= 1)? '#67c23a' : (computedTime(item.timer,value.order_time)[1] === '未完成' ? false : '#E0364F')}">{{((value.compiled_number / value.total_number) >= 1) ? '完成' : computedTime(item.timer,value.order_time)[1]}}</span>
+                      :style="{color:((value.compiled_number / value.total_number) >= 1)? '#67c23a' : (computedTime(item.delivery_time,value.order_time)[1] === '未完成' ? false : '#E0364F'),'font-size':'24px'}">{{((value.compiled_number / value.total_number) >= 1) ? '完成' : computedTime(item.delivery_time,value.order_time)[1]}}</span>
                   </span>
                 </span>
               </li>
@@ -126,13 +145,18 @@ export default {
   data () {
     return {
       loading: true,
-      nowTime: '',
+      year: '',
+      month: '',
+      day: '',
+      date: '',
+      hours: '',
+      minutes: '',
+      seconds: '',
       total: 0,
       pages: 1,
       count: 1,
-      start_time: new Date('1990-01-01').toISOString(),
+      start_time: '',
       end_time: '',
-      lists: [], // 用于比对
       list: [], // 整理好未分页的数据
       pagingList: []// 分页好的数据
     }
@@ -157,7 +181,35 @@ export default {
     getTime () {
       requestAnimationFrame(() => {
         let data = new Date()
-        this.nowTime = data.getFullYear() + '年' + (Number(data.getMonth()) + 1) + '月' + data.getDate() + '日' + ' ' + (data.getHours() / 12 > 1 ? '下午' + (data.getHours() - 12) : '上午' + data.getHours()) + '点' + data.getMinutes() + '分' + data.getSeconds() + '秒'
+        this.year = data.getFullYear()
+        this.month = Number(data.getMonth()) > 8 ? Number(data.getMonth()) + 1 : '0' + (Number(data.getMonth()) + 1)
+        this.date = Number(data.getDate()) > 9 ? Number(data.getDate()) : '0' + (Number(data.getDate()))
+        switch (data.getDay()) {
+          case 1:
+            this.day = '一'
+            break
+          case 2:
+            this.day = '二'
+            break
+          case 3:
+            this.day = '三'
+            break
+          case 4:
+            this.day = '四'
+            break
+          case 5:
+            this.day = '五'
+            break
+          case 6:
+            this.day = '六'
+            break
+          case 7:
+            this.day = '日'
+            break
+        }
+        this.hours = Number(data.getHours()) > 9 ? Number(data.getHours()) : '0' + (Number(data.getHours()))
+        this.minutes = Number(data.getMinutes()) > 9 ? Number(data.getMinutes()) : '0' + (Number(data.getMinutes()))
+        this.seconds = Number(data.getSeconds()) > 9 ? Number(data.getSeconds()) : '0' + (Number(data.getSeconds()))
         this.getTime()
         this.total = this.pagingList.length
         this.end_time = new Date(new Date().getTime() + (180 * 24 * 60 * 60 * 1000)).toISOString()
@@ -340,15 +392,22 @@ export default {
         if (this.loading) {
           this.loading = false
         }
-        if (Number(number) === Number(orderInfo.count)) {
+        if (Math.ceil(orderInfo.count / number) >= this.count) {
+          this.count++
           this.getData(number, pageNumber)
         } else {
           this.goOnPaging(this.list, pageNumber)
         }
+      }).catch(res => {
+        console.log(res)
+        this.count++
+        this.getData(number, pageNumber)
       })
     },
     // 切割list数组进行分页
     paging (data, number) {
+      this.total = this.pagingList.length
+      console.log(this.total, this.pagingList)
       // 切割数据
       let list = data.splice(0, number)
       let arr = []
@@ -369,13 +428,13 @@ export default {
                 order_client: val.order_client,
                 group_name: val.group_name,
                 total_number: val.total_number,
-                unit: val.unit,
                 compiled_number: (val.compiled_number ? val.compiled_number : 0),
                 product_info: [
                   {
                     product_code: val.product_code,
                     product_type: val.product_type,
                     img: [...val.img],
+                    unit: val.unit,
                     size_info: [
                       {
                         size: val.size,
@@ -400,13 +459,13 @@ export default {
               order_client: val.order_client,
               group_name: val.group_name,
               total_number: val.total_number,
-              unit: val.unit,
               compiled_number: (val.compiled_number ? val.compiled_number : 0),
               product_info: [
                 {
                   product_code: val.product_code,
                   product_type: val.product_type,
                   img: [...val.img],
+                  unit: val.unit,
                   size_info: [
                     {
                       size: val.size,
@@ -428,6 +487,7 @@ export default {
                 product_code: val.product_code,
                 product_type: val.product_type,
                 img: [...val.img],
+                unit: val.unit,
                 size_info: [
                   {
                     size: val.size,
@@ -473,7 +533,7 @@ export default {
         flag: flag,
         data: arr
       })
-      console.log(this.pagingList)
+      // console.log(this.pagingList)
     },
     // 当停止获取数据时，继续切割分页
     goOnPaging (data, number) {
@@ -484,6 +544,8 @@ export default {
     }
   },
   created () {
+    this.start_time = new Date(new Date().getTime() - (3 * 24 * 60 * 60 * 1000)).toISOString()
+    this.end_time = new Date(new Date().getTime() + (7 * 24 * 60 * 60 * 1000)).toISOString()
     this.getTime()
     this.getData(12, 12)
   }
@@ -505,5 +567,18 @@ export default {
   .el-progress-bar__inner {
     background-color: #edbf43;
   }
+}
+.imgBox {
+  & > img {
+    height: 70px;
+    cursor: pointer;
+  }
+}
+.textOverflow {
+  display: block;
+  font-style: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

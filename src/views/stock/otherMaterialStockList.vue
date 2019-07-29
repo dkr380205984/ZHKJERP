@@ -52,7 +52,7 @@
           <div class="tableColumn">更新时间</div>
           <div class="tableColumn flex9">操作</div>
         </div>
-        <div class="tableRow bodyTableRow">
+        <!-- <div class="tableRow bodyTableRow">
           <div class="tableColumn flex9">52支上光晴纶</div>
           <div class="tableColumn">300</div>
           <div class="tableColumn">2019-07-24 10:35</div>
@@ -60,8 +60,8 @@
             <span class="btns success"
               @click="$router.push('/index/otherMaterialStockDetail/' + '1')">详情</span>
           </div>
-        </div>
-        <!-- <div class="tableRow bodyTableRow"
+        </div> -->
+        <div class="tableRow bodyTableRow"
           v-for="item in list"
           :key="item.id">
           <div class="tableColumn flex9">{{item.material_name}}</div>
@@ -71,7 +71,7 @@
             <span class="btns success"
               @click="$router.push('/index/mainMaterialStockDetail/' + $route.params.stockId  + '/' + item.id)">详情</span>
           </div>
-        </div> -->
+        </div>
       </div>
       <div class="pageCtn">
         <el-pagination background
@@ -87,7 +87,7 @@
 </template>
 
 <script>
-import { materialStockDetail, clientList } from '@/assets/js/api.js'
+import { materialStockList, clientList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -141,23 +141,19 @@ export default {
     }
   },
   methods: {
-    // 删除条件
-    clear (item) {
-
-    },
     getList () {
-      materialStockDetail({
-        stock_id: this.$route.params.stockId,
-        // company_id: window.sessionStorage.getItem('company_id'),
+      this.loading = true
+      materialStockList({
+        company_id: window.sessionStorage.getItem('company_id'),
         page: this.pages,
         limit: 5,
-        material_color: this.color,
         start_time: this.start_time,
         end_time: this.end_time
       }).then((res) => {
         console.log(res)
         this.total = res.data.data.total
         this.list = res.data.data.data
+        this.loading = false
       })
     },
     pickTime (date) {
@@ -173,24 +169,7 @@ export default {
     }
   },
   mounted () {
-    Promise.all([
-      materialStockDetail({
-        stock_id: this.$route.params.stockId,
-        limit: 5
-      }),
-      clientList({
-        company_id: window.sessionStorage.getItem('company_id')
-      })
-    ]).then((resArr) => {
-      this.total = resArr[0].data.data.total
-      this.list = resArr[0].data.data.data
-      this.loading = false
-      if (this.$route.params.stockId === '0') {
-        this.stock_name = '本厂'
-      } else {
-        this.stock_name = resArr[1].data.data.find(item => item.id === this.$route.params.stockId).name
-      }
-    })
+    this.getList()
   }
 }
 </script>
