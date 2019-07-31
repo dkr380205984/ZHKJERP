@@ -225,6 +225,10 @@ let router = new Router({
       name: 'materialStockList',
       component: () => import('./views/stock/materialStockList.vue')
     }, {
+      path: 'materialStockListNew',
+      name: 'materialStockListNew',
+      component: () => import('./views/stock/materialStockListNew.vue')
+    }, {
       path: 'materialStockDetail/:stockId',
       name: 'materialStockDetail',
       component: () => import('./views/stock/materialStockDetail.vue')
@@ -464,6 +468,22 @@ let router = new Router({
       path: 'permissionsAppend',
       name: 'permissionsAppend',
       component: () => import('./views/permissions/permissionsAppend.vue')
+    }, {
+      path: 'orderFinancialList',
+      name: 'orderFinancialList',
+      component: () => import('./views/financial/orderFinancialList.vue')
+    }, {
+      path: 'companyFinancialList',
+      name: 'companyFinancialList',
+      component: () => import('./views/financial/companyFinancialList.vue')
+    }, {
+      path: 'foreignTradeFinancialList',
+      name: 'foreignTradeFinancialList',
+      component: () => import('./views/financial/foreignTradeFinancialList.vue')
+    }, {
+      path: 'foreignTradeFinancialDetail/:id',
+      name: 'foreignTradeFinancialDetail',
+      component: () => import('./views/financial/foreignTradeFinancialDetail.vue')
     }]
   }
   ]

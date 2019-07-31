@@ -47,7 +47,7 @@
                 v-for="(item,key) in items.data"
                 :key="key">
                 <span class="tableRow"
-                  style="font-size:24px;">{{item.delivery_time}}</span>
+                  :style="{'font-size':'24px','color':isToday(item.delivery_time)}">{{item.delivery_time}}</span>
                 <span class="tableRow col"
                   style="flex:10">
                   <span class="tableColumn"
@@ -60,8 +60,6 @@
                           style="max-width:170px;">{{value.order_code}}</em>
                         <em style="font-size:16px;max-width:170px;"
                           class="textOverflow">{{value.order_client}}</em>
-                        <!-- <span ></span>
-                        <span></span> -->
                       </div>
                     </span>
                     <span class="tableRow">{{value.group_name}}</span>
@@ -158,10 +156,19 @@ export default {
       start_time: '',
       end_time: '',
       list: [], // 整理好未分页的数据
-      pagingList: []// 分页好的数据
+      pagingList: [], // 分页好的数据
+      searchList: {} // 筛选条件
     }
   },
   methods: {
+    // 判断是否为今日
+    isToday (time) {
+      if (new Date().getTime() - new Date(time).getTime()) {
+        return '#1A94FF'
+      } else {
+        return false
+      }
+    },
     // 计算已用工时及是否超时
     computedTime (time, orderTime) {
       let useDay = Math.ceil((new Date().getTime() - new Date(orderTime).getTime()) / 1000 / 60 / 60 / 24)
@@ -229,179 +236,185 @@ export default {
           'company_id': window.sessionStorage.getItem('company_id'),
           'limit': number,
           'page': this.count,
-          'start_time': this.start_time,
-          'end_time': this.end_time
+          'category_id': this.searchList.categoryVal,
+          'type_id': this.searchList.typesVal,
+          'style_id': this.searchList.styleVal,
+          'client_id': this.searchList.company,
+          'group_id': this.searchList.group,
+          'start_time': this.searchList.start_time ? new Date(Number(this.searchList.start_time)).toISOString() : this.start_time,
+          'end_time': this.searchList.end_time ? new Date(Number(this.searchList.end_time)).toISOString() : this.end_time
         })
       ]).then(res => {
-        let orderInfo = res[0].data.data
-        // console.log(orderInfo)
-        for (let prop in orderInfo.data) {
-          let valTime = orderInfo.data[prop]
-          valTime.forEach((valOrder, indOrder) => {
-            valOrder.batch_info = JSON.parse(valOrder.batch_info)
-            valOrder.batch_info.forEach((valPro, indPro) => {
-              valPro.size.forEach((valSize, indSize) => {
-                // 拆分数据  利于切割分页
-                let flag = this.list.find(item => (item.delivery_time === valOrder.delivery_time && item.order_code === valOrder.order_code && item.product_code === valPro.productCode && item.size === valSize.name[0] && item.color === valSize.name[1]))
-                if (!flag) {
-                  this.list.push(
-                    {
-                      delivery_time: valOrder.delivery_time,
-                      order_code: valOrder.order_code,
-                      order_time: valOrder.create_time,
-                      order_client: valOrder.client_name,
-                      group_name: valOrder.group_name,
-                      total_number: valSize.numbers,
-                      unit: valPro.productInfo.category_info.name,
-                      compiled_number: 0,
-                      product_code: valPro.productCode,
-                      product_type: valPro.productInfo.category_info.product_category + '/' + valPro.productInfo.type_name + '/' + valPro.productInfo.style_name + (valPro.productInfo.flower_id ? ('/' + valPro.productInfo.flower_id) : ''),
-                      img: [...valPro.productInfo.img],
-                      size: valSize.name[0],
-                      color: valSize.name[1],
-                      number: valSize.numbers
-                    }
-                  )
-                } else {
-                  flag.total_number = Number(flag.total_number ? flag.total_number : 0) + Number(valSize.numbers)
-                  flag.number = Number(flag.number ? flag.number : 0) + Number(valSize.numbers)
-                  valPro.productInfo.img.forEach(valImg => {
-                    if (flag.img.indexOf(valImg) === -1) {
-                      flag.img.push(valImg)
-                    }
-                  })
+        console.log(res)
+        if (res.status) {
+          let orderInfo = res[0].data.data
+          // console.log(orderInfo)
+          for (let prop in orderInfo.data) {
+            let valTime = orderInfo.data[prop]
+            valTime.forEach((valOrder, indOrder) => {
+              valOrder.batch_info = JSON.parse(valOrder.batch_info)
+              valOrder.batch_info.forEach((valPro, indPro) => {
+                valPro.size.forEach((valSize, indSize) => {
+                  // 拆分数据  利于切割分页
+                  let flag = this.list.find(item => (item.delivery_time === valOrder.delivery_time && item.order_code === valOrder.order_code && item.product_code === valPro.productCode && item.size === valSize.name[0] && item.color === valSize.name[1]))
+                  if (!flag) {
+                    this.list.push(
+                      {
+                        delivery_time: valOrder.delivery_time,
+                        order_code: valOrder.order_code,
+                        order_time: valOrder.create_time,
+                        order_client: valOrder.client_name,
+                        group_name: valOrder.group_name,
+                        total_number: valSize.numbers,
+                        unit: valPro.productInfo.category_info.name,
+                        compiled_number: 0,
+                        product_code: valPro.productCode,
+                        product_type: valPro.productInfo.category_info.product_category + '/' + valPro.productInfo.type_name + '/' + valPro.productInfo.style_name + (valPro.productInfo.flower_id ? ('/' + valPro.productInfo.flower_id) : ''),
+                        img: [...valPro.productInfo.img],
+                        size: valSize.name[0],
+                        color: valSize.name[1],
+                        number: valSize.numbers
+                      }
+                    )
+                  } else {
+                    flag.total_number = Number(flag.total_number ? flag.total_number : 0) + Number(valSize.numbers)
+                    flag.number = Number(flag.number ? flag.number : 0) + Number(valSize.numbers)
+                    valPro.productInfo.img.forEach(valImg => {
+                      if (flag.img.indexOf(valImg) === -1) {
+                        flag.img.push(valImg)
+                      }
+                    })
+                  }
+                  // 仅用于比对数据  无用
+                  // let time = this.lists.find(item => item.delivery_time === valOrder.delivery_time)
+                  // if (!time) {
+                  //   this.lists.push(
+                  //     {
+                  //       delivery_time: valOrder.delivery_time,
+                  //       data: [
+                  //         {
+                  //           order_code: valOrder.order_code,
+                  //           order_time: valOrder.create_time,
+                  //           order_client: valOrder.client_name,
+                  //           group_name: valOrder.group_name,
+                  //           total_number: valSize.numbers,
+                  //           unit: valPro.productInfo.category_info.name,
+                  //           compiled_number: 0,
+                  //           product_info: [
+                  //             {
+                  //               product_code: valPro.productCode,
+                  //               product_type: valPro.productInfo.category_info.product_category + '/' + valPro.productInfo.type_name + '/' + valPro.productInfo.style_name + (valPro.productInfo.flower_id ? ('/' + valPro.productInfo.flower_id) : ''),
+                  //               img: [...valPro.productInfo.img],
+                  //               size_info: [
+                  //                 {
+                  //                   size: valSize.name[0],
+                  //                   color: valSize.name[1],
+                  //                   number: valSize.numbers
+                  //                 }
+                  //               ]
+                  //             }
+                  //           ]
+                  //         }
+                  //       ]
+                  //     }
+                  //   )
+                  // } else {
+                  //   let order = time.data.find(item => item.order_code === valOrder.order_code)
+                  //   if (!order) {
+                  //     time.data.push({
+                  //       order_code: valOrder.order_code,
+                  //       order_time: valOrder.create_time,
+                  //       order_client: valOrder.client_name,
+                  //       group_name: valOrder.group_name,
+                  //       total_number: valSize.numbers,
+                  //       unit: valPro.productInfo.category_info.name,
+                  //       compiled_number: 0,
+                  //       product_info: [
+                  //         {
+                  //           product_code: valPro.productCode,
+                  //           product_type: valPro.productInfo.category_info.product_category + '/' + valPro.productInfo.type_name + '/' + valPro.productInfo.style_name + (valPro.productInfo.flower_id ? ('/' + valPro.productInfo.flower_id) : ''),
+                  //           img: [...valPro.productInfo.img],
+                  //           size_info: [
+                  //             {
+                  //               size: valSize.name[0],
+                  //               color: valSize.name[1],
+                  //               number: valSize.numbers
+                  //             }
+                  //           ]
+                  //         }
+                  //       ]
+                  //     })
+                  //   } else {
+                  //     order.total_number = Number(order.total_number) + Number(valSize.numbers)
+                  //     let product = order.product_info.find(item => item.product_code === valPro.productCode)
+                  //     if (!product) {
+                  //       order.product_info.push({
+                  //         product_code: valPro.productCode,
+                  //         product_type: valPro.productInfo.category_info.product_category + '/' + valPro.productInfo.type_name + '/' + valPro.productInfo.style_name + (valPro.productInfo.flower_id ? ('/' + valPro.productInfo.flower_id) : ''),
+                  //         img: [...valPro.productInfo.img],
+                  //         size_info: [
+                  //           {
+                  //             size: valSize.name[0],
+                  //             color: valSize.name[1],
+                  //             number: valSize.numbers
+                  //           }
+                  //         ]
+                  //       })
+                  //     } else {
+                  //       let size = product.size_info.find(item => (item.size === valSize.name[0] && item.color === valSize.name[1]))
+                  //       if (!size) {
+                  //         product.size_info.push({
+                  //           size: valSize.name[0],
+                  //           color: valSize.name[1],
+                  //           number: valSize.numbers
+                  //         })
+                  //       } else {
+                  //         size.number = Number(size.number) + Number(valSize.numbers)
+                  //       }
+                  //     }
+                  //   }
+                  // }
+                })
+              })
+              valOrder.log.forEach(valPro => {
+                // 插入已完成成品检验的数据
+                let flags = this.list.find(item => (item.delivery_time === valOrder.delivery_time && item.order_code === valOrder.order_code && item.product_code === valPro.product_info.product_code && item.size === valPro.size && item.color === valPro.color))
+                if (flags) {
+                  flags.compiled_number = Number(flags.compiled_number ? flags.compiled_number : 0) + Number(valPro.number)
                 }
                 // 仅用于比对数据  无用
-                // let time = this.lists.find(item => item.delivery_time === valOrder.delivery_time)
-                // if (!time) {
-                //   this.lists.push(
-                //     {
-                //       delivery_time: valOrder.delivery_time,
-                //       data: [
-                //         {
-                //           order_code: valOrder.order_code,
-                //           order_time: valOrder.create_time,
-                //           order_client: valOrder.client_name,
-                //           group_name: valOrder.group_name,
-                //           total_number: valSize.numbers,
-                //           unit: valPro.productInfo.category_info.name,
-                //           compiled_number: 0,
-                //           product_info: [
-                //             {
-                //               product_code: valPro.productCode,
-                //               product_type: valPro.productInfo.category_info.product_category + '/' + valPro.productInfo.type_name + '/' + valPro.productInfo.style_name + (valPro.productInfo.flower_id ? ('/' + valPro.productInfo.flower_id) : ''),
-                //               img: [...valPro.productInfo.img],
-                //               size_info: [
-                //                 {
-                //                   size: valSize.name[0],
-                //                   color: valSize.name[1],
-                //                   number: valSize.numbers
-                //                 }
-                //               ]
-                //             }
-                //           ]
-                //         }
-                //       ]
-                //     }
-                //   )
-                // } else {
-                //   let order = time.data.find(item => item.order_code === valOrder.order_code)
-                //   if (!order) {
-                //     time.data.push({
-                //       order_code: valOrder.order_code,
-                //       order_time: valOrder.create_time,
-                //       order_client: valOrder.client_name,
-                //       group_name: valOrder.group_name,
-                //       total_number: valSize.numbers,
-                //       unit: valPro.productInfo.category_info.name,
-                //       compiled_number: 0,
-                //       product_info: [
-                //         {
-                //           product_code: valPro.productCode,
-                //           product_type: valPro.productInfo.category_info.product_category + '/' + valPro.productInfo.type_name + '/' + valPro.productInfo.style_name + (valPro.productInfo.flower_id ? ('/' + valPro.productInfo.flower_id) : ''),
-                //           img: [...valPro.productInfo.img],
-                //           size_info: [
-                //             {
-                //               size: valSize.name[0],
-                //               color: valSize.name[1],
-                //               number: valSize.numbers
-                //             }
-                //           ]
-                //         }
-                //       ]
-                //     })
-                //   } else {
-                //     order.total_number = Number(order.total_number) + Number(valSize.numbers)
-                //     let product = order.product_info.find(item => item.product_code === valPro.productCode)
-                //     if (!product) {
-                //       order.product_info.push({
-                //         product_code: valPro.productCode,
-                //         product_type: valPro.productInfo.category_info.product_category + '/' + valPro.productInfo.type_name + '/' + valPro.productInfo.style_name + (valPro.productInfo.flower_id ? ('/' + valPro.productInfo.flower_id) : ''),
-                //         img: [...valPro.productInfo.img],
-                //         size_info: [
-                //           {
-                //             size: valSize.name[0],
-                //             color: valSize.name[1],
-                //             number: valSize.numbers
-                //           }
-                //         ]
-                //       })
-                //     } else {
-                //       let size = product.size_info.find(item => (item.size === valSize.name[0] && item.color === valSize.name[1]))
-                //       if (!size) {
-                //         product.size_info.push({
-                //           size: valSize.name[0],
-                //           color: valSize.name[1],
-                //           number: valSize.numbers
-                //         })
-                //       } else {
-                //         size.number = Number(size.number) + Number(valSize.numbers)
+                // let flag = this.lists.find(item => item.delivery_time === valOrder.delivery_time)
+                // if (flag) {
+                //   let flag1 = flag.data.find(item => item.order_code === valOrder.order_code)
+                //   if (flag1) {
+                //     let flag2 = flag1.product_info.find(item => item.product_code === valPro.product_info.product_code)
+                //     if (flag2) {
+                //       let flag3 = flag2.size_info.find(item => (item.size === valPro.size && item.color === valPro.color))
+                //       if (flag3) {
+                //         flag3.compiled_number = Number(flag3.compiled_number ? flag3.compiled_number : 0) + Number(valPro.number)
+                //         flag1.compiled_number = Number(flag1.compiled_number ? flag1.compiled_number : 0) + Number(valPro.number)
                 //       }
                 //     }
                 //   }
                 // }
               })
             })
-            valOrder.log.forEach(valPro => {
-              // 插入已完成成品检验的数据
-              let flags = this.list.find(item => (item.delivery_time === valOrder.delivery_time && item.order_code === valOrder.order_code && item.product_code === valPro.product_info.product_code && item.size === valPro.size && item.color === valPro.color))
-              if (flags) {
-                flags.compiled_number = Number(flags.compiled_number ? flags.compiled_number : 0) + Number(valPro.number)
-              }
-              // 仅用于比对数据  无用
-              // let flag = this.lists.find(item => item.delivery_time === valOrder.delivery_time)
-              // if (flag) {
-              //   let flag1 = flag.data.find(item => item.order_code === valOrder.order_code)
-              //   if (flag1) {
-              //     let flag2 = flag1.product_info.find(item => item.product_code === valPro.product_info.product_code)
-              //     if (flag2) {
-              //       let flag3 = flag2.size_info.find(item => (item.size === valPro.size && item.color === valPro.color))
-              //       if (flag3) {
-              //         flag3.compiled_number = Number(flag3.compiled_number ? flag3.compiled_number : 0) + Number(valPro.number)
-              //         flag1.compiled_number = Number(flag1.compiled_number ? flag1.compiled_number : 0) + Number(valPro.number)
-              //       }
-              //     }
-              //   }
-              // }
-            })
-          })
-        }
-        // console.log(this.list)
-        // console.log(this.lists)
-        this.paging(this.list, pageNumber)
-        if (this.loading) {
-          this.loading = false
-        }
-        if (Math.ceil(orderInfo.count / number) >= this.count) {
-          this.count++
-          this.getData(number, pageNumber)
-        } else {
-          this.goOnPaging(this.list, pageNumber)
+          }
+          // console.log(this.list)
+          // console.log(this.lists)
+          this.paging(this.list, pageNumber)
+          if (this.loading) {
+            this.loading = false
+          }
+          if (Math.ceil(orderInfo.count / number) > this.count) {
+            this.count++
+            this.getData(number, pageNumber)
+          } else {
+            this.goOnPaging(this.list, pageNumber)
+          }
         }
       }).catch(res => {
-        console.log(res)
-        this.count++
-        this.getData(number, pageNumber)
+        console.log('error')
       })
     },
     // 切割list数组进行分页
@@ -544,6 +557,14 @@ export default {
     }
   },
   created () {
+    if (window.location.search) {
+      let searchList = window.location.search.split('?')[1].split('&')
+      searchList.forEach(item => {
+        this.searchList[item.split('=')[0]] = item.split('=')[1]
+      })
+      console.log(this.searchList)
+    }
+
     this.start_time = new Date(new Date().getTime() - (3 * 24 * 60 * 60 * 1000)).toISOString()
     this.end_time = new Date(new Date().getTime() + (7 * 24 * 60 * 60 * 1000)).toISOString()
     this.getTime()
@@ -580,5 +601,6 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  text-align: center;
 }
 </style>

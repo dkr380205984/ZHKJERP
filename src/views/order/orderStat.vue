@@ -89,6 +89,8 @@
       </div>
       <div class="mergeTable"
         v-scroll="{fun:getOrderList,pageSize:5}">
+        <span class="changeToScreenShipmentsList"
+          @click="$router.push('/screenShipmentsList?categoryVal=' + categoryVal +'&typesVal=' + typesVal +'&styleVal=' + styleVal + '&company=' + company + '&group=' + group + '&start_time=' + (start_time ? start_time.getTime() : '') + '&end_time=' + (end_time ? end_time.getTime() : ''))">切换至大屏发货列表</span>
         <div class="mergeHeader">
           <div class="tableColumn">发货日期</div>
           <div class="tableColumn">订单号</div>
@@ -99,6 +101,7 @@
           <div class="tableColumn">产品图片</div>
           <div class="tableColumn">下单数</div>
           <div class="tableColumn">小组信息</div>
+          <div class="tableColumn">完成状态</div>
           <div class="tableColumn"
             style="flex:1">操作</div>
         </div>
@@ -180,6 +183,14 @@
               :key="indexOrder"
               :style="{'height':(itemOrder.lineNum*60)+'px'}">
               <div style="margin:auto">{{itemOrder.group_name}}</div>
+            </div>
+          </div>
+          <div class="tableColumn">
+            <div class="small"
+              v-for="(itemOrder,indexOrder) in item.orderInfo"
+              :key="indexOrder"
+              :style="{'height':(itemOrder.lineNum*60)+'px'}">
+              <div :style="{'margin':'auto','color':((getStatus(item.date,itemOrder.total_number,itemOrder.compiled_number) === '完成') ? '#67c23a' : ( (getStatus(item.date,itemOrder.total_number,itemOrder.compiled_number) !== '未完成') ? '#E0364F' : false))}">{{getStatus(item.date,itemOrder.total_number,itemOrder.compiled_number)}}</div>
             </div>
           </div>
           <div class="tableColumn"
@@ -289,6 +300,22 @@ export default {
     }
   },
   methods: {
+    getStatus (time, totalNumber, compiledNumber) {
+      // console.log(time, totalNumber, compiledNumber)
+      if (new Date().getTime() > new Date(time).getTime()) {
+        let num = Math.floor((new Date().getTime() - new Date(time).getTime()) / 1000 / 60 / 60 / 24)
+        if (num < 1 && totalNumber > compiledNumber) {
+          return '未完成'
+        } else if (num < 1 && compiledNumber >= totalNumber) {
+          return '完成'
+        }
+        return '逾期' + num + '天'
+      } else if (totalNumber > compiledNumber) {
+        return '未完成'
+      } else {
+        return '完成'
+      }
+    },
     getOrderList () {
       this.loading = true
       orderBatchList({
@@ -306,10 +333,13 @@ export default {
         'end_time': this.end_time
       }).then((res) => {
         let json = res.data.data.data
+        console.log(json)
         this.list = Object.keys(json).map((key) => {
           let arr = []
           json[key].forEach((item) => {
             let productList = []
+            let totalNumber = 0
+            let compiledNumber = 0
             JSON.parse(item.batch_info).forEach((itemBatch) => {
               if (productList.find((itemFind) => itemFind.productCode === itemBatch.productCode)) {
                 let mark = -1
@@ -318,10 +348,16 @@ export default {
                     mark = index
                   }
                 })
+                totalNumber = totalNumber + itemBatch.size.reduce((total, current) => {
+                  return total + parseInt(current.numbers)
+                }, 0)
                 productList[mark].sum = productList[mark].sum + itemBatch.size.reduce((total, current) => {
                   return total + parseInt(current.numbers)
                 }, 0)
               } else {
+                totalNumber = itemBatch.size.reduce((total, current) => {
+                  return total + parseInt(current.numbers)
+                }, 0)
                 productList.push({
                   productInfo: itemBatch.productInfo,
                   productCode: itemBatch.productCode,
@@ -331,12 +367,15 @@ export default {
                 })
               }
             })
+            compiledNumber = compiledNumber + item.log.reduce((total, current) => { return total + parseInt(current.number) }, 0)
             arr.push({
               order_id: item.order_id,
               batch_info: productList,
               group_name: this.groupArr.find((itemGroup) => itemGroup.id === item.group_id).name,
               company_name: this.companyArrS.find((itemCompany) => { return parseInt(itemCompany.id) === item.client_id }).name,
               order_code: item.order_code,
+              total_number: totalNumber,
+              compiled_number: compiledNumber,
               lineNum: JSON.parse(item.batch_info).length
             })
           })
@@ -474,7 +513,7 @@ export default {
     },
     companyCmp () {
       if (this.company) {
-        return this.companyArr.find((item) => item.id === this.company).name
+        return this.companyArrS.find((item) => item.id === this.company).name
       } else {
         return ''
       }
@@ -522,6 +561,21 @@ export default {
     background: #1a95ff;
     &:hover {
       background: #48aaff;
+    }
+  }
+  .mergeTable {
+    position: relative;
+    margin-top: 40px;
+    .changeToScreenShipmentsList {
+      position: absolute;
+      top: 0;
+      right: 0;
+      transform: translateY(-100%);
+      background-color: #1a95ff;
+      border-radius: 5px;
+      padding: 5px;
+      cursor: pointer;
+      color: #fff;
     }
   }
 }

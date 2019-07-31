@@ -1,0 +1,243 @@
+@import './common.less';
+ul{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+#orderFinancialList{
+  height: 100%;
+  font-family: 'systemfont';
+  font-weight: 300;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  min-width: 900px;
+  .head {
+    min-height: 60px;
+    border-bottom: 1px solid #ECF0F1;
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    h2 {
+      line-height: 60px;
+      margin: 0;
+      font-size: 24px;
+      color:@fontNormal;
+      font-weight: 400;
+    }
+  }
+  .body {
+    padding: 20px 40px;
+    flex: 1;
+    color:@fontNormal;
+    .filterCtn{
+      margin-bottom: 20px;
+      font-size: @fontBig;
+      .filterLine{
+        height: 60px;
+        display: flex;
+        align-items: center;
+        padding-left: 5em;
+        position: relative;
+        .label{
+          position: absolute;
+          line-height: 60px;
+          left: 0;
+          font-size: @fontBig;
+        }
+        .el-tag{
+          font-size: @fontBig;
+          margin-right: 20px;
+        }
+      }
+      .selectLine{
+        height: 60px;
+        display: flex;
+        align-items: center;
+        padding-left: 5em;
+        position: relative;
+        justify-content: space-between;
+        .el-select{
+          margin-right:25px;
+          width: 130px;
+        }
+        .label{
+          position: absolute;
+          line-height: 60px;
+          left: 0;
+          font-size: 16px;
+        }
+      }
+    }
+    &>.content{
+      height: 720px;
+      border: 1px solid #DDD;
+      position: relative;
+      &>.title{
+        height: 60px;
+        display: flex;
+        background-color: #DDD;
+        overflow-y: scroll;
+        &>span{ 
+          flex:1;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          position: relative;
+          &.icon{
+            cursor: pointer;
+            &>em{
+            position: absolute;
+            top: 50%;
+            right: 0;
+            font-style: normal;
+              &.el-icon-caret-top{
+              transform: translateY(-75%);
+              }
+              &.el-icon-caret-bottom{
+                transform: translateY(-25%)
+              }
+            }
+          }
+        }
+      }
+      .infinite-list{
+        margin-bottom: 60px;
+        height: 600px;
+        overflow-y: scroll;
+        .infinite-list-item{
+          height: auto;
+          border-bottom: 1px solid #DDD;
+          box-sizing: border-box;
+          .list{
+            flex: 1;
+            display: flex;
+            line-height: 58px;
+            &>span{
+              flex: 1;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              border-right: 1px solid #DDD;
+              box-sizing: border-box;
+              position: relative;
+              overflow: hidden;
+              white-space: nowrap;
+              .btn{
+                width: 60px;
+                line-height: 30px;
+                background-color: @normalBlue;
+                border-radius: 5px;
+                color: #FFF;
+                text-align: center;
+                cursor: pointer;
+              }
+              .open {
+                position: absolute;
+                top: 50%;
+                left: 0px;
+                transform: translateY(-50%) rotateZ(0deg);
+                color: #666;
+                transition: transform 0.2s ease-in-out;
+              }
+              .close{
+                transform: translateY(-50%) rotateZ(-90deg);
+              }
+            }
+          }
+          .detail{
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            border-top: 1px solid #FFF;
+            border-right: 1px solid #DDD;
+            transition: all 0.2s ease-in-out;
+            &.detailNone{
+              max-height: 0!important;
+              border-bottom: none;
+              overflow: hidden;
+            }
+            &.detailShow{
+              height: auto!important;
+              max-height:1000px!important;
+              overflow: visible;
+              border-top: 1px solid #DDD;
+            }
+            .title{
+              display: flex;
+              justify-content: center;
+              color: #000;
+              font-weight: bold;
+              height: 60px;
+              &>span{
+                flex: 1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+              }
+            }
+            .content{
+              display: flex;
+              justify-content: center;
+              &>span{
+                flex: 1;
+                display: flex;
+                justify-content: center;
+                &.col {
+                  flex-direction: column;
+                  justify-content: flex-start;
+                  display: flex;
+                  &>span {
+                    width: 100%;
+                    display: flex;
+                    &>span {
+                      flex:1;
+                      display: flex;
+                      justify-content: center;
+                    }
+                  }
+                }
+              }
+            }
+          }
+          &:hover {
+            background-color: #D8EAFF;
+          }
+        }
+        
+      }
+      .footer{
+        background-color: #666;
+        position: absolute;
+        width: 100%;
+        height: 60px;
+        bottom: 0;
+        left: 0;
+        color: #FFF;
+        font-size: @fontBig;
+        display: flex;
+        span{
+          flex: 1;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          overflow: hidden;
+          white-space: nowrap;
+        }
+      }
+    }
+  }
+}
+.flex15{
+  flex: 1.5!important;
+}
+.flex05{
+  flex: 0.5!important;
+}
+.flex35 {
+  flex: 3.5!important;
+}
+.flex11 {
+  flex: 11!important;
+}

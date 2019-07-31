@@ -286,7 +286,7 @@
           @click="closeConfirm(false)"></em>
       </div>
     </div>
-    <div class="shade"
+    <div class="shades"
       v-show='changeOutStockShow'>
       <div class="main"
         style="height:600px;">
@@ -365,7 +365,7 @@
         </div>
       </div>
     </div>
-    <div class="shade"
+    <div class="shades"
       v-show='changePackShow'>
       <div class="main">
         <div class="close"

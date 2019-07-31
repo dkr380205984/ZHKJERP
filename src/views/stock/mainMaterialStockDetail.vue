@@ -8,13 +8,13 @@
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">所在仓库:</span>
-          <span class="content">{{stock_name}}</span>
+          <span class="content">{{materialInfo.stock_name}}</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">物料名称:</span>
-          <span class="content">{{materialInfo.material_name}}</span>
+          <span class="content">{{ materialInfo.material_name}}</span>
         </div>
       </div>
       <div class="lineCtn">
@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import { materialStockDetail, stockMaterialDetail, clientList } from '@/assets/js/api.js'
+import { stockMaterialDetail, clientList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -121,10 +121,6 @@ export default {
   },
   mounted () {
     Promise.all([
-      materialStockDetail({
-        stock_id: this.$route.params.stockId
-        // limit: 5
-      }),
       stockMaterialDetail({
         stock_id: this.$route.params.stockId,
         material_id: this.$route.params.id,
@@ -135,9 +131,8 @@ export default {
       })
     ]).then((res) => {
       console.log(res)
-      this.materialInfo = res[0].data.data.data.filter(key => key.id === Number(this.$route.params.id))[0]
-      console.log(this.materialInfo)
-      this.list = res[1].data.data.map((item) => {
+      this.materialInfo = res[0].data.data.material_info
+      this.list = res[0].data.data.detail.map((item) => {
         return {
           time: item.create_time,
           unit: '千克',
@@ -150,7 +145,7 @@ export default {
       if (this.$route.params.stockId === '0') {
         this.stock_name = '本厂'
       } else {
-        this.stock_name = res[2].data.data.find(item => item.id === this.$route.params.stockId).name
+        this.stock_name = res[1].data.data.find(item => item.id === this.$route.params.stockId).name
       }
       this.loading = false
     })

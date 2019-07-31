@@ -328,17 +328,33 @@ const menu = [{
   //   url: '/index/mainMaterialStockCreate'
   // },
   {
-    name: '物料仓库(仓库=>物料)',
-    url: '/index/materialStockList'
+    name: '物料库存列表',
+    url: '/index/materialStockListNew'
+    // },
+    // {
+    //   name: '物料仓库(仓库=>物料)',
+    //   url: '/index/materialStockList'
+    //   // }, {
+    //   //   name: '添加原料库存',
+    //   //   url: '/index/mainMaterialStockCreate'
     // }, {
-    //   name: '添加原料库存',
-    //   url: '/index/mainMaterialStockCreate'
-  }, {
-    name: '物料仓库(物料=>仓库)',
-    url: '/index/otherMaterialStockList'
+    //   name: '物料仓库(物料=>仓库)',
+    //   url: '/index/otherMaterialStockList'
     // }, {
     //   name: '辅料库存列表',
     //   url: '/index/otherMaterialStockList'
+  }]
+}, {
+  name: '财务管理',
+  children: [{
+    name: '订单财务统计',
+    url: '/index/orderFinancialList'
+  }, {
+    name: '工厂成本统计',
+    url: '/index/companyFinancialList'
+  }, {
+    name: '合作公司财务统计',
+    url: '/index/foreignTradeFinancialList'
   }]
 }, {
   name: '合作公司管理',

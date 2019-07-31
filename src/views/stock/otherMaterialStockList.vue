@@ -49,45 +49,42 @@
           <div class="tableColumn">更新时间</div>
           <div class="tableColumn flex9">操作</div>
         </div>
-        <<<<<<< HEAD=======<!--
-          <div
-          class="tableRow bodyTableRow">
-          <div class="tableColumn flex9">52支上光晴纶</div>
-          <div class="tableColumn">300</div>
-          <div class="tableColumn">2019-07-24 10:35</div>
+        <div class="tableRow bodyTableRow">
+          <div class="tableColumn flex9">{{1111}}</div>
+          <div class="tableColumn">{{111}}</div>
+          <div class="tableColumn">{{111}}</div>
           <div class="tableColumn flex9">
             <span class="btns success"
-              @click="$router.push('/index/otherMaterialStockDetail/' + '1')">详情</span>
+              @click="$router.push('/index/otherMaterialStockDetail/' + 0)">详情</span>
           </div>
-      </div> -->
-      >>>>>>> 3626a5f63978cbfcc1c29723f966455cb6d28268
-      <div class="tableRow bodyTableRow"
-        v-for="item in list"
-        :key="item.id">
-        <div class="tableColumn flex9">{{item.material_name}}</div>
-        <div class="tableColumn">{{item.total_weight}}</div>
-        <div class="tableColumn">{{item.updated_at}}</div>
-        <div class="tableColumn flex9">
-          <span class="btns success"
-            @click="$router.push('/index/otherMaterialStockDetail/' + item.id)">详情</span>
+        </div>
+        <div class="tableRow bodyTableRow"
+          v-for="item in list"
+          :key="item.id">
+          <div class="tableColumn flex9">{{item.material_name}}</div>
+          <div class="tableColumn">{{item.total_weight}}</div>
+          <div class="tableColumn">{{item.updated_at}}</div>
+          <div class="tableColumn flex9">
+            <span class="btns success"
+              @click="$router.push('/index/otherMaterialStockDetail/' + item.id)">详情</span>
+          </div>
         </div>
       </div>
+      <div class="pageCtn">
+        <el-pagination background
+          :page-size="5"
+          layout="prev, pager, next"
+          :total="total"
+          :current-page.sync="pages"
+          @current-change="getList">
+        </el-pagination>
+      </div>
     </div>
-    <div class="pageCtn">
-      <el-pagination background
-        :page-size="5"
-        layout="prev, pager, next"
-        :total="total"
-        :current-page.sync="pages"
-        @current-change="getList">
-      </el-pagination>
-    </div>
-  </div>
   </div>
 </template>
 
 <script>
-import { materialStockList, clientList } from '@/assets/js/api.js'
+import { materialStockListNew } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -132,25 +129,22 @@ export default {
   watch: {
     searchVal (newVal) {
       this.pages = 1
-      this.getProductList()
+      this.getList()
     }
   },
   methods: {
     getList () {
-      materialStockList({
-        company_id: window.sessionStorage.getItem('company_id'),
-        limit: 5,
-        page: this.pages,
-        // material_color: this.color,
-        // material_name: this.material_name,
-        start_time: this.start_time,
-        end_time: this.end_time
-      }).then((res) => {
-        console.log(res.data.data)
-        this.list = res.data.data.data
-        this.total = res.data.data.total
-        this.loading = false
-      })
+      // materialStockListNew({
+      //   company_id: window.sessionStorage.getItem('company_id'),
+      //   limit: 5,
+      //   page: this.pages
+      // }).then((res) => {
+      //   console.log(res.data.data)
+      //   let data = res.data.data.data
+      //   // this.list = res.data.data.data
+      //   // this.total = res.data.data.total
+      this.loading = false
+      // })
     },
     pickTime (date) {
       if (date) {

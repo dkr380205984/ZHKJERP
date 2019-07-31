@@ -171,9 +171,9 @@ const productStockDetail = (params) => http.get(`${baseUrl}/product/stock/detail
 // 获取单挑产品库存
 const productStockOne = (params) => http.get(`${baseUrl}/product/stock/one`, params)
 // 原料库存列表
-const materialStockList = (params) => http.get(`${baseUrl}/material/stock/list`, params)
+const materialStockList = (params) => http.get(`${baseUrl}/stock/material/list`, params)
 // 原料库存详情
-const materialStockDetail = (params) => http.get(`${baseUrl}/material/stock/detail`, params)
+// const materialStockDetail = (params) => http.get(`${baseUrl}/material/stock/detail`, params)
 // 原料库存内详情
 const stockMaterialDetail = (params) => http.get(`${baseUrl}/stock/material/detail`, params)
 // 订单库存详情
@@ -300,7 +300,11 @@ const priceListList = (params) => http.get(`${baseUrl}/product/quotation/list`, 
 const priceListDetail = (params) => http.get(`${baseUrl}/product/quotation/detail`, params)
 // 报价单审核
 const priceListCheck = (params) => http.post(`${baseUrl}/product/quotation/check`, params, 'application/json')
+// 原料对应仓库material/stock/material
+// const materialStockListNew = (params) => http.get(`${baseUrl}/material/stock/material`, params)
+
 export {
+  // materialStockListNew,
   priceListCheck,
   priceListDetail,
   priceListList,
@@ -361,7 +365,7 @@ export {
   rawMaterialOrder,
   rawMaterialOrderInit,
   craftDelete,
-  materialStockDetail,
+  // materialStockDetail,
   materialStockList,
   YarnColorList,
   pantongList,
