@@ -434,7 +434,7 @@ export default {
               order_id: this.$route.params.id,
               material_name: item.material,
               user_id: window.sessionStorage.getItem('user_id'),
-              vat_code: ((val.dyelot_number !== '默认' || val.dyelot_number) ? val.dyelot_number : 'vat_null'),
+              vat_code: ((val.dyelot_number !== '默认' && val.dyelot_number) ? val.dyelot_number : 'vat_null'),
               color_code: value.materialColor,
               number: val.number,
               client_id: value.outStockClient,

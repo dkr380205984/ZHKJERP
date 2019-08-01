@@ -102,7 +102,7 @@
 </template>
 
 <script>
-import { materialStockDetail, clientList } from '@/assets/js/api.js'
+// import { materialStockDetail, clientList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -155,18 +155,18 @@ export default {
 
     },
     getList () {
-      materialStockDetail({
-        stock_id: this.$route.params.stockId,
-        page: this.pages,
-        limit: 5,
-        material_color: this.color,
-        start_time: this.start_time,
-        end_time: this.end_time
-      }).then((res) => {
-        console.log(res)
-        this.total = res.data.data.total
-        this.list = res.data.data.data
-      })
+      // materialStockDetail({
+      //   stock_id: this.$route.params.stockId,
+      //   page: this.pages,
+      //   limit: 5,
+      //   material_color: this.color,
+      //   start_time: this.start_time,
+      //   end_time: this.end_time
+      // }).then((res) => {
+      //   console.log(res)
+      //   this.total = res.data.data.total
+      //   this.list = res.data.data.data
+      // })
     },
     pickTime (date) {
       if (date) {
@@ -181,14 +181,14 @@ export default {
     }
   },
   created () {
-    Promise.all([
-      clientList({
-        company_id: window.sessionStorage.getItem('company_id')
-      })
-    ]).then(res => {
-      this.stockList.push(...res[0].data.data.filter(item => item.type.indexOf(9) !== -1))
-      console.log(this.stockList)
-    })
+    // Promise.all([
+    //   clientList({
+    //     company_id: window.sessionStorage.getItem('company_id')
+    //   })
+    // ]).then(res => {
+    //   this.stockList.push(...res[0].data.data.filter(item => item.type.indexOf(9) !== -1))
+    //   console.log(this.stockList)
+    // })
     this.loading = false
   }
 }

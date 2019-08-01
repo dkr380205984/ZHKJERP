@@ -84,7 +84,7 @@
 </template>
 
 <script>
-import { materialStockDetail, clientList } from '@/assets/js/api.js'
+// import { materialStockDetail, clientList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -143,19 +143,19 @@ export default {
 
     },
     getList () {
-      materialStockDetail({
-        stock_id: this.$route.params.stockId,
-        // company_id: window.sessionStorage.getItem('company_id'),
-        page: this.pages,
-        limit: 5,
-        material_color: this.color,
-        start_time: this.start_time,
-        end_time: this.end_time
-      }).then((res) => {
-        console.log(res)
-        this.total = res.data.data.total
-        this.list = res.data.data.data
-      })
+      // materialStockDetail({
+      //   stock_id: this.$route.params.stockId,
+      //   // company_id: window.sessionStorage.getItem('company_id'),
+      //   page: this.pages,
+      //   limit: 5,
+      //   material_color: this.color,
+      //   start_time: this.start_time,
+      //   end_time: this.end_time
+      // }).then((res) => {
+      //   console.log(res)
+      //   this.total = res.data.data.total
+      //   this.list = res.data.data.data
+      // })
     },
     pickTime (date) {
       if (date) {
@@ -170,24 +170,24 @@ export default {
     }
   },
   mounted () {
-    Promise.all([
-      materialStockDetail({
-        stock_id: this.$route.params.stockId,
-        limit: 5
-      }),
-      clientList({
-        company_id: window.sessionStorage.getItem('company_id')
-      })
-    ]).then((resArr) => {
-      this.total = resArr[0].data.data.total
-      this.list = resArr[0].data.data.data
-      this.loading = false
-      if (this.$route.params.stockId === '0') {
-        this.stock_name = '本厂'
-      } else {
-        this.stock_name = resArr[1].data.data.find(item => item.id === this.$route.params.stockId).name
-      }
-    })
+    // Promise.all([
+    //   materialStockDetail({
+    //     stock_id: this.$route.params.stockId,
+    //     limit: 5
+    //   }),
+    //   clientList({
+    //     company_id: window.sessionStorage.getItem('company_id')
+    //   })
+    // ]).then((resArr) => {
+    //   this.total = resArr[0].data.data.total
+    //   this.list = resArr[0].data.data.data
+    //   this.loading = false
+    //   if (this.$route.params.stockId === '0') {
+    //     this.stock_name = '本厂'
+    //   } else {
+    //     this.stock_name = resArr[1].data.data.find(item => item.id === this.$route.params.stockId).name
+    //   }
+    // })
   }
 }
 </script>

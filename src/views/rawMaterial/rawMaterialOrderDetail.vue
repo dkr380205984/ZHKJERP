@@ -557,9 +557,9 @@ export default {
         type: parseInt(this.type) + 1
       })
     ]).then(res => {
-      console.log(res[1].data.data)
+      console.log(res[1].data)
       let info = res[0].data.data.material_info || []
-      let materialInfo = res[1].data.data || []
+      let materialInfo = res[1].data || []
       let orderInfo = res[2].data.data || []
       let processInfo = res[3].data.data || []
       let productInfo = res[4].data.data

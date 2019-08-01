@@ -227,7 +227,7 @@
                             <span v-for="(itemVat,keyVat) in value.vat_list"
                               :key="keyVat"
                               class="tableColumn">
-                              <span class="tableRow">{{itemVat}}</span>
+                              <span class="tableRow">{{itemVat === 'vat_null' ? '默认' : itemVat}}</span>
                             </span>
                           </span>
                           <span class="tableRow">{{value.outStock_number|fixedFilter}}{{item.unit}}</span>
@@ -384,7 +384,6 @@
           <div class="elCtn">
             <el-input v-model="surplusGoStockInfo.number"
               placeholder="请输入数量">
-              <template slot="append">{{surplusGoStockInfo.unit}}</template>
             </el-input>
           </div>
         </div>

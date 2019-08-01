@@ -485,7 +485,7 @@ export default {
       this.order_time = res[0].data.data.order_time
       this.group_name = res[0].data.data.group_name
       // 初始化订购信息
-      let materialInfo = res[1].data.data
+      let materialInfo = res[1].data
       // console.log(materialInfo)
       materialInfo.forEach(item => {
         if ((this.type === '0' && item.type === 1) || (this.type === '1' && item.type === 2)) {

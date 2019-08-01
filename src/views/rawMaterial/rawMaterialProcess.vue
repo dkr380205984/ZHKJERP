@@ -599,7 +599,8 @@ export default {
           }
         }
       })
-      res[1].data.data.forEach(item => {
+      console.log(res[1].data)
+      res[1].data.forEach(item => {
         let flag = this.materialList.find(val => val.material === item.material_name)
         if (flag) {
           flag.order_weight = (flag.order_weight ? Number(flag.order_weight) : 0) + Number(item.weight)
@@ -608,6 +609,9 @@ export default {
           let arr = this.list.find(val => val.material === item.material_name)
           if (arr) {
             arr.total_number = Number(arr.total_number) + Number(item.weight)
+            if (arr.needColors.indexOf(item.color_code) === -1) {
+              arr.needColors.push(item.color_code)
+            }
           } else {
             this.list.push({
               material: item.material_name,

@@ -12,6 +12,7 @@ ul{
   display: flex;
   flex-direction: column;
   color:@fontNormal;
+  position: relative;
   .head{
     min-height: 60px;
     border-bottom: 1px solid #ECF0F1;
@@ -112,12 +113,29 @@ ul{
           cursor: pointer;
           text-align: center;
         }
+        .management{
+          width: auto;
+          height: 40px;
+          display: flex;
+          .handle{
+            width: 100px;
+            height: 40px;
+            line-height: 40px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            &.handleMain{
+              color: #FFF;
+              background-color: @normalBlue;
+            }
+          }
+        }
       }
       .table{
         height: 720px;
         border: 1px solid #DDD;
         position: relative;
-        &>.title{
+        .title{
           height: 60px;
           display: flex;
           background-color: #DDD;
@@ -279,13 +297,23 @@ ul{
             white-space: nowrap;
           }
         }
+        .checkBox{
+          position: absolute;
+          top: 50%;
+          left: 10px;
+          transform: translateY(-50%);
+        }
       }
       .cutList {
         display: inline-block;
         padding: 5px 10px;
+        border: 1px solid #DDD;
         cursor: pointer;
+        border-radius: 20px;
+        margin-right: 20px;
         &.active{
-          border-bottom: 2px solid @normalBlue;
+          background-color: @normalBlue;
+          color: #FFF;
         }
       }
     }
@@ -295,6 +323,85 @@ ul{
       justify-content: space-around;
       width: 400px;
       margin-top: 40px;
+    }
+  }
+  .window{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width:590px;
+    height: 540px;
+    border: 1px solid #DDD;
+    background-color: #FFF; 
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    .title{
+      height: 60px;
+      color: @normalBlue;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-bottom: 1px solid #DDD;
+      box-sizing: border-box;
+    }
+    .content{
+      flex: 1;
+      overflow: auto;
+      padding: 20px 0;
+      .lineCtn{
+        margin: 20px 60px;
+        min-height: 40px;
+        padding-left: 6em;
+        position: relative;
+        display: flex;
+        align-items: center;
+        .label{
+          position: absolute;
+          height: 40px;
+          top: 0;
+          left: 0;
+          width: 6em;
+          line-height: 40px;
+          text-align: left;
+        }
+        .inputBox{
+          width: 324px;
+        }
+      }
+      .btnCtn{
+        margin: 20px 60px;
+        display: flex;
+        padding-left: 6em;
+        // padding: 20px 60px 40px;
+        // justify-content: space-around;
+        span{
+          border: 1px solid #DDD;
+          padding: 5px 10px;
+          margin-right: 6em;
+          border-radius: 5px;
+          cursor: pointer;
+          &.submit{
+            background-color: @normalBlue;
+            color: #FFF;
+          }
+        }
+      }
+    }
+    .close{
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      padding: 5px;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: 0.2s all ease-in-out;
+      &:hover{
+        background-color: @normalBlue;
+        color: #FFF;
+      }
     }
   }
 }

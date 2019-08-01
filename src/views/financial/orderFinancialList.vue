@@ -1,5 +1,6 @@
 <template>
-  <div id="orderFinancialList">
+  <div id="orderFinancialList"
+    v-loading="loading">
     <div class="head">
       <h2>订单财务统计表</h2>
       <el-input style="width:250px"
@@ -146,7 +147,7 @@
                 <span>
                   <em :class="{'el-icon-caret-bottom':true,'open':true,'close':!item.flag}"></em>
                   {{item.order_code}}</span>
-                <span>{{item.client_name}}</span>
+                <span>{{item.order_client}}</span>
                 <span>{{item.order_time}}</span>
                 <span>{{item.order_total_price}}{{item.price_unit}}</span>
                 <span>{{item.order_number}}</span>
@@ -184,11 +185,11 @@
                   <span>{{valPro.reality_total_price}}</span>
                   <span>{{'图片'}}</span>
                   <span class="flex35 col">
-                    <span v-for="(valSize,indSize) in valPro.size"
+                    <span v-for="(valSize,indSize) in valPro.size_info"
                       :key="indSize">
                       <span class="flex05">{{valSize.size}}</span>
                       <span class="flex05">{{valSize.color}}</span>
-                      <span class="flex05">{{valSize.price}}元/条</span>
+                      <span class="flex05">{{valSize.one_price}}元/条</span>
                       <span>{{valSize.order_number}}条</span>
                       <span>{{valSize.outStock_number}}条</span>
                     </span>
@@ -196,69 +197,20 @@
                   <span class="col">
                     <span>
                       <span>织造</span>
-                      <span>{{valPro.companyCost.weave}}</span>
+                      <!-- <span>{{valPro.companyCost.weave}}</span> -->
                     </span>
                     <span>
                       <span>加工</span>
-                      <span>{{valPro.companyCost.process}}</span>
+                      <!-- <span>{{valPro.companyCost.process}}</span> -->
                     </span>
                     <span>
                       <span>染色</span>
-                      <span>{{valPro.companyCost.dye}}</span>
+                      <!-- <span>{{valPro.companyCost.dye}}</span> -->
                     </span>
                   </span>
                 </span>
               </div>
             </li>
-            <!-- <li :key="key + item.id">
-              <span class="title">
-                <span class="flex15">产品类型</span>
-                <span>订单总值</span>
-                <span>实际总值</span>
-                <span>产品图片</span>
-                <span class="flex05">尺码</span>
-                <span class="flex05">颜色</span>
-                <span class="flex05">单价</span>
-                <span>订单数量</span>
-                <span>出库数量</span>
-                <span>工厂成本</span>
-              </span>
-              <span class="content"
-                v-for="(valPro,indPro) in item.product_info"
-                :key="indPro">
-                <span class="flex15">
-                  <span>{{valPro.product_code}}</span>
-                  <span style="margin-left:10px;">{{valPro.product_type}}</span>
-                </span>
-                <span>{{valPro.order_total_price}}</span>
-                <span>{{valPro.reality_total_price}}</span>
-                <span>{{'图片'}}</span>
-                <span class="flex35 col">
-                  <span v-for="(valSize,indSize) in valPro.size"
-                    :key="indSize">
-                    <span class="flex05">{{valSize.size}}</span>
-                    <span class="flex05">{{valSize.color}}</span>
-                    <span class="flex05">{{valSize.price}}元/条</span>
-                    <span>{{valSize.order_number}}条</span>
-                    <span>{{valSize.outStock_number}}条</span>
-                  </span>
-                </span>
-                <span class="col">
-                  <span>
-                    <span>织造</span>
-                    <span>{{valPro.companyCost.weave}}</span>
-                  </span>
-                  <span>
-                    <span>加工</span>
-                    <span>{{valPro.companyCost.process}}</span>
-                  </span>
-                  <span>
-                    <span>染色</span>
-                    <span>{{valPro.companyCost.dye}}</span>
-                  </span>
-                </span>
-              </span>
-            </li> -->
           </template>
 
         </ul>
@@ -286,6 +238,7 @@ import { orderList, orderDetailNew, clientList, getGroup } from '@/assets/js/api
 export default {
   data () {
     return {
+      loading: true,
       searchVal: '',
       clientVal: '',
       clientList: [],
@@ -440,32 +393,90 @@ export default {
       // }
       orderList({
         company_id: window.sessionStorage.getItem('company_id'),
-        limit: 10,
+        limit: 1,
         client_id: this.clientVal,
         group_id: this.groupVal,
         page: this.pages
       }).then(res => {
+        this.total = res.data.meta.total
         let data = res.data.data
+        console.log(data)
         data.forEach(item => {
-          // 获取该订单的详细信息和日志
-          orderDetailNew({
-            id: item.id
-          }).then(res => {
-            item.detail = res.data.data
-          })
           let list = {}
           // 订单初步信息
+          list.flag = false
           list.order_total_price = item.total_price
           list.order_code = item.order_code
           list.order_id = item.id
           list.order_client = item.client_name
           list.order_time = item.order_time
           list.group_name = item.group_name
-          // 处理数据
-          // item.detail.order_log.stock_out_info
+          list.account_unit = item.account_unit
+          // 订单产品信息
+          item.order_batch.forEach(item => {
+            item.batch_info.forEach(valBat => {
+              if (!list.product_info) {
+                list.product_info = []
+              }
+              valBat.size.forEach(valSize => {
+                list.order_number = Number(list.order_number ? list.order_number : 0) + Number(valSize.numbers)
+                let pro = list.product_info.find(key => key.product_code === valBat.productCode)
+                if (!pro) {
+                  list.product_info.push({
+                    product_code: valBat.productCode,
+                    product_type: valBat.productInfo.category_info.product_category + '/' + valBat.productInfo.type_name + '/' + valBat.productInfo.style_name + (valBat.productInfo.flower_id ? '/' + valBat.productInfo.flower_id : ''),
+                    order_total_price: valSize.unitPrice * valSize.numbers,
+                    img: valBat.productInfo.img,
+                    unit: valBat.productInfo.category_info.name,
+                    size_info: [{
+                      size: valSize.name[0],
+                      color: valSize.name[1],
+                      one_price: valSize.unitPrice,
+                      order_number: valSize.numbers
+                    }]
+                  })
+                } else {
+                  pro.order_total_price = Number(pro.order_total_price ? pro.order_total_price : 0) + Number(valSize.unitPrice * valSize.numbers)
+                  let size = pro.size_info.find(key => (key.size === valSize.name[0] && key.color === valSize.name[1] && key.one_price === valSize.unitPrice))
+                  if (!size) {
+                    pro.size_info.push({
+                      size: valSize.name[0],
+                      color: valSize.name[1],
+                      one_price: valSize.unitPrice,
+                      order_number: valSize.numbers
+                    })
+                  } else {
+                    size.order_number = Number(size.order_number ? size.order_number : 0) + Number(valSize.numbers)
+                  }
+                }
+              })
+            })
+          })
+          // 获取该订单的详细信息和日志
+          orderDetailNew({
+            id: item.id
+          }).then(res => {
+            list.detail = res.data.data
+            // 插入出库数量
+            let outStockInfo = res.data.data.order_log.pack_info
+            if (item.id === '12') {
+              console.log(item.order_code, data)
+              console.log(outStockInfo)
+            }
+            outStockInfo.forEach(valPack => {
+              valPack.product_info = JSON.parse(valPack.product_info)
+              valPack.product_info.forEach(valPro => {
+                valPro.size_info.forEach(valSize => {
+                  list.outStock_number = Number(list.outStock_number ? list.outStock_number : 0) + Number(valSize.pack_number)
+                })
+              })
+            })
+          })
           this.list.push(list)
+          // 处理数据
         })
-        console.log(data)
+        console.log(this.list)
+        this.loading = false
       })
     },
     getData () {

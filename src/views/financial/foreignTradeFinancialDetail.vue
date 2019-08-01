@@ -66,7 +66,8 @@
               :picker-options="pickerOptions">
             </el-date-picker>
           </div>
-          <div class="addBtn">+转账记录</div>
+          <div class="addBtn"
+            @click="transfer.flag = true">+转账记录</div>
         </div>
         <div class="table">
           <div class="title">
@@ -149,17 +150,23 @@
               :picker-options="pickerOptions">
             </el-date-picker>
           </div>
-          <div class="addBtn">+直接扣款</div>
+          <div class="management"
+            @click="cutPay.flag = true">
+            <template v-if="cutPay.flag">
+              <span class="handle">结算</span>
+              <span class="handle">扣款</span>
+            </template>
+            <span class="handle handleMain">{{!cutPay.flag ? '批量管理':'取消管理'}}</span>
+          </div>
         </div>
-        <div class="table">
+        <el-checkbox-group v-model="checkAllFlag"
+          class="table">
           <div class="title">
-            <span @click="filterOption.orderFilterFlag = !filterOption.orderFilterFlag"
-              class="icon">
+            <span>
+              <el-checkbox class="checkBox"
+                @change="checked('all')"
+                v-if="cutPay.flag"></el-checkbox>
               订单号
-              <em class="el-icon-caret-top"
-                :style="{color:filterOption.orderFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-              <em class="el-icon-caret-bottom"
-                :style="{color:!filterOption.orderFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
             </span>
             <span>下单日期</span>
             <span>外贸公司</span>
@@ -179,7 +186,12 @@
               class="infinite-list-item">
               <div class="list"
                 style="line-height:59px;">
-                <span>{{item.order_code}}</span>
+                <span>
+                  <el-checkbox class="checkBox"
+                    v-if="cutPay.flag"
+                    :checked="checkAllFlag"></el-checkbox>
+                  {{item.order_code}}
+                </span>
                 <span>{{item.order_time}}</span>
                 <span>{{item.client_name}}</span>
                 <span>{{item.cooperation_type}}</span>
@@ -211,16 +223,197 @@
             <span>{{450454512|filterNumber}}元</span>
             <span class="flex15"></span>
           </div>
+        </el-checkBox-group>
+      </div>
+    </div>
+    <div class="window"
+      v-show="transfer.flag">
+      <div class="title">添加转账记录</div>
+      <div class="content">
+        <div class="lineCtn">
+          <span class="label">转账日期:</span>
+          <el-date-picker v-model="transfer.time"
+            class="inputBox"
+            type="date"
+            placeholder="选择日期">
+          </el-date-picker>
+        </div>
+        <div class="lineCtn">
+          <span class="label">转账类型:</span>
+          <el-radio v-model="transfer.type"
+            label="1">收款</el-radio>
+          <el-radio v-model="transfer.type"
+            label="2">付款</el-radio>
+        </div>
+        <div class="lineCtn">
+          <span class="label">转账方式:</span>
+          <el-select v-model="transfer.class"
+            class="inputBox"
+            placeholder="请选择转账方式">
+            <el-option v-for="item in classList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </div>
+        <div class="lineCtn">
+          <span class="label">转账金额:</span>
+          <el-input v-model="transfer.total_price"
+            class="inputBox"
+            placeholder="请输入转账金额"></el-input>
+        </div>
+        <div class="lineCtn">
+          <span class="label">上传图片:</span>
+          <el-upload action="#"
+            list-type="picture-card"
+            :auto-upload="false"
+            :on-change="changeImg"
+            :on-progress="handleDownload"
+            :on-error="handleError"
+            :on-success="handleSuccess"
+            :on-remove="handleRemove"
+            :before-upload="beforeUpload">
+            <i slot="default"
+              class="el-icon-plus"></i>
+            <div slot="file"
+              slot-scope="{file}">
+              <img class="el-upload-list__item-thumbnail"
+                :src="file.url"
+                alt="">
+              <span class="el-upload-list__item-actions">
+                <span class="el-upload-list__item-preview">
+                  <i class="el-icon-zoom-in"></i>
+                </span>
+                <span v-if="!disabled"
+                  class="el-upload-list__item-delete">
+                  <i class="el-icon-download"></i>
+                </span>
+                <span v-if="!disabled"
+                  class="el-upload-list__item-delete">
+                  <i class="el-icon-delete"></i>
+                </span>
+              </span>
+            </div>
+          </el-upload>
+          <el-dialog :visible.sync="transfer.dialogVisible">
+            <img width="100%"
+              :src="transfer.dialogImageUrl"
+              alt="">
+          </el-dialog>
+        </div>
+        <div class="lineCtn">
+          <span class="label">转账说明:</span>
+          <el-input type="textarea"
+            class="inputBox"
+            :rows="3"
+            placeholder="请输入转账说明"
+            v-model="transfer.desc">
+          </el-input>
+        </div>
+        <div class="btnCtn">
+          <span class=""
+            @click="$message.warning('已取消'),transfer.flag = false">取消</span>
+          <span class="submit">提交</span>
         </div>
       </div>
-      <!-- <div class="btnCtn">
-        <div class="cancleBtn"
-          @click="$router.go(-1)">返回</div>
-        <div class="okBtn"
-          @click="$router.push('/index/foreignTradeUpdate/' + $route.params.id)">修改</div>
-      </div> -->
+      <span class="close el-icon-close"
+        @click="$message.warning('已取消'),transfer.flag = false"></span>
     </div>
-
+    <div class="window"
+      v-show="cutPay.flag">
+      <div class="title">添加转账记录</div>
+      <div class="content">
+        <div class="lineCtn">
+          <span class="label">转账日期:</span>
+          <el-date-picker v-model="transfer.time"
+            class="inputBox"
+            type="date"
+            placeholder="选择日期">
+          </el-date-picker>
+        </div>
+        <div class="lineCtn">
+          <span class="label">转账类型:</span>
+          <el-radio v-model="transfer.type"
+            label="1">收款</el-radio>
+          <el-radio v-model="transfer.type"
+            label="2">付款</el-radio>
+        </div>
+        <div class="lineCtn">
+          <span class="label">转账方式:</span>
+          <el-select v-model="transfer.class"
+            class="inputBox"
+            placeholder="请选择转账方式">
+            <el-option v-for="item in classList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </div>
+        <div class="lineCtn">
+          <span class="label">转账金额:</span>
+          <el-input v-model="transfer.total_price"
+            class="inputBox"
+            placeholder="请输入转账金额"></el-input>
+        </div>
+        <div class="lineCtn">
+          <span class="label">上传图片:</span>
+          <el-upload action="#"
+            list-type="picture-card"
+            :auto-upload="false"
+            :on-change="changeImg"
+            :on-progress="handleDownload"
+            :on-error="handleError"
+            :on-success="handleSuccess"
+            :on-remove="handleRemove"
+            :before-upload="beforeUpload">
+            <i slot="default"
+              class="el-icon-plus"></i>
+            <div slot="file"
+              slot-scope="{file}">
+              <img class="el-upload-list__item-thumbnail"
+                :src="file.url"
+                alt="">
+              <span class="el-upload-list__item-actions">
+                <span class="el-upload-list__item-preview">
+                  <i class="el-icon-zoom-in"></i>
+                </span>
+                <span v-if="!disabled"
+                  class="el-upload-list__item-delete">
+                  <i class="el-icon-download"></i>
+                </span>
+                <span v-if="!disabled"
+                  class="el-upload-list__item-delete">
+                  <i class="el-icon-delete"></i>
+                </span>
+              </span>
+            </div>
+          </el-upload>
+          <el-dialog :visible.sync="transfer.dialogVisible">
+            <img width="100%"
+              :src="transfer.dialogImageUrl"
+              alt="">
+          </el-dialog>
+        </div>
+        <div class="lineCtn">
+          <span class="label">转账说明:</span>
+          <el-input type="textarea"
+            class="inputBox"
+            :rows="3"
+            placeholder="请输入转账说明"
+            v-model="transfer.desc">
+          </el-input>
+        </div>
+        <div class="btnCtn">
+          <span class=""
+            @click="$message.warning('已取消'),cutPay.flag = false">取消</span>
+          <span class="submit">提交</span>
+        </div>
+      </div>
+      <span class="close el-icon-close"
+        @click="$message.warning('已取消'),cutPay.flag = false"></span>
+    </div>
   </div>
 </template>
 
@@ -231,6 +424,7 @@ export default {
   data () {
     return {
       selectVal: '',
+      checkAllFlag: false,
       pickerOptions: {
         shortcuts: [{
           text: '最近一周',
@@ -270,9 +464,39 @@ export default {
         cutPayFilterFlag: false,
         billFilterFlag: false
       },
-      flag: true, // 切换列表
+      flag: false, // 切换列表
       payList: [],
-      cutPayList: []
+      cutPayList: [],
+      classList: [
+        {
+          id: 1,
+          name: '电子汇款'
+        }, {
+          id: 2,
+          name: '支票'
+        }, {
+          id: 3,
+          name: '网银转账'
+        }, {
+          id: 4,
+          name: '第三方支付'
+        }
+      ],
+      transfer: {
+        flag: false,
+        time: '',
+        type: '1',
+        method: '',
+        total_price: '',
+        desc: '',
+        dialogImageUrl: '',
+        dialogVisible: false,
+        disabled: false
+      },
+      cutPay: {
+        flag: false,
+        checkAllFlag: false
+      }
     }
   },
   methods: {
@@ -316,6 +540,60 @@ export default {
       if (Number(el.scrollTop) + 600 >= this.cutPayList.length * 60) {
         this.getCutPayList()
       }
+    },
+    changeImg (file) {
+      console.log('change', file)
+    },
+    handleRemove (file) {
+      console.log('remove', file)
+    },
+    handleError (file) {
+      console.log('error', file)
+    },
+    handleSuccess (file) {
+      console.log('success', file)
+    },
+    // handlePictureCardPreview (file) {
+    //   console.log(file)
+    //   this.dialogImageUrl = file.url
+    //   this.dialogVisible = true
+    // },
+    handleDownload (file) {
+      console.log('download', file)
+    },
+    beforeUpload: function (file) {
+      let fileName = file.name.lastIndexOf('.')// 取到文件名开始到最后一个点的长度
+      let fileNameLength = file.name.length// 取到文件名长度
+      let fileFormat = file.name.substring(fileName + 1, fileNameLength)// 截
+      this.postData.key = Date.parse(new Date()) + '.' + fileFormat
+      const isJPG = file.type === 'image/jpeg'
+      const isPNG = file.type === 'image/png'
+      const isLt2M = file.size / 1024 / 1024 < 6
+      // const isReapeat = this.fileArr.find((item) => {
+      //   return item.key === file.name
+      // })
+      console.log(fileName, fileNameLength, fileFormat, this.postData.key)
+      if (!isJPG && !isPNG) {
+        this.$message.error('图片只能是 JPG/PNG 格式!')
+        return false
+      }
+      if (!isLt2M) {
+        this.$message.error('图片大小不能超过 6MB!')
+        return false
+      }
+      // if (isReapeat) {
+      //   this.$message.error('不能重复上传图片')
+      //   return false
+      // }
+    },
+    checked (item) {
+      if (item === 'all') {
+        this.checkAllFlag = true
+        console.log(this.checkAllFlag)
+      }
+    },
+    con (item) {
+      console.log(item, typeof item)
     }
   },
   created () {

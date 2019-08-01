@@ -197,7 +197,7 @@ export default {
       }).then(res => {
         let data = res.data.data
         console.log(res)
-        this.total = res.data.data.total
+        this.total = res.data.meta.total
         data.forEach(item => {
           this.list.push({
             stock_name: this.stockList.find(key => Number(key.id) === Number(item.stock_id)).name,

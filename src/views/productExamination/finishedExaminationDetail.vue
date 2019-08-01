@@ -149,7 +149,7 @@
                           <span class="tableRow">{{'第'}}{{chinaNumber(val.batch_id)}}{{'批'}}</span>
                           <span class="tableRow">{{val.delivery_time}}</span>
                           <span class="tableRow">{{val.number ? val.number : 0}}{{'条'}}</span>
-                          <span :class="{'tableRow':true,'compiled':testStatus(key,index,val.number) >= 0,'unCompiled': (0 > testStatus(key,index,val.number) || !testStatus(key,index,val.number))}"
+                          <span :class="{'tableRow':true,'compiled':testStatus(key,index,val.number) >= 0,'unCompiled': (0 > testStatus(key,index,val.number))}"
                             v-once>{{testStatus(key,index,val.number) >= 0 ? '完成' : '未完成'}}</span>
                         </span>
                       </span>
@@ -259,7 +259,7 @@
           @click="showShade=false">
           <span class="icon">x</span>
         </div>
-        <div class="title">{{showShade === 'add' ? '添加新' : '修改'}}角色权限</div>
+        <div class="title">修改成品检验日志</div>
         <div class="content">
           <div class="inputCtn">
             <span class="label">产品名称:</span>

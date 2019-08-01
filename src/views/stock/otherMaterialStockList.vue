@@ -84,7 +84,7 @@
 </template>
 
 <script>
-import { materialStockListNew } from '@/assets/js/api.js'
+// import { materialStockListNew } from '@/assets/js/api.js'
 export default {
   data () {
     return {

@@ -306,7 +306,7 @@ export default {
         price: '',
         value: '',
         attr: '',
-        vat_code: 'vat-null'
+        vat_code: 'vat_null'
       })
     },
     deleteBuyMaterialInfo (key, kay, index) {
@@ -333,7 +333,7 @@ export default {
               price: '',
               value: '',
               attr: '',
-              vat_code: 'vat-null'
+              vat_code: 'vat_null'
             }
           ]
         }
@@ -461,9 +461,10 @@ export default {
             obj.attribute = val.attr ? val.attr : ''
             obj.vat_code = val.vat_code
             arr.push({ ...obj })
-            if (value.company === 0 || value.company === '仓库') {
+            if (value.company[0] === 1) {
               stockObj.material_name = item.material
-              stockObj.stock_id = null
+              stockObj.order_id = this.$route.params.id
+              stockObj.stock_id = value.company[1]
               stockObj.color_code = val.color
               stockObj.user_id = sessionStorage.user_id
               stockObj.weight = Number(val.value)
