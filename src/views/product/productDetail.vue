@@ -91,6 +91,91 @@
           <span class="content">{{productDetail.description}}</span>
         </div>
       </div>
+      <div class="lineCtn">
+        <div class="inputCtn">
+          <span class="label">关联工艺单:</span>
+          <div class="content"
+            style="width:100%">
+            <ul class="tablesCtn"
+              style="width:100%;padding-left:0;box-sizing:border-box;margin:0">
+              <li class="material_info">
+                <span style="border-right:1px solid #ddd">待计算</span>
+                <span style="border-right:1px solid #ddd">待计算</span>
+                <span style="border-right:1px solid #ddd">待计算</span>
+                <span>待计算</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="lineCtn">
+        <div class="inputCtn">
+          <span class="label">关联配料单:</span>
+          <div class="content"
+            style="width:100%">
+            <ul class="tablesCtn"
+              style="width:100%;padding-left:0;box-sizing:border-box;margin:0">
+              <li class="material_info">
+                <span style="border-right:1px solid #ddd">待计算</span>
+                <span style="border-right:1px solid #ddd">待计算</span>
+                <span style="border-right:1px solid #ddd">待计算</span>
+                <span>待计算</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="lineCtn">
+        <div class="inputCtn">
+          <span class="label">关联订单:</span>
+          <div class="content"
+            style="width:100%">
+            <ul class="tablesCtn"
+              style="width:100%;padding-left:0;box-sizing:border-box;margin:0">
+              <li class="material_info">
+                <span style="border-right:1px solid #ddd">待计算</span>
+                <span style="border-right:1px solid #ddd">待计算</span>
+                <span style="border-right:1px solid #ddd">待计算</span>
+                <span>待计算</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="lineCtn">
+        <div class="inputCtn">
+          <span class="label">关联报价单:</span>
+          <div class="content"
+            style="width:100%">
+            <ul class="tablesCtn"
+              style="width:100%;padding-left:0;box-sizing:border-box;margin:0">
+              <li class="material_info">
+                <span style="border-right:1px solid #ddd">待计算</span>
+                <span style="border-right:1px solid #ddd">待计算</span>
+                <span style="border-right:1px solid #ddd">待计算</span>
+                <span>待计算</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="lineCtn">
+        <div class="inputCtn">
+          <span class="label">关联库存:</span>
+          <div class="content"
+            style="width:100%">
+            <ul class="tablesCtn"
+              style="width:100%;padding-left:0;box-sizing:border-box;margin:0">
+              <li class="material_info">
+                <span style="border-right:1px solid #ddd">待计算</span>
+                <span style="border-right:1px solid #ddd">待计算</span>
+                <span style="border-right:1px solid #ddd">待计算</span>
+                <span>待计算</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
       <div class="btnCtn">
         <div class="cancleBtn"
           @click="$router.go(-1)">返回</div>
@@ -112,7 +197,7 @@
 </template>
 
 <script>
-import { porductOne } from '@/assets/js/api.js'
+import { porductOne, productPlanDetail, craftProduct } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -164,13 +249,13 @@ export default {
     // 判断提示信息
     toolTips (product) {
       if (product.has_craft === 1) {
-        return '该产品已有工艺单信息，只能修改图片'
+        return '该产品已有工艺单信息'
       }
       if (product.has_plan === 1) {
-        return '该产品已有配料单信息，只能修改图片'
+        return '该产品已有配料单信息'
       }
       if (product.in_order === 1) {
-        return '该产品已有订单信息，只能修改图片'
+        return '该产品已有订单信息'
       }
     }
   },
@@ -181,9 +266,31 @@ export default {
     }).then((res) => {
       if (res.data.status) {
         this.productDetail = res.data.data
-        this.$nextTick(() => {
-          this.loading = false
-        })
+        // 关联工艺单
+        if (this.productDetail.has_craft === 1) {
+          craftProduct({
+            product_id: this.productDetail.id
+          }).then((res) => {
+            console.log('工艺单 is', res)
+          })
+        }
+        // 关联配料单
+        if (this.productDetail.has_plan === 1) {
+          productPlanDetail({
+            product_code: this.productDetail.product_code
+          }).then((res) => {
+            console.log('配料单 is', res)
+          })
+        }
+        // 关联订单
+        if (this.productDetail.in_order === 1) {
+
+        }
+        // 关联报价单
+        if (this.productDetail.has_craft === 1) {
+
+        }
+        this.loading = false
       }
     })
   }
