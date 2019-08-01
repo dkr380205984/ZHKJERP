@@ -64,7 +64,7 @@
           </div>
           <div class="inputCtn small">
             <span class="label">汇率:</span>
-            <span class="content">100元={{order_info.exchange_rate}}{{order_info.account_unit}}</span>
+            <span class="content">100{{order_info.account_unit}} = {{order_info.exchange_rate}}元</span>
           </div>
         </div>
         <div class="lineCtn">
@@ -85,6 +85,23 @@
           <div class="inputCtn small">
             <span class="label">备注信息:</span>
             <span class="content">{{order_info.remark?order_info.remark:'暂无信息'}}</span>
+          </div>
+        </div>
+        <div class="lineCtn"
+          v-show="order_info.fileArr.length>0">
+          <div class="inputCtn"
+            style="width:100%">
+            <span class="label">文件信息:</span>
+            <span class="fileCtn"
+              v-for="item in order_info.fileArr"
+              :key="item">
+              <a target="view_window"
+                :href="item"
+                :download="item">
+                <i class="el-icon-document"
+                  style="margin-right:5px"></i>{{item.replace('http://zhihui.tlkrzf.com/', '')}}
+              </a>
+            </span>
           </div>
         </div>
       </div>
@@ -617,10 +634,10 @@
               <span style="flex:2">{{item.product_code}}({{item.type}})</span>
               <span>{{item.semi_number ? item.semi_number : 0}}{{item.unit}}</span>
               <span>{{item.semi_defective ? item.semi_defective : 0}}{{item.unit}}</span>
-              <span>{{(item.semi_defective ? item.semi_defective : 0)/(item.semi_number ? item.semi_number : 0) ? ((item.semi_defective ? item.semi_defective : 0)/(item.semi_number ? item.semi_number : 0)).toFixed(2) : 0}}%</span>
+              <span>{{(item.semi_defective ? item.semi_defective : 0)/(item.semi_number ? item.semi_number : 0) ? ((item.semi_defective ? item.semi_defective : 0)/(item.semi_number ? item.semi_number : 0)*100).toFixed(2) : 0}}%</span>
               <span>{{item.finished_number ? item.finished_number : 0}}{{item.unit}}</span>
               <span>{{item.finished_defective ? item.finished_defective : 0}}{{item.unit}}</span>
-              <span>{{((item.finished_defective ? item.finished_defective : 0)/(item.finished_number ? item.finished_number : 0)) ? ((item.finished_defective ? item.finished_defective : 0)/(item.finished_number ? item.finished_number : 0)).toFixed(2) : 0}}%</span>
+              <span>{{((item.finished_defective ? item.finished_defective : 0)/(item.finished_number ? item.finished_number : 0)) ? ((item.finished_defective ? item.finished_defective : 0)/(item.finished_number ? item.finished_number : 0)*100).toFixed(2) : 0}}%</span>
               <span :style="{'color':(item.semi_number - item.semi_defective)/item.plan_number>=1&&(item.finished_number - item.finished_defective)/item.order_num>=1||order_info.status_inspection===1?'#67C23A':'#E6A23C'}">{{(item.semi_number - item.semi_defective)/item.plan_number>=1&&(item.finished_number - item.finished_defective)/item.order_num>1||order_info.status_inspection===1?'完成':'未完成'}}</span>
             </li>
           </div>
@@ -837,8 +854,8 @@
                       :key="indSize">
                       <span class="tableRow">{{valSize.name[0] + '/' + valSize.name[1]}}</span>
                       <span class="tableRow">{{valSize.numbers}}条</span>
-                      <span class="tableRow">{{valSize.unitPrice}}元/条</span>
-                      <span class="tableRow">{{parseInt(valSize.numbers * valSize.unitPrice)}}元</span>
+                      <span class="tableRow">{{valSize.unitPrice}}{{order_info.account_unit}}/条</span>
+                      <span class="tableRow">{{parseInt(valSize.numbers * valSize.unitPrice)}}{{order_info.account_unit}}</span>
                     </span>
                   </span>
                 </span>
@@ -1051,7 +1068,8 @@ export default {
         account_unit: '元',
         order_time: '',
         remark: '',
-        status: 0
+        status: 0,
+        fileArr: []
       },
       timeAxis: [],
       order_log: {},
@@ -1434,6 +1452,7 @@ export default {
     })]).then((res) => {
       const data = res[0].data.data
       this.order_info = data.order_info
+      this.order_info.fileArr = this.order_info.file_url ? JSON.parse(this.order_info.file_url) : []
       this.order_log = data.order_log
       this.process = data.order_schedule
       this.logList = res[4].data.data.map((item) => {
@@ -1742,8 +1761,8 @@ export default {
               store_in_number: item.number
             })
           } else {
-            flag1.store_in_number = Number(flag1.store_in_number ? flag.store_in_number : 0) + Number(item.number)
-            flag1.store_in_count = Number(flag1.store_in_count ? flag.store_in_count : 0) + Number(item.count)
+            flag1.store_in_number = Number(flag1.store_in_number ? flag1.store_in_number : 0) + Number(item.number)
+            flag1.store_in_count = Number(flag1.store_in_count ? flag1.store_in_count : 0) + Number(item.count)
           }
           // if (flag.store_in.indexOf(item.type) === -1) {
           //   flag.store_in.push(item.type)
@@ -1773,8 +1792,8 @@ export default {
               store_out_number: item.number
             })
           } else {
-            flag1.store_out_number = Number(flag1.store_out_number ? flag.store_out_number : 0) + Number(item.number)
-            flag1.store_out_count = Number(flag1.store_out_count ? flag.store_out_count : 0) + Number(item.count)
+            flag1.store_out_number = Number(flag1.store_out_number ? flag1.store_out_number : 0) + Number(item.number)
+            flag1.store_out_count = Number(flag1.store_out_count ? flag1.store_out_count : 0) + Number(item.count)
           }
           // if (flag.store_out.indexOf(item.type) === -1) {
           //   flag.store_out.push(item.type)

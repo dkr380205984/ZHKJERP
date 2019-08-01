@@ -413,7 +413,6 @@ export default {
       this.sizeKey = Object.keys(res[0].data.data.size)
       this.colourArr = res[0].data.data.color
       this.colorArr = res[6].data.data
-      this.processArr = res[2].data.data.process
       this.ingredientArr = res[1].data.data
       let value = []
       Object.keys(this.product.size).forEach((key) => {
@@ -515,8 +514,7 @@ export default {
         })
       }
       // 不管有没有工艺单，都需要接收的数据，工序和辅料信息
-      this.process = res[5].data.data.outside_precess
-      res[5].data.data.material_data.forEach((itemMaterial) => {
+      res[5].data.status && res[5].data.data.material_data.forEach((itemMaterial) => {
         if (itemMaterial.type === 1) {
           this.otherIngredient.ingredient.push(itemMaterial.material)
           this.otherIngredient.colour.push(itemMaterial.colour.map((itemColour) => itemColour.name))
@@ -888,17 +886,6 @@ export default {
         //   })
         //   return
         // }
-        this.process.forEach((item) => {
-          if (!item) {
-            state = true
-          }
-        })
-        if (state) {
-          this.$message.error({
-            message: '检测到有未填写的工序信息，请完善信息'
-          })
-          return
-        }
         let materialData = []
         this.mainIngredient.ingredient.forEach((itemMaterial, indexMaterial) => {
           materialData.push({

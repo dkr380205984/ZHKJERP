@@ -98,6 +98,8 @@ const saveYarnType = (params) => http.post(`${baseUrl}/yarn/type/save`, params, 
 const saveYarnColor = (params) => http.post(`${baseUrl}/yarn/color/save`, params, 'application/json')
 // 纱线颜色列表
 const YarnColorList = (params) => http.get(`${baseUrl}/yarn/color/list`, params)
+// 纱线详情
+const yarnDetail = (params) => http.get(`${baseUrl}/yarn/one`, params)
 // 获取工序+边型+织造法+机型
 const editList = (params) => http.get(`${baseUrl}/production/edit/list`, params)
 // 添加机型
@@ -124,7 +126,7 @@ const productPlanOne = (params) => http.get(`${baseUrl}/product/plan/one`, param
 const productPlanList = (params) => http.get(`${baseUrl}/product/plan/list`, params)
 // 添加产品计划单
 const saveProductPlan = (params) => http.post(`${baseUrl}/product/plan/save`, params, 'application/json')
-// 根据Id获取计划单
+// 根据code获取计划单
 const productPlanDetail = (params) => http.get(`${baseUrl}/product/plan/product/one`, params)
 // 添加产品辅料
 const saveMaterial = (params) => http.post(`${baseUrl}/product/material/save`, params, 'application/json')
@@ -132,6 +134,8 @@ const saveMaterial = (params) => http.post(`${baseUrl}/product/material/save`, p
 const deleteMaterial = (params) => http.post(`${baseUrl}/product/material/delete`, params, 'application/json')
 // 获取辅料列表
 const materialList = (params) => http.get(`${baseUrl}/product/material/list`, params)
+// 辅料详情
+const materialDetail = (params) => http.get(`${baseUrl}/product/material/one`, params)
 // 外贸公司列表
 const clientList = (params) => http.get(`${baseUrl}/client/list`, params)
 // 禁用/启用联系人
@@ -301,6 +305,8 @@ const priceListDetail = (params) => http.get(`${baseUrl}/product/quotation/detai
 // 报价单审核
 const priceListCheck = (params) => http.post(`${baseUrl}/product/quotation/check`, params, 'application/json')
 export {
+  materialDetail,
+  yarnDetail,
   priceListCheck,
   priceListDetail,
   priceListList,

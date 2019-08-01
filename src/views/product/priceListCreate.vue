@@ -1,5 +1,6 @@
 <template>
-  <div id="priceListCreate">
+  <div id="priceListCreate"
+    v-loading="loading">
     <div class="head">
       <h2>添加产品报价单</h2>
     </div>
@@ -246,7 +247,27 @@
         <div class="inputCtn oneLine product">
           <span class="label must">产品报价单：</span>
           <div style="width: 670px;">
-            <div class="daoruBtn">导入报价单</div>
+            <!-- <div class="daoruBtn">导入报价单</div> -->
+            <el-select style="margin-left: auto;display:block;margin-bottom: 15px;width:250px;"
+              filterable
+              remote
+              reserve-keyword
+              v-model="selectVal"
+              :remote-method="remoteMethod"
+              :loading="loadingS"
+              clearable
+              @change="getPriceList"
+              placeholder="输入报价单编号导入报价单">
+              <el-option v-for="item in priceListArr"
+                :key="item.id"
+                :label="item.quotation_code"
+                :value="item.id">
+                <span>{{item.quotation_code}}</span>
+                <span style="margin:0 5px;color:#8492a6;font-size:13px"
+                  v-for="itemPro in JSON.parse(item.product_info)"
+                  :key="itemPro.product_code">({{itemPro.product_info.category_info.product_category +'/'+itemPro.product_info.type_name+'/'+itemPro.product_info.style_name}})</span>
+              </el-option>
+            </el-select>
           </div>
           <div class="specialTable">
             <div class="tbox">
@@ -264,8 +285,8 @@
                   v-model="item.key"
                   filterable
                   placeholder="请选择原料">
-                  <el-option v-for="item in yarnList"
-                    :key="item.id"
+                  <el-option v-for="(item,index) in yarnList"
+                    :key="index"
                     :label="item.name"
                     :value="item.name">
                   </el-option>
@@ -273,7 +294,8 @@
               </div>
               <div class="box2">
                 <el-input v-model="item.price"
-                  placeholder="请输入金额"></el-input>
+                  :key="item.key+index"
+                  :placeholder="item.number?'所需原料参考价：'+(item.number*item.minPrice/1000).toFixed(2)+'元 ~ '+(item.number*item.maxPrice/1000).toFixed(2)+'元':(item.minPrice&&item.maxPrice)?'原料参考价：'+item.minPrice+'元 ~ '+item.maxPrice+'元':'请输入金额'"></el-input>
                 <em class="unit">元</em>
               </div>
               <div class="box3">
@@ -298,7 +320,7 @@
               </div>
               <div class="box2">
                 <el-input v-model="item.price"
-                  placeholder="请输入金额"></el-input>
+                  :placeholder="item.number?'所需辅料参考价：'+item.number*item.minPrice+'元 ~ '+item.number*item.maxPrice+'元':(item.minPrice&&item.maxPrice)?'辅料参考价：'+item.minPrice+'元 ~ '+item.maxPrice+'元':'请输入金额'"></el-input>
                 <em class="unit">元</em>
               </div>
               <div class="box3">
@@ -495,15 +517,33 @@
           @click="saveAll">保存</div>
       </div>
     </div>
+    <!-- 导入报价单暂时不做那么复杂 -->
+    <div class="messageBox"
+      style="z-index:99;"
+      v-show="false">
+      <div class="main">
+        <div class="close">
+          <span class="icon">x</span>
+        </div>
+        <div class="title">导入报价单</div>
+        <div class="content">
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { machiningType, moneyArr } from '@/assets/js/dictionary.js'
-import { clientList, productList, productTppeList, flowerList, getGroup, YarnList, materialList, packagMaterialList, priceListCreate } from '@/assets/js/api.js'
+import { clientList, productList, productTppeList, flowerList, getGroup, YarnList, materialList, packagMaterialList, priceListCreate, productPlanDetail, yarnDetail,
+  materialDetail, priceListList, priceListDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      loading: true,
+      loadingS: false,
+      selectVal: '',
+      priceListArr: [],
       colorSize: [],
       showTips: false,
       page: 1,
@@ -535,12 +575,16 @@ export default {
       yarnList: [],
       yarnArr: [{
         key: '',
-        price: ''
+        price: '',
+        maxPrice: 0,
+        minPrice: 0
       }],
       otherMaterialList: [],
       otherMaterialArr: [{
         key: '',
-        price: ''
+        price: '',
+        maxPrice: 0,
+        minPrice: 0
       }],
       weaveList: [{
         id: 1,
@@ -588,6 +632,10 @@ export default {
     goBaidu () {
       window.open('http://forex.hexun.com/rmbhl/#zkRate')
     },
+    // 打开新页面
+    openUrl (url) {
+      window.open(url)
+    },
     // 根据选取的外贸公司获取联系人
     getContacts (id) {
       this.contactsArr = this.companyArr.find((item) => item.id === id).contacts
@@ -597,6 +645,59 @@ export default {
       if (ev) {
         if (!this.productArr.find((item, index) => item.id === id)) {
           this.productArr.push(this.seachProduct.find((item) => item.id === id))
+          // 添加产品的时候获取配料单，关联上原料数据
+          productPlanDetail({
+            product_code: this.seachProduct.find((item) => item.id === id).product_code
+          }).then((res) => {
+            if (res.data.status) {
+              res.data.data.material_data.forEach((item) => {
+                const finded = this.yarnArr.find((itemFind) => itemFind.key === item.material)
+                const finded2 = this.otherMaterialArr.find((itemFind) => itemFind.key === item.material)
+                if (!finded && item.type === 0) {
+                  let number = item.colour.reduce((totalColour, currentColour) => {
+                    return totalColour + currentColour.color.reduce((totalColor, currentColor) => {
+                      return totalColor + currentColor.size.reduce((totalSize, currentSize) => {
+                        return totalSize + Number(currentSize.number)
+                      }, 0)
+                    }, 0)
+                  }, 0)
+                  if (this.yarnArr[0].key) {
+                    this.yarnArr.push({
+                      key: item.material,
+                      price: '',
+                      number: number,
+                      maxPrice: 0,
+                      minPrice: 0
+                    })
+                  } else {
+                    this.yarnArr[0].key = item.material
+                    this.yarnArr[0].number = number
+                  }
+                }
+                if (!finded2 && item.type === 1) {
+                  let number = item.colour.reduce((totalColour, currentColour) => {
+                    return totalColour + currentColour.color.reduce((totalColor, currentColor) => {
+                      return totalColor + currentColor.size.reduce((totalSize, currentSize) => {
+                        return totalSize + Number(currentSize.number)
+                      }, 0)
+                    }, 0)
+                  }, 0)
+                  if (this.otherMaterialArr[0].key) {
+                    this.otherMaterialArr.push({
+                      key: item.material,
+                      price: '',
+                      number: number,
+                      maxPrice: 0,
+                      minPrice: 0
+                    })
+                  } else {
+                    this.otherMaterialArr[0].key = item.material
+                    this.otherMaterialArr[0].number = number
+                  }
+                }
+              })
+            }
+          })
         }
       } else {
         let mark = -1
@@ -622,7 +723,6 @@ export default {
           product.colorSize = product.colorSize ? product.colorSize : []
         })
       })
-      console.log(this.productArr)
     },
     // 使用删除操作删除产品列表里的信息
     deleteProduct (id) {
@@ -674,14 +774,83 @@ export default {
     },
     // 报价单添加信息
     adds (key) {
-      this[key].push({
-        key: '',
-        price: ''
-      })
+      if (key === 'yarnArr' || key === 'otherMaterialArr') {
+        this[key].push({
+          key: '',
+          price: '',
+          minPrice: 0,
+          maxPrice: 0
+        })
+      } else {
+        this[key].push({
+          key: '',
+          price: ''
+        })
+      }
     },
     // 报价单信息删除
     deletes (key, index) {
       this[key].splice(index, 1)
+    },
+    // 触发下拉框搜索
+    remoteMethod (query) {
+      if (query !== '') {
+        this.loadingS = true
+        priceListList({
+          company_id: window.sessionStorage.getItem('company_id'),
+          limit: 20,
+          page: 1,
+          start_time: '',
+          end_time: '',
+          status: '',
+          client_id: '',
+          code: query
+        }).then((res) => {
+          console.log(res)
+          this.priceListArr = res.data.data
+          this.loadingS = false
+        })
+      } else {
+        this.priceListArr = []
+      }
+    },
+    // 导入报价单操作
+    getPriceList (id) {
+      if (id) {
+        this.loading = true
+        priceListDetail({
+          id: id
+        }).then((res) => {
+          const detail = res.data.data
+          this.company = detail.client_id.toString()
+          this.contactsArr = this.companyArr.find((item) => parseInt(item.id) === detail.client_id).contacts
+          this.contacts = detail.client_contact
+          this.money = detail.account_unit
+          this.exchangeRate = detail.exchange_rate
+          this.yarnArr = JSON.parse(detail.material_info)
+          this.otherMaterialArr = JSON.parse(detail.assist_info)
+          this.weaveArr = JSON.parse(detail.weave_info)
+          this.machiningArr = JSON.parse(detail.semi_product_info)
+          this.packagMaterialArr = JSON.parse(detail.pack_material_info)
+          this.packagMaterialArr = JSON.parse(detail.user_info)
+          this.otherArr = JSON.parse(detail.desc_info)
+          this.desc = detail.desc
+          this.product_need = detail.product_need
+          this.productArr = JSON.parse(detail.product_info)
+          this.productArr.forEach((item) => {
+            for (let key in item.product_info) {
+              if (!item.hasOwnProperty[key]) {
+                item[key] = item.product_info[key]
+              }
+            }
+          })
+          this.yunshu = detail.transport_cost
+          this.lirun = detail.profit
+          this.yongjin = detail.commission
+          this.shuishou = detail.tax
+          this.loading = false
+        })
+      }
     },
     saveAll () {
       let flag = true
@@ -748,9 +917,7 @@ export default {
           tax: this.shuishou,
           desc: this.desc
         }
-        console.log(json)
         priceListCreate(json).then((res) => {
-          console.log(res)
           if (res.data.status) {
             this.$message.success({
               message: '添加成功'
@@ -800,6 +967,55 @@ export default {
       } else {
         return item.category_info.product_category + ' / ' + item.type_name + ' / ' + item.style_name
       }
+    }
+  },
+  watch: {
+    yarnArr: {
+      immediate: true,
+      handler: function (val) {
+        yarnDetail({
+          id: val.map((item) => item.key)
+        }).then((res) => {
+          if (res.data.status && res.data.data.length > 0) {
+            let index = 0 // 返回的数据会跳过空数据,因此需要计数
+            val.forEach((item) => {
+              if (item.key) {
+                item.maxPrice = res.data.data[index].max_price
+                item.minPrice = res.data.data[index].min_price
+                index++
+              } else {
+                item.maxPrice = 0
+                item.minPrice = 0
+              }
+            })
+          }
+          console.log(val)
+        })
+      },
+      deep: true
+    },
+    otherMaterialArr: {
+      immediate: true,
+      handler: function (val) {
+        materialDetail({
+          id: val.map((item) => item.key)
+        }).then((res) => {
+          if (res.data.status && res.data.data.length > 0) {
+            let index = 0 // 返回的数据会跳过空数据,因此需要计数
+            val.forEach((item) => {
+              if (item.key) {
+                item.maxPrice = res.data.data[index].max_price
+                item.minPrice = res.data.data[index].min_price
+                index++
+              } else {
+                item.maxPrice = 0
+                item.minPrice = 0
+              }
+            })
+          }
+        })
+      },
+      deep: true
     }
   },
   mounted () {
