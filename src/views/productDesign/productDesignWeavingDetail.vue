@@ -45,7 +45,7 @@
                   <span>产品编号</span>
                   <span>产品品类</span>
                   <span style="flex:4">
-                    <span>配色/尺码</span>
+                    <span>尺码/配色</span>
                     <span>生产计划数</span>
                     <span style="flex:1.5">纱线</span>
                     <span>颜色</span>
@@ -63,7 +63,7 @@
                     style="flex:4">
                     <span v-for="(itemColour,indexColour) in item.info"
                       :key="indexColour">
-                      <span>{{itemColour.color}}/{{itemColour.size}}</span>
+                      <span>{{itemColour.size}}/{{itemColour.color}}</span>
                       <span>{{itemColour.production_num}}{{item.unit_name}}</span>
                       <span class="col"
                         v-if="itemColour.colorArr"
@@ -112,7 +112,7 @@
                   <span>产品编号</span>
                   <span>产品品类</span>
                   <span style="flex:5;">
-                    <span>配色/尺码</span>
+                    <span>尺码/配色</span>
                     <span>下单数</span>
                     <span>库存调取数</span>
                     <span>生产计划数</span>
@@ -128,7 +128,7 @@
                     style="flex:5;">
                     <span v-for="(itemColour,indexColour) in item.info"
                       :key="indexColour">
-                      <span>{{itemColour.color}}/{{itemColour.size}}</span>
+                      <span>{{itemColour.size}}/{{itemColour.color}}</span>
                       <span>{{itemColour.order_num}}{{item.unit_name}}</span>
                       <span>{{itemColour.stock_pick}}{{item.unit_name}}</span>
                       <span>{{itemColour.production_num}}{{item.unit_name}}</span>
@@ -147,7 +147,7 @@
                     <span>加工单位</span>
                     <span>产品编号</span>
                     <span>产品品类</span>
-                    <span>配色/尺码</span>
+                    <span>尺码/配色</span>
                     <span>单价</span>
                     <span>数量</span>
                     <span>总价</span>
@@ -163,7 +163,7 @@
                     <span>{{item.client_name}}</span>
                     <span>{{item.product_info.product_code}}</span>
                     <span>{{item.product_info.category_info.product_category}}/{{item.product_info.type_name}}/{{item.product_info.style_name}}</span>
-                    <span>{{item.color}}/{{item.size}}</span>
+                    <span>{{item.size}}/{{item.color}}</span>
                     <span>{{item.price}}</span>
                     <span>{{item.number}}{{item.product_info.category_info.name}}</span>
                     <span>{{parseInt(item.price*item.number)}}</span>

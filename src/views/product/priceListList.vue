@@ -15,8 +15,8 @@
             v-show="companyCmp"
             @close="clear('company')">{{companyCmp}}</el-tag>
           <el-tag closable
-            v-show="contactsCmp"
-            @close="clear('contacts')">{{contactsCmp}}</el-tag>
+            v-show="statusCmp"
+            @close="clear('status')">{{statusCmp}}</el-tag>
         </div>
         <div class="selectLine">
           <span class="label">筛选条件:</span>
@@ -31,13 +31,13 @@
                 :value="item.id">
               </el-option>
             </el-select>
-            <el-select v-model="contacts"
+            <el-select v-model="status"
               filterable
-              placeholder="联系人">
-              <el-option v-for="item in contactsArr"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id">
+              placeholder="审核状态">
+              <el-option v-for="item in statusArr"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
               </el-option>
             </el-select>
           </div>
@@ -191,7 +191,18 @@ export default {
       companyArr: [],
       company: '',
       contactsArr: [],
-      contacts: ''
+      contacts: '',
+      status: status,
+      statusArr: [{
+        value: 1,
+        label: '待审核'
+      }, {
+        value: 2,
+        label: '已通过'
+      }, {
+        value: 3,
+        label: '驳回'
+      }]
     }
   },
   watch: {
@@ -204,6 +215,22 @@ export default {
       }
     },
     group (newVal) {
+      if (!this.first) {
+        if (newVal) {
+          this.pages = 1
+        }
+        this.getList()
+      }
+    },
+    status (newVal) {
+      if (!this.first) {
+        if (newVal) {
+          this.pages = 1
+        }
+        this.getList()
+      }
+    },
+    searchVal (newVal) {
       if (!this.first) {
         if (newVal) {
           this.pages = 1
@@ -223,6 +250,13 @@ export default {
     contactsCmp () {
       if (this.contacts) {
         return this.contactsArr.find((item) => item.id === this.contacts).name
+      } else {
+        return ''
+      }
+    },
+    statusCmp () {
+      if (this.status) {
+        return this.statusArr.find((item) => item.value === this.status).label
       } else {
         return ''
       }
@@ -257,7 +291,12 @@ export default {
       priceListList({
         company_id: window.sessionStorage.getItem('company_id'),
         limit: 5,
-        page: this.pages
+        page: this.pages,
+        start_time: this.start_time,
+        end_time: this.end_time,
+        status: this.status,
+        client_id: this.company,
+        code: this.searchVal
       }).then((res) => {
         this.total = res.data.meta.total
         this.list = res.data.data.map((item) => {
@@ -308,6 +347,9 @@ export default {
     clear (item) {
       if (item === 'company') {
         this.company = ''
+      }
+      if (item === 'status') {
+        this.status = ''
       }
     },
     getColor (val) {

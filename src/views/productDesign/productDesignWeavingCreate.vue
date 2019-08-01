@@ -46,7 +46,7 @@
                   <span>产品编号</span>
                   <span>产品品类</span>
                   <span style="flex:5;">
-                    <span>配色/尺码</span>
+                    <span>尺码/配色</span>
                     <span>下单数</span>
                     <span>库存调取数</span>
                     <span>生产计划数</span>
@@ -63,7 +63,7 @@
                     style="flex:5;">
                     <span v-for="(itemColour,indexColour) in item.info"
                       :key="indexColour">
-                      <span>{{itemColour.color}}/{{itemColour.size}}</span>
+                      <span>{{itemColour.size}}/{{itemColour.color}}</span>
                       <span>{{itemColour.order_num}}{{item.unit_name}}</span>
                       <span>{{itemColour.stock_pick}}{{item.unit_name}}</span>
                       <span>{{itemColour.production_num}}{{item.unit_name}}</span>
@@ -92,7 +92,7 @@
                   <span>产品编号</span>
                   <span>产品品类</span>
                   <span style="flex:5;">
-                    <span>配色/尺码</span>
+                    <span>尺码/配色</span>
                     <span>下单数</span>
                     <span>库存调取数</span>
                     <span>生产计划数</span>
@@ -107,7 +107,7 @@
                     style="flex:5;">
                     <span v-for="(itemColour,indexColour) in item.info"
                       :key="indexColour">
-                      <span>{{itemColour.color}}/{{itemColour.size}}</span>
+                      <span>{{itemColour.size}}/{{itemColour.color}}</span>
                       <span>{{itemColour.order_num}}{{item.unit_name}}</span>
                       <span>{{itemColour.stock_pick}}{{item.unit_name}}</span>
                       <span>{{itemColour.production_num}}{{item.unit_name}}</span>

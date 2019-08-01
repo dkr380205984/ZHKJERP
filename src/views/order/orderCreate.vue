@@ -348,6 +348,27 @@
         </div>
       </div>
       <div class="lineCtn">
+        <div class="inputCtn oneLine">
+          <span class="label">上传文件：</span>
+          <el-upload class="upload-demo"
+            action="http://upload.qiniup.com/"
+            accept=""
+            :on-preview="handlePreview"
+            :on-remove="handleRemove"
+            :on-success="handleSuccess"
+            :before-upload="beforeAvatarUpload"
+            :file-list="fileArr"
+            :data="postData"
+            ref="uploada"
+            list-type="picture">
+            <el-button size="small"
+              type="primary">点击上传</el-button>
+            <div slot="tip"
+              class="el-upload__tip">请不要上传超过20M的文件</div>
+          </el-upload>
+        </div>
+      </div>
+      <div class="lineCtn">
         <div class="inputCtn oneLine product">
           <span class="label">备注：</span>
           <el-input style="width:670px"
@@ -370,10 +391,12 @@
 
 <script>
 import { moneyArr } from '@/assets/js/dictionary.js'
-import { clientList, productList, productTppeList, flowerList, orderSave, getGroup } from '@/assets/js/api.js'
+import { clientList, productList, productTppeList, flowerList, orderSave, getGroup, getToken } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      fileArr: [],
+      postData: { token: '' },
       lock: false,
       nomore: false,
       page: 1,
@@ -604,6 +627,34 @@ export default {
       this.orderArr[indexOrder].product[indexProduct].colorSizeArr = arr
       this.orderArr[indexOrder].product[indexProduct].product_info = obj
     },
+    // 文件上传相关操作
+    handleRemove (file, fileList) {
+      console.log(file, fileList)
+    },
+    handlePreview (file) {
+      console.log(file)
+    },
+    beforeAvatarUpload: function (file) {
+      let fileName = file.name.lastIndexOf('.')// 取到文件名开始到最后一个点的长度
+      let fileNameLength = file.name.length// 取到文件名长度
+      let fileFormat = file.name.substring(fileName + 1, fileNameLength)// 截
+      this.postData.key = Date.parse(new Date()) + '.' + fileFormat
+      const isLt2M = file.size / 1024 / 1024 < 20
+      // const isReapeat = this.fileArr.find((item) => {
+      //   return item.key === file.name
+      // })
+      if (!isLt2M) {
+        this.$message.error('图片大小不能超过 20MB!')
+        return false
+      }
+      // if (isReapeat) {
+      //   this.$message.error('不能重复上传图片')
+      //   return false
+      // }
+    },
+    handleSuccess (res, file) {
+      console.log(res)
+    },
     // 清空
     clearAll () {
     },
@@ -707,6 +758,7 @@ export default {
           })
           return
         }
+        const fileArr = this.$refs.uploada.uploadFiles.map((item) => { return 'http://zhihui.tlkrzf.com/' + item.response.key })
         let obj = {
           company_id: this.companyId,
           user_id: window.sessionStorage.getItem('user_id'),
@@ -732,7 +784,9 @@ export default {
             }
           }),
           total_price: this.totalMoney,
-          remark: this.otherInfo
+          remark: this.otherInfo,
+          total_price_RMB: this.totalMoney * this.exchangeRate / 100,
+          file_url: JSON.stringify(fileArr)
         }
         this.lock = false
         this.loading = false
@@ -808,7 +862,7 @@ export default {
       company_id: this.companyId
     }), getGroup({
       company_id: this.companyId
-    })]).then((res) => {
+    }), getToken()]).then((res) => {
       console.log(res[1])
       this.companyArr = res[0].data.data.filter((item) => (item.type.indexOf(1) !== -1))
       this.seachProduct = res[1].data.data
@@ -834,6 +888,7 @@ export default {
       })
       this.flowerArr = res[3].data.data
       this.groupArr = res[4].data.data
+      this.postData.token = res[5].data.data
       this.loading = false
     })
 

@@ -1,6 +1,6 @@
 @import './common.less';
 #priceListCreate{
-  height: 100%;
+  min-height: 100%;
   font-family: 'systemfont';
   font-weight: 300;
   box-sizing: border-box;
@@ -303,6 +303,62 @@
       justify-content: space-around;
       width: 400px;
       margin-top: 40px;
+    }
+  }
+  .messageBox{
+    position: fixed;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0,0,0,0.8);
+    .main{
+      position: absolute;
+      width: 640px;
+      height: 540px;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      margin: auto;
+      background: #ffffff;
+      overflow: hidden;
+      border-radius: 4px;
+      .close{
+        position: absolute;
+        right: -30px;
+        top: -30px;
+        width: 60px;
+        height: 60px;
+        background: @normalBlue;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: 0.1s;
+        color: #ECF0F1;
+        &:hover{
+          transform: scale(1.1);
+          color: #ffffff;
+          background: @hoverBlue;
+        }
+        .icon{
+          position: absolute;
+          left: 15px;
+          bottom: 7px;
+          font-size: 16px;
+          font-weight: bold;
+        }
+      }
+      .title{
+        line-height: 66px;
+        font-size: @fontSubhead;
+        padding: 0 20px;
+        background: linear-gradient(to right,#1A95FF,#CEDDEF);
+        border-radius: 4px;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        color: #ffffff;
+        margin-bottom: 40px;
+      }
     }
   }
 }

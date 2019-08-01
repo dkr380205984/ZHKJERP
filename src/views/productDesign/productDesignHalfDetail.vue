@@ -46,7 +46,7 @@
                   <span>产品编号</span>
                   <span>产品品类</span>
                   <span style="flex:4">
-                    <span>配色/尺码</span>
+                    <span>尺码/配色</span>
                     <span>生产计划数</span>
                     <span>辅料</span>
                     <span>颜色</span>
@@ -63,7 +63,7 @@
                     style="flex:4">
                     <span v-for="(itemColour,indexColour) in item.info"
                       :key="indexColour">
-                      <span>{{itemColour.color}}/{{itemColour.size}}</span>
+                      <span>{{itemColour.size}}/{{itemColour.color}}</span>
                       <span>{{itemColour.production_num}}{{item.unit_name}}</span>
                       <span class="col"
                         v-if="itemColour.colorArr&&itemColour.colorArr.length>0"
@@ -113,7 +113,7 @@
                   <span>产品编号</span>
                   <span style="flex:6">
                     <span style="flex:1.5">产品品类</span>
-                    <span>颜色尺码</span>
+                    <span>尺码/配色</span>
                     <span style="flex:0.7">单价</span>
                     <span style="flex:0.8">数量</span>
                     <span>创建时间</span>
@@ -141,7 +141,7 @@
                             <span v-for="(itemLast,indexLast) in itemPro.info"
                               :key="indexLast">
                               <span style="border-right:1px solid #ddd;flex:1.5">{{itemLast.product_info.category_info.product_category}}/{{itemLast.product_info.type_name}}/{{itemLast.product_info.style_name}}</span>
-                              <span style="border-right:1px solid #ddd">{{itemLast.color}}/{{itemLast.size}}</span>
+                              <span style="border-right:1px solid #ddd">{{itemLast.size}}/{{itemLast.color}}</span>
                               <span style="border-right:1px solid #ddd;flex:0.7">{{itemLast.price}}元</span>
                               <span style="border-right:1px solid #ddd;flex:0.8">{{itemLast.number}}{{itemLast.product_info.category_info.name}}</span>
                               <span style="border-right:1px solid #ddd">{{itemLast.created_at.slice(0,10)}}</span>
