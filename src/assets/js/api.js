@@ -318,7 +318,7 @@ const transferAdd = (params) => http.post(`${baseUrl}/financial/transfer/save`, 
 const deductAdd = (params) => http.post(`${baseUrl}/financial/deduct/save`, params, 'application/json')
 // 添加结算记录financial/settle/save
 const settleAdd = (params) => http.post(`${baseUrl}/financial/settle/save`, params, 'application/json')
-//订单财务统计合计值financial/order/count
+// 订单财务统计合计值financial/order/count
 const orderFinancialCount = (params) => http.get(`${baseUrl}/financial/order/count`, params)
 export {
   orderFinancialCount,
