@@ -74,6 +74,8 @@
             </el-select>
           </div>
           <div class="rightFilter">
+            <span class="changeToScreenShipmentsList"
+              @click="$router.push('/screenShipmentsList?categoryVal=' + categoryVal +'&typesVal=' + typesVal +'&styleVal=' + styleVal + '&company=' + company + '&group=' + group + '&start_time=' + (start_time ? start_time.getTime() : '') + '&end_time=' + (end_time ? end_time.getTime() : ''))">大屏模式</span>
             <el-date-picker v-model="date"
               type="daterange"
               align="right"
@@ -89,8 +91,6 @@
       </div>
       <div class="mergeTable"
         v-scroll="{fun:getOrderList,pageSize:5}">
-        <span class="changeToScreenShipmentsList"
-          @click="$router.push('/screenShipmentsList?categoryVal=' + categoryVal +'&typesVal=' + typesVal +'&styleVal=' + styleVal + '&company=' + company + '&group=' + group + '&start_time=' + (start_time ? start_time.getTime() : '') + '&end_time=' + (end_time ? end_time.getTime() : ''))">切换至大屏发货列表</span>
         <div class="mergeHeader">
           <div class="tableColumn">发货日期</div>
           <div class="tableColumn">订单号</div>
@@ -563,17 +563,16 @@ export default {
       background: #48aaff;
     }
   }
-  .mergeTable {
+  .rightFilter {
     position: relative;
-    margin-top: 40px;
     .changeToScreenShipmentsList {
       position: absolute;
       top: 0;
       right: 0;
-      transform: translateY(-100%);
+      transform: translateY(-150%);
       background-color: #1a95ff;
       border-radius: 5px;
-      padding: 5px;
+      padding: 5px 10px;
       cursor: pointer;
       color: #fff;
     }

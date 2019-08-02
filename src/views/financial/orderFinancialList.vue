@@ -118,9 +118,9 @@
             <em class="el-icon-caret-bottom"
               :style="{color:!filterOption.companyCostFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
           </span>
-          <span @click="filterOption.cutPayFilterFlag = !filterOption.cutPayFilterFlag"
+          <!-- <span @click="filterOption.cutPayFilterFlag = !filterOption.cutPayFilterFlag"
             class="icon">
-            订单扣款
+            扣款记录
             <em class="el-icon-caret-top"
               :style="{color:filterOption.cutPayFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
             <em class="el-icon-caret-bottom"
@@ -128,12 +128,12 @@
           </span>
           <span @click="filterOption.billFilterFlag = !filterOption.billFilterFlag"
             class="icon">
-            已开发票
+            结算记录
             <em class="el-icon-caret-top"
               :style="{color:filterOption.billFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
             <em class="el-icon-caret-bottom"
               :style="{color:!filterOption.billFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-          </span>
+          </span> -->
           <span>负责小组</span>
           <span>操作</span>
         </div>
@@ -142,109 +142,166 @@
           <template v-for="(item,key) in list">
             <li :key="key"
               class="infinite-list-item"
-              @click="item.flag = !item.flag">
+              @click.stop="getInfo(item)">
               <div class="list">
                 <span>
                   <em :class="{'el-icon-caret-bottom':true,'open':true,'close':!item.flag}"></em>
                   {{item.order_code}}</span>
                 <span>{{item.order_client}}</span>
                 <span>{{item.order_time}}</span>
-                <span>{{item.order_total_price}}{{item.price_unit}}</span>
+                <span>{{item.order_total_price}}{{item.account_unit}}</span>
                 <span>{{item.order_number}}</span>
-                <span>{{item.outStock_number}}</span>
-                <span>{{item.total_number}}</span>
-                <span>{{item.companyCost}}</span>
-                <span>{{item.order_cutPay}}</span>
-                <span>{{item.bill}}</span>
+                <span>{{item.total_pop}}</span>
+                <span>{{item.total_real/100}}元</span>
+                <span>{{item.company_cost}}元</span>
+                <!-- <span>{{item.order_cutPay}}</span>
+                <span>{{item.bill}}</span> -->
                 <span>{{item.group_name}}</span>
                 <span>
                   <span class="btn">详情</span>
                 </span>
               </div>
               <div :class="{'detail':true,'detailNone':!item.flag,'detailShow':item.flag}">
-                <span class="title">
-                  <span class="flex15">产品类型</span>
-                  <span>订单总值</span>
-                  <span>实际总值</span>
-                  <span>产品图片</span>
-                  <span class="flex05">尺码</span>
-                  <span class="flex05">颜色</span>
-                  <span class="flex05">单价</span>
-                  <span>订单数量</span>
-                  <span>出库数量</span>
-                  <span>工厂成本</span>
-                </span>
-                <span class="content"
-                  v-for="(valPro,indPro) in item.product_info"
-                  :key="indPro">
-                  <span class="flex15">
-                    <span>{{valPro.product_code}}</span>
-                    <span style="margin-left:10px;">{{valPro.product_type}}</span>
+                <div v-loading='item.loading'>
+                  <span class="title">
+                    <span>产品类型</span>
+                    <span>订单总值</span>
+                    <span>实际总值</span>
+                    <span>产品图片</span>
+                    <span class="flex05">尺码</span>
+                    <span class="flex05">颜色</span>
+                    <span class="flex08">单价</span>
+                    <span>订单数量</span>
+                    <span>发货数量</span>
+                    <span>产品成本</span>
                   </span>
-                  <span>{{valPro.order_total_price}}</span>
-                  <span>{{valPro.reality_total_price}}</span>
-                  <span>{{'图片'}}</span>
-                  <span class="flex35 col">
-                    <span v-for="(valSize,indSize) in valPro.size_info"
-                      :key="indSize">
-                      <span class="flex05">{{valSize.size}}</span>
-                      <span class="flex05">{{valSize.color}}</span>
-                      <span class="flex05">{{valSize.one_price}}元/条</span>
-                      <span>{{valSize.order_number}}条</span>
-                      <span>{{valSize.outStock_number}}条</span>
+                  <span class="content"
+                    v-for="(valPro,indPro) in item.product_info"
+                    :key="indPro">
+                    <span class=" col">
+                      <span>{{valPro.product_code}}</span>
+                      <span>{{valPro.product_type}}</span>
+                    </span>
+                    <span>{{valPro.order_total_price}}{{item.account_unit}}</span>
+                    <span>{{valPro.total_real ? valPro.total_real : 0}}{{item.account_unit}}</span>
+                    <span>
+                      <div class="imgCtn">
+                        <img class="img"
+                          :src="valPro.img.length>0?valPro.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
+                          :onerror="defaultImg" />
+                        <div class="toolTips"
+                          v-if="valPro.img.length>0"><span @click="showImg(valPro.img)">点击查看大图</span></div>
+                        <div class="toolTips"
+                          v-if="valPro.img.length===0"><span>没有预览图</span></div>
+                      </div>
+                    </span>
+                    <span class="flex38 col">
+                      <span v-for="(valSize,indSize) in valPro.size_info"
+                        :key="indSize">
+                        <span class="flex05">{{valSize.size}}</span>
+                        <span class="flex05">{{valSize.color}}</span>
+                        <span class="flex08">{{valSize.one_price}}{{item.account_unit}}/{{valPro.unit}}</span>
+                        <span>{{valSize.order_number}}{{valPro.unit}}</span>
+                        <span>{{valSize.pack_number ? valSize.pack_number : 0}}{{valPro.unit}}</span>
+                      </span>
+                    </span>
+                    <span class="col">
+                      <span>
+                        <span>织造</span>
+                        <span>{{valPro.weave_price ? valPro.weave_price : 0}}元</span>
+                      </span>
+                      <span>
+                        <span>加工</span>
+                        <span>{{valPro.process_price ? valPro.process_price : 0}}元</span>
+                      </span>
                     </span>
                   </span>
-                  <span class="col">
-                    <span>
-                      <span>织造</span>
-                      <!-- <span>{{valPro.companyCost.weave}}</span> -->
-                    </span>
-                    <span>
-                      <span>加工</span>
-                      <!-- <span>{{valPro.companyCost.process}}</span> -->
-                    </span>
-                    <span>
-                      <span>染色</span>
-                      <!-- <span>{{valPro.companyCost.dye}}</span> -->
+                  <span class="title">
+                    <span>其它成本</span>
+                  </span>
+                  <span class="content"
+                    style="width:300px;">
+                    <span class="col">
+                      <span>
+                        <span>物料订购</span>
+                        <span>{{item.material_order_price ? item.material_order_price : 0}}元</span>
+                      </span>
+                      <span>
+                        <span>物料加工</span>
+                        <span>{{item.material_process_price ? item.material_process_price : 0}}元</span>
+                      </span>
+                      <span>
+                        <span>包装辅料订购</span>
+                        <span>{{item.pack_price ? item.pack_price : 0}}元</span>
+                      </span>
                     </span>
                   </span>
-                </span>
+                </div>
               </div>
             </li>
           </template>
-
         </ul>
         <div class="footer">
           <span>合计</span>
           <span></span>
           <span></span>
-          <span>{{60000|filterNumber}}元</span>
-          <span>{{100000|filterNumber}}</span>
-          <span>{{100000|filterNumber}}</span>
-          <span>{{450454512|filterNumber}}元</span>
-          <span>{{450454512|filterNumber}}元</span>
-          <span>{{(450454512.01)|filterNumber}}元</span>
-          <span></span>
+          <span>{{orderFinancialCount.total_order_price|filterNumber}}万元</span>
+          <span>{{orderFinancialCount.total_order_number|filterNumber}}万件</span>
+          <span>{{orderFinancialCount.total_order_pop|filterNumber}}万件</span>
+          <span>{{orderFinancialCount.total_order_real_price|filterNumber}}万元</span>
+          <span>{{orderFinancialCount.total_order_cost|filterNumber}}万元</span>
+          <!-- <span>{{orderFinancialCount.total_order_deduct|filterNumber}}万元</span>
+          <span></span> -->
           <span></span>
           <span></span>
         </div>
+      </div>
+    </div>
+    <!-- 图片弹窗 -->
+    <div class="shade"
+      v-show="showShade">
+      <div class="main">
+        <div class="closeBtn"
+          @click="showShade=false">点此退出预览</div>
+        <el-carousel indicator-position="outside"
+          height="550px"
+          arrow="always">
+          <el-carousel-item v-for="item in imgList"
+            :key="item.image_url">
+            <img :src="item.thumb"
+              class="imgList" />
+          </el-carousel-item>
+        </el-carousel>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { orderList, orderDetailNew, clientList, getGroup } from '@/assets/js/api.js'
+import { orderList, orderDetailNew, clientList, getGroup, orderFinancialCount } from '@/assets/js/api.js'
 export default {
   data () {
     return {
       loading: true,
+      defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
+      imgList: [],
+      showShade: false,
+      pages: 1,
+      total: '',
       searchVal: '',
       clientVal: '',
       clientList: [],
       groupVal: '',
       groupList: [],
       moneyType: 'RMB',
+      orderFinancialCount: {
+        total_order_cost: '',
+        total_order_deduct: '',
+        total_order_number: '',
+        total_order_pop: '',
+        total_order_price: '',
+        total_order_real_price: ''
+      },
       moneyTypeList: [
         {
           label: '￥',
@@ -314,86 +371,9 @@ export default {
   },
   methods: {
     getList () {
-      // console.log('add')
-      // for (let i = 0; i < 10; i++) {
-      //   this.list.push({
-      //     id: '666',
-      //     order_code: 'dindan1',
-      //     client_name: '飞泰',
-      //     order_time: '2019-09-01',
-      //     order_total_price: '40000',
-      //     price_unit: '元',
-      //     order_number: '3000',
-      //     outStock_number: '2980',
-      //     total_number: '2980',
-      //     companyCost: '300000',
-      //     order_cutPay: '3000',
-      //     bill: '5000',
-      //     group_name: 'A组',
-      //     flag: false,
-      //     product_info: [
-      //       {
-      //         product_code: '1111',
-      //         product_type: '尽快发就考虑/交罚款',
-      //         order_total_price: '20000',
-      //         reality_total_price: '19800',
-      //         img: [],
-      //         size: [
-      //           {
-      //             size: 'L',
-      //             color: '绿',
-      //             price: '4',
-      //             order_number: '2000',
-      //             outStock_number: '1980'
-      //           },
-      //           {
-      //             size: 'L',
-      //             color: '绿',
-      //             price: '4',
-      //             order_number: '2000',
-      //             outStock_number: '1980'
-      //           }
-      //         ],
-      //         companyCost: {
-      //           weave: '3000',
-      //           process: '2000',
-      //           dye: '1000'
-      //         }
-      //       },
-      //       {
-      //         product_code: '1111',
-      //         product_type: '尽快发就考虑/交罚款',
-      //         order_total_price: '20000',
-      //         reality_total_price: '19800',
-      //         img: [],
-      //         size: [
-      //           {
-      //             size: 'L',
-      //             color: '绿',
-      //             price: '4',
-      //             order_number: '2000',
-      //             outStock_number: '1980'
-      //           },
-      //           {
-      //             size: 'L',
-      //             color: '绿',
-      //             price: '4',
-      //             order_number: '2000',
-      //             outStock_number: '1980'
-      //           }
-      //         ],
-      //         companyCost: {
-      //           weave: '3000',
-      //           process: '2000',
-      //           dye: '1000'
-      //         }
-      //       }
-      //     ]
-      //   })
-      // }
       orderList({
         company_id: window.sessionStorage.getItem('company_id'),
-        limit: 1,
+        limit: 10,
         client_id: this.clientVal,
         group_id: this.groupVal,
         page: this.pages
@@ -405,6 +385,8 @@ export default {
           let list = {}
           // 订单初步信息
           list.flag = false
+          list.loading = true
+          list.isGetInfo = false
           list.order_total_price = item.total_price
           list.order_code = item.order_code
           list.order_id = item.id
@@ -412,6 +394,9 @@ export default {
           list.order_time = item.order_time
           list.group_name = item.group_name
           list.account_unit = item.account_unit
+          list.company_cost = item.cost
+          list.total_real = item.total_real
+          list.total_pop = item.total_pop
           // 订单产品信息
           item.order_batch.forEach(item => {
             item.batch_info.forEach(valBat => {
@@ -431,6 +416,7 @@ export default {
                     size_info: [{
                       size: valSize.name[0],
                       color: valSize.name[1],
+                      batch_id: item.batch_id,
                       one_price: valSize.unitPrice,
                       order_number: valSize.numbers
                     }]
@@ -442,6 +428,7 @@ export default {
                     pro.size_info.push({
                       size: valSize.name[0],
                       color: valSize.name[1],
+                      batch_id: item.batch_id,
                       one_price: valSize.unitPrice,
                       order_number: valSize.numbers
                     })
@@ -449,26 +436,6 @@ export default {
                     size.order_number = Number(size.order_number ? size.order_number : 0) + Number(valSize.numbers)
                   }
                 }
-              })
-            })
-          })
-          // 获取该订单的详细信息和日志
-          orderDetailNew({
-            id: item.id
-          }).then(res => {
-            list.detail = res.data.data
-            // 插入出库数量
-            let outStockInfo = res.data.data.order_log.pack_info
-            if (item.id === '12') {
-              console.log(item.order_code, data)
-              console.log(outStockInfo)
-            }
-            outStockInfo.forEach(valPack => {
-              valPack.product_info = JSON.parse(valPack.product_info)
-              valPack.product_info.forEach(valPro => {
-                valPro.size_info.forEach(valSize => {
-                  list.outStock_number = Number(list.outStock_number ? list.outStock_number : 0) + Number(valSize.pack_number)
-                })
               })
             })
           })
@@ -483,7 +450,9 @@ export default {
       this.pages++
       let el = document.getElementsByClassName('infinite-list')[0]
       if (Number(el.scrollTop) + 600 >= this.list.length * 60) {
-        this.getList()
+        if (Math.ceil(this.total / 10) >= this.pages) {
+          this.getList()
+        }
       }
     },
     clear (item) {
@@ -492,6 +461,71 @@ export default {
       } else if (item === 'groupVal') {
         this.groupVal = ''
       }
+    },
+    getInfo (item) {
+      item.flag = !item.flag
+      if (item.flag && !item.isGetInfo) {
+        item.loading = true
+        item.isGetInfo = true
+        orderDetailNew({
+          id: item.order_id
+        }).then(res => {
+          let data = res.data.data
+          console.log(data)
+          // 插入出库数量
+          data.order_log.pack_info.forEach(valPack => {
+            valPack.product_info = JSON.parse(valPack.product_info)
+            valPack.product_info.forEach(valPro => {
+              valPro.size_info.forEach(valSize => {
+                let code = item.product_info.find(key => key.product_code === valPro.product_code)
+                if (code) {
+                  let size = code.size_info.find(key => (key.size === valSize.size && key.color === valSize.color && key.batch_id === valPack.batch_id))
+                  if (size) {
+                    size.pack_number = Number(size.pack_number ? size.pack_number : 0) + Number(valSize.pack_number)
+                    code.total_real = Number(code.total_real ? code.total_real : 0) + Number(valSize.pack_number * size.one_price)
+                  }
+                }
+              })
+            })
+          })
+          // 插入织造费用
+          data.order_log.product_weave.forEach(valPro => {
+            let code = item.product_info.find(key => key.product_code === valPro.product_info.product_code)
+            if (code) {
+              code.weave_price = Number(code.weave_price ? code.weave_price : 0) + Number(valPro.price * valPro.number)
+            }
+          })
+          // 插入加工费用
+          data.order_log.semi_finished_production.forEach(valPro => {
+            let code = item.product_info.find(key => key.product_code === valPro.product_info.product_code)
+            if (code) {
+              code.process_price = Number(code.process_price ? code.process_price : 0) + Number(valPro.price * valPro.number)
+            }
+          })
+          // 插入订单物料加工费用
+          data.order_log.material_production.forEach(val => {
+            item.material_process_price = Number(item.material_process_price ? item.material_process_price : 0) + Number(val.total_price)
+          })
+          // 插入订单物料订购费用
+          data.order_log.material_order.forEach(val => {
+            item.material_order_price = Number(item.material_order_price ? item.material_order_price : 0) + Number(val.weight * val.price)
+          })
+          // 插入包装订购费用
+          data.order_log.pack_order.forEach(val => {
+            item.pack_price = Number(item.pack_price ? item.pack_price : 0) + Number(val.price * val.number)
+          })
+          item.loading = false
+        })
+      } else if (!item.flag) {
+        item.loading = false
+      } else if (item.flag) {
+        item.loading = true
+        item.loading = false
+      }
+    },
+    showImg (imgList) {
+      this.imgList = imgList
+      this.showShade = true
     }
   },
   created () {
@@ -501,10 +535,14 @@ export default {
       }),
       getGroup({
         company_id: window.sessionStorage.getItem('company_id')
+      }),
+      orderFinancialCount({
+        company_id: window.sessionStorage.getItem('company_id')
       })
     ]).then(res => {
       this.clientList = res[0].data.data.filter(key => key.type.indexOf(1) !== -1)
       this.groupList = res[1].data.data
+      this.orderFinancialCount = res[2].data.data
       this.getList()
     })
   },
@@ -518,4 +556,11 @@ export default {
 
 <style scoped lang='less'>
 @import "~@/assets/css/orderFinancialList.less";
+</style>
+<style lang="less" scoped>
+.el-carousel__item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 </style>

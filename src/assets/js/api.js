@@ -196,7 +196,7 @@ const rawMaterialOrderInit = (params) => http.get(`${baseUrl}/material/order/ini
 const rawMaterialOrder = (params) => http.post(`${baseUrl}/material/order/save`, params, 'application/json')
 // 物料已订购列表、物料订购详情
 const rawMaterialOrderList = (params) => http.get(`${baseUrl}/material/order/list`, params)
-//  物料已加工列表、物料加工详情
+// 物料已加工列表、物料加工详情
 const rawMaterialProcessList = (params) => http.get(`${baseUrl}/material/process/list`, params)
 // 物料加工
 const rawMaterialProcessPage = (params) => http.post(`${baseUrl}/material/process/save`, params, 'application/json')
@@ -302,8 +302,28 @@ const priceListDetail = (params) => http.get(`${baseUrl}/product/quotation/detai
 const priceListCheck = (params) => http.post(`${baseUrl}/product/quotation/check`, params, 'application/json')
 // 原料对应仓库material/stock/material
 // const materialStockListNew = (params) => http.get(`${baseUrl}/material/stock/material`, params)
-
+// 转账记录financial/transfer/list
+const transferList = (params) => http.get(`${baseUrl}/financial/transfer/list`, params)
+// 扣款记录financial/deduct/list
+const cutPayList = (params) => http.get(`${baseUrl}/financial/deduct/list`, params)
+// 结算记录financial/settle/list
+const settleList = (params) => http.get(`${baseUrl}/financial/settle/list`, params)
+// 添加转账记录financial/transfer/save
+const transferAdd = (params) => http.post(`${baseUrl}/financial/transfer/save`, params, 'application/json')
+// 添加扣款记录financial/deduct/save
+const deductAdd = (params) => http.post(`${baseUrl}/financial/deduct/save`, params, 'application/json')
+// 添加结算记录financial/settle/save
+const settleAdd = (params) => http.post(`${baseUrl}/financial/settle/save`, params, 'application/json')
+//订单财务统计合计值financial/order/count
+const orderFinancialCount = (params) => http.get(`${baseUrl}/financial/order/count`, params)
 export {
+  orderFinancialCount,
+  settleAdd,
+  deductAdd,
+  transferAdd,
+  settleList,
+  cutPayList,
+  transferList,
   // materialStockListNew,
   priceListCheck,
   priceListDetail,
