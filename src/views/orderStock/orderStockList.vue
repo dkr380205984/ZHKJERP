@@ -103,7 +103,7 @@
           <div class="tableColumn flex08">负责小组</div>
           <div class="tableColumn flex08">下单日期</div>
           <div class="tableColumn">交货日期</div>
-          <div class="tableColumn">操作</div>
+          <div class="tableColumn flex08">操作</div>
         </div>
         <div class="mergeBody"
           v-for="(item,key) in list"
@@ -146,10 +146,12 @@
               <span>{{itemTime}}</span>
             </div>
           </div>
-          <div class="tableColumn"
+          <div class="tableColumn flex08"
             style="flex-direction:row;">
-            <span class="btns normal"
-              @click="$router.push('/index/orderStockDetail/'+item.id)">查看详情</span>
+            <div>
+              <span class="btns success"
+                @click="$router.push('/index/orderStockDetail/'+item.id)">详情</span>
+            </div>
           </div>
         </div>
       </div>

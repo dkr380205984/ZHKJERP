@@ -52,7 +52,7 @@
               <span class="sizeOnce"
                 v-for="itemChild in item"
                 :key="itemChild.id">{{itemChild.size_name + '：' + itemChild.size_value + 'cm'}}</span>
-              <span class="sizeOnce">{{ item[0].weight + 'g' + '(克重)'}}</span>
+              <span class="sizeOnce">{{ '克重' + '：'+item[0].weight + 'g'}}</span>
             </span>
           </span>
         </div>
@@ -91,7 +91,8 @@
           <span class="content">{{productDetail.description}}</span>
         </div>
       </div>
-      <div class="lineCtn">
+      <div class="lineCtn"
+        v-if="productDetail.craft_info">
         <div class="inputCtn">
           <span class="label">关联工艺单:</span>
           <div class="content"
@@ -99,10 +100,10 @@
             <ul class="tablesCtn"
               style="width:100%;padding-left:0;box-sizing:border-box;margin:0">
               <li class="material_info">
-                <span style="border-right:1px solid #ddd">待计算</span>
-                <span style="border-right:1px solid #ddd">待计算</span>
-                <span style="border-right:1px solid #ddd">待计算</span>
-                <span>待计算</span>
+                <span>{{productDetail.craft_info.user_name}}</span>
+                <span>工艺图</span>
+                <span>{{productDetail.craft_info.create_time}}</span>
+                <span style="color:#1A95FF">查看详情</span>
               </li>
             </ul>
           </div>
@@ -116,10 +117,30 @@
             <ul class="tablesCtn"
               style="width:100%;padding-left:0;box-sizing:border-box;margin:0">
               <li class="material_info">
-                <span style="border-right:1px solid #ddd">待计算</span>
-                <span style="border-right:1px solid #ddd">待计算</span>
-                <span style="border-right:1px solid #ddd">待计算</span>
-                <span>待计算</span>
+                <span class="col"
+                  style="flex:3">
+                  <span v-for="(itemMat,indexMat) in productDetail.product_plan_info.material_data"
+                    :key="indexMat">
+                    <span>{{itemMat.material}}</span>
+                    <span class="col"
+                      style="flex:2">
+                      <span v-for="(itemColour,indexColour) in itemMat.colour"
+                        :key="indexColour">
+                        <span class="col"
+                          style="flex:1">
+                          <span v-for="(itemColor,indexColor) in itemColour.color"
+                            :key="indexColor">
+                            <span>{{itemColor.name}}</span>
+                            <span>{{itemColor.total}}{{itemColor.size[0].unit}}</span>
+                          </span>
+                        </span>
+                      </span>
+                    </span>
+                  </span>
+                </span>
+                <span style="flex:1">
+                  <span style="color:#1A95FF">查看详情</span>
+                </span>
               </li>
             </ul>
           </div>
@@ -133,16 +154,22 @@
             <ul class="tablesCtn"
               style="width:100%;padding-left:0;box-sizing:border-box;margin:0">
               <li class="material_info">
-                <span style="border-right:1px solid #ddd">待计算</span>
-                <span style="border-right:1px solid #ddd">待计算</span>
-                <span style="border-right:1px solid #ddd">待计算</span>
-                <span>待计算</span>
+                <span class="col">
+                  <span v-for="(item,index) in productDetail.order_list"
+                    :key="index">
+                    <span>{{item.order_code}}</span>
+                    <span>{{item.client_name}}</span>
+                    <span>{{item.total_number}}{{productDetail.category_info.name}}</span>
+                    <span style="color:#1A95FF">查看详情</span>
+                  </span>
+                </span>
               </li>
             </ul>
           </div>
         </div>
       </div>
-      <div class="lineCtn">
+      <div class="lineCtn"
+        v-show="false">
         <div class="inputCtn">
           <span class="label">关联报价单:</span>
           <div class="content"
@@ -150,16 +177,17 @@
             <ul class="tablesCtn"
               style="width:100%;padding-left:0;box-sizing:border-box;margin:0">
               <li class="material_info">
-                <span style="border-right:1px solid #ddd">待计算</span>
-                <span style="border-right:1px solid #ddd">待计算</span>
-                <span style="border-right:1px solid #ddd">待计算</span>
+                <span>待计算</span>
+                <span>待计算</span>
+                <span>待计算</span>
                 <span>待计算</span>
               </li>
             </ul>
           </div>
         </div>
       </div>
-      <div class="lineCtn">
+      <div class="lineCtn"
+        v-show="false">
         <div class="inputCtn">
           <span class="label">关联库存:</span>
           <div class="content"
@@ -167,9 +195,9 @@
             <ul class="tablesCtn"
               style="width:100%;padding-left:0;box-sizing:border-box;margin:0">
               <li class="material_info">
-                <span style="border-right:1px solid #ddd">待计算</span>
-                <span style="border-right:1px solid #ddd">待计算</span>
-                <span style="border-right:1px solid #ddd">待计算</span>
+                <span>待计算</span>
+                <span>待计算</span>
+                <span>待计算</span>
                 <span>待计算</span>
               </li>
             </ul>
@@ -197,7 +225,7 @@
 </template>
 
 <script>
-import { porductOne, productPlanDetail, craftProduct } from '@/assets/js/api.js'
+import { porductOne } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -206,6 +234,9 @@ export default {
         category_info: {
           product_category: '',
           name: ''
+        },
+        product_plan_info: {
+          material_data: []
         },
         type_name: '',
         style_name: '',
@@ -265,30 +296,19 @@ export default {
       id: this.$route.params.id
     }).then((res) => {
       if (res.data.status) {
+        console.log(res.data.data)
         this.productDetail = res.data.data
-        // 关联工艺单
-        if (this.productDetail.has_craft === 1) {
-          craftProduct({
-            product_id: this.productDetail.id
-          }).then((res) => {
-            console.log('工艺单 is', res)
-          })
-        }
-        // 关联配料单
+        // 计算配料单原料
         if (this.productDetail.has_plan === 1) {
-          productPlanDetail({
-            product_code: this.productDetail.product_code
-          }).then((res) => {
-            console.log('配料单 is', res)
+          this.productDetail.product_plan_info.material_data.forEach((itemMat) => {
+            itemMat.colour.forEach((itemColour) => {
+              itemColour.color.forEach((itemColor) => {
+                itemColor.total = itemColor.size.reduce((total, current) => {
+                  return total + Number(current.number)
+                }, 0)
+              })
+            })
           })
-        }
-        // 关联订单
-        if (this.productDetail.in_order === 1) {
-
-        }
-        // 关联报价单
-        if (this.productDetail.has_craft === 1) {
-
         }
         this.loading = false
       }

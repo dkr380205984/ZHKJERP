@@ -284,6 +284,7 @@
                 <el-select style="width:100%"
                   v-model="item.key"
                   filterable
+                  :disabled="item.disable"
                   placeholder="请选择原料">
                   <el-option v-for="(item,index) in yarnList"
                     :key="index"
@@ -310,6 +311,7 @@
                 <el-select style="width:100%"
                   v-model="item.key"
                   filterable
+                  :disabled="item.disable"
                   placeholder="请选择辅料">
                   <el-option v-for="item in otherMaterialList"
                     :key="item.id"
@@ -647,7 +649,7 @@ export default {
           this.productArr.push(this.seachProduct.find((item) => item.id === id))
           // 添加产品的时候获取配料单，关联上原料数据
           productPlanDetail({
-            product_code: this.seachProduct.find((item) => item.id === id).product_code
+            product_key: this.seachProduct.find((item) => item.id === id).product_code
           }).then((res) => {
             if (res.data.status) {
               res.data.data.material_data.forEach((item) => {
@@ -667,11 +669,13 @@ export default {
                       price: '',
                       number: number,
                       maxPrice: 0,
-                      minPrice: 0
+                      minPrice: 0,
+                      disable: true
                     })
                   } else {
                     this.yarnArr[0].key = item.material
                     this.yarnArr[0].number = number
+                    this.yarnArr[0].disable = true
                   }
                 }
                 if (!finded2 && item.type === 1) {
@@ -688,11 +692,13 @@ export default {
                       price: '',
                       number: number,
                       maxPrice: 0,
-                      minPrice: 0
+                      minPrice: 0,
+                      disable: true
                     })
                   } else {
                     this.otherMaterialArr[0].key = item.material
                     this.otherMaterialArr[0].number = number
+                    this.otherMaterialArr[0].disable = true
                   }
                 }
               })
