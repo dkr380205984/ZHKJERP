@@ -1,3 +1,5 @@
+@father:calc(100% + 6px);
+@son:100%;
 @import './common.less';
 ul{
   list-style: none;
@@ -72,9 +74,10 @@ ul{
     }
     &>.content{
       height: 720px;
-      border: 1px solid #DDD;
+      border-left: 1px solid #DDD;
       position: relative;
       &>.title{
+        width: @son;
         height: 60px;
         display: flex;
         background-color: #DDD;
@@ -103,9 +106,14 @@ ul{
         }
       }
       .infinite-list{
+        width:@son;
         margin-bottom: 60px;
         height: 600px;
-        overflow-y: scroll;
+        overflow-y: hidden;
+        &:hover{
+          width: @father;
+          overflow-y: scroll;
+        }
         .infinite-list-item{
           height: auto;
           border-bottom: 1px solid #DDD;
@@ -167,23 +175,30 @@ ul{
             .title{
               display: flex;
               justify-content: center;
-              color: #000;
-              font-weight: bold;
+              color: @fontNormal;
+              font-weight: 600;
               height: 60px;
+              padding: 0 50px;
               &>span{
                 flex: 1;
                 display: flex;
-                justify-content: center;
+                // justify-content: center;
                 align-items: center;
               }
             }
             .content{
               display: flex;
               justify-content: center;
+              padding: 0 50px 20px;
+              span{
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+              }
               &>span{
                 flex: 1;
                 display: flex;
-                justify-content: center;
+                // justify-content: center;
                 &.col {
                   flex-direction: column;
                   justify-content: flex-start;
@@ -194,7 +209,43 @@ ul{
                     &>span {
                       flex:1;
                       display: flex;
+                      // justify-content: center;
+                    }
+                  }
+                }
+                .imgCtn{
+                  position: relative;
+                  width: 100px;
+                  height: 50px;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  &:hover{
+                    .toolTips{
+                      display: flex;
                       justify-content: center;
+                      align-items: center;
+                    }
+                  }
+                  .img{
+                    width:48px;
+                    padding: 6px;
+                    height: 48px;
+                  }
+                  .toolTips{
+                    display: none;
+                    position: absolute;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.7);  
+                    text-align: center;
+                    cursor: pointer;
+                    span{
+                      color: #fff;
+                      &:hover{
+                        color: @normalBlue;
+                      }
                     }
                   }
                 }
@@ -210,7 +261,7 @@ ul{
       .footer{
         background-color: #666;
         position: absolute;
-        width: 100%;
+        width: @son;
         height: 60px;
         bottom: 0;
         left: 0;
@@ -232,11 +283,17 @@ ul{
 .flex15{
   flex: 1.5!important;
 }
+.flex2{
+  flex: 2!important;
+}
 .flex05{
   flex: 0.5!important;
 }
-.flex35 {
-  flex: 3.5!important;
+.flex08{
+  flex: 0.8!important;
+}
+.flex38 {
+  flex: 3.8!important;
 }
 .flex11 {
   flex: 11!important;

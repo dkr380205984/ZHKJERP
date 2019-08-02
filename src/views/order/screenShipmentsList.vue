@@ -163,7 +163,7 @@ export default {
   methods: {
     // 判断是否为今日
     isToday (time) {
-      if (new Date().getTime() - new Date(time).getTime()) {
+      if ((new Date().getTime() - new Date(time).getTime()) / 1000 / 60 / 60 / 24 > 0 && (new Date().getTime() - new Date(time).getTime()) / 1000 / 60 / 60 / 24 < 1) {
         return '#1A94FF'
       } else {
         return false
@@ -231,23 +231,20 @@ export default {
     },
     // 获取数据
     getData (number, pageNumber) {
-      Promise.all([
-        orderBatchList({
-          'company_id': window.sessionStorage.getItem('company_id'),
-          'limit': number,
-          'page': this.count,
-          'category_id': this.searchList.categoryVal,
-          'type_id': this.searchList.typesVal,
-          'style_id': this.searchList.styleVal,
-          'client_id': this.searchList.company,
-          'group_id': this.searchList.group,
-          'start_time': this.searchList.start_time ? new Date(Number(this.searchList.start_time)).toISOString() : this.start_time,
-          'end_time': this.searchList.end_time ? new Date(Number(this.searchList.end_time)).toISOString() : this.end_time
-        })
-      ]).then(res => {
-        console.log(res)
+      orderBatchList({
+        'company_id': window.sessionStorage.getItem('company_id'),
+        'limit': number,
+        'page': this.count,
+        'category_id': this.searchList.categoryVal,
+        'type_id': this.searchList.typesVal,
+        'style_id': this.searchList.styleVal,
+        'client_id': this.searchList.company,
+        'group_id': this.searchList.group,
+        'start_time': this.searchList.start_time ? new Date(Number(this.searchList.start_time)).toISOString() : this.start_time,
+        'end_time': this.searchList.end_time ? new Date(Number(this.searchList.end_time)).toISOString() : this.end_time
+      }).then(res => {
         if (res.status) {
-          let orderInfo = res[0].data.data
+          let orderInfo = res.data.data
           // console.log(orderInfo)
           for (let prop in orderInfo.data) {
             let valTime = orderInfo.data[prop]
@@ -546,7 +543,7 @@ export default {
         flag: flag,
         data: arr
       })
-      // console.log(this.pagingList)
+      console.log(this.pagingList)
     },
     // 当停止获取数据时，继续切割分页
     goOnPaging (data, number) {
@@ -564,7 +561,14 @@ export default {
       })
       console.log(this.searchList)
     }
-
+    let html = document.getElementsByTagName('html')[0]
+    html.addEventListener('keydown', (e) => {
+      if (e.keyCode === 27) {
+        setTimeout(() => {
+          this.$router.push('/index/orderStat')
+        }, 800)
+      }
+    }, false)
     this.start_time = new Date(new Date().getTime() - (3 * 24 * 60 * 60 * 1000)).toISOString()
     this.end_time = new Date(new Date().getTime() + (7 * 24 * 60 * 60 * 1000)).toISOString()
     this.getTime()

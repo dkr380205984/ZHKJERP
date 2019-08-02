@@ -19,7 +19,7 @@
               placeholder="筛选公司类型">
               <el-option v-for="item in companyList"
                 :key="item.value"
-                :label="item.label"
+                :label="item.name"
                 :value="item.value">
               </el-option>
             </el-select>
@@ -104,8 +104,8 @@
               class="infinite-list-item">
               <div class="list"
                 style="line-height:59px;">
-                <span>{{item.client_type}}</span>
-                <span>{{item.client_name}}</span>
+                <span>{{item.type|filterType}}</span>
+                <span>{{item.name}}</span>
                 <span>{{item.total_price}}{{item.price_unit}}</span>
                 <span>{{item.bill_total_price}}{{item.price_unit}}</span>
                 <span>{{item.compiled_pay}}{{item.price_unit}}</span>
@@ -134,12 +134,14 @@
 </template>
 
 <script>
+import { companyType } from '@/assets/js/dictionary.js'
+import { clientList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
       searchVal: '',
       company: '',
-      companyList: [],
+      companyList: companyType,
       group: '',
       groupList: [],
       moneyType: 'RMB',
@@ -196,18 +198,12 @@ export default {
   },
   methods: {
     getList () {
-      console.log('add')
-      for (let i = 0; i < 10; i++) {
-        this.list.push({
-          id: 666,
-          client_type: '染色',
-          client_name: '飞泰',
-          total_price: '30000',
-          price_unit: '元',
-          bill_total_price: '29000',
-          compiled_pay: '20000'
-        })
-      }
+      clientList({
+        company_id: window.sessionStorage.getItem('company_id')
+      }).then(res => {
+        this.list = res.data.data
+        console.log(this.list)
+      })
     },
     getData () {
       let el = document.getElementsByClassName('infinite-list')[0]
@@ -222,6 +218,14 @@ export default {
   filters: {
     filterNumber (val) {
       return val.toLocaleString()
+    },
+    filterType (val) {
+      let type = ''
+      console.log(companyType)
+      val.forEach(item => {
+        type += companyType.find(key => key.value === item).name
+      })
+      return type
     }
   }
 }
