@@ -68,6 +68,64 @@
               }
             }
           }
+          .material_info {
+            &>span{
+              border-right: 1px solid #DDD;
+              align-items: center;
+              &:last-child {
+                border-right: none;
+              }
+              &>span {
+                border-bottom: 1px solid #DDD;
+                &:last-child {
+                  border-bottom: none;
+                }
+                &>span {
+                  border-right: 1px solid #DDD;
+                  align-items: center;
+                  &>span {
+                    border-bottom: 1px solid #DDD;
+                    &:last-child {
+                      border-bottom: none;
+                    }
+                    &>span {
+                      border-right: 1px solid #DDD;
+                      align-items: center;
+                      &>span {
+                        border-bottom: 1px solid #DDD;
+                        &:last-child {
+                          border-bottom: none;
+                        }
+                        &>span {
+                          border-right: 1px solid #DDD;
+                          align-items: center;
+                          &:last-child {
+                            border-right: none;
+                          }
+                          &>span {
+                            border-bottom: 1px solid #DDD;
+                            &:last-child {
+                              border-bottom: none;
+                            }
+                          }
+                        }
+                      }
+                      &:last-child {
+                        border-right: none;
+                      }
+                    }
+                  }
+                  &:last-child {
+                    border-right: none;
+                  }
+                }
+              }
+            }
+            .col {
+              flex-direction: column;
+              align-items: unset;
+            }
+          }
           &.contentFlex{
             display: flex;
             align-items: center;

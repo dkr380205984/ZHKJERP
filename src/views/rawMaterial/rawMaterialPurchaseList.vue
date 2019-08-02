@@ -72,8 +72,10 @@
           <div class="tableColumn">{{item.total_price}}元</div>
           <div class="tableColumn">{{item.desc?item.desc:'无'}}</div>
           <div class="tableColumn">
-            <span class="btns normal"
-              @click="$router.push('/index/rawMaterialPurchaseDetail/'+item.id)">原料入库</span>
+            <div class="margin:auto">
+              <span class="btns normal"
+                @click="$router.push('/index/rawMaterialPurchaseDetail/'+item.id)">入库</span>
+            </div>
           </div>
         </div>
       </div>
