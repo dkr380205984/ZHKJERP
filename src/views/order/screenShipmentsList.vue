@@ -33,7 +33,7 @@
       <!-- 轮播dom -->
       <el-carousel trigger="click"
         height="100%"
-        :interval='6000'
+        :interval='30000'
         indicator-position='none'
         arrow='never'
         class="content"

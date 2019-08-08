@@ -337,7 +337,8 @@
                       v-for="(value,index) in item.create_time"
                       :key="index"
                       :style="'flex:' + value.material_info.length">
-                      <span class="tableRow blue">打印</span>
+                      <span class="tableRow blue"
+                        @click="open($route.params.id,item.client_id,value.create_at)">打印</span>
                     </span>
                   </span>
                 </li>
@@ -387,7 +388,8 @@
                       </i>
                     </span>
                     <span class="flexMid">{{item.user_name}}</span>
-                    <span class="flexMid blue">修改</span>
+                    <span class="flexMid blue"
+                      @click="changeOrderInfo(item)">修改</span>
                   </li>
                 </div>
               </ul>
@@ -414,15 +416,126 @@
           @click="$router.go(-1)">确认</div>
       </div>
     </div>
+    <div class="shades"
+      v-show='changePackShow'>
+      <div class="main">
+        <div class="close"
+          @click="changePackShow=false">
+          <span class="icon">x</span>
+        </div>
+        <div class="title">修改装箱信息</div>
+        <div class="content">
+          <div class="inputCtn">
+            <span class="label"><em>*</em>订购来源:</span>
+            <div class="elCtn">
+              <el-select v-model="changeInfo.client_name"
+                placeholder="请选择订购来源"
+                filterable
+                style="width:300px;">
+                <el-option v-for="packType in packagPageClientList"
+                  :key="packType.id"
+                  :label="packType.name"
+                  :value="packType.id">
+                </el-option>
+              </el-select>
+            </div>
+          </div>
+          <div class="inputCtn">
+            <span class="label"><em>*</em>包装名称:</span>
+            <div class="elCtn">
+              <el-select v-model="changeInfo.pack_material_name"
+                placeholder="请选择包装"
+                filterable
+                style="width:300px;">
+                <el-option v-for="packType in packagMaterialList"
+                  :key="packType.id"
+                  :label="packType.name+'('+packType.size+')'"
+                  :value="packType.id">
+                </el-option>
+              </el-select>
+            </div>
+          </div>
+          <div class="inputCtn">
+            <span class="label"><em>*</em>单价:</span>
+            <div class="elCtn">
+              <el-input placeholder="请输入单价"
+                v-model="changeInfo.price"
+                style="width:300px">
+              </el-input>
+            </div>
+          </div>
+          <div class="inputCtn">
+            <span class="label"><em>*</em>订购数量:</span>
+            <div class="elCtn">
+              <el-input placeholder="请输入订购数量"
+                v-model="changeInfo.number"
+                style="width:300px">
+              </el-input>
+            </div>
+          </div>
+          <div class="inputCtn">
+            <span class="label">备注:</span>
+            <div class="elCtn">
+              <el-input placeholder="请输入备注信息"
+                v-model="changeInfo.desc"
+                style="width:300px">
+              </el-input>
+            </div>
+          </div>
+          <!--<template v-for="(item,key) in changePackInfo.product_info">
+            <div class="inputCtn"
+              :key="key">
+              <span class="label">产品数量:</span>
+              <div class="elCtn">
+                <el-cascader v-model="item.product"
+                  :options="productList"
+                  placeholder="请选择产品"
+                  style="width:300px;"></el-cascader>
+                <em class="el-icon-plus"
+                  v-if="key === 0"
+                  style="top:13px;"
+                  @click="addProduct()"></em>
+                <em class="el-icon-minus"
+                  style="top:13px;"
+                  v-else
+                  @click="deleteProduct(key)"></em>
+              </div>
+              <div class="elCtn"
+                style="margin-top:20px;">
+                <el-input placeholder="请输入单箱数量"
+                  v-model="item.one_number"
+                  style="width:143px">
+                </el-input>
+                <span>—</span>
+                <el-input placeholder="合计数量"
+                  v-model="item.all_number"
+                  disabled
+                  style="width:143px">
+                </el-input>
+              </div>
+            </div>
+          </template>
+           -->
+          <div class="btnCtn">
+            <div class="okBtn"
+              @click="submit">修改</div>
+            <div class="cancleBtn"
+              @click="changePackShow=false">取消</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { orderDetail, packagMaterialDetail } from '@/assets/js/api.js'
+import { orderDetail, packagMaterialDetail, clientList, packagMaterialList, packagMaterialPage } from '@/assets/js/api.js'
 export default {
   data () {
     return {
       loading: true,
+      changePackShow: false,
+      save: true,
       order_code: '',
       client_name: '',
       order_time: '',
@@ -431,10 +544,35 @@ export default {
       packagMaterialPageList: [],
       packagMaterialPageLog: [],
       packagMaterialPageLogFlag: false,
-      flag: true
+      flag: true,
+      changeInfo: {
+        id: '',
+        client_name: '',
+        pack_material_name: '',
+        order_time: '',
+        pack_attr: [],
+        attr: '',
+        price: '',
+        number: '',
+        desc: ''
+      },
+      packagPageClientList: [],
+      packagMaterialList: []
+    }
+  },
+  watch: {
+    'changeInfo.pack_material_name': {
+      deep: true,
+      handler (newVal) {
+        this.changeInfo.pack_attr = this.packagMaterialList.find(key => key.id === newVal).attribute
+        console.log(this.changeInfo.pack_attr)
+      }
     }
   },
   methods: {
+    open (orderId, clientId, time) {
+      window.open('/packagMaterialTable/' + orderId + '/' + clientId + '/' + time)
+    },
     charCodeLength (item) {
       if (!item) {
         return 0
@@ -449,6 +587,158 @@ export default {
         }
       }
       return lengths
+    },
+    submit () {
+      if (this.save) {
+        this.save = false
+        if (!this.changeInfo.client_name) {
+          this.$message({
+            type: 'error',
+            message: `请选择订购来源`
+          })
+          return
+        }
+        if (!this.changeInfo.pack_material_name) {
+          this.$message({
+            type: 'error',
+            message: `请选择包装`
+          })
+          return
+        }
+        if (!this.changeInfo.price) {
+          this.$message({
+            type: 'error',
+            message: `请输入单价`
+          })
+          return
+        }
+        if (!this.changeInfo.number) {
+          this.$message({
+            type: 'error',
+            message: `请输入订购数量`
+          })
+          return
+        }
+        packagMaterialPage({
+          id: this.changeInfo.id,
+          data: [{
+            user_id: window.sessionStorage.getItem('user_id'),
+            order_id: this.$route.params.id,
+            material_id: this.changeInfo.pack_material_name,
+            client_id: this.changeInfo.client_name,
+            number: this.changeInfo.number,
+            price: this.changeInfo.price,
+            order_time: this.changeInfo.order_time,
+            desc: this.changeInfo.desc,
+            attribute: this.changeInfo.pack_attr
+          }]
+        }).then(res => {
+          this.$message({
+            type: 'success',
+            message: `修改成功`
+          })
+          this.getOrderDetail()
+          this.changePackShow = false
+        })
+        setTimeout(() => { this.save = true }, 1000)
+      } else {
+        this.$alert('请求速度过于频繁', '提醒', {
+          confirmButtonText: '确定',
+          callback: action => {
+            this.$message({
+              type: 'error',
+              message: `请于1s后重新请求`
+            })
+          }
+        })
+      }
+    },
+    changeOrderInfo (item) {
+      this.changePackShow = true
+      this.changeInfo.id = item.id
+      this.changeInfo.pack_material_name = item.material_id
+      this.changeInfo.client_name = item.client_id
+      this.changeInfo.price = item.price
+      this.changeInfo.desc = item.remark
+      this.changeInfo.number = item.number
+      this.changeInfo.order_time = item.order_time
+    },
+    getOrderDetail () {
+      this.packagMaterialPageLog = []
+      this.packagMaterialPageList = []
+      packagMaterialDetail({
+        order_id: this.$route.params.id
+      }).then(res => {
+        // 初始化订购包装详情
+        console.log(res.data.data)
+        res.data.data.forEach(item => {
+          this.packagMaterialPageLog.unshift({
+            time: item.order_time.split(' ')[0],
+            client_name: item.client_name,
+            material_name: item.material_name,
+            attr: JSON.parse(item.attribute),
+            price: item.price,
+            number: item.number,
+            remark: item.desc,
+            user_name: item.user_name,
+            created_at: item.created_at,
+            order_time: item.order_time,
+            id: item.id,
+            material_id: item.material_id,
+            client_id: String(item.client_id)
+          })
+        })
+        // 初始化订购包装表格数据
+        this.packagMaterialPageLog.forEach(item => {
+          let flag = this.packagMaterialPageList.find(key => key.client_name === item.client_name)
+          if (!flag) {
+            this.packagMaterialPageList.push({
+              client_name: item.client_name,
+              client_id: item.client_id,
+              total_price: item.price * item.number,
+              time: item.time,
+              create_time: [
+                {
+                  create_at: item.created_at,
+                  material_info: [{
+                    name: item.material_name,
+                    price: item.price,
+                    number: item.number
+                  }]
+                }
+              ]
+            })
+          } else {
+            flag.total_price += item.price * item.number
+            let flag1 = flag.create_time.find(key => key.create_at === item.created_at)
+            if (!flag1) {
+              flag.create_time.push({
+                create_at: item.created_at,
+                material_info: [{
+                  name: item.material_name,
+                  price: item.price,
+                  number: item.number
+                }]
+              })
+            } else {
+              let flag2 = flag1.material_info.find(key => (key.name === item.material_name && key.price === item.price))
+              if (!flag2) {
+                flag1.material_info.push({
+                  name: item.material_name,
+                  price: item.price,
+                  number: item.number
+                })
+              } else {
+                flag2.number = Number(flag2.number) + Number(item.number)
+              }
+            }
+            // if (!(new Date(flag.time).getTime() > new Date(item.time).getTime())) {
+            //   flag.time = item.time
+            //   flag.user_name = item.user_name
+            // }
+          }
+        })
+      })
     }
   },
   filters: {
@@ -457,18 +747,19 @@ export default {
     }
   },
   created () {
+    this.getOrderDetail()
     Promise.all([
       orderDetail({
         id: this.$route.params.id
       }),
-      packagMaterialDetail({
-        order_id: this.$route.params.id
+      clientList({
+        company_id: window.sessionStorage.getItem('company_id')
+      }),
+      packagMaterialList({
+        company_id: window.sessionStorage.getItem('company_id')
       })
     ]).then(res => {
       let orderInfo = res[0].data.data
-      let packagPageInfo = res[1].data.data
-      // console.log('orderInfo', orderInfo)
-      console.log('packagPageInfo', packagPageInfo)
       // 初始化订单信息
       this.order_code = orderInfo.order_code
       this.client_name = orderInfo.client_name
@@ -505,72 +796,8 @@ export default {
           })
         })
       })
-      // 初始化订购包装详情
-      packagPageInfo.forEach(item => {
-        this.packagMaterialPageLog.unshift({
-          time: item.order_time.split(' ')[0],
-          client_name: item.client_name,
-          material_name: item.material_name,
-          attr: JSON.parse(item.attribute),
-          price: item.price,
-          number: item.number,
-          remark: item.desc,
-          user_name: item.user_name,
-          created_at: item.created_at
-        })
-      })
-      // console.log('productList', this.productList)
-      console.log('log', this.packagMaterialPageLog)
-      // 初始化订购包装表格数据
-      this.packagMaterialPageLog.forEach(item => {
-        let flag = this.packagMaterialPageList.find(key => key.client_name === item.client_name)
-        if (!flag) {
-          this.packagMaterialPageList.push({
-            client_name: item.client_name,
-            total_price: item.price * item.number,
-            time: item.time,
-            create_time: [
-              {
-                create_at: item.created_at,
-                material_info: [{
-                  name: item.material_name,
-                  price: item.price,
-                  number: item.number
-                }]
-              }
-            ]
-          })
-        } else {
-          flag.total_price += item.price * item.number
-          let flag1 = flag.create_time.find(key => key.create_at === item.created_at)
-          if (!flag1) {
-            flag.create_time.push({
-              create_at: item.created_at,
-              material_info: [{
-                name: item.material_name,
-                price: item.price,
-                number: item.number
-              }]
-            })
-          } else {
-            let flag2 = flag1.material_info.find(key => (key.name === item.material_name && key.price === item.price))
-            if (!flag2) {
-              flag1.material_info.push({
-                name: item.material_name,
-                price: item.price,
-                number: item.number
-              })
-            } else {
-              flag2.number = Number(flag2.number) + Number(item.number)
-            }
-          }
-          // if (!(new Date(flag.time).getTime() > new Date(item.time).getTime())) {
-          //   flag.time = item.time
-          //   flag.user_name = item.user_name
-          // }
-        }
-      })
-      console.log('packagMaterialPageList', this.packagMaterialPageList)
+      this.packagPageClientList = res[1].data.data.filter(key => (key.type.indexOf(7) !== -1))
+      this.packagMaterialList = res[2].data.data
       this.loading = false
     })
   }
@@ -579,4 +806,111 @@ export default {
 
 <style scoped lang='less'>
 @import "~@/assets/css/packagDetail.less";
+</style>
+<style lang="less" scope>
+// 弹窗样式
+.shades {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  .main {
+    position: absolute;
+    width: 640px;
+    height: 580px;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    background: #ffffff;
+    overflow: hidden;
+    border-radius: 4px;
+    .close {
+      position: absolute;
+      right: -30px;
+      top: -30px;
+      width: 60px;
+      height: 60px;
+      background: #1a95ff;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: 0.1s;
+      color: #ecf0f1;
+      &:hover {
+        transform: scale(1.1);
+        color: #ffffff;
+        background: #48aaff;
+      }
+      .icon {
+        position: absolute;
+        left: 15px;
+        bottom: 7px;
+        font-size: 16px;
+        font-weight: bold;
+      }
+    }
+    .title {
+      line-height: 66px;
+      font-size: 22px;
+      padding: 0 20px;
+      background: linear-gradient(to right, #1a95ff, #ceddef);
+      border-radius: 4px;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      color: #ffffff;
+    }
+    .content {
+      height: 514px;
+      overflow-y: scroll;
+      .inputCtn {
+        margin: 20px;
+        position: relative;
+        font-size: 16px;
+        padding-left: 5em;
+        height: auto;
+        line-height: 40px;
+        color: #666;
+        .label {
+          position: absolute;
+          left: 0;
+          text-align: right;
+          width: 5em;
+          color: #666;
+          & > em {
+            color: #f56c6c;
+            line-height: 40px;
+            margin-right: 2px;
+            vertical-align: -4px;
+          }
+        }
+        .elCtn {
+          margin-left: 15px;
+          width: 400px;
+          height: auto;
+          em {
+            padding: 5px;
+            margin-left: 20px;
+            cursor: pointer;
+            &:hover {
+              background-color: #1a95ff;
+              color: #fff;
+              border-radius: 50%;
+            }
+          }
+        }
+      }
+      .btnCtn {
+        margin: 40px 0;
+        display: flex;
+        justify-content: center;
+        .okBtn {
+          margin: 0 30px;
+        }
+      }
+    }
+  }
+}
 </style>

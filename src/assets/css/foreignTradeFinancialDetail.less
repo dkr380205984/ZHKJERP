@@ -64,10 +64,19 @@ ul{
         right: 0;
         display: flex;
         flex-direction: column;
+        color: #FFF;
+        align-items: flex-end;
         .totalPrice{
           display: flex;
+          width: 50%;
+          height: 67px;
           flex-direction: column;
+          justify-content: center;
           align-items: flex-end;
+          margin-bottom: 20px;
+          padding-right: 20px;
+          border-radius: 6px;
+          background:linear-gradient(132deg,rgba(139,193,255,0.97) 0%,rgba(58,129,226,1) 100%);
           .content {
             font-size: 26px;
             font-weight: 500;
@@ -75,14 +84,29 @@ ul{
         }
         .settlement {
           display: flex;
-          width: 300px;
+          width: 500px;
+          height: 67px;
+          justify-content: space-between;
           &>span{
-            flex: 1;
+            width: 160px;
+            box-sizing: border-box;
+            padding-right: 20px;
             display: flex;
             flex-direction: column;
+            justify-content: center;
             align-items: flex-end;
+            border-radius: 6px;
             .content {
               font-size: 20px;
+            }
+            &.settle{
+              background:linear-gradient(131deg,rgba(57,227,148,0.76) 0%,rgba(52,237,108,1) 100%);
+            }
+            &.noSettle{
+              background:linear-gradient(131deg,rgba(237,178,67,0.62) 0%,rgba(230,162,60,1) 100%);
+            }
+            &.deduct{
+              background:linear-gradient(132deg,rgba(255,129,129,0.56) 0%,rgba(226,58,58,0.89) 100%);
             }
           }
         }
@@ -141,7 +165,7 @@ ul{
         height: 720px;
         border-left: 1px solid #DDD;
         position: relative;
-        .title{
+        &>.title{
           width: @son;
           height: 60px;
           display: flex;
@@ -175,9 +199,15 @@ ul{
           margin-bottom: 60px;
           height: 600px;
           overflow: hidden;
+          box-sizing: border-box;
           &:hover{
             width: @father;
             overflow-y: scroll;
+            border-right: none;
+          }
+          &>.box{
+            min-height: 600px;
+            border-right: 1px solid #DDD;
           }
           .infinite-list-item{
             height: auto;
@@ -197,6 +227,11 @@ ul{
                 position: relative;
                 overflow: hidden;
                 white-space: nowrap;
+                &.find{
+                  cursor: pointer;
+                  color: @normalBlue;
+                  text-decoration: underline;
+                }
                 .btn{
                   width: 60px;
                   line-height: 30px;
@@ -216,13 +251,16 @@ ul{
                 .open {
                   position: absolute;
                   top: 50%;
-                  left: 0px;
+                  left: 25px;
                   transform: translateY(-50%) rotateZ(0deg);
                   color: #666;
                   transition: transform 0.2s ease-in-out;
                 }
                 .close{
                   transform: translateY(-50%) rotateZ(-90deg);
+                }
+                &:last-child{
+                  border-right:none;
                 }
               }
             }
@@ -231,39 +269,47 @@ ul{
               display: flex;
               flex-direction: column;
               border-top: 1px solid #FFF;
-              border-right: 1px solid #DDD;
-              transition: all 0.2s ease-in-out;
+              // border-right: 1px solid #DDD;
+              // transition: all 0.2s ease-in-out;
               &.detailNone{
-                max-height: 0!important;
+                // max-height: 0!important;
+                height: 0;
                 border-bottom: none;
                 overflow: hidden;
               }
               &.detailShow{
                 height: auto!important;
-                max-height:1000px!important;
+                // max-height:1000px!important;
                 overflow: visible;
                 border-top: 1px solid #DDD;
               }
               .title{
                 display: flex;
                 justify-content: center;
-                color: #000;
-                font-weight: bold;
+                color: @fontNormal;
+                font-weight: 600;
                 height: 60px;
+                padding: 0 50px;
                 &>span{
                   flex: 1;
                   display: flex;
-                  justify-content: center;
+                  // justify-content: center;
                   align-items: center;
                 }
               }
               .content{
                 display: flex;
                 justify-content: center;
+                padding: 0 50px 20px;
+                span{
+                  white-space: nowrap;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                }
                 &>span{
                   flex: 1;
                   display: flex;
-                  justify-content: center;
+                  // justify-content: center;
                   &.col {
                     flex-direction: column;
                     justify-content: flex-start;
@@ -274,7 +320,43 @@ ul{
                       &>span {
                         flex:1;
                         display: flex;
+                        // justify-content: center;
+                      }
+                    }
+                  }
+                  .imgCtn{
+                    position: relative;
+                    width: 100px;
+                    height: 50px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    &:hover{
+                      .toolTips{
+                        display: flex;
                         justify-content: center;
+                        align-items: center;
+                      }
+                    }
+                    .img{
+                      width:48px;
+                      padding: 6px;
+                      height: 48px;
+                    }
+                    .toolTips{
+                      display: none;
+                      position: absolute;
+                      top: 0;
+                      width: 100%;
+                      height: 100%;
+                      background: rgba(0,0,0,0.7);  
+                      text-align: center;
+                      cursor: pointer;
+                      span{
+                        color: #fff;
+                        &:hover{
+                          color: @normalBlue;
+                        }
                       }
                     }
                   }
@@ -477,6 +559,11 @@ ul{
         border-top:none;
         position: relative;
         padding-left: 20px;
+        border-bottom: none;
+        text-align: center;
+        &>span{
+          color: #DDD;
+        }
         .borderCtn{
           position: absolute;
           top: 0;
@@ -517,8 +604,11 @@ ul{
           .title{
             color: @fontNormal;
             font-weight: normal;
+            width: 100%;
+            display: flex;
+            align-items: center;
             &>span{
-              margin-right: 40px;
+              text-align: left;
               &>strong{
                 font-size: 18px;
                 font-weight: 600;
@@ -547,6 +637,7 @@ ul{
               flex-wrap: wrap;
               .code{
                 width: calc(100% / 3);
+                text-align: left;
                 &::before{
                   content: '';
                   display: inline-block;
@@ -579,4 +670,19 @@ ul{
 }
 .flex15{
   flex:1.5!important;
+}
+.flex05{
+  flex:0.5!important;
+}
+.flex08{
+  flex:0.8!important;
+}
+.flex48{
+  flex:4.8!important;
+}
+.flex41{
+  flex:4.1!important;
+}
+.flex21{
+  flex:2.1!important;
 }

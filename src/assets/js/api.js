@@ -309,7 +309,7 @@ const priceListCheck = (params) => http.post(`${baseUrl}/product/quotation/check
 // 转账记录financial/transfer/list
 const transferList = (params) => http.get(`${baseUrl}/financial/transfer/list`, params)
 // 扣款记录financial/deduct/list
-const cutPayList = (params) => http.get(`${baseUrl}/financial/deduct/list`, params)
+const deductList = (params) => http.get(`${baseUrl}/financial/deduct/list`, params)
 // 结算记录financial/settle/list
 const settleList = (params) => http.get(`${baseUrl}/financial/settle/list`, params)
 // 添加转账记录financial/transfer/save
@@ -318,15 +318,24 @@ const transferAdd = (params) => http.post(`${baseUrl}/financial/transfer/save`, 
 const deductAdd = (params) => http.post(`${baseUrl}/financial/deduct/save`, params, 'application/json')
 // 添加结算记录financial/settle/save
 const settleAdd = (params) => http.post(`${baseUrl}/financial/settle/save`, params, 'application/json')
-//订单财务统计合计值financial/order/count
+// 订单财务统计合计值financial/order/count
 const orderFinancialCount = (params) => http.get(`${baseUrl}/financial/order/count`, params)
+// 查询合作公司日志financial/client/log
+const clientFinancialLog = (params) => http.get(`${baseUrl}/financial/client/log`, params)
+// 合作公司财务列表financial/client/list
+const clientFinancialList = (params) => http.get(`${baseUrl}/financial/client/list`, params)
+// 合作公司财务合计值financial/client/total
+const clientFinancialTotal = (params) => http.get(`${baseUrl}/financial/client/total`, params)
 export {
+  clientFinancialTotal,
+  clientFinancialList,
+  clientFinancialLog,
   orderFinancialCount,
   settleAdd,
   deductAdd,
   transferAdd,
   settleList,
-  cutPayList,
+  deductList,
   transferList,
   // materialStockListNew,
   materialDetail,
