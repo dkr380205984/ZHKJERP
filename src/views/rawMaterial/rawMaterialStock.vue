@@ -406,7 +406,7 @@ export default {
             }
             obj.color_code = val.materialColor
             obj.number = value.number
-            obj.total_weight = value.weight
+            obj.weight = value.weight
             obj.complete_time = val.stock_time
             obj.desc = val.remark
             obj.attribute = val.materialAtr

@@ -1,7 +1,8 @@
 <template>
-  <div id="foreignTradeFinancialDetail">
+  <div id="foreignTradeFinancialDetail"
+    v-loading="loading">
     <div class="head">
-      <h2>外贸公司详情</h2>
+      <h2>合作公司财务详情</h2>
     </div>
     <div class="body">
       <div class="lineCtn">
@@ -15,25 +16,25 @@
         </div>
         <div class="inputCtn">
           <span class="label">公司类型:</span>
-          <span class="content">{{client_type}}</span>
+          <span class="content">{{client_typeStr}}</span>
         </div>
         <div class="rightCtn">
           <span class="totalPrice">
             <span class="label">共计:</span>
-            <span class="content">{{80000}}元</span>
+            <span class="content">{{total_price}}元</span>
           </span>
           <span class="settlement">
-            <span>
+            <span class="settle">
               <span class="label">已结算:</span>
-              <span class="content">{{6000}}元</span>
+              <span class="content">{{settle_price ? settle_price : 0}}元</span>
             </span>
-            <span>
+            <span class="noSettle">
               <span class="label">待结算:</span>
-              <span class="content">{{80000-6000}}元</span>
+              <span class="content">{{total_price-settle_price > 0 ? total_price-settle_price : 0}}元</span>
             </span>
-            <span>
+            <span class="deduct">
               <span class="label">已扣款:</span>
-              <span class="content">{{6000}}元</span>
+              <span class="content">{{deduct_price ? deduct_price : 0}}元</span>
             </span>
           </span>
         </div>
@@ -41,14 +42,969 @@
       <!-- 切换表格按钮 -->
       <div class="lineCtn"
         style="flex-direction:row;">
-        <span :class="{cutList:true,active:flag}"
-          @click="flag =true">转账列表</span>
-        <span :class="{cutList:true,active:!flag}"
-          @click="flag = false">订单列表</span>
+        <span :class="{cutList:true,active:flag[1].active}"
+          @click="cutList(1)"
+          v-if="this.client_type.indexOf(1) !== -1">订单列表</span>
+        <span :class="{cutList:true,active:flag[2].active}"
+          @click="cutList(2)"
+          v-if="this.client_type.indexOf(2) !== -1">物料订购列表</span>
+        <span :class="{cutList:true,active:flag[3].active}"
+          @click="cutList(3)"
+          v-if="this.client_type.indexOf(3) !== -1">物料加工列表</span>
+        <span :class="{cutList:true,active:flag[4].active}"
+          @click="cutList(4)"
+          v-if="this.client_type.indexOf(4) !== -1">生产织造列表</span>
+        <span :class="{cutList:true,active:flag[5].active}"
+          @click="cutList(5)"
+          v-if="this.client_type.indexOf(5) !== -1">产品加工列表</span>
+        <span :class="{cutList:true,active:flag[7].active}"
+          @click="cutList(7)"
+          v-if="this.client_type.indexOf(7) !== -1">包装订购列表</span>
+        <span :class="{cutList:true,active:flag[8].active}"
+          @click="cutList(8)"
+          v-if="this.client_type.indexOf(8) !== -1">运输列表</span>
+        <span :class="{cutList:true,active:flag[9].active}"
+          @click="cutList(9)">转账列表</span>
       </div>
-      <!-- 转账记录表 -->
+      <!-- 订单列表 -->
       <div class="lineCtn"
-        v-show="flag">
+        v-show="flag[1].active">
+        <div class="selectCtn">
+          <div class="select">
+            <span class="label">筛选条件:</span>
+            <el-select v-model="list.orderList.group_id"
+              style="margin-left:20px;"
+              placeholder="请选择">
+              <el-option v-for="item in []"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+            <el-date-picker v-model="list.orderList.data"
+              type="daterange"
+              align="right"
+              style="margin-left:20px;"
+              unlink-panels
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              :picker-options="pickerOptions">
+            </el-date-picker>
+          </div>
+          <div class="management">
+            <span class="handle blue"
+              @click="record.recordFlag = true">操作记录</span>
+            <template v-if="list.orderList.management">
+              <span class="handle"
+                @click="payMoneys">结算</span>
+              <span class="handle"
+                @click="cutPayMoney">扣款</span>
+            </template>
+            <span class="handle handleMain"
+              @click="list.orderList.management = !list.orderList.management">{{!list.orderList.management ? '批量管理':'取消管理'}}</span>
+          </div>
+        </div>
+        <div class="table">
+          <div class="title">
+            <span>
+              <el-checkbox class="checkBox"
+                v-model="cutPay.checkAllFlag"
+                @change="checked('all','orderList')"
+                v-if="list.orderList.management"></el-checkbox>
+              订单号
+            </span>
+            <span>负责小组</span>
+            <span>下单日期</span>
+            <span>订单公司</span>
+            <span>合计金额</span>
+            <span>扣款记录</span>
+            <span>结算记录</span>
+            <span class="flex15">操作</span>
+          </div>
+          <ul class="infinite-list">
+            <div class="box">
+              <li v-for="(item,key) in list.orderList.list"
+                :key="key"
+                class="infinite-list-item">
+                <div class="list"
+                  @click="getOutStockInfo(item)"
+                  style="line-height:59px;">
+                  <span>
+                    <em :class="{'el-icon-caret-bottom':true,'open':true,'close':!item.flag}"></em>
+                    <el-checkbox class="checkBox"
+                      v-if="list.orderList.management"
+                      v-model="item.checked"
+                      @change="checked(item)"></el-checkbox>
+                    {{item.order_code}}
+                  </span>
+                  <span>{{item.group_name}}</span>
+                  <span>{{item.order_time}}</span>
+                  <span>{{item.client_name}}</span>
+                  <span>{{item.total_price ? item.total_price : 0}}元</span>
+                  <span class="find"
+                    @click.stop="find(item.order_code,'cut')">{{item.deduct_number ? item.deduct_number : '-'}}</span>
+                  <span class="find"
+                    @click.stop="find(item.order_code,'pay')">{{item.settle_number ? item.settle_number : '-'}}</span>
+                  <span class="flex15">
+                    <span class="btn"
+                      @click.stop="$router.push('/index/orderDetailNew/' + item.id)">详情</span>
+                  </span>
+                </div>
+                <div :class="{'detail':true,'detailNone':!item.flag,'detailShow':item.flag}">
+                  <div v-loading='item.loading'>
+                    <span class="title">
+                      <span>产品类型</span>
+                      <span>产品图片</span>
+                      <span class="flex05">尺码</span>
+                      <span class="flex05">颜色</span>
+                      <span class="flex08">单价</span>
+                      <span>订单数量</span>
+                      <span>发货数量</span>
+                      <span>合计金额</span>
+                    </span>
+                    <span class="content"
+                      v-for="(valPro,indPro) in item.product_info"
+                      :key="indPro">
+                      <span class=" col">
+                        <span>{{valPro.product_code}}</span>
+                        <span>{{valPro.product_type}}</span>
+                      </span>
+                      <span>
+                        <div class="imgCtn">
+                          <img class="img"
+                            :src="valPro.img.length>0?valPro.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
+                            :onerror="defaultImg" />
+                          <div class="toolTips"
+                            v-if="valPro.img.length>0"><span @click="showImg(valPro.img)">点击查看大图</span></div>
+                          <div class="toolTips"
+                            v-if="valPro.img.length===0"><span>没有预览图</span></div>
+                        </div>
+                      </span>
+                      <span class="flex48 col">
+                        <span v-for="(valSize,indSize) in valPro.size"
+                          :key="indSize">
+                          <span class="flex05">{{valSize.size}}</span>
+                          <span class="flex05">{{valSize.color}}</span>
+                          <span class="flex08">{{valSize.price|filterToFixed}}{{item.account_unit}}/{{valPro.unit}}</span>
+                          <span>{{valSize.number}}{{valPro.unit}}</span>
+                          <span>{{valSize.pack_number ? valSize.pack_number : 0}}{{valPro.unit}}</span>
+                          <span>{{(valSize.pack_number ? valSize.pack_number : 0)*valSize.price}}{{item.account_unit}}</span>
+                        </span>
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </li>
+            </div>
+          </ul>
+          <div class="footer">
+            <span>合计</span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span>{{list.orderList.total_price|filterNumber}}元</span>
+            <span>{{list.orderList.total_deduct|filterNumber}}</span>
+            <span>{{list.orderList.total_settle|filterNumber}}</span>
+            <span class="flex15"></span>
+          </div>
+        </div>
+      </div>
+      <!-- 物料订购列表 -->
+      <div class="lineCtn"
+        v-show="flag[2].active">
+        <div class="selectCtn">
+          <div class="select">
+            <span class="label">筛选条件:</span>
+            <el-select v-model="list.material_orderList.group_id"
+              style="margin-left:20px;"
+              placeholder="请选择">
+              <el-option v-for="item in []"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+            <el-date-picker v-model="list.material_orderList.data"
+              type="daterange"
+              align="right"
+              style="margin-left:20px;"
+              unlink-panels
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              :picker-options="pickerOptions">
+            </el-date-picker>
+          </div>
+          <div class="management">
+            <span class="handle blue"
+              @click="record.recordFlag = true">操作记录</span>
+            <template v-if="list.material_orderList.management">
+              <span class="handle"
+                @click="payMoneys">结算</span>
+              <span class="handle"
+                @click="cutPayMoney">扣款</span>
+            </template>
+            <span class="handle handleMain"
+              @click="list.material_orderList.management = !list.material_orderList.management">{{!list.material_orderList.management ? '批量管理':'取消管理'}}</span>
+          </div>
+        </div>
+        <div class="table">
+          <div class="title">
+            <span>
+              <el-checkbox class="checkBox"
+                v-model="cutPay.checkAllFlag"
+                @change="checked('all','material_orderList')"
+                v-if="list.material_orderList.management"></el-checkbox>
+              订单号
+            </span>
+            <span>负责小组</span>
+            <span>下单日期</span>
+            <span>订单公司</span>
+            <span>合计金额</span>
+            <span>扣款记录</span>
+            <span>结算记录</span>
+            <span class="flex15">操作</span>
+          </div>
+          <ul class="infinite-list">
+            <div class="box">
+              <li v-for="(item,key) in list.material_orderList.list"
+                :key="key"
+                @click="item.flag = !item.flag"
+                class="infinite-list-item">
+                <div class="list"
+                  style="line-height:59px;">
+                  <span>
+                    <em :class="{'el-icon-caret-bottom':true,'open':true,'close':!item.flag}"></em>
+                    <el-checkbox class="checkBox"
+                      v-if="list.material_orderList.management"
+                      v-model="item.checked"
+                      @change="checked(item)"></el-checkbox>
+                    {{item.order_code}}
+                  </span>
+                  <span>{{item.group_name}}</span>
+                  <span>{{item.order_time}}</span>
+                  <span>{{item.client_name}}</span>
+                  <span>{{item.total_price ? item.total_price: 0}}元</span>
+                  <span class="find"
+                    @click.stop="find(item.order_code,'cut')">{{item.deduct_number ? item.deduct_number : '-'}}</span>
+                  <span class="find"
+                    @click.stop="find(item.order_code,'pay')">{{item.settle_number ? item.settle_number : '-'}}</span>
+                  <span class="flex15">
+                    <span class="btn"
+                      @click.stop="$router.push('/index/orderDetailNew/' + item.id)">详情</span>
+                  </span>
+                </div>
+                <div :class="{'detail':true,'detailNone':!item.flag,'detailShow':item.flag}">
+                  <div v-loading='item.loading'>
+                    <span class="title">
+                      <span>物料名称</span>
+                      <span>类型</span>
+                      <span class="flex08">属性</span>
+                      <span class="flex08">单价</span>
+                      <span class="flex05">数量</span>
+                      <span>合计金额</span>
+                    </span>
+                    <span class="content"
+                      v-for="(val,ind) in item.info"
+                      :key="ind">
+                      <span>{{val.material_name}}</span>
+                      <span class="flex41 col">
+                        <span v-for="(valInfo,indInfo) in val.material_info"
+                          :key="indInfo">
+                          <span>{{valInfo.type}}</span>
+                          <span class="flex08">{{valInfo.attr ? valInfo.attr : '无'}}/{{valInfo.color}}</span>
+                          <span class="flex08">{{valInfo.price|filterToFixed}}元/kg</span>
+                          <span class="flex05">{{valInfo.number}}kg</span>
+                          <span>{{((valInfo.number ? valInfo.number : 0)*valInfo.price)}}元</span>
+                        </span>
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </li>
+            </div>
+          </ul>
+          <div class="footer">
+            <span>合计</span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span>{{list.material_orderList.total_price|filterNumber}}元</span>
+            <span>{{list.material_orderList.total_deduct|filterNumber}}</span>
+            <span>{{list.material_orderList.total_settle|filterNumber}}</span>
+            <span class="flex15"></span>
+          </div>
+        </div>
+      </div>
+      <!-- 物料加工列表 -->
+      <div class="lineCtn"
+        v-show="flag[3].active">
+        <div class="selectCtn">
+          <div class="select">
+            <span class="label">筛选条件:</span>
+            <el-select v-model="list.material_processList.group_id"
+              style="margin-left:20px;"
+              placeholder="请选择">
+              <el-option v-for="item in []"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+            <el-date-picker v-model="list.material_processList.data"
+              type="daterange"
+              align="right"
+              style="margin-left:20px;"
+              unlink-panels
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              :picker-options="pickerOptions">
+            </el-date-picker>
+          </div>
+          <div class="management">
+            <span class="handle blue"
+              @click="record.recordFlag = true">操作记录</span>
+            <template v-if="list.material_processList.management">
+              <span class="handle"
+                @click="payMoneys">结算</span>
+              <span class="handle"
+                @click="cutPayMoney">扣款</span>
+            </template>
+            <span class="handle handleMain"
+              @click="list.material_processList.management = !list.material_processList.management">{{!list.material_processList.management ? '批量管理':'取消管理'}}</span>
+          </div>
+        </div>
+        <div class="table">
+          <div class="title">
+            <span>
+              <el-checkbox class="checkBox"
+                v-model="cutPay.checkAllFlag"
+                @change="checked('all','material_processList')"
+                v-if="list.material_processList.management"></el-checkbox>
+              订单号
+            </span>
+            <span>负责小组</span>
+            <span>下单日期</span>
+            <span>订单公司</span>
+            <span>合计金额</span>
+            <span>扣款记录</span>
+            <span>结算记录</span>
+            <span class="flex15">操作</span>
+          </div>
+          <ul class="infinite-list">
+            <div class="box">
+              <li v-for="(item,key) in list.material_processList.list"
+                :key="key"
+                @click="item.flag = !item.flag"
+                class="infinite-list-item">
+                <div class="list"
+                  style="line-height:59px;">
+                  <span>
+                    <em :class="{'el-icon-caret-bottom':true,'open':true,'close':!item.flag}"></em>
+                    <el-checkbox class="checkBox"
+                      v-if="list.material_processList.management"
+                      v-model="item.checked"
+                      @change="checked(item)"></el-checkbox>
+                    {{item.order_code}}
+                  </span>
+                  <span>{{item.group_name}}</span>
+                  <span>{{item.order_time}}</span>
+                  <span>{{item.client_name}}</span>
+                  <span>{{item.total_price ? item.total_price: 0}}元</span>
+                  <span class="find"
+                    @click.stop="find(item.order_code,'cut')">{{item.deduct_number ? item.deduct_number : '-'}}</span>
+                  <span class="find"
+                    @click.stop="find(item.order_code,'pay')">{{item.settle_number ? item.settle_number : '-'}}</span>
+                  <span class="flex15">
+                    <span class="btn"
+                      @click.stop="$router.push('/index/orderDetailNew/' + item.id)">详情</span>
+                  </span>
+                </div>
+                <div :class="{'detail':true,'detailNone':!item.flag,'detailShow':item.flag}">
+                  <div v-loading='item.loading'>
+                    <span class="title">
+                      <span>物料名称</span>
+                      <span>类型</span>
+                      <span class="flex08">属性</span>
+                      <span class="flex08">单价</span>
+                      <span class="flex05">数量</span>
+                      <span>合计金额</span>
+                    </span>
+                    <span class="content"
+                      v-for="(val,ind) in item.info"
+                      :key="ind">
+                      <span>{{val.material_name}}</span>
+                      <span>{{val.process_type}}</span>
+                      <span class="flex21 col">
+                        <span v-for="(valInfo,indInfo) in val.material_info"
+                          :key="indInfo">
+                          <span class="flex08">{{valInfo.attr ? valInfo.attr : '无'}}/{{valInfo.color}}</span>
+                          <span class="flex08">{{'-'}}</span>
+                          <span class="flex05">{{valInfo.value}}kg</span>
+                        </span>
+                      </span>
+                      <span>{{val.total_price}}元</span>
+                    </span>
+                  </div>
+                </div>
+              </li>
+            </div>
+          </ul>
+          <div class="footer">
+            <span>合计</span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span>{{list.material_processList.total_price|filterNumber}}元</span>
+            <span>{{list.material_processList.total_deduct|filterNumber}}</span>
+            <span>{{list.material_processList.total_settle|filterNumber}}</span>
+            <span class="flex15"></span>
+          </div>
+        </div>
+      </div>
+      <!-- 生产织造列表 -->
+      <div class="lineCtn"
+        v-show="flag[4].active">
+        <div class="selectCtn">
+          <div class="select">
+            <span class="label">筛选条件:</span>
+            <el-select v-model="list.weaveList.group_id"
+              style="margin-left:20px;"
+              placeholder="请选择">
+              <el-option v-for="item in []"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+            <el-date-picker v-model="list.weaveList.data"
+              type="daterange"
+              align="right"
+              style="margin-left:20px;"
+              unlink-panels
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              :picker-options="pickerOptions">
+            </el-date-picker>
+          </div>
+          <div class="management">
+            <span class="handle blue"
+              @click="record.recordFlag = true">操作记录</span>
+            <template v-if="list.weaveList.management">
+              <span class="handle"
+                @click="payMoneys">结算</span>
+              <span class="handle"
+                @click="cutPayMoney">扣款</span>
+            </template>
+            <span class="handle handleMain"
+              @click="list.weaveList.management = !list.weaveList.management">{{!list.weaveList.management ? '批量管理':'取消管理'}}</span>
+          </div>
+        </div>
+        <div class="table">
+          <div class="title">
+            <span>
+              <el-checkbox class="checkBox"
+                v-model="cutPay.checkAllFlag"
+                @change="checked('all','weaveList')"
+                v-if="list.weaveList.management"></el-checkbox>
+              订单号
+            </span>
+            <span>负责小组</span>
+            <span>下单日期</span>
+            <span>订单公司</span>
+            <span>合计金额</span>
+            <span>扣款记录</span>
+            <span>结算记录</span>
+            <span class="flex15">操作</span>
+          </div>
+          <ul class="infinite-list">
+            <div class="box">
+              <li v-for="(item,key) in list.weaveList.list"
+                :key="key"
+                @click="item.flag = !item.flag"
+                class="infinite-list-item">
+                <div class="list"
+                  style="line-height:59px;">
+                  <span>
+                    <em :class="{'el-icon-caret-bottom':true,'open':true,'close':!item.flag}"></em>
+                    <el-checkbox class="checkBox"
+                      v-if="list.weaveList.management"
+                      v-model="item.checked"
+                      @change="checked(item)"></el-checkbox>
+                    {{item.order_code}}
+                  </span>
+                  <span>{{item.group_name}}</span>
+                  <span>{{item.order_time}}</span>
+                  <span>{{item.client_name}}</span>
+                  <span>{{item.total_price ? item.total_price: 0}}元</span>
+                  <span class="find"
+                    @click.stop="find(item.order_code,'cut')">{{item.deduct_number ? item.deduct_number : '-'}}</span>
+                  <span class="find"
+                    @click.stop="find(item.order_code,'pay')">{{item.settle_number ? item.settle_number : '-'}}</span>
+                  <span class="flex15">
+                    <span class="btn"
+                      @click.stop="$router.push('/index/orderDetailNew/' + item.id)">详情</span>
+                  </span>
+                </div>
+                <div :class="{'detail':true,'detailNone':!item.flag,'detailShow':item.flag}">
+                  <div v-loading='item.loading'>
+                    <span class="title">
+                      <span>产品类型</span>
+                      <span>产品图片</span>
+                      <span class="flex05">尺码</span>
+                      <span class="flex08">颜色</span>
+                      <span class="flex08">单价</span>
+                      <span>数量</span>
+                      <span>合计金额</span>
+                    </span>
+                    <span class="content"
+                      v-for="(valPro,indPro) in item.info"
+                      :key="indPro">
+                      <span class=" col">
+                        <span>{{valPro.product_code}}</span>
+                        <span>{{valPro.product_type}}</span>
+                      </span>
+                      <span>
+                        <div class="imgCtn">
+                          <img class="img"
+                            :src="valPro.img.length>0?valPro.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
+                            :onerror="defaultImg" />
+                          <div class="toolTips"
+                            v-if="valPro.img.length>0"><span @click="showImg(valPro.img)">点击查看大图</span></div>
+                          <div class="toolTips"
+                            v-if="valPro.img.length===0"><span>没有预览图</span></div>
+                        </div>
+                      </span>
+                      <span class="flex41 col">
+                        <span v-for="(valSize,indSize) in valPro.size"
+                          :key="indSize">
+                          <span class="flex05">{{valSize.size}}</span>
+                          <span class="flex08">{{valSize.color}}</span>
+                          <span class="flex08">{{valSize.price|filterToFixed}}元/{{valPro.unit}}</span>
+                          <span>{{valSize.number}}{{valPro.unit}}</span>
+                          <span>{{(valSize.number ? valSize.number : 0)*valSize.price}}元</span>
+                        </span>
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </li>
+            </div>
+          </ul>
+          <div class="footer">
+            <span>合计</span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span>{{list.weaveList.total_price|filterNumber}}元</span>
+            <span>{{list.weaveList.total_deduct|filterNumber}}</span>
+            <span>{{list.weaveList.total_settle|filterNumber}}</span>
+            <span class="flex15"></span>
+          </div>
+        </div>
+      </div>
+      <!-- 产品加工列表 -->
+      <div class="lineCtn"
+        v-show="flag[5].active">
+        <div class="selectCtn">
+          <div class="select">
+            <span class="label">筛选条件:</span>
+            <el-select v-model="list.product_processList.group_id"
+              style="margin-left:20px;"
+              placeholder="请选择">
+              <el-option v-for="item in []"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+            <el-date-picker v-model="list.product_processList.data"
+              type="daterange"
+              align="right"
+              style="margin-left:20px;"
+              unlink-panels
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              :picker-options="pickerOptions">
+            </el-date-picker>
+          </div>
+          <div class="management">
+            <span class="handle blue"
+              @click="record.recordFlag = true">操作记录</span>
+            <template v-if="list.product_processList.management">
+              <span class="handle"
+                @click="payMoneys">结算</span>
+              <span class="handle"
+                @click="cutPayMoney">扣款</span>
+            </template>
+            <span class="handle handleMain"
+              @click="list.product_processList.management = !list.product_processList.management">{{!list.product_processList.management ? '批量管理':'取消管理'}}</span>
+          </div>
+        </div>
+        <div class="table">
+          <div class="title">
+            <span>
+              <el-checkbox class="checkBox"
+                v-model="cutPay.checkAllFlag"
+                @change="checked('all','product_processList')"
+                v-if="list.product_processList.management"></el-checkbox>
+              订单号
+            </span>
+            <span>负责小组</span>
+            <span>下单日期</span>
+            <span>订单公司</span>
+            <span>合计金额</span>
+            <span>扣款记录</span>
+            <span>结算记录</span>
+            <span class="flex15">操作</span>
+          </div>
+          <ul class="infinite-list">
+            <div class="box">
+              <li v-for="(item,key) in list.product_processList.list"
+                :key="key"
+                @click="item.flag = !item.flag"
+                class="infinite-list-item">
+                <div class="list"
+                  style="line-height:59px;">
+                  <span>
+                    <em :class="{'el-icon-caret-bottom':true,'open':true,'close':!item.flag}"></em>
+                    <el-checkbox class="checkBox"
+                      v-if="list.product_processList.management"
+                      v-model="item.checked"
+                      @change="checked(item)"></el-checkbox>
+                    {{item.order_code}}
+                  </span>
+                  <span>{{item.group_name}}</span>
+                  <span>{{item.order_time}}</span>
+                  <span>{{item.client_name}}</span>
+                  <span>{{item.total_price ? item.total_price: 0}}元</span>
+                  <span class="find"
+                    @click.stop="find(item.order_code,'cut')">{{item.deduct_number ? item.deduct_number : '-'}}</span>
+                  <span class="find"
+                    @click.stop="find(item.order_code,'pay')">{{item.settle_number ? item.settle_number : '-'}}</span>
+                  <span class="flex15">
+                    <span class="btn"
+                      @click.stop="$router.push('/index/orderDetailNew/' + item.id)">详情</span>
+                  </span>
+                </div>
+                <div :class="{'detail':true,'detailNone':!item.flag,'detailShow':item.flag}">
+                  <div v-loading='item.loading'>
+                    <span class="title">
+                      <span>产品类型</span>
+                      <span>产品图片</span>
+                      <span>类型</span>
+                      <span class="flex05">尺码</span>
+                      <span class="flex05">颜色</span>
+                      <span class="flex08">单价</span>
+                      <span>数量</span>
+                      <span>合计金额</span>
+                    </span>
+                    <span class="content"
+                      v-for="(valPro,indPro) in item.info"
+                      :key="indPro">
+                      <span class=" col">
+                        <span>{{valPro.product_code}}</span>
+                        <span>{{valPro.product_type}}</span>
+                      </span>
+                      <span>
+                        <div class="imgCtn">
+                          <img class="img"
+                            :src="valPro.img.length>0?valPro.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
+                            :onerror="defaultImg" />
+                          <div class="toolTips"
+                            v-if="valPro.img.length>0"><span @click="showImg(valPro.img)">点击查看大图</span></div>
+                          <div class="toolTips"
+                            v-if="valPro.img.length===0"><span>没有预览图</span></div>
+                        </div>
+                      </span>
+                      <span class="flex48 col">
+                        <span v-for="(valSize,indSize) in valPro.size"
+                          :key="indSize">
+                          <span>{{valSize.type}}</span>
+                          <span class="flex05">{{valSize.size}}</span>
+                          <span class="flex05">{{valSize.color}}</span>
+                          <span class="flex08">{{valSize.price|filterToFixed}}元/{{valPro.unit}}</span>
+                          <span>{{valSize.number}}{{valPro.unit}}</span>
+                          <span>{{(valSize.number ? valSize.number : 0)*valSize.price}}元</span>
+                        </span>
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </li>
+            </div>
+          </ul>
+          <div class="footer">
+            <span>合计</span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span>{{list.product_processList.total_price|filterNumber}}元</span>
+            <span>{{list.product_processList.total_deduct|filterNumber}}</span>
+            <span>{{list.product_processList.total_settle|filterNumber}}</span>
+            <span class="flex15"></span>
+          </div>
+        </div>
+      </div>
+      <!-- 包装订购列表 -->
+      <div class="lineCtn"
+        v-show="flag[7].active">
+        <div class="selectCtn">
+          <div class="select">
+            <span class="label">筛选条件:</span>
+            <el-select v-model="list.packList.group_id"
+              style="margin-left:20px;"
+              placeholder="请选择">
+              <el-option v-for="item in []"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+            <el-date-picker v-model="list.packList.data"
+              type="daterange"
+              align="right"
+              style="margin-left:20px;"
+              unlink-panels
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              :picker-options="pickerOptions">
+            </el-date-picker>
+          </div>
+          <div class="management">
+            <span class="handle blue"
+              @click="record.recordFlag = true">操作记录</span>
+            <template v-if="list.packList.management">
+              <span class="handle"
+                @click="payMoneys">结算</span>
+              <span class="handle"
+                @click="cutPayMoney">扣款</span>
+            </template>
+            <span class="handle handleMain"
+              @click="list.packList.management = !list.packList.management">{{!list.packList.management ? '批量管理':'取消管理'}}</span>
+          </div>
+        </div>
+        <div class="table">
+          <div class="title">
+            <span>
+              <el-checkbox class="checkBox"
+                v-model="cutPay.checkAllFlag"
+                @change="checked('all','packList')"
+                v-if="list.packList.management"></el-checkbox>
+              订单号
+            </span>
+            <span>负责小组</span>
+            <span>下单日期</span>
+            <span>订单公司</span>
+            <span>合计金额</span>
+            <span>扣款记录</span>
+            <span>结算记录</span>
+            <span class="flex15">操作</span>
+          </div>
+          <ul class="infinite-list">
+            <div class="box">
+              <li v-for="(item,key) in list.packList.list"
+                :key="key"
+                @click="item.flag = !item.flag"
+                class="infinite-list-item">
+                <div class="list"
+                  style="line-height:59px;">
+                  <span>
+                    <em :class="{'el-icon-caret-bottom':true,'open':true,'close':!item.flag}"></em>
+                    <el-checkbox class="checkBox"
+                      v-if="list.packList.management"
+                      v-model="item.checked"
+                      @change="checked(item)"></el-checkbox>
+                    {{item.order_code}}
+                  </span>
+                  <span>{{item.group_name}}</span>
+                  <span>{{item.order_time}}</span>
+                  <span>{{item.client_name}}</span>
+                  <span>{{item.total_price ? item.total_price: 0}}元</span>
+                  <span class="find"
+                    @click.stop="find(item.order_code,'cut')">{{item.deduct_number ? item.deduct_number : '-'}}</span>
+                  <span class="find"
+                    @click.stop="find(item.order_code,'pay')">{{item.settle_number ? item.settle_number : '-'}}</span>
+                  <span class="flex15"
+                    @click="$router.push('/index/orderDetailNew/' + item.id)">
+                    <span cl.stopass="btn">详情</span>
+                  </span>
+                </div>
+                <div :class="{'detail':true,'detailNone':!item.flag,'detailShow':item.flag}">
+                  <div v-loading='item.loading'>
+                    <span class="title">
+                      <span>包装名称</span>
+                      <span class="flex15">尺寸</span>
+                      <span class="flex08">单价</span>
+                      <span class="flex08">数量</span>
+                      <span>合计金额</span>
+                    </span>
+                    <span class="content"
+                      v-for="(val,ind) in item.info"
+                      :key="ind">
+                      <span>{{val.name}}</span>
+                      <span class="flex41 col">
+                        <span v-for="(valInfo,indInfo) in val.material_info"
+                          :key="indInfo">
+                          <span class="flex15">{{valInfo.size}}</span>
+                          <span class="flex08">{{valInfo.price}}元/个</span>
+                          <span class="flex08">{{valInfo.number}}个</span>
+                          <span>{{valInfo.price * valInfo.number}}元</span>
+                        </span>
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </li>
+            </div>
+          </ul>
+          <div class="footer">
+            <span>合计</span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span>{{list.packList.total_price|filterNumber}}元</span>
+            <span>{{list.packList.total_deduct|filterNumber}}</span>
+            <span>{{list.packList.total_settle|filterNumber}}</span>
+            <span class="flex15"></span>
+          </div>
+        </div>
+      </div>
+      <!-- 运输列表 -->
+      <div class="lineCtn"
+        v-show="flag[8].active">
+        <div class="selectCtn">
+          <div class="select">
+            <span class="label">筛选条件:</span>
+            <el-select v-model="list.material_processList.group_id"
+              style="margin-left:20px;"
+              placeholder="请选择">
+              <el-option v-for="item in []"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+            <el-date-picker v-model="list.material_processList.data"
+              type="daterange"
+              align="right"
+              style="margin-left:20px;"
+              unlink-panels
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              :picker-options="pickerOptions">
+            </el-date-picker>
+          </div>
+          <div class="management">
+            <span class="handle blue"
+              @click="record.recordFlag = true">操作记录</span>
+            <template v-if="list.material_processList.management">
+              <span class="handle"
+                @click="payMoneys">结算</span>
+              <span class="handle"
+                @click="cutPayMoney">扣款</span>
+            </template>
+            <span class="handle handleMain"
+              @click="list.material_processList.management = !list.material_processList.management">{{!list.material_processList.management ? '批量管理':'取消管理'}}</span>
+          </div>
+        </div>
+        <div class="table">
+          <div class="title">
+            <span>
+              <el-checkbox class="checkBox"
+                v-model="cutPay.checkAllFlag"
+                @change="checked('all','material_processList')"
+                v-if="list.material_processList.management"></el-checkbox>
+              订单号
+            </span>
+            <span>负责小组</span>
+            <span>下单日期</span>
+            <span>订单公司</span>
+            <span>合计金额</span>
+            <span>扣款记录</span>
+            <span>结算记录</span>
+            <span class="flex15">操作</span>
+          </div>
+          <ul class="infinite-list">
+            <div class="box">
+              <li v-for="(item,key) in list.material_processList.list"
+                :key="key"
+                @click="item.flag = !item.flag"
+                class="infinite-list-item">
+                <div class="list"
+                  style="line-height:59px;">
+                  <span>
+                    <em :class="{'el-icon-caret-bottom':true,'open':true,'close':!item.flag}"></em>
+                    <el-checkbox class="checkBox"
+                      v-if="list.material_processList.management"
+                      v-model="item.checked"
+                      @change="checked(item)"></el-checkbox>
+                    {{item.order_code}}
+                  </span>
+                  <span>{{item.group_name}}</span>
+                  <span>{{item.order_time}}</span>
+                  <span>{{item.client_name}}</span>
+                  <span>{{item.total_price ? item.total_price: 0}}元</span>
+                  <span class="find"
+                    @click.stop="find(item.order_code,'cut')">{{item.deduct_number ? item.deduct_number : '-'}}</span>
+                  <span class="find"
+                    @click.stop="find(item.order_code,'pay')">{{item.settle_number ? item.settle_number : '-'}}</span>
+                  <span class="flex15"
+                    @click="$router.push('/index/orderDetailNew/' + item.id)">
+                    <span cl.stopass="btn">详情</span>
+                  </span>
+                </div>
+                <div :class="{'detail':true,'detailNone':!item.flag,'detailShow':item.flag}">
+                  <div v-loading='item.loading'>
+                    <span class="title">
+                      <span>物料名称</span>
+                      <span>类型</span>
+                      <span class="flex08">属性</span>
+                      <span class="flex08">单价</span>
+                      <span class="flex05">数量</span>
+                      <span>合计金额</span>
+                    </span>
+                    <span class="content"
+                      v-for="(val,ind) in item.info"
+                      :key="ind">
+                      <span>{{val.material_name}}</span>
+                      <span>{{val.process_type}}</span>
+                      <span class="flex21 col">
+                        <span v-for="(valInfo,indInfo) in val.material_info"
+                          :key="indInfo">
+                          <span class="flex08">{{valInfo.attr ? valInfo.attr : '无'}}/{{valInfo.color}}</span>
+                          <span class="flex08">{{'-'}}</span>
+                          <span class="flex05">{{valInfo.value}}kg</span>
+                        </span>
+                      </span>
+                      <span>{{val.total_price}}元</span>
+                    </span>
+                  </div>
+                </div>
+              </li>
+            </div>
+          </ul>
+          <div class="footer">
+            <span>合计</span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span>{{list.material_processList.total_price|filterNumber}}元</span>
+            <span>{{list.material_processList.total_deduct|filterNumber}}</span>
+            <span>{{list.material_processList.total_settle|filterNumber}}</span>
+            <span class="flex15"></span>
+          </div>
+        </div>
+      </div>
+      <!-- 转账列表 -->
+      <div class="lineCtn"
+        v-show="flag[9].active">
         <div class="selectCtn">
           <div class="select">
             <span class="label">筛选条件:</span>
@@ -61,7 +1017,7 @@
                 :value="item.value">
               </el-option>
             </el-select>
-            <el-date-picker v-model="data"
+            <el-date-picker v-model="list.transferList.data"
               type="daterange"
               align="right"
               style="margin-left:20px;"
@@ -77,162 +1033,52 @@
         </div>
         <div class="table">
           <div class="title">
-            <span @click="filterOption.orderFilterFlag = !filterOption.orderFilterFlag"
-              class="icon">
-              转账日期
-              <em class="el-icon-caret-top"
-                :style="{color:filterOption.orderFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-              <em class="el-icon-caret-bottom"
-                :style="{color:!filterOption.orderFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-            </span>
+            <span class="icon"> 转账日期 </span>
             <span>转账类型</span>
-            <span @click="filterOption.timeFilterFlag = !filterOption.timeFilterFlag"
-              class="icon">
-              转账金额
-              <em class="el-icon-caret-top"
-                :style="{color:filterOption.timeFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-              <em class="el-icon-caret-bottom"
-                :style="{color:!filterOption.timeFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-            </span>
+            <span class="icon"> 转账金额 </span>
             <span>转账说明</span>
             <span>转账凭证</span>
             <span>转账方式</span>
             <span>操作</span>
           </div>
           <ul class="infinite-list">
-            <!-- @mousewheel="getPayData" -->
-            <li v-for="(item,key) in payList"
-              :key="key"
-              class="infinite-list-item">
-              <div class="list"
-                style="line-height:59px;">
-                <span>{{item.complete_time}}</span>
-                <span>{{item.type === 1 ? '收款' : '付款'}}</span>
-                <span>{{item.transfer_price ? item.transfer_price : 0}}</span>
-                <span>{{item.desc ? item.desc : '无'}}</span>
-                <span>
-                  <div class="imgCtn">
-                    <img class="img"
-                      :src="item.file_url.length>0?item.file_url[0]:require('@/assets/image/index/noPic.jpg')"
-                      :onerror="defaultImg" />
-                    <div class="toolTips"
-                      v-if="item.file_url.length>0"><span @click="showImg(item.file_url)">点击查看大图</span></div>
-                    <div class="toolTips"
-                      v-if="item.file_url.length===0"><span>没有预览图</span></div>
-                  </div>
-                </span>
-                <span>{{classList.find(key=>key.id === item.transfer_way).name}}</span>
-                <span>
-                  <span class="btn"
-                    @click="$router.push('/index/foreignTradeFinancialDetail/' + item.id)">详情</span>
-                  <span class="btn change">修改</span>
-                </span>
-              </div>
-            </li>
+            <div class="box">
+              <li v-for="(item,key) in list.transferList.list"
+                :key="key"
+                class="infinite-list-item">
+                <div class="list"
+                  style="line-height:59px;">
+                  <span>{{item.complete_time}}</span>
+                  <span>{{item.type === 1 ? '收款' : '付款'}}</span>
+                  <span>{{item.transfer_price ? item.transfer_price : 0}}</span>
+                  <span>{{item.desc ? item.desc : '无'}}</span>
+                  <span>
+                    <div class="imgCtn">
+                      <img class="img"
+                        :src="item.file_url.length>0?item.file_url[0]:require('@/assets/image/index/noPic.jpg')"
+                        :onerror="defaultImg" />
+                      <div class="toolTips"
+                        v-if="item.file_url.length>0"><span @click="showImg(item.file_url)">点击查看大图</span></div>
+                      <div class="toolTips"
+                        v-if="item.file_url.length===0"><span>没有预览图</span></div>
+                    </div>
+                  </span>
+                  <span>{{classList.find(key=>key.id === item.transfer_way).name}}</span>
+                  <span>
+                    <span class="btn change">修改</span>
+                  </span>
+                </div>
+              </li>
+            </div>
           </ul>
           <div class="footer">
             <span>合计</span>
             <span></span>
-            <span>{{transfer_total_price|filterNumber}}元</span>
+            <span>{{list.transferList.transfer_total_price|filterNumber}}元</span>
             <span></span>
             <span></span>
             <span></span>
             <span></span>
-          </div>
-        </div>
-      </div>
-      <!-- 订单列表 -->
-      <div class="lineCtn"
-        v-show="!flag">
-        <div class="selectCtn">
-          <div class="select">
-            <span class="label">筛选条件:</span>
-            <el-select v-model="selectVal"
-              style="margin-left:20px;"
-              placeholder="请选择">
-              <el-option v-for="item in []"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-            <el-date-picker v-model="data"
-              type="daterange"
-              align="right"
-              style="margin-left:20px;"
-              unlink-panels
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              :picker-options="pickerOptions">
-            </el-date-picker>
-          </div>
-          <div class="management">
-            <span class="handle blue"
-              @click="record.recordFlag = true">操作记录</span>
-            <template v-if="cutPay.flag">
-              <span class="handle"
-                @click="payMoneys">结算</span>
-              <span class="handle"
-                @click="cutPayMoney">扣款</span>
-            </template>
-            <span class="handle handleMain"
-              @click="cutPay.flag = !cutPay.flag">{{!cutPay.flag ? '批量管理':'取消管理'}}</span>
-          </div>
-        </div>
-        <div class="table">
-          <div class="title">
-            <span>
-              <el-checkbox class="checkBox"
-                v-model="cutPay.checkAllFlag"
-                @change="checked('all')"
-                v-if="cutPay.flag"></el-checkbox>
-              订单号
-            </span>
-            <span>下单日期</span>
-            <span>外贸公司</span>
-            <span>合作项目</span>
-            <span>具体金额</span>
-            <span>扣款记录</span>
-            <span>结算记录</span>
-            <span class="flex15">操作</span>
-          </div>
-          <ul class="infinite-list"
-            @mousewheel="getCutPayData">
-            <li v-for="(item,key) in cutPayList"
-              :key="key"
-              class="infinite-list-item">
-              <div class="list"
-                style="line-height:59px;">
-                <span>
-                  <el-checkbox class="checkBox"
-                    v-if="cutPay.flag"
-                    v-model="item.flag"
-                    @change="checked(item)"></el-checkbox>
-                  {{item.order_code}}
-                </span>
-                <span>{{item.order_time}}</span>
-                <span>{{item.client_name}}</span>
-                <span>{{item.cooperation_type}}</span>
-                <span>{{item.total_price}}元</span>
-                <span>{{item.cutPay_price}}</span>
-                <span>{{item.total_price - item.cutPay_price}}</span>
-                <span class="flex15">
-                  <span class="btn"
-                    @click="$router.push('/index/foreignTradeFinancialDetail/' + item.id)">详情</span>
-                </span>
-              </div>
-            </li>
-          </ul>
-          <div class="footer">
-            <span>合计</span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span>{{450454512|filterNumber}}元</span>
-            <span>{{(450454512.01)|filterNumber}}元</span>
-            <span>{{450454512|filterNumber}}元</span>
-            <span class="flex15"></span>
           </div>
         </div>
       </div>
@@ -325,7 +1171,7 @@
         <div class="content">
           <div class="lineCtn">
             <span class="label">订单号:</span>
-            <el-select v-model="cutPay.order_code_list"
+            <el-select v-model="cutPay.order_code_str"
               class="inputBox"
               disabled
               placeholder="请选择转账方式">
@@ -374,10 +1220,10 @@
         <div class="content">
           <div class="lineCtn">
             <span class="label">订单号:</span>
-            <el-select v-model="payMoney.order_code_list"
+            <el-select v-model="payMoney.order_code_str"
               class="inputBox"
               disabled
-              placeholder="请选择转账方式">
+              placeholder="请选择订单号">
               <!-- <el-option v-for="item in classList"
               :key="item.id"
               :label="item.name"
@@ -403,11 +1249,11 @@
           <div class="lineCtn">
             <span class="label">是否开票:</span>
             <el-radio v-model="payMoney.type"
-              label=true>是</el-radio>
+              :label='1'>是</el-radio>
             <el-radio v-model="payMoney.type"
-              label=false>否</el-radio>
+              :label='2'>否</el-radio>
           </div>
-          <template v-if="payMoney.type === 'true'">
+          <template v-if="payMoney.type === 1">
             <template v-for="(item,key) in payMoney.info">
               <div class="lineCtn"
                 :key="key">
@@ -465,7 +1311,6 @@
                 value-format="yyyy-MM-dd"
                 placeholder="选择日期">
               </el-date-picker>
-              {{record.time}}
               <el-input placeholder="请输入订单号"
                 class="inputBox"
                 prefix-icon="el-icon-search"
@@ -487,49 +1332,53 @@
             <div class="borderCtn">
               <span class="border"></span>
             </div>
-            <el-collapse-item v-for="(item,key) in record.infos"
-              :key="key">
-              <div slot="title"
-                class="title">
-                <div class="borderCtn">
-                  <span class="circle"></span>
+            <template v-if="record.infos.length > 0">
+              <el-collapse-item v-for="(item,key) in record.infos"
+                :key="key">
+                <div slot="title"
+                  class="title">
+                  <div class="borderCtn">
+                    <span class="circle"></span>
+                  </div>
+                  <span class="flex08">{{item.created_time}}</span>
+                  <span class="flex08">{{flag[item.type] ? flag[item.type].name+'/' : '未知来源/'}}{{item.method === 1 ? '结算' : '扣款'}}</span>
+                  <span class="flex08"
+                    style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">金额：<strong>{{item.total_price/10000|filterNumber}}万</strong></span>
                 </div>
-                <span class="time">{{item.time}}</span>
-                <span class="type">{{item.type === '1' ? '结算' : '扣款'}}</span>
-                <span>金额：<strong>{{item.money}}</strong></span>
-              </div>
-              <div class="line"
-                v-if="item.type === '1'">
-                <span class="label">是否开票:</span>
-                <span class="info">{{item.isKp ? '已开票' : '未开票'}}</span>
-              </div>
-              <template v-if="item.type === '1'">
-                <template v-for="(val,ind) in item.payInfo">
-                  <div class="line"
-                    :key="ind">
-                    <span class="label">开票号码:</span>
-                    <span class="info">{{val.pay_code}}</span>
-                  </div>
-                  <div class="line"
-                    :key="ind+'money'">
-                    <span class="label">开票金额:</span>
-                    <span class="info">{{val.pay_price}}</span>
-                  </div>
+                <div class="line"
+                  v-if="item.method === 1">
+                  <span class="label">是否开票:</span>
+                  <span class="info">{{item.isKp? '已开票' : '未开票'}}</span>
+                </div>
+                <template v-if="item.isKp">
+                  <template v-for="(val,ind) in item.invoice_info">
+                    <div class="line"
+                      :key="ind">
+                      <span class="label">开票号码:</span>
+                      <span class="info">{{val.pay_code}}</span>
+                    </div>
+                    <div class="line"
+                      :key="ind+'money'">
+                      <span class="label">开票金额:</span>
+                      <span class="info">{{val.pay_price}}</span>
+                    </div>
+                  </template>
                 </template>
-              </template>
-              <div class="line">
-                <span class="label">包含订单:</span>
-                <span class="info">
-                  <span class="code"
-                    v-for="(val,ind) in item.order_code_list"
-                    :key="ind">{{val}}</span>
-                </span>
-              </div>
-              <div class="line">
-                <span class="label">备注信息:</span>
-                <span class="info">{{item.desc ? item.desc : '暂无'}}</span>
-              </div>
-            </el-collapse-item>
+                <div class="line">
+                  <span class="label">包含订单:</span>
+                  <span class="info">
+                    <span class="code"
+                      v-for="(val,ind) in item.order_code_list"
+                      :key="ind">{{val}}</span>
+                  </span>
+                </div>
+                <div class="line">
+                  <span class="label">备注信息:</span>
+                  <span class="info">{{item.desc ? item.desc : '暂无'}}</span>
+                </div>
+              </el-collapse-item>
+            </template>
+            <span v-else>暂无数据</span>
           </el-collapse>
         </div>
         <span class="close el-icon-close"
@@ -558,16 +1407,24 @@
 
 <script>
 import { companyType } from '@/assets/js/dictionary.js'
-import { getToken, clientDetail, transferAdd, transferList } from '@/assets/js/api.js'
+import { getToken, clientDetail, transferAdd, transferList, settleAdd, settleList, deductAdd, deductList, clientFinancialLog, packagNumberDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
-      count: 0,
+      loading: true,
+      now_time: '',
       client_name: '',
       abbreviation: '',
       client_type: '',
-      now_time: '',
-      transfer_total_price: 0, // 总转账金额
+      client_typeStr: '',
+      total_price: 0, // 总金额
+      order_pages: 1, // 订单页数
+      order_total: '', // 订单总数
+      order_start_time: '', // 筛选订单开始时间
+      order_end_time: '', // 筛选订单结算时间
+      order_data: '', //
+      settle_price: 0, // 结算总金额
+      deduct_price: 0, // 扣款总金额
       // fileArr: [],
       imgList: [],
       defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
@@ -601,7 +1458,6 @@ export default {
           }
         }]
       },
-      data: '',
       filterOption: {
         orderFilterFlag: false,
         timeFilterFlag: false,
@@ -613,9 +1469,119 @@ export default {
         cutPayFilterFlag: false,
         billFilterFlag: false
       },
-      flag: true, // 切换列表
-      payList: [],
-      cutPayList: [],
+      flag: {
+        1: {
+          name: '订单列表',
+          active: false,
+          listName: 'orderList'
+        },
+        2: {
+          name: '物料订购列表',
+          active: false,
+          listName: 'material_orderList'
+        },
+        3: {
+          name: '物料加工列表',
+          active: false,
+          listName: 'material_processList'
+        },
+        4: {
+          name: '生产织造列表',
+          active: false,
+          listName: 'weaveList'
+        },
+        5: {
+          name: '产品加工列表',
+          active: false,
+          listName: 'product_processList'
+        },
+        7: {
+          name: '包装订购列表',
+          active: false,
+          listName: 'packList'
+        },
+        8: {
+          name: '运输列表',
+          active: false,
+          listName: 'transportList'
+        },
+        9: {
+          name: '转账列表',
+          active: true,
+          listName: 'transferList'
+        }
+      }, // 切换列表
+      list: {
+        orderList: {
+          list: [],
+          management: false,
+          group_id: '',
+          data: '',
+          total_price: 0,
+          total_deduct: 0,
+          total_settle: 0
+        }, // 订单列表
+        material_orderList: {
+          list: [],
+          management: false,
+          group_id: '',
+          data: '',
+          total_price: 0,
+          total_deduct: 0,
+          total_settle: 0
+        }, // 物料订购
+        material_processList: {
+          list: [],
+          management: false,
+          group_id: '',
+          data: '',
+          total_price: 0,
+          total_deduct: 0,
+          total_settle: 0
+        }, // 物料加工
+        weaveList: {
+          list: [],
+          management: false,
+          group_id: '',
+          data: '',
+          total_price: 0,
+          total_deduct: 0,
+          total_settle: 0
+        }, // 生产织造
+        product_processList: {
+          list: [],
+          management: false,
+          group_id: '',
+          data: '',
+          total_price: 0,
+          total_deduct: 0,
+          total_settle: 0
+        }, // 半成品加工
+        packList: {
+          list: [],
+          management: false,
+          group_id: '',
+          data: '',
+          total_price: 0,
+          total_deduct: 0,
+          total_settle: 0
+        }, // 包装订购
+        transportList: {
+          list: [],
+          management: false,
+          group_id: '',
+          data: '',
+          total_price: 0,
+          total_deduct: 0,
+          total_settle: 0
+        }, // 运输
+        transferList: {
+          list: [],
+          group_id: '',
+          data: '',
+          transfer_total_price: 0
+        } // 转账列表
+      },
       classList: [
         {
           id: 1,
@@ -659,7 +1625,7 @@ export default {
         order_id_list: [],
         pay_time: '',
         pay_price: '',
-        type: 'true',
+        type: 1,
         info: [
           {
             pay_code: '',
@@ -674,149 +1640,98 @@ export default {
         time: '',
         searchVal: '',
         type: 'all',
-        info: [
-          {
-            time: '2019-06-04 12:42',
-            type: '1',
-            money: 60000,
-            isKP: true,
-            payInfo: [{
-              pay_code: '5456131312',
-              pay_price: 50000
-            }, {
-              pay_code: '45641132153',
-              pay_price: 10000
-            }],
-            order_code_list: ['1k', '2j', '3h'],
-            desc: '备注信息'
-          },
-          {
-            time: '2019-06-04 12:42',
-            type: '1',
-            money: 60000,
-            isKP: true,
-            payInfo: [{
-              pay_code: '5456131312',
-              pay_price: 50000
-            }, {
-              pay_code: '45641132153',
-              pay_price: 10000
-            }],
-            order_code_list: ['1k', '2j', '3h'],
-            desc: '备注信息'
-          },
-          {
-            time: '2019-06-04 12:42',
-            type: '1',
-            money: 60000,
-            isKP: true,
-            payInfo: [{
-              pay_code: '5456131312',
-              pay_price: 50000
-            }, {
-              pay_code: '45641132153',
-              pay_price: 10000
-            }],
-            order_code_list: ['1k', '2j', '3h'],
-            desc: '备注信息'
-          },
-          {
-            time: '2019-06-04 12:42',
-            type: '1',
-            money: 60000,
-            isKP: true,
-            payInfo: [{
-              pay_code: '5456131312',
-              pay_price: 50000
-            }, {
-              pay_code: '45641132153',
-              pay_price: 10000
-            }],
-            order_code_list: ['1k', '2j', '3h', '4h'],
-            desc: '备注信息'
-          }, {
-            time: '2019-06-03 12:40',
-            type: '2',
-            money: 6000,
-            desc: '色差原因',
-            order_code_list: ['1k', '2j', '3h', '4h']
-
-          }
-        ],
-        infos: [
-          {
-            time: '2019-06-04 12:42',
-            type: '1',
-            money: 60000,
-            isKP: true,
-            payInfo: [{
-              pay_code: '5456131312',
-              pay_price: 50000
-            }, {
-              pay_code: '45641132153',
-              pay_price: 10000
-            }],
-            order_code_list: ['1k', '2j', '3h'],
-            desc: '备注信息'
-          },
-          {
-            time: '2019-06-04 12:42',
-            type: '1',
-            money: 60000,
-            isKP: true,
-            payInfo: [{
-              pay_code: '5456131312',
-              pay_price: 50000
-            }, {
-              pay_code: '45641132153',
-              pay_price: 10000
-            }],
-            order_code_list: ['1k', '2j', '3h'],
-            desc: '备注信息'
-          },
-          {
-            time: '2019-06-04 12:42',
-            type: '1',
-            money: 60000,
-            isKP: true,
-            payInfo: [{
-              pay_code: '5456131312',
-              pay_price: 50000
-            }, {
-              pay_code: '45641132153',
-              pay_price: 10000
-            }],
-            order_code_list: ['1k', '2j', '3h'],
-            desc: '备注信息'
-          },
-          {
-            time: '2019-06-04 12:42',
-            type: '1',
-            money: 60000,
-            isKP: true,
-            payInfo: [{
-              pay_code: '5456131312',
-              pay_price: 50000
-            }, {
-              pay_code: '45641132153',
-              pay_price: 10000
-            }],
-            order_code_list: ['1k', '2j', '3h', '4h'],
-            desc: '备注信息'
-          }, {
-            time: '2019-06-03 12:40',
-            type: '2',
-            money: 6000,
-            desc: '色差原因',
-            order_code_list: ['1k', '2j', '3h', '4h']
-
-          }
-        ]
+        info: [],
+        infos: []
       }
     }
   },
   methods: {
+    // 获取操作记录
+    getRecordList () {
+      this.loading = true
+      Promise.all([
+        deductList({
+          client_id: this.$route.params.id
+        }),
+        settleList({
+          client_id: this.$route.params.id
+        })
+      ]).then(res => {
+        console.log(res)
+        this.record.info = []
+        this.deduct_price = 0
+        this.settle_price = 0
+        for (const prop in this.list) {
+          this.list[prop].list.forEach(item => {
+            item.settle_number = 0
+            item.deduct_number = 0
+          })
+        }
+        res[0].data.data.forEach(item => {
+          this.deduct_price = Number(this.deduct_price ? this.deduct_price : 0) + Number(item.deduct_price)
+          this.record.info.push({
+            created_time: item.created_at,
+            method: 2,
+            type: item.type,
+            total_price: item.deduct_price,
+            isKp: false,
+            invoice_info: [],
+            order_code_list: JSON.parse(item.order_id),
+            desc: item.desc
+          })
+          if (item.type) {
+            JSON.parse(item.order_id).forEach(value => {
+              let flag = this.list[this.flag[item.type].listName].list.find(key => key.order_code === value)
+              if (flag) {
+                if (!flag.deduct_number) {
+                  flag.deduct_number = 0
+                }
+                flag.deduct_number++
+              }
+            })
+          }
+        })
+        res[1].data.data.forEach(item => {
+          this.settle_price = Number(this.settle_price ? this.settle_price : 0) + Number(item.settle_price)
+          this.record.info.push({
+            created_time: item.created_at,
+            method: 1,
+            type: item.type,
+            total_price: item.settle_price,
+            isKp: item.is_invoice === 1,
+            invoice_info: JSON.parse(item.invoice_info),
+            order_code_list: JSON.parse(item.order_id),
+            desc: item.desc
+          })
+          if (item.type) {
+            JSON.parse(item.order_id).forEach(value => {
+              let flag = this.list[this.flag[item.type].listName].list.find(key => key.order_code === value)
+              console.log(flag)
+              if (flag) {
+                if (!flag.settle_number) {
+                  flag.settle_number = 0
+                }
+                flag.settle_number++
+              }
+            })
+          }
+        })
+        this.record.info.sort((a, b) => {
+          return new Date(b.created_time).getTime() - new Date(a.created_time).getTime()
+        })
+        this.record.infos = this.record.info
+        this.loading = false
+      })
+    },
+    // 提交数据
     submit (item) {
+      let type = null
+      for (const prop in this.flag) {
+        if (this.flag[prop].active) {
+          type = prop
+        }
+      }
+      console.log(type)
       if (item === 'transfer') {
         if (!this.transfer.time) {
           this.$message.error('请选择转账日期')
@@ -843,14 +1758,62 @@ export default {
           desc: this.transfer.desc,
           id: null
         }).then(res => {
-          console.log(res)
+          this.$message.success('添加转账成功')
           this.transfer.flag = false
           this.getPayList()
         })
       } else if (item === 'cutPay') {
-
+        if (!this.cutPay.cutPay_time) {
+          this.$message.error('请选择结算日期')
+          return
+        }
+        if (!this.cutPay.cutPay_price) {
+          this.$message.error('请输入扣款金额')
+          return
+        }
+        deductAdd({
+          user_id: window.sessionStorage.getItem('user_id'),
+          client_id: this.$route.params.id,
+          company_id: window.sessionStorage.getItem('company_id'),
+          complete_time: this.cutPay.cutPay_time,
+          order_id: JSON.stringify(this.cutPay.order_code_list),
+          deduct_price: this.cutPay.cutPay_price,
+          type: type,
+          desc: this.cutPay.desc
+        }).then(res => {
+          this.$message.success('添加扣款成功')
+          this.cutPay.cutPayFlag = false
+          this.getRecordList()
+        })
       } else if (item === 'settle') {
-
+        if (!this.payMoney.pay_time) {
+          this.$message.error('请选择结算日期')
+          return
+        }
+        if (!this.payMoney.pay_price) {
+          this.$message.error('请输入结算金额')
+          return
+        }
+        if (!this.payMoney.type) {
+          this.$message.error('请选择是否开票')
+          return
+        }
+        settleAdd({
+          company_id: window.sessionStorage.getItem('company_id'),
+          client_id: this.$route.params.id,
+          order_id: JSON.stringify(this.payMoney.order_code_list),
+          user_id: window.sessionStorage.getItem('user_id'),
+          settle_price: this.payMoney.pay_price,
+          is_invoice: this.payMoney.type,
+          invoice_info: JSON.stringify(this.payMoney.info),
+          complete_time: this.payMoney.pay_time,
+          type: type,
+          desc: this.payMoney.desc
+        }).then(res => {
+          this.$message.success('添加结算成功')
+          this.payMoney.payFlag = false
+          this.getRecordList()
+        })
       } else {
         this.$message.error('出错了！请刷新页面')
       }
@@ -861,48 +1824,17 @@ export default {
         client_id: this.$route.params.id
       }).then(res => {
         this.transfer_total_price = 0
-        console.log(res.data.data)
-        this.payList = res.data.data
-        this.payList.forEach(item => {
-          this.transfer_total_price += Number(item.transfer_price)
+        this.list.transferList.list = res.data.data
+        this.list.transferList.list.forEach(item => {
+          this.list.transferList.transfer_total_price += Number(item.transfer_price)
           if (item.file_url) {
             item.file_url = JSON.parse(item.file_url)
           }
         })
       })
     },
-    // getPayData () {
-    //   let el = document.getElementsByClassName('infinite-list')[0]
-    //   if (Number(el.scrollTop) + 600 >= this.payList.length * 60) {
-    //     this.getPayList()
-    //   }
-    // },
-    getCutPayList () {
-      for (let i = 0; i < 10; i++) {
-        this.count++
-        this.cutPayList.push({
-          flag: false,
-          id: this.count,
-          order_code: this.count,
-          order_time: '2019-06-05',
-          client_name: '飞泰',
-          cooperation_type: '染色',
-          total_price: '3000',
-          cutPay_price: '100',
-          cutPay_why: '色差',
-          compiled_pay: '2000'
-        })
-      }
-    },
-    getCutPayData () {
-      let el = document.getElementsByClassName('infinite-list')[1]
-      if (Number(el.scrollTop) + 600 >= this.cutPayList.length * 60) {
-        this.getCutPayList()
-      }
-    },
     // 上传图片前验证
     beforeUpload: function (file) {
-      console.log(this.postData)
       let fileName = file.name.lastIndexOf('.')// 取到文件名开始到最后一个点的长度
       let fileNameLength = file.name.length// 取到文件名长度
       let fileFormat = file.name.substring(fileName + 1, fileNameLength)// 截
@@ -913,7 +1845,6 @@ export default {
       // const isReapeat = this.fileArr.find((item) => {
       //   return item.key === file.name
       // })
-      console.log(fileName, fileNameLength, fileFormat, this.postData.key)
       if (!isJPG && !isPNG) {
         this.$message.error('图片只能是 JPG/PNG 格式!')
         return false
@@ -927,20 +1858,20 @@ export default {
       //   return false
       // }
     },
-    // 操作记录切换结算方式
-    checked (item) {
+    // 批量管理全选按钮
+    checked (item, type) {
       if (item === 'all') {
         if (this.cutPay.checkAllFlag) {
-          this.cutPayList.forEach(item => {
-            item.flag = true
+          this.list[type].list.forEach(item => {
+            item.checked = true
             this.cutPay.checkedList.push(item)
           })
         } else {
-          this.cutPayList.forEach(item => { item.flag = false })
+          this.list[type].list.forEach(item => { item.checked = false })
           this.cutPay.checkedList = []
         }
       } else {
-        if (item.flag === true) {
+        if (item.checked === true) {
           this.cutPay.checkedList.push(item)
         } else {
           this.cutPay.checkedList.forEach((val, ind) => {
@@ -950,7 +1881,6 @@ export default {
           })
         }
       }
-      console.log(this.cutPay.checkedList)
     },
     // 扣款弹窗前
     cutPayMoney () {
@@ -960,12 +1890,17 @@ export default {
       }
       this.cutPay.cutPayFlag = true
       this.cutPay.cutPay_time = this.now_time
-      this.cutPay.order_code_list = ''
+      this.cutPay.order_code_list = []
+      this.cutPay.order_code_str = ''
+      this.cutPay.order_id_list = []
       this.cutPay.checkedList.forEach(item => {
         if (this.cutPay.order_code_list.indexOf(item.order_code) === -1) {
-          this.cutPay.order_code_list += (item.order_code + ';')
+          this.cutPay.order_code_list.push(item.order_code)
+          this.cutPay.order_code_str += (item.order_code + ';')
         }
-        this.cutPay.order_id_list.push(item.id)
+        if (this.cutPay.order_id_list.indexOf(item.order_id) === -1) {
+          this.cutPay.order_id_list.push(item.id)
+        }
       })
     },
     // 结算弹窗前
@@ -976,11 +1911,17 @@ export default {
       }
       this.payMoney.payFlag = true
       this.payMoney.pay_time = this.now_time
+      this.payMoney.order_code_list = []
+      this.payMoney.order_code_str = ''
+      this.payMoney.order_id_list = []
       this.cutPay.checkedList.forEach(item => {
         if (this.payMoney.order_code_list.indexOf(item.order_code) === -1) {
-          this.payMoney.order_code_list += (item.order_code + ';')
+          this.payMoney.order_code_list.push(item.order_code)
+          this.payMoney.order_code_str += (item.order_code + ';')
         }
-        this.payMoney.order_id_list.push(item.id)
+        if (this.payMoney.order_id_list.indexOf(item.order_id) === -1) {
+          this.payMoney.order_id_list.push(item.id)
+        }
       })
     },
     // 添加发票信息
@@ -997,6 +1938,59 @@ export default {
     showImg (imgList) {
       this.imgList = imgList
       this.showShade = true
+    },
+    // 切换操作列表
+    cutList (item) {
+      for (const prop in this.flag) {
+        if (item === Number(prop)) {
+          this.flag[prop].active = true
+        } else {
+          this.flag[prop].active = false
+        }
+      }
+      for (const prop in this.list) {
+        this.list[prop].management = false
+        this.list[prop].list.forEach(value => {
+          value.checked = false
+        })
+      }
+      this.cutPay.checkAllFlag = false
+      this.cutPay.checkedList = []
+      // console.log(this.flag[5])
+    },
+    getOutStockInfo (item) {
+      item.flag = !item.flag
+      item.loading = true
+      console.log(item)
+      item.product_info.forEach(val => {
+        val.size.forEach(valSize => {
+          valSize.pack_number = 0
+        })
+      })
+      packagNumberDetail({
+        order_id: item.id
+      }).then(res => {
+        console.log(res.data.data)
+        res.data.data.forEach(val => {
+          JSON.parse(val.product_info).forEach(valPro => {
+            valPro.size_info.forEach(valSize => {
+              let pro = item.product_info.find(key => key.product_code === valPro.product_code)
+              if (pro) {
+                let size = pro.size.find(key => (key.size === valSize.size && key.color === valSize.color && key.batch_id === val.batch_id))
+                if (size) {
+                  size.pack_number = Number(size.pack_number ? size.pack_number : 0) + Number(valSize.pack_number)
+                }
+              }
+            })
+          })
+        })
+        item.loading = false
+      })
+    },
+    find (code, type) {
+      this.record.recordFlag = true
+      this.record.searchVal = code
+      this.record.type = type
     }
   },
   created () {
@@ -1008,28 +2002,431 @@ export default {
     }).then(res => {
       this.client_name = res.data.data.name
       this.abbreviation = res.data.data.abbreviation
+      this.client_type = res.data.data.type
       res.data.data.type.forEach((item, index) => {
-        this.client_type += ((index !== 0 ? ',' : '') + companyType.find(key => key.value === item).name)
+        this.client_typeStr += ((index !== 0 ? ',' : '') + companyType.find(key => key.value === item).name)
       })
+    })
+    clientFinancialLog({
+      client_id: this.$route.params.id
+    }).then(res => {
+      // console.log(res.data.data)
+      // 订单整理
+      res.data.data.order_info.forEach(item => {
+        let productInfo = []
+        item.order_batch.forEach(valBat => {
+          valBat.batch_info.forEach(valPro => {
+            valPro.size.forEach(valSize => {
+              let pro = productInfo.find(key => key.product_code === valPro.productCode)
+              if (!pro) {
+                productInfo.push({
+                  product_code: valPro.productCode,
+                  product_type: valPro.productInfo.category_info.product_category + '/' + valPro.productInfo.type_name + '/' + valPro.productInfo.style_name + (valPro.productInfo.flower_id ? '/' + valPro.productInfo.flower_id : ''),
+                  img: valPro.productInfo.img,
+                  unit: valPro.productInfo.category_info.name,
+                  size: [{
+                    size: valSize.name[0],
+                    color: valSize.name[1],
+                    number: valSize.numbers,
+                    price: valSize.unitPrice,
+                    batch_id: valBat.batch_id
+                  }]
+                })
+              } else {
+                let size = pro.size.find(key => (key.size === valSize.name[0] && key.color === valSize.name[1] && key.price === valSize.unitPrice))
+                if (!size) {
+                  pro.size.push({
+                    size: valSize.name[0],
+                    color: valSize.name[1],
+                    number: valSize.numbers,
+                    price: valSize.unitPrice,
+                    batch_id: valBat.batch_id
+                  })
+                } else {
+                  size.number = Number(size.number ? size.number : 0) + Number(valSize.numbers)
+                }
+              }
+            })
+          })
+        })
+        this.list.orderList.total_price = Number(this.list.orderList.total_price) + Number(item.total_real / 100)
+        this.list.orderList.list.push({
+          id: item.id,
+          order_code: item.order_code,
+          group_name: item.group_name,
+          order_time: item.order_time,
+          client_name: item.client_name,
+          total_price: item.total_real / 100,
+          rate: item.exchange_rate / 100,
+          account_unit: item.account_unit,
+          product_info: productInfo,
+          deduct_number: 0,
+          settle_number: 0,
+          flag: false,
+          checked: false,
+          loading: false
+        })
+      })
+      // 物料订购整理
+      res.data.data.material_order.filter(key => key.type_source === 2).forEach(item => {
+        this.list.material_orderList.total_price = Number(this.list.material_orderList.total_price) + Number(item.weight * item.price)
+        let flag = this.list.material_orderList.list.find(key => key.id === item.order_id)
+        if (!flag) {
+          this.list.material_orderList.list.push({
+            id: item.order_id,
+            order_code: item.order_code,
+            group_name: item.group_name,
+            order_time: item.order_date,
+            client_name: item.order_client,
+            total_price: item.weight * item.price,
+            info: [{
+              material_name: item.material_name,
+              material_info: [{
+                type: '订购',
+                attr: item.attribute,
+                color: item.color_code,
+                price: item.price,
+                number: item.weight
+              }]
+            }],
+            deduct_number: 0,
+            settle_number: 0,
+            flag: false,
+            checked: false,
+            loading: false
+          })
+        } else {
+          flag.total_price = Number(flag.total_price ? flag.total_price : 0) + Number(item.weight * item.price)
+          let name = flag.info.find(key => key.material_name === item.material_name)
+          if (!name) {
+            flag.info.push({
+              material_name: item.material_name,
+              material_info: [{
+                type: '订购',
+                attr: item.attribute,
+                color: item.color_code,
+                price: item.price,
+                number: item.weight
+              }]
+            })
+          } else {
+            let info = name.material_info.find(key => (key.attr === item.attribute && key.color === item.color_code && key.price === item.price))
+            if (!info) {
+              name.material_info.push({
+                type: '订购',
+                attr: item.attribute,
+                color: item.color_code,
+                price: item.price,
+                number: item.weight
+              })
+            } else {
+              info.number = Number(info.number ? info.number : 0) + Number(item.weight)
+            }
+          }
+        }
+      })
+      // 预定购整理
+      res.data.data.material_reserve.forEach(item => {
+        let info = []
+        let totalPrice = 0
+        item.reserve_detail.forEach(val => {
+          this.list.material_orderList.total_price = Number(this.list.material_orderList.total_price) + Number(val.price * val.total_weight)
+          totalPrice = Number(totalPrice) + val.price * val.total_weight
+          let name = info.find(key => key.material_name === val.material_name)
+          if (!name) {
+            info.push({
+              material_name: val.material_name,
+              material_info: [{
+                type: '预定购',
+                attr: val.attribute,
+                color: val.color_code,
+                price: val.price,
+                number: val.total_weight
+              }]
+            })
+          } else {
+            let flag = name.material_info.find(key => (key.attr === val.attribute && key.color === val.color_code && key.price === val.price))
+            if (!flag) {
+              name.material_info.push({
+                type: '预定购',
+                attr: val.attribute,
+                color: val.color_code,
+                price: val.price,
+                number: val.total_weight
+              })
+            } else {
+              flag.number = Number(flag.number ? flag.number : 0) + Number(val.total_weight)
+            }
+          }
+        })
+        this.list.material_orderList.list.push({
+          id: null,
+          order_code: null,
+          group_name: null,
+          order_time: item.order_time,
+          total_price: totalPrice,
+          client_name: null,
+          info: info,
+          deduct_number: 0,
+          settle_number: 0,
+          flag: false,
+          checked: false,
+          loading: false
+        })
+      })
+      // 物料加工整理
+      res.data.data.material_process_log.forEach(item => {
+        this.list.material_processList.total_price = Number(this.list.material_processList.total_price) + Number(item.total_price)
+        let flag = this.list.material_processList.list.find(key => key.id === item.order_id)
+        if (!flag) {
+          this.list.material_processList.list.push({
+            id: item.order_id,
+            order_code: item.order_code,
+            group_name: item.order_group,
+            order_time: item.order_time,
+            client_name: item.order_company,
+            total_price: item.total_price,
+            info: [{
+              material_name: item.material_name,
+              process_type: item.process_type,
+              total_price: item.total_price,
+              material_info: JSON.parse(item.material_info)
+            }],
+            deduct_number: 0,
+            settle_number: 0,
+            flag: false,
+            checked: false,
+            loading: false
+          })
+        } else {
+          flag.total_price = Number(flag.total_price ? flag.total_price : 0) + Number(item.total_price)
+          let name = flag.info.find(key => (key.material_name === item.material_name && key.process_type === item.process_type))
+          if (!name) {
+            flag.info.push({
+              material_name: item.material_name,
+              process_type: item.process_type,
+              total_price: item.total_price,
+              material_info: JSON.parse(item.material_info)
+            })
+          } else {
+            name.material_info.push(...JSON.parse(item.material_info))
+          }
+        }
+      })
+      // 物料织造整理
+      res.data.data.weave_log.forEach(item => {
+        this.list.weaveList.total_price = Number(this.list.weaveList.total_price) + Number(item.number * item.price)
+        let flag = this.list.weaveList.list.find(key => key.id === item.order_id)
+        if (!flag) {
+          this.list.weaveList.list.push({
+            id: item.order_id,
+            order_code: item.order_code,
+            order_time: item.order_time,
+            group_name: item.group_name,
+            client_name: item.order_client_name,
+            total_price: item.number * item.price,
+            info: [{
+              product_code: item.product_info.product_code,
+              product_type: item.product_info.category_info.product_category + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_id ? '/' + item.product_info.flower_id : ''),
+              img: item.product_info.img,
+              unit: item.product_info.category_info.name,
+              size: [{
+                size: item.size,
+                color: item.color,
+                number: item.number,
+                price: item.price
+              }]
+            }],
+            deduct_number: 0,
+            settle_number: 0,
+            flag: false,
+            checked: false,
+            loading: false
+          })
+        } else {
+          flag.total_price = Number(flag.total_price ? flag.total_price : 0) + Number(item.number * item.price)
+          let pro = flag.info.find(key => key.product_code === item.product_info.product_code)
+          if (!pro) {
+            flag.info.push({
+              product_code: item.product_info.product_code,
+              product_type: item.product_info.category_info.product_category + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_id ? '/' + item.product_info.flower_id : ''),
+              img: item.product_info.img,
+              unit: item.product_info.category_info.name,
+              size: [{
+                size: item.size,
+                color: item.color,
+                number: item.number,
+                price: item.price
+              }]
+            })
+          } else {
+            let size = pro.size.find(key => (key.size === item.size && key.color === item.color && key.price === item.price))
+            if (!size) {
+              pro.size.push({
+                size: item.size,
+                color: item.color,
+                number: item.number,
+                price: item.price
+              })
+            } else {
+              size.number = Number(size.number ? size.number : 0) + Number(item.number)
+            }
+          }
+        }
+      })
+      // 产品加工整理
+      res.data.data.semi_product_log.forEach(item => {
+        this.list.product_processList.total_price = Number(this.list.product_processList.total_price) + Number(item.number * item.price)
+        let flag = this.list.product_processList.list.find(key => key.id === item.order_id)
+        if (!flag) {
+          this.list.product_processList.list.push({
+            id: item.order_id,
+            order_code: item.order_code,
+            order_time: item.order_time,
+            client_name: item.order_client_name,
+            group_name: item.group_name,
+            total_price: item.number * item.price,
+            info: [{
+              product_code: item.product_info.product_code,
+              product_type: item.product_info.category_info.product_category + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_id ? '/' + item.product_info.flower_id : ''),
+              img: item.product_info.img,
+              unit: item.product_info.category_info.name,
+              size: [{
+                type: item.type,
+                size: item.size,
+                color: item.color,
+                number: item.number,
+                price: item.price
+              }]
+            }],
+            deduct_number: 0,
+            settle_number: 0,
+            flag: false,
+            checked: false,
+            loading: false
+          })
+        } else {
+          flag.total_price = Number(flag.total_price ? flag.total_price : 0) + Number(item.number * item.price)
+          let pro = flag.info.find(key => key.product_code === item.product_info.product_code)
+          if (!pro) {
+            flag.info.push({
+              product_code: item.product_info.product_code,
+              product_type: item.product_info.category_info.product_category + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_id ? '/' + item.product_info.flower_id : ''),
+              img: item.product_info.img,
+              unit: item.product_info.category_info.name,
+              size: [{
+                type: item.type,
+                size: item.size,
+                color: item.color,
+                number: item.number,
+                price: item.price
+              }]
+            })
+          } else {
+            let size = pro.size.find(key => (key.size === item.size && key.color === item.color && key.price === item.price))
+            if (!size) {
+              pro.size.push({
+                type: item.type,
+                size: item.size,
+                color: item.color,
+                number: item.number,
+                price: item.price
+              })
+            } else {
+              size.number = Number(size.number ? size.number : 0) + Number(item.number)
+            }
+          }
+        }
+      })
+      // 包装订购整理
+      res.data.data.pack_log.forEach(item => {
+        this.list.packList.total_price = Number(this.list.packList.total_price) + Number(item.number * item.price)
+        let flag = this.list.packList.list.find(key => key.id === item.order_id)
+        if (!flag) {
+          this.list.packList.list.push({
+            id: item.order_id,
+            order_code: item.order_code,
+            order_time: item.order_time,
+            group_name: item.group_name,
+            client_name: item.order_client_name,
+            total_price: item.price * item.number,
+            info: [{
+              name: item.material_name,
+              material_info: [{
+                size: item.size,
+                price: item.price,
+                number: item.number
+              }]
+            }],
+            deduct_number: 0,
+            settle_number: 0,
+            flag: false,
+            checked: false,
+            loading: false
+          })
+        } else {
+          flag.total_price = Number(flag.total_price ? flag.total_price : 0) + Number(item.price * item.number)
+          let name = flag.info.find(key => key.name === item.material_name)
+          if (!name) {
+            flag.info.push({
+              name: item.material_name,
+              material_info: [{
+                size: item.size,
+                price: item.price,
+                number: item.number
+              }]
+            })
+          } else {
+            let size = name.material_info.find(key => (key.size === item.size && key.price === item.price))
+            if (!size) {
+              name.material_info.push({
+                size: item.size,
+                price: item.price,
+                number: item.number
+              })
+            } else {
+              size.number = Number(size.number ? size.number : 0) + Number(item.number)
+            }
+          }
+        }
+      })
+      // 运输整理
+      res.data.data.stock_out.forEach(item => {
+        let flag = this.list.transportList.list.find(key => key.id === item.order_id)
+        if (!flag) {
+          this.list.transportList.list.push({
+
+          })
+        }
+      })
+      // 统计共计金额
+      for (const prop in this.list) {
+        this.total_price = Number(this.total_price ? this.total_price : 0) + Number(this.list[prop].total_price ? this.list[prop].total_price : 0)
+      }
+      this.getRecordList()
     })
     let nowDate = new Date()
     this.now_time = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1 < 10 ? '0' + (nowDate.getMonth() + 1) : (nowDate.getMonth() + 1)) + '-' + (nowDate.getDate() < 10 ? '0' + nowDate.getDate() : nowDate.getDate())
     this.getPayList()
-    this.getCutPayList()
+    // this.getOrderList()
   },
   filters: {
     filterNumber (val) {
-      return val.toLocaleString()
+      return val.toFixed(2).toLocaleString()
+    },
+    filterToFixed (val) {
+      return Number(val).toFixed(2)
     }
   },
   watch: {
     'record.time': {
       deep: true,
       handler (newVal) {
+        console.log(this.record.info, newVal)
         if (newVal) {
-
+          this.record.infos = this.record.info.filter(item => (new Date(item.created_time).getFullYear() === new Date(newVal).getFullYear() && new Date(item.created_time).getMonth() === new Date(newVal).getMonth() && new Date(item.created_time).getDate() === new Date(newVal).getDate()))
         } else {
-
+          this.record.infos = this.record.info
         }
       }
     },
@@ -1049,9 +2446,9 @@ export default {
         if (newVal === 'all') {
           this.record.infos = this.record.info
         } else if (newVal === 'pay') {
-          this.record.infos = this.record.info.filter(item => item.type === '1')
+          this.record.infos = this.record.info.filter(item => item.method === 1)
         } else if (newVal === 'cut') {
-          this.record.infos = this.record.info.filter(item => item.type === '2')
+          this.record.infos = this.record.info.filter(item => item.method === 2)
         }
       }
     }

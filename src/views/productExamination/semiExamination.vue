@@ -556,7 +556,6 @@ export default {
           }
         })
       })
-      console.log(this)
       semiInfo.forEach(item => {
         if (item.product_info.product_code === this.list.product_code) {
           let flag = this.list.size_info.find(key => (key.size === item.size && key.color === item.color))

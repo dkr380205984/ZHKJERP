@@ -860,6 +860,7 @@ export default {
       for (let prop in productsInfo.product_plan) {
         materials.push(...productsInfo.product_plan[prop])
       }
+      console.log(this.productionList)
       this.productionList.forEach(item => {
         item.production.forEach(value => {
           value.product_detail.forEach(val => {

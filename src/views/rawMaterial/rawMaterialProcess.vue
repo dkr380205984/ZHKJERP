@@ -391,19 +391,19 @@ export default {
           //   return
           // }
           // console.log(this.selectList)
-          let king = this.selectList.find(vals => vals.material === item.material)
-          if (king) {
-            king.selectArr.forEach(keys => {
-              // console.log(Number(keys.select_number ? keys.select_number : 0) + Number(keys.number ? keys.number : 0) > Number(item.total_number))
-              if (Number(keys.select_number ? keys.select_number : 0) + Number(keys.number ? keys.number : 0) > Number(item.total_number) && flag) {
-                alert('已选数量超出订购数量，请重新输入。')
-                flag = false
-              }
-            })
-            if (!flag) {
-              return
-            }
-          }
+          // let king = this.selectList.find(vals => vals.material === item.material)
+          // if (king) {
+          //   // king.selectArr.forEach(keys => {
+          //   //   // console.log(Number(keys.select_number ? keys.select_number : 0) + Number(keys.number ? keys.number : 0) > Number(item.total_number))
+          //   //   if (Number(keys.select_number ? keys.select_number : 0) + Number(keys.number ? keys.number : 0) > Number(item.total_number) && flag) {
+          //   //     alert('已选数量超出订购数量，请重新输入。')
+          //   //     flag = false
+          //   //   }
+          //   // })
+          //   if (!flag) {
+          //     return
+          //   }
+          // }
           let obj = {}
           obj.company_id = sessionStorage.company_id
           obj.order_id = this.$route.params.id

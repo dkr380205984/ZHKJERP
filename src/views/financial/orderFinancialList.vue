@@ -55,68 +55,70 @@
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
-              :picker-options="pickerOptions">
+              :picker-options="pickerOptions"
+              @change="pickTime(data)">
             </el-date-picker>
           </div>
         </div>
       </div>
       <div class="content">
         <div class="title">
-          <span @click="filterOption.orderFilterFlag = !filterOption.orderFilterFlag"
-            class="icon">
+          <span class="icon">
             订单号
-            <em class="el-icon-caret-top"
+            <!-- @click="filterOption.orderFilterFlag = !filterOption.orderFilterFlag" -->
+            <!-- <em class="el-icon-caret-top"
               :style="{color:filterOption.orderFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
             <em class="el-icon-caret-bottom"
-              :style="{color:!filterOption.orderFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
+              :style="{color:!filterOption.orderFilterFlag ? '#9A9A9A' : '#FFF'}"></em> -->
           </span>
           <span>下单公司</span>
-          <span @click="filterOption.timeFilterFlag = !filterOption.timeFilterFlag"
-            class="icon">
+          <span class="icon">
             下单日期
-            <em class="el-icon-caret-top"
+            <!-- @click="filterOption.timeFilterFlag = !filterOption.timeFilterFlag" -->
+            <!-- <em class="el-icon-caret-top"
               :style="{color:filterOption.timeFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
             <em class="el-icon-caret-bottom"
-              :style="{color:!filterOption.timeFilterFlag ? '#9A9A9A' : '#FFF'}"></em></span>
-          <span @click="filterOption.totalFilterFlag = !filterOption.totalFilterFlag"
-            class="icon">
+              :style="{color:!filterOption.timeFilterFlag ? '#9A9A9A' : '#FFF'}"></em> -->
+          </span>
+          <span class="icon">
             订单总值
-            <em class="el-icon-caret-top"
+            <!-- @click="filterOption.totalFilterFlag = !filterOption.totalFilterFlag" -->
+            <!-- <em class="el-icon-caret-top"
               :style="{color:filterOption.totalFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
             <em class="el-icon-caret-bottom"
-              :style="{color:!filterOption.totalFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
+              :style="{color:!filterOption.totalFilterFlag ? '#9A9A9A' : '#FFF'}"></em> -->
           </span>
-          <span @click="filterOption.numberFilterFlag = !filterOption.numberFilterFlag"
-            class="icon">
+          <span class="icon">
             下单数量
-            <em class="el-icon-caret-top"
+            <!-- @click="filterOption.numberFilterFlag = !filterOption.numberFilterFlag" -->
+            <!-- <em class="el-icon-caret-top"
               :style="{color:filterOption.numberFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
             <em class="el-icon-caret-bottom"
-              :style="{color:!filterOption.numberFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
+              :style="{color:!filterOption.numberFilterFlag ? '#9A9A9A' : '#FFF'}"></em> -->
           </span>
-          <span @click="filterOption.outNumberFilterFlag = !filterOption.outNumberFilterFlag"
-            class="icon">
+          <span class="icon">
             出库数量
-            <em class="el-icon-caret-top"
+            <!-- @click="filterOption.outNumberFilterFlag = !filterOption.outNumberFilterFlag" -->
+            <!-- <em class="el-icon-caret-top"
               :style="{color:filterOption.outNumberFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
             <em class="el-icon-caret-bottom"
-              :style="{color:!filterOption.outNumberFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
+              :style="{color:!filterOption.outNumberFilterFlag ? '#9A9A9A' : '#FFF'}"></em> -->
           </span>
-          <span @click="filterOption.totalNumberFilterFlag = !filterOption.totalNumberFilterFlag"
-            class="icon">
+          <span class="icon">
             实际总值
-            <em class="el-icon-caret-top"
+            <!-- @click="filterOption.totalNumberFilterFlag = !filterOption.totalNumberFilterFlag" -->
+            <!-- <em class="el-icon-caret-top"
               :style="{color:filterOption.totalNumberFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
             <em class="el-icon-caret-bottom"
-              :style="{color:!filterOption.totalNumberFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
+              :style="{color:!filterOption.totalNumberFilterFlag ? '#9A9A9A' : '#FFF'}"></em> -->
           </span>
-          <span @click="filterOption.companyCostFilterFlag = !filterOption.companyCostFilterFlag"
-            class="icon">
+          <span class="icon">
             工厂成本
-            <em class="el-icon-caret-top"
+            <!-- @click="filterOption.companyCostFilterFlag = !filterOption.companyCostFilterFlag" -->
+            <!-- <em class="el-icon-caret-top"
               :style="{color:filterOption.companyCostFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
             <em class="el-icon-caret-bottom"
-              :style="{color:!filterOption.companyCostFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
+              :style="{color:!filterOption.companyCostFilterFlag ? '#9A9A9A' : '#FFF'}"></em> -->
           </span>
           <!-- <span @click="filterOption.cutPayFilterFlag = !filterOption.cutPayFilterFlag"
             class="icon">
@@ -141,24 +143,25 @@
           @mousewheel="getData">
           <template v-for="(item,key) in list">
             <li :key="key"
-              class="infinite-list-item"
-              @click.stop="getInfo(item)">
-              <div class="list">
+              class="infinite-list-item">
+              <div class="list"
+                @click="getInfo(item)">
                 <span>
                   <em :class="{'el-icon-caret-bottom':true,'open':true,'close':!item.flag}"></em>
                   {{item.order_code}}</span>
                 <span>{{item.order_client}}</span>
                 <span>{{item.order_time}}</span>
-                <span>{{item.order_total_price}}{{item.account_unit}}</span>
+                <span>{{item.order_total_price|filterToFixed}}{{item.account_unit}}</span>
                 <span>{{item.order_number}}</span>
                 <span>{{item.total_pop}}</span>
-                <span>{{item.total_real/100}}元</span>
-                <span>{{item.company_cost}}元</span>
+                <span>{{item.total_real/100|filterToFixed}}元</span>
+                <span>{{item.company_cost|filterToFixed}}元</span>
                 <!-- <span>{{item.order_cutPay}}</span>
                 <span>{{item.bill}}</span> -->
                 <span>{{item.group_name}}</span>
                 <span>
-                  <span class="btn">详情</span>
+                  <span class="btn"
+                    @click.stop="$router.push('/index/orderDetailNew/' + item.order_id)">详情</span>
                 </span>
               </div>
               <div :class="{'detail':true,'detailNone':!item.flag,'detailShow':item.flag}">
@@ -182,8 +185,8 @@
                       <span>{{valPro.product_code}}</span>
                       <span>{{valPro.product_type}}</span>
                     </span>
-                    <span>{{valPro.order_total_price}}{{item.account_unit}}</span>
-                    <span>{{valPro.total_real ? valPro.total_real : 0}}{{item.account_unit}}</span>
+                    <span>{{valPro.order_total_price|filterToFixed}}{{item.account_unit}}</span>
+                    <span>{{(valPro.total_real ? valPro.total_real : 0)|filterToFixed}}{{item.account_unit}}</span>
                     <span>
                       <div class="imgCtn">
                         <img class="img"
@@ -200,7 +203,7 @@
                         :key="indSize">
                         <span class="flex05">{{valSize.size}}</span>
                         <span class="flex05">{{valSize.color}}</span>
-                        <span class="flex08">{{valSize.one_price}}{{item.account_unit}}/{{valPro.unit}}</span>
+                        <span class="flex08">{{valSize.one_price|filterToFixed}}{{item.account_unit}}/{{valPro.unit}}</span>
                         <span>{{valSize.order_number}}{{valPro.unit}}</span>
                         <span>{{valSize.pack_number ? valSize.pack_number : 0}}{{valPro.unit}}</span>
                       </span>
@@ -208,11 +211,11 @@
                     <span class="col">
                       <span>
                         <span>织造</span>
-                        <span>{{valPro.weave_price ? valPro.weave_price : 0}}元</span>
+                        <span>{{(valPro.weave_price ? valPro.weave_price : 0)|filterToFixed}}元</span>
                       </span>
                       <span>
                         <span>加工</span>
-                        <span>{{valPro.process_price ? valPro.process_price : 0}}元</span>
+                        <span>{{(valPro.process_price ? valPro.process_price : 0)|filterToFixed}}元</span>
                       </span>
                     </span>
                   </span>
@@ -224,15 +227,15 @@
                     <span class="col">
                       <span>
                         <span>物料订购</span>
-                        <span>{{item.material_order_price ? item.material_order_price : 0}}元</span>
+                        <span>{{(item.material_order_price ? item.material_order_price : 0)|filterToFixed}}元</span>
                       </span>
                       <span>
                         <span>物料加工</span>
-                        <span>{{item.material_process_price ? item.material_process_price : 0}}元</span>
+                        <span>{{(item.material_process_price ? item.material_process_price : 0)|filterToFixed}}元</span>
                       </span>
                       <span>
                         <span>包装辅料订购</span>
-                        <span>{{item.pack_price ? item.pack_price : 0}}元</span>
+                        <span>{{(item.pack_price ? item.pack_price : 0)|filterToFixed}}元</span>
                       </span>
                     </span>
                   </span>
@@ -283,6 +286,7 @@ export default {
   data () {
     return {
       loading: true,
+      isOk: true, // 判断上一次请求是否完成
       defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
       imgList: [],
       showShade: false,
@@ -312,17 +316,17 @@ export default {
         }
       ],
       data: '',
-      filterOption: {
-        orderFilterFlag: false,
-        timeFilterFlag: false,
-        totalFilterFlag: false,
-        numberFilterFlag: false,
-        outNumberFilterFlag: false,
-        totalNumberFilterFlag: false,
-        companyCostFilterFlag: false,
-        cutPayFilterFlag: false,
-        billFilterFlag: false
-      },
+      // filterOption: {
+      //   orderFilterFlag: false,
+      //   timeFilterFlag: false,
+      //   totalFilterFlag: false,
+      //   numberFilterFlag: false,
+      //   outNumberFilterFlag: false,
+      //   totalNumberFilterFlag: false,
+      //   companyCostFilterFlag: false,
+      //   cutPayFilterFlag: false,
+      //   billFilterFlag: false
+      // },
       pickerOptions: {
         shortcuts: [{
           text: '最近一周',
@@ -353,6 +357,18 @@ export default {
       list: []
     }
   },
+  watch: {
+    clientVal (newVal) {
+      this.list = []
+      this.pages = 1
+      this.getList()
+    },
+    groupVal () {
+      this.list = []
+      this.pages = 1
+      this.getList()
+    }
+  },
   computed: {
     clientValCmp () {
       if (this.clientVal) {
@@ -371,16 +387,20 @@ export default {
   },
   methods: {
     getList () {
+      this.isOk = false
       orderList({
         company_id: window.sessionStorage.getItem('company_id'),
         limit: 10,
         client_id: this.clientVal,
         group_id: this.groupVal,
-        page: this.pages
+        page: this.pages,
+        start_time: this.start_time,
+        end_time: this.end_time
       }).then(res => {
         this.total = res.data.meta.total
         let data = res.data.data
-        console.log(data)
+        this.loading = true
+        console.log(res)
         data.forEach(item => {
           let list = {}
           // 订单初步信息
@@ -440,19 +460,22 @@ export default {
             })
           })
           this.list.push(list)
-          // 处理数据
         })
-        console.log(this.list)
+        this.isOk = true
         this.loading = false
       })
     },
     getData () {
-      this.pages++
-      let el = document.getElementsByClassName('infinite-list')[0]
-      if (Number(el.scrollTop) + 600 >= this.list.length * 60) {
-        if (Math.ceil(this.total / 10) >= this.pages) {
-          this.getList()
+      if (this.isOk) {
+        let el = document.getElementsByClassName('infinite-list')[0]
+        if (Number(el.scrollTop) + 600 >= this.list.length * 60) {
+          if (Math.ceil(this.total / 10) > this.pages) {
+            this.pages++
+            this.getList()
+          }
         }
+      } else {
+        return false
       }
     },
     clear (item) {
@@ -526,6 +549,18 @@ export default {
     showImg (imgList) {
       this.imgList = imgList
       this.showShade = true
+    },
+    pickTime (date) {
+      if (date) {
+        this.start_time = date[0]
+        this.end_time = date[1]
+      } else {
+        this.start_time = ''
+        this.end_time = ''
+      }
+      this.list = []
+      this.pages = 1
+      this.getList()
     }
   },
   created () {
@@ -548,7 +583,10 @@ export default {
   },
   filters: {
     filterNumber (val) {
-      return val.toLocaleString()
+      return Number(val).toFixed(2).toLocaleString()
+    },
+    filterToFixed (val) {
+      return Number(val).toFixed(2)
     }
   }
 }

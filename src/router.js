@@ -15,11 +15,10 @@ let router = new Router({
     name: 'rawMaterialProcessTable',
     component: () => import('./views/rawMaterial/rawMaterialProcessTable.vue')
   }, {
-    //   path: '/yhw/:id',
-    //   name: 'yhw',
-    //   component: () => import('./views/yhw.vue')
-    // },
-    // {
+    path: '/packagMaterialTable/:orderId/:clientId/:time',
+    name: 'packagMaterialTable',
+    component: () => import('./views/packaging/packagMaterialTable.vue')
+  }, {
     path: '/productDesignWeavingTable/:id/:clientName/:product_code/:type',
     name: 'productDesignWeavingTable',
     component: () => import('./views/productDesign/productDesignWeavingTable.vue')

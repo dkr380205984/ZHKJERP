@@ -243,13 +243,13 @@ const menu = [{
     name: '订单发货列表',
     url: '/index/orderStat'
   }
-  // {
-  //   name: '大屏发货列表',
-  //   url: '/screenShipments'
-  // },
-  // {
-  //   name: '大屏发货列表',
-  //   url: '/screenShipmentsList'
+    // {
+    //   name: '大屏发货列表',
+    //   url: '/screenShipments'
+    // },
+    // {
+    //   name: '大屏发货列表',
+    //   url: '/screenShipmentsList'
     // },
     // {
     //   name: '添加样品订单(未完成)',
@@ -261,7 +261,7 @@ const menu = [{
     // {
     //   name: '添加样品',
     //   url: '/index/sampleAdd'
-  // }
+    // }
   ]
 }, {
   name: '计划单管理',

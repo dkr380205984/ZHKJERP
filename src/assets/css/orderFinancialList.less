@@ -153,6 +153,16 @@ ul{
                 transform: translateY(-50%) rotateZ(-90deg);
               }
             }
+            .over{
+              box-sizing: border-box;
+              padding:0 40px;
+              width: 100%;
+              overflow:hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              // justify-content: flex-start;
+              text-align: center;
+            }
           }
           .detail{
             box-sizing: border-box;
@@ -160,15 +170,16 @@ ul{
             flex-direction: column;
             border-top: 1px solid #FFF;
             border-right: 1px solid #DDD;
-            transition: all 0.2s ease-in-out;
+            // transition: all 0.2s ease-in-out;
             &.detailNone{
-              max-height: 0!important;
+              // max-height: 0!important;
+              height: 0;
               border-bottom: none;
               overflow: hidden;
             }
             &.detailShow{
               height: auto!important;
-              max-height:1000px!important;
+              // max-height:1000px!important;
               overflow: visible;
               border-top: 1px solid #DDD;
             }
