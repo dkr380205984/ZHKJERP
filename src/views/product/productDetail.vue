@@ -103,13 +103,15 @@
                 <span>{{productDetail.craft_info.user_name}}</span>
                 <span>工艺图</span>
                 <span>{{productDetail.craft_info.create_time}}</span>
-                <span style="color:#1A95FF">查看详情</span>
+                <span style="color:#1A95FF;cursor:pointer"
+                  @click="open('/index/designFormDetail/' + productDetail.craft_info.id)">查看详情</span>
               </li>
             </ul>
           </div>
         </div>
       </div>
-      <div class="lineCtn">
+      <div class="lineCtn"
+        v-if="productDetail.has_plan">
         <div class="inputCtn">
           <span class="label">关联配料单:</span>
           <div class="content"
@@ -139,14 +141,16 @@
                   </span>
                 </span>
                 <span style="flex:1">
-                  <span style="color:#1A95FF">查看详情</span>
+                  <span style="color:#1A95FF;cursor:pointer"
+                    @click="open('/index/productPlanDetail/' + productDetail.product_plan_info.id)">查看详情</span>
                 </span>
               </li>
             </ul>
           </div>
         </div>
       </div>
-      <div class="lineCtn">
+      <div class="lineCtn"
+        v-if="productDetail.order_list.length>0">
         <div class="inputCtn">
           <span class="label">关联订单:</span>
           <div class="content"
@@ -160,7 +164,8 @@
                     <span>{{item.order_code}}</span>
                     <span>{{item.client_name}}</span>
                     <span>{{item.total_number}}{{productDetail.category_info.name}}</span>
-                    <span style="color:#1A95FF">查看详情</span>
+                    <span style="color:#1A95FF;cursor:pointer"
+                      @click="open('/index/orderDetailNew/' + item.id)">查看详情</span>
                   </span>
                 </span>
               </li>
@@ -169,18 +174,21 @@
         </div>
       </div>
       <div class="lineCtn"
-        v-show="false">
+        v-show="priceList.length>0">
         <div class="inputCtn">
           <span class="label">关联报价单:</span>
           <div class="content"
             style="width:100%">
             <ul class="tablesCtn"
               style="width:100%;padding-left:0;box-sizing:border-box;margin:0">
-              <li class="material_info">
-                <span>待计算</span>
-                <span>待计算</span>
-                <span>待计算</span>
-                <span>待计算</span>
+              <li class="material_info"
+                v-for="(item,index) in priceList"
+                :key="index">
+                <span>{{item.quotation_code}}</span>
+                <span>{{item.client_name}}</span>
+                <span>利润{{item.profit}}{{item.account_unit}}</span>
+                <span style="color:#1A95FF;cursor:pointer"
+                  @click="open('/index/priceListDetail/' + item.id)">查看详情</span>
               </li>
             </ul>
           </div>
@@ -225,11 +233,12 @@
 </template>
 
 <script>
-import { porductOne } from '@/assets/js/api.js'
+import { porductOne, priceListDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
       defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
+      priceList: [], // 报价单列表
       productDetail: {
         category_info: {
           product_category: '',
@@ -252,7 +261,9 @@ export default {
         weight: '',
         has_craft: 0,
         has_plan: 0,
-        in_order: 0
+        in_order: 0,
+        order_list: []
+
       },
       loading: true
     }
@@ -277,6 +288,9 @@ export default {
     }
   },
   methods: {
+    open (url) {
+      window.open(url)
+    },
     // 判断提示信息
     toolTips (product) {
       if (product.has_craft === 1) {
@@ -307,6 +321,16 @@ export default {
                   return total + Number(current.number)
                 }, 0)
               })
+            })
+          })
+        }
+        // 循环拿报价单
+        if (res.data.data.quotation_id) {
+          res.data.data.quotation_id.forEach((item) => {
+            priceListDetail({
+              id: item
+            }).then((res) => {
+              this.priceList.push(res.data.data)
             })
           })
         }

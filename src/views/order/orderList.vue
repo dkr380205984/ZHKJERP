@@ -1,12 +1,18 @@
 <template>
   <div id="orderList"
-    v-getHash="{'categoryVal':categoryVal,'typesVal':typesVal,'styleVal':styleVal,'company':company,'searchVal':searchVal,'group':group,'pages':pages}"
+    v-getHash="{'categoryVal':categoryVal,'typesVal':typesVal,'styleVal':styleVal,'company':company,'searchVal':searchVal,'searchVal2':searchVal2,'group':group,'pages':pages}"
     v-loading="loading">
     <div class="head">
       <h2>订单列表</h2>
-      <el-input placeholder="输入订单号精确搜索"
-        suffix-icon="el-icon-search"
-        v-model="searchVal"></el-input>
+      <div>
+        <el-input placeholder="输入订单号精确搜索"
+          suffix-icon="el-icon-search"
+          style="margin-right:25px"
+          v-model="searchVal"></el-input>
+        <el-input placeholder="输入产品编号号搜索"
+          suffix-icon="el-icon-search"
+          v-model="searchVal2"></el-input>
+      </div>
     </div>
     <div class="body">
       <div class="filterCtn">
@@ -227,6 +233,7 @@ export default {
       imgList: [],
       loading: true,
       searchVal: '',
+      searchVal2: '',
       date: '',
       pickerOptions: {
         shortcuts: [{
@@ -319,6 +326,7 @@ export default {
         'client_id': this.company,
         'group_id': this.group,
         'order_code': this.searchVal,
+        'product_code': this.searchVal2,
         'start_time': this.start_time,
         'end_time': this.end_time
       }).then((res) => {
@@ -398,7 +406,6 @@ export default {
         this.group = ''
       }
     },
-
     // 删除订单
     deleteOrder (id) {
       this.$confirm('此操作将删除订单和相关联的生产计划单, 是否继续?', '提示', {
@@ -468,6 +475,14 @@ export default {
       }
     },
     searchVal (newVal) {
+      if (!this.first) {
+        if (newVal) {
+          this.pages = 1
+        }
+        this.getOrderList()
+      }
+    },
+    searchVal2 (newVal) {
       if (!this.first) {
         if (newVal) {
           this.pages = 1

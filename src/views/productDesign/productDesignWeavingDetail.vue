@@ -83,13 +83,13 @@
                       </span>
                       <span style="flex:3.5"
                         v-if="!itemColour.colorArr">
-                        <span style="color:#F56C6C">配料单信息缺失</span>
+                        <span style="color:#ccc">配料单信息缺失</span>
                       </span>
                     </span>
                   </span>
                   <span v-if="item.has_craft===1"
                     style="color:#1A95FF;"
-                    @click="$router.push('/index/designFormDetail/'+item.craft_list_id)">点击查看</span>
+                    @click="openWin('/index/designFormDetail/'+item.craft_list_id)"><span style="cursor:pointer">点击查看</span></span>
                   <span v-if="item.has_craft===0"
                     style="color:#ccc;">暂无工艺单</span>
                 </li>
@@ -739,6 +739,9 @@ export default {
     })
   },
   methods: {
+    openWin (url) {
+      window.open(url)
+    },
     open (id, client, code, type) {
       window.open('/productDesignWeavingTable/' + id + '/' + client + '/' + code + '/' + type)
     },

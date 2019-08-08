@@ -1643,7 +1643,7 @@ export default {
           is_draft: 0,
           id: this.$route.params.id,
           company_id: this.companyId,
-          product_id: this.product.id,
+          product_id: this.product.product_id,
           user_id: window.sessionStorage.getItem('user_id'),
           craft_code: null,
           warp_data: this.warp_data,

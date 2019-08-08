@@ -61,7 +61,7 @@
                 <li class="title">
                   <span>计划原料</span>
                   <span class="flex2">
-                    <span>颜色</span>
+                    <span>{{type==='0'?'颜色':'属性'}}</span>
                     <span class="flex08">数量</span>
                   </span>
                   <span>总计划</span>
@@ -99,7 +99,7 @@
           <div class="tablePlan">
             <div class="tableTitle">
               <span>{{type === '0' ? '原' : '辅'}}料名称</span>
-              <span>{{type === '0' ? '原' : '辅'}}料颜色</span>
+              <span>{{type === '0' ? '原料颜色' : '辅料属性'}}</span>
               <span>合计重量</span>
               <span>
                 已选重量(
@@ -158,7 +158,7 @@
                 <div>
                   <span>{{type === '0' ? '原' : '辅'}}料信息</span>:
                   <el-select v-model="value.color"
-                    placeholder="颜色"
+                    :placeholder="type==='0'?'颜色':'属性'"
                     size="small"
                     :change="watchAll(value.color,item.material,kay,key)">
                     <el-option v-for="color in options.colorList[item.material]"

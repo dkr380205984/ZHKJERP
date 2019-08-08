@@ -100,7 +100,7 @@
           <div class="tablePlan">
             <div class="tableTitle">
               <span>{{type === '0' ? '原': '辅'}}料名称</span>
-              <span>{{type === '0' ? '原': '辅'}}料颜色</span>
+              <span>{{type === '0' ? '原料颜色': '辅料属性'}}</span>
               <span>合计数量</span>
               <span>已选数量</span>
             </div>
@@ -129,7 +129,7 @@
                   <span>{{type === '0' ? '原': '辅'}}料信息:</span>
                   <div>
                     <el-select v-model="value.color"
-                      placeholder="颜色"
+                      :placeholder="type==='0'?'颜色':'属性'"
                       size="small">
                       <el-option v-for="color in colorListVal(item.needColors)"
                         :key="color.value"
@@ -214,7 +214,7 @@
           <div class="addBtn"
             @click="addBuyInfo(key)">
             <span>+</span>
-            <span>添加公司</span>
+            <span>添加{{type === '0' ? '原' : '辅'}}料</span>
           </div>
         </div>
       </div>

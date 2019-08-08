@@ -148,8 +148,10 @@
           </div>
           <div class="tableColumn"
             style="flex-direction:row;">
-            <span class="btns normal"
-              @click="$router.push('/index/packagDetail/'+item.id )">订购详情</span>
+            <div>
+              <span class="btns success"
+                @click="$router.push('/index/packagDetail/'+item.id )">订购详情</span>
+            </div>
           </div>
         </div>
       </div>

@@ -48,7 +48,7 @@
                 <li class="title">
                   <span>产品编号</span>
                   <span>产品品类</span>
-                  <span>尺码颜色</span>
+                  <span>尺码/配色</span>
                   <span>下单数量</span>
                   <span>库存调取数</span>
                   <span>计划生产数</span>
@@ -63,7 +63,7 @@
                     style="flex:4">
                     <span v-for="(itemColour,indexColour) in item.info"
                       :key="indexColour">
-                      <span>{{itemColour.color}}/{{itemColour.size}}</span>
+                      <span>{{itemColour.size}}/{{itemColour.color}}</span>
                       <span>{{itemColour.order_num}}{{item.unit_name}}</span>
                       <span>{{itemColour.stock_pick}}{{item.unit_name}}</span>
                       <span>{{itemColour.production_num}}{{item.unit_name}}</span>
@@ -73,10 +73,10 @@
                     <a class="caozuo"
                       :href="'#'+item.product_code"
                       style="text-decoration:none">详情</a>
-                    <div class="caozuo"
+                    <!-- <div class="caozuo"
                       @click="$router.push('/index/orderStockOut/' + $route.params.id + '/' + item.product_code)">出库</div>
                     <div class="caozuo"
-                      @click="$router.push('/index/orderStockIn/' + $route.params.id + '/' + item.product_code)">入库</div>
+                      @click="$router.push('/index/orderStockIn/' + $route.params.id + '/' + item.product_code)">入库</div> -->
                   </span>
                 </li>
               </ul>
@@ -97,119 +97,6 @@
           <div class="inputCtn noPadding">
             <div class="content">
               <div class="handle">
-                <div @click="item.canOut?$router.push('/index/orderStockOut/' + $route.params.id + '/' + item.product_code):''">
-                  <img class="icon"
-                    :src="item.canOut?require('@/assets/image/icon/outStock.png'):require('@/assets/image/icon/outStock_disabled.png')">
-                  <span :style="{'color':item.canOut?'#1A95FF':'#ddd','cursor':item.canOut?'pointer':'not-allowed'}">去出库</span>
-                </div>
-              </div>
-              <ul class="tablesCtn">
-                <li class="title">
-                  <span>产品编号</span>
-                  <span>产品品类</span>
-                  <span>尺码颜色</span>
-                  <span>计划生产数</span>
-                  <span>出库工序</span>
-                  <span>出库单位</span>
-                  <span>捆(包)数</span>
-                  <span>总数</span>
-                  <span>操作人</span>
-                  <span>入库时间</span>
-                  <span>合计入库数量</span>
-                </li>
-                <li class="material_info">
-                  <span style="color:#1A94FF">{{item.product_code}}</span>
-                  <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
-                  <span class="col"
-                    style="flex:9">
-                    <span v-for="(itemColour,indexColour) in item.info"
-                      :key="indexColour">
-                      <span>{{itemColour.color}}/{{itemColour.size}}</span>
-                      <span>{{itemColour.production_num}}{{item.unit_name}}</span>
-                      <span class="col"
-                        style="flex:7">
-                        <span v-for="(itemType,indexType) in itemColour.out"
-                          :key="indexType">
-                          <span>
-                            {{itemType.type}}
-                          </span>
-                          <span class="col"
-                            style="flex:5">
-                            <span v-for="(itemCompany,indexCompany) in itemType.info"
-                              :key="indexCompany">
-                              <span style="border-right:1px solid #ddd;align-items:center">{{itemCompany.company}}</span>
-                              <span class="col"
-                                style="flex:4">
-                                <span v-for="(itemNumber,indexNumber) in itemCompany.info"
-                                  :key="indexNumber">
-                                  <span class="col"
-                                    :style="{'border-bottom':indexNumber<itemCompany.info.length-1?'1px solid #ddd':'none'}"
-                                    style="flex:2">
-                                    <span v-for="(itemPack,indexPack) in itemNumber.numberPack"
-                                      :key="indexPack">
-                                      <span style="border-right:1px solid #ddd;"
-                                        :style="{'border-bottom':indexPack<itemNumber.numberPack.length-1?'1px solid #ddd':'none'}">{{itemPack.pack}}</span>
-                                      <span style="border-right:1px solid #ddd;"
-                                        :style="{'border-bottom':indexPack<itemNumber.numberPack.length-1?'1px solid #ddd':'none'}">{{itemPack.number}}{{item.unit_name}}</span>
-                                    </span>
-                                  </span>
-                                  <span style="align-items:center;border-right:1px solid #ddd"
-                                    :style="{'border-bottom':indexNumber<itemCompany.info.length-1?'1px solid #ddd':'none'}">{{itemNumber.user_name}}</span>
-                                  <span style="align-items:center;"
-                                    :style="{'border-bottom':indexNumber<itemCompany.info.length-1?'1px solid #ddd':'none'}">{{itemNumber.complete_time.slice(0,10)}}</span>
-                                </span>
-                              </span>
-                            </span>
-                          </span>
-                          <span>{{itemType.total}}{{item.unit_name}}</span>
-                        </span>
-                        <span style="flex:7;"
-                          v-if="itemColour.out.length === 0">暂无出库信息</span>
-                      </span>
-                    </span>
-                  </span>
-                </li>
-              </ul>
-              <div class="logList"
-                @click="showDetail(index,'outLogFlag')">{{ item.outLogFlag ? '收起' : '展开'}}详情</div>
-              <ul class="log"
-                style="margin-top:0"
-                v-show="item.outLogFlag">
-                <div>
-                  <li>
-                    <span>完成时间</span>
-                    <span>出库单位</span>
-                    <span>产品编号</span>
-                    <span>产品品类</span>
-                    <span>配色/尺码</span>
-                    <span>出库捆(包)数</span>
-                    <span>出库数量</span>
-                    <span>操作人</span>
-                    <span>备注</span>
-                    <span>操作</span>
-                  </li>
-                </div>
-                <div>
-                  <li v-for="(itemLog,indexLog) in item.outLog"
-                    :key="indexLog">
-                    <span>{{itemLog.complete_time.slice(0,10)}}</span>
-                    <span>{{itemLog.client_name}}</span>
-                    <span>{{itemLog.product_info.product_code}}</span>
-                    <span>{{itemLog.product_info.category_info.product_category}}/{{itemLog.product_info.type_name}}/{{itemLog.product_info.style_name}}</span>
-                    <span>{{itemLog.color}}/{{itemLog.size}}</span>
-                    <span>{{itemLog.count}}捆(包)</span>
-                    <span>{{itemLog.number}}{{itemLog.product_info.category_info.name}}</span>
-                    <span>{{itemLog.user_name}}</span>
-                    <span>{{itemLog.desc}}</span>
-                    <span style="color:#1A95FF;cursor:pointer"
-                      @click="updateLog(itemLog,'out')">修改</span>
-                  </li>
-                </div>
-                <li v-if="item.outLog.length===0">
-                  <span>暂无日志信息</span>
-                </li>
-              </ul>
-              <div class="handle">
                 <div @click="item.canIn?$router.push('/index/orderStockIn/' + $route.params.id + '/' + item.product_code):''">
                   <img class="icon"
                     :src="item.canIn?require('@/assets/image/icon/goStock.png'):require('@/assets/image/icon/goStock_disabled.png')">
@@ -220,7 +107,7 @@
                 <li class="title">
                   <span>产品编号</span>
                   <span>产品品类</span>
-                  <span>尺码颜色</span>
+                  <span>尺码/配色</span>
                   <span>计划生产数</span>
                   <span>入库工序</span>
                   <span>入库单位</span>
@@ -237,7 +124,7 @@
                     style="flex:9">
                     <span v-for="(itemColour,indexColour) in item.info"
                       :key="indexColour">
-                      <span>{{itemColour.color}}/{{itemColour.size}}</span>
+                      <span>{{itemColour.size}}/{{itemColour.color}}</span>
                       <span>{{itemColour.production_num}}{{item.unit_name}}</span>
                       <span class="col"
                         style="flex:7">
@@ -294,7 +181,7 @@
                     <span>出库单位</span>
                     <span>产品编号</span>
                     <span>产品品类</span>
-                    <span>配色/尺码</span>
+                    <span>尺码/配色</span>
                     <span>出库捆(包)数</span>
                     <span>出库数量</span>
                     <span>操作人</span>
@@ -309,7 +196,7 @@
                     <span>{{itemLog.client_name}}</span>
                     <span>{{itemLog.product_info.product_code}}</span>
                     <span>{{itemLog.product_info.category_info.product_category}}/{{itemLog.product_info.type_name}}/{{itemLog.product_info.style_name}}</span>
-                    <span>{{itemLog.color}}/{{itemLog.size}}</span>
+                    <span>{{itemLog.size}}/{{itemLog.color}}</span>
                     <span>{{itemLog.count}}捆(包)</span>
                     <span>{{itemLog.number}}{{itemLog.product_info.category_info.name}}</span>
                     <span>{{itemLog.user_name}}</span>
@@ -319,6 +206,119 @@
                   </li>
                 </div>
                 <li v-if="item.inLog.length===0">
+                  <span>暂无日志信息</span>
+                </li>
+              </ul>
+              <div class="handle">
+                <div @click="item.canOut?$router.push('/index/orderStockOut/' + $route.params.id + '/' + item.product_code):''">
+                  <img class="icon"
+                    :src="item.canOut?require('@/assets/image/icon/outStock.png'):require('@/assets/image/icon/outStock_disabled.png')">
+                  <span :style="{'color':item.canOut?'#1A95FF':'#ddd','cursor':item.canOut?'pointer':'not-allowed'}">去出库</span>
+                </div>
+              </div>
+              <ul class="tablesCtn">
+                <li class="title">
+                  <span>产品编号</span>
+                  <span>产品品类</span>
+                  <span>尺码/配色</span>
+                  <span>计划生产数</span>
+                  <span>出库工序</span>
+                  <span>出库单位</span>
+                  <span>捆(包)数</span>
+                  <span>总数</span>
+                  <span>操作人</span>
+                  <span>出库时间</span>
+                  <span>合计出库数量</span>
+                </li>
+                <li class="material_info">
+                  <span style="color:#1A94FF">{{item.product_code}}</span>
+                  <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
+                  <span class="col"
+                    style="flex:9">
+                    <span v-for="(itemColour,indexColour) in item.info"
+                      :key="indexColour">
+                      <span>{{itemColour.size}}/{{itemColour.color}}</span>
+                      <span>{{itemColour.production_num}}{{item.unit_name}}</span>
+                      <span class="col"
+                        style="flex:7">
+                        <span v-for="(itemType,indexType) in itemColour.out"
+                          :key="indexType">
+                          <span>
+                            {{itemType.type}}
+                          </span>
+                          <span class="col"
+                            style="flex:5">
+                            <span v-for="(itemCompany,indexCompany) in itemType.info"
+                              :key="indexCompany">
+                              <span style="border-right:1px solid #ddd;align-items:center">{{itemCompany.company}}</span>
+                              <span class="col"
+                                style="flex:4">
+                                <span v-for="(itemNumber,indexNumber) in itemCompany.info"
+                                  :key="indexNumber">
+                                  <span class="col"
+                                    :style="{'border-bottom':indexNumber<itemCompany.info.length-1?'1px solid #ddd':'none'}"
+                                    style="flex:2">
+                                    <span v-for="(itemPack,indexPack) in itemNumber.numberPack"
+                                      :key="indexPack">
+                                      <span style="border-right:1px solid #ddd;"
+                                        :style="{'border-bottom':indexPack<itemNumber.numberPack.length-1?'1px solid #ddd':'none'}">{{itemPack.pack}}</span>
+                                      <span style="border-right:1px solid #ddd;"
+                                        :style="{'border-bottom':indexPack<itemNumber.numberPack.length-1?'1px solid #ddd':'none'}">{{itemPack.number}}{{item.unit_name}}</span>
+                                    </span>
+                                  </span>
+                                  <span style="align-items:center;border-right:1px solid #ddd"
+                                    :style="{'border-bottom':indexNumber<itemCompany.info.length-1?'1px solid #ddd':'none'}">{{itemNumber.user_name}}</span>
+                                  <span style="align-items:center;"
+                                    :style="{'border-bottom':indexNumber<itemCompany.info.length-1?'1px solid #ddd':'none'}">{{itemNumber.complete_time.slice(0,10)}}</span>
+                                </span>
+                              </span>
+                            </span>
+                          </span>
+                          <span>{{itemType.total}}{{item.unit_name}}</span>
+                        </span>
+                        <span style="flex:7;"
+                          v-if="itemColour.out.length === 0">暂无出库信息</span>
+                      </span>
+                    </span>
+                  </span>
+                </li>
+              </ul>
+              <div class="logList"
+                @click="showDetail(index,'outLogFlag')">{{ item.outLogFlag ? '收起' : '展开'}}详情</div>
+              <ul class="log"
+                style="margin-top:0"
+                v-show="item.outLogFlag">
+                <div>
+                  <li>
+                    <span>完成时间</span>
+                    <span>出库单位</span>
+                    <span>产品编号</span>
+                    <span>产品品类</span>
+                    <span>尺码/配色</span>
+                    <span>出库捆(包)数</span>
+                    <span>出库数量</span>
+                    <span>操作人</span>
+                    <span>备注</span>
+                    <span>操作</span>
+                  </li>
+                </div>
+                <div>
+                  <li v-for="(itemLog,indexLog) in item.outLog"
+                    :key="indexLog">
+                    <span>{{itemLog.complete_time.slice(0,10)}}</span>
+                    <span>{{itemLog.client_name}}</span>
+                    <span>{{itemLog.product_info.product_code}}</span>
+                    <span>{{itemLog.product_info.category_info.product_category}}/{{itemLog.product_info.type_name}}/{{itemLog.product_info.style_name}}</span>
+                    <span>{{itemLog.size}}/{{itemLog.color}}</span>
+                    <span>{{itemLog.count}}捆(包)</span>
+                    <span>{{itemLog.number}}{{itemLog.product_info.category_info.name}}</span>
+                    <span>{{itemLog.user_name}}</span>
+                    <span>{{itemLog.desc}}</span>
+                    <span style="color:#1A95FF;cursor:pointer"
+                      @click="updateLog(itemLog,'out')">修改</span>
+                  </li>
+                </div>
+                <li v-if="item.outLog.length===0">
                   <span>暂无日志信息</span>
                 </li>
               </ul>
@@ -416,7 +416,7 @@ export default {
   data () {
     return {
       showShade: false,
-      loading: false,
+      loading: true,
       order: {
         order_code: '',
         client_name: '',
@@ -628,6 +628,7 @@ export default {
         })
         return json
       })
+      this.loading = false
     })
   },
   methods: {

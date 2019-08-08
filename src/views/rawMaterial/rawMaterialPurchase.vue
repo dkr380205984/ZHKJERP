@@ -210,7 +210,6 @@ export default {
       ]
     },
     save () {
-      this.loading = true
       if (!this.company) {
         this.$message({
           showClose: true,
@@ -219,6 +218,22 @@ export default {
         })
         return
       }
+      let IFREPEAT = false
+      const keyArr = this.material_info
+      for (let i = 0; i < keyArr.length - 1; i++) {
+        for (let j = 1; j < keyArr.length; j++) {
+          if (keyArr[i].material_name === keyArr[j].material_name && keyArr[i].color_code === keyArr[j].color_code && keyArr[i].vat_code === keyArr[j].vat_code) {
+            IFREPEAT = true
+          }
+        }
+      }
+      if (IFREPEAT) {
+        this.$message.error({
+          message: '请不要选择重复的纱线'
+        })
+        return
+      }
+      console.log(IFREPEAT)
       for (let prop in this.material_info) {
         let item = this.material_info[prop]
         item.price = Number(item.price)
@@ -309,6 +324,7 @@ export default {
         })
         return
       }
+      this.loading = true
       rawMaterialPurchase({
         user_id: sessionStorage.user_id,
         company_id: sessionStorage.company_id,

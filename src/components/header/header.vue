@@ -50,7 +50,7 @@ export default {
       }
     },
     goHome () {
-      window.location.replace('/index')
+      window.location.replace('/index/home')
     }
   }
 }

@@ -48,7 +48,7 @@
                   <span class="flex45">
                     <span>{{type === '0' ? '原' : '辅'}}料名称</span>
                     <span class="flex17">
-                      <span>颜色</span>
+                      <span>{{type === '0' ? '颜色' : '属性'}}</span>
                       <span>数量</span>
                     </span>
                   </span>
@@ -96,7 +96,7 @@
                     <span class="flex22">
                       <span>{{type === '0' ? '原' : '辅'}}料名称</span>
                       <span class="flex12">
-                        <span>颜色</span>
+                        <span>{{type === '0' ? '颜色' : '属性'}}</span>
                         <span>数量</span>
                       </span>
                     </span>
@@ -164,9 +164,9 @@
               v-for="(iten,kay) in item.stockInfo"
               :key="kay">
               <li>
-                <span>{{type === '0' ? '原' : '辅'}}料颜色</span>:
+                <span>{{type === '0' ? '原料颜色' : '辅料属性'}}</span>:
                 <el-select v-model="iten.materialColor"
-                  :placeholder="'请选择'+(type === '0' ? '原' : '辅')+'料颜色'"
+                  :placeholder="type === '0' ? '请选择颜色' : '请选择属性'"
                   size="small">
                   <el-option v-for="value in item.colors"
                     :key="value"
@@ -251,7 +251,7 @@
           <div class="addBtn"
             @click="addStockInfo(key)">
             <span>+</span>
-            <span>添加原料</span>
+            <span>添加{{type === '0' ? '原' : '辅'}}料</span>
           </div>
         </div>
       </div>

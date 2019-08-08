@@ -260,7 +260,7 @@
                     style="padding-left:0"
                     v-for="(item3,index3) in otherIngredient.color[index][index2].length"
                     :key="index3">
-                    <el-input placeholder="请输入颜色"
+                    <el-input placeholder="请输入属性"
                       v-model="otherIngredient.color[index][index2][index3].name"
                       style="width:150px" />
                     <div class="allInputs"
@@ -281,7 +281,7 @@
                   <div class="addBtn"
                     style="background:#fff;margin-left:0;margin-bottom:15px;"
                     @click="addOtherColor(index,index2)">
-                    <span>添加颜色</span>
+                    <span>添加属性</span>
                     <span>+</span>
                   </div>
                 </div>

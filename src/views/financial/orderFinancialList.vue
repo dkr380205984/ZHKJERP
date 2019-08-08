@@ -157,7 +157,7 @@
                 <!-- <span>{{item.order_cutPay}}</span>
                 <span>{{item.bill}}</span> -->
                 <span>{{item.group_name}}</span>
-                <span>
+                <span @click="$router.push('/index/orderDetailNew/' + item.order_id)">
                   <span class="btn">详情</span>
                 </span>
               </div>

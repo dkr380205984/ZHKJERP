@@ -2,7 +2,12 @@
   <div id="rawMaterialProcess"
     v-loading="loading">
     <div class="head">
-      <h2>半成品加工分配</h2>
+      <h2>半成品加工分配
+        <div class="headBtn"
+          @click="completion">
+          <span>一键分配</span>
+        </div>
+      </h2>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -45,13 +50,14 @@
                 <li class="title">
                   <span>产品编号</span>
                   <span>产品品类</span>
-                  <span style="flex:7;">
+                  <span style="flex:8;">
                     <span>尺码/配色</span>
                     <span>下单数</span>
                     <span>库存调取数</span>
                     <span>生产计划数</span>
                     <span>加工类型</span>
                     <span>分配单位</span>
+                    <span>分配数量</span>
                     <span>辅料分配信息</span>
                   </span>
                 </li>
@@ -61,7 +67,7 @@
                   <span style="color:#1A95FF"
                     @click="open(item.product_code)">{{item.product_code}}</span>
                   <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
-                  <span style="flex:7;"
+                  <span style="flex:8;"
                     class="col">
                     <span v-for="(itemColour,indexColour) in item.info"
                       :key="indexColour">
@@ -71,15 +77,16 @@
                       <span>{{itemColour.production_num}}{{item.unit_name}}</span>
                       <span v-if="itemColour.fenpei.length>0"
                         class="col"
-                        style="flex:3;">
+                        style="flex:4;">
                         <span v-for="itemType in itemColour.fenpei"
                           :key="itemType.name">
-                          <span>{{itemType.name}}</span>
+                          <span style="max-height:40px;white-space:nowrap;overflow:hidden;text-overflow: ellipsis; ">{{itemType.name}}</span>
                           <span class="col"
-                            style="flex:2">
+                            style="flex:3">
                             <span v-for="itemCompany in itemType.info"
                               :key="itemCompany.name">
                               <span style="border-right: 1px solid #DDD;">{{itemCompany.name}}</span>
+                              <span style="border-right: 1px solid #DDD;">{{itemCompany.total}}{{itemCompany.info[0].product_info.category_info.name}}</span>
                               <span class="col">
                                 <span style="color:#1A95FF;cursor:pointer"
                                   v-if="itemCompany.info[0].ingredients.length>0"
@@ -92,7 +99,7 @@
                         </span>
                       </span>
                       <span v-else
-                        style="flex:3;color:rgb(245, 108, 108)">没有分配信息</span>
+                        style="flex:4;color:#ccc">没有分配信息</span>
                     </span>
                   </span>
                 </li>
@@ -100,7 +107,8 @@
             </div>
           </div>
         </div>
-        <div class="lineCtn col">
+        <div class="lineCtn col"
+          v-if="ingredientInfo.name">
           <div class="inputCtn noPadding maxWidth">
             <div class="content">
               <ul class="tablesCtn">
@@ -111,7 +119,7 @@
                   <span>交货日期</span>
                   <span>产品分配数量</span>
                   <span>辅料名称</span>
-                  <span>辅料颜色</span>
+                  <span>辅料属性</span>
                   <span>辅料所需数量</span>
                 </li>
                 <li class="material_info"
@@ -170,13 +178,14 @@
                 <li class="title">
                   <span>产品编号</span>
                   <span>产品品类</span>
-                  <span style="flex:6;">
+                  <span style="flex:7;">
                     <span>尺码/配色</span>
                     <span>下单数</span>
                     <span>库存调取数</span>
                     <span>生产计划数</span>
                     <span>加工类型</span>
                     <span>分配单位</span>
+                    <span>已分配</span>
                   </span>
                 </li>
                 <li class="material_info">
@@ -184,7 +193,7 @@
                     @click="open(item.product_code)">{{item.product_code}}</span>
                   <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
                   <span class="col"
-                    style="flex:6;">
+                    style="flex:7;">
                     <span v-for="(itemColour,indexColour) in item.info"
                       :key="indexColour">
                       <span>{{itemColour.size}}/{{itemColour.color}}</span>
@@ -193,21 +202,22 @@
                       <span>{{itemColour.production_num}}{{item.unit_name}}</span>
                       <span v-if="itemColour.fenpei.length>0"
                         class="col"
-                        style="flex:2;">
+                        style="flex:3;">
                         <span v-for="itemType in itemColour.fenpei"
                           :key="itemType.name">
                           <span>{{itemType.name}}</span>
                           <span class="col"
-                            style="flex:1">
+                            style="flex:2">
                             <span v-for="itemCompany in itemType.info"
                               :key="itemCompany.name">
                               <span style="border-right: 1px solid #DDD;">{{itemCompany.name}}</span>
+                              <span>{{itemCompany.total}}{{itemCompany.info[0].product_info.category_info.name}}</span>
                             </span>
                           </span>
                         </span>
                       </span>
                       <span v-else
-                        style="flex:2;color:rgb(245, 108, 108)">没有分配信息</span>
+                        style="flex:3;color:#ccc">没有分配信息</span>
                     </span>
                   </span>
                 </li>
@@ -252,7 +262,7 @@
                 :key="indexColorSize">
                 <div>
                   <span>价格数量:</span>
-                  <el-cascader placeholder="选择尺码/颜色"
+                  <el-cascader placeholder="选择尺码/配色"
                     style="margin-left:15px;width:243px;"
                     :options="item.colorSizeArr"
                     v-model="itemcolorSize.colorSize">
@@ -440,6 +450,16 @@ export default {
         })
         return jsons
       })
+      // 获取同一加工单位同一工序的总分配数
+      productInfo.forEach((item1) => {
+        item1.fenpei.forEach((item2) => {
+          item2.info.forEach((item3) => {
+            item3.total = item3.info.reduce((total, item4) => {
+              return total + Number(item4.number)
+            }, 0)
+          })
+        })
+      })
       // 合并产品编号相同的数据
       productInfo.forEach((item) => {
         let mark = -1
@@ -480,6 +500,7 @@ export default {
           })
         }
       })
+      console.log(this.productList)
       // 初始化表单数据
       this.productList.forEach((item) => {
         // 给每个产品添加独立尺寸/颜色级联选择数据
@@ -670,13 +691,18 @@ export default {
           this.formList.forEach((item, index) => {
             item.company.forEach((itemCompany, indexCompany) => {
               itemCompany.price_number.forEach((itemPrice, indexPrice) => {
+                // 如果日期是对象格式，手动处理下
+                let completeTime = itemCompany.complete_time
+                if (typeof (completeTime) === 'object') {
+                  completeTime = completeTime.getFullYear() + '-' + (completeTime.getMonth() > 9 ? completeTime.getMonth() + 1 : '0' + (completeTime.getMonth() + 1)) + '-' + (completeTime.getDate() > 10 ? completeTime.getDate() : '0' + completeTime.getDate())
+                }
                 formData.push({
                   company_id: window.sessionStorage.getItem('company_id'),
                   order_id: this.order.id,
                   product_code: item.product_code,
                   client_id: itemCompany.company_id,
                   // total_price: itemCompany.total_price,
-                  complete_time: itemCompany.complete_time,
+                  complete_time: completeTime,
                   desc: itemCompany.desc,
                   price: itemPrice.price,
                   number: itemPrice.number,
@@ -712,6 +738,35 @@ export default {
           message: '请勿频繁操作'
         })
       }
+    },
+    // 一键分配
+    completion () {
+      console.log(this.productList)
+      console.log(this.formList)
+      this.formList.forEach((item) => {
+        item.company = []
+      })
+      this.productList.forEach((itemPro, indexPro) => {
+        this.formList[indexPro].company.push({
+          company_id: '',
+          complete_time: new Date(),
+          desc: '',
+          machining: [],
+          otherMat: [],
+          price_number: [],
+          total_price: 0
+        })
+        itemPro.info.forEach((itemSize, indexSize) => {
+          this.formList[indexPro].company[0].price_number.push({
+            colorSize: [itemSize.size, itemSize.color],
+            number: itemSize.production_num,
+            price: ''
+          })
+        })
+      })
+      this.$message.success({
+        message: '已为您导入产品信息，请输入加工单位和价格信息'
+      })
     }
   },
   watch: {

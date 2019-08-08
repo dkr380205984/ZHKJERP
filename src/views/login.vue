@@ -92,7 +92,7 @@ export default {
           } else {
             window.localStorage.setItem('zhPassword', '')
           }
-          _this.$router.push('/index')
+          _this.$router.push('/index/home')
         } else {
           Message.error({
             message: res.data.message
