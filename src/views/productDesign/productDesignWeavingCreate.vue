@@ -2,7 +2,12 @@
   <div id="rawMaterialProcess"
     v-loading="loading">
     <div class="head">
-      <h2>产品织造分配</h2>
+      <h2>产品织造分配
+        <div class="headBtn"
+          @click="completion">
+          <span>一键分配</span>
+        </div>
+      </h2>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -421,13 +426,18 @@ export default {
           this.formList.forEach((item, index) => {
             item.company.forEach((itemCompany, indexCompany) => {
               itemCompany.price_number.forEach((itemPrice, indexPrice) => {
+                // 如果日期是对象格式，手动处理下
+                let completeTime = itemCompany.complete_time
+                if (typeof (completeTime) === 'object') {
+                  completeTime = completeTime.getFullYear() + '-' + (completeTime.getMonth() > 9 ? completeTime.getMonth() + 1 : '0' + (completeTime.getMonth() + 1)) + '-' + (completeTime.getDate() > 10 ? completeTime.getDate() : '0' + completeTime.getDate())
+                }
                 formData.push({
                   company_id: window.sessionStorage.getItem('company_id'),
                   order_id: this.order.id,
                   product_code: item.product_code,
                   client_id: itemCompany.company_id,
                   // total_price: itemCompany.total_price,
-                  complete_time: itemCompany.complete_time,
+                  complete_time: completeTime,
                   desc: itemCompany.desc,
                   price: itemPrice.price,
                   number: itemPrice.number,
@@ -457,6 +467,33 @@ export default {
           })
         }
       }
+    },
+    // 一键分配 待优化报价单
+    completion () {
+      // 数据初始化
+      console.log(this.productList)
+      this.formList.forEach((item) => {
+        item.company = []
+      })
+      this.productList.forEach((itemPro, indexPro) => {
+        this.formList[indexPro].company.push({
+          company_id: '',
+          complete_time: new Date(),
+          desc: '',
+          price_number: [],
+          total_price: 0
+        })
+        itemPro.info.forEach((itemColor, indexColor) => {
+          this.formList[indexPro].company[0].price_number.push({
+            colorSize: [itemColor.size, itemColor.color],
+            number: itemColor.production_num - itemColor.fenpei,
+            price: ''
+          })
+        })
+      })
+      this.$message.success({
+        message: '已为您导入产品信息，请输入加工单位和价格信息'
+      })
     }
   },
   watch: {

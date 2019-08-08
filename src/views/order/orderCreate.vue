@@ -45,6 +45,7 @@
           <span class="label must">结算单位：</span>
           <el-select class="elInput"
             v-model="money"
+            @change="getRMB"
             placeholder="请选择结算单位">
             <el-option v-for="item in moneyArr"
               :key="item.name"
@@ -61,13 +62,16 @@
           <span class="label must">汇率：</span>
           <el-input class="elInput"
             v-model="exchangeRate"
+            :disabled="!money"
             placeholder="请输入汇率"
             @focus="showTips=true"
             @blur="showTips=false"></el-input>
-          <div style="color:#b5b5b5!important"
+          <div class="tips"
+            style="color:#b5b5b5">{{!money?'请选择结算单位':'100'+money+' = '+(exchangeRate?exchangeRate:0) +'人民币'}}</div>
+          <div style="top:63px;color:#b5b5b5!important"
             class="tips"
-            @mousedown="goBaidu">如:结算单位美元,100美元=670人民币,填写数字670</div>
-          <div style="top:63px"
+            @mousedown="goBaidu">例:结算单位美元,100美元=670人民币,填写数字670</div>
+          <div style="top:85px"
             v-show="showTips"
             class="tips"
             @mousedown="goBaidu">点击查询实时汇率</div>
@@ -448,6 +452,12 @@ export default {
     }
   },
   methods: {
+    // 获取到人名币后自动填汇率
+    getRMB (ev) {
+      if (ev === '元') {
+        this.exchangeRate = 100
+      }
+    },
     // 查询汇率
     goBaidu () {
       window.open('http://forex.hexun.com/rmbhl/#zkRate')
@@ -788,22 +798,24 @@ export default {
           total_price_RMB: this.totalMoney * this.exchangeRate / 100,
           file_url: JSON.stringify(fileArr)
         }
-        this.lock = false
-        this.loading = false
+        this.lock = true
+        this.loading = true
         orderSave(obj).then((res) => {
           console.log(res)
           if (res.data.status) {
             this.$message.success({
               message: '添加订单成功'
             })
-            this.$router.push('/index/orderDetailNew/' + res.data.data.id)
+            if (res.data && res.data.data) {
+              this.$router.push('/index/orderDetailNew/' + res.data.data)
+            }
           } else {
             this.$message.error({
               message: res.data.message
             })
           }
-          this.lock = true
-          this.loading = true
+          this.lock = false
+          this.loading = false
         })
       } else {
         this.$message.error({

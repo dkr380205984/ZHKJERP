@@ -11,7 +11,14 @@ axios.defaults.headers.get['Content-Type'] = 'application/json'
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 axios.defaults.headers.put['Content-Type'] = 'application/json'
 axios.defaults.headers.delete['Content-Type'] = 'application/json'
-
+axios.defaults.headers.common['token'] = window.sessionStorage.getItem('token')
+// 在请求拦截器中 设置token，此时会更新token
+axios.interceptors.request.use(config => {
+  config.headers.token = window.sessionStorage.getItem('token')
+  return config
+}, error => {
+  return Promise.reject(error)
+})
 axios.interceptors.response.use(
   res => {
     return res
@@ -73,6 +80,13 @@ async function get (url, params) {
       router.push('/index')
       return Promise.reject(response)
     }
+    if (response.data.code === 501) {
+      Message.Message.error({
+        message: '登录信息过期'
+      })
+      router.push('/login')
+      return Promise.reject(response)
+    }
     return Promise.resolve(response)
   } catch (error) {
     return Promise.reject(error)
@@ -109,7 +123,14 @@ async function post (url, params, contentType, responseType) {
       Message.Message.error({
         message: response.data.message
       })
-      router.push('/index')
+      router.push('/index/home')
+      return Promise.reject(response)
+    }
+    if (response.data.code === 501) {
+      Message.Message.error({
+        message: '登录信息过期'
+      })
+      router.push('/login')
       return Promise.reject(response)
     }
     return Promise.resolve(response)

@@ -158,12 +158,12 @@
                       <div class="tips">
                         <div class="tip">
                           <div class="circle"></div>
-                          <span>分配 ({{parseInt((item.weaveInfo.weaveNum/item.production_num).toFixed(2) * 100) + '%'}})</span>
+                          <span>分配 ({{parseInt((item.weaveInfo.weaveNum/item.production_num).toFixed(2) * 100)>100?'100%':parseInt((item.weaveInfo.weaveNum/item.production_num).toFixed(2) * 100) + '%'}})</span>
                         </div>
                         <div class="tip">
                           <div class="circle"
                             style="background:#36CBCB"></div>
-                          <span>织造 ({{parseInt((item.weaveInfo.weavePushNum/item.production_num).toFixed(2) * 100) + '%'}})</span>
+                          <span>织造 ({{parseInt((item.weaveInfo.weavePushNum/item.production_num).toFixed(2) * 100)>100?'100%':parseInt((item.weaveInfo.weaveNum/item.production_num).toFixed(2) * 100) + '%'}})</span>
                         </div>
                       </div>
                       <div class="rect">
@@ -210,12 +210,12 @@
                       <div class="tips">
                         <div class="tip">
                           <div class="circle"></div>
-                          <span>半成品 ({{parseInt((item.inspInfo.inspSemiNum/item.production_num).toFixed(2) * 100) + '%'}})</span>
+                          <span>半成品 ({{parseInt((item.inspInfo.inspSemiNum/item.production_num).toFixed(2) * 100)>100?'100%':parseInt((item.inspInfo.inspSemiNum/item.production_num).toFixed(2) * 100) + '%'}})</span>
                         </div>
                         <div class="tip">
                           <div class="circle"
                             style="background:#FAD336"></div>
-                          <span>成品 ({{parseInt((item.inspInfo.inspProNum/item.production_num).toFixed(2) * 100) + '%'}})</span>
+                          <span>成品 ({{parseInt((item.inspInfo.inspProNum/item.production_num).toFixed(2) * 100)>100?'100%':parseInt((item.inspInfo.inspSemiNum/item.production_num).toFixed(2) * 100) + '%'}})</span>
                         </div>
                       </div>
                       <div class="rect">
@@ -227,7 +227,7 @@
                           <div class="rectIn2"
                             style="background:#FAD336"
                             :style="{'width':rateChange(item.inspInfo.inspProNum,item.order_num)}"
-                            :rate="(item.inspInfo.inspProNum/item.production_num).toFixed(2) * 100 + '%'"></div>
+                            :rate="(item.inspInfo.inspProNum/item.order_num).toFixed(2) * 100 + '%'"></div>
                         </div>
                         <span class="rectContent"></span>
                       </div>
@@ -238,11 +238,11 @@
                           <div class="circle"></div>
                           <span>装箱 ({{parseInt((item.packInfo.packNum/item.order_num).toFixed(2) * 100) + '%'}})</span>
                         </div>
-                        <div class="tip">
+                        <!-- <div class="tip">
                           <div class="circle"
                             style="background:#F2637B"></div>
                           <span>出库 ({{parseInt((item.packInfo.proOutNum/item.order_num).toFixed(2) * 100) + '%'}})</span>
-                        </div>
+                        </div> -->
                       </div>
                       <div class="rect">
                         <span class="rectLabel">装箱进度:</span>
@@ -250,10 +250,10 @@
                           <div class="rectIn1"
                             :style="{'width':rateChange(item.packInfo.packNum,item.order_num)}"
                             :rate="(item.packInfo.packNum/item.order_num).toFixed(2) * 100 + '%'"></div>
-                          <div class="rectIn2"
+                          <!-- <div class="rectIn2"
                             :style="{'width':rateChange(item.packInfo.proOutNum,item.order_num)}"
                             :rate="(item.packInfo.proOutNum/item.order_num).toFixed(2) * 100 + '%'"
-                            style="background:#F2637B"></div>
+                            style="background:#F2637B"></div> -->
                         </div>
                         <span class="rectContent"></span>
                       </div>
@@ -693,12 +693,12 @@
                 <span v-for="(valPro,indPro) in item.product_info"
                   :key="indPro">
                   <span style="flex:2">{{valPro.product_code}}{{valPro.product_type}}</span>
-                  <span>{{valPro.number?valPro.number:0}}</span>
-                  <span>{{valPro.product_number?valPro.product_number:0}}</span>
-                  <span>{{valPro.product_number ? valPro.product_number > valPro.number ? '多装' + (valPro.product_number - valPro.number) + '条' : '少装' + (valPro.number - valPro.product_number) + '条':'暂无信息'}}</span>
+                  <span>{{valPro.number?valPro.number:0}}{{ valPro.unit}}</span>
+                  <span>{{valPro.product_number?valPro.product_number:0}}{{valPro.unit}}</span>
+                  <span>{{valPro.product_number ? valPro.product_number > valPro.number ? '多装' + (valPro.product_number - valPro.number) +  valPro.unit : '少装' + (valPro.number - valPro.product_number) +  valPro.unit:'暂无信息'}}</span>
                 </span>
               </span>
-              <span>{{item.pack_number?item.pack_number:0}}</span>
+              <span>{{item.pack_number?item.pack_number:0}}箱</span>
               <span :style="{'color':order_info.status_stock_out===1?'#67C23A':'#E6A23C'}">{{order_info.status_stock_out===1?'完成':'未完成'}}</span>
             </li>
           </div>
@@ -853,8 +853,8 @@
                       v-for="(valSize,indSize) in valPro.size"
                       :key="indSize">
                       <span class="tableRow">{{valSize.name[0] + '/' + valSize.name[1]}}</span>
-                      <span class="tableRow">{{valSize.numbers}}条</span>
-                      <span class="tableRow">{{valSize.unitPrice}}{{order_info.account_unit}}/条</span>
+                      <span class="tableRow">{{valSize.numbers}}{{valPro.productInfo.category_info.name}}</span>
+                      <span class="tableRow">{{valSize.unitPrice}}{{order_info.account_unit}}/{{valPro.productInfo.category_info.name}}</span>
                       <span class="tableRow">{{parseInt(valSize.numbers * valSize.unitPrice)}}{{order_info.account_unit}}</span>
                     </span>
                   </span>
@@ -1536,7 +1536,7 @@ export default {
           }
         })
         this.order_log.product_inspection.forEach((itemInspPro, indexInspPro) => {
-          if (itemInspPro.product_code === itemProduct.product_code) {
+          if (itemInspPro.product_info.product_code === itemProduct.product_code) {
             inspProNum += itemInspPro.number
           }
         })
@@ -1857,7 +1857,8 @@ export default {
                   product_code: val.productCode,
                   product_type: val.productInfo.category_info.product_category + '/' + val.productInfo.type_name + '/' + val.productInfo.style_name,
                   number: valSize.numbers,
-                  img: [...val.productInfo.img]
+                  img: [...val.productInfo.img],
+                  unit: val.productInfo.category_info.name
                 }]
               })
             } else {
@@ -1867,7 +1868,8 @@ export default {
                   product_code: val.productCode,
                   product_type: val.productInfo.category_info.product_category + '/' + val.productInfo.type_name + '/' + val.productInfo.style_name,
                   number: valSize.numbers,
-                  img: [...val.productInfo.img]
+                  img: [...val.productInfo.img],
+                  unit: val.productInfo.category_info.name
                 })
               } else {
                 flag1.number = Number(flag1.number) + Number(valSize.numbers)
@@ -1882,6 +1884,7 @@ export default {
         })
       })
       this.productPriceList = orderInfo.order_batch
+      console.log(this.productPriceList)
       let stockOutInfo = this.order_log.stock_out_info // 订单出库日志
       stockOutInfo.forEach(item => {
         let flag = this.outStockList.find(key => key.batch_id === item.batch_id)
@@ -1905,7 +1908,6 @@ export default {
           })
         }
       })
-
       // 订单取消的时候需要拿物料订购日志（分颜色），下单产品信息（分尺码颜色）
       this.order_log.material_order.forEach((item) => {
         const finded = this.materialDetail.find((itemFind) => itemFind.material_name === item.material_name && itemFind.color_code === item.color_code)

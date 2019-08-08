@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import { loginCheck } from './assets/js/api.js'
 
 Vue.use(Router)
 let router = new Router({
@@ -60,6 +59,10 @@ let router = new Router({
     name: 'index',
     component: () => import('./views/index.vue'),
     children: [{
+      path: 'home',
+      name: 'home',
+      component: () => import('./views/self/home.vue')
+    }, {
       path: 'priceListCreate',
       name: 'priceListCreate',
       component: () => import('./views/product/priceListCreate.vue')
@@ -488,36 +491,36 @@ let router = new Router({
   ]
 })
 
-router.beforeEach((to, from, next) => { // 全局前置守卫按照创建顺序调用
-  if (to.name !== 'login') {
-    try {
-      loginCheck({
-        user_id: window.sessionStorage.getItem('user_id'),
-        token: window.sessionStorage.getItem('token')
-      }).then((res) => {
-        if (res.data.status) {
-          if (from.name === 'designFormPlanCreate' || from.name === 'designFormCreate') {
-            const answer = window.confirm('是否要离开当前页面')
-            if (answer) {
-              next()
-            } else {
-              next(false)// 可以通过在这里写逻辑来处理用户点了物理返回之后的操作
-            }
-          } else {
-            next()
-          }
-        } else {
-          alert('登录信息过期,请重新登录')
-          next('/login')
-        }
-      })
-    } catch {
-      alert('系统异常,请重新登录')
-      next('/login')
-    }
-  } else {
-    next()
-  }
-})
+// router.beforeEach((to, from, next) => { // 全局前置守卫按照创建顺序调用
+//   if (to.name !== 'login') {
+//     try {
+//       loginCheck({
+//         user_id: window.sessionStorage.getItem('user_id'),
+//         token: window.sessionStorage.getItem('token')
+//       }).then((res) => {
+//         if (res.data.status) {
+//           if (from.name === 'designFormPlanCreate' || from.name === 'designFormCreate') {
+//             const answer = window.confirm('是否要离开当前页面')
+//             if (answer) {
+//               next()
+//             } else {
+//               next(false)// 可以通过在这里写逻辑来处理用户点了物理返回之后的操作
+//             }
+//           } else {
+//             next()
+//           }
+//         } else {
+//           alert('登录信息过期,请重新登录')
+//           next('/login')
+//         }
+//       })
+//     } catch {
+//       alert('系统异常,请重新登录')
+//       next('/login')
+//     }
+//   } else {
+//     next()
+//   }
+// })
 
 export default router

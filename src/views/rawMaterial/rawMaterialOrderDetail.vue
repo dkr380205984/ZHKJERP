@@ -64,7 +64,7 @@
                   <li class="title">
                     <span>计划原料</span>
                     <span class="flex2">
-                      <span>颜色</span>
+                      <span>{{type==='0'?'颜色':'属性'}}</span>
                       <span class="flex08">数量</span>
                     </span>
                     <span>总计划</span>
@@ -112,7 +112,7 @@
                       <span class="flex43">
                         <span class="flex17">原料名称</span>
                         <span class="flex26">
-                          <span>颜色</span>
+                          <span>{{type==='0'?'颜色':'属性'}}</span>
                           <span>单价</span>
                           <span>数量</span>
                         </span>
@@ -159,7 +159,7 @@
                     <span class="flexBig">下单日期</span>
                     <span class="flexBig">订购公司</span>
                     <span>{{type === '0' ? '原' : '辅'}}料名称</span>
-                    <span class="flexMid">颜色</span>
+                    <span class="flexMid">{{type==='0'?'颜色':'属性'}}</span>
                     <span class="flexMid">单价</span>
                     <span class="flexMid">重量</span>
                     <span class="flexMid">总价</span>
@@ -230,7 +230,7 @@
                     <span class="flex37">
                       <span class="flex17">原料名称</span>
                       <span class="flex2">
-                        <span>颜色</span>
+                        <span>{{type==='0'?'颜色':'属性'}}</span>
                         <span>数量</span>
                       </span>
                     </span>
@@ -343,7 +343,7 @@
                 <li class="title">
                   <span>次数</span>
                   <span>{{type==='0'?'纱线':'辅料'}}</span>
-                  <span>颜色</span>
+                  <span>{{type==='0'?'颜色':'属性'}}</span>
                   <span>{{type==='0'?'重量':'数量'}}</span>
                   <span>已补量</span>
                   <span>订购总价</span>

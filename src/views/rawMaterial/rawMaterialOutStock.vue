@@ -46,7 +46,7 @@
                 <li class="title">
                   <span>计划{{type === '0' ? '原' : '辅'}}料</span>
                   <span class="flex17">
-                    <span>颜色</span>
+                    <span>{{type === '0' ? '颜色' : '属性'}}</span>
                     <span>数量</span>
                   </span>
                   <span>已计划</span>
@@ -89,14 +89,14 @@
                   <span class="flex22">
                     <span class="flex17">产品信息</span>
                     <span class="flex12">
-                      <span>尺码/颜色</span>
+                      <span>尺码/配色</span>
                       <span>数量</span>
                     </span>
                   </span>
                   <span class="flex20">
                     <span>所需{{type === '0' ? '原' : '辅'}}料</span>
                     <span>
-                      <span>颜色</span>
+                      <span>{{type === '0' ? '颜色' : '属性'}}</span>
                       <span>数量</span>
                     </span>
                   </span>
@@ -183,9 +183,9 @@
                 </el-select>
               </li>
               <li>
-                <span>{{type === '0' ? '原' : '辅'}}料颜色</span>:
+                <span>{{type === '0' ? '原料颜色' : '辅料属性'}}</span>:
                 <el-select v-model="iten.materialColor"
-                  placeholder="请选择颜色"
+                  :placeholder="type === '0' ? '请选择颜色' : '请选择属性'"
                   size="small">
                   <el-option v-for="value in update(item,iten.outStockClient)"
                     :key="value.value"

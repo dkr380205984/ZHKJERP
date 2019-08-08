@@ -49,7 +49,7 @@
                     <span>尺码/配色</span>
                     <span>生产计划数</span>
                     <span>辅料</span>
-                    <span>颜色</span>
+                    <span>属性</span>
                     <span>数量</span>
                   </span>
                 </li>
@@ -83,11 +83,12 @@
                       </span>
                       <span style="flex:3"
                         v-if="!itemColour.colorArr">
-                        <span style="color:#F56C6C">配料单信息缺失</span>
+                        <span style="color:#1A95FF;cursor:pointer"
+                          @click="$router.push('/index/productPlanUpdate/' + item.product_code)">配料单信息缺失(点击填写)</span>
                       </span>
                       <span style="flex:3"
                         v-if="itemColour.colorArr&&itemColour.colorArr.length === 0">
-                        <span style="color:#F56C6C">没有辅料信息</span>
+                        <span style="color:#ccc">没有辅料信息</span>
                       </span>
                     </span>
                   </span>
@@ -225,25 +226,25 @@
                 </div>
               </ul>
               <div class="handle">
-                <div v-if="state"
+                <div v-if="true"
                   class="order"
                   @click="$router.push('/index/productDesignHalfCreate/' + $route.params.id)">
                   <img class="icon"
                     src="@/assets/image/icon/orderIcon.png">
                   <span>去加工</span>
                 </div>
-                <div class="order"
+                <!-- <div class="order"
                   v-if="!state"
                   style="cursor:not-allowed">
                   <img class="icon"
-                    src="@/assets/image/icon/orderIcon.png">
+                    src="@/assets/image/icon/order_disabled.png">
                   <el-tooltip class="item"
                     effect="dark"
                     content="配料单信息不完善"
                     placement="top">
-                    <span>去加工</span>
+                    <span style="color:#ccc">去加工</span>
                   </el-tooltip>
-                </div>
+                </div> -->
               </div>
             </div>
           </div>
@@ -263,7 +264,7 @@
                   <span>生产单位</span>
                   <span>加工类型</span>
                   <span>所需辅料</span>
-                  <span>颜色</span>
+                  <span>属性</span>
                   <span>数量</span>
                   <span>操作</span>
                 </li>
@@ -322,7 +323,7 @@
                 <li class="title">
                   <span>补充次数</span>
                   <span>纱线</span>
-                  <span>颜色</span>
+                  <span>属性</span>
                   <span>补充数量</span>
                   <span>总数量</span>
                   <span>承担单位/比例</span>
@@ -593,6 +594,7 @@ export default {
       })
       // 第三步，对配料单完整的数据进行辅料计算
       this.product = this.product.map((item) => {
+        console.log(item)
         if (item.state === 2) {
           return {
             product_code: item.product_code,
@@ -646,6 +648,7 @@ export default {
           return item
         }
       })
+      console.log(this.product)
       // 所需辅料信息统计至此完成，开始统计半成品分配信息
       // 日志表格可以直接使用
       this.logList = logList
@@ -674,7 +677,6 @@ export default {
       // 半成品分配价格统计完成，开始统计半成品分配辅料信息
       // 第一步，先按加工单位合并，再按加工类型合并
       let materialList = this.jsonMerge(logList, ['client_name', 'type'])
-      console.log(materialList)
       // 对于加工类型里的辅料需要合并一些数值
       materialList = materialList.map((itemCompany) => {
         return {
@@ -731,7 +733,6 @@ export default {
         }
       })
       this.materialList = materialList
-      console.log(materialList)
       // 补辅料信息合并
       this.bushaList = res[2].data.data.map((item) => {
         let json = item

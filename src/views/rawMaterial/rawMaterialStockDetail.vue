@@ -46,7 +46,7 @@
                 <li class="title">
                   <span>计划{{type === '0' ? '原' : '辅'}}料</span>
                   <span class="flex2">
-                    <span>颜色</span>
+                    <span>{{type === '0' ? '颜色' : '属性'}}</span>
                     <span>计划数量</span>
                   </span>
                   <span>已订购</span>
@@ -90,7 +90,7 @@
                 <li class="title">
                   <span>{{type === '0' ? '原' : '辅'}}料名称</span>
                   <span class="flex4">
-                    <span>颜色</span>
+                    <span>{{type === '0' ? '颜色' : '属性'}}</span>
                     <span class="flex3">
                       <span>批/缸号</span>
                       <span>数量</span>
@@ -133,7 +133,7 @@
                   <li>
                     <span class="flexBig">入库日期</span>
                     <span class="flexBig">{{type === '0' ? '原' : '辅'}}料名称</span>
-                    <span>颜色</span>
+                    <span>{{type === '0' ? '颜色' : '属性'}}</span>
                     <span>批/缸号</span>
                     <span>包装属性</span>
                     <span>入库数量</span>
@@ -247,7 +247,7 @@
                     <span class="flexBig">出库日期</span>
                     <span class="flexBig">{{type === '0' ? '原' : '辅'}}料名称</span>
                     <span class="flexBig">出库单位</span>
-                    <span>颜色</span>
+                    <span>{{type === '0' ? '颜色' : '属性'}}</span>
                     <span>批/缸号</span>
                     <span>出库数量</span>
                     <span class="flexBig">备注</span>
@@ -309,7 +309,7 @@
                 <div>
                   <li>
                     <span>{{type === '0' ? '原' : '辅'}}料名称</span>
-                    <span>颜色</span>
+                    <span>{{type === '0' ? '颜色' : '属性'}}</span>
                     <span>缸号</span>
                     <span>结余</span>
                     <span>操作</span>

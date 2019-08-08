@@ -1,5 +1,6 @@
 <template>
-  <div id="rawMaterialProcess">
+  <div id="rawMaterialProcess"
+    v-loading="loading">
     <div class="head">
       <h2>产品出库</h2>
     </div>
@@ -73,7 +74,7 @@
                               :key="indexCmp">
                               <span style="border-right:1px solid #ddd">{{itemCmp.name}}</span>
                               <span style="border-right:1px solid #ddd">{{itemCmp.num}}{{item.unit_name}}</span>
-                              <span>{{itemCmp.inNum}}{{item.unit_name}}</span>
+                              <span>{{itemCmp.outNum}}{{item.unit_name}}</span>
                             </span>
                           </span>
                         </span>
@@ -202,6 +203,7 @@ import { clientList, productionDetail, storeOut, storeOutList, weaveDetail, half
 export default {
   data () {
     return {
+      loading: true,
       order: {
         order_code: '',
         client_name: '',
@@ -221,7 +223,8 @@ export default {
       companyArr: [],
       machiningType: JSON.parse(JSON.stringify(machiningType)), // 洗白对象
       colorSizeArr: [],
-      formList: []
+      formList: [],
+      logListHalf: []
     }
   },
   mounted () {
@@ -236,13 +239,15 @@ export default {
     }), halfProductDetail({
       order_id: this.$route.params.orderId
     })]).then((res) => {
-      this.companyArr = res[0].data.data.filter((item) => { return (item.type.indexOf(4) !== -1 || item.type.indexOf(5) !== -1 || item.type.indexOf(6) !== -1) })
+      let companyArr = res[0].data.data
       this.order = res[1].data.data.production_detail.order_info
       let productList = res[1].data.data.production_detail.product_info.filter((item) => item.product_code === this.$route.params.productId)
       const logListOut = res[2].data.data
       const logListWeave = res[3].data.data
       const logListHalf = res[4].data.data
-      console.log(logListOut)
+      // 保存一下半成品加工日志信息，在提交的时候判断本次提交是否用到了辅料
+      this.logListHalf = logListHalf
+      console.log(logListHalf)
       // 产品尺码和颜色筛选框数据整合
       productList.forEach((itemInfo) => {
         let mark = -1
@@ -279,7 +284,7 @@ export default {
                 id: null,
                 companyArr: [{
                   name: itemFind.client_name,
-                  id: this.companyArr.find((itemCmp) => itemCmp.name === itemFind.client_name).id,
+                  id: companyArr.find((itemCmp) => itemCmp.name === itemFind.client_name).id,
                   num: itemFind.number
                 }]
               })
@@ -288,7 +293,7 @@ export default {
               if (!finded) {
                 item.machiningType[0].companyArr.push({
                   name: itemFind.client_name,
-                  id: this.companyArr.find((itemCmp) => itemCmp.name === itemFind.client_name).id,
+                  id: companyArr.find((itemCmp) => itemCmp.name === itemFind.client_name).id,
                   num: itemFind.number
                 })
               } else {
@@ -309,39 +314,61 @@ export default {
                 id: itemFind.type,
                 companyArr: [{
                   name: itemFind.client_name,
-                  id: this.companyArr.find((itemCmp) => itemCmp.name === itemFind.client_name).id,
+                  id: companyArr.find((itemCmp) => itemCmp.name === itemFind.client_name).id,
                   num: itemFind.number
                 }]
               })
             } else {
               finded.companyArr.push({
                 name: itemFind.client_name,
-                id: this.companyArr.find((itemCmp) => itemCmp.name === itemFind.client_name).id,
+                id: companyArr.find((itemCmp) => itemCmp.name === itemFind.client_name).id,
                 num: itemFind.number
               })
             }
           }
         })
       })
-      productList[0].machiningType.forEach((item) => {
-        item.companyArr.forEach((itemCmp) => {
-          itemCmp.inNum = 0
-          logListOut.forEach((itemFind) => {
-            if (itemFind.product_info.product_code === productList[0].product_code && itemFind.color === productList[0].color && itemFind.size === productList[0].size && itemFind.type === item.name && itemFind.client_name === itemCmp.name) {
-              itemCmp.inNum += itemFind.number
+      productList.forEach((itemPro) => {
+        itemPro.machiningType.forEach((item) => {
+          item.companyArr.forEach((itemCmp) => {
+            itemCmp.outNum = 0
+            logListOut.forEach((itemFind) => {
+              if (itemFind.product_info.product_code === itemPro.product_code && itemFind.color === itemPro.color && itemFind.size === itemPro.size && itemFind.type === item.name && itemFind.client_name === itemCmp.name) {
+                itemCmp.outNum += itemFind.number
+              }
+            })
+          })
+        })
+      })
+      // 过滤出加工单位
+      productList.forEach((itemPro) => {
+        itemPro.machiningType.forEach((itemType) => {
+          itemType.companyArr.forEach((itemCompany) => {
+            const finded = this.companyArr.find((itemFind) => itemFind.name === itemCompany.name)
+            if (!finded) {
+              this.companyArr.push(companyArr.find((findCmp) => findCmp.name === itemCompany.name))
             }
           })
         })
       })
       // 出库数量统计
       this.productList = productList
-      console.log(this.productList)
+      this.loading = false
     })
   },
   methods: {
     // 工序改变的时候，填写相应的单位
     getCompanyArr (index, indexCompany) {
-      this.formList[index].typeCompany[indexCompany].companyArr = this.productList[0].machiningType.find((item) => item.name === this.formList[index].typeCompany[indexCompany].type).companyArr
+      let companyArr = []
+      this.productList.forEach((itemPro) => {
+        let finded = itemPro.machiningType.find((item) => item.name === this.formList[index].typeCompany[indexCompany].type).companyArr
+        finded.forEach((itemCmp) => {
+          if (!companyArr.find((itemFind) => itemCmp.name === itemFind.name)) {
+            companyArr.push(itemCmp)
+          }
+        })
+      })
+      this.formList[index].typeCompany[indexCompany].companyArr = companyArr
     },
     // 添加工序
     addTypeCompany (index) {
@@ -442,12 +469,45 @@ export default {
           })
         })
         console.log(json)
+        this.loading = true
         storeOut({ 'data': json }).then((res) => {
           if (res.data.status) {
             this.$message.success({
               message: '保存成功'
             })
-            window.location.reload()
+            let message = ''
+            let clientArr = []
+            let ingredientsArr = []
+            const createEl = this.$createElement
+            // 判断是否需要辅料出库操作
+            json.forEach((item) => {
+              let finded = this.logListHalf.find((itemFind) => item.size === itemFind.size && item.color === itemFind.color && item.type === itemFind.type && Number(item.client_id) === Number(itemFind.client_id))
+              if (finded && finded.ingredients && finded.ingredients.length > 0) {
+                clientArr.push(finded.client_name)
+                ingredientsArr = ingredientsArr.concat(finded.ingredients)
+              }
+            })
+            message = createEl('p', null, [
+              createEl('span', null, '系统检测到'),
+              createEl('i', { style: 'color: #1A95FF' }, Array.from(new Set(clientArr)).join(',')),
+              createEl('span', null, '需要用到'),
+              createEl('i', { style: 'color: #1A95FF' }, Array.from(new Set(ingredientsArr)).join(',')),
+              createEl('span', null, ',是否前往辅料出库页面填写辅料出库相关信息')
+            ])
+            if (message) {
+              this.$msgbox({
+                title: '提醒',
+                message: message,
+                showCancelButton: true,
+                confirmButtonText: '前往填写',
+                cancelButtonText: '暂不操作'
+              }).then(action => {
+                this.$router.push('/index/rawMaterialOutStock/' + this.$route.params.orderId + '/1')
+              }).catch(() => {
+                this.$router.push('/index/orderStockDetail/' + this.$route.params.orderId)
+              })
+            }
+            this.loading = false
           } else {
             this.$message.error({
               message: res.data.message

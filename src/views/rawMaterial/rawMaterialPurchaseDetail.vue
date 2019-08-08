@@ -230,11 +230,11 @@
                     <span>{{item.attribute}}</span>
                     <span>{{item.price}}元/kg</span>
                     <span>{{item.stock_name?item.stock_name:'本厂仓库'}}</span>
-                    <span>{{item.total_weight}}kg</span>
+                    <span>{{item.weight}}kg</span>
                     <span>{{item.desc}}</span>
                     <span>{{item.user_name}}</span>
-                    <span style="cursor:pointer;color:#1A95FF"
-                      @click="updateLog(item)">修改</span>
+                    <span style="cursor:pointer;color:#F56C6C"
+                      @click="updateLog(item)">删除</span>
                   </li>
                 </div>
                 <li v-if="logList.length===0">
@@ -281,7 +281,7 @@
         <div class="inputCtn">
           <span class="label"><em>*</em>入库数量:</span>
           <div class="elCtn">
-            <el-input v-model="updateInfo.total_weight"
+            <el-input v-model="updateInfo.weight"
               placeholder="请输入入库数量">
               <template slot="append">kg</template>
             </el-input>
@@ -459,27 +459,28 @@ export default {
       this.updateInfo = item
       this.updateInfo.company_id = window.sessionStorage.getItem('company_id')
       this.updateInfo.user_id = window.sessionStorage.getItem('user_id')
-      this.showShade = true
+      // this.showShade = true
+      this.updateLogFn()
     },
     // 预定购日志修改
     updateLogFn () {
-      delete this.updateInfo.user_name
-      delete this.updateInfo.stock_name
-      if (!this.updateInfo.desc) {
-        this.$message.error({
-          message: '请填写本次修改日志原因'
-        })
-      }
-      this.updateInfo.material_order_id = this.updateInfo.id
+      // delete this.updateInfo.user_name
+      // delete this.updateInfo.stock_name
+      // if (!this.updateInfo.desc) {
+      //   this.$message.error({
+      //     message: '请填写本次修改日志原因'
+      //   })
+      // }
+      // this.updateInfo.material_order_id = this.updateInfo.id
       rawMaterialPurchaseIn({
-        id: this.updateInfo.id,
         data: [this.updateInfo]
       }).then((res) => {
         if (res.data.status) {
           this.$message.success({
-            message: '修改成功'
+            message: '删除成功'
           })
-          this.$router.go(-1)
+          window.location.reload()
+          // this.$router.go(-1)
         } else {
           this.$message.error({
             message: res.data.message
@@ -551,7 +552,7 @@ export default {
             obj.company_id = window.sessionStorage.getItem('company_id')
             obj.color_code = val.materialColor
             obj.number = value.number
-            obj.total_weight = value.weight
+            obj.weight = value.weight
             obj.complete_time = val.stock_time
             obj.desc = val.remark
             obj.attribute = val.materialAtr
@@ -581,7 +582,7 @@ export default {
             this.$message.success({
               message: '添加成功'
             })
-            this.$router.go(-1)
+            window.location.reload()
           } else {
             this.$message.error({
               message: res.data.message
@@ -616,7 +617,7 @@ export default {
           stock.forEach((itemStock) => {
             if (itemStock.material_name === item.material_name && itemStock.color_code === itemInfo.color_code && itemStock.price === itemInfo.price) {
               let finded = itemInfo.Arr.find((itemFind) => itemFind.company === itemStock.stock_name)
-              if (finded) { finded.number += itemStock.total_weight } else { itemInfo.Arr.push({ 'company': itemStock.stock_name, 'number': itemStock.total_weight }) }
+              if (finded) { finded.number += itemStock.total_weight } else { itemInfo.Arr.push({ 'company': itemStock.stock_name, 'number': itemStock.weight }) }
             }
           })
         })
