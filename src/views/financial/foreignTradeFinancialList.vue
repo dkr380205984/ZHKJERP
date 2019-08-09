@@ -9,6 +9,20 @@
         v-model="searchVal"></el-input>
     </div>
     <div class="body">
+      <div class="totalCtn">
+        <span>
+          <span>已结算</span>
+          <span class="moneyTag">{{totalList.settle|filterNumber}}<span class="unit">万元</span></span>
+        </span>
+        <span>
+          <span>已扣款</span>
+          <span class="moneyTag">{{totalList.deduct|filterNumber}}<span class="unit">万</span></span>
+        </span>
+        <span>
+          <span>已转账</span>
+          <span class="moneyTag">{{totalList.transfer|filterNumber}}<span class="unit">万</span></span>
+        </span>
+      </div>
       <div class="filterCtn">
         <div class="filterLine">
           <span class="label">筛选列表:</span>
@@ -65,9 +79,9 @@
         <div class="footer">
           <span>合计</span>
           <span></span>
-          <span>{{totalList.settle|filterNumber}}元</span>
-          <span>{{totalList.deduct|filterNumber}}元</span>
-          <span>{{totalList.transfer|filterNumber}}元</span>
+          <span>{{nowCount.settle|filterNumber}}万元</span>
+          <span>{{nowCount.deduct|filterNumber}}万元</span>
+          <span>{{nowCount.transfer|filterNumber}}万元</span>
           <span></span>
         </div>
       </div>
@@ -86,7 +100,6 @@ export default {
       typeVal: '',
       companyList: companyType,
       isOk: true,
-      data: '',
       pickerOptions: {
         shortcuts: [{
           text: '最近一周',
@@ -120,6 +133,11 @@ export default {
         deduct: '',
         transfer: ''
       },
+      nowCount: {
+        settle: 0,
+        deduct: 0,
+        transfer: 0
+      },
       total: '',
       pages: 1
     }
@@ -140,6 +158,9 @@ export default {
     getList () {
       this.loading = true
       this.isOk = false
+      for (const prop in this.nowCount) {
+        this.nowCount[prop] = 0
+      }
       Promise.all([
         clientFinancialTotal({
           company_id: window.sessionStorage.getItem('company_id')
@@ -155,6 +176,11 @@ export default {
         this.totalList = res[0].data.data
         this.total = res[1].data.meta.total
         this.list.push(...res[1].data.data)
+        this.list.forEach(item => {
+          this.nowCount.settle += Number(item.settle_total)
+          this.nowCount.transfer += Number(item.transfer_total)
+          this.nowCount.deduct += Number(item.deduct_total)
+        })
         this.isOk = true
         this.loading = false
       })
@@ -183,7 +209,7 @@ export default {
   },
   filters: {
     filterNumber (val) {
-      return val.toLocaleString()
+      return (val / 10000).toLocaleString()
     },
     filterType (val) {
       let type = ''

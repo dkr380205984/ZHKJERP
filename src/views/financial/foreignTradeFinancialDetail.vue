@@ -21,20 +21,20 @@
         <div class="rightCtn">
           <span class="totalPrice">
             <span class="label">共计:</span>
-            <span class="content">{{total_price}}元</span>
+            <span class="content">{{total_price|filterNumber}}万元</span>
           </span>
           <span class="settlement">
             <span class="settle">
               <span class="label">已结算:</span>
-              <span class="content">{{settle_price ? settle_price : 0}}元</span>
+              <span class="content">{{(settle_price ? settle_price : 0)|filterNumber}}万元</span>
             </span>
             <span class="noSettle">
               <span class="label">待结算:</span>
-              <span class="content">{{total_price-settle_price > 0 ? total_price-settle_price : 0}}元</span>
+              <span class="content">{{(total_price-settle_price > 0 ? total_price-settle_price : 0)|filterNumber}}万元</span>
             </span>
             <span class="deduct">
               <span class="label">已扣款:</span>
-              <span class="content">{{deduct_price ? deduct_price : 0}}元</span>
+              <span class="content">{{(deduct_price ? deduct_price : 0)|filterNumber}}万元</span>
             </span>
           </span>
         </div>
@@ -72,16 +72,38 @@
         <div class="selectCtn">
           <div class="select">
             <span class="label">筛选条件:</span>
-            <el-select v-model="list.orderList.group_id"
-              style="margin-left:20px;"
-              placeholder="请选择">
-              <el-option v-for="item in []"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+            <el-select clearable
+              v-model="list.orderList.filter.clientVal"
+              style="margin-left:20px;width:150px;"
+              placeholder="筛选外贸公司">
+              <el-option v-for="item in clientList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.name">
               </el-option>
             </el-select>
-            <el-date-picker v-model="list.orderList.data"
+            <el-select clearable
+              v-model="list.orderList.filter.groupVal"
+              style="margin-left:20px;width:150px;"
+              placeholder="筛选小组">
+              <el-option v-for="item in groupList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.name">
+              </el-option>
+            </el-select>
+            <el-select clearable
+              v-model="list.orderList.filter.orderVal"
+              style="margin-left:20px;width:150px;"
+              filterable
+              placeholder="筛选订单号">
+              <el-option v-for="item in list.orderList.list"
+                :key="item.id"
+                :label="item.order_code"
+                :value="item.id">
+              </el-option>
+            </el-select>
+            <el-date-picker v-model="list.orderList.filter.data"
               type="daterange"
               align="right"
               style="margin-left:20px;"
@@ -124,7 +146,7 @@
           </div>
           <ul class="infinite-list">
             <div class="box">
-              <li v-for="(item,key) in list.orderList.list"
+              <li v-for="(item,key) in list.orderList.lists"
                 :key="key"
                 class="infinite-list-item">
                 <div class="list"
@@ -203,9 +225,9 @@
             <span></span>
             <span></span>
             <span></span>
-            <span>{{list.orderList.total_price|filterNumber}}元</span>
-            <span>{{list.orderList.total_deduct|filterNumber}}</span>
-            <span>{{list.orderList.total_settle|filterNumber}}</span>
+            <span>{{list.orderList.total_price|filterNumber}}万元</span>
+            <span>{{list.orderList.total_deduct}}</span>
+            <span>{{list.orderList.total_settle}}</span>
             <span class="flex15"></span>
           </div>
         </div>
@@ -216,16 +238,38 @@
         <div class="selectCtn">
           <div class="select">
             <span class="label">筛选条件:</span>
-            <el-select v-model="list.material_orderList.group_id"
-              style="margin-left:20px;"
-              placeholder="请选择">
-              <el-option v-for="item in []"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+            <el-select clearable
+              v-model="list.material_orderList.filter.clientVal"
+              style="margin-left:20px;width:150px;"
+              placeholder="筛选外贸公司">
+              <el-option v-for="item in clientList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.name">
               </el-option>
             </el-select>
-            <el-date-picker v-model="list.material_orderList.data"
+            <el-select clearable
+              v-model="list.material_orderList.filter.groupVal"
+              style="margin-left:20px;width:150px;"
+              placeholder="筛选小组">
+              <el-option v-for="item in groupList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.name">
+              </el-option>
+            </el-select>
+            <el-select clearable
+              v-model="list.material_orderList.filter.orderVal"
+              style="margin-left:20px;width:150px;"
+              filterable
+              placeholder="筛选订单号">
+              <el-option v-for="item in list.material_orderList.list"
+                :key="item.id"
+                :label="item.order_code"
+                :value="item.id">
+              </el-option>
+            </el-select>
+            <el-date-picker v-model="list.material_orderList.filter.data"
               type="daterange"
               align="right"
               style="margin-left:20px;"
@@ -268,7 +312,7 @@
           </div>
           <ul class="infinite-list">
             <div class="box">
-              <li v-for="(item,key) in list.material_orderList.list"
+              <li v-for="(item,key) in list.material_orderList.lists"
                 :key="key"
                 @click="item.flag = !item.flag"
                 class="infinite-list-item">
@@ -330,9 +374,9 @@
             <span></span>
             <span></span>
             <span></span>
-            <span>{{list.material_orderList.total_price|filterNumber}}元</span>
-            <span>{{list.material_orderList.total_deduct|filterNumber}}</span>
-            <span>{{list.material_orderList.total_settle|filterNumber}}</span>
+            <span>{{list.material_orderList.total_price|filterNumber}}万元</span>
+            <span>{{list.material_orderList.total_deduct}}</span>
+            <span>{{list.material_orderList.total_settle}}</span>
             <span class="flex15"></span>
           </div>
         </div>
@@ -343,16 +387,38 @@
         <div class="selectCtn">
           <div class="select">
             <span class="label">筛选条件:</span>
-            <el-select v-model="list.material_processList.group_id"
-              style="margin-left:20px;"
-              placeholder="请选择">
-              <el-option v-for="item in []"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+            <el-select clearable
+              v-model="list.material_processList.filter.clientVal"
+              style="margin-left:20px;width:150px;"
+              placeholder="筛选外贸公司">
+              <el-option v-for="item in clientList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.name">
               </el-option>
             </el-select>
-            <el-date-picker v-model="list.material_processList.data"
+            <el-select clearable
+              v-model="list.material_processList.filter.groupVal"
+              style="margin-left:20px;width:150px;"
+              placeholder="筛选小组">
+              <el-option v-for="item in groupList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.name">
+              </el-option>
+            </el-select>
+            <el-select clearable
+              v-model="list.material_processList.filter.orderVal"
+              style="margin-left:20px;width:150px;"
+              filterable
+              placeholder="筛选订单号">
+              <el-option v-for="item in list.material_processList.list"
+                :key="item.id"
+                :label="item.order_code"
+                :value="item.id">
+              </el-option>
+            </el-select>
+            <el-date-picker v-model="list.material_processList.filter.data"
               type="daterange"
               align="right"
               style="margin-left:20px;"
@@ -395,7 +461,7 @@
           </div>
           <ul class="infinite-list">
             <div class="box">
-              <li v-for="(item,key) in list.material_processList.list"
+              <li v-for="(item,key) in list.material_processList.lists"
                 :key="key"
                 @click="item.flag = !item.flag"
                 class="infinite-list-item">
@@ -457,9 +523,9 @@
             <span></span>
             <span></span>
             <span></span>
-            <span>{{list.material_processList.total_price|filterNumber}}元</span>
-            <span>{{list.material_processList.total_deduct|filterNumber}}</span>
-            <span>{{list.material_processList.total_settle|filterNumber}}</span>
+            <span>{{list.material_processList.total_price|filterNumber}}万元</span>
+            <span>{{list.material_processList.total_deduct}}</span>
+            <span>{{list.material_processList.total_settle}}</span>
             <span class="flex15"></span>
           </div>
         </div>
@@ -470,16 +536,38 @@
         <div class="selectCtn">
           <div class="select">
             <span class="label">筛选条件:</span>
-            <el-select v-model="list.weaveList.group_id"
-              style="margin-left:20px;"
-              placeholder="请选择">
-              <el-option v-for="item in []"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+            <el-select clearable
+              v-model="list.weaveList.filter.clientVal"
+              style="margin-left:20px;width:150px;"
+              placeholder="筛选外贸公司">
+              <el-option v-for="item in clientList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.name">
               </el-option>
             </el-select>
-            <el-date-picker v-model="list.weaveList.data"
+            <el-select clearable
+              v-model="list.weaveList.filter.groupVal"
+              style="margin-left:20px;width:150px;"
+              placeholder="筛选小组">
+              <el-option v-for="item in groupList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.name">
+              </el-option>
+            </el-select>
+            <el-select clearable
+              v-model="list.weaveList.filter.orderVal"
+              style="margin-left:20px;width:150px;"
+              filterable
+              placeholder="筛选订单号">
+              <el-option v-for="item in list.weaveList.list"
+                :key="item.id"
+                :label="item.order_code"
+                :value="item.id">
+              </el-option>
+            </el-select>
+            <el-date-picker v-model="list.weaveList.filter.data"
               type="daterange"
               align="right"
               style="margin-left:20px;"
@@ -522,7 +610,7 @@
           </div>
           <ul class="infinite-list">
             <div class="box">
-              <li v-for="(item,key) in list.weaveList.list"
+              <li v-for="(item,key) in list.weaveList.lists"
                 :key="key"
                 @click="item.flag = !item.flag"
                 class="infinite-list-item">
@@ -599,9 +687,9 @@
             <span></span>
             <span></span>
             <span></span>
-            <span>{{list.weaveList.total_price|filterNumber}}元</span>
-            <span>{{list.weaveList.total_deduct|filterNumber}}</span>
-            <span>{{list.weaveList.total_settle|filterNumber}}</span>
+            <span>{{list.weaveList.total_price|filterNumber}}万元</span>
+            <span>{{list.weaveList.total_deduct}}</span>
+            <span>{{list.weaveList.total_settle}}</span>
             <span class="flex15"></span>
           </div>
         </div>
@@ -612,16 +700,38 @@
         <div class="selectCtn">
           <div class="select">
             <span class="label">筛选条件:</span>
-            <el-select v-model="list.product_processList.group_id"
-              style="margin-left:20px;"
-              placeholder="请选择">
-              <el-option v-for="item in []"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+            <el-select clearable
+              v-model="list.product_processList.filter.clientVal"
+              style="margin-left:20px;width:150px;"
+              placeholder="筛选外贸公司">
+              <el-option v-for="item in clientList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.name">
               </el-option>
             </el-select>
-            <el-date-picker v-model="list.product_processList.data"
+            <el-select clearable
+              v-model="list.product_processList.filter.groupVal"
+              style="margin-left:20px;width:150px;"
+              placeholder="筛选小组">
+              <el-option v-for="item in groupList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.name">
+              </el-option>
+            </el-select>
+            <el-select clearable
+              v-model="list.product_processList.filter.orderVal"
+              style="margin-left:20px;width:150px;"
+              filterable
+              placeholder="筛选订单号">
+              <el-option v-for="item in list.product_processList.list"
+                :key="item.id"
+                :label="item.order_code"
+                :value="item.id">
+              </el-option>
+            </el-select>
+            <el-date-picker v-model="list.product_processList.filter.data"
               type="daterange"
               align="right"
               style="margin-left:20px;"
@@ -664,7 +774,7 @@
           </div>
           <ul class="infinite-list">
             <div class="box">
-              <li v-for="(item,key) in list.product_processList.list"
+              <li v-for="(item,key) in list.product_processList.lists"
                 :key="key"
                 @click="item.flag = !item.flag"
                 class="infinite-list-item">
@@ -743,9 +853,9 @@
             <span></span>
             <span></span>
             <span></span>
-            <span>{{list.product_processList.total_price|filterNumber}}元</span>
-            <span>{{list.product_processList.total_deduct|filterNumber}}</span>
-            <span>{{list.product_processList.total_settle|filterNumber}}</span>
+            <span>{{list.product_processList.total_price|filterNumber}}万元</span>
+            <span>{{list.product_processList.total_deduct}}</span>
+            <span>{{list.product_processList.total_settle}}</span>
             <span class="flex15"></span>
           </div>
         </div>
@@ -756,16 +866,38 @@
         <div class="selectCtn">
           <div class="select">
             <span class="label">筛选条件:</span>
-            <el-select v-model="list.packList.group_id"
-              style="margin-left:20px;"
-              placeholder="请选择">
-              <el-option v-for="item in []"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+            <el-select clearable
+              v-model="list.packList.filter.clientVal"
+              style="margin-left:20px;width:150px;"
+              placeholder="筛选外贸公司">
+              <el-option v-for="item in clientList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.name">
               </el-option>
             </el-select>
-            <el-date-picker v-model="list.packList.data"
+            <el-select clearable
+              v-model="list.packList.filter.groupVal"
+              style="margin-left:20px;width:150px;"
+              placeholder="筛选小组">
+              <el-option v-for="item in groupList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.name">
+              </el-option>
+            </el-select>
+            <el-select clearable
+              v-model="list.packList.filter.orderVal"
+              style="margin-left:20px;width:150px;"
+              filterable
+              placeholder="筛选订单号">
+              <el-option v-for="item in list.packList.list"
+                :key="item.id"
+                :label="item.order_code"
+                :value="item.id">
+              </el-option>
+            </el-select>
+            <el-date-picker v-model="list.packList.filter.data"
               type="daterange"
               align="right"
               style="margin-left:20px;"
@@ -808,7 +940,7 @@
           </div>
           <ul class="infinite-list">
             <div class="box">
-              <li v-for="(item,key) in list.packList.list"
+              <li v-for="(item,key) in list.packList.lists"
                 :key="key"
                 @click="item.flag = !item.flag"
                 class="infinite-list-item">
@@ -868,9 +1000,9 @@
             <span></span>
             <span></span>
             <span></span>
-            <span>{{list.packList.total_price|filterNumber}}元</span>
-            <span>{{list.packList.total_deduct|filterNumber}}</span>
-            <span>{{list.packList.total_settle|filterNumber}}</span>
+            <span>{{list.packList.total_price|filterNumber}}万元</span>
+            <span>{{list.packList.total_deduct}}</span>
+            <span>{{list.packList.total_settle}}</span>
             <span class="flex15"></span>
           </div>
         </div>
@@ -881,16 +1013,38 @@
         <div class="selectCtn">
           <div class="select">
             <span class="label">筛选条件:</span>
-            <el-select v-model="list.material_processList.group_id"
-              style="margin-left:20px;"
-              placeholder="请选择">
-              <el-option v-for="item in []"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+            <el-select clearable
+              v-model="list.transportList.filter.clientVal"
+              style="margin-left:20px;width:150px;"
+              placeholder="筛选外贸公司">
+              <el-option v-for="item in clientList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.name">
               </el-option>
             </el-select>
-            <el-date-picker v-model="list.material_processList.data"
+            <el-select clearable
+              v-model="list.transportList.filter.groupVal"
+              style="margin-left:20px;width:150px;"
+              placeholder="筛选小组">
+              <el-option v-for="item in groupList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.name">
+              </el-option>
+            </el-select>
+            <el-select clearable
+              v-model="list.transportList.filter.orderVal"
+              style="margin-left:20px;width:150px;"
+              filterable
+              placeholder="筛选订单号">
+              <el-option v-for="item in list.transportList.list"
+                :key="item.id"
+                :label="item.order_code"
+                :value="item.id">
+              </el-option>
+            </el-select>
+            <el-date-picker v-model="list.transportList.filter.data"
               type="daterange"
               align="right"
               style="margin-left:20px;"
@@ -933,7 +1087,7 @@
           </div>
           <ul class="infinite-list">
             <div class="box">
-              <li v-for="(item,key) in list.material_processList.list"
+              <li v-for="(item,key) in list.transportList.lists"
                 :key="key"
                 @click="item.flag = !item.flag"
                 class="infinite-list-item">
@@ -995,9 +1149,9 @@
             <span></span>
             <span></span>
             <span></span>
-            <span>{{list.material_processList.total_price|filterNumber}}元</span>
-            <span>{{list.material_processList.total_deduct|filterNumber}}</span>
-            <span>{{list.material_processList.total_settle|filterNumber}}</span>
+            <span>{{list.material_processList.total_price|filterNumber}}万元</span>
+            <span>{{list.material_processList.total_deduct}}</span>
+            <span>{{list.material_processList.total_settle}}</span>
             <span class="flex15"></span>
           </div>
         </div>
@@ -1008,16 +1162,27 @@
         <div class="selectCtn">
           <div class="select">
             <span class="label">筛选条件:</span>
-            <el-select v-model="selectVal"
-              style="margin-left:20px;"
-              placeholder="请选择">
-              <el-option v-for="item in []"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+            <el-select clearable
+              v-model="list.transferList.filter.typeVal"
+              style="margin-left:20px;width:150px;"
+              placeholder="筛选转账类型">
+              <el-option v-for="item in [{name:'收款',id:1},{name:'付款',id:2}]"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
               </el-option>
             </el-select>
-            <el-date-picker v-model="list.transferList.data"
+            <el-select clearable
+              v-model="list.transferList.filter.methodVal"
+              style="margin-left:20px;width:150px;"
+              placeholder="筛选转账方式">
+              <el-option v-for="item in classList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
+            <el-date-picker v-model="list.transferList.filter.data"
               type="daterange"
               align="right"
               style="margin-left:20px;"
@@ -1043,7 +1208,7 @@
           </div>
           <ul class="infinite-list">
             <div class="box">
-              <li v-for="(item,key) in list.transferList.list"
+              <li v-for="(item,key) in list.transferList.lists"
                 :key="key"
                 class="infinite-list-item">
                 <div class="list"
@@ -1107,7 +1272,8 @@
           </div>
           <div class="lineCtn">
             <span class="label">转账方式:</span>
-            <el-select v-model="transfer.method"
+            <el-select clearable
+              v-model="transfer.method"
               class="inputBox"
               placeholder="请选择转账方式">
               <el-option v-for="item in classList"
@@ -1171,7 +1337,8 @@
         <div class="content">
           <div class="lineCtn">
             <span class="label">订单号:</span>
-            <el-select v-model="cutPay.order_code_str"
+            <el-select clearable
+              v-model="cutPay.order_code_str"
               class="inputBox"
               disabled
               placeholder="请选择转账方式">
@@ -1220,7 +1387,8 @@
         <div class="content">
           <div class="lineCtn">
             <span class="label">订单号:</span>
-            <el-select v-model="payMoney.order_code_str"
+            <el-select clearable
+              v-model="payMoney.order_code_str"
               class="inputBox"
               disabled
               placeholder="请选择订单号">
@@ -1343,7 +1511,7 @@
                   <span class="flex08">{{item.created_time}}</span>
                   <span class="flex08">{{flag[item.type] ? flag[item.type].name+'/' : '未知来源/'}}{{item.method === 1 ? '结算' : '扣款'}}</span>
                   <span class="flex08"
-                    style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">金额：<strong>{{item.total_price/10000|filterNumber}}万</strong></span>
+                    style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">金额：<strong>{{item.total_price|filterNumber}}万</strong></span>
                 </div>
                 <div class="line"
                   v-if="item.method === 1">
@@ -1407,7 +1575,7 @@
 
 <script>
 import { companyType } from '@/assets/js/dictionary.js'
-import { getToken, clientDetail, transferAdd, transferList, settleAdd, settleList, deductAdd, deductList, clientFinancialLog, packagNumberDetail } from '@/assets/js/api.js'
+import { getToken, clientDetail, transferAdd, transferList, settleAdd, settleList, deductAdd, deductList, clientFinancialLog, packagNumberDetail, getGroup, clientList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -1418,14 +1586,10 @@ export default {
       client_type: '',
       client_typeStr: '',
       total_price: 0, // 总金额
-      order_pages: 1, // 订单页数
-      order_total: '', // 订单总数
-      order_start_time: '', // 筛选订单开始时间
-      order_end_time: '', // 筛选订单结算时间
-      order_data: '', //
       settle_price: 0, // 结算总金额
       deduct_price: 0, // 扣款总金额
-      // fileArr: [],
+      groupList: [],
+      clientList: [],
       imgList: [],
       defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
       showShade: false,
@@ -1457,17 +1621,6 @@ export default {
             picker.$emit('pick', [start, end])
           }
         }]
-      },
-      filterOption: {
-        orderFilterFlag: false,
-        timeFilterFlag: false,
-        totalFilterFlag: false,
-        numberFilterFlag: false,
-        outNumberFilterFlag: false,
-        totalNumberFilterFlag: false,
-        companyCostFilterFlag: false,
-        cutPayFilterFlag: false,
-        billFilterFlag: false
       },
       flag: {
         1: {
@@ -1514,71 +1667,110 @@ export default {
       list: {
         orderList: {
           list: [],
+          lists: [],
           management: false,
-          group_id: '',
-          data: '',
+          filter: {
+            groupVal: '',
+            data: '',
+            orderVal: '',
+            clientVal: ''
+          },
           total_price: 0,
           total_deduct: 0,
           total_settle: 0
         }, // 订单列表
         material_orderList: {
           list: [],
+          lists: [],
           management: false,
-          group_id: '',
-          data: '',
+          filter: {
+            groupVal: '',
+            data: '',
+            orderVal: '',
+            clientVal: ''
+          },
           total_price: 0,
           total_deduct: 0,
           total_settle: 0
         }, // 物料订购
         material_processList: {
           list: [],
+          lists: [],
           management: false,
-          group_id: '',
-          data: '',
+          filter: {
+            groupVal: '',
+            data: '',
+            orderVal: '',
+            clientVal: ''
+          },
           total_price: 0,
           total_deduct: 0,
           total_settle: 0
         }, // 物料加工
         weaveList: {
           list: [],
+          lists: [],
           management: false,
-          group_id: '',
-          data: '',
+          filter: {
+            groupVal: '',
+            data: '',
+            orderVal: '',
+            clientVal: ''
+          },
           total_price: 0,
           total_deduct: 0,
           total_settle: 0
         }, // 生产织造
         product_processList: {
           list: [],
+          lists: [],
           management: false,
-          group_id: '',
-          data: '',
+          filter: {
+            groupVal: '',
+            data: '',
+            orderVal: '',
+            clientVal: ''
+          },
           total_price: 0,
           total_deduct: 0,
           total_settle: 0
         }, // 半成品加工
         packList: {
           list: [],
+          lists: [],
           management: false,
-          group_id: '',
-          data: '',
+          filter: {
+            groupVal: '',
+            data: '',
+            orderVal: '',
+            clientVal: ''
+          },
           total_price: 0,
           total_deduct: 0,
           total_settle: 0
         }, // 包装订购
         transportList: {
           list: [],
+          lists: [],
           management: false,
-          group_id: '',
-          data: '',
+          filter: {
+            groupVal: '',
+            data: '',
+            orderVal: '',
+            clientVal: ''
+          },
           total_price: 0,
           total_deduct: 0,
           total_settle: 0
         }, // 运输
         transferList: {
           list: [],
-          group_id: '',
-          data: '',
+          lists: [],
+          filter: {
+            data: '',
+            typeVal: '',
+            methodVal: ''
+          },
           transfer_total_price: 0
         } // 转账列表
       },
@@ -1657,7 +1849,6 @@ export default {
           client_id: this.$route.params.id
         })
       ]).then(res => {
-        console.log(res)
         this.record.info = []
         this.deduct_price = 0
         this.settle_price = 0
@@ -1666,6 +1857,8 @@ export default {
             item.settle_number = 0
             item.deduct_number = 0
           })
+          this.list[prop].total_deduct = 0
+          this.list[prop].total_settle = 0
         }
         res[0].data.data.forEach(item => {
           this.deduct_price = Number(this.deduct_price ? this.deduct_price : 0) + Number(item.deduct_price)
@@ -1687,6 +1880,7 @@ export default {
                   flag.deduct_number = 0
                 }
                 flag.deduct_number++
+                this.list[this.flag[item.type].listName].total_deduct++
               }
             })
           }
@@ -1706,12 +1900,12 @@ export default {
           if (item.type) {
             JSON.parse(item.order_id).forEach(value => {
               let flag = this.list[this.flag[item.type].listName].list.find(key => key.order_code === value)
-              console.log(flag)
               if (flag) {
                 if (!flag.settle_number) {
                   flag.settle_number = 0
                 }
                 flag.settle_number++
+                this.list[this.flag[item.type].listName].total_settle++
               }
             })
           }
@@ -1731,7 +1925,6 @@ export default {
           type = prop
         }
       }
-      console.log(type)
       if (item === 'transfer') {
         if (!this.transfer.time) {
           this.$message.error('请选择转账日期')
@@ -1831,6 +2024,7 @@ export default {
             item.file_url = JSON.parse(item.file_url)
           }
         })
+        this.list.transferList.lists = this.list.transferList.list
       })
     },
     // 上传图片前验证
@@ -1956,12 +2150,10 @@ export default {
       }
       this.cutPay.checkAllFlag = false
       this.cutPay.checkedList = []
-      // console.log(this.flag[5])
     },
     getOutStockInfo (item) {
       item.flag = !item.flag
       item.loading = true
-      console.log(item)
       item.product_info.forEach(val => {
         val.size.forEach(valSize => {
           valSize.pack_number = 0
@@ -1970,7 +2162,6 @@ export default {
       packagNumberDetail({
         order_id: item.id
       }).then(res => {
-        console.log(res.data.data)
         res.data.data.forEach(val => {
           JSON.parse(val.product_info).forEach(valPro => {
             valPro.size_info.forEach(valSize => {
@@ -2010,7 +2201,6 @@ export default {
     clientFinancialLog({
       client_id: this.$route.params.id
     }).then(res => {
-      // console.log(res.data.data)
       // 订单整理
       res.data.data.order_info.forEach(item => {
         let productInfo = []
@@ -2130,8 +2320,8 @@ export default {
         let info = []
         let totalPrice = 0
         item.reserve_detail.forEach(val => {
-          this.list.material_orderList.total_price = Number(this.list.material_orderList.total_price) + Number(val.price * val.total_weight)
-          totalPrice = Number(totalPrice) + val.price * val.total_weight
+          this.list.material_orderList.total_price = Number(this.list.material_orderList.total_price) + Number(val.price * val.weight)
+          totalPrice = Number(totalPrice) + val.price * val.weight
           let name = info.find(key => key.material_name === val.material_name)
           if (!name) {
             info.push({
@@ -2141,7 +2331,7 @@ export default {
                 attr: val.attribute,
                 color: val.color_code,
                 price: val.price,
-                number: val.total_weight
+                number: val.weight
               }]
             })
           } else {
@@ -2152,27 +2342,29 @@ export default {
                 attr: val.attribute,
                 color: val.color_code,
                 price: val.price,
-                number: val.total_weight
+                number: val.weight
               })
             } else {
-              flag.number = Number(flag.number ? flag.number : 0) + Number(val.total_weight)
+              flag.number = Number(flag.number ? flag.number : 0) + Number(val.weight)
             }
           }
         })
-        this.list.material_orderList.list.push({
-          id: null,
-          order_code: null,
-          group_name: null,
-          order_time: item.order_time,
-          total_price: totalPrice,
-          client_name: null,
-          info: info,
-          deduct_number: 0,
-          settle_number: 0,
-          flag: false,
-          checked: false,
-          loading: false
-        })
+        if (item.reserve_detail.length !== 0) {
+          this.list.material_orderList.list.push({
+            id: null,
+            order_code: item.id + '(预定购)',
+            group_name: null,
+            order_time: item.order_time,
+            total_price: totalPrice,
+            client_name: null,
+            info: info,
+            deduct_number: 0,
+            settle_number: 0,
+            flag: false,
+            checked: false,
+            loading: false
+          })
+        }
       })
       // 物料加工整理
       res.data.data.material_process_log.forEach(item => {
@@ -2399,11 +2591,23 @@ export default {
           })
         }
       })
-      // 统计共计金额
+      console.log(this.list)
+      // 统计共计金额及可筛选数据数组
       for (const prop in this.list) {
         this.total_price = Number(this.total_price ? this.total_price : 0) + Number(this.list[prop].total_price ? this.list[prop].total_price : 0)
+        this.list[prop].lists = this.list[prop].list
       }
       this.getRecordList()
+    })
+    getGroup({
+      company_id: window.sessionStorage.getItem('company_id')
+    }).then(res => {
+      this.groupList = res.data.data
+    })
+    clientList({
+      company_id: window.sessionStorage.getItem('company_id')
+    }).then(res => {
+      this.clientList = res.data.data.filter(key => key.type.indexOf(1) !== -1)
     })
     let nowDate = new Date()
     this.now_time = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1 < 10 ? '0' + (nowDate.getMonth() + 1) : (nowDate.getMonth() + 1)) + '-' + (nowDate.getDate() < 10 ? '0' + nowDate.getDate() : nowDate.getDate())
@@ -2412,7 +2616,7 @@ export default {
   },
   filters: {
     filterNumber (val) {
-      return val.toFixed(2).toLocaleString()
+      return (val / 10000).toFixed(2).toLocaleString()
     },
     filterToFixed (val) {
       return Number(val).toFixed(2)
@@ -2422,7 +2626,6 @@ export default {
     'record.time': {
       deep: true,
       handler (newVal) {
-        console.log(this.record.info, newVal)
         if (newVal) {
           this.record.infos = this.record.info.filter(item => (new Date(item.created_time).getFullYear() === new Date(newVal).getFullYear() && new Date(item.created_time).getMonth() === new Date(newVal).getMonth() && new Date(item.created_time).getDate() === new Date(newVal).getDate()))
         } else {
@@ -2450,6 +2653,137 @@ export default {
         } else if (newVal === 'cut') {
           this.record.infos = this.record.info.filter(item => item.method === 2)
         }
+      }
+    },
+    'list.orderList.filter': {
+      deep: true,
+      handler (newVal) {
+        this.list.orderList.lists = newVal.clientVal ? this.list.orderList.list.filter(item => item.client_name === newVal.clientVal) : this.list.orderList.list
+        this.list.orderList.lists = newVal.groupVal ? this.list.orderList.lists.filter(item => item.group_name === newVal.groupVal) : this.list.orderList.lists
+        this.list.orderList.lists = newVal.orderVal ? this.list.orderList.lists.filter(item => item.id === newVal.orderVal) : this.list.orderList.lists
+        this.list.orderList.lists = newVal.data ? this.list.orderList.lists.filter(item => (new Date(item.order_time).getTime() >= newVal.data[0].getTime() && newVal.data[1].getTime() >= new Date(item.order_time).getTime())) : this.list.orderList.lists
+        this.list.orderList.total_deduct = 0
+        this.list.orderList.total_price = 0
+        this.list.orderList.total_settle = 0
+        this.list.orderList.lists.forEach(item => {
+          this.list.orderList.total_deduct += item.deduct_number
+          this.list.orderList.total_settle += item.settle_number
+          this.list.orderList.total_price += item.total_price
+        })
+      }
+    },
+    'list.material_orderList.filter': {
+      deep: true,
+      handler (newVal) {
+        this.list.material_orderList.lists = newVal.clientVal ? this.list.material_orderList.list.filter(item => item.client_name === newVal.clientVal) : this.list.material_orderList.list
+        this.list.material_orderList.lists = newVal.groupVal ? this.list.material_orderList.lists.filter(item => item.group_name === newVal.groupVal) : this.list.material_orderList.lists
+        this.list.material_orderList.lists = newVal.orderVal ? this.list.material_orderList.lists.filter(item => item.id === newVal.orderVal) : this.list.material_orderList.lists
+        this.list.material_orderList.lists = newVal.data ? this.list.material_orderList.lists.filter(item => (new Date(item.order_time).getTime() >= newVal.data[0].getTime() && newVal.data[1].getTime() >= new Date(item.order_time).getTime())) : this.list.material_orderList.lists
+        this.list.material_orderList.total_deduct = 0
+        this.list.material_orderList.total_price = 0
+        this.list.material_orderList.total_settle = 0
+        this.list.material_orderList.lists.forEach(item => {
+          this.list.material_orderList.total_deduct += item.deduct_number
+          this.list.material_orderList.total_settle += item.settle_number
+          this.list.material_orderList.total_price += item.total_price
+        })
+      }
+    },
+    'list.material_processList.filter': {
+      deep: true,
+      handler (newVal) {
+        this.list.material_processList.lists = newVal.clientVal ? this.list.material_processList.list.filter(item => item.client_name === newVal.clientVal) : this.list.material_processList.list
+        this.list.material_processList.lists = newVal.groupVal ? this.list.material_processList.lists.filter(item => item.group_name === newVal.groupVal) : this.list.material_processList.lists
+        this.list.material_processList.lists = newVal.orderVal ? this.list.material_processList.lists.filter(item => item.id === newVal.orderVal) : this.list.material_processList.lists
+        this.list.material_processList.lists = newVal.data ? this.list.material_processList.lists.filter(item => (new Date(item.order_time).getTime() >= newVal.data[0].getTime() && newVal.data[1].getTime() >= new Date(item.order_time).getTime())) : this.list.material_processList.lists
+        this.list.material_processList.total_deduct = 0
+        this.list.material_processList.total_price = 0
+        this.list.material_processList.total_settle = 0
+        this.list.material_processList.lists.forEach(item => {
+          this.list.material_processList.total_deduct += item.deduct_number
+          this.list.material_processList.total_settle += item.settle_number
+          this.list.material_processList.total_price += item.total_price
+        })
+      }
+    },
+    'list.weaveList.filter': {
+      deep: true,
+      handler (newVal) {
+        this.list.weaveList.lists = newVal.clientVal ? this.list.weaveList.list.filter(item => item.client_name === newVal.clientVal) : this.list.weaveList.list
+        this.list.weaveList.lists = newVal.groupVal ? this.list.weaveList.lists.filter(item => item.group_name === newVal.groupVal) : this.list.weaveList.lists
+        this.list.weaveList.lists = newVal.orderVal ? this.list.weaveList.lists.filter(item => item.id === newVal.orderVal) : this.list.weaveList.lists
+        this.list.weaveList.lists = newVal.data ? this.list.weaveList.lists.filter(item => (new Date(item.order_time).getTime() >= newVal.data[0].getTime() && newVal.data[1].getTime() >= new Date(item.order_time).getTime())) : this.list.weaveList.lists
+        this.list.weaveList.total_deduct = 0
+        this.list.weaveList.total_price = 0
+        this.list.weaveList.total_settle = 0
+        this.list.weaveList.lists.forEach(item => {
+          this.list.weaveList.total_deduct += item.deduct_number
+          this.list.weaveList.total_settle += item.settle_number
+          this.list.weaveList.total_price += item.total_price
+        })
+      }
+    },
+    'list.product_processList.filter': {
+      deep: true,
+      handler (newVal) {
+        this.list.product_processList.lists = newVal.clientVal ? this.list.product_processList.list.filter(item => item.client_name === newVal.clientVal) : this.list.product_processList.list
+        this.list.product_processList.lists = newVal.groupVal ? this.list.product_processList.lists.filter(item => item.group_name === newVal.groupVal) : this.list.product_processList.lists
+        this.list.product_processList.lists = newVal.orderVal ? this.list.product_processList.lists.filter(item => item.id === newVal.orderVal) : this.list.product_processList.lists
+        this.list.product_processList.lists = newVal.data ? this.list.product_processList.lists.filter(item => (new Date(item.order_time).getTime() >= newVal.data[0].getTime() && newVal.data[1].getTime() >= new Date(item.order_time).getTime())) : this.list.product_processList.lists
+        this.list.product_processList.total_deduct = 0
+        this.list.product_processList.total_price = 0
+        this.list.product_processList.total_settle = 0
+        this.list.product_processList.lists.forEach(item => {
+          this.list.product_processList.total_deduct += item.deduct_number
+          this.list.product_processList.total_settle += item.settle_number
+          this.list.product_processList.total_price += item.total_price
+        })
+      }
+    },
+    'list.packList.filter': {
+      deep: true,
+      handler (newVal) {
+        this.list.packList.lists = newVal.clientVal ? this.list.packList.list.filter(item => item.client_name === newVal.clientVal) : this.list.packList.list
+        this.list.packList.lists = newVal.groupVal ? this.list.packList.lists.filter(item => item.group_name === newVal.groupVal) : this.list.packList.lists
+        this.list.packList.lists = newVal.orderVal ? this.list.packList.lists.filter(item => item.id === newVal.orderVal) : this.list.packList.lists
+        this.list.packList.lists = newVal.data ? this.list.packList.lists.filter(item => (new Date(item.order_time).getTime() >= newVal.data[0].getTime() && newVal.data[1].getTime() >= new Date(item.order_time).getTime())) : this.list.packList.lists
+        this.list.packList.total_deduct = 0
+        this.list.packList.total_price = 0
+        this.list.packList.total_settle = 0
+        this.list.packList.lists.forEach(item => {
+          this.list.packList.total_deduct += item.deduct_number
+          this.list.packList.total_settle += item.settle_number
+          this.list.packList.total_price += item.total_price
+        })
+      }
+    },
+    'list.transportList.filter': {
+      deep: true,
+      handler (newVal) {
+        this.list.transportList.lists = newVal.clientVal ? this.list.transportList.list.filter(item => item.client_name === newVal.clientVal) : this.list.transportList.list
+        this.list.transportList.lists = newVal.groupVal ? this.list.transportList.lists.filter(item => item.group_name === newVal.groupVal) : this.list.transportList.lists
+        this.list.transportList.lists = newVal.orderVal ? this.list.transportList.lists.filter(item => item.id === newVal.orderVal) : this.list.transportList.lists
+        this.list.transportList.lists = newVal.data ? this.list.transportList.lists.filter(item => (new Date(item.order_time).getTime() >= newVal.data[0].getTime() && newVal.data[1].getTime() >= new Date(item.order_time).getTime())) : this.list.transportList.lists
+        this.list.transportList.total_deduct = 0
+        this.list.transportList.total_price = 0
+        this.list.transportList.total_settle = 0
+        this.list.transportList.lists.forEach(item => {
+          this.list.transportList.total_deduct += item.deduct_number
+          this.list.transportList.total_settle += item.settle_number
+          this.list.transportList.total_price += item.total_price
+        })
+      }
+    },
+    'list.transferList.filter': {
+      deep: true,
+      handler (newVal) {
+        this.list.transferList.lists = newVal.typeVal ? this.list.transferList.list.filter(item => item.type === newVal.typeVal) : this.list.transferList.list
+        this.list.transferList.lists = newVal.methodVal ? this.list.transferList.lists.filter(item => item.transfer_way === newVal.methodVal) : this.list.transferList.lists
+        this.list.transferList.lists = newVal.data ? this.list.transferList.lists.filter(item => (new Date(item.complete_time).getTime() >= newVal.data[0].getTime() && newVal.data[1].getTime() >= new Date(item.complete_time).getTime())) : this.list.transferList.lists
+        this.list.transferList.transfer_total_price = 0
+        this.list.transferList.lists.forEach(item => {
+          this.list.transferList.transfer_total_price += item.transfer_price
+        })
       }
     }
   }
