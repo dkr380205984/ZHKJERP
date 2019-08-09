@@ -215,7 +215,7 @@
                         <div class="tip">
                           <div class="circle"
                             style="background:#FAD336"></div>
-                          <span>成品 ({{parseInt((item.inspInfo.inspProNum/item.production_num).toFixed(2) * 100)>100?'100%':parseInt((item.inspInfo.inspSemiNum/item.production_num).toFixed(2) * 100) + '%'}})</span>
+                          <span>成品 ({{parseInt((item.inspInfo.inspProNum/item.production_num).toFixed(2) * 100)>100?'100%':parseInt((item.inspInfo.inspProNum/item.production_num).toFixed(2) * 100) + '%'}})</span>
                         </div>
                       </div>
                       <div class="rect">
@@ -1460,7 +1460,6 @@ export default {
         item.product_info = this.jsonMerge(item.product_info, ['product_id'])
         return item
       })
-      console.log(this.logList)
       for (let key in this.process) {
         this.process[key] = this.process[key] > 100 ? 100 : this.process[key].toFixed(1)
       }
@@ -1884,7 +1883,6 @@ export default {
         })
       })
       this.productPriceList = orderInfo.order_batch
-      console.log(this.productPriceList)
       let stockOutInfo = this.order_log.stock_out_info // 订单出库日志
       stockOutInfo.forEach(item => {
         let flag = this.outStockList.find(key => key.batch_id === item.batch_id)
@@ -1943,6 +1941,7 @@ export default {
           })
         })
       })
+      console.log(this.productRate)
       this.loading = false
     })
   }

@@ -617,7 +617,7 @@ export default {
           stock.forEach((itemStock) => {
             if (itemStock.material_name === item.material_name && itemStock.color_code === itemInfo.color_code && itemStock.price === itemInfo.price) {
               let finded = itemInfo.Arr.find((itemFind) => itemFind.company === itemStock.stock_name)
-              if (finded) { finded.number += itemStock.total_weight } else { itemInfo.Arr.push({ 'company': itemStock.stock_name, 'number': itemStock.weight }) }
+              if (finded) { finded.number += itemStock.weight } else { itemInfo.Arr.push({ 'company': itemStock.stock_name, 'number': itemStock.weight }) }
             }
           })
         })
@@ -635,8 +635,9 @@ export default {
       }, 0)
       // 算总价
       this.cost = stock.reduce((total, current) => {
-        return total + current.price * current.total_weight
+        return total + current.price * current.weight
       }, 0)
+      console.log(stock)
       console.log(this.cost)
     })
     clientList({
