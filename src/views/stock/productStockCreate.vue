@@ -344,6 +344,8 @@ export default {
           })
           return
         }
+        console.log(this.inferior)
+
         this.lock = true
         this.loading = true
         let json = {
@@ -354,13 +356,14 @@ export default {
           size: this.size,
           color: this.colour,
           stock_number: this.numbers,
-          rejects_product: this.inferior,
+          rejects_product: JSON.stringify(this.inferior),
           cost_price: this.cost,
           total_price: this.totalPrice,
           storage_time: this.date,
-          remark: this.otherInfo
+          remark: this.otherInfo,
+          store_id: null
         }
-        productStockSave(json).then((res) => {
+        productStockSave({ data: [json] }).then((res) => {
           console.log(res)
           if (res.data.status) {
             this.$message.success({

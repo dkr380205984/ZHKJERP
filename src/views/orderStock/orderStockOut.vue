@@ -2,7 +2,12 @@
   <div id="rawMaterialProcess"
     v-loading="loading">
     <div class="head">
-      <h2>产品出库</h2>
+      <h2>产品出库
+        <div class="headBtn"
+          @click="completion">
+          <span>一键出库</span>
+        </div>
+      </h2>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -452,6 +457,10 @@ export default {
         this.formList.forEach((item) => {
           item.typeCompany.forEach((itemCompany) => {
             item.packNumber.forEach((itemPackNumber) => {
+              let completeTime = item.complete_time
+              if (typeof (completeTime) === 'object') {
+                completeTime = completeTime.getFullYear() + '-' + (completeTime.getMonth() > 9 ? completeTime.getMonth() + 1 : '0' + (completeTime.getMonth() + 1)) + '-' + (completeTime.getDate() > 10 ? completeTime.getDate() : '0' + completeTime.getDate())
+              }
               json.push({
                 order_id: this.$route.params.orderId,
                 user_id: window.sessionStorage.getItem('user_id'),
@@ -462,7 +471,7 @@ export default {
                 color: itemPackNumber.colorSize[1],
                 count: itemPackNumber.pack,
                 number: itemPackNumber.number,
-                complete_time: item.complete_time,
+                complete_time: completeTime,
                 desc: item.desc
               })
             })
@@ -487,13 +496,15 @@ export default {
                 ingredientsArr = ingredientsArr.concat(finded.ingredients)
               }
             })
-            message = createEl('p', null, [
-              createEl('span', null, '系统检测到'),
-              createEl('i', { style: 'color: #1A95FF' }, Array.from(new Set(clientArr)).join(',')),
-              createEl('span', null, '需要用到'),
-              createEl('i', { style: 'color: #1A95FF' }, Array.from(new Set(ingredientsArr)).join(',')),
-              createEl('span', null, ',是否前往辅料出库页面填写辅料出库相关信息')
-            ])
+            if (clientArr.length > 0 && ingredientsArr.length > 0) {
+              message = createEl('p', null, [
+                createEl('span', null, '系统检测到'),
+                createEl('i', { style: 'color: #1A95FF' }, Array.from(new Set(clientArr)).join(',')),
+                createEl('span', null, '需要用到'),
+                createEl('i', { style: 'color: #1A95FF' }, Array.from(new Set(ingredientsArr)).join(',')),
+                createEl('span', null, ',是否前往辅料出库页面填写辅料出库相关信息')
+              ])
+            }
             if (message) {
               this.$msgbox({
                 title: '提醒',
@@ -508,6 +519,7 @@ export default {
               })
             }
             this.loading = false
+            window.location.reload()
           } else {
             this.$message.error({
               message: res.data.message
@@ -515,6 +527,30 @@ export default {
           }
         })
       }
+    },
+    completion () {
+      this.productList.forEach((itemPro) => {
+        itemPro.machiningType.forEach((itemMach) => {
+          itemMach.companyArr.forEach((itemCompany) => {
+            if (itemCompany.outNum - itemCompany.num < 0) {
+              this.formList.push({
+                complete_time: new Date(),
+                desc: '',
+                packNumber: [{
+                  colorSize: [itemPro.size, itemPro.color],
+                  number: itemCompany.num - itemCompany.outNum,
+                  pack: 1
+                }],
+                typeCompany: [{
+                  company: itemCompany.id,
+                  companyArr: [itemCompany],
+                  type: itemMach.name
+                }]
+              })
+            }
+          })
+        })
+      })
     }
   }
 }

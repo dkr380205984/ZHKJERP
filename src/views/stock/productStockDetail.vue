@@ -58,7 +58,7 @@
             style="color:#1A95FF">{{item.update_time}}</div>
           <div class="tableColumn">{{item.order_code}}</div>
           <div class="tableColumn">{{item.user_name}}</div>
-          <div class="tableColumn">出库/入库</div>
+          <div class="tableColumn">{{item.type===1?'入库':'出库'}}</div>
           <div class="tableColumn">{{item.stock_number}}</div>
           <div class="tableColumn">{{item.rejects_product|filterReject}}
             <!-- <span style="cursor:pointer;color:#1A95FF">(详情)</span> -->
@@ -117,9 +117,14 @@ export default {
       })
       return str.substring(0, str.length - 2)
     },
-    filterReject (arr) {
+    filterReject (item) {
+      console.log(item)
+      if (!item) {
+        return 0
+      }
+      let arr = JSON.parse(item)
       return (arr && arr.reduce((total, current) => {
-        return total + current.num
+        return Number(total) + Number(current.num)
       }, 0)) || '0'
     }
   },
