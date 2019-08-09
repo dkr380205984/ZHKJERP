@@ -2,7 +2,12 @@
   <div id="rawMaterialProcess"
     v-loading="loading">
     <div class="head">
-      <h2>产品入库</h2>
+      <h2>产品入库
+        <div class="headBtn"
+          @click="completion">
+          <span>一键入库</span>
+        </div>
+      </h2>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -451,6 +456,10 @@ export default {
         this.formList.forEach((item) => {
           item.typeCompany.forEach((itemCompany) => {
             item.packNumber.forEach((itemPackNumber) => {
+              let completeTime = item.complete_time
+              if (typeof (completeTime) === 'object') {
+                completeTime = completeTime.getFullYear() + '-' + (completeTime.getMonth() > 9 ? completeTime.getMonth() + 1 : '0' + (completeTime.getMonth() + 1)) + '-' + (completeTime.getDate() > 10 ? completeTime.getDate() : '0' + completeTime.getDate())
+              }
               json.push({
                 order_id: this.$route.params.orderId,
                 user_id: window.sessionStorage.getItem('user_id'),
@@ -461,7 +470,7 @@ export default {
                 color: itemPackNumber.colorSize[1],
                 count: itemPackNumber.pack,
                 number: itemPackNumber.number,
-                complete_time: item.complete_time,
+                complete_time: completeTime,
                 desc: item.desc
               })
             })
@@ -483,6 +492,31 @@ export default {
           }
         })
       }
+    },
+    // 一件入库
+    completion () {
+      this.productList.forEach((itemPro) => {
+        itemPro.machiningType.forEach((itemMach) => {
+          itemMach.companyArr.forEach((itemCompany) => {
+            if (itemCompany.inNum - itemCompany.num < 0) {
+              this.formList.push({
+                complete_time: new Date(),
+                desc: '',
+                packNumber: [{
+                  colorSize: [itemPro.size, itemPro.color],
+                  number: itemCompany.num - itemCompany.inNum,
+                  pack: 1
+                }],
+                typeCompany: [{
+                  company: itemCompany.id,
+                  companyArr: [itemCompany],
+                  type: itemMach.name
+                }]
+              })
+            }
+          })
+        })
+      })
     }
   }
 }
