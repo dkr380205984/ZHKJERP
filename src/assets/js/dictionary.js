@@ -350,9 +350,9 @@ const menu = [{
     name: '订单财务统计',
     url: '/index/orderFinancialList'
   }, {
-    name: '产品产量统计',
-    url: '/index/companyFinancialList'
-  }, {
+    //   name: '产品产量统计',
+    //   url: '/index/companyFinancialList'
+    // }, {
     name: '合作公司财务统计',
     url: '/index/foreignTradeFinancialList'
   }]

@@ -2666,9 +2666,9 @@ export default {
         this.list.orderList.total_price = 0
         this.list.orderList.total_settle = 0
         this.list.orderList.lists.forEach(item => {
-          this.list.orderList.total_deduct += item.deduct_number
-          this.list.orderList.total_settle += item.settle_number
-          this.list.orderList.total_price += item.total_price
+          this.list.orderList.total_deduct += Number(item.deduct_number)
+          this.list.orderList.total_settle += Number(item.settle_number)
+          this.list.orderList.total_price += Number(item.total_price)
         })
       }
     },
@@ -2683,9 +2683,9 @@ export default {
         this.list.material_orderList.total_price = 0
         this.list.material_orderList.total_settle = 0
         this.list.material_orderList.lists.forEach(item => {
-          this.list.material_orderList.total_deduct += item.deduct_number
-          this.list.material_orderList.total_settle += item.settle_number
-          this.list.material_orderList.total_price += item.total_price
+          this.list.material_orderList.total_deduct += Number(item.deduct_number)
+          this.list.material_orderList.total_settle += Number(item.settle_number)
+          this.list.material_orderList.total_price += Number(item.total_price)
         })
       }
     },
@@ -2700,9 +2700,9 @@ export default {
         this.list.material_processList.total_price = 0
         this.list.material_processList.total_settle = 0
         this.list.material_processList.lists.forEach(item => {
-          this.list.material_processList.total_deduct += item.deduct_number
-          this.list.material_processList.total_settle += item.settle_number
-          this.list.material_processList.total_price += item.total_price
+          this.list.material_processList.total_deduct += Number(item.deduct_number)
+          this.list.material_processList.total_settle += Number(item.settle_number)
+          this.list.material_processList.total_price += Number(item.total_price)
         })
       }
     },
@@ -2717,9 +2717,9 @@ export default {
         this.list.weaveList.total_price = 0
         this.list.weaveList.total_settle = 0
         this.list.weaveList.lists.forEach(item => {
-          this.list.weaveList.total_deduct += item.deduct_number
-          this.list.weaveList.total_settle += item.settle_number
-          this.list.weaveList.total_price += item.total_price
+          this.list.weaveList.total_deduct += Number(item.deduct_number)
+          this.list.weaveList.total_settle += Number(item.settle_number)
+          this.list.weaveList.total_price += Number(item.total_price)
         })
       }
     },
@@ -2734,9 +2734,9 @@ export default {
         this.list.product_processList.total_price = 0
         this.list.product_processList.total_settle = 0
         this.list.product_processList.lists.forEach(item => {
-          this.list.product_processList.total_deduct += item.deduct_number
-          this.list.product_processList.total_settle += item.settle_number
-          this.list.product_processList.total_price += item.total_price
+          this.list.product_processList.total_deduct += Number(item.deduct_number)
+          this.list.product_processList.total_settle += Number(item.settle_number)
+          this.list.product_processList.total_price += Number(item.total_price)
         })
       }
     },
@@ -2751,9 +2751,9 @@ export default {
         this.list.packList.total_price = 0
         this.list.packList.total_settle = 0
         this.list.packList.lists.forEach(item => {
-          this.list.packList.total_deduct += item.deduct_number
-          this.list.packList.total_settle += item.settle_number
-          this.list.packList.total_price += item.total_price
+          this.list.packList.total_deduct += Number(item.deduct_number)
+          this.list.packList.total_settle += Number(item.settle_number)
+          this.list.packList.total_price += Number(item.total_price)
         })
       }
     },
@@ -2768,9 +2768,9 @@ export default {
         this.list.transportList.total_price = 0
         this.list.transportList.total_settle = 0
         this.list.transportList.lists.forEach(item => {
-          this.list.transportList.total_deduct += item.deduct_number
-          this.list.transportList.total_settle += item.settle_number
-          this.list.transportList.total_price += item.total_price
+          this.list.transportList.total_deduct += Number(item.deduct_number)
+          this.list.transportList.total_settle += Number(item.settle_number)
+          this.list.transportList.total_price += Number(item.total_price)
         })
       }
     },
@@ -2782,7 +2782,7 @@ export default {
         this.list.transferList.lists = newVal.data ? this.list.transferList.lists.filter(item => (new Date(item.complete_time).getTime() >= newVal.data[0].getTime() && newVal.data[1].getTime() >= new Date(item.complete_time).getTime())) : this.list.transferList.lists
         this.list.transferList.transfer_total_price = 0
         this.list.transferList.lists.forEach(item => {
-          this.list.transferList.transfer_total_price += item.transfer_price
+          this.list.transferList.transfer_total_price += Number(item.transfer_price)
         })
       }
     }

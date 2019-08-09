@@ -3,6 +3,8 @@
     v-loading="loading">
     <div class="head">
       <h2>{{type === '0' ? '原' : '辅'}}料入库</h2>
+      <div class="goStock"
+        @click="addAllGoStockInfo">一键添加入库</div>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -280,6 +282,7 @@ export default {
       defaultStock: '桐庐凯瑞针纺有限公司',
       materialList: [],
       processList: [],
+      stockNumber: [],
       list: [],
       pickerOptions: {
         shortcuts: [{
@@ -312,6 +315,78 @@ export default {
     }
   },
   methods: {
+    addAllGoStockInfo () {
+      let flag = this.processList.find(key => key.process_type === '染色')
+      if (!flag) {
+        this.$message.error('没有相关染色信息，无法一键添加')
+      } else {
+        console.log(flag, this.list, this.stockNumber)
+        let info = []
+        flag.companys.forEach(item => {
+          item.materials.forEach(valMater => {
+            valMater.colors.forEach(valColor => {
+              let material = info.find(index => index.material_name === valMater.material)
+              if (!material) {
+                info.push({
+                  material_name: valMater.material,
+                  color_info: [{
+                    color: valColor.color,
+                    value: valColor.value
+                  }]
+                })
+              } else {
+                let color = material.color_info.find(index => index.color === valColor.color)
+                if (!color) {
+                  material.color_info.push({
+                    color: valColor.color,
+                    value: valColor.value
+                  })
+                } else {
+                  color.value = Number(color.value ? color.value : 0) + Number(valColor.value)
+                }
+              }
+            })
+          })
+        })
+        this.stockNumber.forEach(item => {
+          let material = info.find(key => key.material_name === item.material_name)
+          if (material) {
+            let color = material.color_info.find(key => key.color === item.color_code)
+            if (color) {
+              color.value -= item.total_weight
+            }
+          }
+        })
+        console.log(info)
+        let keys = true
+        info.forEach(item => {
+          item.color_info.forEach(valColor => {
+            if (valColor.value > 0) {
+              keys = false
+              let list = this.list.find(index => index.material === item.material_name)
+              if (list) {
+                list.stockInfo.push({
+                  materialColor: valColor.color,
+                  materialAtr: '',
+                  remark: '',
+                  stock_time: this.now_time,
+                  stockWeightInfo: [
+                    {
+                      dyelot_number: '',
+                      number: 1,
+                      weight: valColor.value
+                    }
+                  ]
+                })
+              }
+            }
+          })
+        })
+        if (keys) {
+          this.$message.warning('染色原料已全部入库')
+        }
+      }
+    },
     appendStockWeightInfo (key, kay) {
       this.list[key].stockInfo[kay].stockWeightInfo.push({
         dyelot_number: '',
@@ -415,7 +490,6 @@ export default {
           })
         })
       })
-      console.log('update:', date)
       if (flag) {
         if (nums === 0) {
           this.$message({
@@ -479,14 +553,12 @@ export default {
         company_id: window.sessionStorage.getItem('company_id')
       })
     ]).then(res => {
-      console.log('init:', res)
       this.order_code = res[0].data.data.order_code
       this.client_name = res[0].data.data.client_name
       this.order_time = res[0].data.data.order_time
       this.group_name = res[0].data.data.group_name
       // 初始化订购信息
       let materialInfo = res[1].data
-      // console.log(materialInfo)
       materialInfo.forEach(item => {
         if ((this.type === '0' && item.type === 1) || (this.type === '1' && item.type === 2)) {
           let flag = this.materialList.find(val => val.company === item.client_name)
@@ -619,11 +691,9 @@ export default {
           }
         })
       })
-      // console.log(this.processList)
       // 初始化已入库数量
-      let stockNumber = res[3].data.data
-      console.log(stockNumber)
-      stockNumber.forEach(item => {
+      this.stockNumber = res[3].data.data
+      this.stockNumber.forEach(item => {
         let flag = this.list.find(val => val.material === item.material_name)
         if (flag) {
           flag.goStocks_number = Number(flag.goStocks_number ? flag.goStocks_number : 0) + Number(item.total_weight)
@@ -635,7 +705,6 @@ export default {
         name: '本厂仓库'
       })
       this.loading = false
-      console.log(this.list)
     })
   }
 }
@@ -643,4 +712,22 @@ export default {
 
 <style scoped lang='less'>
 @import "~@/assets/css/rawMaterialStock.less";
+</style>
+<style lang="less" scoped>
+#rawMaterialStock {
+  position: relative;
+  .goStock {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    width: 7em;
+    height: 40px;
+    line-height: 40px;
+    background: #1a95ff;
+    border-radius: 5px;
+    text-align: center;
+    color: #fff;
+    cursor: pointer;
+  }
+}
 </style>

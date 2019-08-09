@@ -228,7 +228,7 @@
           <div class="addBtn"
             @click="addTestInfo">
             <span>+</span>
-            <span>检验人员</span>
+            <span>添加检验</span>
           </div>
         </div>
       </div>

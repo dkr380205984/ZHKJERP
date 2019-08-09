@@ -3,6 +3,8 @@
     v-loading="loading">
     <div class="head">
       <h2>{{type === '0' ? '原' : '辅'}}料出库</h2>
+      <div class="goStock"
+        @click="addAllOutStockInfo">一键添加出库</div>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -304,7 +306,8 @@ export default {
             picker.$emit('pick', date)
           }
         }]
-      }
+      },
+      outStockInfo: []
     }
   },
   filters: {
@@ -329,17 +332,59 @@ export default {
     }
   },
   methods: {
+    addAllOutStockInfo () {
+      let info = JSON.parse(JSON.stringify(this.productionList))
+      this.outStockInfo.forEach(item => {
+        let client = info.find(key => key.name === item.client_name)
+        if (client) {
+          let material = client.materials.find(key => key.material === item.material_name)
+          if (material) {
+            let color = material.colors.find(key => key.color === item.color_code)
+            if (color) {
+              color.number -= item.weight
+            }
+          }
+        }
+      })
+      console.log(info)
+      let keys = true
+      info.forEach(item => {
+        item.materials.forEach(valMater => {
+          valMater.colors.forEach(valColor => {
+            if (valColor.number > 0) {
+              keys = false
+              let flag = this.list.find(key => key.material === valMater.material)
+              if (flag) {
+                flag.stockInfo.push({
+                  materialColor: valColor.color,
+                  remark: '',
+                  outStockClient: item.client_id,
+                  stock_time: this.now_time,
+                  stockWeightInfo: [
+                    {
+                      dyelot_number: '',
+                      number: 1,
+                      weight: valColor.number
+                    }
+                  ]
+                })
+              }
+            }
+          })
+        })
+      })
+      if (keys) {
+        this.$message.warning('已出库完成，无法继续添加出库')
+      }
+    },
     update (item, key) {
       if (!key) {
-        console.log(222)
         return []
       }
       let arr = item.client_name.find(val => val.id === key)
       if (arr) {
-        console.log(111)
         return item.colors[arr.name]
       } else {
-        console.log(333)
         return []
       }
     },
@@ -354,12 +399,11 @@ export default {
       this.list[key].stockInfo[kay].stockWeightInfo.splice(index, 1)
     },
     addStockInfo (key) {
-      console.log(this.list[key].stockInfo)
       this.list[key].stockInfo.push({
         materialColor: '',
         remark: '',
-        // outStockClient: '',
-        // stock_time: this.now_time,
+        outStockClient: '',
+        stock_time: this.now_time,
         stockWeightInfo: [
           {
             dyelot_number: '',
@@ -373,7 +417,6 @@ export default {
       this.list[key].stockInfo.splice(kay, 1)
     },
     saveAll () {
-      console.log(this.list)
       let arr = []
       let flag = true
       let nums = 0
@@ -447,7 +490,6 @@ export default {
           })
         })
       })
-      console.log(arr)
       if (flag) {
         if (nums === 0) {
           this.$message({
@@ -458,7 +500,6 @@ export default {
           rawMaterialOutStock({
             data: arr
           }).then(res => {
-            console.log(res)
             if (res.data.code === 200) {
               this.$message({
                 message: '添加成功,即将跳转至详情页',
@@ -502,7 +543,6 @@ export default {
         order_id: this.$route.params.id
       })
     ]).then(res => {
-      // console.log(res)
       this.order_code = res[0].data.data.order_code
       this.client_name = res[0].data.data.client_name
       this.order_time = res[0].data.data.order_time
@@ -545,7 +585,6 @@ export default {
       // 生产信息初始化
       let productionInfo = res[2].data.data
       let productsInfo = res[3].data.data
-      console.log(productsInfo)
       // 分配信息初始化
       productionInfo.forEach(item => {
         let types = item.product_info.category_info.product_category + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_id ? ('/' + item.product_info.flower_id) : '')
@@ -590,7 +629,6 @@ export default {
           }
         }
       })
-      console.log(this.productionList)
       // 分配信息插入总计划生产数量与订单数量
       this.productionList.forEach(item => {
         item.production.forEach(val => {
@@ -608,7 +646,6 @@ export default {
       for (let prop in productsInfo.product_plan) {
         materials.push(...productsInfo.product_plan[prop])
       }
-      // console.log(this.productionList)
       this.productionList.forEach(item => {
         item.production.forEach(value => {
           value.product_detail.forEach(val => {
@@ -648,7 +685,6 @@ export default {
           })
         })
       })
-      // console.log(this.productionList)
       // 初始化出库信息
       this.productionList.forEach(item => {
         item.materials.forEach(value => {
@@ -693,7 +729,6 @@ export default {
       })
       // 初始化原料缸号信息
       let vatInfo = res[4].data.data
-      // console.log(vatInfo)
       vatInfo.forEach(item => {
         let flag = this.list.find(val => val.material === item.material_name)
         if (flag) {
@@ -714,11 +749,9 @@ export default {
           fleg.goStock_number = Number(fleg.goStock_number ? fleg.goStock_number : 0) + Number(item.total_weight)
         }
       })
-      // console.log(this.list)
       // 初始化原料出库数量
-      let outStockInfo = res[5].data.data
-      // console.log(outStockInfo, this.materialList)
-      outStockInfo.forEach(item => {
+      this.outStockInfo = res[5].data.data
+      this.outStockInfo.forEach(item => {
         let flag = this.list.find(val => val.material === item.material_name)
         if (flag) {
           flag.stocks_number = Number(flag.stocks_number ? flag.stocks_number : 0) + Number(item.weight)
@@ -735,4 +768,22 @@ export default {
 
 <style scoped lang='less'>
 @import "~@/assets/css/rawMaterialOutStock.less";
+</style>
+<style lang="less" scoped>
+#rawMaterialOutStock {
+  position: relative;
+  .goStock {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    width: 7em;
+    height: 40px;
+    line-height: 40px;
+    background: #1a95ff;
+    border-radius: 5px;
+    text-align: center;
+    color: #fff;
+    cursor: pointer;
+  }
+}
 </style>
