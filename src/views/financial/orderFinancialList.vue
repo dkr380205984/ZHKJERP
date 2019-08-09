@@ -556,7 +556,7 @@ export default {
   },
   filters: {
     filterNumber (val) {
-      return Number(val).toFixed(2).toLocaleString()
+      return Number(Number(val).toFixed(2)).toLocaleString()
     },
     filterToFixed (val) {
       return Number(val).toFixed(2)
