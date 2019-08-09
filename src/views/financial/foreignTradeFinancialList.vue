@@ -209,7 +209,7 @@ export default {
   },
   filters: {
     filterNumber (val) {
-      return (val / 10000).toLocaleString()
+      return (val / 10000).toFixed(2).toLocaleString()
     },
     filterType (val) {
       let type = ''

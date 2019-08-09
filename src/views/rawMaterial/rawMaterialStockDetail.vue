@@ -706,6 +706,7 @@ export default {
       this.materialList.forEach(item => {
         // 插入对应物料的订购值
         let flag = this.goStockList.find(val => val.material === item.material)
+        console.log(flag)
         // 给原料信息添加订购值和加工值
         if (materialInfo.total_weight_order[item.material]) {
           item.order_number = materialInfo.total_weight_order[item.material]

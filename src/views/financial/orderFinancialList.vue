@@ -4,7 +4,7 @@
     <div class="head">
       <h2>订单财务统计表</h2>
       <el-input style="width:250px"
-        placeholder="输入物料名称搜索"
+        placeholder="输入订单号搜索"
         suffix-icon="el-icon-search"
         v-model="searchVal"></el-input>
     </div>
@@ -60,14 +60,14 @@
                 :value="item.id">
               </el-option>
             </el-select>
-            <el-select v-model="moneyType"
+            <!-- <el-select v-model="moneyType"
               placeholder="切换币种">
               <el-option v-for="item in moneyTypeList"
                 :key="item.id"
                 :label="item.label"
                 :value="item.id">
               </el-option>
-            </el-select>
+            </el-select> -->
           </div>
           <div>
             <el-date-picker v-model="data"
@@ -87,77 +87,26 @@
         <div class="title">
           <span class="icon">
             订单号
-            <!-- @click="filterOption.orderFilterFlag = !filterOption.orderFilterFlag" -->
-            <!-- <em class="el-icon-caret-top"
-              :style="{color:filterOption.orderFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-            <em class="el-icon-caret-bottom"
-              :style="{color:!filterOption.orderFilterFlag ? '#9A9A9A' : '#FFF'}"></em> -->
           </span>
           <span>下单公司</span>
           <span class="icon">
             下单日期
-            <!-- @click="filterOption.timeFilterFlag = !filterOption.timeFilterFlag" -->
-            <!-- <em class="el-icon-caret-top"
-              :style="{color:filterOption.timeFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-            <em class="el-icon-caret-bottom"
-              :style="{color:!filterOption.timeFilterFlag ? '#9A9A9A' : '#FFF'}"></em> -->
           </span>
           <span class="icon">
             订单总值
-            <!-- @click="filterOption.totalFilterFlag = !filterOption.totalFilterFlag" -->
-            <!-- <em class="el-icon-caret-top"
-              :style="{color:filterOption.totalFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-            <em class="el-icon-caret-bottom"
-              :style="{color:!filterOption.totalFilterFlag ? '#9A9A9A' : '#FFF'}"></em> -->
           </span>
           <span class="icon">
             下单数量
-            <!-- @click="filterOption.numberFilterFlag = !filterOption.numberFilterFlag" -->
-            <!-- <em class="el-icon-caret-top"
-              :style="{color:filterOption.numberFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-            <em class="el-icon-caret-bottom"
-              :style="{color:!filterOption.numberFilterFlag ? '#9A9A9A' : '#FFF'}"></em> -->
           </span>
           <span class="icon">
             出库数量
-            <!-- @click="filterOption.outNumberFilterFlag = !filterOption.outNumberFilterFlag" -->
-            <!-- <em class="el-icon-caret-top"
-              :style="{color:filterOption.outNumberFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-            <em class="el-icon-caret-bottom"
-              :style="{color:!filterOption.outNumberFilterFlag ? '#9A9A9A' : '#FFF'}"></em> -->
           </span>
           <span class="icon">
             实际总值
-            <!-- @click="filterOption.totalNumberFilterFlag = !filterOption.totalNumberFilterFlag" -->
-            <!-- <em class="el-icon-caret-top"
-              :style="{color:filterOption.totalNumberFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-            <em class="el-icon-caret-bottom"
-              :style="{color:!filterOption.totalNumberFilterFlag ? '#9A9A9A' : '#FFF'}"></em> -->
           </span>
           <span class="icon">
             工厂成本
-            <!-- @click="filterOption.companyCostFilterFlag = !filterOption.companyCostFilterFlag" -->
-            <!-- <em class="el-icon-caret-top"
-              :style="{color:filterOption.companyCostFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-            <em class="el-icon-caret-bottom"
-              :style="{color:!filterOption.companyCostFilterFlag ? '#9A9A9A' : '#FFF'}"></em> -->
           </span>
-          <!-- <span @click="filterOption.cutPayFilterFlag = !filterOption.cutPayFilterFlag"
-            class="icon">
-            扣款记录
-            <em class="el-icon-caret-top"
-              :style="{color:filterOption.cutPayFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-            <em class="el-icon-caret-bottom"
-              :style="{color:!filterOption.cutPayFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-          </span>
-          <span @click="filterOption.billFilterFlag = !filterOption.billFilterFlag"
-            class="icon">
-            结算记录
-            <em class="el-icon-caret-top"
-              :style="{color:filterOption.billFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-            <em class="el-icon-caret-bottom"
-              :style="{color:!filterOption.billFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-          </span> -->
           <span>负责小组</span>
           <span>操作</span>
         </div>
@@ -340,17 +289,6 @@ export default {
         }
       ],
       data: '',
-      // filterOption: {
-      //   orderFilterFlag: false,
-      //   timeFilterFlag: false,
-      //   totalFilterFlag: false,
-      //   numberFilterFlag: false,
-      //   outNumberFilterFlag: false,
-      //   totalNumberFilterFlag: false,
-      //   companyCostFilterFlag: false,
-      //   cutPayFilterFlag: false,
-      //   billFilterFlag: false
-      // },
       pickerOptions: {
         shortcuts: [{
           text: '最近一周',
@@ -411,10 +349,8 @@ export default {
   },
   methods: {
     getList (item) {
-      if (!item) {
-        for (const prop in this.nowCount) {
-          this.nowCount[prop] = 0
-        }
+      for (const prop in this.nowCount) {
+        this.nowCount[prop] = 0
       }
       this.isOk = false
       orderList({
@@ -489,13 +425,14 @@ export default {
               })
             })
           })
-
-          this.nowCount.order_total_price += (list.order_total_price * list.exchange_rate)
-          this.nowCount.order_total_number += list.order_number
-          this.nowCount.order_total_real_price += list.total_real
-          this.nowCount.outStock_total_number += list.total_pop
-          this.nowCount.order_total_cost += list.company_cost
           this.list.push(list)
+        })
+        this.list.forEach(value => {
+          this.nowCount.order_total_price += (value.order_total_price * value.exchange_rate)
+          this.nowCount.order_total_number += Number(value.order_number)
+          this.nowCount.order_total_real_price += Number(value.total_real)
+          this.nowCount.outStock_total_number += Number(value.total_pop)
+          this.nowCount.order_total_cost += Number(value.company_cost)
         })
         this.isOk = true
         this.loading = false
