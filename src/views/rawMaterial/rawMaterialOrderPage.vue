@@ -57,11 +57,11 @@
           <div class="cicle"></div>
           <div class="border"></div>
         </div>
-        <div class="lineCtn">
+        <div class="lineCtn col">
           <ul class="tablesCtn"
             v-for="(item,key) in rawMaterialPlanList"
             :key='key'
-            style="line-height:40px;margin-left:40px;width:898px;">
+            :style="{'line-height':'40px','margin-left':'40px','width':'898px','margin-top':key !== 0 ? '20px' : false}">
             <li class="title">
               <span style='align-items:center'>{{item.material}}</span>
               <span class="materialInfoBox">

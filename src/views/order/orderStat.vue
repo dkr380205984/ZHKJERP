@@ -301,7 +301,7 @@ export default {
   },
   methods: {
     getStatus (time, totalNumber, compiledNumber) {
-      // console.log(time, totalNumber, compiledNumber)
+      console.log(time, totalNumber, compiledNumber)
       if (new Date().getTime() > new Date(time).getTime()) {
         let num = Math.floor((new Date().getTime() - new Date(time).getTime()) / 1000 / 60 / 60 / 24)
         if (num < 1 && totalNumber > compiledNumber) {
