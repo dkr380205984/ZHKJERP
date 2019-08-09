@@ -163,7 +163,7 @@
                   <span>{{item.group_name}}</span>
                   <span>{{item.order_time}}</span>
                   <span>{{item.client_name}}</span>
-                  <span>{{item.total_price ? item.total_price : 0}}元</span>
+                  <span>{{(item.total_price ? item.total_price : 0)|filterToFixed}}元</span>
                   <span class="find"
                     @click.stop="find(item.order_code,'cut')">{{item.deduct_number ? item.deduct_number : '-'}}</span>
                   <span class="find"
@@ -211,7 +211,7 @@
                           <span class="flex08">{{valSize.price|filterToFixed}}{{item.account_unit}}/{{valPro.unit}}</span>
                           <span>{{valSize.number}}{{valPro.unit}}</span>
                           <span>{{valSize.pack_number ? valSize.pack_number : 0}}{{valPro.unit}}</span>
-                          <span>{{(valSize.pack_number ? valSize.pack_number : 0)*valSize.price}}{{item.account_unit}}</span>
+                          <span>{{((valSize.pack_number ? valSize.pack_number : 0)*valSize.price)|filterToFixed}}{{item.account_unit}}</span>
                         </span>
                       </span>
                     </span>
@@ -329,7 +329,7 @@
                   <span>{{item.group_name}}</span>
                   <span>{{item.order_time}}</span>
                   <span>{{item.client_name}}</span>
-                  <span>{{item.total_price ? item.total_price: 0}}元</span>
+                  <span>{{(item.total_price ? item.total_price: 0)|filterToFixed}}元</span>
                   <span class="find"
                     @click.stop="find(item.order_code,'cut')">{{item.deduct_number ? item.deduct_number : '-'}}</span>
                   <span class="find"
@@ -359,8 +359,8 @@
                           <span>{{valInfo.type}}</span>
                           <span class="flex08">{{valInfo.attr ? valInfo.attr : '无'}}/{{valInfo.color}}</span>
                           <span class="flex08">{{valInfo.price|filterToFixed}}元/kg</span>
-                          <span class="flex05">{{valInfo.number}}kg</span>
-                          <span>{{((valInfo.number ? valInfo.number : 0)*valInfo.price)}}元</span>
+                          <span class="flex05">{{valInfo.number|filterToFixed}}kg</span>
+                          <span>{{((valInfo.number ? valInfo.number : 0)*valInfo.price)|filterToFixed}}元</span>
                         </span>
                       </span>
                     </span>
@@ -478,7 +478,7 @@
                   <span>{{item.group_name}}</span>
                   <span>{{item.order_time}}</span>
                   <span>{{item.client_name}}</span>
-                  <span>{{item.total_price ? item.total_price: 0}}元</span>
+                  <span>{{(item.total_price ? item.total_price: 0)|filterToFixed}}元</span>
                   <span class="find"
                     @click.stop="find(item.order_code,'cut')">{{item.deduct_number ? item.deduct_number : '-'}}</span>
                   <span class="find"
@@ -508,10 +508,10 @@
                           :key="indInfo">
                           <span class="flex08">{{valInfo.attr ? valInfo.attr : '无'}}/{{valInfo.color}}</span>
                           <span class="flex08">{{'-'}}</span>
-                          <span class="flex05">{{valInfo.value}}kg</span>
+                          <span class="flex05">{{(valInfo.value)|filterToFixed}}kg</span>
                         </span>
                       </span>
-                      <span>{{val.total_price}}元</span>
+                      <span>{{val.total_price|filterToFixed}}元</span>
                     </span>
                   </div>
                 </div>
@@ -627,7 +627,7 @@
                   <span>{{item.group_name}}</span>
                   <span>{{item.order_time}}</span>
                   <span>{{item.client_name}}</span>
-                  <span>{{item.total_price ? item.total_price: 0}}元</span>
+                  <span>{{(item.total_price ? item.total_price: 0)|filterToFixed}}元</span>
                   <span class="find"
                     @click.stop="find(item.order_code,'cut')">{{item.deduct_number ? item.deduct_number : '-'}}</span>
                   <span class="find"
@@ -673,7 +673,7 @@
                           <span class="flex08">{{valSize.color}}</span>
                           <span class="flex08">{{valSize.price|filterToFixed}}元/{{valPro.unit}}</span>
                           <span>{{valSize.number}}{{valPro.unit}}</span>
-                          <span>{{(valSize.number ? valSize.number : 0)*valSize.price}}元</span>
+                          <span>{{((valSize.number ? valSize.number : 0)*valSize.price)|filterToFixed}}元</span>
                         </span>
                       </span>
                     </span>
@@ -791,7 +791,7 @@
                   <span>{{item.group_name}}</span>
                   <span>{{item.order_time}}</span>
                   <span>{{item.client_name}}</span>
-                  <span>{{item.total_price ? item.total_price: 0}}元</span>
+                  <span>{{(item.total_price ? item.total_price: 0)|filterToFixed}}元</span>
                   <span class="find"
                     @click.stop="find(item.order_code,'cut')">{{item.deduct_number ? item.deduct_number : '-'}}</span>
                   <span class="find"
@@ -839,7 +839,7 @@
                           <span class="flex05">{{valSize.color}}</span>
                           <span class="flex08">{{valSize.price|filterToFixed}}元/{{valPro.unit}}</span>
                           <span>{{valSize.number}}{{valPro.unit}}</span>
-                          <span>{{(valSize.number ? valSize.number : 0)*valSize.price}}元</span>
+                          <span>{{((valSize.number ? valSize.number : 0)*valSize.price)|filterToFixed}}元</span>
                         </span>
                       </span>
                     </span>
@@ -957,7 +957,7 @@
                   <span>{{item.group_name}}</span>
                   <span>{{item.order_time}}</span>
                   <span>{{item.client_name}}</span>
-                  <span>{{item.total_price ? item.total_price: 0}}元</span>
+                  <span>{{(item.total_price ? item.total_price: 0)|filterToFixed}}元</span>
                   <span class="find"
                     @click.stop="find(item.order_code,'cut')">{{item.deduct_number ? item.deduct_number : '-'}}</span>
                   <span class="find"
@@ -984,9 +984,9 @@
                         <span v-for="(valInfo,indInfo) in val.material_info"
                           :key="indInfo">
                           <span class="flex15">{{valInfo.size}}</span>
-                          <span class="flex08">{{valInfo.price}}元/个</span>
+                          <span class="flex08">{{valInfo.price|filterToFixed}}元/个</span>
                           <span class="flex08">{{valInfo.number}}个</span>
-                          <span>{{valInfo.price * valInfo.number}}元</span>
+                          <span>{{(valInfo.price * valInfo.number)|filterToFixed}}元</span>
                         </span>
                       </span>
                     </span>
@@ -1104,7 +1104,7 @@
                   <span>{{item.group_name}}</span>
                   <span>{{item.order_time}}</span>
                   <span>{{item.client_name}}</span>
-                  <span>{{item.total_price ? item.total_price: 0}}元</span>
+                  <span>{{(item.total_price ? item.total_price: 0)|filterToFixed}}元</span>
                   <span class="find"
                     @click.stop="find(item.order_code,'cut')">{{item.deduct_number ? item.deduct_number : '-'}}</span>
                   <span class="find"
@@ -1134,10 +1134,10 @@
                           :key="indInfo">
                           <span class="flex08">{{valInfo.attr ? valInfo.attr : '无'}}/{{valInfo.color}}</span>
                           <span class="flex08">{{'-'}}</span>
-                          <span class="flex05">{{valInfo.value}}kg</span>
+                          <span class="flex05">{{valInfo.value|filterToFixed}}kg</span>
                         </span>
                       </span>
-                      <span>{{val.total_price}}元</span>
+                      <span>{{val.total_price|filterToFixed}}元</span>
                     </span>
                   </div>
                 </div>
@@ -1215,7 +1215,7 @@
                   style="line-height:59px;">
                   <span>{{item.complete_time}}</span>
                   <span>{{item.type === 1 ? '收款' : '付款'}}</span>
-                  <span>{{item.transfer_price ? item.transfer_price : 0}}</span>
+                  <span>{{(item.transfer_price ? item.transfer_price : 0)|filterToFixed}}元</span>
                   <span>{{item.desc ? item.desc : '无'}}</span>
                   <span>
                     <div class="imgCtn">
@@ -2239,14 +2239,14 @@ export default {
             })
           })
         })
-        this.list.orderList.total_price = Number(this.list.orderList.total_price) + Number(item.total_real / 100)
+        this.list.orderList.total_price = Number(this.list.orderList.total_price) + Number(item.total_real)
         this.list.orderList.list.push({
           id: item.id,
           order_code: item.order_code,
           group_name: item.group_name,
           order_time: item.order_time,
           client_name: item.client_name,
-          total_price: item.total_real / 100,
+          total_price: item.total_real,
           rate: item.exchange_rate / 100,
           account_unit: item.account_unit,
           product_info: productInfo,
