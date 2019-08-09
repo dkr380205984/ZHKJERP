@@ -9,6 +9,28 @@
         v-model="searchVal"></el-input>
     </div>
     <div class="body">
+      <div class="totalCtn">
+        <span>
+          <span>订单总额</span>
+          <span class="moneyTag">{{orderFinancialCount.total_order_price|filterNumber}}<span class="unit">万元</span></span>
+        </span>
+        <span>
+          <span>下单数量</span>
+          <span class="moneyTag">{{orderFinancialCount.total_order_number|filterNumber}}<span class="unit">万</span></span>
+        </span>
+        <span>
+          <span>出库数量</span>
+          <span class="moneyTag">{{orderFinancialCount.total_order_pop|filterNumber}}<span class="unit">万</span></span>
+        </span>
+        <span>
+          <span>实际总值</span>
+          <span class="moneyTag">{{orderFinancialCount.total_order_real_price|filterNumber}}<span class="unit">万元</span></span>
+        </span>
+        <span>
+          <span>工厂成本</span>
+          <span class="moneyTag">{{orderFinancialCount.total_order_cost|filterNumber}}<span class="unit">万元</span></span>
+        </span>
+      </div>
       <div class="filterCtn">
         <div class="filterLine">
           <span class="label">筛选列表:</span>
@@ -154,10 +176,8 @@
                 <span>{{item.order_total_price|filterToFixed}}{{item.account_unit}}</span>
                 <span>{{item.order_number}}</span>
                 <span>{{item.total_pop}}</span>
-                <span>{{item.total_real/100|filterToFixed}}元</span>
+                <span>{{item.total_real|filterToFixed}}元</span>
                 <span>{{item.company_cost|filterToFixed}}元</span>
-                <!-- <span>{{item.order_cutPay}}</span>
-                <span>{{item.bill}}</span> -->
                 <span>{{item.group_name}}</span>
                 <span>
                   <span class="btn"
@@ -248,13 +268,11 @@
           <span>合计</span>
           <span></span>
           <span></span>
-          <span>{{orderFinancialCount.total_order_price|filterNumber}}万元</span>
-          <span>{{orderFinancialCount.total_order_number|filterNumber}}万件</span>
-          <span>{{orderFinancialCount.total_order_pop|filterNumber}}万件</span>
-          <span>{{orderFinancialCount.total_order_real_price|filterNumber}}万元</span>
-          <span>{{orderFinancialCount.total_order_cost|filterNumber}}万元</span>
-          <!-- <span>{{orderFinancialCount.total_order_deduct|filterNumber}}万元</span>
-          <span></span> -->
+          <span>{{nowCount.order_total_price/10000|filterNumber}}万元</span>
+          <span>{{nowCount.order_total_number/10000|filterNumber}}万</span>
+          <span>{{nowCount.outStock_total_number/10000|filterNumber}}万</span>
+          <span>{{nowCount.order_total_real_price/10000|filterNumber}}万元</span>
+          <span>{{nowCount.order_total_cost/10000|filterNumber}}万元</span>
           <span></span>
           <span></span>
         </div>
@@ -300,11 +318,17 @@ export default {
       moneyType: 'RMB',
       orderFinancialCount: {
         total_order_cost: '',
-        total_order_deduct: '',
         total_order_number: '',
         total_order_pop: '',
         total_order_price: '',
         total_order_real_price: ''
+      },
+      nowCount: {
+        order_total_price: 0,
+        order_total_number: 0,
+        outStock_total_number: 0,
+        order_total_real_price: 0,
+        order_total_cost: 0
       },
       moneyTypeList: [
         {
@@ -386,7 +410,12 @@ export default {
     }
   },
   methods: {
-    getList () {
+    getList (item) {
+      if (!item) {
+        for (const prop in this.nowCount) {
+          this.nowCount[prop] = 0
+        }
+      }
       this.isOk = false
       orderList({
         company_id: window.sessionStorage.getItem('company_id'),
@@ -417,6 +446,7 @@ export default {
           list.company_cost = item.cost
           list.total_real = item.total_real
           list.total_pop = item.total_pop
+          list.exchange_rate = item.exchange_rate / 100
           // 订单产品信息
           item.order_batch.forEach(item => {
             item.batch_info.forEach(valBat => {
@@ -459,6 +489,12 @@ export default {
               })
             })
           })
+
+          this.nowCount.order_total_price += (list.order_total_price * list.exchange_rate)
+          this.nowCount.order_total_number += list.order_number
+          this.nowCount.order_total_real_price += list.total_real
+          this.nowCount.outStock_total_number += list.total_pop
+          this.nowCount.order_total_cost += list.company_cost
           this.list.push(list)
         })
         this.isOk = true
@@ -471,7 +507,7 @@ export default {
         if (Number(el.scrollTop) + 600 >= this.list.length * 60) {
           if (Math.ceil(this.total / 10) > this.pages) {
             this.pages++
-            this.getList()
+            this.getList(true)
           }
         }
       } else {

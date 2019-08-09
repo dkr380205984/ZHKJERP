@@ -33,6 +33,40 @@ ul{
     padding: 20px 40px;
     flex: 1;
     color:@fontNormal;
+    .totalCtn{
+      height: 120px;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 20px 60px;
+      display: flex;
+      box-shadow:0px 2px 12px rgba(0,0,0,0.08);
+      &>span{
+        flex: 1;
+        border-right: 1px solid #DDD;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        .moneyTag{
+          font-size: 30px;
+          font-weight: 500;
+          position: relative;
+          line-height: 30px;
+          &>.unit{
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            transform: translateX(100%);
+            font-size: 16px;
+            line-height: 16px;
+            font-weight: 400;
+          }
+        }
+        &:last-child {
+          border-right:  none;
+        }
+      }
+    }
     .filterCtn{
       margin-bottom: 20px;
       font-size: @fontBig;

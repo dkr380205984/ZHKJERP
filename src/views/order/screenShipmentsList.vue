@@ -91,7 +91,7 @@
                             <span class="tableRow">
                               <el-progress :class="setColor(item.delivery_time) ? 'success' : 'warning'"
                                 :stroke-width="10"
-                                :percentage="Math.ceil((valSize.compiled_number/valSize.number)*100)"></el-progress>
+                                :percentage="Math.ceil((valSize.compiled_number/valSize.number)*100) > 100 ?  100 : Math.ceil((valSize.compiled_number/valSize.number)*100)"></el-progress>
                             </span>
                           </span>
                         </span>

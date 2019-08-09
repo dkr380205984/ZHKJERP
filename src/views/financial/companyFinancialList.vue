@@ -1,9 +1,9 @@
 <template>
   <div id="orderFinancialList">
     <div class="head">
-      <h2>工厂成本统计</h2>
+      <h2>产品产量统计表</h2>
       <el-input style="width:250px"
-        placeholder="输入物料名称搜索"
+        placeholder="输入产品编号搜索"
         suffix-icon="el-icon-search"
         v-model="searchVal"></el-input>
     </div>
@@ -55,79 +55,13 @@
       </div>
       <div class="content">
         <div class="title">
-          <span @click="filterOption.orderFilterFlag = !filterOption.orderFilterFlag"
-            class="icon">
-            订单号
-            <em class="el-icon-caret-top"
-              :style="{color:filterOption.orderFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-            <em class="el-icon-caret-bottom"
-              :style="{color:!filterOption.orderFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-          </span>
-          <span>公司类型</span>
-          <span @click="filterOption.timeFilterFlag = !filterOption.timeFilterFlag"
-            class="icon">
-            公司名称
-            <em class="el-icon-caret-top"
-              :style="{color:filterOption.timeFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-            <em class="el-icon-caret-bottom"
-              :style="{color:!filterOption.timeFilterFlag ? '#9A9A9A' : '#FFF'}"></em></span>
-          <span @click="filterOption.totalFilterFlag = !filterOption.totalFilterFlag"
-            class="icon">
-            下单日期
-            <em class="el-icon-caret-top"
-              :style="{color:filterOption.totalFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-            <em class="el-icon-caret-bottom"
-              :style="{color:!filterOption.totalFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-          </span>
-          <span @click="filterOption.numberFilterFlag = !filterOption.numberFilterFlag"
-            class="icon">
-            生产数量
-            <em class="el-icon-caret-top"
-              :style="{color:filterOption.numberFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-            <em class="el-icon-caret-bottom"
-              :style="{color:!filterOption.numberFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-          </span>
-          <span @click="filterOption.outNumberFilterFlag = !filterOption.outNumberFilterFlag"
-            class="icon">
-            入库数量
-            <em class="el-icon-caret-top"
-              :style="{color:filterOption.outNumberFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-            <em class="el-icon-caret-bottom"
-              :style="{color:!filterOption.outNumberFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-          </span>
-          <span @click="filterOption.totalNumberFilterFlag = !filterOption.totalNumberFilterFlag"
-            class="icon">
-            次品扣款
-            <em class="el-icon-caret-top"
-              :style="{color:filterOption.totalNumberFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-            <em class="el-icon-caret-bottom"
-              :style="{color:!filterOption.totalNumberFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-          </span>
-          <span @click="filterOption.companyCostFilterFlag = !filterOption.companyCostFilterFlag"
-            class="icon">
-            成本报价
-            <em class="el-icon-caret-top"
-              :style="{color:filterOption.companyCostFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-            <em class="el-icon-caret-bottom"
-              :style="{color:!filterOption.companyCostFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-          </span>
-          <span @click="filterOption.cutPayFilterFlag = !filterOption.cutPayFilterFlag"
-            class="icon">
-            实际总价
-            <em class="el-icon-caret-top"
-              :style="{color:filterOption.cutPayFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-            <em class="el-icon-caret-bottom"
-              :style="{color:!filterOption.cutPayFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-          </span>
-          <span @click="filterOption.billFilterFlag = !filterOption.billFilterFlag"
-            class="icon">
-            差值
-            <em class="el-icon-caret-top"
-              :style="{color:filterOption.billFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-            <em class="el-icon-caret-bottom"
-              :style="{color:!filterOption.billFilterFlag ? '#9A9A9A' : '#FFF'}"></em>
-          </span>
-          <span>负责小组</span>
+          <span>产品编号</span>
+          <span>产品品类</span>
+          <span>下单数量</span>
+          <span>平均价格</span>
+          <span>合计产值</span>
+          <span>次品率</span>
+          <span>库存数量</span>
           <span>操作</span>
         </div>
         <ul class="infinite-list"
@@ -137,24 +71,20 @@
               class="infinite-list-item"
               @click="item.flag = !item.flag">
               <div class="list">
-                <span>
-                  <em :class="{'el-icon-caret-bottom':true,'open':true,'close':!item.flag}"></em>
-                  {{item.order_code}}</span>
-                <span>{{item.client_type}}</span>
-                <span>{{item.client_name}}</span>
-                <span>{{item.order_time}}</span>
-                <span>{{item.production_number}}</span>
-                <span>{{item.goStock_number}}</span>
-                <span>{{item.defective_price}}{{item.price_unit}}</span>
-                <span>{{item.cost_price}}{{item.price_unit}}</span>
-                <span>{{item.bill_price}}{{item.price_unit}}</span>
-                <span>{{Number(item.bill_price) - Number(item.cost_price)}}</span>
-                <span>{{item.group_name}}</span>
+                <span style="line-height:59px;">
+                  <!-- <em :class="{'el-icon-caret-bottom':true,'open':true,'close':!item.flag}"></em> -->
+                  {{item.product_code}}</span>
+                <span>{{item.product_type}}</span>
+                <span>{{item.order_number}}</span>
+                <span>{{item.total_price/item.order_number}}</span>
+                <span>{{item.total_price}}</span>
+                <span>{{item.ciping}}</span>
+                <span>{{item.stock_number}}</span>
                 <span>
                   <span class="btn">详情</span>
                 </span>
               </div>
-              <div :class="{'detail':true,'detailNone':!item.flag,'detailShow':item.flag}">
+              <!-- <div :class="{'detail':true,'detailNone':!item.flag,'detailShow':item.flag}">
                 <span class="title">
                   <span class="flex15">产品类型</span>
                   <span>尺码</span>
@@ -193,7 +123,7 @@
                     </span>
                   </span>
                 </span>
-              </div>
+              </div> -->
             </li>
           </template>
 
@@ -201,15 +131,11 @@
         <div class="footer">
           <span>合计</span>
           <span></span>
-          <span></span>
+          <span>{{100000|filterNumber}}</span>
           <span></span>
           <span>{{100000|filterNumber}}</span>
-          <span>{{100000|filterNumber}}</span>
-          <span>{{450454512|filterNumber}}元</span>
-          <span>{{450454512|filterNumber}}元</span>
-          <span>{{(450454512.01)|filterNumber}}元</span>
-          <span>{{60000|filterNumber}}元</span>
           <span></span>
+          <span>{{450454512|filterNumber}}元</span>
           <span></span>
         </div>
       </div>
@@ -284,84 +210,12 @@ export default {
     getList () {
       for (let i = 0; i < 10; i++) {
         this.list.push({
-          id: '666',
-          order_code: 'dindan1',
-          client_type: '染色',
-          client_name: '飞泰',
-          order_time: '2019-09-01',
-          production_number: '3000',
-          price_unit: '元',
-          goStock_number: '2980',
-          defective_price: '200',
-          cost_price: '3000',
-          bill_price: '5000',
-          group_name: 'A组',
-          flag: false,
-          product_info: [
-            {
-              product_code: '1111',
-              product_type: '尽快发就考虑/交罚款',
-              size: [
-                {
-                  size: 'L',
-                  color: '绿',
-                  process_number: '2000',
-                  process_price: '4',
-                  production_total_price: '20000',
-                  goStock_number: '1980',
-                  defective_number: '10',
-                  defective_cutPay: '100',
-                  cost_price: '100000',
-                  bill_price: '1000000'
-                },
-                {
-                  size: 'L',
-                  color: '绿',
-                  process_number: '2000',
-                  process_price: '4',
-                  production_total_price: '20000',
-                  goStock_number: '1980',
-                  defective_number: '10',
-                  defective_cutPay: '100',
-                  cost_price: '100000',
-                  bill_price: '1000000'
-                }
-              ]
-            },
-            {
-              product_code: '1111',
-              product_type: '尽快发就考虑/交罚款',
-              order_total_price: '20000',
-              reality_total_price: '19800',
-              img: [],
-              size: [
-                {
-                  size: 'L',
-                  color: '绿',
-                  process_number: '2000',
-                  process_price: '4',
-                  production_total_price: '20000',
-                  goStock_number: '1980',
-                  defective_number: '10',
-                  defective_cutPay: '100',
-                  cost_price: '100000',
-                  bill_price: '1000000'
-                },
-                {
-                  size: 'L',
-                  color: '绿',
-                  process_number: '2000',
-                  process_price: '4',
-                  production_total_price: '20000',
-                  goStock_number: '1980',
-                  defective_number: '10',
-                  defective_cutPay: '100',
-                  cost_price: '100000',
-                  bill_price: '1000000'
-                }
-              ]
-            }
-          ]
+          product_code: '19ABC125',
+          product_type: '围巾/针织/长巾/豹纹',
+          order_number: 20000,
+          total_price: 100000,
+          ciping: 10,
+          stock_number: 2000
         })
       }
     },
@@ -374,6 +228,7 @@ export default {
   },
   created () {
     this.getList()
+    console.log(__dirname)
   },
   filters: {
     filterNumber (val) {
