@@ -8,14 +8,12 @@ import 'element-ui/lib/theme-chalk/index.css'
 import mycomponent from './components'
 // 粒子特效 文档地址：https://www.jianshu.com/p/53199b842d25
 import VueParticles from 'vue-particles'
-// 引入echarts主模块
-let echarts = require('echarts/lib/echarts')
-// 引入饼图
-require('echarts/lib/chart/pie')
-// 引入提示框和title组件
-require('echarts/lib/component/tooltip')
-require('echarts/lib/component/title')
-Vue.prototype.$echarts = echarts
+import ECharts from 'vue-echarts/components/ECharts'
+import 'echarts/lib/chart/line'
+import 'echarts/lib/chart/bar'
+import 'echarts/lib/chart/pie'
+import 'echarts/lib/chart/sunburst'
+Vue.component('echarts', ECharts)
 Vue.use(VueParticles)
 Vue.use(ElementUI)
 Vue.use(mycomponent)
