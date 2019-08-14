@@ -165,7 +165,7 @@
                   @click="deleteBuyMaterialInfo(key,kay,index)"></em>
               </li>
               <li>
-                <span cl>订购来源:</span>
+                <span>订购来源:</span>
                 <!-- <el-select v-model="iten.company"
                   placeholder="请选择订购来源"
                   size="small">
@@ -584,7 +584,7 @@ export default {
       this.order_time = res[0].data.data.order_info.order_time
       this.group_name = res[0].data.data.order_info.group_name
       this.company_name = res[0].data.data.order_info.client_name
-      console.log(this.rawMaterialPlanList)
+      // console.log(this.rawMaterialPlanList)
       // this.options.companyList.push(...res[1].data.data.filter((item) => (item.type.indexOf(2) !== -1 || item.type.indexOf(3) !== -1)))
       // 产品信息初始化
       let arr = []
@@ -619,7 +619,8 @@ export default {
             value: item.id,
             label: item.name
           })
-        } else if (item.type.indexOf(2) !== -1) {
+        }
+        if (item.type.indexOf(2) !== -1) {
           this.companyList[1].children.push({
             value: item.id,
             label: item.name
@@ -629,35 +630,37 @@ export default {
       // console.log(this.companyList)
       // 库存信息初始化
       let stockInfo = res[0].data.data.stock_info
-      console.log(stockInfo)
       stockInfo.forEach(item => {
         let flag = this.rawMaterialPlanList.find(key => key.material === item.material_name)
         if (flag) {
-          if (!flag.stock) {
-            flag.stock = []
-          }
-          let flag1 = flag.stock.find(key => key.stock_id === item.stock_id)
-          if (!flag1) {
-            let stockName = clientList.find(key => Number(key.id) === item.stock_id)
-            flag.stock.push({
-              stock_name: (item.stock_id === 0 ? '本厂仓库' : stockName.name),
-              stock_id: item.stock_id,
-              materialInfo: [
-                {
-                  name: item.material_color,
-                  value: item.total_weight
-                }
-              ]
-            })
-          } else {
-            let flag2 = flag1.materialInfo.find(key => key.name === item.material_color)
-            if (!flag2) {
-              flag1.materialInfo.push({
-                name: item.material_color,
-                value: item.total_weight
+          let isNeed = flag.need.find(key => key.name === item.material_color) // 判断是否需要该颜色
+          if (isNeed || item.material_color === '白胚') {
+            if (!flag.stock) {
+              flag.stock = []
+            }
+            let flag1 = flag.stock.find(key => key.stock_id === item.stock_id)
+            if (!flag1) {
+              let stockName = clientList.find(key => Number(key.id) === item.stock_id)
+              flag.stock.push({
+                stock_name: (item.stock_id === 0 ? '本厂仓库' : stockName.name),
+                stock_id: item.stock_id,
+                materialInfo: [
+                  {
+                    name: item.material_color,
+                    value: item.total_weight
+                  }
+                ]
               })
             } else {
-              flag2.value = Number(flag2.value) + Number(item.total_weight)
+              let flag2 = flag1.materialInfo.find(key => key.name === item.material_color)
+              if (!flag2) {
+                flag1.materialInfo.push({
+                  name: item.material_color,
+                  value: item.total_weight
+                })
+              } else {
+                flag2.value = Number(flag2.value) + Number(item.total_weight)
+              }
             }
           }
         }

@@ -221,8 +221,9 @@
                   <span>出库国家</span>
                   <span>运输地址</span>
                   <span>到达港口</span>
+                  <span>费用</span>
                   <span>备注</span>
-                  <span>操作</span>
+                  <span class="flex17">操作</span>
                 </li>
                 <li class="handle"
                   @click="$router.push('/index/packagOutStock/' + $route.params.id + '/' +item.id)">添加出库</li>
@@ -237,9 +238,15 @@
                   <span :class="{tableRow:true,noDate:!val.country}">{{val.country ? val.country : '暂无数据'}}</span>
                   <span :class="{tableRow:true,noDate:!val.address}">{{val.address ? val.address : '暂无数据'}}</span>
                   <span :class="{tableRow:true,noDate:!val.port}">{{val.port ? val.port : '暂无数据'}}</span>
+                  <span :class="{tableRow:true,noDate:!val.cost}">{{val.cost ? val.cost : '暂未添加'}}</span>
                   <span :class="{tableRow:true,noDate:!val.desc}">{{val.desc ? val.desc : '暂无备注'}}</span>
-                  <span class="tableRow blue"
-                    @click="changeLog(val)">修改</span>
+                  <span class="tableRow flex17">
+                    <span class="blue"
+                      @click="changeLog(val)">修改</span>
+                    <span class="blue flex17"
+                      v-show="val.cost === null"
+                      @click="changeLog(val),addPackCost = true">添加运输费用</span>
+                  </span>
                 </li>
               </ul>
             </div>
@@ -289,14 +296,15 @@
     <div class="shades"
       v-show='changeOutStockShow'>
       <div class="main"
-        style="height:600px;">
+        style="height:660px">
         <div class="close"
-          @click="changeOutStockShow=false">
+          @click="changeOutStockShow=false,addPackCost = false">
           <span class="icon">x</span>
         </div>
-        <div class="title">修改出库信息</div>
+        <div class="title">{{addPackCost ? '添加运输费用' : '修改出库信息'}}</div>
         <div class="content"
-          style="height:550px;">
+          v-if="!addPackCost"
+          style="height:610px;">
           <div class="inputCtn">
             <span class="label"><em>*</em>运输单位</span>:
             <el-select v-model="changeOutStockInfo.client_id"
@@ -349,6 +357,14 @@
               style="width:300px">
             </el-input>
           </div>
+          <div class="inputCtn"
+            v-if="changeOutStockInfo.cost !== null">
+            <span class="label">运输费用</span>:
+            <el-input placeholder="请输入运输费用"
+              v-model="changeOutStockInfo.cost"
+              style="width:300px">
+            </el-input>
+          </div>
           <div class="inputCtn">
             <span class="label">备注</span>:
             <el-input placeholder="请输入备注信息"
@@ -361,6 +377,22 @@
               @click="submit('outStock')">修改</div>
             <div class="cancleBtn"
               @click="changeOutStockShow=false">取消</div>
+          </div>
+        </div>
+        <div class="content"
+          v-else>
+          <div class="inputCtn">
+            <span class="label">运输费用</span>:
+            <el-input placeholder="请输入运输费用"
+              v-model="changeOutStockInfo.cost"
+              style="width:300px">
+            </el-input>
+          </div>
+          <div class="btnCtn">
+            <div class="okBtn"
+              @click="submit('outStock')">提交</div>
+            <div class="cancleBtn"
+              @click="changeOutStockShow=false,addPackCost = false">取消</div>
           </div>
         </div>
       </div>
@@ -495,7 +527,8 @@ export default {
       clientList: [],
       country: countries.split('、'),
       productList: [],
-      packTypeList: []
+      packTypeList: [],
+      addPackCost: false
     }
   },
   watch: {
@@ -532,11 +565,19 @@ export default {
         this.changeOutStockInfo = JSON.parse(JSON.stringify(item))
         this.changeOutStockInfo.client_id = this.changeOutStockInfo.client_id.toString()
         this.changeOutStockShow = true
-        console.log('outStock')
       }
     },
     submit (type) {
       let data = []
+      if (this.addPackCost) {
+        if (!this.changeOutStockInfo.cost) {
+          this.$message({
+            type: 'error',
+            message: `请输入运输费用`
+          })
+          return
+        }
+      }
       if (type === 'outStock') {
         let flag = true
         if (!this.changeOutStockInfo.client_name) {
@@ -574,6 +615,7 @@ export default {
           country: this.changeOutStockInfo.country,
           address: this.changeOutStockInfo.address,
           port: this.changeOutStockInfo.port,
+          cost: this.changeOutStockInfo.cost,
           desc: this.changeOutStockInfo.desc
         })
         if (flag) {
@@ -583,7 +625,9 @@ export default {
           }).then(res => {
             if (res.data.code === 200 && res.data.status) {
               this.$message.success('修改成功')
+              this.addPackCost = false
               this.changeOutStockShow = false
+              this.getData()
             } else {
               this.$message.error(res.data.message)
             }
@@ -676,6 +720,7 @@ export default {
             if (res.data.code === 200 && res.data.status) {
               this.$message.success('修改成功')
               this.changePackShow = false
+              this.getData()
             } else {
               this.$message.error(res.data.message)
             }
@@ -683,7 +728,6 @@ export default {
         }
         console.log(this.changePackInfo)
       }
-      this.getData()
     },
     closeConfirm (key, item, batchId) {
       if (!key) {

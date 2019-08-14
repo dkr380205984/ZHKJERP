@@ -645,7 +645,7 @@
                       <span class="flex05">尺码</span>
                       <span class="flex08">颜色</span>
                       <span class="flex08">单价</span>
-                      <span>数量</span>
+                      <span>织造数量</span>
                       <span>合计金额</span>
                     </span>
                     <span class="content"
@@ -810,7 +810,7 @@
                       <span class="flex05">尺码</span>
                       <span class="flex05">颜色</span>
                       <span class="flex08">单价</span>
-                      <span>数量</span>
+                      <span>加工数量</span>
                       <span>合计金额</span>
                     </span>
                     <span class="content"
@@ -973,7 +973,7 @@
                       <span>包装名称</span>
                       <span class="flex15">尺寸</span>
                       <span class="flex08">单价</span>
-                      <span class="flex08">数量</span>
+                      <span class="flex08">订购数量</span>
                       <span>合计金额</span>
                     </span>
                     <span class="content"
@@ -1575,7 +1575,7 @@
 
 <script>
 import { companyType } from '@/assets/js/dictionary.js'
-import { getToken, clientDetail, transferAdd, transferList, settleAdd, settleList, deductAdd, deductList, clientFinancialLog, packagNumberDetail, getGroup, clientList } from '@/assets/js/api.js'
+import { getToken, clientDetail, transferAdd, transferList, settleAdd, settleList, deductAdd, deductList, clientFinancialLog, packagNumberDetail, getGroup, clientList, replenishYarnList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -1838,6 +1838,56 @@ export default {
     }
   },
   methods: {
+    jsonMerge (jsonArr, keyArr) {
+      let newJson = [] // 合并好的数据都放在这个数组里
+      jsonArr.forEach((itemJson, indexJson) => {
+        let mark = -1
+        let finded = newJson.find((itemFind, indexFind) => {
+          if (itemFind[keyArr[0]] === itemJson[keyArr[0]]) {
+            mark = indexFind
+            return itemFind[keyArr[0]] === itemJson[keyArr[0]]
+          }
+        })
+        if (!finded) {
+          let value = {}
+          value[keyArr[0]] = itemJson[keyArr[0]]
+          value['info'] = []
+          let info = {}
+          for (let i in itemJson) {
+            if (i !== keyArr[0]) {
+              info[i] = itemJson[i]
+            }
+          }
+          value['info'].push(info)
+          newJson.push(value)
+        } else {
+          let info = {}
+          for (let i in itemJson) {
+            if (i !== keyArr[0]) {
+              info[i] = itemJson[i]
+            }
+          }
+          newJson[mark]['info'].push(info)
+        }
+      })
+      // 递归的条件是不断的缩减keyArr的length，每次都去除第零个，直到为0
+      if (keyArr.length === 1) {
+        return newJson
+      } else {
+        return newJson.map((itemInfo) => {
+          let newKeyArr = []
+          keyArr.forEach((item, index) => {
+            if (index > 0) {
+              newKeyArr.push(item)
+            }
+          })
+          return {
+            [keyArr[0]]: itemInfo[keyArr[0]],
+            'info': this.jsonMerge(itemInfo['info'], newKeyArr)
+          }
+        })
+      }
+    },
     // 获取操作记录
     getRecordList () {
       this.loading = true
@@ -2185,24 +2235,34 @@ export default {
     }
   },
   created () {
-    getToken().then(res => {
-      this.postData.token = res.data.data
-    })
-    clientDetail({
-      id: this.$route.params.id
-    }).then(res => {
-      this.client_name = res.data.data.name
-      this.abbreviation = res.data.data.abbreviation
-      this.client_type = res.data.data.type
-      res.data.data.type.forEach((item, index) => {
+    Promise.all([
+      getToken(),
+      clientDetail({
+        id: this.$route.params.id
+      }),
+      clientFinancialLog({
+        client_id: this.$route.params.id
+      }),
+      getGroup({
+        company_id: window.sessionStorage.getItem('company_id')
+      }),
+      clientList({
+        company_id: window.sessionStorage.getItem('company_id')
+      }),
+      replenishYarnList({
+        company_id: window.sessionStorage.getItem('company_id')
+      })
+    ]).then(res => {
+      this.postData.token = res[0].data.data
+      this.client_name = res[1].data.data.name
+      this.abbreviation = res[1].data.data.abbreviation
+      this.client_type = res[1].data.data.type
+      res[1].data.data.type.forEach((item, index) => {
         this.client_typeStr += ((index !== 0 ? ',' : '') + companyType.find(key => key.value === item).name)
       })
-    })
-    clientFinancialLog({
-      client_id: this.$route.params.id
-    }).then(res => {
+      console.log(res[2].data.data)
       // 订单整理
-      res.data.data.order_info.forEach(item => {
+      res[2].data.data.order_info.forEach(item => {
         let productInfo = []
         item.order_batch.forEach(valBat => {
           valBat.batch_info.forEach(valPro => {
@@ -2258,7 +2318,7 @@ export default {
         })
       })
       // 物料订购整理
-      res.data.data.material_order.filter(key => key.type_source === 2).forEach(item => {
+      res[2].data.data.material_order.filter(key => key.type_source === 2).forEach(item => {
         this.list.material_orderList.total_price = Number(this.list.material_orderList.total_price) + Number(item.weight * item.price)
         let flag = this.list.material_orderList.list.find(key => key.id === item.order_id)
         if (!flag) {
@@ -2316,7 +2376,7 @@ export default {
         }
       })
       // 预定购整理
-      res.data.data.material_reserve.forEach(item => {
+      res[2].data.data.material_reserve.forEach(item => {
         let info = []
         let totalPrice = 0
         item.reserve_detail.forEach(val => {
@@ -2367,7 +2427,7 @@ export default {
         }
       })
       // 物料加工整理
-      res.data.data.material_process_log.forEach(item => {
+      res[2].data.data.material_process_log.forEach(item => {
         this.list.material_processList.total_price = Number(this.list.material_processList.total_price) + Number(item.total_price)
         let flag = this.list.material_processList.list.find(key => key.id === item.order_id)
         if (!flag) {
@@ -2406,7 +2466,7 @@ export default {
         }
       })
       // 物料织造整理
-      res.data.data.weave_log.forEach(item => {
+      res[2].data.data.weave_log.forEach(item => {
         this.list.weaveList.total_price = Number(this.list.weaveList.total_price) + Number(item.number * item.price)
         let flag = this.list.weaveList.list.find(key => key.id === item.order_id)
         if (!flag) {
@@ -2467,7 +2527,7 @@ export default {
         }
       })
       // 产品加工整理
-      res.data.data.semi_product_log.forEach(item => {
+      res[2].data.data.semi_product_log.forEach(item => {
         this.list.product_processList.total_price = Number(this.list.product_processList.total_price) + Number(item.number * item.price)
         let flag = this.list.product_processList.list.find(key => key.id === item.order_id)
         if (!flag) {
@@ -2531,7 +2591,7 @@ export default {
         }
       })
       // 包装订购整理
-      res.data.data.pack_log.forEach(item => {
+      res[2].data.data.pack_log.forEach(item => {
         this.list.packList.total_price = Number(this.list.packList.total_price) + Number(item.number * item.price)
         let flag = this.list.packList.list.find(key => key.id === item.order_id)
         if (!flag) {
@@ -2583,7 +2643,7 @@ export default {
         }
       })
       // 运输整理
-      res.data.data.stock_out.forEach(item => {
+      res[2].data.data.stock_out.forEach(item => {
         let flag = this.list.transportList.list.find(key => key.id === item.order_id)
         if (!flag) {
           this.list.transportList.list.push({
@@ -2598,21 +2658,42 @@ export default {
         this.list[prop].lists = this.list[prop].list
       }
       this.getRecordList()
-    })
-    getGroup({
-      company_id: window.sessionStorage.getItem('company_id')
-    }).then(res => {
-      this.groupList = res.data.data
-    })
-    clientList({
-      company_id: window.sessionStorage.getItem('company_id')
-    }).then(res => {
-      this.clientList = res.data.data.filter(key => key.type.indexOf(1) !== -1)
+      this.groupList = res[3].data.data
+      this.clientList = res[4].data.data.filter(key => key.type.indexOf(1) !== -1)
+      console.log(res[5].data.data)
+      this.bushaList = res[5].data.data.filter(item => ((item.type - 1) === Number(this.type))).map((item) => {
+        let json = item
+        json.yarn_info = this.jsonMerge(json.yarn_info, ['name'])
+        json.yarn_info.map((itemYarn) => {
+          itemYarn.total = itemYarn.info.reduce((total, current) => {
+            return total + parseInt(current.weight)
+          }, 0)
+          return itemYarn
+        })
+        return json
+      })
+      this.bushaList.forEach((item) => {
+        item.yarn_info.forEach((itemYarn) => {
+          itemYarn.total_price = itemYarn.info.reduce((total, itemColor) => {
+            let finded = this.orderLog.find((itemFind) => itemFind.replenish_id === item.id && itemFind.material === itemYarn.name && itemFind.color === itemColor.color)
+            if (finded) {
+              return total + parseInt(finded.total_price)
+            } else {
+              return total
+            }
+          }, 0)
+          itemYarn.info.forEach((itemColor) => {
+            let finded = this.orderLog.find((itemFind) => itemFind.replenish_id === item.id && itemFind.material === itemYarn.name && itemFind.color === itemColor.color)
+            if (finded) {
+              itemColor['buchong'] = itemColor['buchong'] ? itemColor['buchong'] + finded.weight : finded.weight
+            }
+          })
+        })
+      })
     })
     let nowDate = new Date()
     this.now_time = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1 < 10 ? '0' + (nowDate.getMonth() + 1) : (nowDate.getMonth() + 1)) + '-' + (nowDate.getDate() < 10 ? '0' + nowDate.getDate() : nowDate.getDate())
     this.getPayList()
-    // this.getOrderList()
   },
   filters: {
     filterNumber (val) {
@@ -2636,6 +2717,7 @@ export default {
     'record.searchVal': {
       deep: true,
       handler (newVal) {
+        console.log(newVal)
         if (newVal) {
           this.record.infos = this.record.info.filter(item => (item.order_code_list.indexOf(newVal) !== -1))
         } else {

@@ -510,7 +510,8 @@ export default {
         order_id: this.$route.params.id
       }), replenishYarnList({
         order_id: this.$route.params.id,
-        type: 1
+        type: 1,
+        company_id: window.sessionStorage.getItem('company_id')
       })
     ]).then(res => {
       this.order = res[0].data.data.production_detail.order_info

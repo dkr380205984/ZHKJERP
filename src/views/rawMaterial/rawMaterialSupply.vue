@@ -319,7 +319,8 @@ export default {
               }
             }),
             desc: this.des,
-            replenish_client: this.$route.params.companyId
+            replenish_client: this.$route.params.companyId,
+            company_id: window.sessionStorage.getItem('company_id')
           }
           this.lock = true
           this.loading = true

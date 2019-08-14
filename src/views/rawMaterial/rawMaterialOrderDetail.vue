@@ -108,7 +108,7 @@
                 <li class="title">
                   <span class="flex104 tableRow">
                     <span class="tableColumn">
-                      <span class="flex17">订购公司</span>
+                      <span class="flex17">订购来源</span>
                       <span class="flex43">
                         <span class="flex17">原料名称</span>
                         <span class="flex26">
@@ -126,7 +126,7 @@
                 <li v-for="(value,index) in list.orderList"
                   :key="index"
                   class="content">
-                  <span class="flex17 tableRow">{{value.company === null ? '仓库' : value.company}}</span>
+                  <span class="flex17 tableRow"><span style="justify-content: flex-end;">{{value.where}}</span>/<span style="justify-content: flex-start;">{{value.company}}</span></span>
                   <span class="flex43 tableRow col">
                     <span v-for="(iten,kay) in value.materials"
                       :key="kay"
@@ -157,7 +157,7 @@
                   <li>
                     <span class="flexMid">订购属性</span>
                     <span class="flexBig">下单日期</span>
-                    <span class="flexBig">订购公司</span>
+                    <span class="flexBig">订购来源</span>
                     <span>{{type === '0' ? '原' : '辅'}}料名称</span>
                     <span class="flexMid">{{type==='0'?'颜色':'属性'}}</span>
                     <span class="flexMid">单价</span>
@@ -174,7 +174,7 @@
                     <span class="flexMid"
                       :style="{'color':item.replenish_id?'#F56C6C':'#67c23a'}">{{item.replenish_id?'补充':'常规'}}</span>
                     <span class="flexBig">{{item.order_time}}</span>
-                    <span class="flexBig">{{item.client_name}}</span>
+                    <span class="flexBig">{{item.where}}/{{item.client_name}}</span>
                     <span>{{item.material}}</span>
                     <span class="flexMid">{{item.color}}</span>
                     <span class="flexMid">{{item.price|fixedFilter}}{{'元/' + item.unit}}</span>
@@ -554,7 +554,8 @@ export default {
       }),
       replenishYarnList({
         order_id: this.$route.params.id,
-        type: parseInt(this.type) + 1
+        type: parseInt(this.type) + 1,
+        company_id: window.sessionStorage.getItem('company_id')
       })
     ]).then(res => {
       console.log(res[1].data)
@@ -654,7 +655,8 @@ export default {
           let flag = this.list.orderList.find(val => val.company === item.client_name)
           if (!flag) {
             this.list.orderList.push({
-              company: item.client_name,
+              company: (item.client_name ? item.client_name : '仓库'),
+              where: (item.type_source === 1 ? '库存调取' : '工厂订购'),
               total_price: Math.ceil(item.price * item.weight),
               create_time: item.order_time.split(' ')[0],
               remark: item.desc,
@@ -699,6 +701,7 @@ export default {
           this.orderLog.unshift({
             time: item.create_time,
             client_name: (item.client_name ? item.client_name : '仓库'),
+            where: (item.type_source === 1 ? '库存调取' : '工厂订购'),
             material: item.material_name,
             color: item.color_code,
             price: item.price,
@@ -802,7 +805,8 @@ export default {
         })
       })
       // 补纱信息合并
-      this.bushaList = res[5].data.data.map((item) => {
+      console.log(res[5].data.data)
+      this.bushaList = res[5].data.data.filter(item => ((item.type - 1) === Number(this.type))).map((item) => {
         let json = item
         json.yarn_info = this.jsonMerge(json.yarn_info, ['name'])
         json.yarn_info.map((itemYarn) => {

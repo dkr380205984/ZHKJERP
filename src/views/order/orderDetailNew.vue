@@ -703,7 +703,7 @@
             </li>
           </div>
         </div>
-        <div v-show="false"
+        <div v-show="true"
           class="hrefCtn"
           id="href6">
           <div class="titleLine">
@@ -736,7 +736,7 @@
               <span class="tableRow"
                 style="flex:1.7">{{item.material_name}}</span>
               <span class="tableRow">{{item|filterTotal}}元</span>
-              <span class="tableRow">{{item.order_client?item.order_client:'暂无'}}</span>
+              <span class="tableRow">{{item.order_client?item.order_client[0]:'暂无'}}</span>
               <span class="tableRow">{{item.order_number?item.order_number:0}}{{item.unit}}</span>
               <span class="tableRow">{{item.total_price_order?item.total_price_order:0}}元</span>
               <span class="tableRow col"
@@ -744,7 +744,7 @@
                 <span class="tableColumn"
                   v-for="(valType,indType) in item.processType"
                   :key="indType">
-                  <span class="tableRow">{{valType.process_client}}</span>
+                  <span class="tableRow">{{valType.process_client[0]}}</span>
                   <span class="tableRow">{{valType.type}}</span>
                   <span class="tableRow">{{valType.number}}{{item.unit}}</span>
                   <span class="tableRow">{{valType.total_price_process}}元</span>
@@ -783,7 +783,7 @@
                 </div>
               </span>
               <span class="tableRow">{{item|filterPrice}}</span>
-              <span class="tableRow">{{item.weave_client}}</span>
+              <span class="tableRow">{{item.weave_client[0]}}</span>
               <span class="tableRow">{{item.weave_number}}{{item.unit}}</span>
               <span class="tableRow">{{item.total_price_weave}}元</span>
               <span class="tableRow col"
@@ -791,7 +791,7 @@
                 <span class="tableColumn"
                   v-for="(valType,indType) in item.processType"
                   :key="indType">
-                  <span class="tableRow">{{valType.process_client}}</span>
+                  <span class="tableRow">{{valType.process_client[0]}}</span>
                   <span class="tableRow">{{valType.type}}</span>
                   <span class="tableRow">{{valType.number}}{{item.unit}}</span>
                   <span class="tableRow">{{valType.total_price_semiProcess}}元</span>
