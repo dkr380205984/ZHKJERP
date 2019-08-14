@@ -326,7 +326,13 @@ const clientFinancialLog = (params) => http.get(`${baseUrl}/financial/client/log
 const clientFinancialList = (params) => http.get(`${baseUrl}/financial/client/list`, params)
 // 合作公司财务合计值financial/client/total
 const clientFinancialTotal = (params) => http.get(`${baseUrl}/financial/client/total`, params)
+// 产品产值统计financial/product/count
+const productFinancialTotal = (params) => http.get(`${baseUrl}/financial/product/count`, params)
+// 物料使用统计financial/material/count
+const materialFinancialTotal = (params) => http.get(`${baseUrl}/financial/material/count`, params)
 export {
+  materialFinancialTotal,
+  productFinancialTotal,
   clientFinancialTotal,
   clientFinancialList,
   clientFinancialLog,

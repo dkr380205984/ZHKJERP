@@ -299,6 +299,7 @@ export default {
             country: item.outStock_countries,
             address: item.address,
             port: item.port,
+            cost: null,
             desc: item.remark
           })
         })

@@ -300,7 +300,8 @@ export default {
               }
             }),
             desc: this.des,
-            replenish_client: this.$route.params.companyId
+            replenish_client: this.$route.params.companyId,
+            company_id: window.sessionStorage.getItem('company_id')
           }
           replenishYarnSave(json).then((res) => {
             if (res.data.status) {

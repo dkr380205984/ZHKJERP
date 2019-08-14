@@ -110,10 +110,10 @@
           <span>负责小组</span>
           <span>操作</span>
         </div>
-        <ul class="infinite-list"
-          @mousewheel="getData">
-          <template v-for="(item,key) in list">
-            <li :key="key"
+        <ul class="infinite-list">
+          <div class="liBox">
+            <li v-for="(item,key) in list"
+              :key="key"
               class="infinite-list-item">
               <div class="list"
                 @click="getInfo(item)">
@@ -195,23 +195,49 @@
                     style="width:300px;">
                     <span class="col">
                       <span>
-                        <span>物料订购</span>
-                        <span>{{(item.material_order_price ? item.material_order_price : 0)|filterToFixed}}元</span>
+                        <span class="blue"
+                          @click="open('rawMaterialOrderDetail',item.order_id,0)">原料订购</span>
+                        <span>{{(item.main_material_order_price ? item.main_material_order_price : 0)|filterToFixed}}元</span>
                       </span>
                       <span>
-                        <span>物料加工</span>
-                        <span>{{(item.material_process_price ? item.material_process_price : 0)|filterToFixed}}元</span>
+                        <span class="blue"
+                          @click="open('rawMaterialOrderDetail',item.order_id,1)">辅料订购</span>
+                        <span>{{(item.other_material_order_price ? item.other_material_order_price : 0)|filterToFixed}}元</span>
                       </span>
                       <span>
-                        <span>包装辅料订购</span>
+                        <span class="blue"
+                          @click="open('rawMaterialOrderDetail',item.order_id,0)">原料加工</span>
+                        <span>{{(item.main_material_process_price ? item.main_material_process_price : 0)|filterToFixed}}元</span>
+                      </span>
+                      <span>
+                        <span class="blue"
+                          @click="open('rawMaterialOrderDetail',item.order_id,1)">辅料加工</span>
+                        <span>{{(item.other_material_process_price ? item.other_material_process_price : 0)|filterToFixed}}元</span>
+                      </span>
+                      <span>
+                        <span class="blue"
+                          @click="open('packagDetail',item.order_id)">包装辅料订购</span>
                         <span>{{(item.pack_price ? item.pack_price : 0)|filterToFixed}}元</span>
+                      </span>
+                      <span>
+                        <span class="blue"
+                          @click="open('packagOutStockDetail',item.order_id)">运输</span>
+                        <span>{{(item.transport_price ? item.transport_price : 0)|filterToFixed}}元</span>
                       </span>
                     </span>
                   </span>
                 </div>
               </div>
             </li>
-          </template>
+            <li class="infinite-list-item"
+              v-loading='!isOk'
+              element-loading-text="数据加载中"
+              element-loading-spinner="el-icon-loading"
+              element-loading-background="rgba(0, 0, 0, 0.8)">
+              <div class="list"
+                style="justify-content:center;color:#DDD;"><span>没有更多了</span></div>
+            </li>
+          </div>
         </ul>
         <div class="footer">
           <span>合计</span>
@@ -321,13 +347,21 @@ export default {
   },
   watch: {
     clientVal (newVal) {
+      this.loading = true
       this.list = []
       this.pages = 1
+      for (const prop in this.nowCount) {
+        this.nowCount[prop] = 0
+      }
       this.getList()
     },
     groupVal () {
+      this.loading = true
       this.list = []
       this.pages = 1
+      for (const prop in this.nowCount) {
+        this.nowCount[prop] = 0
+      }
       this.getList()
     }
   },
@@ -348,10 +382,10 @@ export default {
     }
   },
   methods: {
+    open (url, id, type) {
+      window.open('/index/' + url + '/' + id + (type !== undefined ? '/' + type : ''))
+    },
     getList (item) {
-      for (const prop in this.nowCount) {
-        this.nowCount[prop] = 0
-      }
       this.isOk = false
       orderList({
         company_id: window.sessionStorage.getItem('company_id'),
@@ -364,8 +398,6 @@ export default {
       }).then(res => {
         this.total = res.data.meta.total
         let data = res.data.data
-        this.loading = true
-        console.log(res)
         data.forEach(item => {
           let list = {}
           // 订单初步信息
@@ -425,32 +457,32 @@ export default {
               })
             })
           })
+          this.nowCount.order_total_price += (list.order_total_price * list.exchange_rate)
+          this.nowCount.order_total_number += Number(list.order_number)
+          this.nowCount.order_total_real_price += Number(list.total_real)
+          this.nowCount.outStock_total_number += Number(list.total_pop)
+          this.nowCount.order_total_cost += Number(list.company_cost)
           this.list.push(list)
         })
-        this.list.forEach(value => {
-          this.nowCount.order_total_price += (value.order_total_price * value.exchange_rate)
-          this.nowCount.order_total_number += Number(value.order_number)
-          this.nowCount.order_total_real_price += Number(value.total_real)
-          this.nowCount.outStock_total_number += Number(value.total_pop)
-          this.nowCount.order_total_cost += Number(value.company_cost)
-        })
-        this.isOk = true
-        this.loading = false
+        if (Math.ceil(this.total / 10) > this.pages) {
+          this.pages++
+          this.getList(true)
+        } else {
+          this.isOk = true
+        }
+        if (this.list.length >= 10 || this.isOk) { this.loading = false }
       })
     },
-    getData () {
-      if (this.isOk) {
-        let el = document.getElementsByClassName('infinite-list')[0]
-        if (Number(el.scrollTop) + 600 >= this.list.length * 60) {
-          if (Math.ceil(this.total / 10) > this.pages) {
-            this.pages++
-            this.getList(true)
-          }
-        }
-      } else {
-        return false
-      }
-    },
+    // getData () {
+    //   if (this.isOk) {
+    //     let el = document.getElementsByClassName('infinite-list')[0]
+    //     if (Number(el.scrollTop) + 600 >= this.list.length * 60) {
+
+    //     }
+    //   } else {
+    //     return false
+    //   }
+    // },
     clear (item) {
       if (item === 'clientVal') {
         this.clientVal = ''
@@ -467,7 +499,6 @@ export default {
           id: item.order_id
         }).then(res => {
           let data = res.data.data
-          console.log(data)
           // 插入出库数量
           data.order_log.pack_info.forEach(valPack => {
             valPack.product_info = JSON.parse(valPack.product_info)
@@ -499,12 +530,21 @@ export default {
             }
           })
           // 插入订单物料加工费用
+          console.log(data.order_log.material_production)
           data.order_log.material_production.forEach(val => {
-            item.material_process_price = Number(item.material_process_price ? item.material_process_price : 0) + Number(val.total_price)
+            if (Number(val.type) === 1) {
+              item.main_material_process_price = Number(item.main_material_process_price ? item.main_material_process_price : 0) + Number(val.total_price)
+            } else if (Number(val.type) === 2) {
+              item.other_material_process_price = Number(item.other_material_process_price ? item.other_material_process_price : 0) + Number(val.total_price)
+            }
           })
           // 插入订单物料订购费用
           data.order_log.material_order.forEach(val => {
-            item.material_order_price = Number(item.material_order_price ? item.material_order_price : 0) + Number(val.weight * val.price)
+            if (Number(val.type) === 1) {
+              item.main_material_order_price = Number(item.main_material_order_price ? item.main_material_order_price : 0) + Number(val.weight * val.price)
+            } else if (Number(val.type) === 2) {
+              item.other_material_order_price = Number(item.other_material_order_price ? item.other_material_order_price : 0) + Number(val.weight * val.price)
+            }
           })
           // 插入包装订购费用
           data.order_log.pack_order.forEach(val => {
@@ -573,5 +613,10 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.blue {
+  color: #1a95ff;
+  cursor: pointer;
+  text-decoration: underline;
 }
 </style>

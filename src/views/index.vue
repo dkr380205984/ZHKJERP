@@ -14,7 +14,11 @@
             <el-submenu v-for="(item,index) in menu"
               :index="index.toString()"
               :key="item.name">
-              <span slot="title">{{item.name}}</span>
+              <div slot="title">
+                <img :src="require('@/assets/image/icon/'+ item.name +'.png')"
+                  alt=""
+                  class="icon">
+                {{item.name}}</div>
               <el-menu-item v-for="(item2) in item.children"
                 :index="item2.url"
                 :key="item2.name">{{item2.name}}</el-menu-item>

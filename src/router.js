@@ -475,9 +475,13 @@ let router = new Router({
       name: 'orderFinancialList',
       component: () => import('./views/financial/orderFinancialList.vue')
     }, {
-      path: 'companyFinancialList',
-      name: 'companyFinancialList',
-      component: () => import('./views/financial/companyFinancialList.vue')
+      path: 'productFinancialList',
+      name: 'productFinancialList',
+      component: () => import('./views/financial/productFinancialList.vue')
+    }, {
+      path: 'materialFinancialList',
+      name: 'materialFinancialList',
+      component: () => import('./views/financial/materialFinancialList.vue')
     }, {
       path: 'foreignTradeFinancialList',
       name: 'foreignTradeFinancialList',

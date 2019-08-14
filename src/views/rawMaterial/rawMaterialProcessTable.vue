@@ -112,11 +112,11 @@ export default {
       }).then(res => {
         console.log(res)
         res.data.data.forEach(item => {
-          this.total_price += Number(item.total_price)
           this.order_code = item.order_code
-          item.material_info = JSON.parse(item.material_info)
-          item.material_info.forEach(value => {
-            if (item.process_type === this.type && String(item.client_name) === this.client_name) {
+          if (item.process_type === this.type && String(item.client_name) === this.client_name) {
+            this.total_price += Number(item.total_price)
+            item.material_info = JSON.parse(item.material_info)
+            item.material_info.forEach(value => {
               let flag = this.process_info.find(val => val.material === item.material_name)
               if (!flag) {
                 this.process_info.push({
@@ -140,8 +140,8 @@ export default {
                   flag2.value = Number(flag2.value) + Number(value.value)
                 }
               }
-            }
-          })
+            })
+          }
         })
         this.loading = false
       })

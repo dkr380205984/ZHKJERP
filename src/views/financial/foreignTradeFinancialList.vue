@@ -53,10 +53,10 @@
           <span>已转账</span>
           <span>操作</span>
         </div>
-        <ul class="infinite-list"
-          @mousewheel="getData">
-          <template v-for="(item,key) in list">
+        <ul class="infinite-list">
+          <div class="liBox">
             <li :key="key"
+              v-for="(item,key) in list"
               class="infinite-list-item">
               <div class="list"
                 style="line-height:59px;">
@@ -73,7 +73,7 @@
                 </span>
               </div>
             </li>
-          </template>
+          </div>
 
         </ul>
         <div class="footer">
@@ -144,23 +144,27 @@ export default {
   },
   watch: {
     typeVal () {
+      this.loading = true
       this.list = []
       this.pages = 1
+      for (const prop in this.nowCount) {
+        this.nowCount[prop] = 0
+      }
       this.getList()
     },
     searchVal () {
+      this.loading = true
       this.list = []
       this.pages = 1
+      for (const prop in this.nowCount) {
+        this.nowCount[prop] = 0
+      }
       this.getList(0)
     }
   },
   methods: {
     getList () {
-      this.loading = true
       this.isOk = false
-      for (const prop in this.nowCount) {
-        this.nowCount[prop] = 0
-      }
       Promise.all([
         clientFinancialTotal({
           company_id: window.sessionStorage.getItem('company_id')
@@ -175,29 +179,33 @@ export default {
       ]).then(res => {
         this.totalList = res[0].data.data
         this.total = res[1].data.meta.total
-        this.list.push(...res[1].data.data)
-        this.list.forEach(item => {
+        res[1].data.data.forEach(item => {
           this.nowCount.settle += Number(item.settle_total)
           this.nowCount.transfer += Number(item.transfer_total)
           this.nowCount.deduct += Number(item.deduct_total)
         })
-        this.isOk = true
-        this.loading = false
+        this.list.push(...res[1].data.data)
+        if (Math.ceil(this.total / 10) > this.pages) {
+          this.pages++
+          this.getList()
+        } else {
+          this.isOk = true
+        }
+        if (this.list.length >= 10 || this.isOk) {
+          this.loading = false
+        }
       })
     },
-    getData () {
-      if (this.isOk) {
-        let el = document.getElementsByClassName('infinite-list')[0]
-        if (Number(el.scrollTop) + 600 >= this.list.length * 60) {
-          if (Math.ceil(this.total / 10) > this.pages) {
-            this.pages++
-            this.getList()
-          }
-        }
-      } else {
-        return false
-      }
-    },
+    // getData () {
+    //   if (this.isOk) {
+    //     let el = document.getElementsByClassName('infinite-list')[0]
+    //     if (Number(el.scrollTop) + 600 >= this.list.length * 60) {
+
+    //     }
+    //   } else {
+    //     return false
+    //   }
+    // },
     clear (item) {
       if (item === 'typeVal') {
         this.typeVal = ''
