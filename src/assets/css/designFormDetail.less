@@ -1,6 +1,6 @@
 @import './common.less';
 #designFormDetail{
-  height: 100%;
+  min-height: 100%;
   font-family: 'systemfont';
   font-weight: 300;
   box-sizing: border-box;
@@ -220,11 +220,82 @@
             }
           }
         }
+        .deltaCtn {
+          display: inline-block;
+          width: 200px;
+          height: 125px;
+          display: flex;
+          align-items: center;
+          color: #666;
+          margin-left: 15px;
+          margin-bottom: 15px;
+          .leftCtn {
+            height: 125px;
+            margin-right: 20px;
+            position: relative;
+            &::after {
+              content: "";
+              position: absolute;
+              width: 20px;
+              height: 1px;
+              background: #ccc;
+              left: 23px;
+              top: 24px;
+              transform: rotate(-45deg);
+            }
+            &::before {
+              content: "";
+              position: absolute;
+              width: 20px;
+              height: 1px;
+              background: #ccc;
+              left: 23px;
+              bottom: 24px;
+              transform: rotate(45deg);
+            }
+            span {
+              display: inline-block;
+              width: 22px;
+              height: 22px;
+              border: 1px solid #ddd;
+              border-radius: 50%;
+              line-height: 22px;
+              text-align: center;
+              margin: 50px 0;
+            }
+          }
+          .rightCtn {
+            height: 125px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+          }
+        }
       }
       .canvasCtn{
         width: 600px;
         height: 1200px;
-        border: 1px solid #909399;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        position: relative;
+        .mark{
+          width: 0px;
+          height: 0px;
+          position: absolute;
+          border: 40px solid;
+          border-color: @normalBlue @normalBlue rgba(0,0,0,0) rgba(0,0,0,0);
+          right: 0;
+          top: 0;
+          white-space: nowrap;
+          span{
+            position: absolute;
+            color: #fff;
+            width: 100px;
+            text-align: center;
+            font-size: @fontBig;
+            transform: rotate(45deg) translate(-41px,10px);
+          }
+        }
       }
     }
     .btnCtn{

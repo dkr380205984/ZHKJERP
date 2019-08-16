@@ -478,7 +478,7 @@ export default {
                         colorCode: { 'color': keyColor, 'name': name },
                         value: [{
                           size: Object.keys(gyd.product_info.size)[0], // 这里的size理论上只有均码，工艺单产品只有均码，现在为了对应数据稍微改造一下
-                          number: gyd.peise_yarn_wight[keyColour][keyMaterial][keyColor],
+                          number: gyd.peise_yarn_wight[keyColour][keyMaterial][keyColor].toFixed(1),
                           unit: '克'
                         }]
                       })

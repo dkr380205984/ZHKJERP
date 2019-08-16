@@ -128,6 +128,30 @@
             </div>
           </div>
         </div>
+        <div class="lineCtn"
+          v-if="this.shuangmian"
+          style="margin-top:0">
+          <div class="inputCtn oneLine rowLine">
+            <span class="label">经向排列(反):</span>
+            <div class="overflowCtn"
+              :style="{'overflow-x':longSortBack.length>12?'auto':'hidden'}">
+              <div class="selectCtn">
+                <div class="tableConnect">
+                  <div class="selectOnce"
+                    v-for="(item,index) in longSortBack"
+                    :key="index">
+                    {{item|filterMethods}}
+                  </div>
+                </div>
+              </div>
+              <div class="excelCtn">
+                <hot-table :settings="hotSettingsBack"
+                  :height="140"
+                  ref="table"></hot-table>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="lineCtn">
           <div class="inputCtn">
             <span class="label">整经总头纹:</span>
@@ -167,10 +191,36 @@
             <span class="label">综页:</span>
             <div class="content">{{warp_data.sum_up?warp_data.sum_up+'支':'暂无信息'}}</div>
           </div>
+        </div>
+        <div class="lineCtn">
+          <div class="inputCtn">
+            <span class="label">穿综法循环:</span>
+            <div class="content">{{warp_data.additional_data?warp_data.additional_data:'暂无信息'}}</div>
+          </div>
+        </div>
+        <div class="lineCtn">
           <div class="inputCtn"
-            style="width:615px">
-            <span class="label">穿综法:</span>
-            <div class="content">{{warp_data.drafting_method?warp_data.drafting_method:'暂无信息'}}</div>
+            style="width:940px">
+            <span class="label"
+              style="top:42px">穿综法:</span>
+            <div class="deltaCtn"
+              v-for="(item,index) in drafting_method"
+              :key="index">
+              <div class="leftCtn">
+                <span>{{index+1}}</span>
+              </div>
+              <div class="rightCtn">
+                <span>{{drafting_method[index][0]}}</span>
+                <span>{{drafting_method[index][2]?drafting_method[index][1]:''}}</span>
+                <span>{{drafting_method[index][2]?drafting_method[index][2]:drafting_method[index][1]}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="lineCtn">
+          <div class="inputCtn">
+            <span class="label">备注信息:</span>
+            <div class="content">{{desc}}</div>
           </div>
         </div>
       </div>
@@ -282,6 +332,30 @@
             </div>
           </div>
         </div>
+        <div class="lineCtn"
+          v-if="this.shuangmian"
+          style="margin-top:0">
+          <div class="inputCtn oneLine rowLine">
+            <span class="label">纬向排列(反):</span>
+            <div class="overflowCtn"
+              :style="{'overflow-x':longSort2Back.length>12?'auto':'hidden'}">
+              <div class="selectCtn">
+                <div class="tableConnect">
+                  <div class="selectOnce"
+                    v-for="(item,index) in longSort2Back"
+                    :key="index">
+                    {{item|filterMethods}}
+                  </div>
+                </div>
+              </div>
+              <div class="excelCtn">
+                <hot-table :settings="hotSettings2Back"
+                  :height="140"
+                  ref="table"></hot-table>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="lineCtn">
           <div class="inputCtn">
             <span class="label">产品净重:</span>
@@ -325,8 +399,22 @@
           </div>
         </div>
         <div class="canvasCtn"
-          :style="{height:600*chang/kuan + 'px'}">
+          :style="{height:600*chang/kuan + 'px'}"
+          style="margin-bottom:15px">
+          <div class="mark">
+            <span>{{this.shuangmian?'正面':'单面'}}</span>
+          </div>
           <canvas ref="myCanvas"
+            width="600"
+            :height="600*chang/kuan"></canvas>
+        </div>
+        <div class="canvasCtn"
+          v-if="this.shuangmian"
+          :style="{height:600*chang/kuan + 'px'}">
+          <div class="mark">
+            <span>反面</span>
+          </div>
+          <canvas ref="myCanvas2"
             width="600"
             :height="600*chang/kuan"></canvas>
         </div>
@@ -359,7 +447,9 @@ export default {
       kuan: 1, // 初始化宽
       chooseWhichColour: 0, // 选择哪款配色方案进行渲染
       longSort: [],
+      longSortBack: [],
       longSort2: [],
+      longSort2Back: [],
       hotSettings: {
         data: [ // 数据，可以是数据，对象
           [''],
@@ -377,6 +467,38 @@ export default {
         ]
       },
       hotSettings2: {
+        data: [ // 数据，可以是数据，对象
+          [''],
+          [''],
+          ['']
+        ],
+        colWidths: 62, // 列宽
+        rowHeights: [34, 34, 34],
+        className: 'htCenter htMiddle ',
+        licenseKey: 'non-commercial-and-evaluation', // 申明非商业用途
+        minCols: 1,
+        minRows: 3,
+        mergeCells: [
+
+        ]
+      },
+      hotSettingsBack: {
+        data: [ // 数据，可以是数据，对象
+          [''],
+          [''],
+          ['']
+        ],
+        colWidths: 62, // 列宽
+        rowHeights: [34, 34, 34],
+        className: 'htCenter htMiddle ',
+        licenseKey: 'non-commercial-and-evaluation', // 申明非商业用途
+        minCols: 1,
+        minRows: 3,
+        mergeCells: [
+
+        ]
+      },
+      hotSettings2Back: {
         data: [ // 数据，可以是数据，对象
           [''],
           [''],
@@ -436,11 +558,16 @@ export default {
       },
       warp_canvas: [], // 保存下经向绘图数据用于颜色重绘
       werf_canvas: [], // 保存下纬向绘图数据用于颜色重绘
+      warp_canvas_back: [],
+      weft_canvas_back: [],
       weight: 0,
       yarn: [],
       warpWeightArr: [],
       weftWeightArr: [],
-      weigthAll: 0
+      weigthAll: 0,
+      drafting_method: [],
+      desc: '',
+      shuangmian: false // 新增字段用于判断是否有双面巾
     }
   },
   methods: {
@@ -486,6 +613,11 @@ export default {
   },
   watch: {
     chooseWhichColour: function (newVal, oldVal) {
+      this.loading = true
+      this.$refs.myCanvas.getContext('2d').clearRect(0, 0, 600, 600 * this.chang / this.kuan)
+      if (this.shuangmian) {
+        this.$refs.myCanvas2.getContext('2d').clearRect(0, 0, 600, 600 * this.chang / this.kuan)
+      }
       // 处理下颜色数据
       let ArrMain = this.warp_canvas.map((item) => {
         return {
@@ -503,33 +635,224 @@ export default {
           colorIndex: item.colorIndex
         }
       })
-      // 画图
-      this.$nextTick(() => {
-        let lineWidth = 500 / this.warp_data.weft // 经向粗细
-        let dom = this.$refs.myCanvas
-        let ctx = dom.getContext('2d')
-        ctx.clearRect(0, 0, 600, (600 * this.chang / this.kuan))
-        ArrMain.reduce((total, current, index) => {
-          ctx.globalAlpha = 0.5
-          ctx.beginPath()
-          ctx.fillStyle = current.color
-          ctx.rect(total, 50, current.number * lineWidth, (600 * this.chang / this.kuan - 100))
-          ctx.fill()
-          return total + current.number * lineWidth
-        }, 50)
-        let lineHeight = (600 * this.chang / this.kuan - 100) / this.weft_data.total
-        ArrMain2.reduce((total, current, index) => {
-          ctx.globalAlpha = 0.3
-          ctx.beginPath()
-          ctx.fillStyle = current.color
-          ctx.rect(50, total, 500, current.number * lineHeight)
-          ctx.fill()
-          return total + current.number * lineHeight
-        }, 50)
+      let ArrMainBack = this.warp_canvas_back.map((item) => {
+        return {
+          number: item.number,
+          index: item.index,
+          color: this.color_data.warpColorData[newVal].color_scheme[item.colorIndex].value,
+          colorIndex: item.colorIndex
+        }
       })
+      let ArrMain2Back = this.weft_canvas_back.map((item) => {
+        return {
+          number: item.number,
+          index: item.index,
+          color: this.color_data.weftColorData[newVal].color_scheme[item.colorIndex].value,
+          colorIndex: item.colorIndex
+        }
+      })
+      // 画图
+      let chuanzongfa = []
+      if (this.warp_data.drafting_method) {
+        this.drafting_method = JSON.parse(this.warp_data.drafting_method)
+        JSON.parse(this.warp_data.drafting_method).forEach((item) => {
+          item.forEach((itemChild) => {
+            if ((/^[0-9][，,0-9]*[0-9]$/).test(itemChild) || (/^[0-9]$/).test(itemChild)) {
+              chuanzongfa.push(itemChild.split(/[,，]/))
+            }
+          })
+        })
+        if (this.warp_data.additional_data) {
+          let findArr = this.warp_data.additional_data.split(/[,，]/)
+          chuanzongfa.forEach((item) => {
+            item.forEach((itemChild, indexChild) => {
+              if (!findArr.find((itemFind) => itemFind === itemChild)) {
+                item.splice(indexChild, 1)
+              }
+            })
+          })
+        }
+        // 把数据从原来的线，拆成点
+        let ArrMain3 = []
+        let ArrMain4 = []
+        let ArrMain3Back = []
+        let ArrMain4Back = []
+        ArrMain.reduce((total, current) => {
+          for (let i = total; i < total + Number(current.number); i++) {
+            ArrMain3.push({
+              color: current.color,
+              x: i // 坐标值基本是个摆设，跟数组的索引值相同
+            })
+          }
+          return total + Number(current.number)
+        }, 0)
+        ArrMain2.reduce((total, current) => {
+          for (let i = total; i < total + Number(current.number); i++) {
+            ArrMain4.push({
+              color: current.color,
+              y: i
+            })
+          }
+          return total + Number(current.number)
+        }, 0)
+        ArrMainBack.reduce((total, current) => {
+          for (let i = total; i < total + Number(current.number); i++) {
+            ArrMain3Back.push({
+              color: current.color,
+              x: i // 坐标值基本是个摆设，跟数组的索引值相同
+            })
+          }
+          return total + Number(current.number)
+        }, 0)
+        ArrMain2Back.reduce((total, current) => {
+          for (let i = total; i < total + Number(current.number); i++) {
+            ArrMain4Back.push({
+              color: current.color,
+              y: i
+            })
+          }
+          return total + Number(current.number)
+        }, 0)
+        this.$nextTick(() => {
+          let dom = this.$refs.myCanvas
+          let ctx = dom.getContext('2d')
+          const lineWidth = 500 / this.warp_data.weft // 经向粗细
+          const lineHeight = (600 * this.chang / this.kuan - 100) / this.weft_data.total
+          const maxHeight = chuanzongfa.length // 纵向计数
+          let maxWidth = 0 // 横向计数取最大值
+          chuanzongfa.forEach((item) => {
+            item.forEach((num) => {
+              if (num > maxWidth) {
+                maxWidth = num
+              }
+            })
+          })
+          // 创建矩阵
+          let matrix = Array.from({ length: maxHeight }, () => new Array(maxWidth).fill(0))
+          // 将穿综法转化成矩阵
+          chuanzongfa.forEach((itemY, indexY) => {
+            itemY.forEach((itemX) => {
+              matrix[indexY][itemX - 1] = true
+            })
+          })
+          let xNum = 0 // 横向计数器
+          let xTime = 0 // 横向计数次数
+          ArrMain3.forEach((warp) => {
+            let yNum = 0 // 纵向计数器
+            let yTime = 0 // 纵向计数次数
+            ArrMain4.forEach((weft) => {
+              ctx.beginPath()
+              if (matrix[weft.y - yTime * maxHeight][warp.x - xTime * maxWidth]) {
+                ctx.fillStyle = warp.color
+              } else {
+                ctx.fillStyle = weft.color
+              }
+              ctx.rect(50 + warp.x * lineWidth, 50 + weft.y * lineHeight, lineWidth, lineHeight)
+              ctx.fill()
+              if (yNum === maxHeight - 1) {
+                yNum = 0
+                yTime++
+              } else {
+                yNum++
+              }
+            })
+            if (xNum === maxWidth - 1) {
+              xNum = 0
+              xTime++
+            } else {
+              xNum++
+            }
+          })
+          if (this.shuangmian) {
+            let dom2 = this.$refs.myCanvas2
+            let ctxBack = dom2.getContext('2d')
+            xNum = 0
+            xTime = 0
+            ArrMain3Back.forEach((warp) => {
+              let yNum = 0 // 纵向计数器
+              let yTime = 0 // 纵向计数次数
+              ArrMain4Back.forEach((weft) => {
+                ctxBack.beginPath()
+                if (matrix[weft.y - yTime * maxHeight][warp.x - xTime * maxWidth]) {
+                  ctxBack.fillStyle = warp.color
+                } else {
+                  ctxBack.fillStyle = weft.color
+                }
+                ctxBack.rect(50 + warp.x * lineWidth, 50 + weft.y * lineHeight, lineWidth, lineHeight)
+                ctxBack.fill()
+                if (yNum === maxHeight - 1) {
+                  yNum = 0
+                  yTime++
+                } else {
+                  yNum++
+                }
+              })
+              if (xNum === maxWidth - 1) {
+                xNum = 0
+                xTime++
+              } else {
+                xNum++
+              }
+            })
+          }
+          this.loading = false
+        })
+      } else {
+        // 普通画图
+        this.$nextTick(() => {
+          let lineWidth = 500 / this.warp_data.weft // 经向粗细
+          let dom = this.$refs.myCanvas
+          let ctx = dom.getContext('2d')
+          ArrMain.reduce((total, current, index) => {
+            ctx.globalAlpha = 0.5
+            ctx.beginPath()
+            ctx.fillStyle = current.color
+            ctx.rect(total, 50, current.number * lineWidth, (600 * this.chang / this.kuan - 100))
+            ctx.fill()
+            return total + current.number * lineWidth
+          }, 50)
+          let lineHeight = (600 * this.chang / this.kuan - 100) / this.weft_data.total
+          ArrMain2.reduce((total, current, index) => {
+            ctx.globalAlpha = 0.3
+            ctx.beginPath()
+            ctx.fillStyle = current.color
+            ctx.rect(50, total, 500, current.number * lineHeight)
+            ctx.fill()
+            return total + current.number * lineHeight
+          }, 50)
+        })
+        if (this.shuangmian) {
+          this.$nextTick(() => {
+            let lineWidth = 500 / this.warp_data.weft // 经向粗细
+            let dom = this.$refs.myCanvas2
+            let ctx = dom.getContext('2d')
+            ArrMainBack.reduce((total, current, index) => {
+              ctx.globalAlpha = 0.5
+              ctx.beginPath()
+              ctx.fillStyle = current.color
+              ctx.rect(total, 50, current.number * lineWidth, (600 * this.chang / this.kuan - 100))
+              ctx.fill()
+              return total + current.number * lineWidth
+            }, 50)
+            let lineHeight = (600 * this.chang / this.kuan - 100) / this.weft_data.total
+            ArrMain2Back.reduce((total, current, index) => {
+              ctx.globalAlpha = 0.3
+              ctx.beginPath()
+              ctx.fillStyle = current.color
+              ctx.rect(50, total, 500, current.number * lineHeight)
+              ctx.fill()
+              return total + current.number * lineHeight
+            }, 50)
+          })
+        }
+
+        this.loading = false
+      }
       // 保存下绘图的数据
       this.warp_canvas = ArrMain
       this.weft_canvas = ArrMain2
+      this.warp_canvas_back = ArrMainBack
+      this.weft_canvas_back = ArrMain2Back
     }
   },
   mounted () {
@@ -642,7 +965,6 @@ export default {
       this.hotSettings.data[2] = this.hotSettings.data[2].map((item) => {
         return item === '' ? null : item
       })
-
       this.hotSettings.data[2].forEach((item, index) => {
         if (item !== null || index === this.hotSettings.data[2].length - 1) {
           // 遇到第一个不为null的数开始计算,否则初始化col
@@ -718,9 +1040,9 @@ export default {
       } else {
         ArrMain = Arr
       }
+      // 纬向单元格合并操作
       this.longSort2 = data.weft_data.weft_rank_bottom
       this.hotSettings2.data = data.weft_data.weft_rank
-      // 纬向单元格合并操作
       let weftMerge2 = [] // 纬向第二层数据合并 用于画图
       mergeCells = []
       col = 0
@@ -866,6 +1188,311 @@ export default {
       } else {
         ArrMain2 = Arr2
       }
+
+      // 如果是双面巾，复制粘贴经向处理代码
+      let ArrBack = []
+      let ArrMainBack = []
+      let Arr2Back = []
+      let ArrMain2Back = []
+      if (data.warp_data.warp_rank_bottom_back && data.warp_data.warp_rank_bottom_back.length > 0) {
+        this.shuangmian = true
+        this.hotSettingsBack.data = data.warp_data.warp_rank_back
+        this.longSortBack = data.warp_data.warp_rank_bottom_back
+        let warpMerge2Back = [] // 经向第二层数据合并 用于画图
+        let mergeCellsBack = []
+        let colBack = 0
+        let colspanBack = 0
+        let unNullBack = 0 // 遇到第一个不为null的数开始计算
+        let markBack = 1 // 用于标记不为null的值 用于画图xunhuan字段获取
+        let pointBack = []
+        this.hotSettingsBack.data[1].forEach((item, index) => {
+          if (item === '') {
+            pointBack.push(index)
+          }
+        })
+        this.hotSettingsBack.data[1][pointBack[0]] = 1
+        pointBack.forEach((item, index) => {
+          if (pointBack[index + 1] && (pointBack[index + 1] - item) > 1) {
+            this.hotSettingsBack.data[1][pointBack[index + 1]] = 1
+          }
+        })
+        this.hotSettingsBack.data[1] = this.hotSettingsBack.data[1].map((item) => {
+          return item === '' ? null : item
+        })
+        this.hotSettingsBack.data[1].forEach((item, index) => {
+          if (item || index === this.hotSettingsBack.data[1].length - 1) {
+            // 遇到第一个不为null的数开始计算,否则初始化col
+            if (unNullBack > 0) {
+              if (item === null && index === this.hotSettingsBack.data[1].length - 1) {
+                mergeCellsBack.push({ row: 1, col: colBack, rowspan: 1, colspan: colspanBack + 1 })
+                warpMerge2Back.push({ 'buchang': colspanBack + 1, 'xunhuan': markBack })
+              } else {
+                mergeCellsBack.push({ row: 1, col: colBack, rowspan: 1, colspan: colspanBack })
+                warpMerge2Back.push({ 'buchang': colspanBack, 'xunhuan': markBack })
+              }
+              if (parseInt(item) === 1 && index === this.hotSettingsBack.data[1].length - 1) {
+                warpMerge2Back.push({ 'buchang': 1, 'xunhuan': 1 })
+              }
+              colspanBack = 1
+              colBack = index
+            } else {
+              colspanBack = 1
+              colBack = index
+              unNullBack++
+            }
+          } else {
+            colspanBack++
+          }
+          if (item) {
+            markBack = item
+          }
+        })
+        // 重置计算值
+        colBack = 0
+        colspanBack = 0
+        unNullBack = 0
+        let warpMerge3Back = [] // 经向第三层数据合并 用于画图
+        let mark2Back = 1
+        pointBack = []
+        this.hotSettingsBack.data[2].forEach((item, index) => {
+          if (item === '') {
+            pointBack.push(index)
+          }
+        })
+        this.hotSettingsBack.data[2][point[0]] = 1
+        pointBack.forEach((item, index) => {
+          if (pointBack[index + 1] && (pointBack[index + 1] - item) > 1) {
+            this.hotSettingsBack.data[2][pointBack[index + 1]] = 1
+          }
+        })
+        this.hotSettingsBack.data[2] = this.hotSettingsBack.data[2].map((item) => {
+          return item === '' ? null : item
+        })
+        this.hotSettingsBack.data[2].forEach((item, index) => {
+          if (item !== null || index === this.hotSettingsBack.data[2].length - 1) {
+            // 遇到第一个不为null的数开始计算,否则初始化col
+            if (unNullBack > 0) {
+              if (item === null && index === this.hotSettingsBack.data[2].length - 1) {
+                mergeCellsBack.push({ row: 2, col: colBack, rowspan: 1, colspan: colspanBack + 1 })
+                warpMerge3Back.push({ 'buchang': colspanBack + 1, 'xunhuan': mark2Back })
+              } else {
+                mergeCellsBack.push({ row: 2, col: colBack, rowspan: 1, colspan: colspanBack })
+                warpMerge3Back.push({ 'buchang': colspanBack, 'xunhuan': mark2Back })
+              }
+              if (parseInt(item) && index === this.hotSettingsBack.data[1].length - 1) {
+                warpMerge3Back.push({ 'buchang': 1, 'xunhuan': 1 })
+              }
+              colspanBack = 1
+              colBack = index
+            } else {
+              colspanBack = 1
+              colBack = index
+              unNullBack++
+            }
+          } else {
+            colspanBack++
+          }
+          if (item) {
+            mark2Back = item
+          }
+        })
+        this.hotSettingsBack.mergeCells = mergeCellsBack
+        // 经向画图数据格式获取 将三维数组合并成二维
+        ArrBack = [] // 第一次合并数组 存放结果
+        ArrMainBack = [] // 第二次合并数组
+        let markBuchangBack = 0 // 标记步长
+        let colorArrBack = this.color_data.warpColorData[this.chooseWhichColour].color_scheme
+        let numArrBack = this.hotSettingsBack.data[0]
+        if (warpMerge2Back.length > 0) {
+          warpMerge2Back.forEach((item) => {
+            for (let index2 = 0; index2 < item.xunhuan; index2++) {
+              for (let index3 = markBuchangBack; index3 < item.buchang + markBuchangBack; index3++) {
+                ArrBack.push({
+                  color: colorArrBack[this.longSortBack[index3]].value,
+                  number: numArrBack[index3],
+                  index: index3,
+                  colorIndex: this.longSortBack[index3]
+                })
+              }
+            }
+            markBuchangBack = item.buchang + markBuchangBack
+          })
+        } else {
+          ArrBack = this.hotSettingsBack.data[0].map((item, index) => {
+            return {
+              color: colorArrBack[this.longSort[index]].value,
+              number: numArrBack[index],
+              index: index,
+              colorIndex: this.longSortBack[index]
+            }
+          })
+        }
+        markBuchangBack = 0 // 初始化步长
+        if (warpMerge3Back.length > 0 && warpMerge3Back.find((item) => item.buchang !== 1)) {
+          warpMerge3Back.forEach((item) => {
+            let lastMarkBuchang = markBuchangBack
+            markBuchangBack = item.buchang + markBuchangBack
+            for (let index2 = 0; index2 < item.xunhuan; index2++) {
+              ArrBack.forEach((item2) => {
+                if (lastMarkBuchang <= item2.index && item2.index < markBuchangBack) {
+                  ArrMainBack.push(item2)
+                }
+              })
+            }
+          })
+        } else {
+          ArrMainBack = ArrBack
+        }
+        // 纬向单元格合并操作 反面
+        this.longSort2Back = data.weft_data.weft_rank_bottom_back
+        this.hotSettings2Back.data = data.weft_data.weft_rank_back
+        let weftMerge2Back = [] // 纬向第二层数据合并 用于画图
+        mergeCellsBack = []
+        colBack = 0
+        colspanBack = 0
+        unNullBack = 0
+        markBack = 1
+        pointBack = []
+        this.hotSettings2Back.data[1].forEach((item, index) => {
+          if (item === '') {
+            pointBack.push(index)
+          }
+        })
+        this.hotSettings2Back.data[1][pointBack[0]] = 1
+        pointBack.forEach((item, index) => {
+          if (pointBack[index + 1] && (pointBack[index + 1] - item) > 1) {
+            this.hotSettings2Back.data[1][pointBack[index + 1]] = 1
+          }
+        })
+        this.hotSettings2Back.data[1] = this.hotSettings2Back.data[1].map((item) => {
+          return item === '' ? null : item
+        })
+        this.hotSettings2Back.data[1].forEach((item, index) => {
+          if (item || index === this.hotSettings2Back.data[1].length - 1) {
+            // 遇到第一个不为null的数开始计算,否则初始化col
+            if (unNullBack > 0) {
+              if (!item && index === this.hotSettings2Back.data[1].length - 1) {
+                mergeCellsBack.push({ row: 1, col: colBack, rowspan: 1, colspan: colspanBack + 1 })
+                weftMerge2Back.push({ 'buchang': colspanBack + 1, 'xunhuan': markBack })
+              } else {
+                mergeCellsBack.push({ row: 1, col: colBack, rowspan: 1, colspan: colspanBack })
+                weftMerge2Back.push({ 'buchang': colspanBack, 'xunhuan': markBack })
+              }
+              if (parseInt(item) === 1 && index === this.hotSettings2Back.data[1].length - 1) {
+                weftMerge2Back.push({ 'buchang': 1, 'xunhuan': 1 })
+              }
+              colspanBack = 1
+              colBack = index
+            } else {
+              colspanBack = 1
+              colBack = index
+              unNullBack++
+            }
+          } else {
+            colspanBack++
+          }
+          if (item) {
+            markBack = item
+          }
+        })
+        // 重置计算值
+        let weftMerge3Back = [] // 经向第三层数据合并 用于画图
+        mark2Back = 1
+        colBack = 0
+        colspanBack = 0
+        unNullBack = 0
+        pointBack = []
+        this.hotSettings2Back.data[2].forEach((item, index) => {
+          if (item === '') {
+            pointBack.push(index)
+          }
+        })
+        this.hotSettings2Back.data[2][pointBack[0]] = 1
+        pointBack.forEach((item, index) => {
+          if (pointBack[index + 1] && (pointBack[index + 1] - item) > 1) {
+            this.hotSettings2Back.data[2][pointBack[index + 1]] = 1
+          }
+        })
+        this.hotSettings2Back.data[2] = this.hotSettings2Back.data[2].map((item) => {
+          return item === '' ? null : item
+        })
+        this.hotSettings2Back.data[2].forEach((item, index) => {
+          if (item || index === this.hotSettings2Back.data[2].length - 1) {
+            // 遇到第一个不为null的数开始计算,否则初始化col
+            if (unNullBack > 0) {
+              if (!item && index === this.hotSettings2Back.data[2].length - 1) {
+                mergeCellsBack.push({ row: 2, col: col, rowspan: 1, colspan: colspan + 1 })
+                weftMerge3Back.push({ 'buchang': colspan + 1, 'xunhuan': mark2 })
+              } else {
+                mergeCellsBack.push({ row: 2, col: colBack, rowspan: 1, colspan: colspanBack })
+                weftMerge3Back.push({ 'buchang': colspanBack, 'xunhuan': mark2Back })
+              }
+              if (parseInt(item) === 1 && index === this.hotSettings2Back.data[1].length - 1) {
+                weftMerge3Back.push({ 'buchang': 1, 'xunhuan': 1 })
+              }
+              colspanBack = 1
+              colBack = index
+            } else {
+              colspanBack = 1
+              colBack = index
+              unNullBack++
+            }
+          } else {
+            colspanBack++
+          }
+          if (item) {
+            mark2 = item
+          }
+        })
+        this.hotSettings2Back.mergeCells = mergeCells
+        // 纬向画图数据格式获取 将三维数组合并成二维
+        Arr2Back = [] // 第一次合并数组 存放结果
+        ArrMain2Back = [] // 第二次合并数组
+        let colorArr2Back = this.color_data.weftColorData[this.chooseWhichColour].color_scheme
+        let numArr2Back = this.hotSettings2Back.data[0]
+        markBuchangBack = 0 // 标记步长
+        if (weftMerge2Back.length > 0) {
+          weftMerge2Back.forEach((item) => {
+            for (let index2 = 0; index2 < item.xunhuan; index2++) {
+              for (let index3 = markBuchangBack; index3 < item.buchang + markBuchangBack; index3++) {
+                Arr2Back.push({
+                  color: colorArr2Back[this.longSort2Back[index3]].value,
+                  number: numArr2Back[index3],
+                  index: index3,
+                  colorIndex: this.longSort2Back[index3]
+                })
+              }
+            }
+            markBuchangBack = item.buchang + markBuchangBack
+          })
+        } else {
+          Arr2Back = this.hotSettings2Back.data[0].map((item, index) => {
+            return {
+              color: colorArr2Back[this.longSort2[index]].value,
+              number: numArr2Back[index],
+              index: index,
+              colorIndex: this.longSort2Back[index] // 记录下颜色所处的位置,在修改配色方案的时候有用
+            }
+          })
+        }
+        markBuchangBack = 0 // 初始化步长
+        if (weftMerge3Back.length > 0 && weftMerge3Back.find((item) => item.buchang !== 1)) {
+          weftMerge3Back.forEach((item) => {
+            let lastMarkBuchang = markBuchangBack
+            markBuchangBack = item.buchang + markBuchangBack
+            for (let index2 = 0; index2 < item.xunhuan; index2++) {
+              Arr2Back.forEach((item2) => {
+                if (lastMarkBuchang <= item2.index && item2.index < markBuchangBack) {
+                  ArrMain2Back.push(item2)
+                }
+              })
+            }
+          })
+        } else {
+          ArrMain2Back = Arr2Back
+        }
+      }
+
       // 新需求,要把主夹克重算出来
       // 处理下经纬向的数据,保证三行数据可以相乘
       let newWarpData = this.hotSettings.data.map((item, index) => {
@@ -943,33 +1570,207 @@ export default {
       // 保存下绘图的数据
       this.warp_canvas = ArrMain
       this.weft_canvas = ArrMain2
+      this.warp_canvas_back = ArrMainBack
+      this.weft_canvas_back = ArrMain2Back
       this.chang = res.data.data.weft_data.neichang + res.data.data.weft_data.rangwei
       this.kuan = res.data.data.warp_data.reed_width
-      // 画图
-      this.$nextTick(() => {
-        let lineWidth = 500 / this.warp_data.weft // 经向粗细
-        let dom = this.$refs.myCanvas
-        let ctx = dom.getContext('2d')
-        ArrMain.reduce((total, current, index) => {
-          ctx.globalAlpha = 0.5
-          ctx.beginPath()
-          ctx.fillStyle = current.color
-          ctx.rect(total, 50, current.number * lineWidth, (600 * this.chang / this.kuan - 100))
-          ctx.fill()
-          return total + current.number * lineWidth
-        }, 50)
-        let lineHeight = (600 * this.chang / this.kuan - 100) / this.weft_data.total
-        ArrMain2.reduce((total, current, index) => {
-          ctx.globalAlpha = 0.3
-          ctx.beginPath()
-          ctx.fillStyle = current.color
-          ctx.rect(50, total, 500, current.number * lineHeight)
-          ctx.fill()
-          return total + current.number * lineHeight
-        }, 50)
-      })
+      this.desc = data.desc
+      // 加入穿综法的画图
+      // 穿综法数据处理格式
+      let chuanzongfa = []
+      if (data.warp_data.drafting_method) {
+        this.drafting_method = JSON.parse(data.warp_data.drafting_method)
+        JSON.parse(data.warp_data.drafting_method).forEach((item) => {
+          item.forEach((itemChild) => {
+            if ((/^[0-9][，,0-9]*[0-9]$/).test(itemChild) || (/^[0-9]$/).test(itemChild)) {
+              chuanzongfa.push(itemChild.split(/[,，]/))
+            }
+          })
+        })
+        if (data.warp_data.additional_data) {
+          let findArr = data.warp_data.additional_data.split(/[,，]/)
+          chuanzongfa.forEach((item) => {
+            item.forEach((itemChild, indexChild) => {
+              if (!findArr.find((itemFind) => itemFind === itemChild)) {
+                item.splice(indexChild, 1)
+              }
+            })
+          })
+        }
+        // 把数据从原来的线，拆成点
+        let ArrMain3 = []
+        let ArrMain4 = []
+        let ArrMain3Back = []
+        let ArrMain4Back = []
+        ArrMain.reduce((total, current) => {
+          for (let i = total; i < total + Number(current.number); i++) {
+            ArrMain3.push({
+              color: current.color,
+              x: i // 坐标值基本是个摆设，跟数组的索引值相同
+            })
+          }
+          return total + Number(current.number)
+        }, 0)
+        ArrMain2.reduce((total, current) => {
+          for (let i = total; i < total + Number(current.number); i++) {
+            ArrMain4.push({
+              color: current.color,
+              y: i
+            })
+          }
+          return total + Number(current.number)
+        }, 0)
+        ArrMainBack.reduce((total, current) => {
+          for (let i = total; i < total + Number(current.number); i++) {
+            ArrMain3Back.push({
+              color: current.color,
+              x: i // 坐标值基本是个摆设，跟数组的索引值相同
+            })
+          }
+          return total + Number(current.number)
+        }, 0)
+        ArrMain2Back.reduce((total, current) => {
+          for (let i = total; i < total + Number(current.number); i++) {
+            ArrMain4Back.push({
+              color: current.color,
+              y: i
+            })
+          }
+          return total + Number(current.number)
+        }, 0)
+        this.$nextTick(() => {
+          let dom = this.$refs.myCanvas
+          let ctx = dom.getContext('2d')
+          const lineWidth = 500 / this.warp_data.weft // 经向粗细
+          const lineHeight = (600 * this.chang / this.kuan - 100) / this.weft_data.total
+          const maxHeight = chuanzongfa.length // 纵向计数
+          let maxWidth = 0 // 横向计数取最大值
+          chuanzongfa.forEach((item) => {
+            item.forEach((num) => {
+              if (num > maxWidth) {
+                maxWidth = num
+              }
+            })
+          })
+          // 创建矩阵
+          let matrix = Array.from({ length: maxHeight }, () => new Array(maxWidth).fill(0))
+          // 将穿综法转化成矩阵
+          chuanzongfa.forEach((itemY, indexY) => {
+            itemY.forEach((itemX) => {
+              matrix[indexY][itemX - 1] = true
+            })
+          })
+          let xNum = 0 // 横向计数器
+          let xTime = 0 // 横向计数次数
+          ArrMain3.forEach((warp) => {
+            let yNum = 0 // 纵向计数器
+            let yTime = 0 // 纵向计数次数
+            ArrMain4.forEach((weft) => {
+              ctx.beginPath()
+              if (matrix[weft.y - yTime * maxHeight][warp.x - xTime * maxWidth]) {
+                ctx.fillStyle = warp.color
+              } else {
+                ctx.fillStyle = weft.color
+              }
+              ctx.rect(50 + warp.x * lineWidth, 50 + weft.y * lineHeight, lineWidth, lineHeight)
+              ctx.fill()
+              if (yNum === maxHeight - 1) {
+                yNum = 0
+                yTime++
+              } else {
+                yNum++
+              }
+            })
+            if (xNum === maxWidth - 1) {
+              xNum = 0
+              xTime++
+            } else {
+              xNum++
+            }
+          })
+          if (this.shuangmian) {
+            let ctxBack = this.$refs.myCanvas2.getContext('2d')
+            xNum = 0
+            xTime = 0
+            ArrMain3Back.forEach((warp) => {
+              let yNum = 0 // 纵向计数器
+              let yTime = 0 // 纵向计数次数
+              ArrMain4Back.forEach((weft) => {
+                ctxBack.beginPath()
+                if (matrix[weft.y - yTime * maxHeight][warp.x - xTime * maxWidth]) {
+                  ctxBack.fillStyle = warp.color
+                } else {
+                  ctxBack.fillStyle = weft.color
+                }
+                ctxBack.rect(50 + warp.x * lineWidth, 50 + weft.y * lineHeight, lineWidth, lineHeight)
+                ctxBack.fill()
+                if (yNum === maxHeight - 1) {
+                  yNum = 0
+                  yTime++
+                } else {
+                  yNum++
+                }
+              })
+              if (xNum === maxWidth - 1) {
+                xNum = 0
+                xTime++
+              } else {
+                xNum++
+              }
+            })
+          }
+        })
+      } else {
+        // 普通画图
+        this.$nextTick(() => {
+          let lineWidth = 500 / this.warp_data.weft // 经向粗细
+          let dom = this.$refs.myCanvas
+          let ctx = dom.getContext('2d')
+          ArrMain.reduce((total, current, index) => {
+            ctx.globalAlpha = 0.5
+            ctx.beginPath()
+            ctx.fillStyle = current.color
+            ctx.rect(total, 50, current.number * lineWidth, (600 * this.chang / this.kuan - 100))
+            ctx.fill()
+            return total + current.number * lineWidth
+          }, 50)
+          let lineHeight = (600 * this.chang / this.kuan - 100) / this.weft_data.total
+          ArrMain2.reduce((total, current, index) => {
+            ctx.globalAlpha = 0.3
+            ctx.beginPath()
+            ctx.fillStyle = current.color
+            ctx.rect(50, total, 500, current.number * lineHeight)
+            ctx.fill()
+            return total + current.number * lineHeight
+          }, 50)
+        })
+        if (this.shuangmian) {
+          this.$nextTick(() => {
+            let lineWidth = 500 / this.warp_data.weft // 经向粗细
+            let dom = this.$refs.myCanvas2
+            let ctx = dom.getContext('2d')
+            ArrMainBack.reduce((total, current, index) => {
+              ctx.globalAlpha = 0.5
+              ctx.beginPath()
+              ctx.fillStyle = current.color
+              ctx.rect(total, 50, current.number * lineWidth, (600 * this.chang / this.kuan - 100))
+              ctx.fill()
+              return total + current.number * lineWidth
+            }, 50)
+            let lineHeight = (600 * this.chang / this.kuan - 100) / this.weft_data.total
+            ArrMain2Back.reduce((total, current, index) => {
+              ctx.globalAlpha = 0.3
+              ctx.beginPath()
+              ctx.fillStyle = current.color
+              ctx.rect(50, total, 500, current.number * lineHeight)
+              ctx.fill()
+              return total + current.number * lineHeight
+            }, 50)
+          })
+        }
+      }
+      this.loading = false
     })
-    this.loading = false
   }
 
 }

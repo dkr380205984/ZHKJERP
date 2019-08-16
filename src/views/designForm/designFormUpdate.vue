@@ -318,14 +318,48 @@
         <div class="lineCtn">
           <div class="inputCtn"
             style="width:940px">
-            <span class="label">穿综法:</span>
-            <el-input style="margin-left:15px;"
-              class="warp_data.drafting_method"
-              type="textarea"
-              :rows="6"
-              placeholder="请输入穿综法,可打印后用笔填写"
-              v-model="warp_data.drafting_method">
+            <span class="label">穿综法循环:</span>
+            <el-input class="elInput"
+              style="width:100%"
+              @change="checkContent"
+              placeholder="请输入穿综法循环信息，数字与数字之间用逗号分割，例：3，4，5，6"
+              v-model="warp_data.additional_data">
             </el-input>
+          </div>
+        </div>
+        <div class="lineCtn">
+          <div class="inputCtn"
+            style="width:940px">
+            <span class="label"
+              style="top:42px">穿综法:</span>
+            <div class="deltaCtn"
+              v-for="(item,index) in drafting_method"
+              :key="index">
+              <div class="leftCtn">
+                <span>{{index+1}}</span>
+              </div>
+              <div class="rightCtn">
+                <el-input placeholder="数字间用逗号分隔"
+                  @change="checkContent"
+                  v-model="drafting_method[index][0]"></el-input>
+                <el-input placeholder="数字间用逗号分隔"
+                  @change="checkContent"
+                  v-model="drafting_method[index][1]"></el-input>
+                <el-input placeholder="非必填项"
+                  @change="checkContent"
+                  v-model="drafting_method[index][2]"></el-input>
+              </div>
+            </div>
+            <div class="addBtn"
+              @click="addMethod"
+              style="width:40px;text-align:center;padding:0;margin-top:42px">
+              <i class="el-icon-plus"></i>
+            </div>
+            <div class="addBtn"
+              @click="deleteMethod"
+              style="width:40px;text-align:center;padding:0;margin-top:42px">
+              <i class="el-icon-minus"></i>
+            </div>
           </div>
         </div>
       </div>
@@ -745,7 +779,8 @@ export default {
         reed_method: null,
         reed_width: null,
         sum_up: null,
-        drafting_method: null
+        drafting_method: null,
+        additional_data: ''
       },
       weft_data: {
         organization_id: null,
@@ -759,7 +794,8 @@ export default {
       },
       coefficient: [],
       mergeCells1: [],
-      mergeCells2: []
+      mergeCells2: [],
+      drafting_method: []
     }
   },
   watch: {
@@ -891,6 +927,7 @@ export default {
       this.longSort = data.warp_data.warp_rank_bottom
       this.hotSettings2.data = data.weft_data.weft_rank
       this.longSort2 = data.weft_data.weft_rank_bottom
+      this.drafting_method = JSON.parse(data.warp_data.drafting_method) || []
       // 处理单元格合并
       let point = []
       let mergeCells = []
@@ -1639,6 +1676,7 @@ export default {
         this.weft_data.weft_rank = this.hotSettings2.data
         this.weft_data.weft_rank_bottom = this.longSort2
         this.weft_data.weimi = this.weimi
+        this.warp_data.drafting_method = JSON.stringify(this.drafting_method)
         let json = {
           is_draft: 0,
           id: this.$route.params.id,
@@ -1678,6 +1716,27 @@ export default {
     },
     // 清空
     clearAll () {
+    },
+    // 添加穿综法
+    addMethod () {
+      this.drafting_method.push(['', '', ''])
+    },
+    // 删除穿综法
+    deleteMethod () {
+      this.drafting_method.pop()
+    },
+    // 检测输入内容
+    checkContent (ctx) {
+      if (ctx === '') {
+        return
+      }
+      if ((/^[0-9][，,0-9]*[0-9]$/).test(ctx) || (/^[0-9]$/).test(ctx)) {
+        console.log(ctx.split(/[,，]/))
+      } else {
+        this.$alert('检测到刚才输入的穿综法格式有误，请输入用逗号分割的数字，不要出现中文，字母等非法字符', '错误提示', {
+          confirmButtonText: '确定'
+        })
+      }
     }
   },
   filters: {
