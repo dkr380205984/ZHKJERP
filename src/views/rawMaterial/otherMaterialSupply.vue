@@ -61,8 +61,8 @@
                 v-model="company[index]"
                 placeholder="请选择承担单位">
                 <el-option v-for="item in companyArr"
-                  :key="item"
-                  :label="item"
+                  :key="item.id"
+                  :label="item.name"
                   :value="item">
                 </el-option>
               </el-select>
@@ -144,7 +144,7 @@ export default {
       this.order = res[0].data.data.production_detail.order_info
       let companyArr = res[2].data.data
       for (let i in companyArr) {
-        this.companyArr.push(companyArr[i])
+        this.companyArr.push({ name: companyArr[i], id: i })
       }
       console.log(this.companyArr)
       // let productPlan = res[0].data.data.product_plan
@@ -296,7 +296,8 @@ export default {
             client_info: this.company.map((item, index) => {
               return {
                 percent: this.rate[index],
-                client_name: item
+                client_name: item.name,
+                client_id: item.id
               }
             }),
             desc: this.des,

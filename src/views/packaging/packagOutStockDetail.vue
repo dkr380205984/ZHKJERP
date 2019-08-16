@@ -1086,6 +1086,8 @@ export default {
         height: auto;
         line-height: 40px;
         color: #666;
+        display: flex;
+        align-items: center;
         .label {
           position: absolute;
           left: 0;
@@ -1112,6 +1114,13 @@ export default {
               color: #fff;
               border-radius: 50%;
             }
+          }
+        }
+        .el-input,
+        .el-select {
+          height: 40px;
+          .el-input__inner {
+            height: 40px;
           }
         }
       }

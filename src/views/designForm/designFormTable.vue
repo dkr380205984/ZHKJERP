@@ -54,7 +54,7 @@
               <div class="title">经向排列</div>
               <div class="content">
                 <div class="particulars"
-                  v-if="warp_data.warp_rank_bottom.length < 13 && weft_data.weft_rank_bottom.length < 13">
+                  v-if="warp_data.warp_rank_bottom.length < 13 && weft_data.weft_rank_bottom.length < 13 && !weft_data.weft_rank_bottom_back && !warp_data.warp_rank_bottom_back">
                   <div>
                     <span v-for="(item,key) in add(warp_data.warp_rank_bottom)"
                       :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
@@ -115,7 +115,22 @@
             </div>
             <div class="through-methods">
               <div class="through-title">穿综法</div>
-              <div><span>{{warp_data.drafting_method?warp_data.drafting_method:''}}</span></div>
+              <!-- <span>{{warp_data.drafting_method?warp_data.drafting_method:''}}</span> -->
+              <div class="through-content">
+                <div class="through-for">{{warp_data.additional_data}}</div>
+                <div class="content-box">
+                  <div class="box"
+                    v-for="(val,ind) in warp_data.drafting_method"
+                    :key='ind'>
+                    <span class="index">{{ind+1}}</span>
+                    <span class="detail">
+                      <span>{{val[0]}}</span>
+                      <span>{{val[1]}}</span>
+                    </span>
+                  </div>
+                </div>
+                <div class="through-desc"></div>
+              </div>
             </div>
           </div>
         </li>
@@ -168,7 +183,7 @@
               <div class="title">纬向排列</div>
               <div class="content">
                 <div class="particulars"
-                  v-if="weft_data.weft_rank_bottom.length < 13 && warp_data.warp_rank_bottom.length < 13">
+                  v-if="weft_data.weft_rank_bottom.length < 13 && warp_data.warp_rank_bottom.length < 13 && !weft_data.weft_rank_bottom_back && !warp_data.warp_rank_bottom_back">
                   <div>
                     <span v-for="(item,key) in add(weft_data.weft_rank_bottom)"
                       :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
@@ -266,13 +281,13 @@
       </ul>
     </div>
     <div class="outTable-arrangement"
-      v-if="warp_data.warp_rank_bottom.length > 12 || weft_data.weft_rank_bottom.length > 12">
+      v-if="warp_data.warp_rank_bottom.length > 12 || weft_data.weft_rank_bottom.length > 12 || warp_data.warp_rank_bottom_back || weft_data.weft_rank_bottom_back">
       <div class="code">
         <div class="title">工艺单编号:</div>
         <div class="content">{{craft_code}}</div>
       </div>
       <div class="warp-wise-arrange">
-        <div class="title">经向排列:</div>
+        <div class="title">经向排列-正:</div>
         <div class="content">
           <div class="particulars"
             v-for=" (a,b) in add(warp_data.warp_rank_bottom,'all')"
@@ -311,7 +326,46 @@
         </div>
       </div>
       <div class="warp-wise-arrange">
-        <div class="title">纬向排列:</div>
+        <div class="title">经向排列-反:</div>
+        <div class="content">
+          <div class="particulars"
+            v-for=" (a,b) in add(warp_data.warp_rank_bottom_back,'all')"
+            :key="b">
+            <div>
+              <span v-for="(item,key) in add(warp_data.warp_rank_bottom_back,b)"
+                :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
+                :key="key">{{item === 'no' ? '' : (item === 0 ? '主' : '夹' + item)}}</span>
+            </div>
+            <div v-for="(item,key) in warp_data.warp_rank_back"
+              :key="key">
+              <template v-if="key === 0">
+                <span v-for="(val,ind) in add(item,b)"
+                  :style="{minWidth : (100/12) + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
+                  :key="ind">
+                  {{val === 'no' ? '' : val}}
+                </span>
+              </template>
+              <template v-else>
+                <span v-for="(value,index) in changeArr(add(item,b))"
+                  :key="index"
+                  :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999',background: (consol(item,b,value,index) && value.value !== 'no') ? 'rgb(240,240,240)' : false}">
+                  {{value.value === 'no' ? '' : value.value}}
+                  <!-- <span v-if="consol(item,b,value,index) && value.value !== 'no'"
+                    class="jiantou">
+                    <span v-if="consol(item,b,value,index,true) === '' && b !== 0 && b !== add(warp_data.warp_rank_bottom_back,'all').length -1"></span>
+                    <span v-else-if="(((item[(b + 1) * 12] === item[(b + 1) * 12 - 1] && item[( b + 1 ) * 12 ] === '' ) || item[(b + 1) * 12] === null) && index === changeArr(add(item, b)).length - 1)"
+                      class="el-icon-back left"></span>
+                    <span v-else-if="(((item[b * 12] === item[b * 12 - 1] && item[b * 12] === '') || item[b * 12] === null) && index === 0 && b !== 0)"
+                      class="el-icon-back right"></span>
+                  </span> -->
+                </span>
+              </template>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="warp-wise-arrange">
+        <div class="title">纬向排列-正:</div>
         <div class="content">
           <div class="particulars"
             v-for=" (a,b) in add(weft_data.weft_rank_bottom,'all')"
@@ -339,6 +393,46 @@
                   <span v-if="consol(item,b,value,index) && value.value !== 'no' "
                     class="jiantou">
                     <span v-if="consol(item,b,value,index,true) === '' && b !== 0 && b !== add(weft_data.weft_rank_bottom,'all').length -1"></span>
+                    <span v-else-if="(((item[(b + 1) * 12] === item[(b + 1) * 12 - 1] && item[( b + 1 ) * 12 ] === '' ) || item[(b + 1) * 12] === null) && index === changeArr(add(item, b)).length - 1)"
+                      class="el-icon-back left"></span>
+                    <span v-else-if="(((item[b * 12] === item[b * 12 - 1] && item[b * 12] === '') || item[b * 12] === null) && index === 0 && b !== 0)"
+                      class="el-icon-back right"></span>
+                  </span>
+                </span>
+              </template>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="warp-wise-arrange">
+        <div class="title">纬向排列-反:</div>
+        <div class="content">
+          <div class="particulars"
+            v-for=" (a,b) in add(weft_data.weft_rank_bottom_back,'all')"
+            :key="b">
+            <div>
+              <span v-for="(item,key) in add(weft_data.weft_rank_bottom_back,b)"
+                :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
+                :key="key">{{item === 'no' ? '' : (item === 0 ? '主' : '夹' + item)}}</span>
+            </div>
+            <div v-for="(item,key) in weft_data.weft_rank_back"
+              :key="key">
+              <template v-if="key === 0">
+                <span v-for="(items,key) in add(item,b)"
+                  :style="{minWidth : (100/12) + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
+                  :key="key">
+                  {{items === 'no' ? '' : items}}
+                </span>
+              </template>
+              <template v-else>
+                <span v-for="(value,index) in changeArr(add(item,b))"
+                  :key="index"
+                  :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999',background: consol(item,b,value,index) && value.value !== 'no' ? 'rgb(240,240,240)' : false}">
+                  {{value.value === 'no' ? '' : value.value}}
+
+                  <span v-if="consol(item,b,value,index) && value.value !== 'no' "
+                    class="jiantou">
+                    <span v-if="consol(item,b,value,index,true) === '' && b !== 0 && b !== add(weft_data.weft_rank_bottom_back,'all').length -1"></span>
                     <span v-else-if="(((item[(b + 1) * 12] === item[(b + 1) * 12 - 1] && item[( b + 1 ) * 12 ] === '' ) || item[(b + 1) * 12] === null) && index === changeArr(add(item, b)).length - 1)"
                       class="el-icon-back left"></span>
                     <span v-else-if="(((item[b * 12] === item[b * 12 - 1] && item[b * 12] === '') || item[b * 12] === null) && index === 0 && b !== 0)"
@@ -725,12 +819,13 @@ export default {
     craftOne({
       id: this.$route.params.id
     }).then((res) => {
-      // console.log(res.data.data)
+      console.log(res.data.data)
       const data = res.data.data
       this.product_info = data.product_info
       this.craft_code = data.craft_code
       this.create_time = data.create_time
       this.weight = data.weight
+      data.warp_data.drafting_method = JSON.parse(data.warp_data.drafting_method)
       this.warp_data = data.warp_data
       this.weft_data = data.weft_data
       data.material_data.forEach((item) => {

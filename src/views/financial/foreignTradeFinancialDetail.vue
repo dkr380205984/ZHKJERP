@@ -54,6 +54,9 @@
         <span :class="{cutList:true,active:flag[4].active}"
           @click="cutList(4)"
           v-if="this.client_type.indexOf(4) !== -1">生产织造列表</span>
+        <span :class="{cutList:true,active:flag[6].active}"
+          @click="cutList(6)"
+          v-if="this.client_type.indexOf(4) !== -1">补纱扣款列表</span>
         <span :class="{cutList:true,active:flag[5].active}"
           @click="cutList(5)"
           v-if="this.client_type.indexOf(5) !== -1">产品加工列表</span>
@@ -694,6 +697,148 @@
           </div>
         </div>
       </div>
+      <!-- 补纱扣款列表 -->
+      <div class="lineCtn"
+        v-show="flag[6].active">
+        <div class="selectCtn">
+          <div class="select">
+            <span class="label">筛选条件:</span>
+            <el-select clearable
+              v-model="list.weaveDeductList.filter.clientVal"
+              style="margin-left:20px;width:150px;"
+              placeholder="筛选外贸公司">
+              <el-option v-for="item in clientList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.name">
+              </el-option>
+            </el-select>
+            <el-select clearable
+              v-model="list.weaveDeductList.filter.groupVal"
+              style="margin-left:20px;width:150px;"
+              placeholder="筛选小组">
+              <el-option v-for="item in groupList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.name">
+              </el-option>
+            </el-select>
+            <el-select clearable
+              v-model="list.weaveDeductList.filter.orderVal"
+              style="margin-left:20px;width:150px;"
+              filterable
+              placeholder="筛选订单号">
+              <el-option v-for="item in list.weaveDeductList.list"
+                :key="item.id"
+                :label="item.order_code"
+                :value="item.id">
+              </el-option>
+            </el-select>
+            <el-date-picker v-model="list.weaveDeductList.filter.data"
+              type="daterange"
+              align="right"
+              style="margin-left:20px;"
+              unlink-panels
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              :picker-options="pickerOptions">
+            </el-date-picker>
+          </div>
+          <div class="management">
+            <span class="handle blue"
+              @click="record.recordFlag = true">操作记录</span>
+            <template v-if="list.weaveDeductList.management">
+              <span class="handle"
+                @click="cutPayMoney">扣款</span>
+            </template>
+            <span class="handle handleMain"
+              @click="list.weaveDeductList.management = !list.weaveDeductList.management">{{!list.weaveDeductList.management ? '批量管理':'取消管理'}}</span>
+          </div>
+        </div>
+        <div class="table">
+          <div class="title">
+            <span>
+              <el-checkbox class="checkBox"
+                v-model="cutPay.checkAllFlag"
+                @change="checked('all','weaveDeductList')"
+                v-if="list.weaveDeductList.management"></el-checkbox>
+              订单号
+            </span>
+            <span>负责小组</span>
+            <span>下单日期</span>
+            <span>订单公司</span>
+            <span>合计金额</span>
+            <span>扣款记录</span>
+            <span class="flex15">操作</span>
+          </div>
+          <ul class="infinite-list">
+            <div class="box">
+              <li v-for="(item,key) in list.weaveDeductList.lists"
+                :key="key"
+                @click="item.flag = !item.flag"
+                class="infinite-list-item">
+                <div class="list"
+                  style="line-height:59px;">
+                  <span>
+                    <em :class="{'el-icon-caret-bottom':true,'open':true,'close':!item.flag}"></em>
+                    <el-checkbox class="checkBox"
+                      v-if="list.weaveDeductList.management"
+                      v-model="item.checked"
+                      @change="checked(item)"></el-checkbox>
+                    {{item.order_code}}
+                  </span>
+                  <span>{{item.group_name}}</span>
+                  <span>{{item.order_time}}</span>
+                  <span>{{item.client_name}}</span>
+                  <span>{{(item.total_price ? item.total_price: 0)|filterToFixed}}元</span>
+                  <span class="find"
+                    @click.stop="find(item.order_code,'cut')">{{item.deduct_number ? item.deduct_number : '-'}}</span>
+                  <span class="flex15">
+                    <span class="btn"
+                      @click.stop="$router.push('/index/orderDetailNew/' + item.id)">详情</span>
+                  </span>
+                </div>
+                <div :class="{'detail':true,'detailNone':!item.flag,'detailShow':item.flag}">
+                  <div v-loading='item.loading'>
+                    <span class="title">
+                      <span class="flex15">补充物料</span>
+                      <span>颜色</span>
+                      <span>补充总量</span>
+                      <span>单价</span>
+                      <span>承担比例</span>
+                      <span>合计金额</span>
+                    </span>
+                    <span class="content"
+                      v-for="(valMat,indMat) in item.info"
+                      :key="indMat">
+                      <span class="flex15">{{valMat.material_name}}</span>
+                      <span>{{valMat.color}}</span>
+                      <span>{{valMat.weight}}</span>
+                      <span>{{valMat.price}}</span>
+                      <span>{{valMat.percent}}%</span>
+                      <span>{{valMat.price*valMat.weight*valMat.percent/100}}元</span>
+                    </span>
+                  </div>
+                </div>
+              </li>
+              <li class="infinite-list-item"
+                v-if="list.weaveDeductList.lists.length === 0 ">
+                <div class="list"><span style="color:#DDD;">暂无数据</span></div>
+              </li>
+            </div>
+          </ul>
+          <div class="footer">
+            <span>合计</span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span>{{list.weaveDeductList.total_price|filterNumber}}万元</span>
+            <span>{{list.weaveDeductList.total_deduct}}</span>
+            <span class="flex15"></span>
+          </div>
+        </div>
+      </div>
       <!-- 产品加工列表 -->
       <div class="lineCtn"
         v-show="flag[5].active">
@@ -1058,14 +1203,14 @@
           <div class="management">
             <span class="handle blue"
               @click="record.recordFlag = true">操作记录</span>
-            <template v-if="list.material_processList.management">
+            <template v-if="list.transportList.management">
               <span class="handle"
                 @click="payMoneys">结算</span>
               <span class="handle"
                 @click="cutPayMoney">扣款</span>
             </template>
             <span class="handle handleMain"
-              @click="list.material_processList.management = !list.material_processList.management">{{!list.material_processList.management ? '批量管理':'取消管理'}}</span>
+              @click="list.transportList.management = !list.transportList.management">{{!list.transportList.management ? '批量管理':'取消管理'}}</span>
           </div>
         </div>
         <div class="table">
@@ -1073,8 +1218,8 @@
             <span>
               <el-checkbox class="checkBox"
                 v-model="cutPay.checkAllFlag"
-                @change="checked('all','material_processList')"
-                v-if="list.material_processList.management"></el-checkbox>
+                @change="checked('all','transportList')"
+                v-if="list.transportList.management"></el-checkbox>
               订单号
             </span>
             <span>负责小组</span>
@@ -1089,14 +1234,14 @@
             <div class="box">
               <li v-for="(item,key) in list.transportList.lists"
                 :key="key"
-                @click="item.flag = !item.flag"
                 class="infinite-list-item">
                 <div class="list"
+                  @click="item.flag = !item.flag"
                   style="line-height:59px;">
                   <span>
                     <em :class="{'el-icon-caret-bottom':true,'open':true,'close':!item.flag}"></em>
                     <el-checkbox class="checkBox"
-                      v-if="list.material_processList.management"
+                      v-if="list.transportList.management"
                       v-model="item.checked"
                       @change="checked(item)"></el-checkbox>
                     {{item.order_code}}
@@ -1109,35 +1254,26 @@
                     @click.stop="find(item.order_code,'cut')">{{item.deduct_number ? item.deduct_number : '-'}}</span>
                   <span class="find"
                     @click.stop="find(item.order_code,'pay')">{{item.settle_number ? item.settle_number : '-'}}</span>
-                  <span class="flex15"
-                    @click="$router.push('/index/orderDetailNew/' + item.id)">
-                    <span cl.stopass="btn">详情</span>
+                  <span class="flex15">
+                    <span class="btn"
+                      @click.stop="$router.push('/index/orderDetailNew/' + item.id)">详情</span>
                   </span>
                 </div>
                 <div :class="{'detail':true,'detailNone':!item.flag,'detailShow':item.flag}">
                   <div v-loading='item.loading'>
                     <span class="title">
-                      <span>物料名称</span>
-                      <span>类型</span>
-                      <span class="flex08">属性</span>
-                      <span class="flex08">单价</span>
-                      <span class="flex05">数量</span>
+                      <span>批次信息</span>
+                      <span>总箱数</span>
+                      <span>总立方数</span>
                       <span>合计金额</span>
                     </span>
                     <span class="content"
                       v-for="(val,ind) in item.info"
                       :key="ind">
-                      <span>{{val.material_name}}</span>
-                      <span>{{val.process_type}}</span>
-                      <span class="flex21 col">
-                        <span v-for="(valInfo,indInfo) in val.material_info"
-                          :key="indInfo">
-                          <span class="flex08">{{valInfo.attr ? valInfo.attr : '无'}}/{{valInfo.color}}</span>
-                          <span class="flex08">{{'-'}}</span>
-                          <span class="flex05">{{valInfo.value|filterToFixed}}kg</span>
-                        </span>
-                      </span>
-                      <span>{{val.total_price|filterToFixed}}元</span>
+                      <span>第{{val.batch_id}}批</span>
+                      <span>{{val.number ? val.number : 0}}</span>
+                      <span>{{val.cubic_number ? val.cubic_number : 0}}m³</span>
+                      <span>{{val.cost ? val.cost : 0}}元</span>
                     </span>
                   </div>
                 </div>
@@ -1149,9 +1285,9 @@
             <span></span>
             <span></span>
             <span></span>
-            <span>{{list.material_processList.total_price|filterNumber}}万元</span>
-            <span>{{list.material_processList.total_deduct}}</span>
-            <span>{{list.material_processList.total_settle}}</span>
+            <span>{{list.transportList.total_price|filterNumber}}万元</span>
+            <span>{{list.transportList.total_deduct}}</span>
+            <span>{{list.transportList.total_settle}}</span>
             <span class="flex15"></span>
           </div>
         </div>
@@ -1239,7 +1375,7 @@
           <div class="footer">
             <span>合计</span>
             <span></span>
-            <span>{{list.transferList.transfer_total_price|filterNumber}}元</span>
+            <span>{{list.transferList.transfer_total_price|filterNumber}}万元</span>
             <span></span>
             <span></span>
             <span></span>
@@ -1648,6 +1784,11 @@ export default {
           active: false,
           listName: 'product_processList'
         },
+        6: {
+          name: '补纱扣款列表',
+          active: false,
+          listName: 'weaveDeductList'
+        },
         7: {
           name: '包装订购列表',
           active: false,
@@ -1721,6 +1862,20 @@ export default {
           total_deduct: 0,
           total_settle: 0
         }, // 生产织造
+        weaveDeductList: {
+          list: [],
+          lists: [],
+          management: false,
+          filter: {
+            groupVal: '',
+            data: '',
+            orderVal: '',
+            clientVal: ''
+          },
+          total_price: 0,
+          total_deduct: 0,
+          total_settle: 0
+        }, // 补纱扣款
         product_processList: {
           list: [],
           lists: [],
@@ -1838,56 +1993,6 @@ export default {
     }
   },
   methods: {
-    jsonMerge (jsonArr, keyArr) {
-      let newJson = [] // 合并好的数据都放在这个数组里
-      jsonArr.forEach((itemJson, indexJson) => {
-        let mark = -1
-        let finded = newJson.find((itemFind, indexFind) => {
-          if (itemFind[keyArr[0]] === itemJson[keyArr[0]]) {
-            mark = indexFind
-            return itemFind[keyArr[0]] === itemJson[keyArr[0]]
-          }
-        })
-        if (!finded) {
-          let value = {}
-          value[keyArr[0]] = itemJson[keyArr[0]]
-          value['info'] = []
-          let info = {}
-          for (let i in itemJson) {
-            if (i !== keyArr[0]) {
-              info[i] = itemJson[i]
-            }
-          }
-          value['info'].push(info)
-          newJson.push(value)
-        } else {
-          let info = {}
-          for (let i in itemJson) {
-            if (i !== keyArr[0]) {
-              info[i] = itemJson[i]
-            }
-          }
-          newJson[mark]['info'].push(info)
-        }
-      })
-      // 递归的条件是不断的缩减keyArr的length，每次都去除第零个，直到为0
-      if (keyArr.length === 1) {
-        return newJson
-      } else {
-        return newJson.map((itemInfo) => {
-          let newKeyArr = []
-          keyArr.forEach((item, index) => {
-            if (index > 0) {
-              newKeyArr.push(item)
-            }
-          })
-          return {
-            [keyArr[0]]: itemInfo[keyArr[0]],
-            'info': this.jsonMerge(itemInfo['info'], newKeyArr)
-          }
-        })
-      }
-    },
     // 获取操作记录
     getRecordList () {
       this.loading = true
@@ -2644,52 +2749,107 @@ export default {
       })
       // 运输整理
       res[2].data.data.stock_out.forEach(item => {
-        let flag = this.list.transportList.list.find(key => key.id === item.order_id)
+        this.list.transportList.total_price = Number(this.list.transportList.total_price) + Number(item.cost)
+        let flag = this.list.transportList.list.find(key => key.id === item.order_info.id)
         if (!flag) {
           this.list.transportList.list.push({
-
+            id: item.order_info.id,
+            order_code: item.order_info.order_code,
+            order_time: item.order_info.order_time,
+            group_name: item.order_info.group_name,
+            client_name: item.order_info.client_name,
+            total_price: item.cost,
+            info: [{
+              batch_id: item.batch_id,
+              number: item.number,
+              cubic_number: item.cubic_number,
+              cost: item.cost
+            }],
+            deduct_number: 0,
+            settle_number: 0,
+            flag: false,
+            checked: false,
+            loading: false
           })
+        } else {
+          flag.total_price = Number(flag.total_price ? flag.total_price : 0) + Number(item.cost)
+          let name = flag.info.find(key => key.batch_id === item.batch_id)
+          if (!name) {
+            flag.info.push({
+              batch_id: item.batch_id,
+              number: item.number,
+              cubic_number: item.cubic_number,
+              cost: item.cost
+            })
+          } else {
+            name.number = Number(name.number ? name.number : 0) + Number(item.number)
+            name.cubic_number = Number(name.cubic_number ? name.cubic_number : 0) + Number(item.cubic_number)
+            name.cost = Number(name.cost ? name.cost : 0) + Number(item.cost)
+          }
+        }
+      })
+      // 补纱扣款整理
+      console.log(res[5].data.data)
+      res[5].data.data.forEach(item => {
+        let flag = item.client_info.find(key => key.client_id === this.$route.params.id)
+        if (flag) {
+          let total = item.yarn_info.reduce((a, b) => { return Number(a.weight * a.price || a) + (b.weight * (b.price ? b.price : 0)) })
+          let price = total * flag.percent / 100
+          this.list.weaveDeductList.total_price += price
+          item.yarn_info.forEach(valMat => {
+            let orderCode = this.list.weaveDeductList.list.find(key => key.id === item.order_info.id)
+            if (!orderCode) {
+              this.list.weaveDeductList.list.push({
+                id: item.order_info.id,
+                order_code: item.order_info.order_code,
+                order_time: item.order_info.order_time,
+                group_name: item.order_info.group_name,
+                client_name: item.order_info.client_name,
+                total_price: valMat.weight * (valMat.price ? valMat.price : 0) * flag.percent / 100,
+                info: [{
+                  material_name: valMat.name,
+                  weight: valMat.weight,
+                  color: valMat.color,
+                  price: valMat.price,
+                  percent: flag.percent
+                }],
+                deduct_number: 0,
+                flag: false,
+                checked: false,
+                loading: false
+              })
+            } else {
+              orderCode.total_price += (valMat.weight * (valMat.price ? valMat.price : 0) * flag.percent / 100)
+              let material = orderCode.info.find(key => (key.material_name === valMat.name && key.color === valMat.color && key.price === valMat.price))
+              if (!material) {
+                orderCode.info.push({
+                  material_name: valMat.name,
+                  weight: valMat.weight,
+                  color: valMat.color,
+                  price: valMat.price,
+                  percent: flag.percent
+                })
+              } else {
+                material.weight = Number(material.weight ? material.weight : 0) + Number(valMat.weight)
+              }
+            }
+          })
+          console.log(price)
         }
       })
       console.log(this.list)
       // 统计共计金额及可筛选数据数组
       for (const prop in this.list) {
-        this.total_price = Number(this.total_price ? this.total_price : 0) + Number(this.list[prop].total_price ? this.list[prop].total_price : 0)
+        if (prop === 'weaveDeductList') {
+          this.total_price -= this.list[prop].total_price
+        } else {
+          this.total_price = Number(this.total_price ? this.total_price : 0) + Number(this.list[prop].total_price ? this.list[prop].total_price : 0)
+        }
         this.list[prop].lists = this.list[prop].list
       }
       this.getRecordList()
       this.groupList = res[3].data.data
       this.clientList = res[4].data.data.filter(key => key.type.indexOf(1) !== -1)
-      console.log(res[5].data.data)
-      this.bushaList = res[5].data.data.filter(item => ((item.type - 1) === Number(this.type))).map((item) => {
-        let json = item
-        json.yarn_info = this.jsonMerge(json.yarn_info, ['name'])
-        json.yarn_info.map((itemYarn) => {
-          itemYarn.total = itemYarn.info.reduce((total, current) => {
-            return total + parseInt(current.weight)
-          }, 0)
-          return itemYarn
-        })
-        return json
-      })
-      this.bushaList.forEach((item) => {
-        item.yarn_info.forEach((itemYarn) => {
-          itemYarn.total_price = itemYarn.info.reduce((total, itemColor) => {
-            let finded = this.orderLog.find((itemFind) => itemFind.replenish_id === item.id && itemFind.material === itemYarn.name && itemFind.color === itemColor.color)
-            if (finded) {
-              return total + parseInt(finded.total_price)
-            } else {
-              return total
-            }
-          }, 0)
-          itemYarn.info.forEach((itemColor) => {
-            let finded = this.orderLog.find((itemFind) => itemFind.replenish_id === item.id && itemFind.material === itemYarn.name && itemFind.color === itemColor.color)
-            if (finded) {
-              itemColor['buchong'] = itemColor['buchong'] ? itemColor['buchong'] + finded.weight : finded.weight
-            }
-          })
-        })
-      })
     })
     let nowDate = new Date()
     this.now_time = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1 < 10 ? '0' + (nowDate.getMonth() + 1) : (nowDate.getMonth() + 1)) + '-' + (nowDate.getDate() < 10 ? '0' + nowDate.getDate() : nowDate.getDate())
@@ -2802,6 +2962,21 @@ export default {
           this.list.weaveList.total_deduct += Number(item.deduct_number)
           this.list.weaveList.total_settle += Number(item.settle_number)
           this.list.weaveList.total_price += Number(item.total_price)
+        })
+      }
+    },
+    'list.weaveDeductList.filter': {
+      deep: true,
+      handler (newVal) {
+        this.list.weaveDeductList.lists = newVal.clientVal ? this.list.weaveDeductList.list.filter(item => item.client_name === newVal.clientVal) : this.list.weaveDeductList.list
+        this.list.weaveDeductList.lists = newVal.groupVal ? this.list.weaveDeductList.lists.filter(item => item.group_name === newVal.groupVal) : this.list.weaveDeductList.lists
+        this.list.weaveDeductList.lists = newVal.orderVal ? this.list.weaveDeductList.lists.filter(item => item.id === newVal.orderVal) : this.list.weaveDeductList.lists
+        this.list.weaveDeductList.lists = newVal.data ? this.list.weaveDeductList.lists.filter(item => (new Date(item.order_time).getTime() >= newVal.data[0].getTime() && newVal.data[1].getTime() >= new Date(item.order_time).getTime())) : this.list.weaveDeductList.lists
+        this.list.weaveDeductList.total_deduct = 0
+        this.list.weaveDeductList.total_price = 0
+        this.list.weaveDeductList.lists.forEach(item => {
+          this.list.weaveDeductList.total_deduct += Number(item.deduct_number)
+          this.list.weaveDeductList.total_price += Number(item.total_price)
         })
       }
     },
