@@ -6,29 +6,31 @@
       <el-input style="width:250px"
         placeholder="输入物料名称搜索"
         suffix-icon="el-icon-search"
-        v-model="searchVal"></el-input>
+        v-model="filter.searchVal"></el-input>
     </div>
     <div class="body">
-      <!-- <div class="filterCtn">
+      <div class="filterCtn">
         <div class="filterLine">
           <span class="label">筛选列表:</span>
+          <el-tag closable
+            v-show="typeCmp"
+            @close="clear('type')">{{typeCmp}}</el-tag>
         </div>
         <div class="selectLine">
           <span class="label">筛选条件:</span>
           <div>
-            <el-select v-model="group"
+            <el-select v-model="filter.type"
               placeholder="筛选类型">
-              <el-option v-for="item in groupList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+              <el-option v-for="item in filter.typeList"
+                :key="item.type"
+                :label="item.name"
+                :value="item.type">
               </el-option>
             </el-select>
           </div>
         </div>
-      </div> -->
-      <div class="content"
-        style="margin-top:60px;">
+      </div>
+      <div class="content">
         <div class="title">
           <span>物料名称</span>
           <span>合计使用</span>
@@ -37,7 +39,7 @@
           <span>库存剩余</span>
           <span>平均价格</span>
           <span>合计价格</span>
-          <span>操作</span>
+          <!-- <span>操作</span> -->
         </div>
         <ul class="infinite-list">
           <div class="liBox">
@@ -46,17 +48,16 @@
               :key="key"
               @click="item.flag = !item.flag">
               <div class="list">
-                <span style="line-height:59px;">
-                  {{item.material_name}}</span>
-                <span>{{item.use_total}}</span>
-                <span>{{item.reserve_number}}</span>
-                <span>{{item.order_number}}</span>
-                <span>{{item.stock_number}}</span>
-                <span>{{(item.price_total/(Number(item.reserve_number) + Number(item.order_number))).toFixed(2)}}</span>
+                <span style="line-height:59px;">{{item.material_name}}</span>
+                <span>{{item.use_total}}{{item.type === 1 ? 'kg' : '个'}}</span>
+                <span>{{item.reserve_number}}{{item.type === 1 ? 'kg' : '个'}}</span>
+                <span>{{item.order_number}}{{item.type === 1 ? 'kg' : '个'}}</span>
+                <span>{{item.stock_number}}{{item.type === 1 ? 'kg' : '个'}}</span>
+                <span>{{(item.price_total/(Number(item.reserve_number) + Number(item.order_number))).toFixed(2)}}元/{{item.type === 1 ? 'kg' : '个'}}</span>
                 <span>{{item.price_total}}元</span>
-                <span>
+                <!-- <span>
                   <span class="btn">详情</span>
-                </span>
+                </span> -->
               </div>
             </li>
           </div>
@@ -69,7 +70,7 @@
           <span>{{total_stock_number|filterNumber}}万</span>
           <span></span>
           <span>{{total_price|filterNumber}}万元</span>
-          <span></span>
+          <!-- <span></span> -->
         </div>
       </div>
     </div>
@@ -82,7 +83,11 @@ export default {
   data () {
     return {
       loading: true,
-      searchVal: '',
+      filter: {
+        searchVal: '',
+        type: 1,
+        typeList: [{ name: '原料', type: 1 }, { name: '辅料', type: 2 }]
+      },
       total_use_number: 0,
       total_reserve_number: 0,
       total_order_number: 0,
@@ -104,6 +109,7 @@ export default {
           let flag = this.list.find(key => key.material_name === item.material_name)
           if (!flag) {
             this.list.push({
+              type: item.type,
               material_name: item.material_name,
               use_total: item.use_total,
               stock_number: item.stock_number,
@@ -126,17 +132,43 @@ export default {
           this.total_stock_number += Number(item.stock_number)
           this.total_price += Number(item.price_total)
         })
-        this.filterList = this.list
+        this.filterList = this.list.filter(item => item.type === this.filter.type)
         this.loading = false
       })
+    },
+    clear (item) {
+      if (item === 'type') {
+        this.filter.type = ''
+      }
     }
   },
   watch: {
-    searchVal (newVal) {
-      if (newVal) {
-        this.filterList = this.list.filter(item => item.material_name.indexOf(newVal) !== -1)
+    'filter': {
+      deep: true,
+      handler (newVal) {
+        this.total_use_number = 0
+        this.total_reserve_number = 0
+        this.total_order_number = 0
+        this.total_stock_number = 0
+        this.total_price = 0
+        this.filterList = newVal.searchVal ? this.list.filter(item => item.material_name.indexOf(newVal.searchVal) !== -1) : this.list
+        this.filterList = newVal.type ? this.filterList.filter(item => item.type === newVal.type) : this.filterList
+        this.filterList.forEach(item => {
+          this.total_use_number += Number(item.use_total)
+          this.total_reserve_number += Number(item.reserve_number)
+          this.total_order_number += Number(item.order_number)
+          this.total_stock_number += Number(item.stock_number)
+          this.total_price += Number(item.price_total)
+        })
+      }
+    }
+  },
+  computed: {
+    typeCmp () {
+      if (this.filter.type) {
+        return this.filter.typeList.find(item => item.type === this.filter.type).name
       } else {
-        this.filterList = this.list
+        return '所有分类'
       }
     }
   },

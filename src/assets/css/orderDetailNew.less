@@ -644,6 +644,21 @@
             }
           }
         }
+        &>.title{
+          display: inline-block;
+          margin: 10px 0;
+          color: @fontNormal;
+          font-weight: 500; 
+          &::before{
+            display: inline-block;
+            content: '';
+            width: 10px;
+            height: 10px;
+            background-color: @normalBlue;
+            border-radius: 50%;
+            margin-right: 10px;
+          }
+        }
       }
       .fileCtn{
         margin-left: 40px;

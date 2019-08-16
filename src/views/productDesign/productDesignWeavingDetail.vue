@@ -311,7 +311,7 @@
                       </span>
                     </span>
                   </span>
-                  <span style="color:#1A95FF"
+                  <span style="color:#1A95FF;cursor: pointer;"
                     @click="$router.push('/index/rawMaterialSupply/'+$route.params.id+'/'+item.client_name + '/' +item.info[0].info[0].client_id )">补纱</span>
                 </li>
                 <li class="material_info"

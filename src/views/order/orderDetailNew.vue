@@ -703,18 +703,18 @@
             </li>
           </div>
         </div>
-        <div v-show="true"
-          class="hrefCtn"
+        <div class="hrefCtn"
           id="href6">
           <div class="titleLine">
             <div class="titleCtn">
               <span class="title">财务概述</span>
               <i class="border"></i>
             </div>
-            <div class="oprationCtn">
+            <!-- <div class="oprationCtn">
               <span class="opration">财务详情</span>
-            </div>
+            </div> -->
           </div>
+          <span class="title">物料成本</span>
           <div class="tablesCtn"
             style="line-height:40px;width:1220px;box-sizing:border-box">
             <li class="title">
@@ -752,8 +752,9 @@
               </span>
             </li>
           </div>
+          <span class="title">产品织造加工成本</span>
           <div class="tablesCtn"
-            style="line-height:40px;width:1220px;box-sizing:border-box;margin-top:30px;">
+            style="line-height:40px;width:1220px;box-sizing:border-box;">
             <li class="title">
               <span style="flex:2">产品名称</span>
               <span>产品图片</span>
@@ -783,18 +784,56 @@
                 </div>
               </span>
               <span class="tableRow">{{item|filterPrice}}</span>
-              <span class="tableRow">{{item.weave_client[0]}}</span>
-              <span class="tableRow">{{item.weave_number}}{{item.unit}}</span>
-              <span class="tableRow">{{item.total_price_weave}}元</span>
+              <span class="tableRow">{{item.weave_client ? item.weave_client[0] : '暂无'}}</span>
+              <span class="tableRow">{{item.weave_number ? item.weave_number : 0}}{{item.unit}}</span>
+              <span class="tableRow">{{item.total_price_weave ? item.total_price_weave : 0}}元</span>
               <span class="tableRow col"
                 style="flex:4">
                 <span class="tableColumn"
                   v-for="(valType,indType) in item.processType"
                   :key="indType">
-                  <span class="tableRow">{{valType.process_client[0]}}</span>
+                  <span class="tableRow">{{(valType.process_client || valType.process_client.length !==0) ? valType.process_client[0] : '暂无'}}</span>
                   <span class="tableRow">{{valType.type}}</span>
-                  <span class="tableRow">{{valType.number}}{{item.unit}}</span>
-                  <span class="tableRow">{{valType.total_price_semiProcess}}元</span>
+                  <span class="tableRow">{{valType.number ? valType.number : 0}}{{item.unit}}</span>
+                  <span class="tableRow">{{valType.total_price_semiProcess ? valType.total_price_semiProcess : 0}}元</span>
+                </span>
+              </span>
+            </li>
+          </div>
+          <span class="title">包装订购成本</span>
+          <div class="tablesCtn"
+            style="line-height:40px;width:1220px;box-sizing:border-box">
+            <li class="title">
+              <span>包装名称</span>
+              <span>订购公司</span>
+              <span>尺寸</span>
+              <span>属性</span>
+              <span>单价</span>
+              <span>订购数量</span>
+              <span>总价</span>
+            </li>
+            <li class="content"
+              v-for="(item,key) in packOrderList"
+              :key="key">
+              <span class="tableRow">{{item.pack_name}}</span>
+              <span class="tableRow col"
+                style="flex:6">
+                <span class="tableColumn"
+                  v-for="(value,index) in item.client_info"
+                  :key="index">
+                  <span class="tableRow">{{value.client_name}}</span>
+                  <span class="tableRow col"
+                    style="flex:5">
+                    <span class="tableColumn"
+                      v-for="(val,ind) in value.size_info"
+                      :key="ind">
+                      <span class="tableRow">{{val.size}}</span>
+                      <span class="tableRow"><template v-for="(valAttr,indAttr) in val.attr">{{(indAttr !== 0 && !valAttr) ? '/' : ''}}{{valAttr.pack_attr ? valAttr.pack_attr : '无'}}</template></span>
+                      <span class="tableRow">{{val.price}}</span>
+                      <span class="tableRow">{{val.number}}</span>
+                      <span class="tableRow">{{val.number*val.price}}元</span>
+                    </span>
+                  </span>
                 </span>
               </span>
             </li>
@@ -947,7 +986,7 @@
       <li class="ahref"><a href="#href3">收发概述</a></li>
       <li class="ahref"><a href="#href4">检验概述</a></li>
       <li class="ahref"><a href="#href5">出库概述</a></li>
-      <!-- <li class="ahref"><a href="#href6">财务概述</a></li> -->
+      <li class="ahref"><a href="#href6">财务概述</a></li>
       <li class="ahref"><a href="#href7">发货信息</a></li>
       <li class="ahref"
         v-show="order_info.status===2"><a href="#href8">订单取消日志</a></li>
@@ -1090,7 +1129,8 @@ export default {
       designList: [], //  生产概述
       outStockList: [], // 出库概述
       productPriceList: [], // 产品价格信息
-      storeList: [] // 收发概述
+      storeList: [], // 收发概述
+      packOrderList: []// 包装订购
     }
   },
   methods: {
@@ -1811,10 +1851,10 @@ export default {
         item.rejects_info.map(keys => {
           num += Number(keys.number ? keys.number : 0)
         })
-        let flag = this.designList.find(key => key.product_code === item.product_code)
+        let flag = this.designList.find(key => key.product_code === item.product_info.product_code)
         if (!flag) {
           this.designList.push({
-            product_code: item.product_code,
+            product_code: item.product_info.product_code,
             img: [],
             semi_number: item.number,
             semi_defective: num
@@ -1884,7 +1924,6 @@ export default {
         })
       })
       this.productPriceList = orderInfo.order_batch
-      console.log(this.productPriceList)
       let stockOutInfo = this.order_log.stock_out_info // 订单出库日志
       stockOutInfo.forEach(item => {
         let flag = this.outStockList.find(key => key.batch_id === item.batch_id)
@@ -1892,6 +1931,54 @@ export default {
           flag.pack_number = Number(flag.pack_number ? flag.pack_number : 0) + Number(item.number)
         }
       })
+      // 包装订购成本统计
+      let packOrderInfo = this.order_log.pack_order
+      console.log(packOrderInfo)
+      packOrderInfo.forEach(item => {
+        let pack = this.packOrderList.find(key => key.pack_name === item.material_name)
+        if (!pack) {
+          this.packOrderList.push({
+            pack_name: item.material_name,
+            client_info: [{
+              client_name: item.client_name,
+              client_id: item.client_id,
+              size_info: [{
+                size: item.size,
+                attr: JSON.parse(item.attribute),
+                number: item.number,
+                price: item.price
+              }]
+            }]
+          })
+        } else {
+          let client = pack.client_info.find(key => key.client_id === item.client_id)
+          if (!client) {
+            pack.client_info.push({
+              client_name: item.client_name,
+              client_id: item.client_id,
+              size_info: [{
+                size: item.size,
+                attr: JSON.parse(item.attribute),
+                number: item.number,
+                price: item.price
+              }]
+            })
+          } else {
+            let size = client.size_info.find(key => (key.size === item.size && key.price === item.price))
+            if (!size) {
+              size.size_info.push({
+                size: item.size,
+                attr: JSON.parse(item.attribute),
+                number: item.number,
+                price: item.price
+              })
+            } else {
+              size.number = Number(size.number ? size.number : 0) + Number(item.number)
+            }
+          }
+        }
+      })
+      console.log(this.packOrderList)
       // 出库概述添加装箱实际数量
       let outStockNumberInfo = res[3].data.data
       outStockNumberInfo.forEach(item => {

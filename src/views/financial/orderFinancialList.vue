@@ -550,6 +550,10 @@ export default {
           data.order_log.pack_order.forEach(val => {
             item.pack_price = Number(item.pack_price ? item.pack_price : 0) + Number(val.price * val.number)
           })
+          data.order_log.stock_out_info.forEach(val => {
+            item.transport_price = Number(item.transport_price ? item.transport_price : 0) + Number(val.cost)
+          })
+          console.log(item)
           item.loading = false
         })
       } else if (!item.flag) {
