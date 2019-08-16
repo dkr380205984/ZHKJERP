@@ -54,7 +54,7 @@
               <div class="title">经向排列</div>
               <div class="content">
                 <div class="particulars"
-                  v-if="warp_data.warp_rank_bottom.length < 13 && weft_data.weft_rank_bottom.length < 13 && !weft_data.weft_rank_bottom_back && !warp_data.warp_rank_bottom_back">
+                  v-if="warp_data.warp_rank_bottom.length < 13 && weft_data.weft_rank_bottom.length < 13 && (warp_data.warp_rank_bottom_back ? warp_data.warp_rank_bottom_back.length === 0 : !warp_data.warp_rank_bottom_back) && (weft_data.weft_rank_bottom_back ? weft_data.weft_rank_bottom_back.length === 0 : !weft_data.weft_rank_bottom_back)">
                   <div>
                     <span v-for="(item,key) in add(warp_data.warp_rank_bottom)"
                       :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
@@ -183,7 +183,7 @@
               <div class="title">纬向排列</div>
               <div class="content">
                 <div class="particulars"
-                  v-if="weft_data.weft_rank_bottom.length < 13 && warp_data.warp_rank_bottom.length < 13 && !weft_data.weft_rank_bottom_back && !warp_data.warp_rank_bottom_back">
+                  v-if="weft_data.weft_rank_bottom.length < 13 && warp_data.warp_rank_bottom.length < 13 && (warp_data.warp_rank_bottom_back ? warp_data.warp_rank_bottom_back.length === 0 : !warp_data.warp_rank_bottom_back) && (weft_data.weft_rank_bottom_back ? weft_data.weft_rank_bottom_back.length === 0 : !weft_data.weft_rank_bottom_back)">
                   <div>
                     <span v-for="(item,key) in add(weft_data.weft_rank_bottom)"
                       :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
@@ -281,7 +281,7 @@
       </ul>
     </div>
     <div class="outTable-arrangement"
-      v-if="warp_data.warp_rank_bottom.length > 12 || weft_data.weft_rank_bottom.length > 12 || warp_data.warp_rank_bottom_back || weft_data.weft_rank_bottom_back">
+      v-if="warp_data.warp_rank_bottom.length > 12 || weft_data.weft_rank_bottom.length > 12 || (warp_data.warp_rank_bottom_back ? warp_data.warp_rank_bottom_back.length !== 0 : warp_data.warp_rank_bottom_back) || (weft_data.weft_rank_bottom_back ? weft_data.weft_rank_bottom_back.length !== 0 : weft_data.weft_rank_bottom_back)">
       <div class="code">
         <div class="title">工艺单编号:</div>
         <div class="content">{{craft_code}}</div>
@@ -325,7 +325,8 @@
           </div>
         </div>
       </div>
-      <div class="warp-wise-arrange">
+      <div class="warp-wise-arrange"
+        v-if="warp_data.warp_rank_bottom_back && warp_data.warp_rank_bottom_back.length !== 0">
         <div class="title">经向排列-反:</div>
         <div class="content">
           <div class="particulars"
@@ -404,7 +405,8 @@
           </div>
         </div>
       </div>
-      <div class="warp-wise-arrange">
+      <div class="warp-wise-arrange"
+        v-if="weft_data.weft_rank_bottom_back && weft_data.weft_rank_bottom_back.length !== 0">
         <div class="title">纬向排列-反:</div>
         <div class="content">
           <div class="particulars"
