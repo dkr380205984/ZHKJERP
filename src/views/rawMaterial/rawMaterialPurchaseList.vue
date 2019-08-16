@@ -73,6 +73,8 @@
           <div class="tableColumn">{{item.desc?item.desc:'无'}}</div>
           <div class="tableColumn">
             <div class="margin:auto">
+              <span class="btns warning"
+                @click="$router.push('/index/rawMaterialPurchaseUpdate/'+item.id)">修改</span>
               <span class="btns normal"
                 @click="$router.push('/index/rawMaterialPurchaseDetail/'+item.id)">入库</span>
             </div>

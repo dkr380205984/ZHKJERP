@@ -228,6 +228,15 @@
         <div class="lineCtn"
           style="margin-top:0">
           <div class="inputCtn oneLine rowLine">
+            <span class="label must">双面选择:</span>
+            <el-switch style="height:40px;margin-left:15px"
+              v-model="shuangmian">
+            </el-switch>
+          </div>
+        </div>
+        <div class="lineCtn"
+          style="margin-top:0">
+          <div class="inputCtn oneLine rowLine">
             <span class="label must">经向排列:</span>
             <div class="overflowCtn"
               :style="{'overflow-x':longSort.length>12?'auto':'hidden'}">
@@ -262,6 +271,50 @@
               </div>
               <div class="excelCtn">
                 <hot-table :settings="hotSettings"
+                  :height="140"
+                  ref="table"></hot-table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="lineCtn"
+          v-show="shuangmian"
+          style="margin-top:0">
+          <div class="inputCtn oneLine rowLine">
+            <span class="label must">经向排列(反):</span>
+            <div class="overflowCtn"
+              :style="{'overflow-x':longSort3.length>12?'auto':'hidden'}">
+              <div class="selectCtn"
+                style="height:40px;line-height:40px;">
+                <div class="tableConnect">
+                  <div class="selectOnce"
+                    v-for="(item,index) in longSort3"
+                    :key="index"
+                    style="text-align:center;padding:0;cursor:not-allowed">
+                    {{index+1}}
+                  </div>
+                </div>
+              </div>
+              <div class="selectCtn">
+                <div class="tableConnect">
+                  <div class="selectOnce"
+                    v-for="(item,index) in longSort3"
+                    :key="index">
+                    <el-select class="elSelect"
+                      style="width:50px;margin-left:0;"
+                      placeholder=""
+                      v-model="longSort3[index]">
+                      <el-option v-for="(item,index2) in colorNum[0]"
+                        :key="item"
+                        :label="filterMethods(item-1)"
+                        :value="index2">
+                      </el-option>
+                    </el-select>
+                  </div>
+                </div>
+              </div>
+              <div class="excelCtn">
+                <hot-table :settings="hotSettings3"
                   :height="140"
                   ref="table"></hot-table>
               </div>
@@ -359,13 +412,60 @@
         <div class="lineCtn">
           <div class="inputCtn"
             style="width:940px">
-            <span class="label">穿综法:</span>
+            <span class="label">穿综法循环:</span>
+            <el-input class="elInput"
+              style="width:100%"
+              @change="checkContent"
+              placeholder="请输入穿综法循环信息，数字与数字之间用逗号分割，例：3，4，5，6"
+              v-model="warp_data.additional_data">
+            </el-input>
+          </div>
+        </div>
+        <div class="lineCtn">
+          <div class="inputCtn"
+            style="width:940px">
+            <span class="label"
+              style="top:42px">穿综法:</span>
+            <div class="deltaCtn"
+              v-for="(item,index) in drafting_method"
+              :key="index">
+              <div class="leftCtn">
+                <span>{{index+1}}</span>
+              </div>
+              <div class="rightCtn">
+                <el-input placeholder="数字间用逗号分隔"
+                  @change="checkContent"
+                  v-model="drafting_method[index][0]"></el-input>
+                <el-input placeholder="数字间用逗号分隔"
+                  @change="checkContent"
+                  v-model="drafting_method[index][1]"></el-input>
+                <el-input placeholder="非必填项"
+                  @change="checkContent"
+                  v-model="drafting_method[index][2]"></el-input>
+              </div>
+            </div>
+            <div class="addBtn"
+              @click="addMethod"
+              style="width:40px;text-align:center;padding:0;margin-top:42px">
+              <i class="el-icon-plus"></i>
+            </div>
+            <div class="addBtn"
+              @click="deleteMethod"
+              style="width:40px;text-align:center;padding:0;margin-top:42px">
+              <i class="el-icon-minus"></i>
+            </div>
+          </div>
+        </div>
+        <div class="lineCtn">
+          <div class="inputCtn"
+            style="width:940px">
+            <span class="label">备注信息:</span>
             <el-input style="margin-left:15px;"
               class="warp_data.drafting_method"
               type="textarea"
               :rows="6"
-              placeholder="请输入穿综法,可打印后用笔填写"
-              v-model="warp_data.drafting_method">
+              placeholder="请输入备注信息"
+              v-model="desc">
             </el-input>
           </div>
         </div>
@@ -586,7 +686,7 @@
         <div class="lineCtn"
           style="margin-top:0">
           <div class="inputCtn oneLine rowLine">
-            <span class="label must">纬向排列</span>
+            <span class="label must">纬向排列:</span>
             <div class="overflowCtn"
               :style="{'overflow-x':longSort2.length>12?'auto':'hidden'}">
               <div class="selectCtn"
@@ -620,6 +720,51 @@
               </div>
               <div class="excelCtn">
                 <hot-table :settings="hotSettings2"
+                  :width="2000"
+                  :height="140"
+                  ref="table2"></hot-table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="lineCtn"
+          v-show="shuangmian"
+          style="margin-top:0">
+          <div class="inputCtn oneLine rowLine">
+            <span class="label must">纬向排列(反):</span>
+            <div class="overflowCtn"
+              :style="{'overflow-x':longSort4.length>12?'auto':'hidden'}">
+              <div class="selectCtn"
+                style="height:40px;line-height:40px;">
+                <div class="tableConnect">
+                  <div class="selectOnce"
+                    v-for="(item,index) in longSort4"
+                    :key="index"
+                    style="text-align:center;padding:0;cursor:not-allowed">
+                    {{index+1}}
+                  </div>
+                </div>
+              </div>
+              <div class="selectCtn">
+                <div class="tableConnect">
+                  <div class="selectOnce"
+                    v-for="(item,index) in longSort4"
+                    :key="index">
+                    <el-select class="elSelect"
+                      style="width:50px;margin-left:0;"
+                      placeholder=""
+                      v-model="longSort4[index]">
+                      <el-option v-for="(item,index2) in colorNum2[0]"
+                        :key="item"
+                        :label="filterMethods(item-1)"
+                        :value="index2">
+                      </el-option>
+                    </el-select>
+                  </div>
+                </div>
+              </div>
+              <div class="excelCtn">
+                <hot-table :settings="hotSettings4"
                   :width="2000"
                   :height="140"
                   ref="table2"></hot-table>
@@ -691,6 +836,7 @@ export default {
   },
   data () {
     return {
+      shuangmian: false,
       editFlag: false,
       showMore: false,
       lock: false,
@@ -780,6 +926,76 @@ export default {
         afterCreateCol: this.createCol2, // 监听行添加
         afterRemoveCol: this.removeCol2 // 监听列删除
       },
+      hotSettings3: {
+        data: [ // 数据，可以是数据，对象
+          [''],
+          [''],
+          ['']
+        ],
+        colWidths: 62, // 列宽
+        rowHeights: [47, 34, 34],
+        className: 'htCenter htMiddle ',
+        contextMenu: [
+          'mergeCells', // 合并单元格菜单
+          'col_right',
+          'col_left',
+          'copy',
+          '粘贴(Ctrl + V)',
+          'undo',
+          'redo',
+          'remove_col'
+        ],
+        // cells: (row, col) => {
+        //   let cellMeta = {}
+        //   if (row === 0) {
+
+        //   } else {
+        //     cellMeta.type = 'numeric'
+        //   }
+        //   return cellMeta
+        // },
+        licenseKey: 'non-commercial-and-evaluation', // 申明非商业用途
+        mergeCells: true,
+        minCols: 1,
+        minRows: 3,
+        afterCreateCol: this.createCol3, // 监听行添加
+        afterRemoveCol: this.removeCol3 // 监听列删除
+      },
+      hotSettings4: {
+        data: [ // 数据，可以是数据，对象
+          [''],
+          [''],
+          ['']
+        ],
+        colWidths: 62, // 列宽
+        rowHeights: [47, 34, 34],
+        className: 'htCenter htMiddle ',
+        contextMenu: [
+          'mergeCells', // 合并单元格菜单
+          'col_right',
+          'col_left',
+          'copy',
+          '粘贴(Ctrl + V)',
+          'undo',
+          'redo',
+          'remove_col'
+        ],
+        // cells: (row, col) => {
+        //   let cellMeta = {}
+        //   if (row === 0) {
+
+        //   } else {
+        //     cellMeta.type = 'numeric'
+        //   }
+        //   return cellMeta
+        // },
+        licenseKey: 'non-commercial-and-evaluation', // 申明非商业用途
+        mergeCells: true,
+        minCols: 1,
+        minRows: 3,
+        afterCreateCol: this.createCol4, // 监听行添加
+        afterRemoveCol: this.removeCol4 // 监听列删除
+      },
       colour: [''],
       colourArr: [],
       colourNum: 1,
@@ -810,6 +1026,8 @@ export default {
       jia2: [],
       longSort: [''], // 经向排列
       longSort2: [''], // 纬向排列
+      longSort3: [''], // 经向排列反
+      longSort4: [''], // 纬向排列反
       sideArr: [],
       modeleArr: [],
       method: '',
@@ -823,8 +1041,9 @@ export default {
         reed_method: null,
         reed_width: null,
         sum_up: null,
-        drafting_method: null,
-        reed_detail: null
+        drafting_method: [],
+        reed_detail: null,
+        additional_data: ''
       },
       weft_data: {
         organization_id: null,
@@ -838,7 +1057,9 @@ export default {
       },
       coefficient: [],
       mergeCells1: [],
-      mergeCells2: []
+      mergeCells2: [],
+      drafting_method: [],
+      desc: ''
     }
   },
   watch: {
@@ -886,20 +1107,6 @@ export default {
       },
       deep: true
     }
-    // colorNum2 (newVal) {
-    //   this.hotSettings2.cells = (row, col) => {
-    //     let cellMeta = {}
-    //     if (row === 0) {
-    //       cellMeta.type = 'dropdown'
-    //       cellMeta.source = []
-    //       for (let i = 0; i < newVal[0]; i++) { cellMeta.source.push('夹' + (i + 1)) }
-    //       console.log(cellMeta.source)
-    //     } else {
-    //       cellMeta.type = 'numeric'
-    //     }
-    //     return cellMeta
-    //   }
-    // }
   },
   mounted () {
     // 初始化接口
@@ -912,7 +1119,6 @@ export default {
     }), YarnColorList({
       company_id: this.companyId
     })]).then((res) => {
-      console.log(res)
       this.product = res[0].data.data
       this.colourArr = res[0].data.data.color
       this.colorArr = res[3].data.data
@@ -947,7 +1153,7 @@ export default {
         reed_method: null,
         reed_width: null,
         sum_up: null,
-        drafting_method: null
+        drafting_method: []
       }
       this.weft_data = JSON.parse(window.localStorage.getItem('weft_data')) || {
         organization_id: null,
@@ -1081,9 +1287,30 @@ export default {
     removeCol2 (index, amount) {
       this.longSort2.splice(index, amount)
     },
+    // 监听添加行 amount：新列的数目,index：新列的索引
+    createCol3 (index, amount) {
+      this.hotSettings3.data[0][index] = ''
+      this.hotSettings3.data[1][index] = ''
+      this.hotSettings3.data[2][index] = ''
+      this.longSort3.splice(index, 0, '')
+    },
+    // 监听列删除
+    removeCol3 (index, amount) {
+      this.longSort3.splice(index, amount)
+    },
+    // 监听添加行 amount：新列的数目,index：新列的索引
+    createCol4 (index, amount) {
+      this.hotSettings4.data[0][index] = ''
+      this.hotSettings4.data[1][index] = ''
+      this.hotSettings4.data[2][index] = ''
+      this.longSort4.splice(index, 0, '')
+    },
+    // 监听列删除
+    removeCol4 (index, amount) {
+      this.longSort4.splice(index, amount)
+    },
     // 添加新的配色方案
     addColour () {
-      console.log(this.color)
       this.colour.push('')
       this.colorNum.push(this.colorNum[0])
       this.color.push([])
@@ -1561,6 +1788,18 @@ export default {
         this.weft_data.weft_rank = this.hotSettings2.data
         this.weft_data.weft_rank_bottom = this.longSort2
         this.weft_data.weimi = this.weimi
+        this.warp_data.drafting_method = JSON.stringify(this.drafting_method)
+        if (this.shuangmian) {
+          this.warp_data.warp_rank_back = this.hotSettings3.data
+          this.warp_data.warp_rank_bottom_back = this.longSort3
+          this.weft_data.weft_rank_back = this.hotSettings4.data
+          this.weft_data.weft_rank_bottom_back = this.longSort4
+        } else {
+          this.warp_data.warp_rank_back = []
+          this.warp_data.warp_rank_bottom_back = []
+          this.weft_data.weft_rank_back = []
+          this.weft_data.weft_rank_bottom_back = []
+        }
         let json = {
           id: '',
           is_draft: 0,
@@ -1573,7 +1812,8 @@ export default {
           color_data: colorData,
           material_data: materialDataNew,
           weight: this.weight,
-          yarn_coefficient: yarnCoefficient
+          yarn_coefficient: yarnCoefficient,
+          desc: this.desc
         }
         console.log(json)
         this.lock = true
@@ -1760,6 +2000,7 @@ export default {
         this.longSort = data.warp_data.warp_rank_bottom
         this.hotSettings2.data = data.weft_data.weft_rank
         this.longSort2 = data.weft_data.weft_rank_bottom
+        this.drafting_method = JSON.parse(data.warp_data.drafting_method) || []
         // 处理单元格合并
         let point = []
         let mergeCells = []
@@ -1930,6 +2171,27 @@ export default {
         this.weight = data.weight
         this.loading = false
       })
+    },
+    // 添加穿综法
+    addMethod () {
+      this.drafting_method.push(['', '', ''])
+    },
+    // 删除穿综法
+    deleteMethod () {
+      this.drafting_method.pop()
+    },
+    // 检测输入内容
+    checkContent (ctx) {
+      if (ctx === '') {
+        return
+      }
+      if ((/^[0-9][，,0-9]*[0-9]$/).test(ctx) || (/^[0-9]$/).test(ctx)) {
+        console.log(ctx.split(/[,，]/))
+      } else {
+        this.$alert('检测到刚才输入的穿综法格式有误，请输入用逗号分割的数字，不要出现中文，字母等非法字符', '错误提示', {
+          confirmButtonText: '确定'
+        })
+      }
     }
   },
   filters: {

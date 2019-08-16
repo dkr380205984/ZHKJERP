@@ -1530,7 +1530,7 @@ export default {
         let inspSemiNum = 0 // 半成品检验
         let inspProNum = 0 // 成品检验
         this.order_log.semi_product_inspection.forEach((itemInspSemi, indexInspSemi) => {
-          if (itemInspSemi.product_code === itemProduct.product_code) {
+          if (itemInspSemi.product_info.product_code === itemProduct.product_code) {
             inspSemiNum += itemInspSemi.number
           }
         })
@@ -1585,6 +1585,7 @@ export default {
           }
         })
       })
+      console.log(this.productRate)
       // 物料概述
       let materialInfo = res[1].data.data
       let processInfo = this.order_log.material_production
@@ -1810,7 +1811,7 @@ export default {
         item.rejects_info.map(keys => {
           num += Number(keys.number ? keys.number : 0)
         })
-        let flag = this.designList.find(key => key.product_code === item.product_code)
+        let flag = this.designList.find(key => key.product_code === item.product_info.product_code)
         if (!flag) {
           this.designList.push({
             product_code: item.product_code,
@@ -1941,7 +1942,6 @@ export default {
           })
         })
       })
-      console.log(this.productRate)
       this.loading = false
     })
   }
