@@ -268,21 +268,7 @@ ul{
               box-sizing: border-box;
               display: flex;
               flex-direction: column;
-              border-top: 1px solid #FFF;
-              // border-right: 1px solid #DDD;
-              // transition: all 0.2s ease-in-out;
-              &.detailNone{
-                // max-height: 0!important;
-                height: 0;
-                border-bottom: none;
-                overflow: hidden;
-              }
-              &.detailShow{
-                height: auto!important;
-                // max-height:1000px!important;
-                overflow: visible;
-                border-top: 1px solid #DDD;
-              }
+              border-top: 1px solid #DDD;
               .title{
                 display: flex;
                 justify-content: center;
@@ -304,7 +290,7 @@ ul{
                 span{
                   white-space: nowrap;
                   overflow: hidden;
-                  text-overflow: ellipsis;
+                  // text-overflow: ellipsis;
                 }
                 &>span{
                   flex: 1;

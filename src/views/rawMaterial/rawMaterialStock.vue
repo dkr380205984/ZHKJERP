@@ -176,13 +176,13 @@
                   </el-option>
                 </el-select>
               </li>
-              <li>
+              <!-- <li>
                 <span>包装属性</span>:
                 <el-input v-model="iten.materialAtr"
                   :placeholder="'请输入包装属性'"
                   size="small">
                 </el-input>
-              </li>
+              </li> -->
               <li v-for="(value,index) in iten.stockWeightInfo"
                 :key="index"
                 class="col">
@@ -214,18 +214,6 @@
                   class="el-icon-delete"
                   @click="deleteStockWeightInfo(key,kay,index)"></em>
               </li>
-              <!-- <li>
-                <span>仓库</span>:
-                <el-select v-model="iten.stock_name"
-                  :placeholder="'请选择入库仓库'"
-                  size="small">
-                  <el-option v-for="value in companyArr"
-                    :key="value.id"
-                    :label="value.name"
-                    :value="value.id">
-                  </el-option>
-                </el-select>
-              </li> -->
               <li>
                 <span>入库时间</span>:
                 <el-date-picker v-model="iten.stock_time"
@@ -367,7 +355,6 @@ export default {
               if (list) {
                 list.stockInfo.push({
                   materialColor: valColor.color,
-                  materialAtr: '',
                   remark: '',
                   stock_time: this.now_time,
                   stockWeightInfo: [
@@ -401,7 +388,6 @@ export default {
       this.list[key].stockInfo.push(
         {
           materialColor: '',
-          materialAtr: '',
           remark: '',
           stock_time: this.now_time,
           stockWeightInfo: [
@@ -484,7 +470,7 @@ export default {
             obj.weight = value.weight
             obj.complete_time = val.stock_time
             obj.desc = val.remark
-            obj.attribute = val.materialAtr
+            obj.attribute = ''
             obj.stock_id = 0
             date.push({ ...obj })
           })

@@ -58,6 +58,7 @@ ul{
             right: 0;
             transform: translateX(100%);
             font-size: 16px;
+            white-space: nowrap;
             line-height: 16px;
             font-weight: 400;
           }
@@ -153,6 +154,7 @@ ul{
           border-right: 1px solid #DDD;
           .infinite-list-item{
             height: auto;
+            min-height: 60px;
             border-bottom: 1px solid #DDD;
             box-sizing: border-box;
             .list{
@@ -208,21 +210,17 @@ ul{
               box-sizing: border-box;
               display: flex;
               flex-direction: column;
-              border-top: 1px solid #FFF;
-              border-right: 1px solid #DDD;
-              // transition: all 0.2s ease-in-out;
-              &.detailNone{
-                // max-height: 0!important;
-                height: 0;
-                border-bottom: none;
-                overflow: hidden;
-              }
-              &.detailShow{
-                height: auto!important;
-                // max-height:1000px!important;
-                overflow: visible;
-                border-top: 1px solid #DDD;
-              }
+              border-top: 1px solid #DDD;
+              // &.detailNone{
+              //   height: 0;
+              //   border-bottom: none;
+              //   overflow: hidden;
+              // }
+              // &.detailShow{
+              //   height: auto!important;
+              //   overflow: visible;
+              //   border-top: 1px solid #DDD;
+              // }
               .title{
                 display: flex;
                 justify-content: center;
@@ -242,10 +240,10 @@ ul{
                 justify-content: center;
                 padding: 0 50px 20px;
                 span{
-                  width: 20%;
+                  // width: 20%;
                   white-space: nowrap;
                   overflow: hidden;
-                  text-overflow: ellipsis;
+                  // text-overflow: ellipsis;
                 }
                 &>span{
                   flex: 1;

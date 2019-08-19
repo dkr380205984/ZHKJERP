@@ -146,10 +146,14 @@
                 <div>
                   <span></span>
                   <div>
-                    <el-input size="small"
-                      placeholder="包装"
-                      v-model="value.attr">
-                    </el-input>
+                    <el-select v-model="value.attr"
+                      placeholder="属性"
+                      size="small">
+                      <el-option v-for="attr in ['筒纱','绞纱','足斤','98']"
+                        :key="attr.value"
+                        :value="attr">
+                      </el-option>
+                    </el-select>
                     <strong>—</strong>
                     <el-input size="small"
                       placeholder="单价"
@@ -449,7 +453,7 @@ export default {
             obj.color_code = val.color
             obj.price = Number(val.price)
             obj.total_weight = Math.ceil(Number(val.value))
-            obj.attribute = val.attr ? val.attr : ''
+            obj.attribute = val.attr.join('/')
             obj.vat_code = val.vat_code
             obj.replenish_id = this.bushaId
             arr.push({ ...obj })

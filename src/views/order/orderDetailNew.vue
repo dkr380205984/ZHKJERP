@@ -704,6 +704,7 @@
           </div>
         </div>
         <div class="hrefCtn"
+          v-show="hasPlan"
           id="href6">
           <div class="titleLine">
             <div class="titleCtn">

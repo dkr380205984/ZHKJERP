@@ -46,6 +46,7 @@
                   </el-option>
                 </el-select>
                 <el-select v-model="item.attribute"
+                  multiple
                   placeholder="请选择包装">
                   <el-option v-for="value in materialList.attr"
                     :key="value.value"
@@ -140,7 +141,7 @@ export default {
       companyList: [], // 公司列表
       materialList: {
         material: [{ name: '36支上光晴纶' }, { name: '48支单股涤纶' }],
-        attr: [{ name: '足斤包装' }, { name: '98包装' }, { name: '95包装' }]
+        attr: [{ name: '筒纱' }, { name: '绞纱' }, { name: '足斤' }, { name: '98' }]
       },
       company: '',
       remark: '',
@@ -151,7 +152,7 @@ export default {
         {
           material_name: '',
           color_code: '白胚',
-          attribute: '',
+          attribute: [],
           price: '',
           vat_code: 'vat-null'
         }
@@ -163,7 +164,7 @@ export default {
       this.material_info.push({
         material_name: '',
         color_code: '白胚',
-        attribute: '',
+        attribute: [],
         price: '',
         vat_code: 'vat-null'
       })
@@ -325,11 +326,15 @@ export default {
         return
       }
       this.loading = true
+      let materialInfo = JSON.parse(JSON.stringify(this.material_info))
+      materialInfo.forEach(item => {
+        item.attribute = item.attribute.join('/')
+      })
       rawMaterialPurchase({
         user_id: sessionStorage.user_id,
         company_id: sessionStorage.company_id,
         client_id: this.company,
-        material_info: [...this.material_info],
+        material_info: [...materialInfo],
         total_weight: Number(this.total_weight),
         total_price: Number(this.total_price),
         order_time: this.order_time,

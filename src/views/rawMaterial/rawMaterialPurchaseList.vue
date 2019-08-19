@@ -45,7 +45,7 @@
           <div class="tableColumn">原料属性</div>
           <div class="tableColumn">预定价格</div>
           <div class="tableColumn">预定总重</div>
-          <div class="tableColumn">总价</div>
+          <div class="tableColumn">预付款</div>
           <div class="tableColumn">备注</div>
           <div class="tableColumn">操作</div>
         </div>

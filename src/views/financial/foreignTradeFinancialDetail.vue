@@ -176,50 +176,53 @@
                       @click.stop="$router.push('/index/orderDetailNew/' + item.id)">详情</span>
                   </span>
                 </div>
-                <div :class="{'detail':true,'detailNone':!item.flag,'detailShow':item.flag}">
-                  <div v-loading='item.loading'>
-                    <span class="title">
-                      <span>产品类型</span>
-                      <span>产品图片</span>
-                      <span class="flex05">尺码</span>
-                      <span class="flex05">颜色</span>
-                      <span class="flex08">单价</span>
-                      <span>订单数量</span>
-                      <span>发货数量</span>
-                      <span>合计金额</span>
-                    </span>
-                    <span class="content"
-                      v-for="(valPro,indPro) in item.product_info"
-                      :key="indPro">
-                      <span class=" col">
-                        <span>{{valPro.product_code}}</span>
-                        <span>{{valPro.product_type}}</span>
+                <el-collapse-transition>
+                  <div class="detail"
+                    v-show="item.flag">
+                    <div v-loading='item.loading'>
+                      <span class="title">
+                        <span>产品类型</span>
+                        <span>产品图片</span>
+                        <span class="flex05">尺码</span>
+                        <span class="flex05">颜色</span>
+                        <span class="flex08">单价</span>
+                        <span>订单数量</span>
+                        <span>发货数量</span>
+                        <span>合计金额</span>
                       </span>
-                      <span>
-                        <div class="imgCtn">
-                          <img class="img"
-                            :src="valPro.img.length>0?valPro.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
-                            :onerror="defaultImg" />
-                          <div class="toolTips"
-                            v-if="valPro.img.length>0"><span @click="showImg(valPro.img)">点击查看大图</span></div>
-                          <div class="toolTips"
-                            v-if="valPro.img.length===0"><span>没有预览图</span></div>
-                        </div>
-                      </span>
-                      <span class="flex48 col">
-                        <span v-for="(valSize,indSize) in valPro.size"
-                          :key="indSize">
-                          <span class="flex05">{{valSize.size}}</span>
-                          <span class="flex05">{{valSize.color}}</span>
-                          <span class="flex08">{{valSize.price|filterToFixed}}{{item.account_unit}}/{{valPro.unit}}</span>
-                          <span>{{valSize.number}}{{valPro.unit}}</span>
-                          <span>{{valSize.pack_number ? valSize.pack_number : 0}}{{valPro.unit}}</span>
-                          <span>{{((valSize.pack_number ? valSize.pack_number : 0)*valSize.price)|filterToFixed}}{{item.account_unit}}</span>
+                      <span class="content"
+                        v-for="(valPro,indPro) in item.product_info"
+                        :key="indPro">
+                        <span class=" col">
+                          <span>{{valPro.product_code}}</span>
+                          <span>{{valPro.product_type}}</span>
+                        </span>
+                        <span>
+                          <div class="imgCtn">
+                            <img class="img"
+                              :src="valPro.img.length>0?valPro.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
+                              :onerror="defaultImg" />
+                            <div class="toolTips"
+                              v-if="valPro.img.length>0"><span @click="showImg(valPro.img)">点击查看大图</span></div>
+                            <div class="toolTips"
+                              v-if="valPro.img.length===0"><span>没有预览图</span></div>
+                          </div>
+                        </span>
+                        <span class="flex48 col">
+                          <span v-for="(valSize,indSize) in valPro.size"
+                            :key="indSize">
+                            <span class="flex05">{{valSize.size}}</span>
+                            <span class="flex05">{{valSize.color}}</span>
+                            <span class="flex08">{{valSize.price|filterToFixed}}{{item.account_unit}}/{{valPro.unit}}</span>
+                            <span>{{valSize.number}}{{valPro.unit}}</span>
+                            <span>{{valSize.pack_number ? valSize.pack_number : 0}}{{valPro.unit}}</span>
+                            <span>{{((valSize.pack_number ? valSize.pack_number : 0)*valSize.price)|filterToFixed}}{{item.account_unit}}</span>
+                          </span>
                         </span>
                       </span>
-                    </span>
+                    </div>
                   </div>
-                </div>
+                </el-collapse-transition>
               </li>
             </div>
           </ul>
@@ -342,33 +345,36 @@
                       @click.stop="$router.push('/index/orderDetailNew/' + item.id)">详情</span>
                   </span>
                 </div>
-                <div :class="{'detail':true,'detailNone':!item.flag,'detailShow':item.flag}">
-                  <div v-loading='item.loading'>
-                    <span class="title">
-                      <span>物料名称</span>
-                      <span>类型</span>
-                      <span class="flex08">属性</span>
-                      <span class="flex08">单价</span>
-                      <span class="flex05">数量</span>
-                      <span>合计金额</span>
-                    </span>
-                    <span class="content"
-                      v-for="(val,ind) in item.info"
-                      :key="ind">
-                      <span>{{val.material_name}}</span>
-                      <span class="flex41 col">
-                        <span v-for="(valInfo,indInfo) in val.material_info"
-                          :key="indInfo">
-                          <span>{{valInfo.type}}</span>
-                          <span class="flex08">{{valInfo.attr ? valInfo.attr : '无'}}/{{valInfo.color}}</span>
-                          <span class="flex08">{{valInfo.price|filterToFixed}}元/kg</span>
-                          <span class="flex05">{{valInfo.number|filterToFixed}}kg</span>
-                          <span>{{((valInfo.number ? valInfo.number : 0)*valInfo.price)|filterToFixed}}元</span>
+                <el-collapse-transition>
+                  <div class="detail"
+                    v-show="item.flag">
+                    <div v-loading='item.loading'>
+                      <span class="title">
+                        <span>物料名称</span>
+                        <span>类型</span>
+                        <span class="flex08">属性</span>
+                        <span class="flex08">单价</span>
+                        <span class="flex05">数量</span>
+                        <span>合计金额</span>
+                      </span>
+                      <span class="content"
+                        v-for="(val,ind) in item.info"
+                        :key="ind">
+                        <span>{{val.material_name}}</span>
+                        <span class="flex41 col">
+                          <span v-for="(valInfo,indInfo) in val.material_info"
+                            :key="indInfo">
+                            <span>{{valInfo.type}}</span>
+                            <span class="flex08">{{valInfo.attr ? valInfo.attr : '无'}}/{{valInfo.color}}</span>
+                            <span class="flex08">{{valInfo.price|filterToFixed}}元/kg</span>
+                            <span class="flex05">{{valInfo.number|filterToFixed}}kg</span>
+                            <span>{{((valInfo.number ? valInfo.number : 0)*valInfo.price)|filterToFixed}}元</span>
+                          </span>
                         </span>
                       </span>
-                    </span>
+                    </div>
                   </div>
-                </div>
+                </el-collapse-transition>
               </li>
             </div>
           </ul>
@@ -491,33 +497,36 @@
                       @click.stop="$router.push('/index/orderDetailNew/' + item.id)">详情</span>
                   </span>
                 </div>
-                <div :class="{'detail':true,'detailNone':!item.flag,'detailShow':item.flag}">
-                  <div v-loading='item.loading'>
-                    <span class="title">
-                      <span>物料名称</span>
-                      <span>类型</span>
-                      <span class="flex08">属性</span>
-                      <span class="flex08">单价</span>
-                      <span class="flex05">数量</span>
-                      <span>合计金额</span>
-                    </span>
-                    <span class="content"
-                      v-for="(val,ind) in item.info"
-                      :key="ind">
-                      <span>{{val.material_name}}</span>
-                      <span>{{val.process_type}}</span>
-                      <span class="flex21 col">
-                        <span v-for="(valInfo,indInfo) in val.material_info"
-                          :key="indInfo">
-                          <span class="flex08">{{valInfo.attr ? valInfo.attr : '无'}}/{{valInfo.color}}</span>
-                          <span class="flex08">{{'-'}}</span>
-                          <span class="flex05">{{(valInfo.value)|filterToFixed}}kg</span>
-                        </span>
+                <el-collapse-transition>
+                  <div class="detail"
+                    v-show="item.flag">
+                    <div v-loading='item.loading'>
+                      <span class="title">
+                        <span>物料名称</span>
+                        <span>类型</span>
+                        <span class="flex08">属性</span>
+                        <span class="flex08">单价</span>
+                        <span class="flex05">数量</span>
+                        <span>合计金额</span>
                       </span>
-                      <span>{{val.total_price|filterToFixed}}元</span>
-                    </span>
+                      <span class="content"
+                        v-for="(val,ind) in item.info"
+                        :key="ind">
+                        <span>{{val.material_name}}</span>
+                        <span>{{val.process_type}}</span>
+                        <span class="flex21 col">
+                          <span v-for="(valInfo,indInfo) in val.material_info"
+                            :key="indInfo">
+                            <span class="flex08">{{valInfo.attr ? valInfo.attr : '无'}}/{{valInfo.color}}</span>
+                            <span class="flex08">{{'-'}}</span>
+                            <span class="flex05">{{(valInfo.value)|filterToFixed}}kg</span>
+                          </span>
+                        </span>
+                        <span>{{val.total_price|filterToFixed}}元</span>
+                      </span>
+                    </div>
                   </div>
-                </div>
+                </el-collapse-transition>
               </li>
             </div>
           </ul>
@@ -640,48 +649,51 @@
                       @click.stop="$router.push('/index/orderDetailNew/' + item.id)">详情</span>
                   </span>
                 </div>
-                <div :class="{'detail':true,'detailNone':!item.flag,'detailShow':item.flag}">
-                  <div v-loading='item.loading'>
-                    <span class="title">
-                      <span>产品类型</span>
-                      <span>产品图片</span>
-                      <span class="flex05">尺码</span>
-                      <span class="flex08">颜色</span>
-                      <span class="flex08">单价</span>
-                      <span>织造数量</span>
-                      <span>合计金额</span>
-                    </span>
-                    <span class="content"
-                      v-for="(valPro,indPro) in item.info"
-                      :key="indPro">
-                      <span class=" col">
-                        <span>{{valPro.product_code}}</span>
-                        <span>{{valPro.product_type}}</span>
+                <el-collapse-transition>
+                  <div class="detail"
+                    v-show="item.flag">
+                    <div v-loading='item.loading'>
+                      <span class="title">
+                        <span>产品类型</span>
+                        <span>产品图片</span>
+                        <span class="flex05">尺码</span>
+                        <span class="flex08">颜色</span>
+                        <span class="flex08">单价</span>
+                        <span>织造数量</span>
+                        <span>合计金额</span>
                       </span>
-                      <span>
-                        <div class="imgCtn">
-                          <img class="img"
-                            :src="valPro.img.length>0?valPro.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
-                            :onerror="defaultImg" />
-                          <div class="toolTips"
-                            v-if="valPro.img.length>0"><span @click="showImg(valPro.img)">点击查看大图</span></div>
-                          <div class="toolTips"
-                            v-if="valPro.img.length===0"><span>没有预览图</span></div>
-                        </div>
-                      </span>
-                      <span class="flex41 col">
-                        <span v-for="(valSize,indSize) in valPro.size"
-                          :key="indSize">
-                          <span class="flex05">{{valSize.size}}</span>
-                          <span class="flex08">{{valSize.color}}</span>
-                          <span class="flex08">{{valSize.price|filterToFixed}}元/{{valPro.unit}}</span>
-                          <span>{{valSize.number}}{{valPro.unit}}</span>
-                          <span>{{((valSize.number ? valSize.number : 0)*valSize.price)|filterToFixed}}元</span>
+                      <span class="content"
+                        v-for="(valPro,indPro) in item.info"
+                        :key="indPro">
+                        <span class=" col">
+                          <span>{{valPro.product_code}}</span>
+                          <span>{{valPro.product_type}}</span>
+                        </span>
+                        <span>
+                          <div class="imgCtn">
+                            <img class="img"
+                              :src="valPro.img.length>0?valPro.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
+                              :onerror="defaultImg" />
+                            <div class="toolTips"
+                              v-if="valPro.img.length>0"><span @click="showImg(valPro.img)">点击查看大图</span></div>
+                            <div class="toolTips"
+                              v-if="valPro.img.length===0"><span>没有预览图</span></div>
+                          </div>
+                        </span>
+                        <span class="flex41 col">
+                          <span v-for="(valSize,indSize) in valPro.size"
+                            :key="indSize">
+                            <span class="flex05">{{valSize.size}}</span>
+                            <span class="flex08">{{valSize.color}}</span>
+                            <span class="flex08">{{valSize.price|filterToFixed}}元/{{valPro.unit}}</span>
+                            <span>{{valSize.number}}{{valPro.unit}}</span>
+                            <span>{{((valSize.number ? valSize.number : 0)*valSize.price)|filterToFixed}}元</span>
+                          </span>
                         </span>
                       </span>
-                    </span>
+                    </div>
                   </div>
-                </div>
+                </el-collapse-transition>
               </li>
             </div>
           </ul>
@@ -799,28 +811,31 @@
                       @click.stop="$router.push('/index/orderDetailNew/' + item.id)">详情</span>
                   </span>
                 </div>
-                <div :class="{'detail':true,'detailNone':!item.flag,'detailShow':item.flag}">
-                  <div v-loading='item.loading'>
-                    <span class="title">
-                      <span class="flex15">补充物料</span>
-                      <span>颜色</span>
-                      <span>补充总量</span>
-                      <span>单价</span>
-                      <span>承担比例</span>
-                      <span>合计金额</span>
-                    </span>
-                    <span class="content"
-                      v-for="(valMat,indMat) in item.info"
-                      :key="indMat">
-                      <span class="flex15">{{valMat.material_name}}</span>
-                      <span>{{valMat.color}}</span>
-                      <span>{{valMat.weight}}</span>
-                      <span>{{valMat.price}}</span>
-                      <span>{{valMat.percent}}%</span>
-                      <span>{{valMat.price*valMat.weight*valMat.percent/100}}元</span>
-                    </span>
+                <el-collapse-transition>
+                  <div class="detail"
+                    v-show="item.flag">
+                    <div v-loading='item.loading'>
+                      <span class="title">
+                        <span class="flex15">补充物料</span>
+                        <span>颜色</span>
+                        <span>补充总量</span>
+                        <span>单价</span>
+                        <span>承担比例</span>
+                        <span>合计金额</span>
+                      </span>
+                      <span class="content"
+                        v-for="(valMat,indMat) in item.info"
+                        :key="indMat">
+                        <span class="flex15">{{valMat.material_name}}</span>
+                        <span>{{valMat.color}}</span>
+                        <span>{{valMat.weight}}</span>
+                        <span>{{valMat.price}}</span>
+                        <span>{{valMat.percent}}%</span>
+                        <span>{{valMat.price*valMat.weight*valMat.percent/100}}元</span>
+                      </span>
+                    </div>
                   </div>
-                </div>
+                </el-collapse-transition>
               </li>
               <li class="infinite-list-item"
                 v-if="list.weaveDeductList.lists.length === 0 ">
@@ -946,50 +961,53 @@
                       @click.stop="$router.push('/index/orderDetailNew/' + item.id)">详情</span>
                   </span>
                 </div>
-                <div :class="{'detail':true,'detailNone':!item.flag,'detailShow':item.flag}">
-                  <div v-loading='item.loading'>
-                    <span class="title">
-                      <span>产品类型</span>
-                      <span>产品图片</span>
-                      <span>类型</span>
-                      <span class="flex05">尺码</span>
-                      <span class="flex05">颜色</span>
-                      <span class="flex08">单价</span>
-                      <span>加工数量</span>
-                      <span>合计金额</span>
-                    </span>
-                    <span class="content"
-                      v-for="(valPro,indPro) in item.info"
-                      :key="indPro">
-                      <span class=" col">
-                        <span>{{valPro.product_code}}</span>
-                        <span>{{valPro.product_type}}</span>
+                <el-collapse-transition>
+                  <div class="detail"
+                    v-show="item.flag">
+                    <div v-loading='item.loading'>
+                      <span class="title">
+                        <span>产品类型</span>
+                        <span>产品图片</span>
+                        <span>类型</span>
+                        <span class="flex05">尺码</span>
+                        <span class="flex05">颜色</span>
+                        <span class="flex08">单价</span>
+                        <span>加工数量</span>
+                        <span>合计金额</span>
                       </span>
-                      <span>
-                        <div class="imgCtn">
-                          <img class="img"
-                            :src="valPro.img.length>0?valPro.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
-                            :onerror="defaultImg" />
-                          <div class="toolTips"
-                            v-if="valPro.img.length>0"><span @click="showImg(valPro.img)">点击查看大图</span></div>
-                          <div class="toolTips"
-                            v-if="valPro.img.length===0"><span>没有预览图</span></div>
-                        </div>
-                      </span>
-                      <span class="flex48 col">
-                        <span v-for="(valSize,indSize) in valPro.size"
-                          :key="indSize">
-                          <span>{{valSize.type}}</span>
-                          <span class="flex05">{{valSize.size}}</span>
-                          <span class="flex05">{{valSize.color}}</span>
-                          <span class="flex08">{{valSize.price|filterToFixed}}元/{{valPro.unit}}</span>
-                          <span>{{valSize.number}}{{valPro.unit}}</span>
-                          <span>{{((valSize.number ? valSize.number : 0)*valSize.price)|filterToFixed}}元</span>
+                      <span class="content"
+                        v-for="(valPro,indPro) in item.info"
+                        :key="indPro">
+                        <span class=" col">
+                          <span>{{valPro.product_code}}</span>
+                          <span>{{valPro.product_type}}</span>
+                        </span>
+                        <span>
+                          <div class="imgCtn">
+                            <img class="img"
+                              :src="valPro.img.length>0?valPro.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
+                              :onerror="defaultImg" />
+                            <div class="toolTips"
+                              v-if="valPro.img.length>0"><span @click="showImg(valPro.img)">点击查看大图</span></div>
+                            <div class="toolTips"
+                              v-if="valPro.img.length===0"><span>没有预览图</span></div>
+                          </div>
+                        </span>
+                        <span class="flex48 col">
+                          <span v-for="(valSize,indSize) in valPro.size"
+                            :key="indSize">
+                            <span>{{valSize.type}}</span>
+                            <span class="flex05">{{valSize.size}}</span>
+                            <span class="flex05">{{valSize.color}}</span>
+                            <span class="flex08">{{valSize.price|filterToFixed}}元/{{valPro.unit}}</span>
+                            <span>{{valSize.number}}{{valPro.unit}}</span>
+                            <span>{{((valSize.number ? valSize.number : 0)*valSize.price)|filterToFixed}}元</span>
+                          </span>
                         </span>
                       </span>
-                    </span>
+                    </div>
                   </div>
-                </div>
+                </el-collapse-transition>
               </li>
             </div>
           </ul>
@@ -1112,31 +1130,34 @@
                     <span cl.stopass="btn">详情</span>
                   </span>
                 </div>
-                <div :class="{'detail':true,'detailNone':!item.flag,'detailShow':item.flag}">
-                  <div v-loading='item.loading'>
-                    <span class="title">
-                      <span>包装名称</span>
-                      <span class="flex15">尺寸</span>
-                      <span class="flex08">单价</span>
-                      <span class="flex08">订购数量</span>
-                      <span>合计金额</span>
-                    </span>
-                    <span class="content"
-                      v-for="(val,ind) in item.info"
-                      :key="ind">
-                      <span>{{val.name}}</span>
-                      <span class="flex41 col">
-                        <span v-for="(valInfo,indInfo) in val.material_info"
-                          :key="indInfo">
-                          <span class="flex15">{{valInfo.size}}</span>
-                          <span class="flex08">{{valInfo.price|filterToFixed}}元/个</span>
-                          <span class="flex08">{{valInfo.number}}个</span>
-                          <span>{{(valInfo.price * valInfo.number)|filterToFixed}}元</span>
+                <el-collapse-transition>
+                  <div class="detail"
+                    v-show="item.flag">
+                    <div v-loading='item.loading'>
+                      <span class="title">
+                        <span>包装名称</span>
+                        <span class="flex15">尺寸</span>
+                        <span class="flex08">单价</span>
+                        <span class="flex08">订购数量</span>
+                        <span>合计金额</span>
+                      </span>
+                      <span class="content"
+                        v-for="(val,ind) in item.info"
+                        :key="ind">
+                        <span>{{val.name}}</span>
+                        <span class="flex41 col">
+                          <span v-for="(valInfo,indInfo) in val.material_info"
+                            :key="indInfo">
+                            <span class="flex15">{{valInfo.size}}</span>
+                            <span class="flex08">{{valInfo.price|filterToFixed}}元/个</span>
+                            <span class="flex08">{{valInfo.number}}个</span>
+                            <span>{{(valInfo.price * valInfo.number)|filterToFixed}}元</span>
+                          </span>
                         </span>
                       </span>
-                    </span>
+                    </div>
                   </div>
-                </div>
+                </el-collapse-transition>
               </li>
             </div>
           </ul>
@@ -1259,24 +1280,27 @@
                       @click.stop="$router.push('/index/orderDetailNew/' + item.id)">详情</span>
                   </span>
                 </div>
-                <div :class="{'detail':true,'detailNone':!item.flag,'detailShow':item.flag}">
-                  <div v-loading='item.loading'>
-                    <span class="title">
-                      <span>批次信息</span>
-                      <span>总箱数</span>
-                      <span>总立方数</span>
-                      <span>合计金额</span>
-                    </span>
-                    <span class="content"
-                      v-for="(val,ind) in item.info"
-                      :key="ind">
-                      <span>第{{val.batch_id}}批</span>
-                      <span>{{val.number ? val.number : 0}}</span>
-                      <span>{{val.cubic_number ? val.cubic_number : 0}}m³</span>
-                      <span>{{val.cost ? val.cost : 0}}元</span>
-                    </span>
+                <el-collapse-transition>
+                  <div class="detail"
+                    v-show="item.flag">
+                    <div v-loading='item.loading'>
+                      <span class="title">
+                        <span>批次信息</span>
+                        <span>总箱数</span>
+                        <span>总立方数</span>
+                        <span>合计金额</span>
+                      </span>
+                      <span class="content"
+                        v-for="(val,ind) in item.info"
+                        :key="ind">
+                        <span>第{{val.batch_id}}批</span>
+                        <span>{{val.number ? val.number : 0}}</span>
+                        <span>{{val.cubic_number ? val.cubic_number : 0}}m³</span>
+                        <span>{{val.cost ? val.cost : 0}}元</span>
+                      </span>
+                    </div>
                   </div>
-                </div>
+                </el-collapse-transition>
               </li>
             </div>
           </ul>

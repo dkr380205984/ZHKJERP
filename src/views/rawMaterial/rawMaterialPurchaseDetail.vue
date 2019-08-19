@@ -109,7 +109,7 @@
                       </el-option>
                     </el-select>
                   </li>
-                  <li>
+                  <!-- <li>
                     <span>包装属性</span>:
                     <el-select v-model="iten.materialAtr"
                       placeholder="请选择包装属性"
@@ -119,7 +119,7 @@
                         :label="item.name"
                         :value="item.name"></el-option>
                     </el-select>
-                  </li>
+                  </li> -->
                   <li v-for="(value,index) in iten.stockWeightInfo"
                     :key="index"
                     class="col">
@@ -438,7 +438,7 @@ export default {
         {
           company: '',
           materialColor: '',
-          materialAtr: '',
+          // materialAtr: '',
           remark: '',
           stock_time: this.now_time,
           stockWeightInfo: [
@@ -555,7 +555,7 @@ export default {
             obj.weight = value.weight
             obj.complete_time = val.stock_time
             obj.desc = val.remark
-            obj.attribute = val.materialAtr
+            obj.attribute = '' // val.materialAtr
             obj.type = 1
             formArray.push({ ...obj })
           })
@@ -606,6 +606,7 @@ export default {
       this.logList = res.data.data.data_stock
       let stock = res.data.data.data_stock
       let materialList = JSON.parse(res.data.data.data_one.material_info)
+      console.log(materialList)
       // 对同种类型的纱线进行合并
       this.list = this.jsonMerge(materialList, ['material_name']).map((item) => {
         item.colors = item.info.map((itemColor) => {
@@ -630,6 +631,7 @@ export default {
         item.unit = 'kg'
         return item
       })
+      console.log(this.list)
       this.otherInfo.leaveWeight = this.list.reduce((total, current) => {
         return total + parseInt(current.allNumber)
       }, 0)
@@ -665,7 +667,7 @@ export default {
     margin-top: 30px;
     background-color: #f6f6f6;
     width: 417px;
-    height: 480px;
+    height: 440px;
     overflow-y: scroll;
     padding: 35px 35px 35px 30px;
     box-sizing: border-box;
