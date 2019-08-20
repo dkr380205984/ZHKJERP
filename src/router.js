@@ -55,6 +55,10 @@ let router = new Router({
     name: 'screenShipmentsList',
     component: () => import('./views/order/screenShipmentsList.vue')
   }, {
+    path: '/productMenu',
+    name: 'productMenu',
+    component: () => import('./views/product/productMenu.vue')
+  }, {
     path: '/index',
     name: 'index',
     component: () => import('./views/index.vue'),

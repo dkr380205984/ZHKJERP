@@ -206,6 +206,9 @@ const menu = [{
   }, {
     name: '产品报价单列表',
     url: '/index/priceListList'
+    // }, {
+    //   name: '产品电子手册',
+    //   url: '/productMenu'
   }]
 }, {
   name: '工艺单管理',

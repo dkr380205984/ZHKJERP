@@ -85,7 +85,7 @@ export default {
       loading: true,
       filter: {
         searchVal: '',
-        type: 1,
+        type: '',
         typeList: [{ name: '原料', type: 1 }, { name: '辅料', type: 2 }]
       },
       total_use_number: 0,
@@ -132,7 +132,7 @@ export default {
           this.total_stock_number += Number(item.stock_number)
           this.total_price += Number(item.price_total)
         })
-        this.filterList = this.list.filter(item => item.type === this.filter.type)
+        this.filterList = this.list
         this.loading = false
       })
     },

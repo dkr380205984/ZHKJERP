@@ -75,7 +75,7 @@
                 <span>{{item.category_name+'/'+item.type_name+'/'+item.style_name}}</span>
                 <span>{{item.order_number}}{{item.unit}}</span>
                 <span>{{(item.price_avg ? item.price_avg.toFixed(2) : 0)}}元/{{item.unit}}</span>
-                <span>{{item.total_production}}{{item.unit}}</span>
+                <span>{{item.total_production}}元</span>
                 <span>{{item.ciping ? item.ciping : '暂无'}}</span>
                 <span>{{item.total_stock ? item.total_stock: 0}}{{item.unit}}</span>
                 <span>
@@ -99,7 +99,7 @@
           <span></span>
           <span>{{total_order_number|filterNumber}}万件</span>
           <span></span>
-          <span>{{total_production_number|filterNumber}}万件</span>
+          <span>{{total_production_number|filterNumber}}万元</span>
           <span></span>
           <span>{{total_stock_number|filterNumber}}万件</span>
           <span></span>

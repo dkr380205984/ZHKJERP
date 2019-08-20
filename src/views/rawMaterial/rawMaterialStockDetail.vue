@@ -94,7 +94,7 @@
                     <span class="flex3">
                       <span>批/缸号</span>
                       <span>数量</span>
-                      <span>包装属性</span>
+                      <!-- <span>包装属性</span> -->
                     </span>
                   </span>
                   <span>已入库</span>
@@ -116,7 +116,7 @@
                           class="tableColumn">
                           <span class="tableRow">{{value.dyelot_number === 'vat_null' ? '默认' : value.dyelot_number}}</span>
                           <span class="tableRow">{{value.value|fixedFilter}}{{item.unit}}</span>
-                          <span class="tableRow">{{value.attr ? value.attr : '无'}}</span>
+                          <!-- <span class="tableRow">{{value.attr ? value.attr : '无'}}</span> -->
                         </span>
                       </span>
                     </span>
@@ -135,7 +135,7 @@
                     <span class="flexBig">{{type === '0' ? '原' : '辅'}}料名称</span>
                     <span>{{type === '0' ? '颜色' : '属性'}}</span>
                     <span>批/缸号</span>
-                    <span>包装属性</span>
+                    <!-- <span>包装属性</span> -->
                     <span>入库数量</span>
                     <span class="flexBig">备注</span>
                     <span>操作人</span>
@@ -149,7 +149,7 @@
                     <span class="flexBig">{{item.material}}</span>
                     <span>{{item.color}}</span>
                     <span>{{item.dyelot_number === 'vat_null' ? '默认' : item.dyelot_number}}</span>
-                    <span>{{item.attr ? item.attr : '无'}}</span>
+                    <!-- <span>{{item.attr ? item.attr : '无'}}</span> -->
                     <span>{{item.goStock_number|fixedFilter}}{{item.unit}}</span>
                     <span class="flexBig remark">
                       <i>
