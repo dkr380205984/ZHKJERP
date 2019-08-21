@@ -121,7 +121,7 @@
                   @click="item.flag = !item.flag, item.flag && !item.isGetInfo ? getInfo(item) : ''">
                   <span>
                     <em :class="{'el-icon-caret-bottom':true,'open':true,'close':!item.flag}"></em>
-                    {{item.order_code}}{{'-'+key}}</span>
+                    {{item.order_code}}</span>
                   <span>{{item.order_client}}</span>
                   <span>{{item.order_time}}</span>
                   <span>{{item.order_total_price|filterToFixed}}{{item.account_unit}}</span>
@@ -472,12 +472,14 @@ export default {
           this.nowCount.order_total_cost += Number(list.company_cost)
           this.list.push(list)
         })
-        if (Math.ceil(this.total / 25) > this.pages) {
-          this.pages++
-          this.getList(true)
-        } else {
-          this.isOk = true
-        }
+        setTimeout(() => {
+          if (Math.ceil(this.total / 25) > this.pages) {
+            this.pages++
+            this.getList(true)
+          } else {
+            this.isOk = true
+          }
+        }, 500)
         if (this.list.length >= 20 || this.isOk) { this.loading = false }
       })
     },

@@ -21,24 +21,24 @@
       display: flex;
       align-items: center;
       .logoBox{
-        width: 50px;
-        height: 50px;
+        width: 80px;
+        height: 80px;
         border-radius: 50%;
         background: linear-gradient(141deg,rgba(128,107,245,1) 0%,rgba(89,130,221,1) 100%);
         text-align: center;
-        line-height: 50px;
+        line-height: 80px;
         color:#FFF;
         margin-right: 20px;
       }
       .clientBox{
-        height: 50px;
+        height: 80px;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
-        h2,h4{
+        justify-content: space-around;
+        h1,h3{
           margin: 0;
         }
-        h4{
+        h3{
           color:@fontGray;
         }
       }
@@ -93,6 +93,7 @@
           height: 100%;
         }
         .about-box{
+          width: 100%;
           height: 230px;
           background: rgba(0,0,0,0.4);
           color:#FFF;
@@ -132,18 +133,30 @@
                   margin-bottom:10px; 
                   padding-left: 6em;
                   position: relative;
+                  height: 30px;
                   .label{
                     position: absolute;
-                    top:0;
+                    top:50%;
                     left: 0;
                     width: 5.6em;
                     text-align: right;
+                    transform: translateY(-50%);
                     .icon{
                       margin-right: 5px;
                     }
                   }
+                  .data{
+                    line-height: 30px;
+                  }
+                  .inpCtn{
+                    width: 260px;
+                    height: 30px;
+                  }
                 }
               }
+            }
+            .noBack{
+              background: transparent;
             }
           }
         }
@@ -251,6 +264,107 @@
             height: 50px;
             background: rgba(0,0,0,0.8);
             color:#FFF;
+          }
+        }
+      }
+      .product-list{
+        list-style: none;
+        margin: 30px 30px 30px 10px;
+        padding: 0;
+        border: 1px solid #DDD;
+        position: relative;
+        li{
+          height: 60px;
+          display: flex;
+          padding: 0 60px;
+          &>span{
+            flex: 1;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            &.center{
+              justify-content: center;
+            }
+            &.flexSmall{
+              flex: 0.5;
+            }
+            .imgCtn{
+              position: relative;
+              width: 60%;
+              height: 100%;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              &:hover{
+                .toolTips{
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                }
+              }
+              .img{
+                width:48px;
+                padding: 6px;
+                height: 48px;
+              }
+              .toolTips{
+                display: none;
+                position: absolute;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.7);  
+                text-align: center;
+                cursor: pointer;
+                span{
+                  color: #fff;
+                  &:hover{
+                    color: @normalBlue;
+                  }
+                }
+              }
+            }
+          }
+        }
+        .product-list-title{
+          background: rgb(240,240,240);
+          padding: 0 66px 0 60px;
+        }
+        .item-box{
+          height: 299px;
+          width: calc(100% - 6px);
+          overflow: hidden;
+          &:hover{
+            width: 100%;
+            overflow-y: scroll;
+          }
+          .product-list-item{
+            box-sizing: border-box;
+            border-bottom: 1px solid #DDD;
+            &:hover{
+              background: #D8EAFF;
+            }
+            &:last-child{
+              border-bottom: none;
+            }
+          }
+        }
+        .outBox{
+          position: absolute;
+          top: 0;
+          right: 0;
+          transform: translateY(-200%);
+          .btn{
+            border: 1px solid @normalBlue;
+            color: @normalBlue;
+            border-radius: 2px;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            cursor: pointer;
+            margin-left: 10px;
           }
         }
       }

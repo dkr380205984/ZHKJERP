@@ -100,9 +100,7 @@ export default {
   methods: {
     getList () {
       materialFinancialTotal({
-        company_id: window.sessionStorage.getItem('company_id'),
-        limit: 10,
-        page: this.pages
+        company_id: window.sessionStorage.getItem('company_id')
       }).then(res => {
         console.log(res)
         res.data.data.forEach(item => {
