@@ -75,7 +75,7 @@
                 <span>{{item.category_name+'/'+item.type_name+'/'+item.style_name}}</span>
                 <span>{{item.order_number}}{{item.unit}}</span>
                 <span>{{(item.price_avg ? item.price_avg.toFixed(2) : 0)}}元/{{item.unit}}</span>
-                <span>{{item.total_production}}元</span>
+                <span>{{Number(item.total_production).toFixed(2)}}元</span>
                 <span>{{item.ciping ? item.ciping : '暂无'}}</span>
                 <span>{{item.total_stock ? item.total_stock: 0}}{{item.unit}}</span>
                 <span>
@@ -150,12 +150,14 @@ export default {
           this.total_stock_number += Number(item.total_stock)
         })
         this.list.push(...res.data.data)
-        if (Math.ceil(this.total / 10) > this.pages) {
-          this.pages++
-          this.getList()
-        } else {
-          this.isOk = true
-        }
+        setTimeout(() => {
+          if (Math.ceil(this.total / 10) > this.pages) {
+            this.pages++
+            this.getList()
+          } else {
+            this.isOk = true
+          }
+        }, 500)
         if (this.list.length >= 10 || Math.ceil(this.total / 10) <= this.pages) {
           this.loading = false
         }
