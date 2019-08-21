@@ -70,6 +70,7 @@ axios.defaults.timeout = 30000
 async function get (url, params) {
   params = typeof (params) === 'object' ? params : {}
   params.user_id = window.sessionStorage.getItem('user_id')
+  params.company_id = window.sessionStorage.getItem('company_id')
   try {
     let response = await axios({ method: 'get', url: url, params: params })
     if (response.data.code === 999) {
@@ -100,6 +101,7 @@ async function get (url, params) {
 async function post (url, params, contentType, responseType) {
   params = typeof (params) === 'object' ? params : {}
   params.user_id = window.sessionStorage.getItem('user_id')
+  params.company_id = window.sessionStorage.getItem('company_id')
   // 设置请求头
   let headers = {}
   if (contentType && contentType === 'application/json') {

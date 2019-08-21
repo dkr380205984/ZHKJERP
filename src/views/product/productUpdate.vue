@@ -87,7 +87,7 @@
             v-model="footage[indexf]"
             placeholder="请选择尺码"
             style="width:200px;margin-bottom: 24px;">
-            <el-option v-for="item in child_footage"
+            <el-option v-for="item in child_measurement"
               :key="item.id"
               :label="item.name"
               :value="item.id">
@@ -213,7 +213,7 @@ export default {
       fileArr: [],
       footage: [],
       sizeArr: [],
-      child_footage: [{
+      child_measurement: [{
         id: -1,
         name: '均码'
       }],
@@ -244,7 +244,7 @@ export default {
         return {
           value: item.id,
           label: item.name,
-          child_footage: item.child_footage,
+          child_measurement: item.child_measurement,
           child_size: item.child_size,
           children: item.child.length === 0 ? null : item.child.map((item) => {
             return {
@@ -326,8 +326,8 @@ export default {
     types (newVal) {
       if (newVal.length !== 0) {
         const obj = this.treeData.find((item) => item.value === newVal[0])
-        this.child_footage = obj.child_footage
-        this.child_size = obj.child_size
+        this.child_measurement = obj.child_size
+        this.child_size = obj.child_measurement
       }
     },
     ingredientScale (newVal) {
@@ -473,7 +473,7 @@ export default {
             return {
               'size_name': this.child_size[index2].name || null,
               'size_value': item2 || null,
-              'footage': this.child_footage.find((item3) => item3.name === item).name || null,
+              'footage': this.child_measurement.find((item3) => item3.name === item).name || null,
               'weight': this.weight[index]
             }
           })

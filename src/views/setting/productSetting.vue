@@ -116,7 +116,7 @@
       <div class="lineCtn"
         :style="{'max-height':flagObj.sizeTFlag?'300px':'64px'}">
         <div class="inputCtn">
-          <span class="label">添加规格:</span>
+          <span class="label">添加尺寸:</span>
           <el-select v-model="selectTypes2"
             placeholder="请选择大类"
             class="elInput">
@@ -127,7 +127,7 @@
             </el-option>
           </el-select>
           <el-input class="elInput"
-            placeholder="请逐个输入产品规格"
+            placeholder="请逐个输入产品尺寸"
             v-model="sizeTname"
             @keyup.enter.native="saveSizeTname"></el-input>
           <div class="floatDiv">
@@ -148,7 +148,7 @@
               :key="item.id">
               <span class="lineTitle">{{item.name}}:</span>
               <div class="btnCtn"
-                v-for="itemchild in item.child_size"
+                v-for="itemchild in item.child_measurement"
                 :key="itemchild.name">
                 <span>{{itemchild.name}}</span>
                 <i class="iconCancle"
@@ -193,7 +193,7 @@
               :key="item.id">
               <span class="lineTitle">{{item.name}}:</span>
               <div class="btnCtn"
-                v-for="itemchild in item.child_footage"
+                v-for="itemchild in item.child_size"
                 :key="itemchild.name">
                 <span>{{itemchild.name}}</span>
                 <i class="iconCancle"
@@ -704,7 +704,7 @@ export default {
               message: '添加成功'
             })
             this.sizeName = ''
-            footageList({
+            sizeList({
               company_id: window.sessionStorage.getItem('company_id')
             }).then((res) => {
               this.sizeArr = res.data.data
@@ -786,7 +786,7 @@ export default {
           this.$message.success({
             message: '删除成功'
           })
-          footageList({
+          sizeList({
             company_id: window.sessionStorage.getItem('company_id')
           }).then((res) => {
             this.sizeArr = res.data.data
@@ -872,7 +872,7 @@ export default {
             unitList({
               company_id: window.sessionStorage.getItem('company_id')
             }).then((res) => {
-              this.unitArr = res.data.data
+              this.unitArr = res.data
               this.loading = false
             })
           }
@@ -895,7 +895,7 @@ export default {
           unitList({
             company_id: window.sessionStorage.getItem('company_id')
           }).then((res) => {
-            this.unitArr = res.data.data
+            this.unitArr = res.data
             this.loading = false
           })
         } else {
@@ -1023,9 +1023,10 @@ export default {
       this.ingredientArr = res[2].data.data
       this.colorArr = res[3].data.data
       this.sizeTarr = res[4].data.data
-      this.sizeArr = res[5].data.data
+      this.sizeArr = res[4].data.data
       this.otherIngredientArr = res[6].data.data
-      this.unitArr = res[7].data.data
+      this.unitArr = res[7].data
+      console.log(this.unitArr)
       this.loading = false
     })
   }

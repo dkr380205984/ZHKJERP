@@ -439,7 +439,7 @@ export default {
       this.materialArr = res[3].data.data
       // 对有工艺单的情况进行正义的数据改造
       if (res[4].data.code === 200) {
-        this.state = false
+        this.state = true // 工艺单对配料单的限制去除，如需加限制，把这个字段改为false即可
         const gyd = res[4].data.data
         let ingredient = gyd.yarn_coefficient.map((item) => {
           return item.name
