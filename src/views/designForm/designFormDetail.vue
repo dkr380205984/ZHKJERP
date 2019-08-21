@@ -720,6 +720,7 @@ export default {
           const lineHeight = (600 * this.chang / this.kuan - 100) / this.weft_data.total
           const maxHeight = chuanzongfa.length // 纵向计数
           let maxWidth = 0 // 横向计数取最大值
+          // let min = 0 //横向值最小值获取
           chuanzongfa.forEach((item) => {
             item.forEach((num) => {
               if (num > maxWidth) {
@@ -735,6 +736,7 @@ export default {
               matrix[indexY][itemX - 1] = true
             })
           })
+          console.log(matrix)
           let xNum = 0 // 横向计数器
           let xTime = 0 // 横向计数次数
           ArrMain3.forEach((warp) => {
@@ -1596,7 +1598,14 @@ export default {
               }
             })
           })
+          const min = Math.min(...data.warp_data.additional_data.split(/[,，]/)) // 找出穿综法循环中的最小值
+          chuanzongfa = chuanzongfa.map((item) => {
+            return item.map((num) => {
+              return num - (min - 1)
+            })
+          })
         }
+        console.log(chuanzongfa)
         // 把数据从原来的线，拆成点
         let ArrMain3 = []
         let ArrMain4 = []
@@ -1647,8 +1656,8 @@ export default {
           let maxWidth = 0 // 横向计数取最大值
           chuanzongfa.forEach((item) => {
             item.forEach((num) => {
-              if (num > maxWidth) {
-                maxWidth = num
+              if (Number(num) > maxWidth) {
+                maxWidth = Number(num)
               }
             })
           })

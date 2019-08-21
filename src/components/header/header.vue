@@ -18,7 +18,8 @@
           class="item">
           <i class="el-icon-bell"></i>
         </el-badge>
-        <i class="el-icon-setting"></i>
+        <i class="el-icon-setting"
+          @click="showSetting=true"></i>
         <div class="selectCtn">
           <el-dropdown @command="commondHandler">
             <span class="el-dropdown-link">
@@ -33,12 +34,70 @@
         </div>
       </div>
     </div>
+    <!-- 这里加一个设置模块 -->
+    <div class="settingsCtn"
+      v-show="showSetting">
+      <div class="main">
+        <div class="close"
+          @click="closeWin">
+          <span class="icon">x</span>
+        </div>
+        <div class="title">系统设置</div>
+        <div class="blockCtn">
+          <div @click="openWin(item.url)"
+            class="blocks"
+            v-for="(item,index) in list"
+            :key="index">
+            <img class="image"
+              :src="item.img" />
+            <span class="description">{{item.name}}</span>
+          </div>
+        </div>
+        <div class="btnCtn">
+          <div class="cancleBtn"
+            @click="closeWin">取消</div>
+          <div class="okBtn"
+            @click="closeWin">完成</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import './header.less'
 export default {
+  data () {
+    return {
+      goSetting: false,
+      showSetting: false,
+      list: [{
+        name: '产品设置',
+        img: require('../../assets/image/setting/产品设置-蓝.png'),
+        url: '/index/productSetting'
+      }, {
+        name: '工艺单设置',
+        img: require('../../assets/image/setting/工艺单设置-蓝.png'),
+        url: '/index/designFormSetting'
+      }, {
+        name: '原料设置',
+        img: require('../../assets/image/setting/原料设置-蓝.png'),
+        url: '/index/yarnSetting'
+      }, {
+        name: '辅料设置',
+        img: require('../../assets/image/setting/辅料设置-蓝.png'),
+        url: '/index/error/404'
+      }, {
+        name: '账号设置',
+        img: require('../../assets/image/setting/账号设置-蓝.png'),
+        url: '/index/accountSetting'
+      }, {
+        name: '包装设置',
+        img: require('../../assets/image/setting/包装设置-蓝.png'),
+        url: '/index/packagMaterialList'
+      }]
+    }
+  },
   methods: {
     commondHandler (cmd) {
       console.log(cmd)
@@ -51,6 +110,17 @@ export default {
     },
     goHome () {
       window.location.replace('/index/home')
+    },
+    openWin (url) {
+      this.goSetting = true
+      window.open(url)
+    },
+    closeWin () {
+      if (this.goSetting) {
+        window.location.reload()
+      } else {
+        this.showSetting = false
+      }
     }
   }
 }

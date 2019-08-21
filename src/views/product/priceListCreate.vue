@@ -281,7 +281,7 @@
               v-for="(item,index) in yarnArr"
               :key="'yarnArr'+index">
               <div class="box1">
-                <el-select style="width:100%"
+                <!-- <el-select style="width:100%"
                   v-model="item.key"
                   filterable
                   :disabled="item.disable"
@@ -291,12 +291,31 @@
                     :label="item.name"
                     :value="item.name">
                   </el-option>
-                </el-select>
+                </el-select> -->
+                <el-autocomplete class="inline-input"
+                  v-model="item.key"
+                  :fetch-suggestions="searchYarn"
+                  placeholder="请输入原料"
+                  @select="selectYarn($event,index)">
+                  <i class="el-icon-edit el-input__icon"
+                    slot="suffix"></i>
+                  <template slot-scope="{ item }">
+                    <div class="name">{{ item.name }}</div>
+                  </template>
+                </el-autocomplete>
               </div>
               <div class="box2">
-                <el-input v-model="item.price"
+                <el-input style="width:30%"
+                  v-model="item.weight"
+                  placeholder="克重"></el-input>
+                <em style="right:calc(70% + 15px)"
+                  class="unit">克</em>
+                <div class="border"
+                  style="position:absolute;width:1px;background:#f0f0f0;right:calc(70%);top:0;bottom:0;"></div>
+                <el-input style="width:70%"
+                  v-model="item.price"
                   :key="item.key+index"
-                  :placeholder="item.number?'所需原料参考价：'+(item.number*item.minPrice/1000).toFixed(2)+'元 ~ '+(item.number*item.maxPrice/1000).toFixed(2)+'元':(item.minPrice&&item.maxPrice)?'原料参考价：'+item.minPrice+'元 ~ '+item.maxPrice+'元':'请输入金额'"></el-input>
+                  :placeholder="item.number?'参考价：'+(item.number*item.minPrice/1000).toFixed(2)+' ~ '+(item.number*item.maxPrice/1000).toFixed(2):(item.minPrice&&item.maxPrice)?'参考价：'+item.minPrice+' ~ '+item.maxPrice:'请输入金额'"></el-input>
                 <em class="unit">元</em>
               </div>
               <div class="box3">
@@ -308,7 +327,7 @@
               v-for="(item,index) in otherMaterialArr"
               :key="'otherMaterialArr'+index">
               <div class="box1">
-                <el-select style="width:100%"
+                <!-- <el-select style="width:100%"
                   v-model="item.key"
                   filterable
                   :disabled="item.disable"
@@ -318,11 +337,30 @@
                     :label="item.name"
                     :value="item.name">
                   </el-option>
-                </el-select>
+                </el-select> -->
+                <el-autocomplete class="inline-input"
+                  v-model="item.key"
+                  :fetch-suggestions="searchMaterial"
+                  placeholder="请输入辅料"
+                  @select="selectMaterial($event,index)">
+                  <i class="el-icon-edit el-input__icon"
+                    slot="suffix"></i>
+                  <template slot-scope="{ item }">
+                    <div class="name">{{ item.name }}</div>
+                  </template>
+                </el-autocomplete>
               </div>
               <div class="box2">
-                <el-input v-model="item.price"
-                  :placeholder="item.number?'所需辅料参考价：'+item.number*item.minPrice+'元 ~ '+item.number*item.maxPrice+'元':(item.minPrice&&item.maxPrice)?'辅料参考价：'+item.minPrice+'元 ~ '+item.maxPrice+'元':'请输入金额'"></el-input>
+                <el-input style="width:30%"
+                  v-model="item.weight"
+                  placeholder="数量"></el-input>
+                <!-- <em style="right:calc(50% + 15px)"
+                  class="unit">个</em> -->
+                <div class="border"
+                  style="position:absolute;width:1px;background:#f0f0f0;right:calc(70%);top:0;bottom:0;"></div>
+                <el-input style="width:70%"
+                  v-model="item.price"
+                  :placeholder="item.number?'参考价：'+item.number*item.minPrice+' ~ '+item.number*item.maxPrice:(item.minPrice&&item.maxPrice)?'参考价：'+item.minPrice+' ~ '+item.maxPrice:'请输入金额'"></el-input>
                 <em class="unit">元</em>
               </div>
               <div class="box3">
@@ -334,7 +372,7 @@
               v-for="(item,index) in weaveArr"
               :key="'weaveArr'+index">
               <div class="box1">
-                <el-select style="width:100%"
+                <!-- <el-select style="width:100%"
                   v-model="item.key"
                   filterable
                   placeholder="请选择织造明细">
@@ -343,7 +381,18 @@
                     :label="item.name"
                     :value="item.name">
                   </el-option>
-                </el-select>
+                </el-select> -->
+                <el-autocomplete class="inline-input"
+                  v-model="item.key"
+                  :fetch-suggestions="searchWeave"
+                  placeholder="请输入织造明细"
+                  @select="selectWeave($event,index)">
+                  <i class="el-icon-edit el-input__icon"
+                    slot="suffix"></i>
+                  <template slot-scope="{ item }">
+                    <div class="name">{{ item.name }}</div>
+                  </template>
+                </el-autocomplete>
               </div>
               <div class="box2">
                 <el-input v-model="item.price"
@@ -359,7 +408,7 @@
               v-for="(item,index) in machiningArr"
               :key="'machiningArr'+index">
               <div class="box1">
-                <el-select style="width:100%"
+                <!-- <el-select style="width:100%"
                   v-model="item.key"
                   filterable
                   placeholder="请选择半成品加工工序">
@@ -368,7 +417,18 @@
                     :label="item.name"
                     :value="item.name">
                   </el-option>
-                </el-select>
+                </el-select> -->
+                <el-autocomplete class="inline-input"
+                  v-model="item.key"
+                  :fetch-suggestions="searchMachining"
+                  placeholder="请输入半成品加工工序"
+                  @select="selectMachining($event,index)">
+                  <i class="el-icon-edit el-input__icon"
+                    slot="suffix"></i>
+                  <template slot-scope="{ item }">
+                    <div class="name">{{ item.name }}</div>
+                  </template>
+                </el-autocomplete>
               </div>
               <div class="box2">
                 <el-input v-model="item.price"
@@ -384,7 +444,7 @@
               v-for="(item,index) in packagMaterialArr"
               :key="'packagMaterialArr'+index">
               <div class="box1">
-                <el-select style="width:100%"
+                <!-- <el-select style="width:100%"
                   v-model="item.key"
                   filterable
                   placeholder="请选择所需包装辅料">
@@ -393,7 +453,18 @@
                     :label="item.name"
                     :value="item.name">
                   </el-option>
-                </el-select>
+                </el-select> -->
+                <el-autocomplete class="inline-input"
+                  v-model="item.key"
+                  :fetch-suggestions="searchPackag"
+                  placeholder="请输入所需包装辅料"
+                  @select="selectPackag($event,index)">
+                  <i class="el-icon-edit el-input__icon"
+                    slot="suffix"></i>
+                  <template slot-scope="{ item }">
+                    <div class="name">{{ item.name }}</div>
+                  </template>
+                </el-autocomplete>
               </div>
               <div class="box2">
                 <el-input v-model="item.price"
@@ -409,7 +480,7 @@
               v-for="(item,index) in manArr"
               :key="'manArr'+index">
               <div class="box1">
-                <el-select style="width:100%"
+                <!-- <el-select style="width:100%"
                   v-model="item.key"
                   filterable
                   placeholder="请选择人工费用明细">
@@ -418,7 +489,18 @@
                     :label="item.name"
                     :value="item.name">
                   </el-option>
-                </el-select>
+                </el-select> -->
+                <el-autocomplete class="inline-input"
+                  v-model="item.key"
+                  :fetch-suggestions="searchMan"
+                  placeholder="请输入人工费用明细"
+                  @select="selectMan($event,index)">
+                  <i class="el-icon-edit el-input__icon"
+                    slot="suffix"></i>
+                  <template slot-scope="{ item }">
+                    <div class="name">{{ item.name }}</div>
+                  </template>
+                </el-autocomplete>
               </div>
               <div class="box2">
                 <el-input v-model="item.price"
@@ -579,14 +661,16 @@ export default {
         key: '',
         price: '',
         maxPrice: 0,
-        minPrice: 0
+        minPrice: 0,
+        weight: ''
       }],
       otherMaterialList: [],
       otherMaterialArr: [{
         key: '',
         price: '',
         maxPrice: 0,
-        minPrice: 0
+        minPrice: 0,
+        weight: ''
       }],
       weaveList: [{
         id: 1,
@@ -668,6 +752,7 @@ export default {
                       key: item.material,
                       price: '',
                       number: number,
+                      weight: number,
                       maxPrice: 0,
                       minPrice: 0,
                       disable: true
@@ -675,6 +760,7 @@ export default {
                   } else {
                     this.yarnArr[0].key = item.material
                     this.yarnArr[0].number = number
+                    this.yarnArr[0].weight = number
                     this.yarnArr[0].disable = true
                   }
                 }
@@ -691,12 +777,14 @@ export default {
                       key: item.material,
                       price: '',
                       number: number,
+                      weight: number,
                       maxPrice: 0,
                       minPrice: 0,
                       disable: true
                     })
                   } else {
                     this.otherMaterialArr[0].key = item.material
+                    this.otherMaterialArr[0].weight = number
                     this.otherMaterialArr[0].number = number
                     this.otherMaterialArr[0].disable = true
                   }
@@ -728,6 +816,8 @@ export default {
           product.colorSizeArr = arr
           product.colorSize = product.colorSize ? product.colorSize : []
         })
+        // 强制刷新，防止数据不渲染
+        this.$forceUpdate()
       })
     },
     // 使用删除操作删除产品列表里的信息
@@ -785,7 +875,8 @@ export default {
           key: '',
           price: '',
           minPrice: 0,
-          maxPrice: 0
+          maxPrice: 0,
+          weight: ''
         })
       } else {
         this[key].push({
@@ -858,6 +949,54 @@ export default {
         })
       }
     },
+    // 获取原料列表
+    searchYarn (str, cb) {
+      str ? cb(this.yarnList.filter((item) => item.name.indexOf(str) !== -1)) : cb(this.yarnList)
+    },
+    // 选取原料
+    selectYarn (yarn, index) {
+      this.yarnArr[index].key = yarn.name
+    },
+    // 选取辅料列表
+    searchMaterial (str, cb) {
+      str ? cb(this.otherMaterialList.filter((item) => item.name.indexOf(str) !== -1)) : cb(this.otherMaterialList)
+    },
+    // 选取辅料
+    selectMaterial (material, index) {
+      this.otherMaterialArr[index].key = material.name
+    },
+    // 搜索织造明细
+    searchWeave (str, cb) {
+      str ? cb(this.weaveList.filter((item) => item.name.indexOf(str) !== -1)) : cb(this.weaveList)
+    },
+    // 选取织造明细
+    selectWeave (weave, index) {
+      this.weaveArr[index].key = weave.name
+    },
+    // 获取加工工序
+    searchMachining (str, cb) {
+      str ? cb(this.machiningList.filter((item) => item.name.indexOf(str) !== -1)) : cb(this.machiningList)
+    },
+    // 选取加工工序
+    selectMachining (machining, index) {
+      this.machiningArr[index].key = machining.name
+    },
+    // 获取包装辅料
+    searchPackag (str, cb) {
+      str ? cb(this.packagMaterialList.filter((item) => item.name.indexOf(str) !== -1)) : cb(this.packagMaterialList)
+    },
+    // 选取包装辅料
+    selectPackag (packag, index) {
+      this.packagMaterialArr[index].key = packag.name
+    },
+    // 获取人工费用
+    searchMan (str, cb) {
+      str ? cb(this.manList.filter((item) => item.name.indexOf(str) !== -1)) : cb(this.manList)
+    },
+    // 选取人工费用
+    selectMan (man, index) {
+      this.manArr[index].key = man.name
+    },
     saveAll () {
       let flag = true
       let errorMsg = ''
@@ -877,10 +1016,10 @@ export default {
         flag = false
         errorMsg = '请输入汇率'
       }
-      if (this.productArr.length === 0) {
-        flag = false
-        errorMsg = '至少有一款产品'
-      }
+      // if (this.productArr.length === 0) {
+      //   flag = false
+      //   errorMsg = '至少有一款产品'
+      // }
       this.productArr.forEach((item) => {
         if (item.colorSize.length === 0) {
           flag = false
@@ -986,7 +1125,7 @@ export default {
           if (res.data.status && res.data.data.length > 0) {
             let index = 0 // 返回的数据会跳过空数据,因此需要计数
             val.forEach((item) => {
-              if (item.key) {
+              if (item.key && this.yarnList.find((itemFind) => itemFind.name === item.key)) {
                 item.maxPrice = res.data.data[index].max_price
                 item.minPrice = res.data.data[index].min_price
                 index++
@@ -996,7 +1135,6 @@ export default {
               }
             })
           }
-          console.log(val)
         })
       },
       deep: true
@@ -1010,7 +1148,7 @@ export default {
           if (res.data.status && res.data.data.length > 0) {
             let index = 0 // 返回的数据会跳过空数据,因此需要计数
             val.forEach((item) => {
-              if (item.key) {
+              if (item.key && this.otherMaterialList.find((itemFind) => itemFind.name === item.key)) {
                 item.maxPrice = res.data.data[index].max_price
                 item.minPrice = res.data.data[index].min_price
                 index++
@@ -1116,6 +1254,9 @@ export default {
     border: 0;
     outline: none;
     resize: none;
+  }
+  .el-autocomplete {
+    width: 100%;
   }
 }
 </style>

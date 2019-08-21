@@ -111,13 +111,27 @@
               v-for="(item,index) in JSON.parse(priceList.material_info)"
               :key="'material_info'+ index">
               <div class="box1">{{item.key?item.key:'原料费用'}}</div>
-              <div class="box2">{{item.price?item.price:0}}<em>元</em></div>
+              <div class="box2">
+                <div style="width:50%;display:inline-block;box-sizing:border-box;border-right:1px solid #ddd;position:relative">
+                  {{item.weight?item.weight:0}}<em>克</em>
+                </div>
+                <div style="width:50%;display:inline-block;box-sizing:border-box;padding-left:15px;position:relative">
+                  {{item.price?item.price:0}}<em>元</em>
+                </div>
+              </div>
             </div>
             <div class="tbox"
               v-for="(item,index) in JSON.parse(priceList.assist_info)"
               :key="'assist_info'+ index">
               <div class="box1">{{item.key?item.key:'辅料费用'}}</div>
-              <div class="box2">{{item.price?item.price:0}}<em>元</em></div>
+              <div class="box2">
+                <div style="width:50%;display:inline-block;box-sizing:border-box;border-right:1px solid #ddd;position:relative">
+                  {{item.weight?item.weight:0}}<em>数量</em>
+                </div>
+                <div style="width:50%;display:inline-block;box-sizing:border-box;padding-left:15px;position:relative">
+                  {{item.price?item.price:0}}<em>元</em>
+                </div>
+              </div>
             </div>
             <div class="tbox"
               v-for="(item,index) in JSON.parse(priceList.weave_info)"
