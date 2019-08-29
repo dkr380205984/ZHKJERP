@@ -498,6 +498,14 @@ let router = new Router({
       path: 'foreignTradeFinancialDetail/:id',
       name: 'foreignTradeFinancialDetail',
       component: () => import('./views/financial/foreignTradeFinancialDetail.vue')
+    }, {
+      path: 'productMenuEdit',
+      name: 'productMenuEdit',
+      component: () => import('./views/setting/productMenuEdit.vue')
+    }, {
+      path: 'companyInfoSetting',
+      name: 'companyInfoSetting',
+      component: () => import('./views/setting/companyInfoSetting.vue')
     }]
   }
   ]

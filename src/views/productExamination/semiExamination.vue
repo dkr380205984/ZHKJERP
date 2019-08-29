@@ -403,6 +403,7 @@ export default {
             arr.number = value.number
             arr.rejects_info = JSON.stringify(value.defective_info)
             arr.desc = item.remark
+            arr.company_id = window.sessionStorage.getItem('company_id')
             data.push(arr)
           })
         })

@@ -85,7 +85,7 @@ const productList = (params) => http.get(`${baseUrl}/product/list`, params)
 // 单个产品获取
 const porductOne = (params) => http.get(`${baseUrl}/product/one`, params)
 // 删除产品
-const productDelete = (params) => http.post(`${baseUrl}/product/delete`, params)
+const productDelete = (params) => http.post(`${baseUrl}/product/delete`, params, 'application/json')
 // 添加纱线名称
 const saveYarn = (params) => http.post(`${baseUrl}/yarn/save`, params, 'application/json')
 // 纱线名称列表
@@ -330,7 +330,19 @@ const clientFinancialTotal = (params) => http.get(`${baseUrl}/financial/client/t
 const productFinancialTotal = (params) => http.get(`${baseUrl}/financial/product/count`, params)
 // 物料使用统计financial/material/count
 const materialFinancialTotal = (params) => http.get(`${baseUrl}/financial/material/count`, params)
+// 设置工厂信息
+const companyInfoSetting = (params) => http.post(`${baseUrl}/company/save`, params, 'application/json')
+// 获取工厂信息
+const companyInfoDetail = (params) => http.get(`${baseUrl}/company/detail`, params)
+// 设置产品手册
+const productMenuSetting = (params) => http.post(`${baseUrl}/product/handbook/save`, params, 'application/json')
+// 获取产品手册
+const productMenuList = (params) => http.get(`${baseUrl}/product/handbook/list`, params)
 export {
+  productMenuList,
+  productMenuSetting,
+  companyInfoDetail,
+  companyInfoSetting,
   materialFinancialTotal,
   productFinancialTotal,
   clientFinancialTotal,

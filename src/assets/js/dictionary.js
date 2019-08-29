@@ -206,9 +206,9 @@ const menu = [{
   }, {
     name: '产品报价单列表',
     url: '/index/priceListList'
-    // }, {
-    //   name: '产品电子手册',
-    //   url: '/productMenu'
+  }, {
+    name: '产品电子手册',
+    url: '/productMenu'
   }]
 }, {
   name: '工艺单管理',
@@ -380,8 +380,14 @@ const menu = [{
     name: '权限设置',
     url: '/index/permissionsAdd'
   }, {
+    name: '产品手册设置',
+    url: '/index/productMenuEdit'
+  }, {
     name: '添加权限',
     url: '/index/permissionsAppend'
+  }, {
+    name: '工厂信息设置',
+    url: '/index/companyInfoSetting'
   }]
 }]
 // 次品原因

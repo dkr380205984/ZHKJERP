@@ -567,7 +567,8 @@ export default {
               price: valPack.price,
               order_time: item.order_time,
               desc: item.remark,
-              attribute: JSON.stringify(valPack.pack_attr.attribute)
+              attribute: JSON.stringify(valPack.pack_attr.attribute),
+              company_id: window.sessionStorage.getItem('company_id')
             })
           })
         })

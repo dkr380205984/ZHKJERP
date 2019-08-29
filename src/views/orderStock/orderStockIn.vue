@@ -471,7 +471,8 @@ export default {
                 count: itemPackNumber.pack,
                 number: itemPackNumber.number,
                 complete_time: completeTime,
-                desc: item.desc
+                desc: item.desc,
+                company_id: window.sessionStorage.getItem('company_id')
               })
             })
           })

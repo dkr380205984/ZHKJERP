@@ -12,6 +12,7 @@
     "axios": "^0.18.0",
     "element-ui": "^2.5.4",
     "handsontable": "^7.0.0",
+    "qrcode": "^1.4.1",
     "vue": "^2.6.6",
     "vue-echarts": "^4.0.3",
     "vue-router": "^3.0.1",

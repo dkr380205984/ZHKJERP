@@ -444,7 +444,8 @@ export default {
             net_weight: item.only_weight,
             product_info: JSON.stringify(item.product_info),
             desc: item.remark,
-            batch_id: this.$route.params.batchId
+            batch_id: this.$route.params.batchId,
+            company_id: window.sessionStorage.getItem('company_id')
           })
         })
         if (flag) {
