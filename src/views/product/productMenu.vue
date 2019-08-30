@@ -53,9 +53,11 @@
             <el-carousel-item v-for="(item,key) in image"
               class="img"
               :key="key">
-              <img :src="item"
+              <!-- <img :src="item"
                 alt=""
-                class="img">
+                class="img"> -->
+              <div class="bgBox"
+                :style="{'background-image':getBg(item)}"></div>
             </el-carousel-item>
           </el-carousel>
           <div class="about-box">
@@ -111,12 +113,14 @@
             v-for="item in filterProList"
             :key="item.product_id">
             <div class="box-top">
-              <img :src="(item.image && item.image.length !== 0) ? item.image[0] : require('@/assets/image/index/noPic.jpg')"
-                alt="">
-              <div class="info">
+              <!-- <img :src="(item.image && item.image.length !== 0) ? item.image[0] : require('@/assets/image/index/noPic.jpg')"
+                alt=""> -->
+              <div class="bgBox"
+                :style="{'background-image':getBg((item.image && item.image.length !== 0) ? item.image[0] : require('@/assets/image/index/noPic.jpg'))}"></div>
+              <!-- <div class="info">
                 <span>产品描述:</span>
                 <span>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat</span>
-              </div>
+              </div> -->
             </div>
             <div class="box-bottom">
               <span>{{item.product_code}}</span>
@@ -162,6 +166,9 @@ export default {
     }
   },
   methods: {
+    getBg (item) {
+      return 'url("' + item + '")'
+    },
     share () {
       this.shareBoxStatu = !this.shareBoxStatu
     },

@@ -125,6 +125,12 @@
           width: 100%;
           height: 100%;
         }
+        .bgBox{
+          width: 100%;
+          height: 100%;
+          background-position:center center;
+          background-size:cover;  
+        }
         .about-box{
           width: 100%;
           height: 230px;
@@ -231,12 +237,13 @@
         flex-wrap: wrap;
         justify-content: flex-start;
         margin-top: 20px;
+        padding: 0 10px;
         .productBox{
           width:200px;
           height: 200px;
-          border-radius: 5px;
           overflow: hidden;
-          margin:10px;
+          margin: 24px 40px;
+          box-shadow:0px 2px 12px rgba(0,0,0,0.16);
           &.addNewPro{
             background: #D9D9D9;
             display: flex;
@@ -259,13 +266,16 @@
             height: 150px;
             position: relative;
             overflow: hidden;
+            border-radius: 5px;
             cursor: pointer;
             &:hover .info{
               top: 0;
             }
-            img{
-              width: 200px;
-              height: 150px;
+            .bgBox{
+              width: 100%;
+              height: 100%;
+              background-position:center center;
+              background-size:cover;  
             }
             .info{
               position: absolute;
@@ -295,7 +305,7 @@
             justify-content: center;
             align-items: center;
             height: 50px;
-            background: rgba(0,0,0,0.8);
+            background: #484848;
             color:#FFF;
           }
         }

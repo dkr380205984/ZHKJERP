@@ -127,7 +127,7 @@ async function post (url, params, contentType, responseType) {
       router.push('/index/home')
       return Promise.reject(response)
     }
-    if (response.data.code === 501) {
+    if (response.data.code === 502) {
       Message.Message.error({
         message: '登录信息过期'
       })
