@@ -487,108 +487,124 @@
     }
   }
 }
-// 弹窗样式
-// .shades {
-//   position: fixed;
-//   top: 0;
-//   bottom: 0;
-//   left: 0;
-//   right: 0;
-//   background-color: rgba(0, 0, 0, 0.8);
-//   .main {
-//     position: absolute;
-//     width: 640px;
-//     height: 580px;
-//     right: 0;
-//     top: 0;
-//     bottom: 0;
-//     left: 0;
-//     margin: auto;
-//     background: #ffffff;
-//     overflow: hidden;
-//     border-radius: 4px;
-//     .close {
-//       position: absolute;
-//       right: -30px;
-//       top: -30px;
-//       width: 60px;
-//       height: 60px;
-//       background: #1a95ff;
-//       border-radius: 50%;
-//       cursor: pointer;
-//       transition: 0.1s;
-//       color: #ecf0f1;
-//       &:hover {
-//         transform: scale(1.1);
-//         color: #ffffff;
-//         background: #48aaff;
-//       }
-//       .icon {
-//         position: absolute;
-//         left: 15px;
-//         bottom: 7px;
-//         font-size: 16px;
-//         font-weight: bold;
-//       }
-//     }
-//     .title {
-//       line-height: 66px;
-//       font-size: 22px;
-//       padding: 0 20px;
-//       background: linear-gradient(to right, #1a95ff, #ceddef);
-//       border-radius: 4px;
-//       border-bottom-left-radius: 0;
-//       border-bottom-right-radius: 0;
-//       color: #ffffff;
-//     }
-//     .content {
-//       height: 514px;
-//       overflow-y: scroll;
-//       .inputCtn {
-//         margin: 20px;
-//         position: relative;
-//         font-size: 16px;
-//         padding-left: 5em;
-//         height: auto;
-//         line-height: 40px;
-//         color: #666;
-//         .label {
-//           position: absolute;
-//           left: 0;
-//           text-align: right;
-//           width: 5em;
-//           color: #666;
-//           & > em {
-//             color: #f56c6c;
-//             line-height: 40px;
-//             margin-right: 2px;
-//             vertical-align: -4px;
-//           }
-//         }
-//         .elCtn {
-//           margin-left: 15px;
-//           width: 400px;
-//           height: auto;
-//           em {
-//             padding: 5px;
-//             margin-left: 20px;
-//             cursor: pointer;
-//             &:hover {
-//               background-color: #1a95ff;
-//               color: #fff;
-//               border-radius: 50%;
-//             }
-//           }
-//         }
-//       }
-//       .btnCtn {
-//         margin: 40px 0;
-//         display: flex;
-//         justify-content: center;
-//         .okBtn {
-//           margin: 0 30px;
-//         }
-//       }
-//     }
-//   }
-// }
+
+
+// 步骤条形式页面样式
+.stepCtn{
+  position: relative;
+  padding: 40px 0 40px 20px;
+  &:nth-last-child(2){
+    padding-bottom: 0;
+  }
+  .stepTitle{
+    position: absolute;
+    top: -17px;
+    left: 0;
+    padding-left: 20px;
+    line-height: 50px;
+    color: @normalBlue;
+    font-size: @fontSubhead;
+    font-weight:400;
+  }
+  .borderCtn{
+    position: absolute;
+    top: 0;
+    left: -4px;
+    width: 14px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .border{
+      flex: 1;
+      width: 4px;
+      background: @normalBlue;
+    }
+    .cicle{
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: @normalBlue;
+    }
+  }
+}
+// 页面头部的一些附加信息 如：很多页面上面需要展示产品信息
+.appendInfo{
+  max-width: 1000px;
+  .row{
+    display: flex;
+    margin: 16px 0;
+    .box{
+      position: relative;
+      font-size: @fontBig;
+      &.box1{
+        width: 100%;
+      }
+      &.box2{
+        width: 50%;
+      }
+      &.box3{
+        width: 33%;
+      }
+      &.box4{
+        width: 25%;
+      }
+      &.em5{
+        .content{
+          padding-left: 6em;
+        }
+        .label{
+          width: 5em;
+        }
+      }
+      &.em6{
+        .content{
+          padding-left: 7em;
+        }
+        .label{
+          width: 6em;
+        }
+      }
+      &.em7{
+        .content{
+          padding-left: 8em;
+        }
+        .label{
+          width: 7em;
+        }
+      }
+      .label{
+        width: 5em;
+        text-align: right;
+        position: absolute;
+        line-height: 30px;
+        left: 0;
+        top: 0;
+        color:#333;
+        &.must{
+          &::before{
+            content:'*';
+            color: @error;
+          }
+        }
+      }
+      .content{
+        color:#666;
+        line-height: 30px;
+        padding-left: 6em;
+        &.important{
+          color:@normalBlue;
+        }
+      }
+    }
+  }
+}
+// 页面底部的按钮
+.bottomBtnCtn{
+  display: flex;
+  padding-left: 6em;
+  justify-content: space-around;
+  width: 400px;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
