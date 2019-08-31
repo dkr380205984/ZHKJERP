@@ -103,6 +103,10 @@ let router = new Router({
       name: 'designFormCreate',
       component: () => import('./views/designForm/designFormCreate.vue')
     }, {
+      path: 'designFormCreateR',
+      name: 'designFormCreateR',
+      component: () => import('./views/designForm/designFormCreateR.vue')
+    }, {
       path: 'designFormUpdate/:id',
       name: 'designFormUpdate',
       component: () => import('./views/designForm/designFormUpdate.vue')
