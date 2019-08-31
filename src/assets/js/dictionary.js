@@ -190,6 +190,9 @@ let machiningType = [{
 }, {
   name: '穿线',
   id: 21
+}, {
+  name: '缝纫',
+  id: 22
 }]
 // 菜单栏在做中的页面
 const menu = [{

@@ -69,7 +69,7 @@ let router = new Router({
     }, {
       path: 'priceListCreate',
       name: 'priceListCreate',
-      component: () => import('./views/product/priceListCreate1.vue')
+      component: () => import('./views/product/priceListCreate.vue')
     }, {
       path: 'priceListDetail/:id',
       name: 'priceListDetail',
