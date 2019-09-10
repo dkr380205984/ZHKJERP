@@ -162,7 +162,7 @@
         </div>
         <div class="lineCtn">
           <div class="inputCtn product oneLine">
-            <span class="label must">尺码颜色：</span>
+            <span class="label">尺码颜色：</span>
             <div class="twoCol"
               v-for="(itemPro,indexPro) in productArr"
               :key="indexPro">
@@ -191,7 +191,7 @@
         <div class="lineCtn">
           <div class="inputCtn oneLine">
             <span class="label">产品需求：</span>
-            <el-input placeholder="请输入产品需求"
+            <el-input placeholder="请输入产品需求，如品名、尺寸、针型、克重、配色、成分等"
               v-model="product_need"
               style="width:668px"
               type="textarea"
@@ -1284,6 +1284,10 @@ export default {
       this.yarnList = res[5].data.data
       this.otherMaterialList = res[6].data.data
       this.loading = false
+      if (this.$route.fullPath.split('?')[1]) {
+        this.seachProduct.find(key => key.id === this.$route.fullPath.split('?')[1]).checked = true
+        this.getProduct(true, this.$route.fullPath.split('?')[1])
+      }
     })
     // 给产品列表做优化
     this.$refs.scrollBox.addEventListener('scroll', (ev) => {

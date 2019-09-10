@@ -1,0 +1,483 @@
+<template>
+  <div id="sampleCreate"
+    v-loading="loading">
+    <div class="head">
+      <h2>添加样品</h2>
+    </div>
+    <div class="body">
+      <div class="inputCtn">
+        <span class="label">样品编号:</span>
+        <div class="content blue">{{productCode}}</div>
+      </div>
+      <div class="inputCtn">
+        <span class="label">样品名称:</span>
+        <div class="content">
+          <el-input v-model="sampleName"
+            clearable
+            placeholder="请输入样品名称"
+            class="inputItem"></el-input>
+        </div>
+      </div>
+      <div class="inputCtn">
+        <span class="label must">样品分类:</span>
+        <div class="content">
+          <el-cascader :options="treeData"
+            expand-trigger="hover"
+            v-model="types"
+            class="inputItem"
+            clearable
+            placeholder="请选择产品品类">
+          </el-cascader>
+        </div>
+        <div class="tooltips"
+          style="bottom:-20px"
+          v-show="warning">
+          <i class="el-icon-warning"></i>
+          警告：系统暂时不支持没有三级分类的产品，请联系管理员完善产品信息
+        </div>
+      </div>
+      <div class="inputCtn">
+        <span class="label must">样品花型:</span>
+        <el-select clearable
+          v-model="flower"
+          class="inputItem content"
+          placeholder="请选择花型">
+          <el-option v-for="item in flowerArr"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+          </el-option>
+        </el-select>
+      </div>
+      <div class="inputCtn">
+        <span class="label">样品成分:</span>
+        <div v-for="(item,key) in ingredient"
+          :key="key"
+          class="content">
+          <el-select v-model="item.ingredient_name"
+            clearable
+            class="smallInputItem"
+            placeholder="选择成分">
+            <el-option v-for="item in ingredientArr"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
+          <el-input class="smallInputItem"
+            placeholder="输入比例"
+            v-model="item.ingredient_value">
+            <span class="unit"
+              slot="append">%</span>
+          </el-input>
+          <div class="addBtn"
+            @click="addIngredient"
+            v-if="key === 0">添加</div>
+          <div class="deleteBtn"
+            @click="deleteIngredient(key)"
+            v-else>删除</div>
+        </div>
+        <div class="tooltips"
+          style="bottom:-20px;"
+          v-show="showError">
+          <i class="el-icon-warning"></i>
+          产品成分比例总和不等于100%，请检查比例
+        </div>
+      </div>
+      <div class="inputCtn">
+        <span class="label must">样品规格:</span>
+        <div class="content col"
+          v-for="(item,key) in size"
+          :key="key">
+          <div class="column">
+            <el-select clearable
+              v-model="item.size"
+              class="smallInputItem"
+              placeholder="选择规格">
+              <el-option v-for="item in sizeArr"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
+            <el-input placeholder="输入克重"
+              class="smallInputItem"
+              v-model="item.weight"
+              :key="item.id">
+              <span slot="append"
+                class="unit">克</span>
+            </el-input>
+            <div class="addBtn"
+              @click="addSize"
+              v-if="key === 0">添加</div>
+            <div class="deleteBtn"
+              v-else
+              @click="deleteSize(key)">删除</div>
+          </div>
+          <div class="column">
+            <el-input class="inputItem"
+              placeholder="输入尺寸信息"
+              v-model="item.desc">
+            </el-input>
+          </div>
+        </div>
+      </div>
+      <div class="inputCtn">
+        <span class="label">样品配色:</span>
+        <div class="content"
+          v-for="(item,key) in color"
+          :key="key">
+          <!-- remote
+            :remote-method='remoteColor' -->
+          <el-select clearable
+            filterable
+            class="inputItem"
+            v-model="item.color"
+            placeholder="请选择配色">
+            <el-option v-for="item in colorArr"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+              <div class="bgBlock"
+                :style="{'background':item.color_code}"></div>
+              <div class="desc">{{item.name}}</div>
+            </el-option>
+          </el-select>
+          <div class="addBtn"
+            @click="addColor"
+            v-if="key === 0">添加</div>
+          <div class="deleteBtn"
+            @click="deleteColor(key)"
+            v-else>删除</div>
+        </div>
+      </div>
+      <div class="inputCtn">
+        <span class="label">样品图片:</span>
+        <div class="content">
+          <el-upload class="upload-demo"
+            action="http://upload.qiniup.com/"
+            accept="image/jpeg,image/gif,image/png,image/bmp"
+            :before-upload="beforeAvatarUpload"
+            :file-list="fileArr"
+            :data="postData"
+            ref="uploada"
+            list-type="picture">
+            <el-button size="small"
+              type="primary">点击上传</el-button>
+            <div slot="tip"
+              class="el-upload__tip">只能上传jpg/png图片文件，且不超过10M</div>
+          </el-upload>
+        </div>
+      </div>
+      <div class="inputCtn">
+        <span class="label">样品描述:</span>
+        <div class="content">
+          <el-input class="inputItem autoHeight"
+            type="textarea"
+            :rows="6"
+            placeholder="请输入描述内容..."
+            v-model="textarea">
+          </el-input>
+        </div>
+      </div>
+      <div class="btnCtn">
+        <div class="cancleBtn"
+          @click="clearAll">清空</div>
+        <div class="okBtn"
+          @click="saveAll">保存</div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { letterArr } from '@/assets/js/dictionary.js'
+import { productTppeList, flowerList, ingredientList, colorList, getToken, saveProduct } from '@/assets/js/api.js'
+export default {
+  data () {
+    return {
+      loading: true,
+      product_code: ['00', 'Y', 'X', 'X', 'X', '00'],
+      sampleName: '',
+      treeData: [],
+      types: [],
+      warning: false,
+      flowerArr: [],
+      flower: '',
+      ingredient: [{ ingredient_name: '', ingredient_value: '' }],
+      ingredientArr: [],
+      showError: false,
+      size: [{ size: '', weight: '', desc: '' }],
+      sizeArr: [{
+        id: -1,
+        name: '均码'
+      }],
+      color: [{ color: '' }],
+      colorArr: [],
+      // nopantongColorArr: [],
+      textarea: '',
+      postData: { token: '' },
+      fileArr: []
+    }
+  },
+  created () {
+    this.product_code[0] = new Date().getFullYear().toString().substring(2, 4)
+    Promise.all([
+      productTppeList({
+        company_id: window.sessionStorage.getItem('company_id')
+      }),
+      flowerList({
+        company_id: window.sessionStorage.getItem('company_id')
+      }),
+      ingredientList({
+        company_id: window.sessionStorage.getItem('company_id')
+      }),
+      colorList({
+        company_id: window.sessionStorage.getItem('company_id')
+      }),
+      getToken()
+    ]).then(res => {
+      console.log(res[0].data.data)
+      this.treeData = res[0].data.data.map((item) => {
+        return {
+          value: item.id,
+          label: item.name,
+          sizeArr: item.sizeArr,
+          child_size: item.child_size,
+          children: item.child.length === 0 ? null : item.child.map((item) => {
+            return {
+              value: item.id,
+              label: item.name,
+              children: item.child.length === 0 ? null : item.child.map((item) => {
+                return {
+                  value: item.id,
+                  label: item.name
+                }
+              })
+            }
+          })
+        }
+      })
+      this.flowerArr = res[1].data.data
+      this.ingredientArr = res[2].data.data
+      this.colorArr = res[3].data.data
+      // this.nopantongColorArr = res[3].data.data
+      this.postData.token = res[4].data.data
+      this.loading = false
+    })
+  },
+  watch: {
+    types (newVal) {
+      this.product_code[2] = 'X'
+      this.product_code[3] = 'X'
+      this.product_code[4] = 'X'
+      if (newVal.length !== 0) {
+        const obj = this.treeData.find((item) => item.value === newVal[0])
+        this.sizeArr = obj.child_size
+        this.child_size = obj.sizeArr
+      }
+      this.treeData.forEach((item, index) => {
+        if (item.value === newVal[0]) {
+          this.$set(this.product_code, 2, letterArr[index])
+        }
+        if (item.children) {
+          item.children.forEach((item2, index2) => {
+            if (item2.value === newVal[1]) {
+              this.$set(this.product_code, 3, letterArr[index2])
+            }
+            if (item2.children) {
+              item2.children.forEach((item3, index3) => {
+                if (item3.value === newVal[2]) {
+                  this.$set(this.product_code, 4, letterArr[index3])
+                }
+              })
+            }
+          })
+        }
+      })
+      if (!newVal[1] || !newVal[2]) {
+        this.warning = true
+      } else {
+        this.warning = false
+      }
+    },
+    flower (newVal) {
+      this.flowerArr.forEach((item, index) => {
+        if (item.id === newVal) {
+          let code = index + 1
+          if (code < 10) {
+            code = '0' + code
+          }
+          this.$set(this.product_code, 5, code)
+        }
+      })
+    },
+    ingredient: {
+      deep: true,
+      handler (newVal) {
+        let total = 0
+        newVal.forEach(item => {
+          total += Number(item.ingredient_value ? item.ingredient_value : 0)
+        })
+        if (total === 100) {
+          this.showError = false
+        } else {
+          this.showError = true
+        }
+      }
+    }
+  },
+  computed: {
+    productCode () {
+      return this.product_code.join('')
+    }
+  },
+  methods: {
+    // 潘通色号
+    // remoteColor (newVal) {
+    //   console.log(newVal)
+    //   pantongList({
+    //     keyword: newVal
+    //   }).then((res) => {
+    //     if (newVal) {
+    //       this.colorArr = this.nopantongColorArr.filter((item) => {
+    //         return item.name.indexOf(newVal) !== -1
+    //       }).concat(res.data.data)
+    //     } else {
+    //       this.colorArr = this.nopantongColorArr
+    //     }
+    //   })
+    // },
+    beforeAvatarUpload: function (file) {
+      let fileName = file.name.lastIndexOf('.')// 取到文件名开始到最后一个点的长度
+      let fileNameLength = file.name.length// 取到文件名长度
+      let fileFormat = file.name.substring(fileName + 1, fileNameLength)// 截
+      this.postData.key = Date.parse(new Date()) + '.' + fileFormat
+      const isJPG = file.type === 'image/jpeg'
+      const isPNG = file.type === 'image/png'
+      const isLt2M = file.size / 1024 / 1024 < 6
+      // const isReapeat = this.fileArr.find((item) => {
+      //   return item.key === file.name
+      // })
+      if (!isJPG && !isPNG) {
+        this.$message.error('图片只能是 JPG/PNG 格式!')
+        return false
+      }
+      if (!isLt2M) {
+        this.$message.error('图片大小不能超过 6MB!')
+        return false
+      }
+      // if (isReapeat) {
+      //   this.$message.error('不能重复上传图片')
+      //   return false
+      // }
+    },
+    deleteIngredient (index) {
+      this.ingredient.splice(index, 1)
+    },
+    addIngredient () {
+      this.ingredient.push({ ingredient_name: '', ingredient_value: '' })
+    },
+    addSize () {
+      this.size.push({ size: '', weight: '', desc: '' })
+    },
+    deleteSize (index) {
+      this.size.splice(index, 1)
+    },
+    addColor () {
+      this.color.push({ color: '' })
+    },
+    deleteColor (index) {
+      this.color.splice(index, 1)
+    },
+    clearAll () {
+
+    },
+    saveAll () {
+      let flag = true
+      if (this.types.length <= 0) {
+        this.$message.error('请选择样品分类')
+        flag = false
+        return
+      }
+      if (!this.flower) {
+        this.$message.error('请选择样品花型')
+        flag = false
+        return
+      }
+      this.size.forEach(item => {
+        if (!item.size) {
+          this.$message.error('请将样品规格填写完整')
+          flag = false
+        }
+      })
+      const imgArr = this.$refs.uploada.uploadFiles.map((item) => { return 'http://zhihui.tlkrzf.com/' + item.response.key })
+      let data = {
+        product_code: this.product_code.join(''),
+        company_id: window.sessionStorage.getItem('company_id'),
+        category_id: this.types[0],
+        type_id: this.types[1],
+        style_id: this.types[2],
+        type: 2,
+        flower_id: this.flower,
+        description: this.textarea,
+        user_id: window.sessionStorage.getItem('user_id'),
+        img: imgArr,
+        color: this.color.map(item => {
+          return item.color
+        }),
+        sample_size: JSON.stringify(this.size),
+        sample_title: this.sampleName,
+        materials: this.ingredient,
+        size: null
+      }
+      if (flag) {
+        saveProduct(data).then(res => {
+          console.log(res)
+        })
+      }
+      console.log(data)
+    }
+  }
+}
+</script>
+
+<style lang="less" scoped>
+@import "~@/assets/css/sampleCreate.less";
+</style>
+<style lang="less">
+#sampleCreate {
+  .el-input {
+    width: 100%;
+    height: 100%;
+  }
+  .el-input-group__append {
+    padding: 0;
+    .unit {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 38px;
+      height: 100%;
+    }
+  }
+}
+// .el-cascader-menu {
+//   font-size: 14px;
+//   color: #666;
+//   font-family: "systemfont";
+//   font-weight: 300;
+// }
+// .el-input-group--append .el-select .el-input.is-focus .el-input__inner,
+// .el-input-group--prepend .el-select .el-input.is-focus .el-input__inner {
+//   border: 0 !important;
+//   &:hover {
+//     border: 0 !important;
+//     border-color: transparent !important;
+//   }
+//   &:focus {
+//     border: 0 !important;
+//     border-color: transparent !important;
+//   }
+// }
+</style>

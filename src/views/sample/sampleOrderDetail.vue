@@ -17,17 +17,18 @@
           <div class="keyBtn">
             <!-- <span class="btns">确认完成</span> -->
             <el-dropdown size="medium"
-              @click="order_info.status===0?orderStatus(1):''"
-              @command="orderStatus"
+              @command="showMessage"
               split-button
               type="primary">
-              {{orderStateOpr}}
+              {{'操作'}}
               <el-dropdown-menu slot="dropdown">
                 <!-- <el-dropdown-item>订单异常</el-dropdown-item> -->
                 <el-dropdown-item v-show="order_info.status!==2"
-                  command="8">取消订单</el-dropdown-item>
-                <el-dropdown-item v-show="order_info.status===2"
-                  command="9">物料产品入库</el-dropdown-item>
+                  command="ok">客户确认</el-dropdown-item>
+                <el-dropdown-item v-show="order_info.status!==2"
+                  command="change">修改样单</el-dropdown-item>
+                <el-dropdown-item v-show="order_info.status!==2"
+                  command="cancle">样单取消</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
@@ -47,10 +48,6 @@
                 </el-tooltip>
               </span>
             </div>
-            <div class="labelInfo">
-              <span class="label">订单金额</span>
-              <span class="info">{{moneyCmp}}</span>
-            </div>
           </div>
         </div>
         <div class="lineCtn">
@@ -63,28 +60,18 @@
             <span class="content">{{order_info.client_name}}</span>
           </div>
           <div class="inputCtn small">
-            <span class="label">汇率:</span>
-            <span class="content">100{{order_info.account_unit}} = {{order_info.exchange_rate}}元</span>
+            <span class="label">联系人:</span>
+            <span class="content">{{order_info.contacts}}</span>
           </div>
         </div>
         <div class="lineCtn">
           <div class="inputCtn small">
-            <span class="label">下单日期:</span>
-            <span class="content">{{order_info.order_time}}</span>
-          </div>
-          <div class="inputCtn small">
-            <span class="label">联系人:</span>
-            <span class="content">{{order_info.contacts}}</span>
+            <span class="label">汇率:</span>
+            <span class="content">100{{order_info.account_unit}} = {{order_info.exchange_rate}}元</span>
           </div>
           <div class="inputCtn small">
             <span class="label">税率:</span>
             <span class="content">{{order_info.tax_rate}}%</span>
-          </div>
-        </div>
-        <div class="lineCtn">
-          <div class="inputCtn small">
-            <span class="label">备注信息:</span>
-            <span class="content">{{order_info.remark?order_info.remark:'暂无信息'}}</span>
           </div>
         </div>
         <div class="lineCtn"
@@ -102,6 +89,56 @@
                   style="margin-right:5px"></i>{{item.replace('http://zhihui.tlkrzf.com/', '')}}
               </a>
             </span>
+          </div>
+        </div>
+        <div class="lineCtn sampleCtn">
+          <div class="catBtn">
+            <span class="active">三次打样</span>
+            <span>二次打样</span>
+            <span>一次打样</span>
+          </div>
+          <div class="applyProcess">
+            <div class="title">申请流程</div>
+            <div class="info row">
+              <div class="item col"
+                v-for="item in 4"
+                :key="item">
+                <div class="borderCtn">
+                  <div class="leftBorder"></div>
+                  <div class="circle"></div>
+                  <div class="border"></div>
+                </div>
+                <span>提交样单修改申请</span>
+                <span>王经理</span>
+                <span>2016-12-12 12:32</span>
+              </div>
+            </div>
+          </div>
+          <div class="applyInfo"
+            style="margin-top:33px;">
+            <div class="title">打样信息</div>
+            <div class="info col">
+              <div class="item-info">
+                <div class="items">
+                  <span class="label">客户确认:</span>
+                  <span :class="{'content':true,'success':true,'error':true,'running':true}"></span>
+                </div>
+                <div class="items">
+                  <span class="label">样单类型:</span>
+                  <span class="content"></span>
+                </div>
+              </div>
+              <div class="item-info">
+                <div class="items">
+                  <span class="label">下单日期:</span>
+                  <span class="content"></span>
+                </div>
+                <div class="items">
+                  <span class="label">备注:</span>
+                  <span class="content"></span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1075,6 +1112,224 @@
         </div>
       </div>
     </div>
+    <!-- 弹窗 -->
+    <div class="message"
+      v-if="showMessageBox">
+      <div class="messageBox">
+        <div :class="{'title':true,'success':handleType === 'ok','change': handleType === 'change','cancle' : handleType === 'cancle'}">{{handleType === 'ok' ? '客户确认样' : (handleType === 'change' ? '客户修改样' : '样单取消')}}</div>
+        <!-- <div class="item"
+          style="margin-top:27px;">
+          <span class="label">产品编号:</span>
+          <div class="content blue">{{sample_code|filterCode}}</div>
+        </div>
+        <div class="item">
+          <span class="label">样品编号:</span>
+          <div class="content">
+            <el-input v-model="sample_code"
+              class="input_item"
+              placeholder="样品编号"
+              disabled></el-input>
+          </div>
+        </div>
+        <div class="item">
+          <span class="label">选择工艺:</span>
+          <div class="content">
+            <el-select v-model="isCategory"
+              class="input_item"
+              placeholder="请选择工艺版本">
+              <el-option v-for="item in []"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </div>
+        </div>
+        <div class="item"
+          style="margin-bottom:27px;">
+          <span class="label">选择配料:</span>
+          <div class="content">
+            <el-select v-model="isCategory"
+              class="input_item"
+              placeholder="请选择工艺版本">
+              <el-option v-for="item in []"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </div>
+        </div> -->
+        <!-- 取消样单弹窗 -->
+        <template v-if="handleType !== 'cancle'">
+          <div class="item"
+            v-if="handleType === 'ok'"
+            style="margin-top:27px;">
+            <span class="label">是否打样:</span>
+            <div class="content">
+              <el-radio-group v-model="submitInfo.isSample"
+                class="elInput">
+                <el-radio :label="true">是</el-radio>
+                <el-radio :label="false">否</el-radio>
+              </el-radio-group>
+            </div>
+          </div>
+          <template v-if="submitInfo.isSample">
+            <div class="item"
+              :style="{'margin-top':handleType === 'change' ? '27px' : false}">
+              <span class="label">样单类型:</span>
+              <div class="content">
+                <el-select v-model="submitInfo.sampleType"
+                  class="input_item elInput"
+                  placeholder="请选择样单类型">
+                  <el-option v-for="item in []"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </div>
+            </div>
+            <div class="item">
+              <span class="label">打样样品:</span>
+              <div class="content">
+                <el-select v-model="submitInfo.sample"
+                  class="input_item elInput marginRight"
+                  placeholder="请选择打样样品">
+                  <el-option v-for="item in []"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+                <el-input v-model="submitInfo.number"
+                  class="elInput"
+                  placeholder="打样数量">
+                  <template slot="append">条</template>
+                </el-input>
+              </div>
+            </div>
+            <div class="item">
+              <div class="content">
+                <el-input v-model="submitInfo.sampleIdea"
+                  class="elInput"
+                  placeholder="请输入该样品修改意见"></el-input>
+              </div>
+            </div>
+            <div class="item">
+              <span class="label">客户付费:</span>
+              <div class="content">
+                <el-switch v-model="submitInfo.isCustomerPay"
+                  class="elInput"
+                  active-text="是"
+                  inactive-text="否">
+                </el-switch>
+              </div>
+            </div>
+            <div class="item"
+              v-if="submitInfo.isCustomerPay">
+              <div class="content">
+                <el-input v-model="submitInfo.price"
+                  class="elInput"
+                  placeholder="输入数量">
+                  <template slot="append">元/条</template>
+                </el-input>
+                <el-input v-model="submitInfo.totalNum"
+                  class="elInput"
+                  placeholder="输入数量">
+                  <template slot="append">条</template>
+                </el-input>
+              </div>
+            </div>
+            <div class="item"
+              v-if="submitInfo.isCustomerPay">
+              <div class="content">
+                <el-input placeholder="总价"
+                  class="elInput"
+                  disabled
+                  v-model="submitInfo.total_price">
+                  <template slot="append">元</template>
+                </el-input>
+              </div>
+            </div>
+          </template>
+          <template v-else>
+            <div class="item">
+              <span class="label">建立产品:</span>
+              <div class="content">
+                <el-select v-model="submitInfo.sample_odd"
+                  class="elInput"
+                  placeholder="请选择样品添加至产品库">
+                  <el-option v-for="item in []"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </div>
+            </div>
+            <div class="item">
+              <div class="content">
+                <el-select v-model="submitInfo.design_odd"
+                  class="elInput marginRight"
+                  placeholder="请选择样品工艺单">
+                  <el-option v-for="item in []"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+                <el-select v-model="submitInfo.plan_odd"
+                  class="elInput"
+                  placeholder="请选择样品配料单">
+                  <el-option v-for="item in []"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </div>
+            </div>
+          </template>
+        </template>
+        <template v-else>
+          <div class="item"
+            style="margin-top:27px">
+            <span class="label">物料入库:</span>
+            <div class="content">
+              <el-radio-group v-model="submitInfo.isStockForMaterial"
+                class="elInput">
+                <el-radio :label="true">是</el-radio>
+                <el-radio :label="false">否</el-radio>
+              </el-radio-group>
+            </div>
+          </div>
+          <div class="item"
+            v-for="(item,key) in submitInfo.material_info"
+            :key="key">
+            <div class="content">
+              <el-input placeholder="原料"
+                class="elInput marginRight"
+                disabled
+                v-model="item.name"></el-input>
+              <el-input placeholder="克重/数量"
+                class="elInput"
+                disabled
+                v-model="item.number">
+                <template slot="append">kg</template>
+              </el-input>
+            </div>
+          </div>
+        </template>
+        <div class="footer">
+          <span class="cancel"
+            @click="showMessageBox = false">取消</span>
+          <span class="ok">确定</span>
+        </div>
+        <span class="close el-icon-close"
+          @click="showMessageBox = false"></span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -1131,10 +1386,37 @@ export default {
       outStockList: [], // 出库概述
       productPriceList: [], // 产品价格信息
       storeList: [], // 收发概述
-      packOrderList: []// 包装订购
+      packOrderList: [], // 包装订购
+      showMessageBox: false,
+      handleType: 'ok',
+      submitInfo: {
+        isSample: true,
+        sampleType: '',
+        sample: '',
+        number: '',
+        sampleIdea: '',
+        isCustomerPay: false,
+        price: '',
+        totalNum: '',
+        total_price: '',
+        sample_odd: '',
+        design_odd: '',
+        plan_odd: '',
+        isStockForMaterial: true,
+        material_info: [
+          {
+            name: '36支单股晴纶',
+            number: 40
+          }
+        ]
+      }
     }
   },
   methods: {
+    showMessage (type) {
+      this.showMessageBox = true
+      this.handleType = type
+    },
     // 日期格式化
     getTime (date) {
       let fmt = 'yyyy-MM-dd'
@@ -1319,7 +1601,7 @@ export default {
     openWin (cmd) {
       const orderId = this.$route.params.id
       let urlJson = {
-        '原料详情': '/index/rawMaterialOrderDetail/' + orderId + '/0',
+        '原料详��': '/index/rawMaterialOrderDetail/' + orderId + '/0',
         '辅料详情': '/index/rawMaterialOrderDetail/' + orderId + '/1',
         '原料出入库': '/index/rawMaterialStockDetail/' + orderId + '/0',
         '辅料出入库': '/index/rawMaterialStockDetail/' + orderId + '/1',
@@ -1431,10 +1713,10 @@ export default {
       }
     },
     // 订单状态操作
-    orderStateOpr () {
-      const state = ['确认完成', '已完成', '已取消']
-      return state[this.order_info.status]
-    },
+    // orderStateOpr () {
+    //   const state = ['确认完成', '已完成', '已取消']
+    //   return state[this.order_info.status]
+    // },
     // (今天 + 1) - 下单日期
     useTime () {
       if (this.timeAxis.length > 0) {
@@ -2088,6 +2370,163 @@ export default {
         }
       }
     }
+  }
+  .sampleCtn {
+    display: flex;
+    flex-direction: column;
+    .catBtn {
+      width: 100%;
+      border-bottom: 1px solid rgba(233, 233, 233, 1);
+      display: flex;
+      justify-content: flex-start;
+      margin-bottom: 37px;
+      height: 32px;
+      & > span {
+        margin-right: 2px;
+        width: 88px;
+        height: 32px;
+        text-align: center;
+        line-height: 32px;
+        box-sizing: border-box;
+        cursor: pointer;
+        border: 1px solid rgba(233, 233, 233, 1);
+        border-bottom: none;
+        background: rgba(247, 247, 247, 1);
+        border-radius: 4px 4px 0px 0px;
+        font-size: 14px;
+        &:hover,
+        &.active {
+          color: #1a95ff;
+          background: #fff;
+          height: 33px;
+        }
+      }
+    }
+    .applyProcess,
+    .applyInfo {
+      width: 1260px;
+      border: 1px solid #ddd;
+      border-radius: 3px 3px 0px 0px;
+      .title {
+        border-bottom: 1px solid #ddd;
+        line-height: 44px;
+        box-sizing: border-box;
+        background: rgba(250, 250, 250, 1);
+        padding-left: 46px;
+        color: rgba(0, 0, 0, 0.85);
+        font-weight: 500;
+        font-size: 16px;
+      }
+      .info {
+        padding: 40px 96px 36px 83px;
+        display: flex;
+        .item-info {
+          display: flex;
+          .items {
+            flex: 1;
+            padding-left: 6em;
+            position: relative;
+            min-height: 40px;
+            .label {
+              position: absolute;
+              display: inline-block;
+              width: 6em;
+              height: 40px;
+              line-height: 40px;
+              top: 0;
+              left: 0;
+            }
+            .success {
+              color: #67c23a;
+            }
+            .error {
+              color: #ee3f59;
+            }
+            .running {
+              color: #1a95ff;
+            }
+          }
+        }
+        .item {
+          display: flex;
+          flex: 1;
+          &:first-child {
+            .leftBorder {
+              background: transparent !important;
+            }
+          }
+          &:last-child {
+            flex: none;
+            .border {
+              background: transparent !important;
+            }
+          }
+          .borderCtn {
+            width: 100%;
+            position: static;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            .leftBorder {
+              width: 28px;
+              height: 2px;
+              background: #1a95ff;
+            }
+            .circle {
+              width: 10px;
+              height: 10px;
+              background: #1a95ff;
+              border-radius: 50%;
+            }
+            .border {
+              width: 100%;
+              height: 2px;
+              background: #1a95ff;
+            }
+          }
+          & > span {
+            font-size: 12px;
+            margin-top: 14px;
+            &:first-of-type {
+              font-size: 14px;
+              font-weight: 500;
+            }
+            &:last-child {
+              margin-top: 8px;
+            }
+          }
+        }
+      }
+      .row {
+        justify-content: space-between;
+      }
+      .col {
+        flex-direction: column;
+        justify-content: center;
+      }
+    }
+  }
+  .item {
+    .content {
+      width: 100%;
+      display: flex;
+      .elInput {
+        flex: 1;
+        &.marginRight {
+          margin-right: 8px;
+        }
+      }
+    }
+  }
+  .success {
+    color: #67c23a;
+  }
+  .change {
+    color: #e6a23c;
+  }
+  .cancle {
+    color: #ee3f59;
   }
   .el-carousel__arrow {
     background: #1a95ff;

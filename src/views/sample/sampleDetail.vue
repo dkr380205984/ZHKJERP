@@ -1,65 +1,69 @@
 <template>
-  <div id="productDetail"
+  <div id="sampleDetail"
     v-loading="loading">
     <div class="head">
-      <h2>产品详情</h2>
+      <h2>样品详情</h2>
     </div>
     <div class="body">
+      <div class="transFromProBtn"
+        @click="showMessageBox = true">添加到产品</div>
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">产品编号:</span>
+          <span class="label">样品编号:</span>
           <span class="content blue">{{productDetail.product_code}}</span>
+        </div>
+        <div class="inputCtn">
+          <span class="label">样品名称:</span>
+          <span class="content">{{productDetail.sample_title}}</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">创建日期:</span>
-          <span class="content gray">{{productDetail.create_time}}</span>
+          <span class="content">{{productDetail.create_time}}</span>
         </div>
         <div class="inputCtn">
           <span class="label">创建人:</span>
-          <span class="content gray">{{productDetail.user_name}}</span>
+          <span class="content">{{productDetail.user_name}}</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">产品品类:</span>
+          <span class="label">样品品类:</span>
           <span class="content">{{productDetail|filterType}}</span>
         </div>
         <div class="inputCtn">
-          <span class="label">产品花型:</span>
+          <span class="label">样品花型:</span>
           <span class="content">{{productDetail.flower_id}}</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">产品克重:</span>
+          <span class="label">样品克重:</span>
           <span class="content">{{productDetail.weight}}克</span>
         </div>
         <div class="inputCtn">
-          <span class="label">产品成分:</span>
+          <span class="label">样品成分:</span>
           <span class="content">{{productDetail.materials|filterMaterials}}</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">产品规格:</span>
+          <span class="label">样品规格:</span>
           <span class="content contentLine"
-            v-for="(item,key) in productDetail.size"
+            v-for="(item,key) in productDetail.sample_size"
             :key="key">
-            <span class="size">{{key}}</span>
+            <span class="size">{{item.size}}</span>
             <span class="sizeDetail">
-              <span class="sizeOnce"
-                v-for="itemChild in item"
-                :key="itemChild.id">{{itemChild.size_name + '：' + itemChild.size_value + 'cm'}}</span>
-              <span class="sizeOnce">{{ '克重' + '：'+item[0].weight + 'g'}}</span>
+              <span class="sizeOnce">{{item.desc + 'cm'}}</span>
+              <span class="sizeOnce">{{ '克重' + '：'+item.weight + 'g'}}</span>
             </span>
           </span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">产品配色:</span>
+          <span class="label">样品配色:</span>
           <span class="content contentFlex"
             v-for="(item,index) in productDetail.color"
             :key="index">
@@ -72,7 +76,13 @@
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">产品图片:</span>
+          <span class="label">样品描述:</span>
+          <span class="content">{{productDetail.description ? productDetail.description : '暂无样品描述'}}</span>
+        </div>
+      </div>
+      <div class="lineCtn">
+        <div class="inputCtn">
+          <span class="label">样品图片:</span>
           <span class="content">
             <img v-if="productDetail.img.length === 0"
               class="img"
@@ -80,68 +90,9 @@
             <img v-for="(item,index) in productDetail.img"
               :key="index"
               class="img"
-              :src="item.img_url"
+              :src="item.image_url"
               :onerror="defaultImg" />
           </span>
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">产品标签:</span>
-          <span class="content row">
-            <span class="printBtn"
-              @click="showMessageBox = true">打印</span>
-            <span class="printBtn hover">
-              预览
-              <div class="printInfo">
-                <div class="items">
-                  <span class="labels">编号:</span>
-                  <div class="contents">{{productDetail.product_code}}</div>
-                </div>
-                <div class="items">
-                  <span class="labels">品类:</span>
-                  <div class="contents">{{productDetail|filterType}}{{productDetail.flower_id ? '/' + productDetail.flower_id : ''}}</div>
-                </div>
-                <div class="items">
-                  <span class="labels">规格:</span>
-                  <div class="contents col"
-                    style="align-items:flex-start">
-                    <span style="white-space:nowrap;">{{selectSize}}</span>
-                    <span style="word-break: break-word;">({{productDetail.size[selectSize]|filterSize}})cm</span>
-                  </div>
-                </div>
-                <div class="items">
-                  <span class="labels">克重:</span>
-                  <div class="contents">{{productDetail.size[selectSize] ?  productDetail.size[selectSize][0].weight : ''}}g</div>
-                </div>
-                <div class="items">
-                  <span class="labels">颜色:</span>
-                  <div class="contents">{{selectColor}}</div>
-                </div>
-                <div class="items">
-                  <span class="labels">描述:</span>
-                  <div class="contents">
-                    <span>{{productDetail.description ? productDetail.description : '暂无'}}</span>
-                  </div>
-                </div>
-                <div class="items"
-                  style="margin-top:30px;">
-                  <div class="contents col">
-                    <img :src="qrCodeUrl"
-                      class="qrCode"
-                      alt="">
-                    <span class="littleBlack">扫码查看更多</span>
-                  </div>
-                </div>
-              </div>
-            </span>
-          </span>
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">产品描述:</span>
-          <span class="content">{{productDetail.description ? productDetail.description : '暂无产品描述'}}</span>
         </div>
       </div>
       <div class="lineCtn">
@@ -166,8 +117,7 @@
                   @click="open('/index/designFormDetail/' + productDetail.craft_info.id)">查看详情</span>
               </li>
               <li v-else>暂无相关工艺单</li>
-              <span class="addNewBtn"
-                v-show="!productDetail.craft_info">新增工艺单</span>
+              <span class="addNewBtn">新增工艺单</span>
             </ul>
           </div>
         </div>
@@ -213,25 +163,23 @@
                     @click="open('/index/productPlanDetail/' + productDetail.product_plan_info.id)">查看详情</span>
                 </span>
               </li>
-              <li v-else>暂无相关配料单</li>
-              <span class="addNewBtn"
-                v-show="!productDetail.has_plan"
-                @click="$router.push('/index/productPlanCreate/' + $route.params.id)">新增配料单</span>
+              <li v-else>暂无配料单</li>
+              <span class="addNewBtn">新增配料单</span>
             </ul>
           </div>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn paddingTB">
-          <span class="label">关联订单:</span>
+          <span class="label">关联样单:</span>
           <div class="content"
             style="width:100%">
             <ul class="tablesCtn"
               style="width:100%;padding-left:0;box-sizing:border-box;margin:0">
               <li class="material_info">
-                <span>订单编号</span>
+                <span>样单编号</span>
                 <span>订单公司</span>
-                <span>下单数量</span>
+                <span>打样数量</span>
                 <span>查看信息</span>
               </li>
               <li class="material_info"
@@ -247,9 +195,8 @@
                   </span>
                 </span>
               </li>
-              <li v-else>暂无相关订单</li>
-              <span class="addNewBtn"
-                @click="$router.push('/index/orderCreate?' + $route.params.id)">新增订单</span>
+              <li v-else>暂无相关样品订单</li>
+              <span class="addNewBtn">新增样单</span>
             </ul>
           </div>
         </div>
@@ -264,13 +211,13 @@
               <li class="material_info">
                 <span>报价单编号</span>
                 <span>外贸公司</span>
-                <span>产品报价</span>
+                <span>样品报价</span>
                 <span>查看信息</span>
               </li>
               <li class="material_info"
+                v-show="priceList.length>0"
                 v-for="(item,index) in priceList"
-                :key="index"
-                v-show="priceList.length>0">
+                :key="index">
                 <span>{{item.quotation_code}}</span>
                 <span>{{item.client_name}}</span>
                 <span>总价:{{item.total_price}}{{item.account_unit}}</span>
@@ -278,33 +225,25 @@
                   @click="open('/index/priceListDetail/' + item.id)">查看详情</span>
               </li>
               <li v-show="priceList.length === 0">暂无相关报价单</li>
-              <span class="addNewBtn"
-                @click="$router.push('/index/priceListCreate?' + $route.params.id)">新增报价单</span>
+              <span class="addNewBtn">新增报价单</span>
             </ul>
           </div>
         </div>
       </div>
-      <div class="lineCtn">
-        <div class="inputCtn paddingTB">
+      <div class="lineCtn"
+        v-show="false">
+        <div class="inputCtn">
           <span class="label">关联库存:</span>
           <div class="content"
             style="width:100%">
             <ul class="tablesCtn"
               style="width:100%;padding-left:0;box-sizing:border-box;margin:0">
               <li class="material_info">
-                <span>尺码/颜色</span>
-                <span>库存数量</span>
-                <span>查看信息</span>
-              </li>
-              <li class="material_info"
-                v-if="false">
+                <span>待计算</span>
                 <span>待计算</span>
                 <span>待计算</span>
                 <span>待计算</span>
               </li>
-              <li v-else>暂无库存信息</li>
-              <span class="addNewBtn"
-                v-if="!false">新增库存</span>
             </ul>
           </div>
         </div>
@@ -329,37 +268,54 @@
     <div class="message"
       v-if="showMessageBox">
       <div class="messageBox">
-        <div class="title">打印标签</div>
+        <div class="title">新建产品</div>
         <div class="item"
           style="margin-top:27px;">
           <span class="label">产品编号:</span>
-          <div class="content blue">{{productDetail.product_code}}</div>
+          <div class="content blue">{{sample_code|filterCode}}</div>
         </div>
         <div class="item">
-          <span class="label">产品规格:</span>
+          <span class="label">样品编号:</span>
           <div class="content">
-            <el-radio-group v-model="selectSize">
-              <el-radio v-for="(item,key) in productDetail.size"
-                :label="key"
-                :key="key">{{key}}</el-radio>
-            </el-radio-group>
+            <el-input v-model="sample_code"
+              class="input_item"
+              placeholder="样品编号"
+              disabled></el-input>
           </div>
         </div>
         <div class="item">
-          <span class="label">产品配色:</span>
+          <span class="label">选择工艺:</span>
           <div class="content">
-            <el-radio-group v-model="selectColor">
-              <el-radio v-for="(item,key) in productDetail.color"
-                :key="key"
-                :label="item.name">{{item.name}}</el-radio>
-            </el-radio-group>
+            <el-select v-model="isCategory"
+              class="input_item"
+              placeholder="请选择工艺版本">
+              <el-option v-for="item in []"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </div>
+        </div>
+        <div class="item"
+          style="margin-bottom:27px;">
+          <span class="label">选择配料:</span>
+          <div class="content">
+            <el-select v-model="isCategory"
+              class="input_item"
+              placeholder="请选择工艺版本">
+              <el-option v-for="item in []"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
           </div>
         </div>
         <div class="footer">
           <span class="cancel"
-            @click="showMessageBox = false">取消</span>
-          <span class="ok"
-            @click="print(selectSize,selectColor)">去打印</span>
+            @click="showMessageBox">取消</span>
+          <span class="ok">确定</span>
         </div>
         <span class="close el-icon-close"
           @click="showMessageBox = false"></span>
@@ -369,8 +325,7 @@
 </template>
 
 <script>
-import { porductOne, priceListDetail, productStockOne } from '@/assets/js/api.js'
-const QRCode = require('qrcode')
+import { porductOne, priceListDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -402,34 +357,25 @@ export default {
         order_list: []
 
       },
-      qrCodeUrl: '',
       showMessageBox: false,
-      selectSize: '',
-      selectColor: '',
-      loading: true
+      loading: true,
+      isCategory: '',
+      isProduct: ''
     }
   },
   filters: {
-    filterSize (sizeArr) {
-      if (sizeArr) {
-        return sizeArr.map(item => {
-          return item.size_value
-        }).join('*')
-      } else {
-        return ''
-      }
-      // return sizeArr[this.selectSize].map((item) => {
-      //   return item.size_value + 'cm'
-      // }).join('*')
+    // 拟定编号
+    filterCode (item) {
+      return item + '111'
     },
     // 类型合并
     filterType (item) {
       if (!item.type_name) {
         return item.category_info.product_category
       } else if (!item.style_name) {
-        return item.category_info.product_category + '/' + item.type_name
+        return item.category_info.product_category + ' / ' + item.type_name
       } else {
-        return item.category_info.product_category + '/' + item.type_name + '/' + item.style_name
+        return item.category_info.product_category + ' / ' + item.type_name + ' / ' + item.style_name
       }
     },
     filterMaterials (arr) {
@@ -441,27 +387,23 @@ export default {
     }
   },
   methods: {
-    // 打印产品标签
-    print (size, color) {
-      window.open('/tagPrint/' + this.$route.params.id + '/' + size + '/' + color)
-    },
     open (url) {
       window.open(url)
     },
     // 判断提示信息
     toolTips (product) {
       if (product.has_craft === 1) {
-        return '该产品已有工艺单信息'
+        return '该样品已有工艺单信息'
       }
       if (product.has_plan === 1) {
-        return '该产品已有配料单信息'
+        return '该样品已有配料单信息'
       }
       if (product.in_order === 1) {
-        return '该产品已有订单信息'
+        return '该样品已有订单信息'
       }
     }
   },
-  created () {
+  mounted () {
     this.loading = true
     porductOne({
       id: this.$route.params.id
@@ -469,8 +411,7 @@ export default {
       if (res.data.status) {
         console.log(res.data.data)
         this.productDetail = res.data.data
-        this.selectSize = Object.keys(res.data.data.size)[0]
-        this.selectColor = res.data.data.color[0].name
+        this.productDetail.sample_size = JSON.parse(this.productDetail.sample_size)
         // 计算配料单原料
         if (this.productDetail.has_plan === 1) {
           this.productDetail.product_plan_info.material_data.forEach((itemMat) => {
@@ -496,97 +437,18 @@ export default {
         this.loading = false
       }
     })
-    // productStockOne({
-    //   id: this.$route.params.id
-    // }).then(res => {
-
-    // })
-  },
-  mounted () {
-    QRCode.toDataURL(window.location.href, { errorCorrectionLevel: 'H' }, (err, url) => {
-      console.log(err)
-      this.qrCodeUrl = url
-    })
   }
 }
 </script>
 
 <style lang="less" scoped>
-#productDetail {
-  .row {
-    display: flex;
-    .printBtn {
-      width: 52px;
-      height: 26px;
-      border: 1px solid rgba(26, 148, 255, 1);
-      opacity: 1;
-      border-radius: 4px;
-      color: rgba(26, 148, 255, 1);
-      text-align: center;
-      line-height: 26px;
-      cursor: pointer;
-      margin-left: 10px;
-      margin: 7px;
-    }
-  }
-  .hover {
-    &:hover {
-      .printInfo {
-        display: flex;
-      }
-    }
-  }
-  .printInfo {
-    position: absolute;
-    top: 0;
-    right: 0;
-    transform: translate(100%, -30%);
-    width: 226px;
-    height: 340px;
-    background: #fff;
-    z-index: 99;
-    border-radius: 4px;
-    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
-    font-size: 12px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 36px;
-    box-sizing: border-box;
-    color: #666;
-    display: none;
-    .items {
-      width: 100%;
-      margin-bottom: 16px;
-      line-height: 1em;
-      min-height: 0;
-      display: flex;
-      justify-content: flex-start;
-      .labels {
-        margin-right: 1em;
-        position: static;
-        width: auto;
-        white-space: nowrap;
-      }
-      .contents {
-        text-align: left;
-        &.col {
-          width: 100%;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          .qrCode {
-            width: 58px;
-            height: 58px;
-          }
-          .littleBlack {
-            margin-top: 8px;
-            color: #c4c4c4;
-          }
-        }
-      }
-    }
+@import "~@/assets/css/sampleDetail.less";
+</style>
+<style lang="less">
+#sampleDetail {
+  .el-input,
+  .el-input__inner {
+    width: 100%;
   }
 }
-@import "~@/assets/css/productDetail.less";
 </style>

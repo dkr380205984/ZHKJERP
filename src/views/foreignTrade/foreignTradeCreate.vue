@@ -1,32 +1,53 @@
 <template>
   <div id="foreignTradeCreate">
     <div class="head">
-      <h2>添加合作公司</h2>
+      <h2>添加客户</h2>
     </div>
     <div class="body">
       <div class="inputCtn">
-        <span class="label must">公司名称:</span>
+        <span class="label must">客户名称:</span>
         <el-input class="elInput"
-          placeholder="请输入外贸公司名称"
+          placeholder="请输入客户名称"
           v-model="name"></el-input>
       </div>
       <div class="inputCtn">
-        <span class="label">公司简称:</span>
+        <span class="label">客户简称:</span>
         <el-input class="elInput"
-          placeholder="请输入外贸公司简称"
+          placeholder="请输入客户简称"
           v-model="abbreviation"></el-input>
       </div>
       <div class="inputCtn">
-        <span class="label must">公司类型:</span>
-        <el-select class="elInput"
+        <span class="label must">客户类型:</span>
+        <!-- <el-select class="elInput"
           multiple
-          placeholder="请选择公司类型"
+          placeholder="请选择客户类型"
           v-model="type">
           <el-option v-for="item in companyType"
             :key="item.value"
             :value="item.value"
             :label="item.name"></el-option>
-        </el-select>
+        </el-select> -->
+        <!-- <el-cascader v-model="type"
+          class="elInput"
+          placeholder="请选择客户类型"
+          :options="companyType"
+          expand-trigger="hover"
+          :multiple='true'></el-cascader> -->
+        <!-- <el-cascader :options="companyType"
+          :props="props"
+          collapse-tags
+          clearable></el-cascader> -->
+        <ele-multi-cascader :options="companyType"
+          class="elInput"
+          v-model="type"
+          placeholder="选择运营商"
+          @change="con(type)">
+        </ele-multi-cascader>
+        <!-- <el-cascader :options="companyType"
+          props.multiple=true
+          expandTrigger='hover'
+          multiple
+          clearable></el-cascader> -->
       </div>
       <div class="inputCtn">
         <span class="label must">人员管理:</span>
@@ -97,7 +118,7 @@
 </template>
 
 <script>
-import { companyType } from '@/assets/js/dictionary.js'
+import { companyTypes } from '@/assets/js/dictionary.js'
 import { clientAdd } from '@/assets/js/api.js'
 export default {
   data () {
@@ -111,11 +132,14 @@ export default {
       contactsName: '',
       contactsStation: '',
       contactsPhone: '',
-      companyType: companyType,
-      type: ''
+      companyType: companyTypes,
+      type: []
     }
   },
   methods: {
+    con (item) {
+      console.log(item)
+    },
     addContacts () {
       if (this.contactsName && this.contactsStation && this.contactsPhone) {
         this.contacts.push({
@@ -182,4 +206,9 @@ export default {
 
 <style lang="less" scoped>
 @import "~@/assets/css/foreignTradeCreate.less";
+</style>
+<style lang="less">
+.el-checkbox {
+  margin-right: 0 !important;
+}
 </style>

@@ -10,6 +10,14 @@ let router = new Router({
     path: '/',
     redirect: '/login'
   }, {
+    path: '/tagPrint/:id/:size/:color',
+    name: 'tagPrint',
+    component: () => import('./views/product/tagPrint.vue')
+  }, {
+    path: '/priceListTable/:id',
+    name: 'priceListTable',
+    component: () => import('./views/product/priceListTable.vue')
+  }, {
     path: '/rawMaterialProcessTable/:id/:companyName/:type',
     name: 'rawMaterialProcessTable',
     component: () => import('./views/rawMaterial/rawMaterialProcessTable.vue')
@@ -153,11 +161,27 @@ let router = new Router({
     }, {
       path: 'sampleCreate',
       name: 'sampleCreate',
-      component: () => import('./views/order/sampleCreate.vue')
+      component: () => import('./views/sample/sampleCreate.vue')
     }, {
       path: 'sampleList',
       name: 'sampleList',
-      component: () => import('./views/order/sampleList.vue')
+      component: () => import('./views/sample/sampleList.vue')
+    }, {
+      path: 'sampleDetail/:id',
+      name: 'sampleDetail',
+      component: () => import('./views/sample/sampleDetail.vue')
+    }, {
+      path: 'sampleOrderCreate',
+      name: 'sampleOrderCreate',
+      component: () => import('./views/sample/sampleOrderCreate.vue')
+    }, {
+      path: 'sampleOrderList',
+      name: 'sampleOrderList',
+      component: () => import('./views/sample/sampleOrderList.vue')
+    }, {
+      path: 'sampleOrderDetail/:id',
+      name: 'sampleOrderDetail',
+      component: () => import('./views/sample/sampleOrderDetail.vue')
     }, {
       path: 'orderCreate',
       name: 'orderCreate',

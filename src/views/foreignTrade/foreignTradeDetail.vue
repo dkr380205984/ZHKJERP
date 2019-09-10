@@ -1,18 +1,18 @@
 <template>
   <div id="foreignTradeDetail">
     <div class="head">
-      <h2>外贸公司详情</h2>
+      <h2>客户详情</h2>
     </div>
     <div class="body">
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">公司名称：</span>
+          <span class="label">客户名称：</span>
           <span class="content">{{companyInfo.name}}</span>
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">公司简称：</span>
+          <span class="label">客户简称：</span>
           <span class="content">{{companyInfo.abbreviation}}</span>
         </div>
       </div>

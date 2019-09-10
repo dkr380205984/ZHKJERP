@@ -49,8 +49,7 @@
               type="textarea"
               placeholder="公司简介在200字以内..."
               v-model="client_about"
-              :rows="5"
-              maxlength="200">
+              :rows="5">
             </el-input>
           </div>
         </div>

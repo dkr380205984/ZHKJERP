@@ -80,9 +80,11 @@ async function get (url, params) {
       router.push('/index')
       return Promise.reject(response)
     }
-    if (response.data.code === 501) {
+    if (response.data.code === 501 || response.data.code === 502) {
       Message.Message.error({
-        message: '登录信息过期'
+        message: '登录信息过期',
+        duration: 0,
+        showClose: true
       })
       router.push('/login')
       return Promise.reject(response)
@@ -127,9 +129,12 @@ async function post (url, params, contentType, responseType) {
       router.push('/index/home')
       return Promise.reject(response)
     }
-    if (response.data.code === 502) {
+    console.log(response.data)
+    if (response.data.code === 501 || response.data.code === 502) {
       Message.Message.error({
-        message: '登录信息过期'
+        message: '登录信息过期',
+        duration: 0,
+        showClose: true
       })
       router.push('/login')
       return Promise.reject(response)

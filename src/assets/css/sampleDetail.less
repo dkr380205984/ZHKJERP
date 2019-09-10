@@ -1,5 +1,5 @@
 @import './common.less';
-#productDetail{
+#sampleDetail{
   height: 100%;
   font-family: 'systemfont';
   font-weight: 300;
@@ -24,6 +24,7 @@
   .body{
     padding: 20px 40px;
     flex: 1;
+    position: relative;
     .lineCtn{
       display: flex;
       margin:24px 0;
@@ -53,21 +54,6 @@
           color:@fontNormal;
           font-size: @fontMid;
           position: relative;
-          .addNewBtn{
-            position: absolute;
-            top: -4px;
-            right: 0;
-            transform: translateY(-100%);
-            width:auto;
-            height:26px;
-            padding: 0 1em;
-            background:rgba(26,148,255,1);
-            border-radius:4px;
-            color: #FFF;
-            text-align: center;
-            line-height: 26px;
-            cursor: pointer;
-          }
           &.gray{
             color: @placeholderColor;
           }
@@ -145,6 +131,21 @@
               align-items: unset;
             }
           }
+          .addNewBtn{
+            position: absolute;
+            top: -4px;
+            right: 0;
+            transform: translateY(-100%);
+            width:auto;
+            height:26px;
+            padding: 0 1em;
+            background:rgba(26,148,255,1);
+            border-radius:4px;
+            color: #FFF;
+            text-align: center;
+            line-height: 26px;
+            cursor: pointer;
+          }
           &.contentFlex{
             display: flex;
             align-items: center;
@@ -163,12 +164,140 @@
         }
       }
     }
+    .transFromProBtn{
+      position: absolute;
+      top: 40px;
+      left: 940px;
+      transform: translateX(-100%);
+      width: auto;
+      height: 35px;
+      text-align: center;
+      line-height: 35px;
+      padding: 0.2em 1em;
+      border-radius: 4px;
+      background: rgba(26,148,255,1);
+      color: #FFF;
+      z-index: 3;
+      cursor: pointer;
+    }
     .btnCtn{
       display: flex;
       padding-left: 6em;
       justify-content: space-around;
       width: 400px;
       margin-top: 40px;
+    }
+  }
+  .message{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.3);
+    z-index: 5;
+    color: @fontNormal;
+    .messageBox{
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+      background: #FFF;
+      width:520px;
+      height:360px;
+      box-shadow:0px 2px 24px rgba(0,0,0,0.36);
+      border-radius: 8px;
+      display: flex;
+      // align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 50px 46px;
+      box-sizing: border-box;
+      .item{
+        margin-bottom:16px;
+        min-height: 40px;
+        display: flex;
+        position: relative;
+        padding-left: 5em;
+        box-sizing: border-box;
+        .label{
+          width: 5em;
+          height: 40px;
+          line-height: 40px;
+          position: absolute;
+          top: 0;
+          left: 0;
+        }
+        .content{
+          display: flex;
+          align-items: center;
+          &.blue{
+            color:@normalBlue;
+          }
+          .input_item{
+            height: 100%;
+            width: 354px;
+          }
+        } 
+      }
+      .close{
+        position: absolute;
+        top: 16px;
+        right: 18px;
+        width: 18px;
+        height: 18px;
+        font-size: 18px;
+        cursor: pointer;
+        border-radius: 50%;
+        transition: all 0.1s ease-in-out;
+        &:hover{
+          background: @normalBlue;
+          color: #FFF;
+        }
+      }
+      .title{
+        position: absolute;
+        top: 0;
+        left: 0;
+        line-height: 50px;
+        height: 50px;
+        width: inherit;
+        padding-left: 16px;
+        box-sizing: border-box;
+        color: @fontNormal;
+        border-bottom: 1px solid rgb(233,233,233)
+      }
+      .footer{
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        line-height: 50px;
+        height: 50px;
+        width: inherit;
+        padding-right: 18px;
+        box-sizing: border-box;
+        color: @fontNormal;
+        border-top: 1px solid rgb(233,233,233);
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        span{
+          padding: 0 1em;
+          border-radius:4px;
+          cursor: pointer;
+          text-align: center;
+          height: 32px;
+          line-height: 32px;
+          margin-left: 16px;
+          &.ok{
+            background: rgba(26,148,255,1);
+            color:#FFF;
+          }
+          &.cancel{
+            border:1px solid rgba(217,217,217,1);
+          }
+        }
+      }
     }
   }
 }

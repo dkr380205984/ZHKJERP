@@ -198,14 +198,12 @@
                 </div>
               </ul>
               <div class="handle">
-                <div :class="{'disabled':!flag}"
-                  @click="open('order',$route.params.id,flag)">
+                <div @click="open('order',$route.params.id)">
                   <img class="icon"
-                    v-if="flag"
                     src="@/assets/image/icon/orderIcon.png">
-                  <img class="icon"
+                  <!-- <img class="icon"
                     v-else
-                    src="@/assets/image/icon/order_disabled.png">
+                    src="@/assets/image/icon/order_disabled.png"> -->
                   <span>去订购</span>
                 </div>
               </div>
@@ -276,7 +274,7 @@
                 v-if="processLogFlag">
                 <div>
                   <li>
-                    <span class="flexBig">下单日期</span>
+                    <span class="flexBig">完成日期</span>
                     <span class="flexBig">加工单位</span>
                     <span>加工类型</span>
                     <span>{{type === '0' ? '原' : '辅'}}料名称</span>
@@ -314,14 +312,12 @@
                 </div>
               </ul>
               <div class="handle">
-                <div :class="{'disabled':!flag}"
-                  @click="open('process',$route.params.id,flag)">
+                <div @click="open('process',$route.params.id)">
                   <img class="icon"
-                    v-if="flag"
                     src="@/assets/image/icon/orderIcon.png">
-                  <img class="icon"
+                  <!-- <img class="icon"
                     v-else
-                    src="@/assets/image/icon/order_disabled.png">
+                    src="@/assets/image/icon/order_disabled.png"> -->
                   <span>去加工</span>
                 </div>
               </div>
@@ -502,25 +498,25 @@ export default {
         let str = '/rawMaterialProcessTable/' + id + '/' + companyId + '/' + type
         window.open(str)
       } else if (where === 'order') {
-        if (flag) {
-          this.$router.push('/index/rawMaterialOrderPage/' + id + '/' + this.type)
-        } else {
-          this.$message(
-            {
-              message: '请将产品的配料单信息填写完整',
-              type: 'error'
-            }
-          )
-        }
+        // if (flag) {
+        this.$router.push('/index/rawMaterialOrderPage/' + id + '/' + this.type)
+        // } else {
+        //   this.$message(
+        //     {
+        //       message: '请将产品的配料单信息填写完整',
+        //       type: 'error'
+        //     }
+        //   )
+        // }
       } else if (where === 'process') {
-        if (flag) {
-          this.$router.push('/index/rawMaterialProcess/' + id + '/' + this.type)
-        } else {
-          this.$message({
-            message: '请将产品的配料单信息填写完整',
-            type: 'error'
-          })
-        }
+        // if (flag) {
+        this.$router.push('/index/rawMaterialProcess/' + id + '/' + this.type)
+        // } else {
+        //   this.$message({
+        //     message: '请将产品的配料单信息填写完整',
+        //     type: 'error'
+        //   })
+        // }
       }
     },
     change () {
@@ -583,11 +579,9 @@ export default {
               let keys = orderProductInfo[value.productCode].find(a => ((a.size === val.name[0]) && (a.color_match_name === val.name[1])))
               if (!keys) {
                 flag = false
-                this.flag = false
               }
             } else {
               flag = false
-              this.flag = false
             }
             //
             arr.push({

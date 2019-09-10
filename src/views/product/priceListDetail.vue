@@ -174,7 +174,7 @@
                 <span>{{item.price ? item.price : '/'}}{{item.price && item.unit ? '元/' + item.unit : '' }}</span>
                 <span>{{item.sunhao ? item.sunhao : '/'}}{{item.sunhao ? '%' : ''}}</span>
                 <span>{{item.other ? item.other : '/'}}</span>
-                <span>{{item.totalPrice ? item.totalPrice : '/'}}元</span>
+                <span>{{item.totalPrice ? item.totalPrice : 0}}元</span>
               </li>
             </ul>
             <div class="otherCtn bigFont">
@@ -221,7 +221,9 @@
         <span class="total"></span>
         <div class="btnCtn">
           <span class="clear"
-            @click="$router.go(-1)">返回</span>
+            @click="$router.push('/index/priceListList')">返回</span>
+          <span class="change"
+            @click="$router.push('/priceListTable/' + $route.params.id)">打印</span>
           <span class="submit"
             @click="showBox = true">审核</span>
         </div>
@@ -387,7 +389,7 @@ export default {
       return item.category_info.product_category + '/' + item.type_name + '/' + item.style_name
     },
     filterPrice (item) {
-      return Number(item.yongjin.price ? item.yongjin.price : 0) + Number(item.lirun.price ? item.lirun.price : 0) + Number(item.shuifei.price ? item.shuifei.price : 0)
+      return (Number(item.yongjin.price ? item.yongjin.price : 0) + Number(item.lirun.price ? item.lirun.price : 0) + Number(item.shuifei.price ? item.shuifei.price : 0)).toFixed(1)
     }
   },
   created () {
@@ -407,7 +409,7 @@ export default {
       this.priceTableDetail.info.push(
         ...JSON.parse(data.material_info).map(item => {
           return {
-            name: item.key,
+            name: item.key ? item.key : '原料',
             number: item.weight / 1000,
             price: item.price,
             sunhao: item.sunhao,
@@ -417,7 +419,7 @@ export default {
         }),
         ...JSON.parse(data.assist_info).map(item => {
           return {
-            name: item.key,
+            name: item.key ? item.key : '辅料',
             number: item.weight,
             price: item.price,
             sunhao: item.sunhao,
@@ -427,40 +429,40 @@ export default {
         }),
         ...JSON.parse(data.pack_material_info).map(item => {
           return {
-            name: item.key,
+            name: item.key ? item.key : '包装',
             totalPrice: item.price
           }
         }),
         ...JSON.parse(data.semi_product_info).map(item => {
           return {
-            name: item.key.join('/'),
+            name: item.key && item.key.length !== 0 ? item.key.join('/') : '半成品加工',
             totalPrice: item.price
           }
         }),
         ...JSON.parse(data.weave_info).map(item => {
           return {
-            name: item.key,
+            name: item.key ? item.key : '织造',
             number: item.number,
             totalPrice: item.price
           }
         }),
         ...JSON.parse(data.user_info).map(item => {
           return {
-            name: item.key,
+            name: item.key ? item.key : '非生产费用',
             totalPrice: item.price
           }
         }),
         ...JSON.parse(data.desc_info).map(item => {
           return {
-            name: item.key,
+            name: item.key ? item.key : '其他',
             totalPrice: item.price
           }
         }),
         { name: '运输', totalPrice: data.transport_cost }
       )
-      this.priceTableDetail.product_total_price = this.priceTableDetail.info.reduce((total, item) => {
+      this.priceTableDetail.product_total_price = (this.priceTableDetail.info.reduce((total, item) => {
         return Number(total.totalPrice ? total.totalPrice : total) + Number(item.totalPrice)
-      })
+      })).toFixed(1)
       this.priceTableDetail.yongjin = JSON.parse(data.commission)
       this.priceTableDetail.shuifei = JSON.parse(data.tax)
       this.priceTableDetail.lirun = JSON.parse(data.profit)

@@ -1,19 +1,19 @@
 <template>
   <div id="foreignTradeCreate">
     <div class="head">
-      <h2>修改合作公司</h2>
+      <h2>修改客户信息</h2>
     </div>
     <div class="body">
       <div class="inputCtn">
-        <span class="label must">公司名称:</span>
+        <span class="label must">客户名称:</span>
         <el-input class="elInput"
-          placeholder="请输入外贸公司名称"
+          placeholder="请输入客户名称"
           v-model="name"></el-input>
       </div>
       <div class="inputCtn">
-        <span class="label">公司简称:</span>
+        <span class="label">客户简称:</span>
         <el-input class="elInput"
-          placeholder="请输入外贸公司简称"
+          placeholder="请输入客户简称"
           v-model="abbreviation"></el-input>
       </div>
       <div class="inputCtn">

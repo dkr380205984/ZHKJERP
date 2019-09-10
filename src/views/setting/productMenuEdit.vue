@@ -5,86 +5,6 @@
       <h2>产品手册设置</h2>
     </div>
     <div class="body">
-      <!-- <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">已选产品:</span>
-          <div class="content">
-            <div class="filterCtn">
-              <el-select v-model="filterList.typeVal"
-                class="select-item"
-                clearable
-                placeholder="筛选品类">
-                <el-option v-for="item in typeList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id">
-                </el-option>
-              </el-select>
-              <el-select v-model="filterList.flowerVal"
-                class="select-item"
-                clearable
-                placeholder="筛选花型">
-                <el-option v-for="item in flowerList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id">
-                </el-option>
-              </el-select>
-              <el-date-picker v-model="filterList.date"
-                type="daterange"
-                align="right"
-                style="margin-right:20px;"
-                unlink-panels
-                value-format="yyyy-MM-dd"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                :picker-options="pickerOptions">
-              </el-date-picker>
-              <el-input placeholder="输入产品编号精确搜索"
-                class="select-item"
-                suffix-icon="el-icon-search"
-                v-model="filterList.searchVal"></el-input>
-            </div>
-            <ul class="checkCtn">
-              <li class="title">
-                <span class="center">产品编号</span>
-                <span>产品类别</span>
-                <span class="flex05">产品花纹</span>
-                <span class="center">产品图片</span>
-                <span class="flex05">创建人</span>
-                <span class="flex06 center">创建日期</span>
-                <span class="flex05 center">操作</span>
-              </li>
-              <div class="proBox">
-                <li v-for="(item,key) in checkedProList.filter(value=>value.checked)"
-                  :key="key">
-                  <span class="center">{{item.product_code}}</span>
-                  <span>{{item|filterType}}</span>
-                  <span class="flex05">{{item.flower_id}}</span>
-                  <span class="center">
-                    <div class="imgCtn">
-                      <img class="img"
-                        :src="item.img.length>0?item.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
-                        :onerror="defaultImg" />
-                      <div class="toolTips"
-                        v-if="item.img.length>0"><span @click="showImg(item.img)">点击查看大图</span></div>
-                      <div class="toolTips"
-                        v-if="item.img.length===0"><span>没有预览图</span></div>
-                    </div>
-                  </span>
-                  <span class="flex05">{{item.user_name}}</span>
-                  <span class="flex06 center">{{item.create_time}}</span>
-                  <span class="flex05 center">
-                    <el-checkbox v-model="item.checked"
-                      @change="checked('check_delete',item)"></el-checkbox>
-                  </span>
-                </li>
-              </div>
-            </ul>
-          </div>
-        </div>
-      </div> -->
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">已选产品:</span>
@@ -94,12 +14,9 @@
                 v-for="(item,key) in checkedProList"
                 :key="key">
                 <div class="box-top">
-                  <img :src="item.img[0] ? item.img[0].img_url : require('@/assets/image/index/noPic.jpg')"
+                  <img :src="(item.img && item.img.length !== 0) ? item.img[0].thumb : require('@/assets/image/index/noPic.jpg')"
                     alt="">
-                  <div class="info">
-                    <span>产品描述:</span>
-                    <span>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat</span>
-                  </div>
+                  <!-- @load="showClearImg((item.img && item.img.length !== 0) ? item.img[0].img_url : false,key)" -->
                 </div>
                 <div class="box-bottom">
                   <span>{{item.product_code}}</span>
@@ -188,7 +105,8 @@
                       @change="checked('check_push',item)"></el-checkbox>
                   </span>
                 </li>
-                <li style="color:#DDD;">已达底部</li>
+                <li style="color:#DDD;border-bottom:none">已达底部</li>
+                <div class="isCheckNum">已选产品:{{checkedProList.length + '/200' }}</div>
               </div>
             </ul>
           </div>
@@ -196,7 +114,7 @@
       </div>
       <div class="btnCtn">
         <div class="cancleBtn"
-          @click="clearAll">清空</div>
+          @click="$router.go(-1)">返回</div>
         <div class="okBtn"
           @click="saveAll">保存</div>
       </div>
@@ -304,13 +222,28 @@ export default {
         // }
       })
     },
+    showClearImg (item, e) {
+      console.log(e)
+      if (item) {
+        let clearImg = new Image()
+        clearImg.src = item
+        clearImg.onload = () => {
+          console.log('load', item, clearImg)
+          document.getElementsByClassName('box-top')[e].innerHTML = ''
+          document.getElementsByClassName('box-top')[e].appendChild(clearImg)
+        }
+      }
+    },
     showImg (imgList) {
       this.imgList = imgList
       this.showShade = true
     },
     checked (checkStatu, item) {
       console.log(checkStatu, item.checked)
-      if (checkStatu === 'check_push') {
+      if (checkStatu === 'check_push' && this.checkedProList.length >= 200 && item.checked) {
+        this.$message.warning('已选产品已达200,不可继续添加！')
+        item.checked = false
+      } else if (checkStatu === 'check_push') {
         if (item.checked) {
           let flag = this.checkedProList.find(key => key.id === item.id)
           if (!flag) {
@@ -389,39 +322,4 @@ export default {
 
 <style scoped lang="less">
 @import "~@/assets/css/productMenuEdit.less";
-</style>
-<style lang="less">
-// #productMenuEdit {
-//   .avatar-uploader {
-//     width: 100px;
-//     height: 100px;
-//     .logo-img {
-//       width: 100px;
-//       height: 100px;
-//     }
-//     .logo-icon {
-//       width: 100px;
-//       height: 100px;
-//       text-align: center;
-//       line-height: 100px;
-//       margin: 0;
-//       font-size: 30px;
-//       color: #8c939d;
-//     }
-//   }
-//   .img-upload {
-//     width: auto;
-//     height: auto;
-//     .el-upload-dragger {
-//       width: 150px;
-//       height: 150px;
-//       border: none;
-//     }
-//   }
-//   .el-upload,
-//   .el-upload-dragger {
-//     width: inherit;
-//     height: inherit;
-//   }
-// }
 </style>

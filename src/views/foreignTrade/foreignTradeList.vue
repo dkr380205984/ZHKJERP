@@ -2,8 +2,8 @@
   <div id="foreignTradeList"
     v-loading="loading">
     <div class="head">
-      <h2>合作公司列表</h2>
-      <el-input placeholder="请输入公司名称或简称"
+      <h2>客户列表</h2>
+      <el-input placeholder="请输入客户名称或简称"
         suffix-icon="el-icon-search"
         v-model="searchVal"></el-input>
     </div>
@@ -38,8 +38,8 @@
       <div class="tableCtn"
         v-scroll="{fun:getList,pageSize:5}">
         <div class="tableRow titleTableRow">
-          <div class="tableColumn">公司名称</div>
-          <div class="tableColumn">公司简称</div>
+          <div class="tableColumn">客户名称</div>
+          <div class="tableColumn">客户简称</div>
           <div class="tableColumn">公司类型</div>
           <div class="tableColumn">人员数量</div>
           <div class="tableColumn">联系电话</div>

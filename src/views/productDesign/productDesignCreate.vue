@@ -105,7 +105,7 @@
 </template>
 
 <script>
-import { orderStockDetail, productionSave } from '@/assets/js/api.js'
+import { orderStockDetail, productionSave, productPlanDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -127,7 +127,8 @@ export default {
         id: ''
       },
       productInfo: [],
-      product: []
+      product: [],
+      product_plan: []
     }
   },
   methods: {
@@ -215,6 +216,13 @@ export default {
           message: '请勿频繁操作'
         })
       }
+    },
+    getProductPlanInfo (id) {
+      productPlanDetail({
+        id: id
+      }).then(res => {
+        console.log(res.data.data)
+      })
     }
   },
   mounted () {
@@ -224,6 +232,11 @@ export default {
     }).then((res) => {
       console.log(res)
       this.order = res.data.data.order
+      this.order.order_batch.forEach(item => {
+        item.batch_info.forEach(value => {
+          this.getProductPlanInfo(value.productInfo.id)
+        })
+      })
       let obj = res.data.data.stock_data
       Object.keys(obj).forEach((key) => {
         obj[key].forEach((item) => {
