@@ -145,7 +145,6 @@ export default {
           productByCode.push(item)
         }
       })
-      console.log(productByCode)
       // 第二步，根据Size进行分类
       let productBySize = []
       productByCode.forEach((item) => {
@@ -172,7 +171,6 @@ export default {
           })
         }
       })
-      // console.log(productBySize)
       // 第三步，先把原料分成主要原料和次要原料
       let productByMaterial = {
         main_ingredients: [], // 主要辅料
@@ -225,7 +223,7 @@ export default {
                   colorList: obj ? obj.color.map((itemColor) => {
                     return {
                       name: itemColor.name,
-                      number: (itemColor.size.find((item) => item.size === itemSize.size).number * itemColour.number * (1 + itemColour.production_sunhao / 100) / 1000).toFixed(2),
+                      number: (itemColor.size.find((item) => item.size === itemSize.size).number * itemColour.number * (1 + itemColour.production_sunhao / 100) / 1000).toFixed(1),
                       unit: '千克',
                       value: itemColor.value
                     }

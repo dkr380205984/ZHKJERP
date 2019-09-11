@@ -270,6 +270,7 @@ export default {
       this.product_code[1] = 'X'
       this.product_code[2] = 'X'
       this.product_code[3] = 'X'
+      console.log(letterArr)
       if (newVal.length !== 0) {
         const obj = this.treeData.find((item) => item.value === newVal[0])
         this.child_measurement = obj.child_size
@@ -544,6 +545,7 @@ export default {
           flower_id: this.flower,
           description: this.textarea,
           user_id: window.sessionStorage.getItem('user_id'),
+          type: 1,
           img: imgArr,
           color: this.color,
           size: sizeArr,
@@ -565,6 +567,7 @@ export default {
             this.colorNum = 1
             this.sizeNum = 1
             this.ingredientNum = 1
+            this.$router.push('/index/productDetail/' + res.data.data.id)
           } else {
             this.$message.error({
               message: res.data.message

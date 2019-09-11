@@ -264,21 +264,22 @@ export default {
   },
   filters: {
     cmpPrice (val) {
+      console.log(val)
       return ((val.material_info).reduce((total, current) => {
-        return total + Number(current.price)
+        return total + Number(current.totalPrice ? current.totalPrice : 0)
       }, 0) + (val.assist_info).reduce((total, current) => {
-        return total + Number(current.price)
+        return total + Number(current.totalPrice ? current.totalPrice : 0)
       }, 0) + (val.weave_info).reduce((total, current) => {
-        return total + Number(current.price)
+        return total + Number(current.totalPrice ? current.totalPrice : 0)
       }, 0) + (val.semi_product_info).reduce((total, current) => {
-        return total + Number(current.price)
+        return total + Number(current.totalPrice ? current.totalPrice : 0)
       }, 0) + (val.pack_material_info).reduce((total, current) => {
-        return total + Number(current.price)
+        return total + Number(current.totalPrice ? current.totalPrice : 0)
       }, 0) + (val.user_info).reduce((total, current) => {
-        return total + Number(current.price)
+        return total + Number(current.totalPrice ? current.totalPrice : 0)
       }, 0) + (val.desc_info).reduce((total, current) => {
-        return total + Number(current.price)
-      }, 0) + Number(val.transport_cost) + Number(val.profit) + Number(val.commission) + Number(val.tax)).toFixed(2)
+        return total + Number(current.totalPrice ? current.totalPrice : 0)
+      }, 0) + Number(val.transport_cost) + Number(JSON.parse(val.profit).price) + Number(JSON.parse(val.commission).price) + Number(JSON.parse(val.tax).price)).toFixed(2)
     },
     filterStatus (val) {
       let arr = ['暂无', '待审核', '已通过', '驳回']
@@ -368,39 +369,39 @@ export default {
         keyword: '',
         status: 1
       })]).then((res) => {
-      console.log(res)
-      this.total = res[0].data.meta.total
-      this.list = res[0].data.data.map((item) => {
-        return {
-          id: item.id,
-          client_name: item.client_name,
-          quotation_code: item.quotation_code,
-          contact_name: item.contact_name,
-          exchange_rate: item.exchange_rate,
-          account_unit: item.account_unit,
-          product_info: JSON.parse(item.product_info),
-          product_need: item.product_need,
-          material_info: JSON.parse(item.material_info),
-          assist_info: JSON.parse(item.assist_info),
-          weave_info: JSON.parse(item.weave_info),
-          semi_product_info: JSON.parse(item.semi_product_info),
-          pack_material_info: JSON.parse(item.pack_material_info),
-          user_info: JSON.parse(item.user_info),
-          desc_info: JSON.parse(item.desc_info),
-          transport_cost: item.transport_cost,
-          profit: item.profit,
-          commission: item.commission,
-          tax: item.tax,
-          desc: item.desc,
-          created_at: item.created_at,
-          status: item.status
-        }
+        console.log(res)
+        this.total = res[0].data.meta.total
+        this.list = res[0].data.data.map((item) => {
+          return {
+            id: item.id,
+            client_name: item.client_name,
+            quotation_code: item.quotation_code,
+            contact_name: item.contact_name,
+            exchange_rate: item.exchange_rate,
+            account_unit: item.account_unit,
+            product_info: JSON.parse(item.product_info),
+            product_need: item.product_need,
+            material_info: JSON.parse(item.material_info),
+            assist_info: JSON.parse(item.assist_info),
+            weave_info: JSON.parse(item.weave_info),
+            semi_product_info: JSON.parse(item.semi_product_info),
+            pack_material_info: JSON.parse(item.pack_material_info),
+            user_info: JSON.parse(item.user_info),
+            desc_info: JSON.parse(item.desc_info),
+            transport_cost: item.transport_cost,
+            profit: item.profit,
+            commission: item.commission,
+            tax: item.tax,
+            desc: item.desc,
+            created_at: item.created_at,
+            status: item.status
+          }
+        })
+        this.companyArr = res[1].data.data.filter((item) => (item.type.indexOf(1) !== -1))
+        this.first = false
+        this.loading = false
+        console.log(this.list)
       })
-      this.companyArr = res[1].data.data.filter((item) => (item.type.indexOf(1) !== -1))
-      this.first = false
-      this.loading = false
-      console.log(this.list)
-    })
   }
 }
 </script>

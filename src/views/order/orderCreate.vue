@@ -353,7 +353,7 @@
       </div>
       <div class="lineCtn">
         <div class="inputCtn oneLine">
-          <span class="label">上传文件：</span>
+          <span class="label">上传订单合同：</span>
           <el-upload class="upload-demo"
             action="http://upload.qiniup.com/"
             accept=""
@@ -363,7 +363,70 @@
             :before-upload="beforeAvatarUpload"
             :file-list="fileArr"
             :data="postData"
-            ref="uploada"
+            ref="uploada1"
+            list-type="picture">
+            <el-button size="small"
+              type="primary">点击上传</el-button>
+            <div slot="tip"
+              class="el-upload__tip">请不要上传超过20M的文件</div>
+          </el-upload>
+        </div>
+      </div>
+      <div class="lineCtn">
+        <div class="inputCtn oneLine">
+          <span class="label">上传包装资料：</span>
+          <el-upload class="upload-demo"
+            action="http://upload.qiniup.com/"
+            accept=""
+            :on-preview="handlePreview"
+            :on-remove="handleRemove"
+            :on-success="handleSuccess"
+            :before-upload="beforeAvatarUpload"
+            :file-list="fileArr"
+            :data="postData"
+            ref="uploada2"
+            list-type="picture">
+            <el-button size="small"
+              type="primary">点击上传</el-button>
+            <div slot="tip"
+              class="el-upload__tip">请不要上传超过20M的文件</div>
+          </el-upload>
+        </div>
+      </div>
+      <div class="lineCtn">
+        <div class="inputCtn oneLine">
+          <span class="label">上传装箱资料：</span>
+          <el-upload class="upload-demo"
+            action="http://upload.qiniup.com/"
+            accept=""
+            :on-preview="handlePreview"
+            :on-remove="handleRemove"
+            :on-success="handleSuccess"
+            :before-upload="beforeAvatarUpload"
+            :file-list="fileArr"
+            :data="postData"
+            ref="uploada3"
+            list-type="picture">
+            <el-button size="small"
+              type="primary">点击上传</el-button>
+            <div slot="tip"
+              class="el-upload__tip">请不要上传超过20M的文件</div>
+          </el-upload>
+        </div>
+      </div>
+      <div class="lineCtn">
+        <div class="inputCtn oneLine">
+          <span class="label">上传其它文件：</span>
+          <el-upload class="upload-demo"
+            action="http://upload.qiniup.com/"
+            accept=""
+            :on-preview="handlePreview"
+            :on-remove="handleRemove"
+            :on-success="handleSuccess"
+            :before-upload="beforeAvatarUpload"
+            :file-list="fileArr"
+            :data="postData"
+            ref="uploada4"
             list-type="picture">
             <el-button size="small"
               type="primary">点击上传</el-button>
@@ -513,7 +576,8 @@ export default {
         start_time: this.dateSearch || null,
         end_time: endTime,
         product_code: this.search || null,
-        has_plan: this.hasJHD
+        has_plan: this.hasJHD,
+        type: 1
       }).then((res) => {
         this.loading = false
         if (this.page === 1) {
@@ -768,7 +832,10 @@ export default {
           })
           return
         }
-        const fileArr = this.$refs.uploada.uploadFiles.map((item) => { return 'http://zhihui.tlkrzf.com/' + item.response.key })
+        const orderContract = this.$refs.uploada1.uploadFiles.map((item) => { return 'http://zhihui.tlkrzf.com/' + item.response.key })
+        const packMeans = this.$refs.uploada2.uploadFiles.map((item) => { return 'http://zhihui.tlkrzf.com/' + item.response.key })
+        const storeMeans = this.$refs.uploada3.uploadFiles.map((item) => { return 'http://zhihui.tlkrzf.com/' + item.response.key })
+        const otherInfo = this.$refs.uploada4.uploadFiles.map((item) => { return 'http://zhihui.tlkrzf.com/' + item.response.key })
         let obj = {
           company_id: this.companyId,
           user_id: window.sessionStorage.getItem('user_id'),
@@ -796,7 +863,10 @@ export default {
           total_price: this.totalMoney,
           remark: this.otherInfo,
           total_price_RMB: this.totalMoney * this.exchangeRate / 100,
-          file_url: JSON.stringify(fileArr)
+          order_contract: JSON.stringify(orderContract),
+          pack_means: JSON.stringify(packMeans),
+          store_means: JSON.stringify(storeMeans),
+          other_info: JSON.stringify(otherInfo)
         }
         this.lock = true
         this.loading = true
@@ -867,7 +937,8 @@ export default {
       plan_code: null,
       has_plan: null,
       limit: 5,
-      page: 1
+      page: 1,
+      type: 1
     }), productTppeList({
       company_id: this.companyId
     }), flowerList({
@@ -878,6 +949,9 @@ export default {
       console.log(res[1])
       this.companyArr = res[0].data.data.filter((item) => (item.type.indexOf(1) !== -1))
       this.seachProduct = res[1].data.data
+      if (this.$route.fullPath.split('?')[1]) {
+        this.getProduct(true, this.$route.fullPath.split('?')[1])
+      }
       this.typeArr = res[2].data.data.map((item) => {
         return {
           value: item.id,
@@ -903,7 +977,6 @@ export default {
       this.postData.token = res[5].data.data
       this.loading = false
     })
-
     // 给产品列表做优化
     this.$refs.scrollBox.addEventListener('scroll', (ev) => {
       clearTimeout(this.timer)

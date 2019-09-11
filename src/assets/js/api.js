@@ -338,7 +338,13 @@ const companyInfoDetail = (params) => http.get(`${baseUrl}/company/detail`, para
 const productMenuSetting = (params) => http.post(`${baseUrl}/product/handbook/save`, params, 'application/json')
 // 获取产品手册
 const productMenuList = (params) => http.get(`${baseUrl}/product/handbook/list`, params)
+// 添加样单order/sample/save
+const sampleOrderCreate = (params) => http.post(`${baseUrl}/order/sample/save`, params, 'application/json')
+// 获取样单列表order/sample/list
+const sampleOrderList = (params) => http.get(`${baseUrl}/order/sample/list`, params)
 export {
+  sampleOrderList,
+  sampleOrderCreate,
   productMenuList,
   productMenuSetting,
   companyInfoDetail,

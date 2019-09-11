@@ -3,7 +3,7 @@
     v-loading="loading"
     v-getHash="{'categoryVal':categoryVal,'typesVal':typesVal,'styleVal':styleVal,'flowerVal':flowerVal,'searchVal':searchVal,'pages':pages}">
     <div class="head">
-      <h2>产品列表</h2>
+      <h2>样品列表</h2>
       <el-input placeholder="输入产品编号精确搜索"
         suffix-icon="el-icon-search"
         v-model="searchVal"></el-input>
@@ -75,41 +75,6 @@
             </el-date-picker>
           </div>
         </div>
-        <div class="productMenu">
-          <div class="label"><span class="icon el-icon-collection"></span>电子产品手册</div>
-          <div class="handle">
-            <span @click="$router.push('/productMenu')">查看</span>
-            <span @click="share = !share">分享</span>
-            <span @click="$router.push('/index/productMenuEdit')">编辑</span>
-            <div class="share-box"
-              v-show="share">
-              <div class="qrCode-box">
-                <!-- <img src="../../../../productMenu.png"
-                alt=""> -->
-                <img class="qrcode_canvas"
-                  id="qrcode_canvas"
-                  ref="qrcodeCanvas"
-                  alt="二维码图片">
-                <img class="qrcode_logo"
-                  ref="qrcodeLogo"
-                  :src="logoUrl"
-                  alt="二维码logo">
-                <canvas :width="qrSize"
-                  :height="qrSize"
-                  class="canvas"
-                  ref="canvas"></canvas>
-              </div>
-              <div class="url-box">
-                <el-input v-model="urlVal"
-                  style="width:280px;"
-                  id="copyDom"></el-input>
-                <el-button type="primary"
-                  style="margin-left:10px"
-                  @click="copyUrl">点击复制</el-button>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
       <div class="tableCtn"
         v-scroll="{fun:getProductList,pageSize:5}">
@@ -153,13 +118,13 @@
               placement="top-start">
               <span class="btns warning"
                 v-if="item.has_craft===1||item.in_order===1||item.has_plan===1"
-                @click="$router.push('/index/productUpdate/'+item.id)">修改</span>
+                @click="$router.push('/index/sampleDetail/'+item.id)">修改</span>
             </el-tooltip>
             <span class="btns warning"
               v-if="item.has_craft===0&&item.in_order===0&&item.has_plan===0"
-              @click="$router.push('/index/productUpdate/'+item.id)">修改</span>
+              @click="$router.push('/index/sampleDetail/'+item.id)">修改</span>
             <span class="btns success"
-              @click="$router.push('/index/productDetail/'+item.id)">详情</span>
+              @click="$router.push('/index/sampleDetail/'+item.id)">详情</span>
             <span class="btns error"
               v-if="item.has_plan===0"
               @click="deleteProduct(item.id)">删除</span>
@@ -203,8 +168,7 @@
 </template>
 
 <script>
-import { productList, productTppeList, flowerList, productDelete, companyInfoDetail } from '@/assets/js/api.js'
-const QRCode = require('qrcode')
+import { productList, productTppeList, flowerList, productDelete } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -255,22 +219,10 @@ export default {
       flowerVal: '',
       start_time: '',
       end_time: '',
-      first: true, // 判断是不是第一次进入页面
-      share: false,
-      logoUrl: '',
-      urlVal: '',
-      qrLogo: '',
-      qrSize: 100,
-      qrLogoSize: 20
+      first: true // 判断是不是第一次进入页面
     }
   },
   methods: {
-    copyUrl () {
-      let copy = document.getElementById('copyDom')
-      copy.select()
-      document.execCommand('Copy')
-      this.$message.success('复制成功')
-    },
     getProductList () {
       this.loading = true
       productList({
@@ -284,7 +236,7 @@ export default {
         'start_time': this.start_time,
         'end_time': this.end_time,
         'product_code': this.searchVal,
-        'type': 1
+        'type': 2
       }).then((res) => {
         this.total = res.data.meta.total
         this.list = res.data.data
@@ -362,50 +314,6 @@ export default {
         })
       })
     }
-  },
-  mounted () {
-    this.urlVal = window.location.href
-    let qrcodeCanvas = this.$refs.qrcodeCanvas
-    let qrcodeLogo = this.$refs.qrcodeLogo
-    let canvas = this.$refs.canvas
-    // 画二维码里的logo[注意添加logo图片的时候需要使用服务器]
-    QRCode.toDataURL(this.urlVal, { errorCorrectionLevel: 'H' }, (err, url) => {
-      console.log(err)
-      qrcodeCanvas.src = url
-      // 画二维码里的logo// 在canvas里进行拼接
-      let ctx = canvas.getContext('2d')
-      setTimeout(() => {
-        // 获取图片
-        ctx.drawImage(qrcodeCanvas, 0, 0, this.qrSize, this.qrSize)
-        // 设置logo大小
-        // 设置获取的logo将其变为圆角以及添加白色背景
-        ctx.fillStyle = '#fff'
-        ctx.beginPath()
-        let logoPosition = (this.qrSize - this.qrLogoSize) / 2 // logo相对于canvas居中定位
-        let h = this.qrLogoSize + 10 // 圆角高 10为基数(logo四周白色背景为10/2)
-        let w = this.qrLogoSize + 10 // 圆角宽
-        let x = logoPosition - 5
-        let y = logoPosition - 5
-        let r = 5 // 圆角半径
-        ctx.moveTo(x + r, y)
-        ctx.arcTo(x + w, y, x + w, y + h, r)
-        ctx.arcTo(x + w, y + h, x, y + h, r)
-        ctx.arcTo(x, y + h, x, y, r)
-        ctx.arcTo(x, y, x + w, y, r)
-        ctx.closePath()
-        ctx.fill()
-        ctx.drawImage(
-          qrcodeLogo,
-          logoPosition,
-          logoPosition,
-          this.qrLogoSize,
-          this.qrLogoSize
-        )
-        // canvas.style.display = 'none'
-        // qrcodeCanvas.src = canvas.toDataURL()
-        // qrcodeCanvas.style.display = 'inline-block'
-      }, 700)
-    })
   },
   watch: {
     categoryVal (newVal) {
@@ -520,12 +428,9 @@ export default {
       company_id: window.sessionStorage.getItem('company_id')
     }), flowerList({
       company_id: window.sessionStorage.getItem('company_id')
-    }), companyInfoDetail({
-      id: window.sessionStorage.getItem('company_id')
     })]).then((res) => {
       this.category = res[0].data.data
       this.flower = res[1].data.data
-      this.logoUrl = res[2].data.data.logo
       for (let key in hash) {
         this[key] = hash[key]
       }
@@ -545,33 +450,6 @@ export default {
     background: #1a95ff;
     &:hover {
       background: #48aaff;
-    }
-  }
-  .share-box {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    transform: translateY(100%);
-    width: 420px;
-    height: 210px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: #fff;
-    z-index: 999;
-    border-radius: 5px;
-    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.16);
-    .qrCode-box {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 150px;
-      img {
-        width: 100px;
-        height: 100px;
-        margin: 10px 0;
-        display: none;
-      }
     }
   }
 }

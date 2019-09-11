@@ -1,225 +1,232 @@
 <template>
-  <div id="priceListDetail">
+  <div id="priceListDetail"
+    v-loading='loading'>
     <div class="head">
       <h2>报价单详情</h2>
     </div>
     <div class="body">
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">报价单编号:</span>
-          <span class="content blue">{{priceList.quotation_code}}</span>
+      <div class="card">
+        <div class="lineCtn">
+          <div class="inputCtn strong">
+            <span class="label">报价单编号:</span>
+            <div class="content">{{priceTableDetail.code}}</div>
+          </div>
         </div>
+        <div class="lineCtn">
+          <div class="inputCtn">
+            <span class="label">创建人:</span>
+            <div class="content">{{priceTableDetail.userName}}</div>
+          </div>
+          <div class="inputCtn">
+            <span class="label">共计报价:</span>
+            <div class="content blue">{{priceTableDetail.totalPrice}}元</div>
+          </div>
+        </div>
+        <div class="lineCtn">
+          <div class="inputCtn">
+            <span class="label">外贸公司:</span>
+            <div class="content">{{priceTableDetail.clientName}}</div>
+          </div>
+          <div class="inputCtn">
+            <span class="label">联系人:</span>
+            <div class="content">{{priceTableDetail.linkMan}}</div>
+          </div>
+        </div>
+        <div class="lineCtn">
+          <div class="inputCtn">
+            <span class="label">结算单位:</span>
+            <div class="content">{{priceTableDetail.unit}}</div>
+          </div>
+          <div class="inputCtn">
+            <span class="label">汇率:</span>
+            <div class="content">{{priceTableDetail.exchangeRate}}</div>
+          </div>
+        </div>
+        <div class="lineCtn">
+          <div class="inputCtn">
+            <span class="label">驳回理由:</span>
+            <div class="content">{{priceTableDetail.reasonText ? priceTableDetail.reasonText : '无'}}</div>
+          </div>
+          <div class="inputCtn">
+            <span class="label">更新时间:</span>
+            <div class="content">{{priceTableDetail.updateTime}}</div>
+          </div>
+        </div>
+        <div class="watermark"
+          v-if="priceTableDetail.status === 3"
+          :style="{'background-image':'url('+require('@/assets/image/icon/pass.png')+ ')'}"></div>
+        <div class="watermark"
+          v-else-if="priceTableDetail.status === 2"
+          :style="{'background-image':'url('+require('@/assets/image/icon/tongguo.png')+ ')'}"></div>
+        <div class="watermark"
+          v-else
+          :style="{'background-image':'url('+require('@/assets/image/icon/reasoning.png')+ ')'}"></div>
       </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">共计报价:</span>
-          <span class="content">{{priceList.total_price}} 元</span>
+      <div class="card"
+        style="margin-top:16px;padding-bottom:40px;">
+        <div class="headCtn">
+          <span>产品信息</span>
         </div>
-        <div class="inputCtn">
-          <span class="label">审核状态:</span>
-          <span class="content"
-            :style="{'color':getColor(priceList.status)}">{{priceList.status|filterStatus}}</span>
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">外贸公司:</span>
-          <span class="content">{{priceList.client_name}}</span>
-        </div>
-        <div class="inputCtn">
-          <span class="label">联系人:</span>
-          <span class="content">{{priceList.contact_name}}</span>
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">结算单位:</span>
-          <span class="content">{{priceList.account_unit}}</span>
-        </div>
-        <div class="inputCtn">
-          <span class="label">汇率:</span>
-          <span class="content">{{priceList.exchange_rate}}</span>
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">驳回理由:</span>
-          <span class="content">
-            <span v-for="(itemInfo,indexInfo) in JSON.parse(priceList.reason)"
-              :key="itemInfo">{{indexInfo+1}}.{{itemInfo}} <br /></span>
-          </span>
-        </div>
-        <div class="inputCtn">
-          <span class="label">备注信息:</span>
-          <span class="content">{{priceList.reason_text?priceList.reason_text:'暂无'}}</span>
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">产品信息:</span>
-          <div class="productCtn"
-            v-for="item in priceList.product_info"
-            :key="item.id">
-            <div class="infoCtn blue">
-              <span class="titles">{{item.product_code}}</span>
-              <div class="info">
-                <span class="inline">{{item.product_info.category_info.product_category}} / {{item.product_info.type_name}} / {{item.product_info.style_name}}</span>
-              </div>
+        <div class="lineCtn">
+          <div class="inputCtn">
+            <span class="label">产品需求:</span>
+            <div class="content">
+              {{priceTableDetail.need ? priceTableDetail.need : '暂无需求内容'}}
             </div>
-            <div class="infoCtn">
-              <span class="titles">规格尺码</span>
-              <div class="info">
-                <div class="block"
-                  v-for="(itemSize,indexSize) in item.size"
-                  :key="indexSize">
-                  <span class="inline">{{itemSize.size}}</span>
-                  <span class="inline"
-                    v-for="(itemGuige,indexGuige) in itemSize.guige"
-                    :key="indexGuige">{{itemGuige.size_name}}：{{itemGuige.size_value}}cm</span>
+          </div>
+        </div>
+        <div class="lineCtn">
+          <div class="inputCtn auto">
+            <span class="label">产品信息:</span>
+            <div class="content"
+              style="width:972px">
+              <div class="proBox"
+                style="transform: translateX(0);"
+                ref="proBox">
+                <div class="proCtn"
+                  v-for="(item,key) in product_info"
+                  :key="key"
+                  @click="item.show = !item.show"
+                  :class="{'active':item.show}">
+                  <div class="
+                  left">
+                    <img :src="item.product_info.img.length > 0 ? item.product_info.img[0].img_url : require('@/assets/image/index/noPic.png')"
+                      :alt="item.product_info.category_info.product_category + '图片'"
+                      :title="item.product_info.category_info.product_category"
+                      class="imgItem">
+                    <span class="blue">{{item.product_code}}</span>
+                    <span>{{item.product_info|filterType}}</span>
+                  </div>
+                  <ul class="right">
+                    <li>
+                      <span class="title">产品编号:</span>
+                      <span class="info blue">{{item.product_code}}</span>
+                    </li>
+                    <li>
+                      <span class="title">产品品类:</span>
+                      <span class="info">{{item.product_info|filterType}}</span>
+                    </li>
+                    <li>
+                      <span class="title">颜色色组:</span>
+                      <span class="info">{{item.product_info|filterColor}}</span>
+                    </li>
+                    <li>
+                      <span class="title">尺码规格:</span>
+                      <span class="info">
+                        <div class="sizeCtn"
+                          v-for="(value,index) in item.product_info.size"
+                          :key="index">
+                          <span>{{index}}</span>
+                          (
+                          <template v-for="(val,ind) in value">
+                            <span :key="ind">{{val.size_name}}:</span>
+                            <span :key="val.id">{{val.size_value}}cm</span>
+                            <span v-if="ind === value.length - 1"
+                              :key="ind+'x'">
+                              克重:
+                            </span>
+                            <span v-if="ind === value.length - 1"
+                              :key="ind+'y'">
+                              {{val.weight}}g
+                            </span>
+                          </template>
+                          )
+                        </div>
+                      </span>
+                    </li>
+                  </ul>
                 </div>
               </div>
-            </div>
-            <div class="infoCtn">
-              <span class="titles">颜色色组</span>
-              <div class="info">
-                <span class="inline"
-                  v-for="(itemColor,indexColor) in item.color"
-                  :key="indexColor">{{itemColor}}</span>
-              </div>
+              <div class="pagesCtn left el-icon-arrow-left"
+                @click="scroll('left')"></div>
+              <div class="pagesCtn right el-icon-arrow-right"
+                @click="scroll('right')"></div>
             </div>
           </div>
         </div>
       </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">产品要求:</span>
-          <span class="content">{{priceList.product_need?priceList.product_need:'暂无信息'}}</span>
+      <div class="card"
+        style="margin-top:16px;padding-bottom:60px;">
+        <div class="headCtn">
+          <span>报价详情</span>
         </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">报价单:</span>
-          <div class="specialTable">
-            <div class="tbox">
-              <div class="box1"
-                style="text-align:center;">
-                <span class="content"
-                  style="font-size:20px;">报价单</span>
-              </div>
+        <div class="lineCtn">
+          <div class="rightCtn">费用合计:<span>{{priceTableDetail.totalPrice}}</span>元</div>
+        </div>
+        <div class="lineCtn">
+          <div class="tabCtn">
+            <div class="otherCtn">
+              <span>产品费用</span>
             </div>
-            <div class="tbox"
-              v-for="(item,index) in JSON.parse(priceList.material_info)"
-              :key="'material_info'+ index">
-              <div class="box1">{{item.key?item.key:'原料费用'}}</div>
-              <div class="box2">
-                <div style="width:50%;display:inline-block;box-sizing:border-box;border-right:1px solid #ddd;position:relative">
-                  {{item.weight?item.weight:0}}<em>克</em>
-                </div>
-                <div style="width:50%;display:inline-block;box-sizing:border-box;padding-left:15px;position:relative">
-                  {{item.price?item.price:0}}<em>元</em>
-                </div>
-              </div>
-            </div>
-            <div class="tbox"
-              v-for="(item,index) in JSON.parse(priceList.assist_info)"
-              :key="'assist_info'+ index">
-              <div class="box1">{{item.key?item.key:'辅料费用'}}</div>
-              <div class="box2">
-                <div style="width:50%;display:inline-block;box-sizing:border-box;border-right:1px solid #ddd;position:relative">
-                  {{item.weight?item.weight:0}}<em>数量</em>
-                </div>
-                <div style="width:50%;display:inline-block;box-sizing:border-box;padding-left:15px;position:relative">
-                  {{item.price?item.price:0}}<em>元</em>
-                </div>
-              </div>
-            </div>
-            <div class="tbox"
-              v-for="(item,index) in JSON.parse(priceList.weave_info)"
-              :key="'weave_info'+ index">
-              <div class="box1">{{item.key?item.key:'制造明细'}}</div>
-              <div class="box2">{{item.price?item.price:0}}<em>元</em></div>
-            </div>
-            <div class="tbox"
-              v-for="(item,index) in JSON.parse(priceList.semi_product_info)"
-              :key="'semi_product_info'+ index">
-              <div class="box1">{{item.key?item.key:'半成品加工'}}</div>
-              <div class="box2">{{item.price?item.price:0}}<em>元</em></div>
-            </div>
-            <div class="tbox"
-              v-for="(item,index) in JSON.parse(priceList.pack_material_info)"
-              :key="'pack_material_info'+ index">
-              <div class="box1">{{item.key?item.key:'包装辅料'}}</div>
-              <div class="box2">{{item.price?item.price:0}}<em>元</em></div>
-            </div>
-            <div class="tbox"
-              v-for="(item,index) in JSON.parse(priceList.user_info)"
-              :key="'user_info'+ index">
-              <div class="box1">{{item.key?item.key:'人工费用'}}</div>
-              <div class="box2">{{item.price?item.price:0}}<em>元</em></div>
-            </div>
-            <div class="tbox"
-              v-for="(item,index) in JSON.parse(priceList.desc_info)"
-              :key="'desc_info'+ index">
-              <div class="box1">{{item.key?item.key:'其他费用'}}</div>
-              <div class="box2">{{item.price?item.price:0}}<em>元</em></div>
-            </div>
-            <div class="tbox">
-            </div>
-            <div class="tbox">
-              <div class="box1">运输费用</div>
-              <div class="box2">{{priceList.transport_cost}}<em>元</em></div>
-            </div>
-            <div class="tbox">
-              <div class="box1">基本利润</div>
-              <div class="box2">{{priceList.profit}}<em>元</em></div>
-            </div>
-            <div class="tbox">
-              <div class="box1">基本佣金</div>
-              <div class="box2">{{priceList.commission}}<em>元</em></div>
-            </div>
-            <div class="tbox">
-              <div class="box1">基本税收</div>
-              <div class="box2">{{priceList.tax}}<em>元</em></div>
-            </div>
-            <div class="tbox"
-              style="height:100px">
-              <div class="box1">备注：{{priceList.desc}}</div>
-            </div>
-            <div class="tbox">
-              <div class="box1">
-                <span>总计</span>
-              </div>
-              <div class="box2">
-                <span style="color:#666;font-weight:500;font-size:22px;">{{priceList.total_price}}</span>
-                <em class="unit">元</em>
-              </div>
+            <ul class="conCtn">
+              <li class="title">
+                <span>名称</span>
+                <span>克重/数量</span>
+                <span>单价</span>
+                <span>损耗</span>
+                <span>其他</span>
+                <span>总价</span>
+              </li>
+              <li v-for="(item,key) in priceTableDetail.info"
+                :key="key">
+                <span>{{item.name ? item.name : '/'}}</span>
+                <span>{{item.number ? item.number : '/'}}{{(item.unit && item.number) ? item.unit : ''}}</span>
+                <span>{{item.price ? item.price : '/'}}{{item.price && item.unit ? '元/' + item.unit : '' }}</span>
+                <span>{{item.sunhao ? item.sunhao : '/'}}{{item.sunhao ? '%' : ''}}</span>
+                <span>{{item.other ? item.other : '/'}}</span>
+                <span>{{item.totalPrice ? item.totalPrice : 0}}元</span>
+              </li>
+            </ul>
+            <div class="otherCtn bigFont">
+              <span>合计</span>
+              <span>{{priceTableDetail.product_total_price ? priceTableDetail.product_total_price : 0}}<em>元</em></span>
             </div>
           </div>
         </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">创建人:</span>
-          <span class="content">{{priceList.user_name}}</span>
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">创建时间:</span>
-          <span class="content">{{priceList.created_at}}</span>
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">更新时间:</span>
-          <span class="content">{{priceList.updated_at}}</span>
+        <div class="lineCtn">
+          <div class="tabCtn">
+            <div class="otherCtn">
+              <span>订单费用</span>
+            </div>
+            <ul class="conCtn">
+              <li class="title">
+                <span>名称</span>
+                <span>费用比例</span>
+                <span>总价</span>
+              </li>
+              <li>
+                <span>基本佣金</span>
+                <span>{{priceTableDetail.yongjin.prop}}%</span>
+                <span>{{priceTableDetail.yongjin.price}}元</span>
+              </li>
+              <li>
+                <span>基本税费</span>
+                <span>{{priceTableDetail.shuifei.prop}}%</span>
+                <span>{{priceTableDetail.shuifei.price}}元</span>
+              </li>
+              <li>
+                <span>基本利润</span>
+                <span>{{priceTableDetail.lirun.prop}}%</span>
+                <span>{{priceTableDetail.lirun.price}}元</span>
+              </li>
+            </ul>
+            <div class="otherCtn bigFont">
+              <span>合计</span>
+              <span>{{priceTableDetail|filterPrice}}<em>元</em></span>
+            </div>
+          </div>
         </div>
       </div>
       <div class="bottom">
-        <div class="cancleBtn"
-          @click="$router.go(-1)">返回</div>
-        <div class="okBtn"
-          @click="showBox = true">审核</div>
+        <span class="total"></span>
+        <div class="btnCtn">
+          <span class="clear"
+            @click="$router.push('/index/priceListList')">返回</span>
+          <span class="change"
+            @click="$router.push('/priceListTable/' + $route.params.id)">打印</span>
+          <span class="submit"
+            @click="showBox = true">审核</span>
+        </div>
       </div>
     </div>
     <div class="messageBox"
@@ -286,61 +293,40 @@ import { priceListDetail, priceListCheck } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      loading: true,
       showBox: false,
-      reasonText: '',
       ifPass: true,
+      reasonText: '',
       checkList: [],
-      priceList: {
-        account_unit: '',
-        assist_info: '[]',
-        client_name: '',
-        commission: 0,
-        contact_name: '',
-        created_at: '',
-        desc: '',
-        desc_info: '[]',
-        exchange_rate: '',
-        material_info: '[]',
-        pack_material_info: '[]',
-        product_info: [],
-        product_need: '',
-        profit: 0,
-        quotation_code: '',
-        semi_product_info: '[]',
-        tax: 0,
-        transport_cost: 0,
-        user_info: '[]',
-        weave_info: '[]',
-        updated_at: '',
-        user_name: '',
-        total_price: 0,
-        reason_text: '',
-        reason: '[]'
-      }
+      priceTableDetail: {
+        code: '',
+        userName: '',
+        totalPrice: '',
+        clientName: '',
+        linkMan: '',
+        unit: '',
+        exchangeRate: '',
+        reasonText: '',
+        updateTime: '',
+        need: '',
+        info: [],
+        yongjin: {
+          prop: '',
+          price: ''
+        },
+        shuifei: {
+          prop: '',
+          price: ''
+        },
+        lirun: {
+          prop: '',
+          price: ''
+        }
+      },
+      product_info: []
     }
   },
   methods: {
-    cmpPrice (val) {
-      return (JSON.parse(val.material_info).reduce((total, current) => {
-        return total + Number(current.price)
-      }, 0) + JSON.parse(val.assist_info).reduce((total, current) => {
-        return total + Number(current.price)
-      }, 0) + JSON.parse(val.weave_info).reduce((total, current) => {
-        return total + Number(current.price)
-      }, 0) + JSON.parse(val.semi_product_info).reduce((total, current) => {
-        return total + Number(current.price)
-      }, 0) + JSON.parse(val.pack_material_info).reduce((total, current) => {
-        return total + Number(current.price)
-      }, 0) + JSON.parse(val.user_info).reduce((total, current) => {
-        return total + Number(current.price)
-      }, 0) + JSON.parse(val.desc_info).reduce((total, current) => {
-        return total + Number(current.price)
-      }, 0) + Number(val.transport_cost) + Number(val.profit) + Number(val.commission) + Number(val.tax)).toFixed(2)
-    },
-    getColor (val) {
-      let arr = ['#ddd', '#1A95FF', '#67c23a', '#F56C6C']
-      return arr[val]
-    },
     check () {
       // 1初始 2通过 3驳回
       if (this.ifPass) {
@@ -363,32 +349,134 @@ export default {
           })
         })
       }
+    },
+    scroll (direction) {
+      let dom = this.$refs.proBox
+      let maxWidth = dom.offsetWidth - 972
+      if (maxWidth < 0) {
+        return
+      }
+      let nowPosition = Number(dom.style.transform.split('(')[1].split('px')[0])
+      if (direction === 'left') {
+        nowPosition += 100
+      } else if (direction === 'right') {
+        nowPosition -= 100
+      }
+      if (nowPosition > 0) {
+        nowPosition = 0
+      } else if (nowPosition < (0 - maxWidth)) {
+        nowPosition = -maxWidth
+      }
+      dom.style.transform = 'translateX(' + nowPosition + 'px)'
     }
   },
   filters: {
-    filterStatus (val) {
-      let arr = ['暂无', '待审核', '已通过', '驳回']
-      return arr[val]
+    // filterStatus (val) {
+    //   let arr = ['暂无', '待审核', '已通过', '驳回']
+    //   return arr[val]
+    // },
+    filterColor (item) {
+      let str = ''
+      item.color.forEach((value, index) => {
+        str += ((index !== 0 ? '/' : '') + value.name)
+      })
+      return str
+      // return item.color.reduce((str, str1) => {
+      //   return ((str.name ? str.name : str) + str1.name)
+      // })
+    },
+    filterType (item) {
+      return item.category_info.product_category + '/' + item.type_name + '/' + item.style_name
+    },
+    filterPrice (item) {
+      return (Number(item.yongjin.price ? item.yongjin.price : 0) + Number(item.lirun.price ? item.lirun.price : 0) + Number(item.shuifei.price ? item.shuifei.price : 0)).toFixed(1)
     }
   },
-  mounted () {
+  created () {
     priceListDetail({
       id: this.$route.params.id
     }).then((res) => {
-      console.log(res)
-      this.priceList = res.data.data
-      this.priceList.total_price = this.cmpPrice(this.priceList)
-      this.priceList.product_info = JSON.parse(this.priceList.product_info)
-      console.log(this.priceList.product_info)
-      this.priceList.product_info.forEach((itemPro) => {
-        itemPro.color = []
-        itemPro.size = []
-        itemPro.colorSize.forEach((item) => {
-          const arr = item.split('/')
-          if (!itemPro.color.find((item) => item === arr[1])) { itemPro.color.push(arr[1]) }
-          if (!itemPro.size.find((item) => item.size === arr[0])) { itemPro.size.push({ size: arr[0], guige: itemPro.product_info.size[arr[0]] }) }
-        })
+      let data = res.data.data
+      this.priceTableDetail.code = data.quotation_code
+      this.priceTableDetail.userName = data.user_name
+      this.priceTableDetail.totalPrice = data.total_price
+      this.priceTableDetail.clientName = data.client_name
+      this.priceTableDetail.linkMan = data.contact_name
+      this.priceTableDetail.unit = data.account_unit
+      this.priceTableDetail.exchangeRate = data.exchange_rate
+      // this.priceTableDetail.reasonText = data.reason_text
+      this.priceTableDetail.updateTime = data.updated_at
+      this.priceTableDetail.info.push(
+        ...JSON.parse(data.material_info).map(item => {
+          return {
+            name: item.key ? item.key : '原料',
+            number: item.weight / 1000,
+            price: item.price,
+            sunhao: item.sunhao,
+            totalPrice: item.total_price,
+            unit: 'kg'
+          }
+        }),
+        ...JSON.parse(data.assist_info).map(item => {
+          return {
+            name: item.key ? item.key : '辅料',
+            number: item.weight,
+            price: item.price,
+            sunhao: item.sunhao,
+            totalPrice: item.total_price,
+            unit: item.unit
+          }
+        }),
+        ...JSON.parse(data.pack_material_info).map(item => {
+          return {
+            name: item.key ? item.key : '包装',
+            totalPrice: item.price
+          }
+        }),
+        ...JSON.parse(data.semi_product_info).map(item => {
+          return {
+            name: item.key && item.key.length !== 0 ? item.key.join('/') : '半成品加工',
+            totalPrice: item.price
+          }
+        }),
+        ...JSON.parse(data.weave_info).map(item => {
+          return {
+            name: item.key ? item.key : '织造',
+            number: item.number,
+            totalPrice: item.price
+          }
+        }),
+        ...JSON.parse(data.user_info).map(item => {
+          return {
+            name: item.key ? item.key : '非生产费用',
+            totalPrice: item.price
+          }
+        }),
+        ...JSON.parse(data.desc_info).map(item => {
+          return {
+            name: item.key ? item.key : '其他',
+            totalPrice: item.price
+          }
+        }),
+        { name: '运输', totalPrice: data.transport_cost }
+      )
+      this.priceTableDetail.product_total_price = (this.priceTableDetail.info.reduce((total, item) => {
+        return Number(total.totalPrice ? total.totalPrice : total) + Number(item.totalPrice)
+      })).toFixed(1)
+      this.priceTableDetail.yongjin = JSON.parse(data.commission)
+      this.priceTableDetail.shuifei = JSON.parse(data.tax)
+      this.priceTableDetail.lirun = JSON.parse(data.profit)
+      this.priceTableDetail.reasonText = data.reason ? JSON.parse(data.reason).join(',') : ''
+      this.priceTableDetail.need = data.product_need
+      this.priceTableDetail.status = data.status
+      this.product_info = JSON.parse(data.product_info).map(item => {
+        return {
+          show: false,
+          ...item
+        }
       })
+      console.log(this.product_info)
+      this.loading = false
     })
   }
 }

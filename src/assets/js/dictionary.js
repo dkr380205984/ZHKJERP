@@ -1,31 +1,62 @@
 // 字典文件，存储常用json数据
 // 公司类型
+const companyTypes = [
+  {
+    label: '订单客户',
+    disabled: true,
+    children: [{
+      value: 1,
+      label: '订单公司'
+    }]
+  }, {
+    label: '供应商',
+    disabled: true,
+    children: [{
+      value: 2,
+      label: '原料纱线单位'
+    }, {
+      value: 10,
+      label: '装饰辅料单位'
+    }, {
+      value: 7,
+      label: '包装辅料单位'
+    }]
+  }, {
+    label: '生产商',
+    disabled: true,
+    children: [{
+      value: 4,
+      label: '生产织造单位'
+    }, {
+      value: 5,
+      label: '半成品加工单位'
+    }, {
+      value: 3,
+      label: '物料加工单位'
+    }]
+  }, {
+    label: '其他',
+    disabled: true,
+    children: [{
+      value: 8,
+      label: '运输单位'
+    }, {
+      value: 6,
+      label: '检验单位'
+    }, {
+      value: 9,
+      label: '存储单位'
+    }]
+  }
+]
+
 const companyType = [
-  //   {
-  //   value: 1,
-  //   name: '外贸公司'
-  // }, {
-  //   value: 2,
-  //   name: '纱线订购单位'
-  // }, {
-  //   value: 3,
-  //   name: '染色单位'
-  // }, {
-  //   value: 4,
-  //   name: '倒纱单位'
-  // }, {
-  //   value: 5,
-  //   name: '裁剪单位'
-  // }, {
-  //   value: 6,
-  //   name: '辅料订购单位'
-  // }
   {
     value: 1,
-    name: '外贸公司'
+    name: '订单公司'
   }, {
     value: 2,
-    name: '物料订购公司'
+    name: '原料纱线单位'
   }, {
     value: 3,
     name: '物料加工单位'
@@ -40,16 +71,18 @@ const companyType = [
     name: '检验单位'
   }, {
     value: 7,
-    name: '包装辅料公司'
+    name: '包装辅料单位'
   }, {
     value: 8,
     name: '运输单位'
   }, {
     value: 9,
-    name: '物料存储单位'
+    name: '存储单位'
+  }, {
+    value: 10,
+    name: '装饰辅料单位'
   }
 ]
-
 // 字母映射
 const letterArr = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'Y', 'Z']
 // 货币
@@ -190,9 +223,27 @@ let machiningType = [{
 }, {
   name: '穿线',
   id: 21
+}, {
+  name: '缝纫',
+  id: 22
 }]
 // 菜单栏在做中的页面
 const menu = [{
+  name: '样品管理',
+  children: [{
+    name: '添加样品',
+    url: '/index/sampleCreate'
+  }, {
+    name: '样品列表',
+    url: '/index/sampleList'
+  }, {
+    name: '新建样品订单',
+    url: '/index/sampleOrderCreate'
+  }, {
+    name: '样品订单列表',
+    url: '/index/sampleOrderList'
+  }]
+}, {
   name: '产品管理',
   children: [{
     name: '添加新产品',
@@ -206,9 +257,9 @@ const menu = [{
   }, {
     name: '产品报价单列表',
     url: '/index/priceListList'
-  }, {
-    name: '产品电子手册',
-    url: '/productMenu'
+    // }, {
+    //   name: '产品电子手册',
+    //   url: '/productMenu'
   }]
 }, {
   name: '工艺单管理',
@@ -363,12 +414,12 @@ const menu = [{
     url: '/index/materialFinancialList'
   }]
 }, {
-  name: '合作公司管理',
+  name: '客户管理',
   children: [{
-    name: '添加合作公司',
+    name: '添加客户',
     url: '/index/foreignTradeCreate'
   }, {
-    name: '合作公司列表',
+    name: '客户列表',
     url: '/index/foreignTradeList'
   }]
 }, {
@@ -380,9 +431,9 @@ const menu = [{
     name: '权限设置',
     url: '/index/permissionsAdd'
   }, {
-    name: '产品手册设置',
-    url: '/index/productMenuEdit'
-  }, {
+    //   name: '产品手册设置',
+    //   url: '/index/productMenuEdit'
+    // }, {
     name: '添加权限',
     url: '/index/permissionsAppend'
   }, {
@@ -843,4 +894,4 @@ const permissionsData = [
   }
 ]
 const allUrl = ['auth/login', 'auth/send_code', 'auth/register', 'auth/verify_phone', 'upload/token', 'product/flower/save', 'product/flower/one', 'product/flower/list', 'product/category/one', 'product/category/list', 'product/one', 'auth/password/forget', 'product/category/delete', 'product/flower/delete', 'product/color/save', 'product/color/one', 'product/ingredient/save', 'product/ingredient/one', 'product/ingredient/delete', 'product/ingredient/list', 'product/color/list', 'product/size/save', 'product/size/company/all', 'product/size/category/all', 'product/size/delete', 'product/footage/list', 'product/footage/delete', 'product/footage/one', 'product/size/one', 'product/footage/save', 'product/footage/category/all', 'production/process/save', 'production/type/save', 'production/method/save', 'production/side/save', 'product/save', 'production/edit/list', 'permission/one', 'permission/company/all', 'yarn/color/save', 'product/unit/save', 'product/unit/all', 'product/unit/one', 'product/unit/category/one', 'user/save', 'user/check_status', 'user/group/save', 'user/station/save', 'user/list', 'user/station/list', 'user/group/list', 'product/craft/one', 'craft/product/one', 'product/material/save', 'product/material/list', 'product/material/one', 'client/delete', 'client/one', 'client/contacts/delete', 'client/contacts/check', 'client/list', 'order/sample/list', 'order/sample/save', 'product/craft/save', 'product/stock/one', 'product/stock/list', 'product/stock/order', 'production/save', 'production/list', 'production/one', 'client/save', 'order/list', 'order/batch/list', 'product/list', 'product/delete', 'product/craft/list', 'product/plan/list', 'product/plan/order', 'product/plan/product/one', 'product/plan/one', 'upload/put', 'product/plan/save', 'product/stock/detail', 'product/unit/delete', 'product/material/delete', 'order/delete', 'production/side/delete', 'production/method/delete', 'auth/logout', 'auth/check/login', 'user/station/delete', 'user/group/delete', 'yarn/list', 'pan/color/list', 'yarn/color/list', 'yarn/category/save', 'yarn/category/list', 'material/order/init', 'material/process/list', 'material/order/list', 'product/craft/draft/delete', 'material/stock/list', 'material/reserve/save', 'order/material/push/detail', 'order/material/pop/detail', 'production/weave/save', 'production/semi_product/save', 'product/plan/order/detail', 'material/process/save', 'production/semi_product/list', 'production/weave/list', 'product/order/push', 'product/order/pop', 'product/order/push/list', 'product/order/pop/list', 'production/weave/edit', 'production/semi_product/edit', 'product/inspection/list', 'product/semi/inspection/list', 'product/order/push/edit', 'product/order/pop/edit', 'product/inspection', 'yarn/save', 'yarn/edit', 'product/category/save', 'product/semi/inspection', 'pack/order/list', 'production/order/cilent/list', 'production/yarn/replenish/save', 'production/yarn/replenish/list', 'material/order/save', 'pack/material/one', 'pack/material/save', 'pack/material/list', 'pack/order/save', 'pack/info/list', 'stock/out/save', 'stock/out/list', 'pack/info/save', 'pack/real/save', 'pack/real/list', 'material/reserve/list', 'material/reserve/one', 'material/reserve/push', 'order/material/pop', 'order/one', 'order/detail', 'order/material/push', 'order/material/surplus/push', 'order/material/list', 'order/material/surplus/delete', 'material/stock/detail', 'stock/material/detail', 'order/save', 'permission/save', 'permission/group/save', 'permission/group/one', 'permission/group/all', 'product/stock/save', 'order/status/check']
-export { menu, menu2, letterArr, companyType, moneyArr, machiningType, defectiveType, countries, permissionsData, allUrl }
+export { menu, menu2, letterArr, companyType, companyTypes, moneyArr, machiningType, defectiveType, countries, permissionsData, allUrl }
