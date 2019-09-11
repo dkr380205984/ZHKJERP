@@ -86,7 +86,7 @@ async function get (url, params) {
         duration: 0,
         showClose: true
       })
-      router.push('/login')
+      router.push('/login' + '?nextUrl=' + window.location.href)
       return Promise.reject(response)
     }
     return Promise.resolve(response)
@@ -136,7 +136,7 @@ async function post (url, params, contentType, responseType) {
         duration: 0,
         showClose: true
       })
-      router.push('/login')
+      router.push('/login' + '?nextUrl=' + window.location.href)
       return Promise.reject(response)
     }
     return Promise.resolve(response)

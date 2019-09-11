@@ -125,6 +125,7 @@
     <div class="message"
       v-show="showMessageBox">
       <div class="messageBox"
+        style="flex-direction:row"
         v-loading="showMessageBoxLoading">
         <div class="left-img">
           <el-carousel indicator-position="inside"
@@ -459,9 +460,8 @@ export default {
   display: flex;
   flex-direction: column;
   position: absolute;
-  top: 50%;
+  top: -100%;
   left: 50%;
-  z-index: -66;
   .imgBox {
     width: 100%;
     height: 324px;

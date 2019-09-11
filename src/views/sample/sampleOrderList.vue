@@ -118,12 +118,12 @@
         <div class="mergeBody"
           v-for="(item ,index) in list"
           :key="index">
-          <div class="tableColumn">{{item.order_code}}</div>
+          <div class="tableColumn">{{item.order_title}}</div>
           <div class="tableColumn">{{item.client_name}}</div>
           <div class="tableColumn"
             style="flex:2">
             <div class="small"
-              v-for="(itemProduct,indexProduct) in item.productList"
+              v-for="(itemProduct,indexProduct) in JSON.parse(item.product_info)"
               :key="indexProduct"
               style="height:60px;text-align:center;justify-content:space-around">
               <span style="display:inline-block">
@@ -223,7 +223,7 @@
 </template>
 
 <script>
-import { orderList, productTppeList, clientList, getGroup, orderDelete } from '@/assets/js/api.js'
+import { sampleOrderList, productTppeList, clientList, getGroup, orderDelete } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -315,7 +315,7 @@ export default {
     },
     getOrderList () {
       this.loading = true
-      orderList({
+      sampleOrderList({
         'company_id': window.sessionStorage.getItem('company_id'),
         'limit': 5,
         'page': this.pages,
@@ -332,45 +332,7 @@ export default {
       }).then((res) => {
         this.loading = false
         this.total = res.data.meta.total
-        this.list = res.data.data.map((item) => {
-          let productList = []
-          item.order_batch.forEach((itemOrder) => {
-            itemOrder.batch_info.forEach((itemBatch) => {
-              if (productList.find((itemFind) => itemFind.productCode === itemBatch.productCode)) {
-                let mark = -1
-                productList.forEach((itemFind, index) => {
-                  if (itemFind.productCode === itemBatch.productCode) {
-                    mark = index
-                  }
-                })
-                productList[mark].sum = productList[mark].sum + itemBatch.size.reduce((total, current) => {
-                  return total + parseInt(current.numbers)
-                }, 0)
-              } else {
-                productList.push({
-                  productInfo: itemBatch.productInfo,
-                  productCode: itemBatch.productCode,
-                  sum: itemBatch.size.reduce((total, current) => {
-                    return total + parseInt(current.numbers)
-                  }, 0)
-                })
-              }
-            })
-          })
-          return {
-            id: item.id,
-            has_log: item.has_log,
-            status: item.status,
-            group_name: item.group_name,
-            order_code: item.order_code,
-            order_time: item.order_time,
-            client_name: item.client_name,
-            contacts: item.contacts,
-            delivery_time: item.order_batch.map((item) => item.delivery_time),
-            productList: productList,
-            lineNum: productList.length // 这个参数用于计算每行的高度
-          }
-        })
+        this.list = res.data.data
         console.log(this.list)
         this.first = false
       })

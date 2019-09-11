@@ -1,4 +1,9 @@
 @import './common.less';
+ul{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
 #productDesignDetail{
   height: 100%;
   font-family: 'systemfont';
@@ -30,6 +35,8 @@
       color: @fontNormal;
       margin: 24px 0;
       max-width: 1000px;
+      padding-left:20px;
+      position: relative;
       .inputCtn{  
         display: flex;
         align-items: center;
@@ -48,7 +55,7 @@
         .label{
           font-size: @fontBig;
           width: 7em;
-          text-align: right;
+          text-align: left;
           position: absolute;
           line-height: 40px;
           left: 0;
@@ -89,8 +96,8 @@
       background: #ffffff;
       border:1px solid #B5B5B5;
       box-shadow: 0 0 5px #f0f0f0;
-      margin-top: 10px;
-      margin-left: 15px;
+      // margin-top: 10px;
+      // margin-left: 15px;
       display: flex;
       .left{
         width: 150px;
@@ -188,6 +195,55 @@
         }
       }
     }
+    .btn{
+      background: @normalBlue;
+      color: #FFF;
+      cursor: pointer;
+      display: flex;
+      width: auto;
+      height: 32px;
+      line-height: 32px;
+      justify-content: center;
+      border-radius: 4px;
+      padding: 0 16px;
+      &.rightTop{
+        position: absolute;
+        top: -8px;
+        right: 0;
+        transform: translateY(-100%);
+      }
+      &.leftTop{
+        position: absolute;
+        top:-8px;
+        left: 0;
+        transform: translateY(-100%);
+      }
+    }
+    .catBtn{
+      position: absolute;
+      top: -8px;
+      left: 0;
+      display: flex;
+      transform: translateY(-100%);
+      &>span{
+        width: auto;
+        height: 32px;
+        line-height: 32px;
+        color: #FFF;
+        cursor: pointer;
+        text-align: center;
+        padding: 0 16px;
+        border-radius: 4px;
+        background: rgba(137,137,137,1);
+        margin-left: 8px;
+        &:first-child{
+          margin-left: 0;
+        }
+        &.active{
+          background: @normalBlue;
+        }
+      }
+    }
     .btnCtn{
       display: flex;
       padding-left: 6em;
@@ -196,5 +252,141 @@
       margin-top: 40px;
       margin-bottom: 40px;
     }
+    .planTable{
+      border: 1px solid #DDD;
+      margin: 40px 0;
+      line-height: 40px;
+      display: flex;
+      position: relative;
+      .planLeft{
+        flex:1;
+        min-width: 20%;
+        border-right: 1px solid #DDD;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        &:hover{
+          overflow-x: auto;
+        }
+        &>span{
+          border-top: 1px solid #DDD;
+          text-align: center;
+          &.blue{
+            color: @normalBlue;
+            display: flex;
+            flex-direction: column;
+            line-height: 30px;
+            border: none;
+            background: rgba(240,240,240,1);
+          }
+        }
+      }
+      .planRight{
+        display: flex;
+        flex-direction: column;
+        max-width: 80%;
+        overflow: hidden;
+        &:hover{
+          overflow-x: auto;
+        }
+        &>span{
+          border-top: 1px solid #DDD;
+          display: flex;
+          &.titles{
+            font-weight: 500;
+            display: flex;
+            height: 60px;
+            border: none;
+            line-height: 60px;
+            &>span{
+              flex: 1;
+              text-align: center;
+              border-right: 1px solid #DDD;
+              background: rgba(240,240,240,1);
+              &:last-of-type{
+                border-right: none;
+              }
+            }
+          }
+          .planCol{
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #DDD;
+            &:last-of-type{
+              border-right: none;
+            }
+          }
+          .planRow{
+            display: flex;
+            justify-content: center;
+            &>span{
+              display: flex;
+              width: 35%;
+              justify-content: flex-start;
+              &:last-of-type{
+                justify-content: flex-end;
+              }
+            }
+          }
+        }
+      }
+    }
+    .totalTable{
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      width: 100%;
+      position: relative;
+      margin: 40px 0;
+      .item{
+        width: 20%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        border-top: 1px solid #DDD;
+        border-left: 1px solid #DDD;
+        border-bottom: 1px solid #DDD;
+        box-sizing: border-box;
+        &:nth-child(5n){
+          border-right: 1px solid #DDD;
+        }
+        &>span{
+          text-align: center;
+          border-top: 1px solid #DDD;
+          line-height: 40px;
+          height: 40px;
+          &.title{
+            line-height: 60px;
+            background: rgba(240,240,240,1);
+            height: 60px;
+            border-top:none;
+          }
+          &.total{
+            background: rgba(240,240,240,1);
+          }
+          &.info{
+            display: flex;
+            justify-content: center;
+            &>span{
+              width: 35%;
+              text-align: left;
+              &:last-of-type{
+                text-align: right;
+              }
+            }
+          }
+        }
+      }
+    }
   }
+}
+.flex3{
+  flex:3!important;
+}
+.flex08{
+  flex:0.8!important;
+}
+.flex12{
+  flex:1.2!important;
 }

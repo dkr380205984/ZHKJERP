@@ -61,7 +61,7 @@
             <el-option v-for="item in ingredientArr"
               :key="item.id"
               :label="item.name"
-              :value="item.id">
+              :value="item.name">
             </el-option>
           </el-select>
           <el-input class="smallInputItem"
@@ -97,7 +97,7 @@
               <el-option v-for="item in sizeArr"
                 :key="item.id"
                 :label="item.name"
-                :value="item.id">
+                :value="item.name">
               </el-option>
             </el-select>
             <el-input placeholder="输入克重"
@@ -217,7 +217,8 @@ export default {
       // nopantongColorArr: [],
       textarea: '',
       postData: { token: '' },
-      fileArr: []
+      fileArr: [],
+      lock: true
     }
   },
   created () {
@@ -395,6 +396,7 @@ export default {
     },
     saveAll () {
       let flag = true
+      this.lock = false
       if (this.types.length <= 0) {
         this.$message.error('请选择样品分类')
         flag = false
@@ -432,9 +434,19 @@ export default {
         size: null
       }
       if (flag) {
-        saveProduct(data).then(res => {
-          console.log(res)
-        })
+        if (this.lock) {
+          saveProduct(data).then(res => {
+            if (res.data.status) {
+              this.$message.success('添加成功,即将跳转至详情页')
+              setTimeout(() => {
+                this.lock = true
+                this.$router.push('/index/sampleDetail/' + res.data.data.id)
+              }, 800)
+            }
+          })
+        } else {
+          this.$message.warning('请勿频繁点击')
+        }
       }
       console.log(data)
     }

@@ -19,8 +19,7 @@
           <span class="label must">样单类型：</span>
           <el-select class="elInput"
             v-model="orderType"
-            placeholder="请选择样单类型"
-            @change="getContacts">
+            placeholder="请选择样单类型">
             <el-option v-for="item in sampleTypeArr"
               :key="item.id"
               :label="item.name"
@@ -195,16 +194,17 @@
           </el-select>
           <span class="delete"
             @click="checked(false,item)">删除</span>
-          <el-input v-model="item.price"
+          <!-- <el-input v-model="item.price"
             v-if="settleFun"
             class="elInput"
             style="width:140px"
             placeholder="样品单价">
             <template slot="append">元</template>
-          </el-input>
+          </el-input> -->
+          <!-- style="width:140px;margin-left:8px" -->
           <el-input v-model="item.number"
             class="elInput"
-            style="width:140px;margin-left:8px"
+            style="width:160px"
             placeholder="打样数量">
             <template slot="append">{{item.category_info.name}}</template>
           </el-input>
@@ -281,11 +281,11 @@
 </template>
 
 <script>
-import { clientList, productList, productTppeList, flowerList, orderSave, getGroup, getToken } from '@/assets/js/api.js'
+import { clientList, productList, productTppeList, flowerList, getGroup, getToken, sampleOrderCreate } from '@/assets/js/api.js'
 export default {
   data () {
     return {
-      loading: false,
+      loading: true,
       orderTitle: '',
       orderType: '',
       sampleTypeArr: [{
@@ -316,7 +316,6 @@ export default {
       groupArr: [],
       typeArr: [],
       types: [],
-      dateSearch: '',
       flower: '',
       flowerArr: [],
       hasJHD: '',
@@ -330,14 +329,15 @@ export default {
         id: 0,
         name: '无'
       }],
+      dateSearch: '',
       search: '',
       seachProduct: [],
-      settleFun: true,
+      // settleFun: true,
       productArr: [],
-      exchangeRate: '',
-      totalMoney: 0,
+      // exchangeRate: '',
+      // totalMoney: 0,
       presentDate: '',
-      total: '',
+      // total: '',
       otherInfo: '',
       postData: { token: '' },
       page: 1,
@@ -456,144 +456,76 @@ export default {
     // 保存
     saveAll () {
       if (!this.lock) {
-        if (!this.orderId) {
-          this.$message.error({
-            message: '订单号未填写，请输入订单号'
-          })
+        if (!this.orderTitle) {
+          this.$message.error('订单号未填写，请输入订单号')
+          return
+        }
+        if (!this.orderType && this.orderType !== 0) {
+          this.$message.error('样单类型未选择，请选择样单类型')
           return
         }
         if (!this.company) {
-          this.$message.error({
-            message: '外贸公司未选择，请选择外贸公司'
-          })
+          this.$message.error('外贸公司未选择，请选择外贸公司')
           return
         }
-        if (!this.contacts) {
-          this.$message.error({
-            message: '联系人未选择，请选择联系人'
-          })
-          return
-        }
-        if (!this.money) {
-          this.$message.error({
-            message: '结算单位未选择，请选择结算单位'
-          })
-          return
-        }
-        if (!this.exchangeRate) {
-          this.$message.error({
-            message: '汇率未填写，请填写汇率'
-          })
-          return
-        }
-        if (!this.taxRate) {
-          this.$message.error({
-            message: '税率未填写，请填写税率'
-          })
-          return
-        }
+        // if (!this.contacts) {
+        //   this.$message.error('联系人未选择，请选择联系人')
+        //   return
+        // }
         if (!this.date) {
-          this.$message.error({
-            message: '下单日期未选择，请选择下单日期'
-          })
+          this.$message.error('下单日期未选择，请选择下单日期')
           return
         }
         if (!this.group) {
-          this.$message.error({
-            message: '负责小组未选择，请选择负责小组'
-          })
+          this.$message.error('负责小组未选择，请选择负责小组')
           return
         }
-        let timeState = true
-        let productState = true
-        let sizeState = true
-        this.orderArr.forEach((itemOrder) => {
-          if (!itemOrder.date) {
-            timeState = false
-          }
-          itemOrder.product.forEach((itemProduct) => {
-            if (!itemProduct.name) {
-              productState = false
-            }
-            itemProduct.size.forEach((itemSize, indexSize) => {
-              itemProduct.size.forEach((item, index) => {
-                if (itemSize.name.length > 0 && indexSize !== index) {
-                  if (itemSize.name[0] === item.name[0] && itemSize.name[1] === item.name[1]) {
-                    sizeState = false
-                  }
-                }
-              })
-              if (!itemSize.numbers) {
-                productState = false
-              }
-              if (!itemSize.unitPrice) {
-                productState = false
-              }
-              if (itemSize.name.length === 0) {
-                productState = false
-              }
-            })
-          })
+        if (this.productArr.length === 0) {
+          this.$message.error('检测到未选择样品，请选择')
+          return
+        }
+        let checkedFlag = true
+        this.productArr.forEach(item => {
+          item.number ? checkedFlag = true : checkedFlag = false
         })
-        if (!timeState) {
-          this.$message.error({
-            message: '交货日期填写不完整，请检查'
-          })
+        if (!checkedFlag) {
+          this.$message.error('检测到未填写打样数量，请填写打样数量')
           return
         }
-        if (!productState) {
-          this.$message.error({
-            message: '产品信息填写不完整，请检查'
-          })
-          return
-        }
-        if (!sizeState) {
-          this.$message.error({
-            message: '检测到同一批次中有相同的产品颜色和尺寸,请合并后提交'
-          })
+        if (!this.presentDate) {
+          this.$message.error('检测到未选择样单交期，请选择')
           return
         }
         const fileArr = this.$refs.uploada.uploadFiles.map((item) => { return 'http://zhihui.tlkrzf.com/' + item.response.key })
-        let obj = {
-          company_id: this.companyId,
-          user_id: window.sessionStorage.getItem('user_id'),
-          order_code: this.orderId,
-          client_id: this.company,
-          contacts: this.contacts,
-          account_unit: this.money,
-          exchange_rate: this.exchangeRate,
-          tax_rate: this.taxRate,
-          order_time: this.date,
-          group_id: this.group,
-          order_info: this.orderArr.map((item, index) => {
-            return {
-              batch_info: item.product.map((item) => {
-                return {
-                  productCode: item.name,
-                  size: item.size,
-                  productInfo: item.product_info
-                }
-              }),
-              delivery_time: item.date,
-              batch_id: parseInt(index + 1)
-            }
-          }),
-          total_price: this.totalMoney,
-          remark: this.otherInfo,
-          total_price_RMB: this.totalMoney * this.exchangeRate / 100,
-          file_url: JSON.stringify(fileArr)
-        }
         this.lock = true
         this.loading = true
-        orderSave(obj).then((res) => {
-          console.log(res)
+        sampleOrderCreate({
+          id: null,
+          company_id: this.companyId,
+          user_id: window.sessionStorage.getItem('user_id'),
+          contact_user: this.contacts,
+          order_title: this.orderTitle,
+          order_type: this.orderType,
+          order_time: this.date,
+          complete_time: this.presentDate,
+          desc: this.otherInfo,
+          group_id: this.group,
+          client_id: this.company,
+          file_url: JSON.stringify(fileArr),
+          product_info: JSON.stringify(this.productArr.map(item => {
+            return {
+              id: item.id,
+              number: item.number
+            }
+          }))
+        }).then(res => {
           if (res.data.status) {
             this.$message.success({
-              message: '添加订单成功'
+              message: '添加样单成功'
             })
-            if (res.data && res.data.data) {
-              this.$router.push('/index/orderDetailNew/' + res.data.data)
-            }
+            // if (res.data && res.data.data) {
+            //   this.$router.push('/index/orderDetailNew/' + res.data.data)
+            // }
           } else {
             this.$message.error({
               message: res.data.message
@@ -602,6 +534,10 @@ export default {
           this.lock = false
           this.loading = false
         })
+        // orderSave(obj).then((res) => {
+        //   console.log(res)
+        //
+        // })
       } else {
         this.$message.error({
           message: '请勿频繁操作'
@@ -615,9 +551,9 @@ export default {
       if (!item.type_name) {
         return item.category_info.product_category
       } else if (!item.style_name) {
-        return item.category_info.product_category + ' / ' + item.type_name
+        return item.category_info.product_category + '/' + item.type_name
       } else {
-        return item.category_info.product_category + ' / ' + item.type_name + ' / ' + item.style_name
+        return item.category_info.product_category + '/' + item.type_name + '/' + item.style_name
       }
     }
   },
