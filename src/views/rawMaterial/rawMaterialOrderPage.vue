@@ -456,7 +456,7 @@ export default {
               //   flag = false
               //   return
             }
-            obj.order_time = value.orderTime
+            obj.complete_time = value.orderTime
             obj.type_source = value.company[0]
             obj.client_id = value.company[1]
             obj.desc = value.remark

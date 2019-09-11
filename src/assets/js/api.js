@@ -120,6 +120,12 @@ const craftOne = (params) => http.get(`${baseUrl}/product/craft/one`, params)
 const craftProduct = (params) => http.get(`${baseUrl}/craft/product/one`, params)
 // 删除工艺单
 const craftDelete = (params) => http.post(`${baseUrl}/product/craft/draft/delete`, params, 'application/json')
+// 添加穿综法
+const savePM = (params) => http.post(`${baseUrl}/craft/pattern/save`, params, 'application/json')
+// 穿综法列表
+const PMList = (params) => http.get(`${baseUrl}/craft/pattern/list`, params)
+// 删除穿综法
+const deletePM = (params) => http.post(`${baseUrl}/craft/pattern/delete`, params, 'application/json')
 // 获取产品计划单
 const productPlanOne = (params) => http.get(`${baseUrl}/product/plan/one`, params)
 // 产品计划单列表
@@ -345,6 +351,9 @@ const sampleOrderList = (params) => http.get(`${baseUrl}/order/sample/list`, par
 export {
   sampleOrderList,
   sampleOrderCreate,
+  savePM,
+  PMList,
+  deletePM,
   productMenuList,
   productMenuSetting,
   companyInfoDetail,

@@ -562,29 +562,32 @@ export default {
       })
       productionNumber.forEach(value => {
         value.sizeColor.forEach(val => {
-          let filtersArr = productPlan[value.product_code].filter(key => (key.size === val.size && key.color_match_name === val.color))
-          filtersArr.forEach(valNum => {
-            let material = null
-            let sizeColorInfo = null
-            if (valNum.type === 0) {
-              material = value.material.main
-              sizeColorInfo = val.sizeColor.main
-            } else if (valNum.type === 1) {
-              material = value.material.other
-              sizeColorInfo = val.sizeColor.other
-            }
-            if (material.indexOf(valNum.material_name) === -1) {
-              material.push(valNum.material_name)
-            }
-            if (!sizeColorInfo[valNum.material_name]) {
-              sizeColorInfo[valNum.material_name] = {}
-            }
-            if (sizeColorInfo[valNum.material_name][valNum.color_name]) {
-              sizeColorInfo[valNum.material_name][valNum.color_name].number += Number((val.production_num ? val.production_num : 0) * ((val.productiong_sunhao ? val.productiong_sunhao : 0) / 100 + 1) * valNum.number)
-            } else {
-              sizeColorInfo[valNum.material_name][valNum.color_name] = { number: (val.production_num ? val.production_num : 0) * ((val.productiong_sunhao ? val.productiong_sunhao : 0) / 100 + 1) * valNum.number, unit: valNum.unit }
-            }
-          })
+          console.log(productPlan[value.product_code])
+          if (productPlan[value.product_code]) {
+            let filtersArr = productPlan[value.product_code].filter(key => (key.size === val.size && key.color_match_name === val.color))
+            filtersArr.forEach(valNum => {
+              let material = null
+              let sizeColorInfo = null
+              if (valNum.type === 0) {
+                material = value.material.main
+                sizeColorInfo = val.sizeColor.main
+              } else if (valNum.type === 1) {
+                material = value.material.other
+                sizeColorInfo = val.sizeColor.other
+              }
+              if (material.indexOf(valNum.material_name) === -1) {
+                material.push(valNum.material_name)
+              }
+              if (!sizeColorInfo[valNum.material_name]) {
+                sizeColorInfo[valNum.material_name] = {}
+              }
+              if (sizeColorInfo[valNum.material_name][valNum.color_name]) {
+                sizeColorInfo[valNum.material_name][valNum.color_name].number += Number((val.production_num ? val.production_num : 0) * ((val.productiong_sunhao ? val.productiong_sunhao : 0) / 100 + 1) * valNum.number)
+              } else {
+                sizeColorInfo[valNum.material_name][valNum.color_name] = { number: (val.production_num ? val.production_num : 0) * ((val.productiong_sunhao ? val.productiong_sunhao : 0) / 100 + 1) * valNum.number, unit: valNum.unit }
+              }
+            })
+          }
         })
       })
       this.materials = productionNumber

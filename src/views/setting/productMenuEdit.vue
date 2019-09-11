@@ -195,7 +195,7 @@ export default {
     getProductList () {
       this.loading = true
       productList({
-        'company_id': window.sessionStorage.getItem('company_id')
+        'company_id': window.sessionStorage.getItem('company_id'),
         // 'limit': 10,
         // 'category_id': this.filterList.typeVal,
         // 'flower_id': this.filterList.flowerVal,
@@ -203,6 +203,7 @@ export default {
         // 'end_time': this.filterList.end_time,
         // 'product_code': this.filterList.searchVal,
         // 'page': this.pages
+        'type': 1
       }).then((res) => {
         // this.total = res.data.meta.total
         res.data.data.forEach(item => {

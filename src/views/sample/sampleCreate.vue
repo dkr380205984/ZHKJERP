@@ -396,7 +396,6 @@ export default {
     },
     saveAll () {
       let flag = true
-      this.lock = false
       if (this.types.length <= 0) {
         this.$message.error('请选择样品分类')
         flag = false
@@ -435,6 +434,7 @@ export default {
       }
       if (flag) {
         if (this.lock) {
+          this.lock = false
           saveProduct(data).then(res => {
             if (res.data.status) {
               this.$message.success('添加成功,即将跳转至详情页')

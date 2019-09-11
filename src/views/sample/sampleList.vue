@@ -96,7 +96,7 @@
             style="color:#1A95FF">{{item.product_code}}</div>
           <div class="tableColumn flex9">{{item|filterType}}</div>
           <div class="tableColumn">{{item.flower_id}}</div>
-          <div class="tableColumn">{{item.size|filterSize}}</div>
+          <div class="tableColumn">{{item.sample_size|filterSize}}</div>
           <div class="tableColumn flexSamll">{{item.color.length}}</div>
           <div class="tableColumn">
             <div class="imgCtn">
@@ -412,11 +412,9 @@ export default {
     },
     // 类型展示
     filterSize (item) {
-      let str = ''
-      for (let key in item) {
-        str += key + '/'
-      }
-      return str.substring(0, str.length - 1)
+      return JSON.parse(item).map(key => {
+        return key.size
+      }).join('/')
     }
   },
   created () {

@@ -167,7 +167,8 @@
               </li>
               <li v-else>暂无相关工艺单</li>
               <span class="addNewBtn"
-                v-show="!productDetail.craft_info">新增工艺单</span>
+                v-show="!productDetail.craft_info"
+                @click="$router.push('/index/designFormCreate/' + $route.params.id)">新增工艺单</span>
             </ul>
           </div>
         </div>

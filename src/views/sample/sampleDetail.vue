@@ -117,7 +117,8 @@
                   @click="open('/index/designFormDetail/' + productDetail.craft_info.id)">查看详情</span>
               </li>
               <li v-else>暂无相关工艺单</li>
-              <span class="addNewBtn">新增工艺单</span>
+              <span class="addNewBtn"
+                @click="$router.push('/index/designFormCreate/' + $route.params.id)">新增工艺单</span>
             </ul>
           </div>
         </div>
@@ -164,7 +165,8 @@
                 </span>
               </li>
               <li v-else>暂无配料单</li>
-              <span class="addNewBtn">新增配料单</span>
+              <span class="addNewBtn"
+                @click="$router.push('/index/productPlanCreate/' + $route.params.id)">新增配料单</span>
             </ul>
           </div>
         </div>

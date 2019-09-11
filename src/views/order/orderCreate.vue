@@ -352,7 +352,7 @@
         </div>
       </div>
       <div class="lineCtn">
-        <div class="inputCtn oneLine">
+        <div class="inputCtn">
           <span class="label">上传订单合同：</span>
           <el-upload class="upload-demo"
             action="http://upload.qiniup.com/"
@@ -371,9 +371,8 @@
               class="el-upload__tip">请不要上传超过20M的文件</div>
           </el-upload>
         </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn oneLine">
+
+        <div class="inputCtn">
           <span class="label">上传包装资料：</span>
           <el-upload class="upload-demo"
             action="http://upload.qiniup.com/"
@@ -394,7 +393,7 @@
         </div>
       </div>
       <div class="lineCtn">
-        <div class="inputCtn oneLine">
+        <div class="inputCtn">
           <span class="label">上传装箱资料：</span>
           <el-upload class="upload-demo"
             action="http://upload.qiniup.com/"
@@ -413,9 +412,7 @@
               class="el-upload__tip">请不要上传超过20M的文件</div>
           </el-upload>
         </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn oneLine">
+        <div class="inputCtn">
           <span class="label">上传其它文件：</span>
           <el-upload class="upload-demo"
             action="http://upload.qiniup.com/"

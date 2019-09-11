@@ -149,7 +149,9 @@
                 <div class="tableColumn">
                   <input class="inputs"
                     placeholder="输入数字"
-                    v-model="item.stock_pick" />
+                    v-model="item.stock_pick"
+                    v-if="item.stock_num" />
+                  <template v-else>暂无库存</template>
                 </div>
                 <div class="tableColumn">
                   <input class="inputs"

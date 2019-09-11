@@ -466,7 +466,7 @@ export default {
               flag = false
               return
             }
-            obj.order_time = value.orderTime
+            obj.complete_time = value.orderTime
             obj.desc = value.remark
             arr.push({ ...obj })
           })

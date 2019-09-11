@@ -461,7 +461,7 @@ export default {
         { name: '运输', totalPrice: data.transport_cost }
       )
       this.priceTableDetail.product_total_price = (this.priceTableDetail.info.reduce((total, item) => {
-        return Number(total.totalPrice ? total.totalPrice : total) + Number(item.totalPrice)
+        return Number(total.totalPrice ? total.totalPrice : total) + Number(item.totalPrice ? item.totalPrice : 0)
       })).toFixed(1)
       this.priceTableDetail.yongjin = JSON.parse(data.commission)
       this.priceTableDetail.shuifei = JSON.parse(data.tax)

@@ -969,7 +969,8 @@ export default {
         start_time: this.dateSearch || null,
         end_time: endTime,
         product_code: this.search || null,
-        has_plan: this.hasJHD
+        has_plan: this.hasJHD,
+        type: 1
       }).then((res) => {
         this.loading = false
         if (this.page === 1) {
@@ -1245,7 +1246,8 @@ export default {
       plan_code: null,
       has_plan: null,
       limit: 5,
-      page: 1
+      page: 1,
+      type: 1
     }), productTppeList({
       company_id: this.companyId
     }), flowerList({

@@ -269,12 +269,12 @@ const menu = [{
   }, {
     name: '工艺单列表',
     url: '/index/designFormList'
-  }, {
-    name: '添加设计单',
-    url: '/index/designFormPlanCreate'
-  }, {
-    name: '设计单列表',
-    url: '/index/designFormPlanList'
+    // }, {
+    //   name: '添加设计单',
+    //   url: '/index/designFormPlanCreate'
+    // }, {
+    //   name: '设计单列表',
+    //   url: '/index/designFormPlanList'
   }]
 }, {
   name: '配料单管理',
@@ -368,36 +368,36 @@ const menu = [{
     name: '装箱出库列表',
     url: '/index/packagOutStockList'
   }]
-}, {
-  name: '库存管理',
-  children: [{
-    name: '添加产品库存',
-    url: '/index/stockProductList'
-  }, {
-    name: '产品库存列表',
-    url: '/index/productStockList'
-  },
+  // }, {
+  //   name: '库存管理',
+  //   children: [{
+  //     name: '添加产品库存',
+  //     url: '/index/stockProductList'
+  //   }, {
+  //     name: '产品库存列表',
+  //     url: '/index/productStockList'
+  //   },
   // {
   //   name: '添加物料库存',
   //   url: '/index/mainMaterialStockCreate'
   // },
-  {
-    name: '物料库存列表',
-    url: '/index/materialStockListNew'
-    // },
-    // {
-    //   name: '物料仓库(仓库=>物料)',
-    //   url: '/index/materialStockList'
-    //   // }, {
-    //   //   name: '添加原料库存',
-    //   //   url: '/index/mainMaterialStockCreate'
-    // }, {
-    //   name: '物料仓库(物料=>仓库)',
-    //   url: '/index/otherMaterialStockList'
-    // }, {
-    //   name: '辅料库存列表',
-    //   url: '/index/otherMaterialStockList'
-  }]
+  // {
+  //   name: '物料库存列表',
+  //   url: '/index/materialStockListNew'
+  // },
+  // {
+  //   name: '物料仓库(仓库=>物料)',
+  //   url: '/index/materialStockList'
+  //   // }, {
+  //   //   name: '添加原料库存',
+  //   //   url: '/index/mainMaterialStockCreate'
+  // }, {
+  //   name: '物料仓库(物料=>仓库)',
+  //   url: '/index/otherMaterialStockList'
+  // }, {
+  //   name: '辅料库存列表',
+  //   url: '/index/otherMaterialStockList'
+  // }]
 }, {
   name: '财务管理',
   children: [{
