@@ -85,6 +85,7 @@ export default {
       }
     },
     getColor (color, name) {
+      this.tips = name
       this.color = color
       this.$emit('input', {
         color: color,

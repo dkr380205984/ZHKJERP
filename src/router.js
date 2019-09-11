@@ -101,15 +101,15 @@ let router = new Router({
     }, {
       path: 'designFormCreate/:id',
       name: 'designFormCreate',
-      component: () => import('./views/designForm/designFormCreate.vue')
-    }, {
-      path: 'designFormCreateR',
-      name: 'designFormCreateR',
       component: () => import('./views/designForm/designFormCreateR.vue')
+    }, {
+      path: 'designFormDetail/:id',
+      name: 'designFormDetail',
+      component: () => import('./views/designForm/designFormDetailR.vue')
     }, {
       path: 'designFormUpdate/:id',
       name: 'designFormUpdate',
-      component: () => import('./views/designForm/designFormUpdate.vue')
+      component: () => import('./views/designForm/designFormUpdateR.vue')
     }, {
       path: 'designFormList',
       name: 'designFormList',
@@ -198,10 +198,6 @@ let router = new Router({
       path: 'foreignTradeUpdate/:id',
       name: 'foreignTradeUpdate',
       component: () => import('./views/foreignTrade/foreignTradeUpdate.vue')
-    }, {
-      path: 'designFormDetail/:id',
-      name: 'designFormDetail',
-      component: () => import('./views/designForm/designFormDetail.vue')
     }, {
       path: 'productPlanList',
       name: 'productPlanList',
