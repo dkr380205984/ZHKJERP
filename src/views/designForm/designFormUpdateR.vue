@@ -2,7 +2,7 @@
   <div id="designFormCreateR"
     v-loading="loading">
     <div class="head">
-      <h2>添加工艺单</h2>
+      <h2>修改工艺单</h2>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -58,16 +58,16 @@
               <div class="label">产品规格：</div>
               <div class="content">
                 <div class="oneLine"
-                  v-for="(item,index) in productInfo.size"
+                  v-for="(value,key,index) in productInfo.size"
                   :key="index">
-                  <span>{{item.name}}</span>
+                  <span>{{key}}</span>
                   <span style="margin-left:16px"
-                    v-for="itemSize in item.value"
+                    v-for="itemSize in value"
                     :key="itemSize.id">
                     <span>{{itemSize.size_name}}：</span>
                     <span>{{itemSize.size_value}}cm</span>
                   </span>
-                  <span style="margin-left:16px">{{item.value[0].weight}}g</span>
+                  <span style="margin-left:16px">{{value[0].weight}}g</span>
                 </div>
               </div>
             </div>
@@ -1022,13 +1022,13 @@
         <div class="cancleBtn"
           @click="$router.go(-1)">返回</div>
         <div class="okBtn"
-          @click="saveAll">添加</div>
+          @click="saveAll">修改</div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import { porductOne, YarnList, editList, YarnColorList, materialList, saveCraft, savePM, PMList, deletePM } from '@/assets/js/api.js'
+import { YarnList, editList, YarnColorList, materialList, saveCraft, savePM, PMList, deletePM, craftOne } from '@/assets/js/api.js'
 import { HotTable } from '@handsontable/vue'
 import enCH from '@/assets/js/languages.js'
 import Handsontable from 'handsontable'
@@ -1936,10 +1936,7 @@ export default {
       }
     },
     saveAll () {
-      // saveCraft
-      // console.log(this.allMaterial)
-      // 获取合并单元格信息
-      // console.log(this.$refs)
+      console.log(this.GL)
       let errorInput = false
       errorInput = this.colour.some((itemColour) => {
         if (!itemColour.value) {
@@ -2151,7 +2148,7 @@ export default {
         return
       }
       let formData = {
-        id: null,
+        id: this.$route.params.id,
         is_draft: 0,
         company_id: window.sessionStorage.getItem('company_id'),
         product_id: this.$route.params.id,
@@ -2350,9 +2347,9 @@ export default {
         console.log(res)
         if (res.data.code === 200) {
           this.$message.success({
-            message: '添加成功'
+            message: '修改成功'
           })
-          this.$router.push('/index/designFormUpdate/' + res.data.data.id)
+          this.$router.push('/index/designFormDetail/' + res.data.data.id)
         } else {
           this.$message.error({
             message: res.data.message
@@ -2451,9 +2448,7 @@ export default {
     }
   },
   mounted () {
-    Promise.all([porductOne({
-      id: this.$route.params.id
-    }), YarnList({
+    Promise.all([YarnList({
       company_id: this.companyId
     }), editList({
       company_id: this.companyId
@@ -2461,24 +2456,90 @@ export default {
       company_id: this.companyId
     }), materialList({
       company_id: this.companyId
-    }), PMList({
-
+    }), PMList({}),
+    craftOne({
+      id: this.$route.params.id
     })]).then((res) => {
       // console.log(res)
-      this.productInfo = res[0].data.data
       this.productInfo.size = Object.keys(this.productInfo.size).map((key) => {
         return {
           name: key,
           value: this.productInfo.size[key]
         }
       })
-      this.yarn.yarnArr = res[1].data.data
-      this.sideArr = res[2].data.data.side
-      this.modeleArr = res[2].data.data.type
-      this.methodArr = res[2].data.data.method
-      this.colorArr = this.colorArr.concat(res[3].data.data)
+      this.yarn.yarnArr = res[0].data.data
+      this.sideArr = res[1].data.data.side
+      this.modeleArr = res[1].data.data.type
+      this.methodArr = res[1].data.data.method
+      this.colorArr = this.colorArr.concat(res[2].data.data)
       // this.material.materialArr = res[4].data.data
-      this.commonPMArr = res[5].data.data
+      this.commonPMArr = res[4].data.data
+      let data = res[5].data.data
+      this.productInfo = data.product_info
+      this.warpInfo = data.warp_data
+      this.weftInfo = data.weft_data
+      this.colour = this.warpInfo.color_data.map((item, index) => {
+        return {
+          value: item.product_color,
+          colorWarp: item.color_scheme.map((item) => {
+            return {
+              name: item.name,
+              color: item.value
+            }
+          }),
+          colorWeft: this.weftInfo.color_data[index].color_scheme.map((item) => {
+            return {
+              name: item.name,
+              color: item.value
+            }
+          })
+        }
+      })
+      this.yarn.yarnWarp = this.warpInfo.material_data.find((item) => item.type_material === 1).material_name
+      this.yarn.yarnWeft = this.weftInfo.material_data.find((item) => item.type_material === 1).material_name
+      this.yarn.yarnOtherWarp = this.warpInfo.material_data.filter((item) => item.type_material === 2)
+      this.yarn.yarnOtherWeft = this.weftInfo.material_data.filter((item) => item.type_material === 2)
+      this.material.materialWarp = JSON.parse(this.warpInfo.assist_material)
+      this.material.materialWeft = JSON.parse(this.weftInfo.assist_material)
+      this.$refs.warp.hotInstance.loadData(JSON.parse(this.warpInfo.warp_rank).map((item, index) => {
+        return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
+      }))
+      this.$refs.weft.hotInstance.loadData(JSON.parse(this.weftInfo.weft_rank).map((item, index) => {
+        return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
+      }))
+      this.tableData.warp.mergeCells = JSON.parse(this.warpInfo.merge_data)
+      this.tableData.weft.mergeCells = JSON.parse(this.weftInfo.merge_data)
+      this.tableData.warp.data = JSON.parse(this.warpInfo.warp_rank).map((item, index) => {
+        return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
+      })
+      this.tableData.weft.data = JSON.parse(this.weftInfo.weft_rank).map((item, index) => {
+        return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
+      })
+
+      // this.$refs.warpBack.hotInstance.loadData(JSON.parse(this.warpInfo.warp_rank_back).map((item, index) => {
+      //   return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
+      // }))
+      // this.$refs.weftBack.hotInstance.loadData(JSON.parse(this.weftInfo.weft_rank_back).map((item, index) => {
+      //   return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
+      // }))
+      // this.tableData.warpBack.mergeCells = JSON.parse(this.warpInfo.merge_data_back)
+      // this.tableData.weftBack.mergeCells = JSON.parse(this.weftInfo.merge_data_back)
+      // this.tableData.warpBack.data = JSON.parse(this.warpInfo.warp_rank_back).map((item, index) => {
+      //   return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
+      // })
+      // this.tableData.weftBack.data = JSON.parse(this.weftInfo.weft_rank_back).map((item, index) => {
+      //   return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
+      // })
+      this.ifDouble.warp = data.warp_data.back_status
+      this.ifDouble.weft = data.weft_data.back_status
+
+      this.GL = data.draft_method.GL
+      this.GLFlag = data.draft_method.GLFlag
+      this.repeatPM = data.draft_method.PM
+      this.PMFlag = data.draft_method.PMFlag
+      this.desc = data.desc
+      this.weight = data.weight
+      this.coefficient = data.yarn_coefficient.map((item) => item.value)
     })
     // 监听快捷键，给表格插入列
     document.onkeydown = (e) => {

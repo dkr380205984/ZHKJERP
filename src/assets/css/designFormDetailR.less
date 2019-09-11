@@ -1,5 +1,5 @@
 @import './common.less';
-#designFormCreateR{
+#designFormDetail{
   min-height: 100%;
   font-family: 'systemfont';
   font-weight: 300;
@@ -48,43 +48,15 @@
         max-width: calc(1000px - 6em);
         margin: 16px 0;
         position: relative;
-        .button{
-          height: 32px;
-          line-height: 32px;
-          border-radius: 2px;
-          text-align: center;
-          cursor: pointer;
-          color: #fff;
-          background: @normalBlue;
-          margin: 16px 0;
-          &:hover{
-            background: @hoverBlue;
-          }
-        }
         .formCtn{
           margin: 16px 0;
         }
-        .sliderCtn{
-          line-height: 20px;
-          border-radius: 16px;
-          background: #E9E9E9;
-          color: #fff;
-          font-size: @fontMid;
-          font-style: normal;
-          display: inline-block;
-          overflow: hidden;
-          margin: 6px 0;
-          position: relative;
-          vertical-align: middle;
-          .text{
-            border-radius: 16px;
-            padding: 0 8px;
-            cursor: pointer;
-            display: inline-block;
-            &.active{
-              background: @normalBlue;
-            }
-          }
+        .mark{
+          width: 2em;
+          height: 125px;
+          line-height: 125px;
+          margin: auto;
+          float: left;
         }
         .deltaCtn {
           width: 200px;
@@ -137,39 +109,6 @@
             justify-content: space-between;
           }
         }
-        .addBtn{
-          height: 32px;
-          width:32px;
-          line-height: 30px;
-          border-radius: 2px;
-          margin-left: 16px;
-          padding: 0;
-          float: left;
-          text-align: center;
-          margin-top: 46px;
-          cursor: pointer;
-          color: #909399;
-          border:1px solid #E6E6E6;
-          &:hover{
-            color: #10AEF5;
-            border-color: #10AEF5;
-          }
-          span{
-            font-size: 16px;
-            &:nth-child(2){
-              margin-left: 5px;
-              font-size: 20px;
-              vertical-align: -1px;;
-            }
-          }
-        }
-        .mark{
-          width: 2em;
-          height: 125px;
-          line-height: 125px;
-          margin: auto;
-          float: left;
-        }
         .tips{
           display: inline-block;
           font-size: 16px;
@@ -193,7 +132,7 @@
             position: absolute;
             line-height: 22px;
             top: 7px;
-            left:44px;
+            left:0;
             font-size: 16px;
             width: 22px;
             height: 22px;
@@ -225,7 +164,7 @@
             vertical-align: text-top;
             border-radius: 2px;
             position: relative;
-            margin-left: 75px;
+            margin-left: 32px;
             .deleteBtn{
               border:0;
               background:@error;
@@ -245,7 +184,7 @@
             .lineRow{
               height: 1px;
               position: absolute;
-              width: 30px;
+              width: 46px;
               background: #e6e6e6;
               left: -46px;
               top: 0;
@@ -344,11 +283,75 @@
           .lineCol{
             position: absolute;
             width: 1px;
-            left:105px;
+            left:62px;
             top: 32px;
             bottom: 32px;
             background: #e6e6e6;
           }
+        }
+      }
+      .buttons{
+        height: 32px;
+        margin-bottom: 25px;
+        .button{
+          line-height: 30px;
+          padding: 0 12px;
+          border:1px solid #dcdfe6;
+          display: inline-block;
+          color: @fontNormal;
+          border-left: 0;
+          cursor: pointer;
+          &.active{
+            background: @normalBlue;
+            color: #fff;
+          }
+          &:nth-child(1){
+            border-left: 1px solid #dcdfe6;
+          }
+        }
+      }
+    }
+    .canvasCtn{
+      display: inline-block;
+      font-size: 0;
+      position: relative;
+      .floatRightTop{
+        position: absolute;
+        left: 620px;
+        padding: 20px;
+        border: 1px solid #dcdfe6;
+      }
+      .mouse{
+        position: absolute;
+        padding: 50px;
+        background: rgba(0,0,0,0.5);
+      }
+      .cursorMagnifier{
+        cursor:crosshair ;
+      }
+    }
+    .appendInfo{
+      .colorLabel{
+        display: inline-block;
+        vertical-align: middle;
+        width: 4em;
+        text-align: left;
+      }
+      .colorBox{
+        width: 32px;
+        height: 32px;
+        line-height: 32px;
+        margin-left: 16px;
+        display: inline-block;
+        vertical-align: middle;
+        .colorText{
+          width: 100%;
+          height: 100%;
+          text-align: center;
+          vertical-align: center;
+          display: inline-block;
+          background: rgba(0, 0, 0,0.1);
+          color: #fff;
         }
       }
     }

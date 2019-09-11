@@ -73,7 +73,8 @@
           <div class="tableColumn">产品图片</div>
           <div class="tableColumn flexSamll">创建人</div>
           <div class="tableColumn flexSamll">创建时间</div>
-          <div class="tableColumn flex9">操作</div>
+          <div class="tableColumn"
+            style="flex:2.4">操作</div>
         </div>
         <div class="tableRow bodyTableRow"
           v-for="(item) in list"
@@ -82,7 +83,7 @@
             style="color: rgb(26, 149, 255);">{{item.craft_code}}</div>
           <div class="tableColumn flex5">{{item.product_info|filterType}}</div>
           <div class="tableColumn">{{item|filterWeft}}</div>
-          <div class="tableColumn flex9">{{item.material_data|filterMaterial}}</div>
+          <div class="tableColumn flex9">{{item.warp_data.material_data|filterMaterial}}/{{item.weft_data.material_data|filterMaterial}}</div>
           <div class="tableColumn flexSamll">{{item.weight}}</div>
           <div class="tableColumn">
             <div class="imgCtn">
@@ -97,7 +98,8 @@
           </div>
           <div class="tableColumn flexSamll">{{item.user_name}}</div>
           <div class="tableColumn flexSamll">{{item.create_time}}</div>
-          <div class="tableColumn flex9">
+          <div class="tableColumn"
+            style="flex:2.4">
             <span class="btns warning"
               v-if="item.product_info.has_plan===0"
               @click="$router.push('/index/designFormUpdate/'+item.id)">修改</span>
@@ -108,6 +110,8 @@
               @click="$router.push('/index/designFormDetail/'+item.id)">查看</span>
             <span class="btns copy"
               @click="copy(item.id)">打印</span>
+            <span class="btns error"
+              @click="deleteCraft(item.id)">删除</span>
           </div>
         </div>
       </div>
@@ -141,7 +145,7 @@
 </template>
 
 <script>
-import { productTppeList, craftList } from '@/assets/js/api.js'
+import { productTppeList, craftList, craftDelete } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -267,6 +271,32 @@ export default {
           message: '已取消修改'
         })
       })
+    },
+    deleteCraft (id) {
+      this.$confirm('是否删除该工艺单?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        craftDelete({
+          id: id
+        }).then((res) => {
+          if (res.data.status) {
+            this.$message.success({
+              message: '删除成功'
+            })
+          } else {
+            this.$message.error({
+              message: res.data.message
+            })
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
   },
   watch: {
@@ -367,18 +397,7 @@ export default {
     },
     // 原料合并
     filterMaterial (material) {
-      let str = ''
-      material.forEach((item) => {
-        if (item.type === 0 && item.type_material === 0) {
-          str += item.material_name + '/'
-        }
-      })
-      material.forEach((item) => {
-        if (item.type === 1 && item.type_material === 0) {
-          str += item.material_name
-        }
-      })
-      return str
+      return material.find((item) => item.type_material === 1).material_name
     }
   },
   created () {
