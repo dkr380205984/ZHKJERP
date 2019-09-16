@@ -37,11 +37,11 @@
             </div>
           </div>
           <div class="row">
-            <div class="box box4">
+            <div class="box box2">
               <div class="label">产品成分：</div>
               <div class="content">
                 <span v-for="(item,index) in productInfo.materials"
-                  :key="item.id">{{item.ingredient_name}}({{item.ingredient_value}}%){{index>0?'/':''}}</span>
+                  :key="item.id">{{item.ingredient_value}}%{{item.ingredient_name}}{{index===(productInfo.materials.length-1)?'':'/'}}</span>
               </div>
             </div>
             <div class="box box4">
@@ -476,6 +476,7 @@
           </canvas>
           <!-- canvas转图像的容器 -->
           <img ref="img"
+            v-show="selectColour!==-1"
             @mousedown.prevent="showMagnifier=true"
             @mousemove="enlargeImg($event)"
             @mouseup="showMagnifier=false"
@@ -784,7 +785,7 @@ export default {
       showMagnifier: false,
       warpCanvas: [], // 经纬向绘图数据
       weftCanvas: [],
-      selectColour: 0// 选择配色方案
+      selectColour: -1// 选择配色方案
     }
   },
   methods: {
@@ -964,8 +965,8 @@ export default {
       this.PM = data.draft_method.PM
       this.PMFlag = data.draft_method.PMFlag
       this.canvasHeight = (this.weftInfo.neichang + this.weftInfo.rangwei) / this.warpInfo.reed_width * 600 * 4
-      // console.log('经向表格:', JSON.parse(this.warpInfo.warp_rank))
-      // console.log('纬向表格:', JSON.parse(this.weftInfo.weft_rank))
+      console.log('经向表格:', JSON.parse(this.warpInfo.warp_rank))
+      console.log('纬向表格:', JSON.parse(this.weftInfo.weft_rank))
       // console.log('纹版图:', this.GL)
       // console.log('穿综法:', this.PM)
       // 展平合并信息
@@ -1090,37 +1091,37 @@ export default {
       this.warpCanvas = warpCanvas
       this.weftCanvas = weftCanvas
       // 用JS 处理矩阵数据，优化画图
-      let canvasMatrix = []
-      let warpWidth = 600 / warpCanvas.length * 4
-      let weftWidth = this.canvasHeight / weftCanvas.length
-      let warpColor = this.warpInfo.color_data[0].color_scheme
-      let weftColor = this.warpInfo.color_data[0].color_scheme
-      warpCanvas.reduce((totalWarp, itemWarp) => {
-        weftCanvas.reduce((totalWeft, itemWeft) => {
-          canvasMatrix.push({
-            x: totalWarp,
-            y: totalWeft,
-            width: warpWidth,
-            height: weftWidth,
-            color: itemWeft.GL.replace(/，/g, ',').split(',').find((item) => item === itemWarp.PM) ? warpColor[itemWarp.color].value : weftColor[itemWeft.color].value
-          })
-          return totalWeft + weftWidth
-        }, 0)
-        return totalWarp + warpWidth
-      }, 0)
+      // let canvasMatrix = []
+      // let warpWidth = 600 / warpCanvas.length * 4
+      // let weftWidth = this.canvasHeight / weftCanvas.length
+      // let warpColor = this.warpInfo.color_data[0].color_scheme
+      // let weftColor = this.warpInfo.color_data[0].color_scheme
+      // warpCanvas.reduce((totalWarp, itemWarp) => {
+      //   weftCanvas.reduce((totalWeft, itemWeft) => {
+      //     canvasMatrix.push({
+      //       x: totalWarp,
+      //       y: totalWeft,
+      //       width: warpWidth,
+      //       height: weftWidth,
+      //       color: itemWeft.GL.replace(/，/g, ',').split(',').find((item) => item === itemWarp.PM) ? warpColor[itemWarp.color].value : weftColor[itemWeft.color].value
+      //     })
+      //     return totalWeft + weftWidth
+      //   }, 0)
+      //   return totalWarp + warpWidth
+      // }, 0)
       this.loading = false
       // 画图部分优化
-      this.$nextTick(() => {
-        let dom = this.$refs.myCanvas
-        let ctx = dom.getContext('2d')
-        ctx.beginPath()
-        canvasMatrix.forEach((item) => {
-          ctx.fillStyle = item.color
-          ctx.fillRect(item.x, item.y, item.width, item.height)
-        })
-        let img = this.$refs.img
-        img.src = dom.toDataURL() // canvas转图片
-      })
+      // this.$nextTick(() => {
+      //   let dom = this.$refs.myCanvas
+      //   let ctx = dom.getContext('2d')
+      //   ctx.beginPath()
+      //   canvasMatrix.forEach((item) => {
+      //     ctx.fillStyle = item.color
+      //     ctx.fillRect(item.x, item.y, item.width, item.height)
+      //   })
+      //   let img = this.$refs.img
+      //   img.src = dom.toDataURL() // canvas转图片
+      // })
     })
   }
 }

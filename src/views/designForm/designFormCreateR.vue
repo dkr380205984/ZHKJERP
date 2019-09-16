@@ -41,7 +41,7 @@
               <div class="label">产品成分：</div>
               <div class="content">
                 <span v-for="(item,index) in productInfo.materials"
-                  :key="item.id">{{item.ingredient_name}}({{item.ingredient_value}}%){{index>0?'/':''}}</span>
+                  :key="item.id">{{item.ingredient_value}}%{{item.ingredient_name}}{{index===(productInfo.materials.length-1)?'':'/'}}</span>
               </div>
             </div>
             <div class="box box4">
