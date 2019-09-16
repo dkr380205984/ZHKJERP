@@ -403,6 +403,36 @@
               </div>
             </div>
             <div class="itemCtn">
+              <span class="label">成品加工:</span>
+              <div class="content">
+                <div class="inpCtn"
+                  v-for="(item,index) in production_info"
+                  :key="index">
+                  <el-select v-model="item.key"
+                    class="selectInp"
+                    filterable
+                    multiple
+                    allow-create
+                    placeholder="请选择成品加工工序">
+                    <el-option v-for="item in productionArr"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.name">
+                    </el-option>
+                  </el-select>
+                  <el-input placeholder="请输入金额"
+                    class="selectInp marginLeft16"
+                    v-model="item.price"
+                    @input="computedTotalPrice">
+                    <div slot="append"
+                      class='unit'>元</div>
+                  </el-input>
+                  <span :class="index>0?'delete':'add'"
+                    @click="index>0?deletes('production_info',index):adds('production_info')">{{index>0?'删除':'添加'}}</span>
+                </div>
+              </div>
+            </div>
+            <div class="itemCtn">
               <span class="label">包装辅料:</span>
               <div class="content">
                 <div class="inpCtn"
@@ -748,6 +778,20 @@ export default {
           name: '人工费'
         }
       ],
+      production_info: [{
+        key: '',
+        price: ''
+      }],
+      productionArr: [{
+        id: 1,
+        name: '车标'
+      }, {
+        id: 2,
+        name: '包装'
+      }, {
+        id: 3,
+        name: '人工'
+      }],
       user_info_price: '',
       otherArr: [
         {
@@ -804,9 +848,9 @@ export default {
       this.packagMaterialArr.forEach(item => {
         total += Number(item.price ? item.price : 0)
       })
-      // this.manArr.forEach(item => {
-      //   total += Number(item.price ? item.price : 0)
-      // })
+      this.production_info.forEach(item => {
+        total += Number(item.price ? item.price : 0)
+      })
       this.otherArr.forEach(item => {
         total += Number(item.price ? item.price : 0)
       })
@@ -822,6 +866,7 @@ export default {
         this.lirun.price = (this.total_price * this.lirun.prop / 100).toFixed(1)
         this.yongjin.price = (this.total_price * this.yongjin.prop / 100).toFixed(1)
         this.shuifei.price = (this.total_price * this.shuifei.prop / 100).toFixed(1)
+        console.log(this.total_price)
         this.total_price = this.total_price.toFixed(1)
       }
     },
@@ -1054,6 +1099,7 @@ export default {
           this.weaveArr = JSON.parse(detail.weave_info)
           this.machiningArr = JSON.parse(detail.semi_product_info)
           this.packagMaterialArr = JSON.parse(detail.pack_material_info)
+          this.production_info = JSON.parse(detail.production_info)
           this.user_info_price = detail.no_product_cost
           this.otherArr = JSON.parse(detail.desc_info)
           this.desc = detail.desc
@@ -1132,6 +1178,7 @@ export default {
           weave_info: JSON.stringify(this.weaveArr),
           semi_product_info: JSON.stringify(this.machiningArr),
           pack_material_info: JSON.stringify(this.packagMaterialArr),
+          production_info: JSON.stringify(this.production_info),
           no_product_cost: this.user_info_price,
           desc_info: JSON.stringify(this.otherArr),
           transport_cost: this.yunshu,
@@ -1250,6 +1297,7 @@ export default {
         this.weaveArr = JSON.parse(detail.weave_info)
         this.machiningArr = JSON.parse(detail.semi_product_info)
         this.packagMaterialArr = JSON.parse(detail.pack_material_info)
+        this.production_info = JSON.parse(detail.production_info)
         this.user_info_price = detail.no_product_cost
         this.otherArr = JSON.parse(detail.desc_info)
         this.desc = detail.desc

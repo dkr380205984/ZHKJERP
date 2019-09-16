@@ -137,7 +137,7 @@
             <el-option v-for="item in colorArr"
               :key="item.id"
               :label="item.name"
-              :value="item.id">
+              :value="item.name">
               <div class="bgBlock"
                 :style="{'background':item.color_code}"></div>
               <div class="desc">{{item.name}}</div>
@@ -427,10 +427,16 @@ export default {
         color: this.color.map(item => {
           return item.color
         }),
-        sample_size: JSON.stringify(this.size),
+        // sample_size: JSON.stringify(this.size),
         sample_title: this.sampleName,
         materials: this.ingredient,
-        size: null
+        size: this.size.map(item => {
+          return {
+            weight: item.weight,
+            measurement: item.size,
+            size_info: item.desc
+          }
+        })
       }
       if (flag) {
         if (this.lock) {
@@ -440,7 +446,7 @@ export default {
               this.$message.success('添加成功,即将跳转至详情页')
               setTimeout(() => {
                 this.lock = true
-                this.$router.push('/index/sampleDetail/' + res.data.data.id)
+                this.$router.push('/index/productDetail/' + res.data.data.id)
               }, 800)
             }
           })
