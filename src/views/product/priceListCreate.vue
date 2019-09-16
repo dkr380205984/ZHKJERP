@@ -203,7 +203,7 @@
         <div class="headCtn"
           style="margin-bottom:20px;">
           <span>产品报价</span>
-          <!-- <el-select style="margin-left: 832px;"
+          <el-select style="margin-left: 832px;"
             class="selectCtn"
             filterable
             remote
@@ -223,7 +223,7 @@
                 v-for="itemPro in JSON.parse(item.product_info)"
                 :key="itemPro.product_code">({{itemPro.product_info.category_info.product_category +'/'+itemPro.product_info.type_name+'/'+itemPro.product_info.style_name}})</span>
             </el-option>
-          </el-select> -->
+          </el-select>
         </div>
         <div class="stepCtn">
           <div class="stepTitle">产品费用</div>
@@ -1036,44 +1036,45 @@ export default {
       }
     },
     // 导入报价单操作
-    // getPriceList (id) {
-    //   console.log(id)
-    //   if (id) {
-    //     this.loading = true
-    //     priceListDetail({
-    //       id: id
-    //     }).then((res) => {
-    //       const detail = res.data.data
-    //       this.company = detail.client_id.toString()
-    //       this.contactsArr = this.companyArr.find((item) => parseInt(item.id) === detail.client_id).contacts
-    //       this.contacts = detail.client_contact
-    //       this.money = detail.account_unit
-    //       this.exchangeRate = detail.exchange_rate
-    //       this.yarnArr = JSON.parse(detail.material_info)
-    //       this.otherMaterialArr = JSON.parse(detail.assist_info)
-    //       this.weaveArr = JSON.parse(detail.weave_info)
-    //       this.machiningArr = JSON.parse(detail.semi_product_info)
-    //       this.packagMaterialArr = JSON.parse(detail.pack_material_info)
-    //       this.packagMaterialArr = JSON.parse(detail.user_info)
-    //       this.otherArr = JSON.parse(detail.desc_info)
-    //       this.desc = detail.desc
-    //       this.product_need = detail.product_need
-    //       this.productArr = JSON.parse(detail.product_info)
-    //       this.productArr.forEach((item) => {
-    //         for (let key in item.product_info) {
-    //           if (!item.hasOwnProperty[key]) {
-    //             item[key] = item.product_info[key]
-    //           }
-    //         }
-    //       })
-    //       this.yunshu = detail.transport_cost
-    //       this.lirun.price = detail.profit
-    //       this.yongjin.price = detail.commission
-    //       this.shuifei.price = detail.tax
-    //       this.loading = false
-    //     })
-    //   }
-    // },
+    getPriceList (id) {
+      console.log(id)
+      if (id) {
+        this.loading = true
+        priceListDetail({
+          id: id
+        }).then((res) => {
+          const detail = res.data.data
+          this.company = detail.client_id.toString()
+          this.contactsArr = this.companyArr.find((item) => parseInt(item.id) === detail.client_id).contacts
+          this.contacts = detail.client_contact
+          this.money = detail.account_unit
+          this.exchangeRate = detail.exchange_rate
+          this.yarnArr = JSON.parse(detail.material_info)
+          this.otherMaterialArr = JSON.parse(detail.assist_info)
+          this.weaveArr = JSON.parse(detail.weave_info)
+          this.machiningArr = JSON.parse(detail.semi_product_info)
+          this.packagMaterialArr = JSON.parse(detail.pack_material_info)
+          this.user_info_price = detail.no_product_cost
+          this.otherArr = JSON.parse(detail.desc_info)
+          this.desc = detail.desc
+          this.product_need = detail.product_need
+          this.productArr = JSON.parse(detail.product_info)
+          this.productArr.forEach((item) => {
+            for (let key in item.product_info) {
+              if (!item.hasOwnProperty[key]) {
+                item[key] = item.product_info[key]
+              }
+            }
+          })
+          this.yunshu = detail.transport_cost
+          this.lirun = JSON.parse(detail.profit)
+          this.yongjin = JSON.parse(detail.commission)
+          this.shuifei = JSON.parse(detail.tax)
+          this.total_price = detail.total_price ? detail.total_price : 0
+          this.loading = false
+        })
+      }
+    },
     saveAll () {
       let flag = true
       let errorMsg = ''

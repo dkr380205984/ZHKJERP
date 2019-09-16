@@ -1054,7 +1054,7 @@ export default {
           this.weaveArr = JSON.parse(detail.weave_info)
           this.machiningArr = JSON.parse(detail.semi_product_info)
           this.packagMaterialArr = JSON.parse(detail.pack_material_info)
-          this.packagMaterialArr = JSON.parse(detail.user_info)
+          this.user_info_price = detail.no_product_cost
           this.otherArr = JSON.parse(detail.desc_info)
           this.desc = detail.desc
           this.product_need = detail.product_need
@@ -1067,9 +1067,10 @@ export default {
             }
           })
           this.yunshu = detail.transport_cost
-          this.lirun.price = detail.profit
-          this.yongjin.price = detail.commission
-          this.shuifei.price = detail.tax
+          this.lirun = JSON.parse(detail.profit)
+          this.yongjin = JSON.parse(detail.commission)
+          this.shuifei = JSON.parse(detail.tax)
+          this.total_price = detail.total_price ? detail.total_price : 0
           this.loading = false
         })
       }
@@ -1249,7 +1250,6 @@ export default {
         this.weaveArr = JSON.parse(detail.weave_info)
         this.machiningArr = JSON.parse(detail.semi_product_info)
         this.packagMaterialArr = JSON.parse(detail.pack_material_info)
-        // this.manArr = JSON.parse(detail.user_info)
         this.user_info_price = detail.no_product_cost
         this.otherArr = JSON.parse(detail.desc_info)
         this.desc = detail.desc
