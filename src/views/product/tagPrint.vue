@@ -11,6 +11,10 @@
         <div class="contents">{{type}}</div>
       </div>
       <div class="items">
+        <span class="labels">成分:</span>
+        <div class="contents">{{materials|filterMaterial}}</div>
+      </div>
+      <div class="items">
         <span class="labels">规格:</span>
         <div class="contents col"
           style="align-items:flex-start">
@@ -56,7 +60,8 @@ export default {
       size: {},
       description: '',
       type: '',
-      qrCodeUrl: ''
+      qrCodeUrl: '',
+      materials: []
     }
   },
   updated () {
@@ -73,6 +78,7 @@ export default {
         this.product_code = detail.product_code
         this.size = detail.size
         this.description = detail.description
+        this.materials = detail.materials
         this.type = detail.category_info.product_category + '/' + detail.type_name + '/' + detail.style_name + (detail.flower_id ? '/' + detail.flower_id : '')
         this.loading = false
       }
@@ -83,6 +89,12 @@ export default {
     })
   },
   filters: {
+    filterMaterial (materials) {
+      let arr = materials.map(item => {
+        return item.ingredient_value + '%' + item.ingredient_name
+      })
+      return arr.join(',')
+    },
     filterSize (sizeArr) {
       if (sizeArr) {
         return sizeArr.map(item => {

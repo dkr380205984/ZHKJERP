@@ -103,6 +103,10 @@
                   <div class="contents">{{productDetail|filterType}}{{productDetail.flower_id ? '/' + productDetail.flower_id : ''}}</div>
                 </div>
                 <div class="items">
+                  <span class="labels">成分:</span>
+                  <div class="contents">{{productDetail.materials|filterMaterial}}</div>
+                </div>
+                <div class="items">
                   <span class="labels">规格:</span>
                   <div class="contents col"
                     style="align-items:flex-start">
@@ -241,7 +245,7 @@
                   <span v-for="(item,index) in productDetail.order_list"
                     :key="index">
                     <span>{{item.order_code}}</span>
-                    <span>{{item.client_name}}</span>
+                    <span>{{item.client_name}}{{item.id}}</span>
                     <span>{{item.total_number}}{{productDetail.category_info.name}}</span>
                     <span style="color:#1A95FF;cursor:pointer"
                       @click="open('/index/orderDetailNew/' + item.id)">查看详情</span>
@@ -411,6 +415,12 @@ export default {
     }
   },
   filters: {
+    filterMaterial (materials) {
+      let arr = materials.map(item => {
+        return item.ingredient_value + '%' + item.ingredient_name
+      })
+      return arr.join(',')
+    },
     filterSize (sizeArr) {
       if (sizeArr) {
         return sizeArr.map(item => {
@@ -514,6 +524,15 @@ export default {
 
 <style lang="less" scoped>
 #productDetail {
+  .messageBox {
+    .title {
+      line-height: 50px;
+      height: 50px;
+      width: inherit;
+      padding-left: 16px;
+      border-bottom: 1px solid rgb(233, 233, 233);
+    }
+  }
   .row {
     display: flex;
     .printBtn {

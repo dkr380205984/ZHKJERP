@@ -14,13 +14,13 @@
                 v-for="(item,key) in checkedProList"
                 :key="key">
                 <div class="box-top">
-                  <img :src="(item.img && item.img.length !== 0) ? item.img[0].thumb : require('@/assets/image/index/noPic.jpg')"
+                  <img :src="(item.thumb && item.thumb.length !== 0) ? item.thumb[0] : require('@/assets/image/index/noPic.jpg')"
                     alt="">
                   <!-- @load="showClearImg((item.img && item.img.length !== 0) ? item.img[0].img_url : false,key)" -->
                 </div>
                 <div class="box-bottom">
                   <span>{{item.product_code}}</span>
-                  <span>{{item|filterType}}</span>
+                  <span>{{item.category_name + '/' + item.type_name + '/' + item.style_name}}</span>
                 </div>
                 <el-checkbox v-model="item.checked"
                   class="inBox"
@@ -193,34 +193,31 @@ export default {
   },
   methods: {
     getProductList () {
-      this.loading = true
       productList({
         'company_id': window.sessionStorage.getItem('company_id'),
-        // 'limit': 10,
+        'limit': 10,
         // 'category_id': this.filterList.typeVal,
         // 'flower_id': this.filterList.flowerVal,
         // 'start_time': this.filterList.start_time,
         // 'end_time': this.filterList.end_time,
         // 'product_code': this.filterList.searchVal,
-        // 'page': this.pages
+        'page': this.pages,
         'type': 1
       }).then((res) => {
-        // this.total = res.data.meta.total
+        this.total = res.data.meta.total
         res.data.data.forEach(item => {
           if (this.checkedProFilterList.find(key => Number(key.product_id) === Number(item.id))) {
             item.checked = true
-            this.checkedProList.push(item)
           }
         })
         this.productList.push(...res.data.data)
         this.filProductList = this.productList
-        this.loading = false
-        // if (this.pages * 10 < this.total) {
-        //   setTimeout(() => {
-        //     this.pages++
-        //     this.getProductList()
-        //   }, 800)
-        // }
+        if (this.pages * 10 < this.total) {
+          setTimeout(() => {
+            this.pages++
+            this.getProductList()
+          }, 800)
+        }
       })
     },
     showClearImg (item, e) {
@@ -240,18 +237,30 @@ export default {
       this.showShade = true
     },
     checked (checkStatu, item) {
-      console.log(checkStatu, item.checked)
       if (checkStatu === 'check_push' && this.checkedProList.length >= 200 && item.checked) {
         this.$message.warning('已选产品已达200,不可继续添加！')
         item.checked = false
       } else if (checkStatu === 'check_push') {
         if (item.checked) {
-          let flag = this.checkedProList.find(key => key.id === item.id)
+          let flag = this.checkedProList.find(key => Number(key.product_id) === Number(item.id))
           if (!flag) {
-            this.checkedProList.push(item)
+            this.checkedProList.push({
+              checked: true,
+              category_name: item.category_info.product_category,
+              image: item.img.map(value => {
+                return value.img_url
+              }),
+              product_code: item.product_code,
+              product_id: item.id,
+              style_name: item.style_name,
+              thumb: item.img.map(value => {
+                return value.thumb
+              }),
+              type_name: item.type_name
+            })
           }
         } else {
-          let flag = this.checkedProList.find(key => key.id === item.id)
+          let flag = this.checkedProList.find(key => Number(key.product_id) === Number(item.id))
           if (flag) {
             flag.checked = false
             this.checkedProList = this.checkedProList.filter(key => key.checked)
@@ -259,16 +268,12 @@ export default {
         }
       } else if (checkStatu === 'check_delete') {
         item.checked = false
-        let flag = this.productList.find(key => key.id === item.id)
+        let flag = this.productList.find(key => Number(key.id) === Number(item.product_id))
         if (flag) {
           flag.checked = false
         }
         this.checkedProList = this.checkedProList.filter(key => key.checked)
       }
-    },
-    clearAll () {
-      this.checkedProList = []
-      this.productList.forEach(item => { item.checked = false })
     },
     saveAll () {
       if (this.checkedProList.length === 0) {
@@ -299,6 +304,14 @@ export default {
       this.flowerList = res[0].data.data
       this.typeList = res[1].data.data
       this.checkedProFilterList = res[2].data.data
+      console.log(this.checkedProFilterList)
+      this.checkedProList = this.checkedProFilterList.map(item => {
+        return {
+          checked: true,
+          ...item
+        }
+      })
+      this.loading = false
     })
   },
   watch: {

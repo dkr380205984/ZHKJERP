@@ -151,9 +151,10 @@
           <span>报价详情</span>
         </div>
         <div class="lineCtn">
-          <div class="rightCtn">费用合计:<span>{{priceTableDetail.totalPrice}}</span>元</div>
+          <!-- <div class="rightCtn">费用合计:<span>{{priceTableDetail.totalPrice}}</span>元</div> -->
         </div>
-        <div class="lineCtn">
+        <div class="lineCtn"
+          style="margin-top:20px;">
           <div class="tabCtn">
             <div class="otherCtn">
               <span>产品费用</span>
@@ -218,7 +219,7 @@
         </div>
       </div>
       <div class="bottom">
-        <span class="total"></span>
+        <span class="total">费用合计:<span style="font-size:24px;color:#1A94FF;margin:0 8px;font-weight:500">{{priceTableDetail.totalPrice}}</span>元</span>
         <div class="btnCtn">
           <span class="clear"
             @click="$router.push('/index/priceListList')">返回</span>
@@ -427,9 +428,10 @@ export default {
             unit: item.unit
           }
         }),
-        ...JSON.parse(data.pack_material_info).map(item => {
+        ...JSON.parse(data.weave_info).map(item => {
           return {
-            name: item.key ? item.key : '包装',
+            name: item.key ? item.key : '织造',
+            number: item.number,
             totalPrice: item.price
           }
         }),
@@ -439,16 +441,9 @@ export default {
             totalPrice: item.price
           }
         }),
-        ...JSON.parse(data.weave_info).map(item => {
+        ...JSON.parse(data.pack_material_info).map(item => {
           return {
-            name: item.key ? item.key : '织造',
-            number: item.number,
-            totalPrice: item.price
-          }
-        }),
-        ...JSON.parse(data.user_info).map(item => {
-          return {
-            name: item.key ? item.key : '非生产费用',
+            name: item.key ? item.key : '包装',
             totalPrice: item.price
           }
         }),
@@ -458,6 +453,7 @@ export default {
             totalPrice: item.price
           }
         }),
+        { name: '非生产费用', totalPrice: data.no_product_cost },
         { name: '运输', totalPrice: data.transport_cost }
       )
       this.priceTableDetail.product_total_price = (this.priceTableDetail.info.reduce((total, item) => {

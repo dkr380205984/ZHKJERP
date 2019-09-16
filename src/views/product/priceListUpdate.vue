@@ -336,66 +336,6 @@
               </div>
             </div>
             <div class="itemCtn">
-              <span class="label">包装辅料:</span>
-              <div class="content">
-                <div class="inpCtn"
-                  v-for="(item,index) in packagMaterialArr"
-                  :key="index">
-                  <el-select v-model="item.key"
-                    class="selectInp"
-                    clearable
-                    filterable
-                    allow-create
-                    placeholder="请选择包装辅料">
-                    <el-option v-for="item in packagMaterialList"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item.name">
-                    </el-option>
-                  </el-select>
-                  <el-input placeholder="请输入金额"
-                    class="selectInp marginLeft16"
-                    v-model="item.price"
-                    @input="computedTotalPrice">
-                    <div slot="append"
-                      class='unit'>元</div>
-                  </el-input>
-                  <span :class="index>0?'delete':'add'"
-                    @click="index>0?deletes('packagMaterialArr',index):adds('packagMaterialArr')">{{index>0?'删除':'添加'}}</span>
-                </div>
-              </div>
-            </div>
-            <div class="itemCtn">
-              <span class="label">半成品加工:</span>
-              <div class="content">
-                <div class="inpCtn"
-                  v-for="(item,index) in machiningArr"
-                  :key="index">
-                  <el-select v-model="item.key"
-                    class="selectInp"
-                    filterable
-                    multiple
-                    allow-create
-                    placeholder="请选择半成品加工工序">
-                    <el-option v-for="item in machiningList"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item.name">
-                    </el-option>
-                  </el-select>
-                  <el-input placeholder="请输入金额"
-                    class="selectInp marginLeft16"
-                    v-model="item.price"
-                    @input="computedTotalPrice">
-                    <div slot="append"
-                      class='unit'>元</div>
-                  </el-input>
-                  <span :class="index>0?'delete':'add'"
-                    @click="index>0?deletes('machiningArr',index):adds('machiningArr')">{{index>0?'删除':'添加'}}</span>
-                </div>
-              </div>
-            </div>
-            <div class="itemCtn">
               <span class="label">织造明细:</span>
               <div class="content">
                 <div class="inpCtn"
@@ -433,18 +373,18 @@
               </div>
             </div>
             <div class="itemCtn">
-              <span class="label">非生产费用:</span>
+              <span class="label">半成品加工:</span>
               <div class="content">
                 <div class="inpCtn"
-                  v-for="(item,index) in manArr"
+                  v-for="(item,index) in machiningArr"
                   :key="index">
                   <el-select v-model="item.key"
                     class="selectInp"
-                    clearable
                     filterable
+                    multiple
                     allow-create
-                    placeholder="请选择非生产工序">
-                    <el-option v-for="item in manList"
+                    placeholder="请选择半成品加工工序">
+                    <el-option v-for="item in machiningList"
                       :key="item.id"
                       :label="item.name"
                       :value="item.name">
@@ -458,7 +398,37 @@
                       class='unit'>元</div>
                   </el-input>
                   <span :class="index>0?'delete':'add'"
-                    @click="index>0?deletes('manArr',index):adds('manArr')">{{index>0?'删除':'添加'}}</span>
+                    @click="index>0?deletes('machiningArr',index):adds('machiningArr')">{{index>0?'删除':'添加'}}</span>
+                </div>
+              </div>
+            </div>
+            <div class="itemCtn">
+              <span class="label">包装辅料:</span>
+              <div class="content">
+                <div class="inpCtn"
+                  v-for="(item,index) in packagMaterialArr"
+                  :key="index">
+                  <el-select v-model="item.key"
+                    class="selectInp"
+                    clearable
+                    filterable
+                    allow-create
+                    placeholder="请选择包装辅料">
+                    <el-option v-for="item in packagMaterialList"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.name">
+                    </el-option>
+                  </el-select>
+                  <el-input placeholder="请输入金额"
+                    class="selectInp marginLeft16"
+                    v-model="item.price"
+                    @input="computedTotalPrice">
+                    <div slot="append"
+                      class='unit'>元</div>
+                  </el-input>
+                  <span :class="index>0?'delete':'add'"
+                    @click="index>0?deletes('packagMaterialArr',index):adds('packagMaterialArr')">{{index>0?'删除':'添加'}}</span>
                 </div>
               </div>
             </div>
@@ -481,6 +451,34 @@
                   </el-input>
                   <span :class="index>0?'delete':'add'"
                     @click="index>0?deletes('otherArr',index):adds('otherArr')">{{index>0?'删除':'添加'}}</span>
+                </div>
+              </div>
+            </div>
+            <div class="itemCtn">
+              <span class="label">非生产费用:</span>
+              <div class="content">
+                <div class="inpCtn">
+                  <!-- <el-select v-model="item.key"
+                    class="selectInp"
+                    clearable
+                    filterable
+                    allow-create
+                    placeholder="请选择非生产工序">
+                    <el-option v-for="item in manList"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.name">
+                    </el-option>
+                  </el-select> -->
+                  <el-input placeholder="请输入金额"
+                    class="selectInp"
+                    v-model="user_info_price"
+                    @input="computedTotalPrice">
+                    <div slot="append"
+                      class='unit'>元</div>
+                  </el-input>
+                  <!-- <span :class="index>0?'delete':'add'"
+                    @click="index>0?deletes('manArr',index):adds('manArr')">{{index>0?'删除':'添加'}}</span> -->
                 </div>
               </div>
             </div>
@@ -615,7 +613,7 @@
 
 <script>
 import { machiningType, moneyArr } from '@/assets/js/dictionary.js'
-import { clientList, productList, productTppeList, flowerList, getGroup, YarnList, materialList, priceListCreate, productPlanDetail, yarnDetail, materialDetail, priceListList, priceListDetail } from '@/assets/js/api.js'
+import { clientList, productList, productTppeList, flowerList, getGroup, YarnList, materialList, priceListCreate, productPlanDetail, priceListList, priceListDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -750,12 +748,7 @@ export default {
           name: '人工费'
         }
       ],
-      manArr: [
-        {
-          key: '',
-          price: ''
-        }
-      ],
+      user_info_price: '',
       otherArr: [
         {
           key: '',
@@ -811,12 +804,13 @@ export default {
       this.packagMaterialArr.forEach(item => {
         total += Number(item.price ? item.price : 0)
       })
-      this.manArr.forEach(item => {
-        total += Number(item.price ? item.price : 0)
-      })
+      // this.manArr.forEach(item => {
+      //   total += Number(item.price ? item.price : 0)
+      // })
       this.otherArr.forEach(item => {
         total += Number(item.price ? item.price : 0)
       })
+      total += Number(this.user_info_price)
       total += Number(this.yunshu)
       this.product_total_price = total.toFixed(1)
       this.computedOrderPrice()
@@ -1137,7 +1131,7 @@ export default {
           weave_info: JSON.stringify(this.weaveArr),
           semi_product_info: JSON.stringify(this.machiningArr),
           pack_material_info: JSON.stringify(this.packagMaterialArr),
-          user_info: JSON.stringify(this.manArr),
+          no_product_cost: this.user_info_price,
           desc_info: JSON.stringify(this.otherArr),
           transport_cost: this.yunshu,
           profit: JSON.stringify(this.lirun),
@@ -1183,52 +1177,6 @@ export default {
         this.exchangeRate = 100
       }
     }
-    // yarnArr: {
-    //   immediate: true,
-    //   handler: function (val) {
-    //     yarnDetail({
-    //       id: val.map((item) => item.key)
-    //     }).then((res) => {
-    //       if (res.data.status && res.data.data.length > 0) {
-    //         let index = 0 // 返回的数据会跳过空数据,因此需要计数
-    //         val.forEach((item) => {
-    //           if (item.key && this.yarnList.find((itemFind) => itemFind.name === item.key)) {
-    //             item.maxPrice = res.data.data[index].max_price
-    //             item.minPrice = res.data.data[index].min_price
-    //             index++
-    //           } else {
-    //             item.maxPrice = 0
-    //             item.minPrice = 0
-    //           }
-    //         })
-    //       }
-    //     })
-    //   },
-    //   deep: true
-    // },
-    // otherMaterialArr: {
-    //   immediate: true,
-    //   handler: function (val) {
-    //     materialDetail({
-    //       id: val.map((item) => item.key)
-    //     }).then((res) => {
-    //       if (res.data.status && res.data.data.length > 0) {
-    //         let index = 0 // 返回的数据会跳过空数据,因此需要计数
-    //         val.forEach((item) => {
-    //           if (item.key && this.otherMaterialList.find((itemFind) => itemFind.name === item.key)) {
-    //             item.maxPrice = res.data.data[index].max_price
-    //             item.minPrice = res.data.data[index].min_price
-    //             index++
-    //           } else {
-    //             item.maxPrice = 0
-    //             item.minPrice = 0
-    //           }
-    //         })
-    //       }
-    //     })
-    //   },
-    //   deep: true
-    // }
   },
   mounted () {
     Promise.all([clientList({
@@ -1301,7 +1249,8 @@ export default {
         this.weaveArr = JSON.parse(detail.weave_info)
         this.machiningArr = JSON.parse(detail.semi_product_info)
         this.packagMaterialArr = JSON.parse(detail.pack_material_info)
-        this.manArr = JSON.parse(detail.user_info)
+        // this.manArr = JSON.parse(detail.user_info)
+        this.user_info_price = detail.no_product_cost
         this.otherArr = JSON.parse(detail.desc_info)
         this.desc = detail.desc
         this.product_need = detail.product_need
