@@ -41,7 +41,7 @@
               <div class="label">产品成分：</div>
               <div class="content">
                 <span v-for="(item,index) in productInfo.materials"
-                  :key="item.id">{{item.ingredient_name}}({{item.ingredient_value}}%){{index>0?'/':''}}</span>
+                  :key="item.id">{{item.ingredient_value}}%{{item.ingredient_name}}{{index===(productInfo.materials.length-1)?'':'/'}}</span>
               </div>
             </div>
             <div class="box box4">
@@ -1936,7 +1936,6 @@ export default {
       }
     },
     saveAll () {
-      console.log(this.GL)
       let errorInput = false
       errorInput = this.colour.some((itemColour) => {
         if (!itemColour.value) {
@@ -2515,21 +2514,25 @@ export default {
       this.tableData.weft.data = JSON.parse(this.weftInfo.weft_rank).map((item, index) => {
         return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
       })
+      if (data.warp_data.back_status === 1) {
+        this.$refs.warpBack.hotInstance.loadData(JSON.parse(this.warpInfo.warp_rank_back).map((item, index) => {
+          return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
+        }))
+        this.tableData.warpBack.mergeCells = JSON.parse(this.warpInfo.merge_data_back)
+        this.tableData.warpBack.data = JSON.parse(this.warpInfo.warp_rank_back).map((item, index) => {
+          return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
+        })
+      }
+      if (data.weft_data.back_status === 1) {
+        this.$refs.weftBack.hotInstance.loadData(JSON.parse(this.weftInfo.weft_rank_back).map((item, index) => {
+          return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
+        }))
 
-      // this.$refs.warpBack.hotInstance.loadData(JSON.parse(this.warpInfo.warp_rank_back).map((item, index) => {
-      //   return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
-      // }))
-      // this.$refs.weftBack.hotInstance.loadData(JSON.parse(this.weftInfo.weft_rank_back).map((item, index) => {
-      //   return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
-      // }))
-      // this.tableData.warpBack.mergeCells = JSON.parse(this.warpInfo.merge_data_back)
-      // this.tableData.weftBack.mergeCells = JSON.parse(this.weftInfo.merge_data_back)
-      // this.tableData.warpBack.data = JSON.parse(this.warpInfo.warp_rank_back).map((item, index) => {
-      //   return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
-      // })
-      // this.tableData.weftBack.data = JSON.parse(this.weftInfo.weft_rank_back).map((item, index) => {
-      //   return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
-      // })
+        this.tableData.weftBack.mergeCells = JSON.parse(this.weftInfo.merge_data_back)
+        this.tableData.weftBack.data = JSON.parse(this.weftInfo.weft_rank_back).map((item, index) => {
+          return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
+        })
+      }
       this.ifDouble.warp = data.warp_data.back_status
       this.ifDouble.weft = data.weft_data.back_status
 
@@ -2540,6 +2543,7 @@ export default {
       this.desc = data.desc
       this.weight = data.weight
       this.coefficient = data.yarn_coefficient.map((item) => item.value)
+      this.loading = false
     })
     // 监听快捷键，给表格插入列
     document.onkeydown = (e) => {
@@ -2557,7 +2561,6 @@ export default {
         this.deleteOneCol('weft')
       }
     }
-    this.loading = false
   }
 }
 </script>
