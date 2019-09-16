@@ -47,12 +47,10 @@
           <span class="content contentLine"
             v-for="(item,key) in productDetail.size"
             :key="key">
-            <span class="size">{{key}}</span>
+            <span class="size">{{item.measurement}}</span>
             <span class="sizeDetail">
-              <span class="sizeOnce"
-                v-for="itemChild in item"
-                :key="itemChild.id">{{itemChild.size_name + '：' + itemChild.size_value + 'cm'}}</span>
-              <span class="sizeOnce">{{ '克重' + '：'+item[0].weight + 'g'}}</span>
+              <span class="sizeOnce">{{item.size_info}}</span>
+              <span class="sizeOnce">{{ '克重' + '：'+item.weight + 'g'}}</span>
             </span>
           </span>
         </div>
@@ -64,9 +62,7 @@
             v-for="(item,index) in productDetail.color"
             :key="index">
             <span class="sort">{{index+1}}.</span>
-            <div class="colorBg"
-              :style="{'background':item.color_code}"></div>
-            <span class="color">{{item.name}}</span>
+            <span class="color">{{item.color_name}}</span>
           </span>
         </div>
       </div>
@@ -480,8 +476,8 @@ export default {
       if (res.data.status) {
         console.log(res.data.data)
         this.productDetail = res.data.data
-        this.selectSize = Object.keys(res.data.data.size)[0]
-        this.selectColor = res.data.data.color[0].name
+        this.selectSize = res.data.data.size[0].measurement
+        this.selectColor = res.data.data.color[0].color_name
         // 计算配料单原料
         if (this.productDetail.has_plan === 1) {
           this.productDetail.product_plan_info.material_data.forEach((itemMat) => {

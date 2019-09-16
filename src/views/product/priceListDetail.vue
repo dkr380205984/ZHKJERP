@@ -441,6 +441,12 @@ export default {
             totalPrice: item.price
           }
         }),
+        ...JSON.parse(data.production_info).map(item => {
+          return {
+            name: item.key && item.key.length !== 0 ? item.key.join('/') : '成品加工',
+            totalPrice: item.price
+          }
+        }),
         ...JSON.parse(data.pack_material_info).map(item => {
           return {
             name: item.key ? item.key : '包装',
