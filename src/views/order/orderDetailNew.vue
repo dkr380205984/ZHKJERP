@@ -94,12 +94,12 @@
           </div>
         </div>
         <div class="lineCtn"
-          v-show="order_info.fileArr.length>0">
+          v-show="JSON.parse(order_info.order_contract).length>0">
           <div class="inputCtn"
             style="width:100%">
             <span class="label">文件信息:</span>
             <span class="fileCtn"
-              v-for="item in order_info.fileArr"
+              v-for="item in JSON.parse(order_info.order_contract)"
               :key="item">
               <a target="view_window"
                 :href="item"
@@ -395,7 +395,7 @@
             </div>
             <div class="oprationCtn">
               <el-dropdown @command="openWin"
-                trigger="click">
+                trigger="hover">
                 <span class="el-dropdown-link opration"
                   style="color:#1A95FF">
                   物料详情<i class="el-icon-arrow-down el-icon--right"></i>
@@ -468,7 +468,7 @@
               <i class="border"></i>
             </div>
             <div class="oprationCtn">
-              <el-dropdown trigger="click"
+              <el-dropdown trigger="hover"
                 @command="openWin">
                 <span class="el-dropdown-link opration"
                   style="color:#1A95FF">
@@ -536,7 +536,7 @@
               <i class="border"></i>
             </div>
             <div class="oprationCtn">
-              <el-dropdown trigger="click"
+              <el-dropdown trigger="hover"
                 @command="openWin">
                 <span class="el-dropdown-link opration"
                   style="color:#1A95FF">
@@ -601,7 +601,7 @@
               <i class="border"></i>
             </div>
             <div class="oprationCtn">
-              <el-dropdown trigger="click"
+              <el-dropdown trigger="hover"
                 @command="openWin">
                 <span class="el-dropdown-link opration"
                   style="color:#1A95FF">
@@ -657,7 +657,7 @@
               <i class="border"></i>
             </div>
             <div class="oprationCtn">
-              <el-dropdown trigger="click"
+              <el-dropdown trigger="hover"
                 @command="openWin">
                 <span class="el-dropdown-link opration"
                   style="color:#1A95FF">
@@ -758,6 +758,8 @@
                 </span>
               </span>
             </li>
+            <li class="content"
+              v-if="materialList.length === 0">暂无物料信息</li>
           </div>
           <span class="title">产品织造加工成本</span>
           <div class="tablesCtn"

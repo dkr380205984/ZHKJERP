@@ -135,8 +135,8 @@
               :key="key"
               class="img-inner">
               <div class="imgBox">
-                <img :src="item.img_url"
-                  v-if="item.img_url"
+                <img :src="item.image_url"
+                  v-if="item.image_url"
                   alt="">
               </div>
             </el-carousel-item>
@@ -169,15 +169,8 @@
             <span class="item"
               v-for="(item,key) in showMessageProInfo.size"
               :key="key">
-              <span class="title">{{key}}:</span>
-              <span class="info">
-                <template v-for="(value,index) in item">
-                  <span :key="index">
-                    <span>{{value.size_name + ':'}}</span>
-                    <span>{{value.size_value + 'cm'}}</span>
-                  </span>
-                </template>
-              </span>
+              <span class="title">{{item.measurement}}:</span>
+              <span class="info">{{item.size_info}}</span>
             </span>
           </span>
           <span>
