@@ -282,7 +282,7 @@ export default {
       }
       productMenuSetting({
         company_id: window.sessionStorage.getItem('company_id'),
-        product_id: this.checkedProList.map(key => { return key.id })
+        product_id: this.checkedProList.map(key => { return key.product_id })
       }).then(res => {
         this.$message.success('保存成功')
       })

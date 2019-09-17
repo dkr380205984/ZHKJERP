@@ -1,35 +1,49 @@
 <template>
-  <div id="productCreate"
+  <div id="sampleCreate"
     v-loading="loading">
     <div class="head">
-      <h2>产品修改</h2>
+      <h2>修改{{type === '1' ? '产' : '样'}}品</h2>
     </div>
     <div class="body">
       <div class="inputCtn">
-        <span class="label">产品编号:</span>
-        <span class="unInput">{{product_code}}</span>
+        <span class="label">{{type === '1' ? '产' : '样'}}品编号:</span>
+        <div class="content blue">{{product_code}}</div>
       </div>
       <div class="inputCtn">
-        <span class="label must">产品分类:</span>
-        <div class="ascaderCtn">
+        <span class="label">{{type === '1' ? '产' : '样'}}品名称:</span>
+        <div class="content">
+          <el-input v-model="sampleName"
+            clearable
+            :placeholder="'请输入' + (type === '1' ? '产' : '样') + '品名称'"
+            class="inputItem"></el-input>
+        </div>
+      </div>
+      <div class="inputCtn">
+        <span class="label must">{{type === '1' ? '产' : '样'}}品分类:</span>
+        <div class="content">
           <el-cascader :options="treeData"
             expand-trigger="hover"
             v-model="types"
-            @change="handleChange"
             disabled
-            placeholder="请选择产品品类">
+            class="inputItem"
+            clearable
+            :placeholder="'请选择' + (type === '1' ? '产' : '样') + '品品类'">
           </el-cascader>
         </div>
+        <div class="tooltips"
+          style="bottom:-20px"
+          v-show="warning">
+          <i class="el-icon-warning"></i>
+          警告：系统暂时不支持没有三级分类的{{type === '1' ? '产' : '样'}}品，请联系管理员完善{{type === '1' ? '产' : '样'}}品信息
+        </div>
       </div>
-      <div class="inputCtn"
-        style="margin-bottom:0">
-        <span class="label must">产品花型:</span>
+      <div class="inputCtn">
+        <span class="label must">{{type === '1' ? '产' : '样'}}品花型:</span>
         <el-select clearable
-          style="width:400px"
-          class="elSelect"
           v-model="flower"
-          placeholder="请选择花型"
-          disabled>
+          disabled
+          class="inputItem content"
+          placeholder="请选择花型">
           <el-option v-for="item in flowerArr"
             :key="item.id"
             :label="item.name"
@@ -37,214 +51,203 @@
           </el-option>
         </el-select>
       </div>
-      <div class="inputCtn"
-        style="margin-top:0;margin-bottom:0">
-        <span class="label must">产品成分:</span>
-        <div class="cancleCtn"
-          v-for="item in ingredientNum"
-          :key="item">
-          <div class="index">{{item}}</div>
-          <el-select :disabled="has_next"
-            class="specialSel"
-            v-model="ingredient[item-1]"
-            placeholder="请选择成分">
+      <div class="inputCtn">
+        <span class="label">{{type === '1' ? '产' : '样'}}品成分:</span>
+        <div v-for="(item,key) in ingredient"
+          :key="key"
+          class="content">
+          <el-select v-model="item.ingredient_name"
+            clearable
+            class="smallInputItem"
+            placeholder="选择成分">
             <el-option v-for="item in ingredientArr"
               :key="item.id"
               :label="item.name"
-              :value="item.id">
+              :value="item.name">
             </el-option>
           </el-select>
-          <el-input :disabled="has_next"
-            style="width:160px;margin-left:15px;margin-bottom:24px"
-            placeholder="请输入比例"
-            v-model="ingredientScale[item-1]"
-            class="input-with-select">
-            <template slot="append">%</template>
+          <el-input class="smallInputItem"
+            placeholder="输入比例"
+            v-model="item.ingredient_value">
+            <span class="unit"
+              slot="append">%</span>
           </el-input>
+          <div class="addBtn"
+            @click="addIngredient"
+            v-if="key === 0">添加</div>
           <div class="deleteBtn"
-            @click="deleteIngredient(item)"><i class="el-icon-delete"></i></div>
-        </div>
-        <div class="addBtn"
-          @click="addingredientNum">
-          <span>添加成分</span>
-          <span>+</span>
+            @click="deleteIngredient(key)"
+            v-else>删除</div>
         </div>
         <div class="tooltips"
+          style="bottom:-20px;"
           v-show="showError">
           <i class="el-icon-warning"></i>
-          产品成分比例总和不等于100%，请检查比例
+          {{type === '1' ? '产' : '样'}}品成分比例总和不等于100%，请检查比例
         </div>
       </div>
-      <div class="inputCtn"
-        style="margin-bottom:0;margin-top:4px">
-        <span class="label must">产品尺寸:</span>
-        <div class="lineCtn"
-          v-for="(itemf,indexf) in sizeNum"
-          :key="indexf">
-          <el-select :disabled="has_next && itemf<=haveSizeNum"
-            clearable
-            class="elInput"
-            v-model="footage[indexf]"
-            placeholder="请选择尺码"
-            style="width:200px;margin-bottom: 24px;">
-            <el-option v-for="item in child_measurement"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id">
-            </el-option>
-          </el-select>
-          <el-input :disabled="has_next && itemf<=haveSizeNum"
-            v-for="(item,index) in child_size"
-            class="elInputAp"
-            placeholder="请输入数字"
-            v-model="sizeArr[indexf][index]"
-            :key="item.id">
-            <template slot="prepend">{{item.name}}</template>
-            <template slot="append">厘米</template>
-          </el-input>
-          <el-input :disabled="has_next && itemf<=haveSizeNum"
-            class="elInputAp"
-            style="width:200px"
-            placeholder="请输入产品克重"
-            v-model="weight[indexf]">
-            <template slot="append">克</template>
-          </el-input>
-          <div class="deleteBtn2"
-            @click="deleteSize(itemf)"><i class="el-icon-delete"></i></div>
-        </div>
-        <div class="addBtn"
-          @click="addSizeLine">
-          <span>添加尺寸</span>
-          <span>+</span>
+      <div class="inputCtn">
+        <span class="label must">{{type === '1' ? '产' : '样'}}品规格:</span>
+        <div class="content col"
+          v-for="(item,key) in size"
+          :key="key">
+          <div class="column">
+            <el-select clearable
+              v-model="item.size"
+              class="smallInputItem"
+              placeholder="选择规格">
+              <el-option v-for="item in sizeArr"
+                :key="item.id"
+                :label="item.name"
+                :value="item.name">
+              </el-option>
+            </el-select>
+            <el-input placeholder="输入克重"
+              class="smallInputItem"
+              v-model="item.weight"
+              :key="item.id">
+              <span slot="append"
+                class="unit">克</span>
+            </el-input>
+            <div class="addBtn"
+              @click="addSize"
+              v-if="key === 0">添加</div>
+            <div class="deleteBtn"
+              v-else
+              @click="deleteSize(key)">删除</div>
+          </div>
+          <div class="column">
+            <el-input class="inputItem"
+              placeholder="输入尺寸信息"
+              v-model="item.desc">
+            </el-input>
+          </div>
         </div>
       </div>
-      <div class="inputCtn"
-        style="margin-top:0;margin-bottom:0">
-        <span class="label must">产品配色:</span>
-        <div class="cancleCtn"
-          v-for="item in colorNum"
-          :key="item">
-          <el-select :disabled="has_next && item<=haveColorNum"
-            clearable
+      <div class="inputCtn">
+        <span class="label">{{type === '1' ? '产' : '样'}}品配色:</span>
+        <div class="content"
+          v-for="(item,key) in color"
+          :key="key">
+          <!-- remote
+            :remote-method='remoteColor' -->
+          <el-select clearable
             filterable
-            class="elSelect"
-            v-model="color[item-1]"
+            class="inputItem"
+            v-model="item.color"
             placeholder="请选择配色">
             <el-option v-for="item in colorArr"
               :key="item.id"
               :label="item.name"
-              :value="item.id">
+              :value="item.name">
               <div class="bgBlock"
                 :style="{'background':item.color_code}"></div>
               <div class="desc">{{item.name}}</div>
             </el-option>
           </el-select>
+          <div class="addBtn"
+            @click="addColor"
+            v-if="key === 0">添加</div>
           <div class="deleteBtn"
-            @click="deleteColor(item)"><i class="el-icon-delete"></i></div>
-        </div>
-        <div class="addBtn"
-          @click="addcolorNum">
-          <span>添加配色</span>
-          <span>+</span>
+            @click="deleteColor(key)"
+            v-else>删除</div>
         </div>
       </div>
       <div class="inputCtn">
-        <span class="label">产品图片:</span>
-        <el-upload class="upload-demo"
-          action="http://upload.qiniup.com/"
-          accept="image/jpeg,image/gif,image/png,image/bmp"
-          :on-preview="handlePreview"
-          :on-remove="handleRemove"
-          :on-success="handleSuccess"
-          :before-upload="beforeAvatarUpload"
-          :file-list="fileArr"
-          :data="postData"
-          ref="uploada"
-          list-type="picture">
-          <el-button size="small"
-            type="primary">点击上传</el-button>
-          <div slot="tip"
-            class="el-upload__tip">只能上传jpg/png图片文件，且不超过10M</div>
-        </el-upload>
+        <span class="label">{{type === '1' ? '产' : '样'}}品图片:</span>
+        <div class="content">
+          <el-upload class="upload-demo"
+            action="http://upload.qiniup.com/"
+            accept="image/jpeg,image/gif,image/png,image/bmp"
+            :before-upload="beforeAvatarUpload"
+            :file-list="fileArr"
+            :data="postData"
+            ref="uploada"
+            list-type="picture">
+            <el-button size="small"
+              type="primary">点击上传</el-button>
+            <div slot="tip"
+              class="el-upload__tip">只能上传jpg/png图片文件，且不超过10M</div>
+          </el-upload>
+        </div>
       </div>
-      <div class="inputCtn"
-        style="margin-top:50px">
-        <span class="label">产品描述:</span>
-        <el-input class="textarea"
-          type="textarea"
-          :rows="6"
-          placeholder="请输入内容"
-          v-model="textarea">
-        </el-input>
+      <div class="inputCtn">
+        <span class="label">{{type === '1' ? '产' : '样'}}品描述:</span>
+        <div class="content">
+          <el-input class="inputItem autoHeight"
+            type="textarea"
+            :rows="6"
+            placeholder="请输入描述内容..."
+            v-model="textarea">
+          </el-input>
+        </div>
       </div>
       <div class="btnCtn">
         <div class="cancleBtn"
           @click="$router.go(-1)">返回</div>
         <div class="okBtn"
-          @click="saveAll">修改</div>
+          @click="saveAll">保存</div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { getToken, productTppeList, flowerList, ingredientList, colorList, saveProduct, porductOne } from '@/assets/js/api.js'
+import { productTppeList, flowerList, ingredientList, colorList, getToken, saveProduct, porductOne } from '@/assets/js/api.js'
 export default {
   data () {
     return {
-      lock: false,
-      has_next: false,
-      product_code: '',
-      postData: { token: '' },
       loading: true,
-      colorNum: 1,
-      sizeNum: 1,
-      ingredientNum: 1,
-      textarea: '',
-      flower: '',
-      flowerArr: [],
-      types: [],
+      product_code: '',
+      sampleName: '',
       treeData: [],
-      ingredient: [],
-      ingredientScale: [100],
+      types: [],
+      warning: false,
+      flowerArr: [],
+      flower: '',
+      ingredient: [{ ingredient_name: '', ingredient_value: 100 }],
       ingredientArr: [],
-      color: [],
-      colorArr: [],
-      fileArr: [],
-      footage: [],
-      sizeArr: [],
-      child_measurement: [{
+      showError: false,
+      size: [{ size: '', weight: '', desc: '' }],
+      sizeArr: [{
         id: -1,
         name: '均码'
       }],
-      child_size: [],
-      weight: [],
-      showError: false,
-      haveSizeNum: 1, // 用于记录已有的尺码和配色信息
-      haveColorNum: 1
+      color: [{ color: '' }],
+      colorArr: [],
+      textarea: '',
+      postData: { token: '' },
+      fileArr: [],
+      lock: true,
+      type: ''
     }
   },
-  mounted () {
-    let companyId = window.sessionStorage.getItem('company_id')
-    // 初始化接口
-    Promise.all([flowerList({
-      company_id: companyId
-    }), productTppeList({
-      company_id: companyId
-    }), ingredientList({
-      company_id: companyId
-    }), colorList({
-      company_id: companyId
-    }), getToken(),
-    porductOne({
-      id: this.$route.params.id
-    })]).then((res) => {
-      this.flowerArr = res[0].data.data
-      this.treeData = res[1].data.data.map((item) => {
+  created () {
+    this.type = window.location.search.split('?')[1].split('&')[0].split('=')[1]
+    Promise.all([
+      productTppeList({
+        company_id: window.sessionStorage.getItem('company_id')
+      }),
+      flowerList({
+        company_id: window.sessionStorage.getItem('company_id')
+      }),
+      ingredientList({
+        company_id: window.sessionStorage.getItem('company_id')
+      }),
+      colorList({
+        company_id: window.sessionStorage.getItem('company_id')
+      }),
+      getToken(),
+      porductOne({
+        id: this.$route.params.id
+      })
+    ]).then(res => {
+      console.log(res[5].data.data)
+      this.treeData = res[0].data.data.map((item) => {
         return {
           value: item.id,
           label: item.name,
-          child_measurement: item.child_measurement,
+          sizeArr: item.sizeArr,
           child_size: item.child_size,
           children: item.child.length === 0 ? null : item.child.map((item) => {
             return {
@@ -260,104 +263,59 @@ export default {
           })
         }
       })
+      this.flowerArr = res[1].data.data
       this.ingredientArr = res[2].data.data
       this.colorArr = res[3].data.data
       this.postData.token = res[4].data.data
-      // 初始化已有数据,详情数据给的都是name所以都要处理成id初始化
-      const product = res[5].data.data
-      this.colorNum = product.color.length
-      this.product_code = product.product_code
-      this.color = product.color.map((item) => {
-        return this.colorArr.find((item2) => {
-          return item2.name === item.name
-        }).id
-      })
-      this.flower = this.flowerArr.find((item) => {
-        return item.name === product.flower_id
-      }).id
-      this.textarea = product.description
-      // 成分
-      this.ingredientNum = product.materials.length
-      this.ingredientScale = product.materials.map((item) => {
-        return item.ingredient_value
-      })
-      this.ingredient = product.materials.map((item) => {
-        return item.ingredient_name
-      })
-      // 尺码
-      this.footage = Object.keys(product.size)
-      this.footage.forEach((key) => {
-        this.sizeArr.push(product.size[key].map((item) => {
-          return item.size_value
-        }))
-      })
-      this.footage.forEach((key) => {
-        this.weight.push(product.size[key][0].weight)
-      })
-      this.sizeNum = this.footage.length
-      // 类型
-      const categoryObj = this.treeData.find((item) => {
-        return item.label === product.category_info.product_category
-      })
-      const typeObj = product.type_name ? categoryObj.children.find((item) => {
-        return item.label === product.type_name
-      }) : ''
-      const styleObj = product.style_name ? typeObj.children.find((item) => {
-        return item.label === product.style_name
-      }) : ''
-      this.types.push(categoryObj.value, typeObj.value || '', styleObj.value || '')
-      // 图片
-      this.fileArr = product.img.map((item, index) => {
+      let productInfo = res[5].data.data
+      // 加载数据
+      this.sampleName = productInfo.sample_title
+      this.product_code = productInfo.product_code
+      this.fileArr = productInfo.img.map(item => {
         return {
-          name: '图片' + index,
           url: item.image_url
         }
       })
-      // 如果产品有后续信息，则只能修改图片
-      if (product.has_craft !== 0 || product.has_plan !== 0 || product.in_order !== 0) {
-        this.has_next = true
-        this.haveSizeNum = this.sizeNum
-        this.haveColorNum = this.colorNum
+      this.flower = this.flowerArr.find(item => item.name === productInfo.flower_id).id
+      this.ingredient = productInfo.materials.map(item => {
+        return {
+          ingredient_name: item.ingredient_name,
+          ingredient_value: item.ingredient_value
+        }
+      })
+      if (this.ingredient.length === 0) {
+        this.ingredient.push({
+          ingredient_name: '',
+          ingredient_value: 100
+        })
       }
+      this.size = productInfo.size.map(item => {
+        return {
+          size: item.measurement,
+          desc: item.size_info,
+          weight: item.weight
+        }
+      })
+      this.color = productInfo.color.map(item => {
+        return {
+          color: item.color_name
+        }
+      })
+      this.types[0] = this.treeData.find(item =>
+        item.label === productInfo.category_info.product_category
+      ).value
+      this.types[1] = this.treeData.find(item =>
+        item.label === productInfo.category_info.product_category
+      ).children.find(item => item.label === productInfo.type_name).value
+
+      this.types[2] = this.treeData.find(item =>
+        item.label === productInfo.category_info.product_category
+      ).children.find(item => item.label === productInfo.type_name).children.find(item => item.label === productInfo.style_name).value
+      this.description = productInfo.description
       this.loading = false
     })
   },
-  watch: {
-    types (newVal) {
-      if (newVal.length !== 0) {
-        const obj = this.treeData.find((item) => item.value === newVal[0])
-        this.child_measurement = obj.child_size
-        this.child_size = obj.child_measurement
-      }
-    },
-    ingredientScale (newVal) {
-      let add = 0
-      newVal.forEach((item) => {
-        add += parseInt(item)
-      })
-      console.log(add)
-      if (add !== 100) {
-        this.showError = true
-      } else {
-        this.showError = false
-      }
-    }
-  },
   methods: {
-    // 数字校验
-    filterNum (val) {
-      this[val] = this[val].replace(/[^0-9.]/g, '')
-    },
-    handleChange (value) {
-      console.log(value)
-    },
-    // 文件上传相关操作
-    handleRemove (file, fileList) {
-      console.log(file, fileList)
-    },
-    handlePreview (file) {
-      console.log(file)
-    },
     beforeAvatarUpload: function (file) {
       let fileName = file.name.lastIndexOf('.')// 取到文件名开始到最后一个点的长度
       let fileNameLength = file.name.length// 取到文件名长度
@@ -377,294 +335,125 @@ export default {
         this.$message.error('图片大小不能超过 6MB!')
         return false
       }
-      // if (isReapeat) {
-      //   this.$message.error('不能重复上传图片')
-      //   return false
-      // }
     },
-    handleSuccess (file) {
-      // this.fileArr.push(file)
+    deleteIngredient (index) {
+      this.ingredient.splice(index, 1)
     },
-    // 保存操作
+    addIngredient () {
+      this.ingredient.push({ ingredient_name: '', ingredient_value: '' })
+    },
+    addSize () {
+      this.size.push({ size: '', weight: '', desc: '' })
+    },
+    deleteSize (index) {
+      this.size.splice(index, 1)
+    },
+    addColor () {
+      this.color.push({ color: '' })
+    },
+    deleteColor (index) {
+      this.color.splice(index, 1)
+    },
     saveAll () {
-      if (!this.lock) {
-        // 表单验证
-        if (this.types.length === 0) {
-          this.$message.error({
-            message: '请选择产品品类'
-          })
-          return
+      let flag = true
+      if (this.types.length <= 0) {
+        this.$message.error('请选择' + (this.type === '1' ? '产' : '样') + '品分类')
+        flag = false
+      }
+      if (!this.flower) {
+        this.$message.error('请选择' + (this.type === '1' ? '产' : '样') + '品花型')
+        flag = false
+      }
+      this.size.forEach(item => {
+        if (!item.size) {
+          this.$message.error('请将' + (this.type === '1' ? '产' : '样') + '品规格填写完整')
+          flag = false
         }
-        if (!this.flower) {
-          this.$message.error({
-            message: '请选择产品花型'
-          })
-          return
-        }
-        if (this.ingredient.length < this.ingredientNum) {
-          this.$message.error({
-            message: '检测到未填写的产品成分，请选择后保存'
-          })
-          return
-        }
-        for (let i = 0; i < this.ingredient.length; i++) {
-          if (!this.ingredient[i]) {
-            this.$message.error({
-              message: '检测到未填写的产品成分，请选择后保存'
-            })
-            return
-          }
-        }
-        if (this.ingredientScale.length < this.ingredientNum) {
-          this.$message.error({
-            message: '检测到有未填写的产品占比，请输入后保存'
-          })
-          return
-        }
-        for (let i = 0; i < this.ingredientScale.length; i++) {
-          if (!this.ingredientScale[i]) {
-            this.$message.error({
-              message: '检测到未填写的产品成分，请输入后保存'
-            })
-            return
-          }
-        }
-        if (this.showError) {
-          this.$message.error({
-            message: '产品成分比例总和不等于100%，请重新输入占比'
-          })
-          return
-        }
-        if (this.footage.length < this.sizeNum) {
-          this.$message.error({
-            message: '检测到有未填写的产品尺码，请输入后保存'
-          })
-          return
-        }
-        for (let i = 0; i < this.footage.length; i++) {
-          if (!this.footage[i]) {
-            this.$message.error({
-              message: '检测到未填写的产品尺码，请选择后保存'
-            })
-            return
-          }
-        }
-        console.log(this.$refs.uploada.uploadFiles)
-        const imgArr = this.$refs.uploada.uploadFiles.map((item) => {
-          if (item.response) {
-            return 'http://zhihui.tlkrzf.com/' + item.response.key
-          } else {
-            return item.url
+      })
+      const imgArr = this.$refs.uploada.uploadFiles.map((item) => { return (item.response ? 'http://zhihui.tlkrzf.com/' + item.response.key : item.url) })
+      let data = {
+        id: this.$route.params.id,
+        product_code: this.product_code,
+        company_id: window.sessionStorage.getItem('company_id'),
+        category_id: this.types[0],
+        type_id: this.types[1],
+        style_id: this.types[2],
+        type: Number(this.type),
+        flower_id: this.flower,
+        description: this.textarea,
+        user_id: window.sessionStorage.getItem('user_id'),
+        img: imgArr,
+        color: this.color.map(item => {
+          return item.color
+        }),
+        sample_title: this.sampleName,
+        materials: this.ingredient,
+        size: this.size.map(item => {
+          return {
+            weight: item.weight,
+            measurement: item.size,
+            size_info: item.desc
           }
         })
-        // const sizeArr = this.footage.map((item, index) => {
-        //   return this.sizeArr[index].map((item2, index2) => {
-        //     return {
-        //       'size_name': this.child_size[index2].name || null,
-        //       'size_value': item2 || null,
-        //       'footage': this.child_footage.find((item3) => item3.id === item).name || null,
-        //       'weight': this.weight[index]
-        //     }
-        //   })
-        // }).flat() // ES6二维数组转一维用不了 polyfill支持不来
-        // 获取多维sizeArr
-        const sizeArrErWei = this.footage.map((item, index) => {
-          return this.sizeArr[index].map((item2, index2) => {
-            return {
-              'size_name': this.child_size[index2].name || null,
-              'size_value': item2 || null,
-              'footage': this.child_measurement.find((item3) => item3.name === item).name || null,
-              'weight': this.weight[index]
+      }
+      if (flag) {
+        if (this.lock) {
+          this.lock = false
+          saveProduct(data).then(res => {
+            if (res.data.status) {
+              this.$message.success('添加成功,即将跳转至详情页')
+              setTimeout(() => {
+                this.lock = true
+                this.$router.push('/index/productDetail/' + res.data.data.id)
+              }, 800)
             }
           })
-        })
-        let sizeArr = []
-        // 数组扁平化
-        sizeArrErWei.forEach((item) => {
-          if (Array.isArray(item)) {
-            item.forEach((itemChild) => {
-              sizeArr = sizeArr.concat(itemChild)
-            })
-          } else {
-            sizeArr.push(item)
-          }
-        })
-        if (sizeArr.length < this.sizeNum * this.child_size.length) {
-          this.$message.error({
-            message: '检测到未填写的产品尺寸，请输入后保存'
-          })
-        }
-        for (let i = 0; i < sizeArr.length; i++) {
-          if (!(sizeArr[i].size_name && sizeArr[i].size_value)) {
-            this.$message.error({
-              message: '检测到未填写的产品尺寸，请输入后保存'
-            })
-            return
-          }
-        }
-        if (this.color.length < this.colorNum) {
-          this.$message.error({
-            message: '检测到未填写的颜色，请选择后保存'
-          })
-        }
-        const materialsArr = this.ingredientScale.map((item, index) => {
-          return {
-            'ingredient_value': item,
-            'ingredient_name': this.ingredient[index]
-          }
-        })
-        this.lock = true
-        this.loading = true
-        saveProduct({
-          id: this.$route.params.id,
-          product_code: this.product_code,
-          company_id: window.sessionStorage.getItem('company_id'),
-          category_id: this.types[0],
-          type_id: this.types[1],
-          style_id: this.types[2] || null,
-          flower_id: this.flower,
-          description: this.textarea,
-          user_id: window.sessionStorage.getItem('user_id'),
-          img: imgArr,
-          color: this.color,
-          size: sizeArr,
-          materials: materialsArr
-        }).then((res) => {
-          if (res.data.status) {
-            this.$message.success({
-              message: '修改成功'
-            })
-            this.$router.push('/index/productList')
-          } else {
-            this.$message.error({
-              message: res.data.message
-            })
-          }
-          this.lock = false
-          this.loading = false
-        })
-      } else {
-        this.$message.error({
-          message: '请勿频繁操作'
-        })
-      }
-    },
-    // 解决了vue数据类型检测的bug
-    addSizeLine () {
-      this.sizeArr.push([])
-      this.sizeNum++
-    },
-    // 添加成分
-    addingredientNum () {
-      if (!this.has_next) {
-        this.ingredientNum++
-      } else {
-        this.$message.error({
-          message: '不能添加成分'
-        })
-      }
-    },
-    // 删除成分
-    deleteIngredient (index) {
-      if (!this.has_next) {
-        if (this.ingredientNum > 1) {
-          this.ingredientScale.splice(index - 1, 1)
-          this.ingredient.splice(index - 1, 1)
-          this.ingredientNum--
         } else {
-          this.$message.error({
-            message: '至少含有一种成分'
-          })
-        }
-      } else {
-        this.$message.error({
-          message: '不能删除成分'
-        })
-      }
-    },
-    // 添加颜色
-    addcolorNum () {
-      this.colorNum++
-    },
-    // 删除颜色
-    deleteColor (index) {
-      if (!this.has_next) {
-        if (this.colorNum > 1) {
-          this.color.splice(index - 1, 1)
-          this.colorNum--
-        } else {
-          this.$message.error({
-            message: '至少含有一种配色'
-          })
-        }
-      } else {
-        if (index > this.haveColorNum) {
-          this.color.splice(index - 1, 1)
-          this.colorNum--
-        } else {
-          this.$message.error({
-            message: '不能删除已有配色'
-          })
+          this.$message.warning('请勿频繁点击')
         }
       }
-    },
-    // 删除尺寸
-    deleteSize (index) {
-      if (!this.has_next) {
-        if (this.sizeNum > 1) {
-          this.footage.splice(index - 1, 1)
-          this.sizeArr.splice(index - 1, 1)
-          this.sizeNum--
-        } else if (this.sizeNum === 1) {
-          this.$message.error({
-            message: '至少含有一种尺寸'
-          })
-        }
-      } else {
-        if (index > this.haveSizeNum) {
-          this.footage.splice(index - 1, 1)
-          this.sizeArr.splice(index - 1, 1)
-          this.sizeNum--
-        } else {
-          this.$message.error({
-            message: '不能删除已有尺寸'
-          })
-        }
-      }
+      console.log(data)
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
-@import "~@/assets/css/productCreate.less";
+@import "~@/assets/css/sampleCreate.less";
 </style>
 <style lang="less">
-.el-cascader-menu {
-  font-size: 14px;
-  color: #666;
-  font-family: "systemfont";
-  font-weight: 300;
-}
-.el-input-group--append .el-select .el-input.is-focus .el-input__inner,
-.el-input-group--prepend .el-select .el-input.is-focus .el-input__inner {
-  border: 0 !important;
-  &:hover {
-    border: 0 !important;
-    border-color: transparent !important;
+#sampleCreate {
+  .el-input {
+    width: 100%;
+    height: 100%;
   }
-  &:focus {
-    border: 0 !important;
-    border-color: transparent !important;
+  .el-input-group__append {
+    padding: 0;
+    .unit {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 38px;
+      height: 100%;
+    }
   }
 }
-.el-cascader.is-disabled .el-cascader__label span {
-  color: #c0c4cc !important;
-}
-.el-cascader.is-disabled .el-cascader__label {
-  cursor: not-allowed !important;
-}
-.el-input.is-disabled .el-input__inner {
-  color: #c0c4cc !important;
-}
+// .el-cascader-menu {
+//   font-size: 14px;
+//   color: #666;
+//   font-family: "systemfont";
+//   font-weight: 300;
+// }
+// .el-input-group--append .el-select .el-input.is-focus .el-input__inner,
+// .el-input-group--prepend .el-select .el-input.is-focus .el-input__inner {
+//   border: 0 !important;
+//   &:hover {
+//     border: 0 !important;
+//     border-color: transparent !important;
+//   }
+//   &:focus {
+//     border: 0 !important;
+//     border-color: transparent !important;
+//   }
+// }
 </style>

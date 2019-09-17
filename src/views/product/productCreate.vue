@@ -50,7 +50,7 @@
         </el-select>
       </div>
       <div class="inputCtn">
-        <span class="label">产品成分:</span>
+        <span class="label must">产品成分:</span>
         <div v-for="(item,key) in ingredient"
           :key="key"
           class="content">
@@ -123,7 +123,7 @@
         </div>
       </div>
       <div class="inputCtn">
-        <span class="label">产品配色:</span>
+        <span class="label must">产品配色:</span>
         <div class="content"
           v-for="(item,key) in color"
           :key="key">
@@ -131,6 +131,7 @@
             :remote-method='remoteColor' -->
           <el-select clearable
             filterable
+            allow-create
             class="inputItem"
             v-model="item.color"
             placeholder="请选择配色">
@@ -409,6 +410,42 @@ export default {
       this.size.forEach(item => {
         if (!item.size) {
           this.$message.error('请将产品规格填写完整')
+          flag = false
+        }
+        if (!item.weight) {
+          this.$message.error('请填写产品克重信息')
+          flag = false
+        }
+        if (!item.desc) {
+          this.$message.error('请填写产品尺寸信息')
+          flag = false
+        }
+      })
+      this.ingredient.forEach(item => {
+        if (!item.ingredient_name) {
+          this.$message.error('请将产品成分填写完整')
+          flag = false
+        }
+        if (!item.ingredient_value) {
+          this.$message.error('请将产品成分填写完整')
+          flag = false
+        }
+      })
+      let arr = this.ingredient.map(item => {
+        return item.ingredient_value
+      })
+      console.log(arr.reduce((total, item) => {
+        return Number(total) + Number(item)
+      }))
+      if (arr.reduce((total, item) => {
+        return Number(total) + Number(item)
+      }) !== '100') {
+        this.$message.error('产品成分比例总和不等于100%，请检查比例')
+        flag = false
+      }
+      this.color.forEach(item => {
+        if (!item.color) {
+          this.$message.error('请将产品配色填写完整')
           flag = false
         }
       })

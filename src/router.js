@@ -530,6 +530,10 @@ let router = new Router({
       path: 'companyInfoSetting',
       name: 'companyInfoSetting',
       component: () => import('./views/setting/companyInfoSetting.vue')
+    }, {
+      path: 'productPlanCreateNew/:id',
+      name: 'productPlanCreateNew',
+      component: () => import('./views/productPlan/productPlanCreateNew.vue')
     }]
   }
   ]

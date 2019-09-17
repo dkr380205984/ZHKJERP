@@ -769,15 +769,6 @@ export default {
           price: ''
         }
       ],
-      manList: [
-        {
-          id: 1,
-          name: '管理费'
-        }, {
-          id: 2,
-          name: '人工费'
-        }
-      ],
       otherArr: [
         {
           key: '',
@@ -797,6 +788,9 @@ export default {
       }, {
         id: 3,
         name: '人工'
+      }, {
+        id: 4,
+        name: '水洗'
       }],
       yunshu: '',
       user_info_price: '',
@@ -1272,6 +1266,8 @@ export default {
     // }
   },
   mounted () {
+    let firstInput = document.getElementsByTagName('input')[0]
+    firstInput.focus()
     Promise.all([clientList({
       company_id: this.companyId,
       keyword: '',

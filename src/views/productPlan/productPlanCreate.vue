@@ -51,17 +51,14 @@
           <div class="inputCtn"
             style="width:100%">
             <span class="label">产品规格:</span>
-            <span class="content"
-              style="width:100%;"
+            <span class="content contentLine"
               v-for="(item,key) in product.size"
               :key="key">
-              <span style="margin-right:15px">{{key}}</span>
+              <span class="size">{{item.measurement}}</span>
               <span class="sizeDetail">
-                <span class="sizeOnce"
-                  v-for="itemChild in item"
-                  :key="itemChild.id">{{itemChild.size_value + 'cm' + '(' + itemChild.size_name + ')'}}&nbsp;&nbsp;&nbsp;</span>
+                <span class="sizeOnce">{{item.size_info}}</span>
+                <span class="sizeOnce">{{ '克重' + '：'+item.weight + 'g'}}</span>
               </span>
-              <span class="size">{{item[0].weight}}g(克重)</span>
             </span>
           </div>
         </div>
@@ -131,11 +128,11 @@
                   placeholder="请选择配色方案">
                   <el-option v-for="item in colourArr"
                     :key="item.name"
-                    :label="item.name"
-                    :value="item.name">
-                    <div class="bgBlock"
-                      :style="{'background':item.color_code}"></div>
-                    <div class="desc">{{item.name}}</div>
+                    :label="item.color_name"
+                    :value="item.color_name">
+                    <!-- <div class="bgBlock"
+                      :style="{'background':item.color_code}"></div> -->
+                    <div class="desc">{{item.color_name}}</div>
                   </el-option>
                 </el-select>
                 <div class="deleteCtn"
@@ -260,11 +257,11 @@
                   placeholder="请选择配色方案">
                   <el-option v-for="item in colourArr"
                     :key="item.name"
-                    :label="item.name"
-                    :value="item.name">
-                    <div class="bgBlock"
-                      :style="{'background':item.color_code}"></div>
-                    <div class="desc">{{item.name}}</div>
+                    :label="item.color_name"
+                    :value="item.color_name">
+                    <!-- <div class="bgBlock"
+                      :style="{'background':item.color_code}"></div> -->
+                    <div class="desc">{{item.color_name}}</div>
                   </el-option>
                 </el-select>
                 <div class="deleteCtn"
@@ -945,7 +942,7 @@ export default {
       console.log(this.colorArr)
       if (newVal === '0') {
         this.mainIngredient.ingredient = [this.ingredientArr[0].name]
-        this.mainIngredient.colour = [this.colourArr.map((item) => item.name)]
+        this.mainIngredient.colour = [this.colourArr.map((item) => item.color_name)]
         this.mainIngredient.color = [this.colourArr.map((item) => {
           return [{
             name: '无',
@@ -1011,11 +1008,7 @@ export default {
     },
     // 颜色合并
     filterColor (arr) {
-      let str = ''
-      arr.forEach((item) => {
-        str += item.name + '/'
-      })
-      return str.substring(0, str.length - 1)
+      return arr.map(item => { return item.color_name }).join('/')
     }
   }
 }

@@ -130,7 +130,7 @@
                 <span class="hoverBlue"
                   style="margin:0 5px;cursor:pointer"
                   @click="open('/index/productDetail/'+itemProduct.productInfo.id)">{{itemProduct.productCode}}</span>
-                <span style="margin:0 5px">{{itemProduct.productInfo.category_info.product_category}}/{{itemProduct.productInfo.type_name}}/{{itemProduct.productInfo.style_name}}/{{itemProduct.productInfo.flower_id}}</span>
+                <!-- <span style="margin:0 5px">{{itemProduct.productInfo.category_info.product_category}}/{{itemProduct.productInfo.type_name}}/{{itemProduct.productInfo.style_name}}/{{itemProduct.productInfo.flower_id}}</span> -->
               </span>
             </div>
           </div>
@@ -155,7 +155,7 @@
               :key="indexProduct"
               style="height:60px;text-align:center;justify-content:space-around">
               <span style="display:inline-block">
-                <span style="margin:0 5px">{{itemProduct.sum}}{{itemProduct.productInfo.category_info.name}}</span>
+                <!-- <span style="margin:0 5px">{{itemProduct.sum}}{{itemProduct.productInfo.category_info.name}}</span> -->
               </span>
             </div>
           </div>

@@ -96,7 +96,7 @@
             style="color:#1A95FF">{{item.product_code}}</div>
           <div class="tableColumn flex9">{{item|filterType}}</div>
           <div class="tableColumn">{{item.flower_id}}</div>
-          <div class="tableColumn">{{item.sample_size|filterSize}}</div>
+          <div class="tableColumn">{{item.size|filterSize}}</div>
           <div class="tableColumn flexSamll">{{item.color.length}}</div>
           <div class="tableColumn">
             <div class="imgCtn">
@@ -118,11 +118,11 @@
               placement="top-start">
               <span class="btns warning"
                 v-if="item.has_craft===1||item.in_order===1||item.has_plan===1"
-                @click="$router.push('/index/sampleDetail/'+item.id)">修改</span>
+                @click="$router.push('/index/productUpdate/'+item.id + '?type=2')">修改</span>
             </el-tooltip>
             <span class="btns warning"
               v-if="item.has_craft===0&&item.in_order===0&&item.has_plan===0"
-              @click="$router.push('/index/sampleDetail/'+item.id)">修改</span>
+              @click="$router.push('/index/productUpdate/'+item.id + '?type=2')">修改</span>
             <span class="btns success"
               @click="$router.push('/index/sampleDetail/'+item.id)">详情</span>
             <span class="btns error"
@@ -412,8 +412,9 @@ export default {
     },
     // 类型展示
     filterSize (item) {
-      return JSON.parse(item).map(key => {
-        return key.size
+      console.log(item)
+      return item.map(key => {
+        return key.measurement
       }).join('/')
     }
   },

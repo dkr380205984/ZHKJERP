@@ -153,11 +153,11 @@
               placement="top-start">
               <span class="btns warning"
                 v-if="item.has_craft===1||item.in_order===1||item.has_plan===1"
-                @click="$router.push('/index/productUpdate/'+item.id)">修改</span>
+                @click="$router.push('/index/productUpdate/'+item.id + '?type=1')">修改</span>
             </el-tooltip>
             <span class="btns warning"
               v-if="item.has_craft===0&&item.in_order===0&&item.has_plan===0"
-              @click="$router.push('/index/productUpdate/'+item.id)">修改</span>
+              @click="$router.push('/index/productUpdate/'+item.id + '?type=1')">修改</span>
             <span class="btns success"
               @click="$router.push('/index/productDetail/'+item.id)">详情</span>
             <span class="btns error"
@@ -504,11 +504,11 @@ export default {
     },
     // 类型展示
     filterSize (item) {
-      let str = ''
-      for (let key in item) {
-        str += key + '/'
-      }
-      return str.substring(0, str.length - 1)
+      console.log(item)
+      let arr = item.map(value => {
+        return value.measurement
+      })
+      return arr.join('/')
     }
   },
   created () {

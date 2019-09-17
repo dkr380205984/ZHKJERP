@@ -76,7 +76,7 @@
             <img v-for="(item,index) in productDetail.img"
               :key="index"
               class="img"
-              :src="item.img_url"
+              :src="item.image_url"
               :onerror="defaultImg" />
           </span>
         </div>
@@ -240,7 +240,11 @@
                 <span class="col">
                   <span v-for="(item,index) in productDetail.order_list"
                     :key="index">
-                    <span>{{item.order_code}}</span>
+                    <span style="display:flex;flex-direction:column;">
+                      <span v-for="(val,ind) in item.order_code.split(';')"
+                        style="border-bottom:none;line-height:30px;"
+                        :key="ind">{{val}}</span>
+                    </span>
                     <span>{{item.client_name}}{{item.id}}</span>
                     <span>{{item.total_number}}{{productDetail.category_info.name}}</span>
                     <span style="color:#1A95FF;cursor:pointer"
@@ -323,7 +327,7 @@
           placement="top-start">
           <div class="okBtn"
             style="background:#E6A23C"
-            @click="$router.push('/index/productUpdate/'+productDetail.id)">修改</div>
+            @click="$router.push('/index/productUpdate/'+productDetail.id + '?type=1')">修改</div>
         </el-tooltip>
       </div>
     </div>
@@ -370,7 +374,7 @@
 </template>
 
 <script>
-import { porductOne, priceListDetail, productStockOne } from '@/assets/js/api.js'
+import { porductOne, priceListDetail } from '@/assets/js/api.js'
 const QRCode = require('qrcode')
 export default {
   data () {

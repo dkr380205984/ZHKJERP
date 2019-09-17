@@ -51,11 +51,11 @@
         <div class="inputCtn">
           <span class="label">样品规格:</span>
           <span class="content contentLine"
-            v-for="(item,key) in productDetail.sample_size"
+            v-for="(item,key) in productDetail.size"
             :key="key">
-            <span class="size">{{item.size}}</span>
+            <span class="size">{{item.measurement}}</span>
             <span class="sizeDetail">
-              <span class="sizeOnce">{{item.desc + 'cm'}}</span>
+              <span class="sizeOnce">{{item.size_info}}</span>
               <span class="sizeOnce">{{ '克重' + '：'+item.weight + 'g'}}</span>
             </span>
           </span>
@@ -68,9 +68,9 @@
             v-for="(item,index) in productDetail.color"
             :key="index">
             <span class="sort">{{index+1}}.</span>
-            <div class="colorBg"
-              :style="{'background':item.color_code}"></div>
-            <span class="color">{{item.name}}</span>
+            <!-- <div class="colorBg"
+              :style="{'background':item.color_code}"></div> -->
+            <span class="color">{{item.color_name}}</span>
           </span>
         </div>
       </div>
@@ -255,7 +255,7 @@
           @click="$router.go(-1)">返回</div>
         <div class="okBtn"
           v-if="productDetail.has_craft===0&&productDetail.in_order===0&&productDetail.has_plan===0"
-          @click="$router.push('/index/productUpdate/'+productDetail.id)">修改</div>
+          @click="$router.push('/index/productUpdate/'+productDetail.id + '?type=2')">修改</div>
         <el-tooltip v-if="productDetail.has_craft===1||productDetail.in_order===1||productDetail.has_plan===1"
           class="item"
           effect="dark"
@@ -263,7 +263,7 @@
           placement="top-start">
           <div class="okBtn"
             style="background:#E6A23C"
-            @click="$router.push('/index/productUpdate/'+productDetail.id)">修改</div>
+            @click="$router.push('/index/productUpdate/'+productDetail.id + '?type=2')">修改</div>
         </el-tooltip>
       </div>
     </div>
@@ -357,7 +357,6 @@ export default {
         has_plan: 0,
         in_order: 0,
         order_list: []
-
       },
       showMessageBox: false,
       loading: true,
@@ -413,7 +412,7 @@ export default {
       if (res.data.status) {
         console.log(res.data.data)
         this.productDetail = res.data.data
-        this.productDetail.sample_size = JSON.parse(this.productDetail.sample_size)
+        this.productDetail.size = this.productDetail.size
         // 计算配料单原料
         if (this.productDetail.has_plan === 1) {
           this.productDetail.product_plan_info.material_data.forEach((itemMat) => {

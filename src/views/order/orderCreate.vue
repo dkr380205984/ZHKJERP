@@ -8,9 +8,21 @@
       <div class="lineCtn">
         <div class="inputCtn oneLine">
           <span class="label must">订单号：</span>
-          <el-input class="elInput"
-            v-model="orderId"
-            placeholder="请输入订单号"></el-input>
+          <template v-for="(item,key) in orderId">
+            <el-input class="elInput"
+              :key="key"
+              v-model="item.code"
+              style="margin:5px 0;"
+              :placeholder="'请输入订单号' + (key+1)"></el-input>
+            <span :key="key+'C'"
+              style="margin:0 8px;font-size:14px;color:#1A95FF;cursor: pointer;"
+              v-if="key === 0"
+              @click="orderId.push({code:''})">添加</span>
+            <span :key="key+'D'"
+              v-else
+              style="margin:0 8px;font-size:14px;color:#F56C6C;cursor: pointer;"
+              @click="orderId.splice(key,1)">删除</span>
+          </template>
         </div>
       </div>
       <div class="lineCtn">
@@ -353,83 +365,85 @@
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">上传订单合同：</span>
-          <el-upload class="upload-demo"
-            action="http://upload.qiniup.com/"
-            accept=""
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :on-success="handleSuccess"
-            :before-upload="beforeAvatarUpload"
-            :file-list="fileArr"
-            :data="postData"
-            ref="uploada1"
-            list-type="picture">
-            <el-button size="small"
-              type="primary">点击上传</el-button>
-            <div slot="tip"
-              class="el-upload__tip">请不要上传超过20M的文件</div>
-          </el-upload>
-        </div>
+          <span class="label">订单资料：</span>
+          <div class="content">
+            <ul class="tablesCtn"
+              style="list-style:none;margin:0;padding:0;width:670px;">
+              <li class="content">
+                <span class="tableRow">订单合同</span>
+                <span class="tableRow">包装资料</span>
+                <span class="tableRow">装箱资料</span>
+                <span class="tableRow">其他文件</span>
+              </li>
+              <li class="content"
+                style="min-height:60px;">
+                <span class="tableRow noCenter">
+                  <el-upload class="upload-demo"
+                    action="http://upload.qiniup.com/"
+                    accept=""
+                    :on-preview="handlePreview"
+                    :on-remove="handleRemove"
+                    :on-success="handleSuccess"
+                    :before-upload="beforeAvatarUpload"
+                    :file-list="fileArr"
+                    :data="postData"
+                    ref="uploada1">
+                    <el-button size="small"
+                      type="primary">点击上传</el-button>
+                  </el-upload>
+                </span>
+                <span class="tableRow noCenter">
+                  <el-upload class="upload-demo"
+                    action="http://upload.qiniup.com/"
+                    accept=""
+                    :on-preview="handlePreview"
+                    :on-remove="handleRemove"
+                    :on-success="handleSuccess"
+                    :before-upload="beforeAvatarUpload"
+                    :file-list="fileArr"
+                    :data="postData"
+                    :show-file-list='false'
+                    ref="uploada2">
+                    <el-button size="small"
+                      type="primary">点击上传</el-button>
+                  </el-upload>
+                </span>
+                <span class="tableRow noCenter">
+                  <el-upload class="upload-demo"
+                    action="http://upload.qiniup.com/"
+                    accept=""
+                    :on-preview="handlePreview"
+                    :on-remove="handleRemove"
+                    :on-success="handleSuccess"
+                    :before-upload="beforeAvatarUpload"
+                    :file-list="fileArr"
+                    :data="postData"
+                    :show-file-list='false'
+                    ref="uploada3">
+                    <el-button size="small"
+                      type="primary">点击上传</el-button>
+                  </el-upload>
+                </span>
+                <span class="tableRow noCenter">
+                  <el-upload class="upload-demo"
+                    action="http://upload.qiniup.com/"
+                    accept=""
+                    :on-preview="handlePreview"
+                    :on-remove="handleRemove"
+                    :on-success="handleSuccess"
+                    :before-upload="beforeAvatarUpload"
+                    :file-list="fileArr"
+                    :data="postData"
+                    :show-file-list='false'
+                    ref="uploada4">
+                    <el-button size="small"
+                      type="primary">点击上传</el-button>
+                  </el-upload>
+                </span>
+              </li>
+            </ul>
+          </div>
 
-        <div class="inputCtn">
-          <span class="label">上传包装资料：</span>
-          <el-upload class="upload-demo"
-            action="http://upload.qiniup.com/"
-            accept=""
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :on-success="handleSuccess"
-            :before-upload="beforeAvatarUpload"
-            :file-list="fileArr"
-            :data="postData"
-            ref="uploada2"
-            list-type="picture">
-            <el-button size="small"
-              type="primary">点击上传</el-button>
-            <div slot="tip"
-              class="el-upload__tip">请不要上传超过20M的文件</div>
-          </el-upload>
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">上传装箱资料：</span>
-          <el-upload class="upload-demo"
-            action="http://upload.qiniup.com/"
-            accept=""
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :on-success="handleSuccess"
-            :before-upload="beforeAvatarUpload"
-            :file-list="fileArr"
-            :data="postData"
-            ref="uploada3"
-            list-type="picture">
-            <el-button size="small"
-              type="primary">点击上传</el-button>
-            <div slot="tip"
-              class="el-upload__tip">请不要上传超过20M的文件</div>
-          </el-upload>
-        </div>
-        <div class="inputCtn">
-          <span class="label">上传其它文件：</span>
-          <el-upload class="upload-demo"
-            action="http://upload.qiniup.com/"
-            accept=""
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :on-success="handleSuccess"
-            :before-upload="beforeAvatarUpload"
-            :file-list="fileArr"
-            :data="postData"
-            ref="uploada4"
-            list-type="picture">
-            <el-button size="small"
-              type="primary">点击上传</el-button>
-            <div slot="tip"
-              class="el-upload__tip">请不要上传超过20M的文件</div>
-          </el-upload>
         </div>
       </div>
       <div class="lineCtn">
@@ -469,7 +483,7 @@ export default {
       loading: true,
       showTips: false,
       hasJHD: null,
-      orderId: '',
+      orderId: [{ code: '' }],
       companyId: window.sessionStorage.getItem('company_id'),
       companyArr: [],
       company: '',
@@ -683,18 +697,18 @@ export default {
     getColorSize (id, indexOrder, indexProduct) {
       let arr = []
       let obj = this.productArr.find((item) => item.product_code === id)
-      for (let key in obj.size) {
-        arr.push({
-          value: key,
-          label: key,
-          children: obj.color.map((item) => {
+      arr = obj.size.map(item => {
+        return {
+          value: item.measurement,
+          label: item.measurement,
+          children: obj.color.map(item => {
             return {
-              value: item.name,
-              label: item.name
+              value: item.color_name,
+              label: item.color_name
             }
           })
-        })
-      }
+        }
+      })
       this.orderArr[indexOrder].product[indexProduct].colorSizeArr = arr
       this.orderArr[indexOrder].product[indexProduct].product_info = obj
     },
@@ -836,7 +850,9 @@ export default {
         let obj = {
           company_id: this.companyId,
           user_id: window.sessionStorage.getItem('user_id'),
-          order_code: this.orderId,
+          order_code: this.orderId.map(key => {
+            return key.code
+          }).join(';'),
           client_id: this.company,
           contacts: this.contacts,
           account_unit: this.money,
@@ -919,6 +935,8 @@ export default {
     }
   },
   mounted () {
+    let firstInput = document.getElementsByTagName('input')[0]
+    firstInput.focus()
     Promise.all([clientList({
       company_id: this.companyId,
       keyword: '',
@@ -986,10 +1004,38 @@ export default {
         }
       }, 300)
     })
+  },
+  watch: {
+    'orderId': {
+      deep: true,
+      handler (newVal) {
+        newVal.forEach(item => {
+          if (item.code.indexOf(';') !== -1) {
+            item.code = item.code.split(';').join('')
+            this.$message.error('订单号内不可含有";"')
+          }
+        })
+      }
+    }
   }
 }
 </script>
 
 <style lang="less" scoped>
+#orderCreate {
+  .tableRow {
+    &.noCenter {
+      justify-content: flex-start;
+      align-items: flex-start;
+    }
+  }
+  .upload-demo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 14px auto;
+  }
+}
+
 @import "~@/assets/css/orderCreate.less";
 </style>

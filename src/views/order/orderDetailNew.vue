@@ -56,8 +56,14 @@
         <div class="lineCtn">
           <div class="inputCtn small">
             <span class="label">订单号:</span>
-            <span class="content">{{order_info.order_code}}</span>
+            <span class="content"
+              style="display:flex;flex-direction:column;line-height:30px;color:#1A95FF">
+              <span v-for="(item,key) in order_info.order_code.split(';')"
+                :key="key">{{item}}</span>
+            </span>
           </div>
+        </div>
+        <div class="lineCtn">
           <div class="inputCtn small">
             <span class="label">订单公司:</span>
             <span class="content">{{order_info.client_name}}</span>

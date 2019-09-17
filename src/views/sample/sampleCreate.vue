@@ -131,15 +131,16 @@
             :remote-method='remoteColor' -->
           <el-select clearable
             filterable
+            allow-create
             class="inputItem"
             v-model="item.color"
             placeholder="请选择配色">
             <el-option v-for="item in colorArr"
               :key="item.id"
               :label="item.name"
-              :value="item.id">
-              <div class="bgBlock"
-                :style="{'background':item.color_code}"></div>
+              :value="item.name">
+              <!-- <div class="bgBlock"
+                :style="{'background':item.color_code}"></div> -->
               <div class="desc">{{item.name}}</div>
             </el-option>
           </el-select>
@@ -182,7 +183,7 @@
       </div>
       <div class="btnCtn">
         <div class="cancleBtn"
-          @click="clearAll">清空</div>
+          @click="$router.go(-1)">返回</div>
         <div class="okBtn"
           @click="saveAll">保存</div>
       </div>
@@ -334,21 +335,6 @@ export default {
     }
   },
   methods: {
-    // 潘通色号
-    // remoteColor (newVal) {
-    //   console.log(newVal)
-    //   pantongList({
-    //     keyword: newVal
-    //   }).then((res) => {
-    //     if (newVal) {
-    //       this.colorArr = this.nopantongColorArr.filter((item) => {
-    //         return item.name.indexOf(newVal) !== -1
-    //       }).concat(res.data.data)
-    //     } else {
-    //       this.colorArr = this.nopantongColorArr
-    //     }
-    //   })
-    // },
     beforeAvatarUpload: function (file) {
       let fileName = file.name.lastIndexOf('.')// 取到文件名开始到最后一个点的长度
       let fileNameLength = file.name.length// 取到文件名长度
@@ -427,10 +413,15 @@ export default {
         color: this.color.map(item => {
           return item.color
         }),
-        sample_size: JSON.stringify(this.size),
+        size: this.size.map(key => {
+          return {
+            size_info: key.desc,
+            weight: key.weight,
+            measurement: key.size
+          }
+        }),
         sample_title: this.sampleName,
-        materials: this.ingredient,
-        size: null
+        materials: this.ingredient
       }
       if (flag) {
         if (this.lock) {

@@ -2,7 +2,7 @@
   <div id="productPlan"
     v-loading="loading">
     <div class="head">
-      <h2>配料单修改</h2>
+      <h2>添加配料单</h2>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -51,11 +51,10 @@
           <div class="inputCtn"
             style="width:100%">
             <span class="label">产品规格:</span>
-            <span class="content"
-              style="width:100%;"
+            <span class="content contentLine"
               v-for="(item,key) in product.size"
               :key="key">
-              <span style="margin-right:15px">{{item.measurement}}</span>
+              <span class="size">{{item.measurement}}</span>
               <span class="sizeDetail">
                 <span class="sizeOnce">{{item.size_info}}</span>
                 <span class="sizeOnce">{{ '克重' + '：'+item.weight + 'g'}}</span>
@@ -71,13 +70,14 @@
           <div class="border"></div>
         </div>
         <div class="lineCtn">
-          <div class="inputCtn oneLine">
-            <span class="label must">主要原料:</span>
-            <div class="addBtn"
-              @click="addMainMaterial">
-              <span>添加主要原料</span>
-              <span>+</span>
-            </div>
+          <div class="inputCtn">
+            <span class="label must">是否有原料:</span>
+            <el-radio :disabled="!state"
+              style="margin-left:15px"
+              v-model="hasIngredient"
+              label="0">无</el-radio>
+            <el-radio v-model="hasIngredient"
+              label="1">有</el-radio>
           </div>
         </div>
         <!-- 多层嵌套四个index分别为
@@ -86,79 +86,104 @@
           index3:color 纱线颜色
           index4:size 尺码
          -->
-        <div class="lineCtn">
-          <div class="inputCtn oneLine rowLine">
-            <span class="label must">原料列表:</span>
-            <div class="specialCtn"
-              v-for="(item,index) in mainIngredient.ingredient.length"
-              :key="index">
-              <div class="blockCtn">
-                <el-select filterable
-                  class="elSelect"
-                  v-model="mainIngredient.ingredient[index]"
-                  style="margin-left:0;width:200px"
-                  placeholder="请选择主要原料">
+        <div class="lineCtn"
+          style="flex-direction:column;">
+          <div class="inputCtn oneLine"
+            v-for="(item,index) in mainIngredient.ingredient.length"
+            :key="index">
+            <span class="label must">纱线原料{{index+1}}:</span>
+            <div class="specialCtn">
+              <div class="materialInfo">
+                <el-select v-model="mainIngredient.ingredient[index]"
+                  class="elInput noMarginLeft"
+                  placeholder="请选择纱线原料">
                   <el-option v-for="item in ingredientArr"
                     :key="item.name"
                     :label="item.name"
                     :value="item.name">
                   </el-option>
                 </el-select>
-                <div class="addBtn"
-                  style="background:#fff;"
-                  @click="addColour(index)">
-                  <span>添加配色方案</span>
-                  <span>+</span>
-                </div>
-              </div>
-              <div class="blockCtn"
-                v-for="(item2,index2) in mainIngredient.colour[index].length"
-                :key="index2">
-                <el-select v-model="mainIngredient.colour[index][index2]"
-                  placeholder="请选择配色方案">
-                  <el-option v-for="item in colourArr"
-                    :key="item.name"
-                    :label="item.name"
-                    :value="item.name">
-                    <div class="bgBlock"
-                      :style="{'background':item.color_code}"></div>
-                    <div class="desc">{{item.name}}</div>
+                <el-select v-model="value"
+                  class="elInput"
+                  placeholder="请选择包装属性">
+                  <el-option v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
                   </el-option>
                 </el-select>
-                <div class="deleteCtn"
-                  @click="deleteColour(index,index2)"><i class="el-icon-delete"></i></div>
-                <div class="colorsCtn">
-                  <div class="colorOnce"
-                    v-for="(item3,index3) in mainIngredient.color[index][index2].length"
-                    :key="index3">
-                    <color-picker :key="mainIngredient.color[index][index2][index3].colorCode.color"
-                      :content="mainIngredient.color[index][index2][index3].name.substr(0,1)"
-                      :colorArr="colorArr"
-                      v-model="mainIngredient.color[index][index2][index3].colorCode"
-                      @colorChange="(json)=>{getColor(json,index,index2,index3)}"></color-picker>
-                    <div class="allInputs"
+                <el-input v-model="value"
+                  class="elInput"
+                  placeholder="原料备注"></el-input>
+              </div>
+              <div class="proColorInfo"
+                v-for="(item2,index2) in mainIngredient.colour[index].length"
+                :key="index2"
+                style="padding-top:12px;">
+                <div class="proColorBox">
+                  <span class="line"></span>
+                  <div class="tranY">
+                    <el-select v-model="mainIngredient.colour[index][index2]"
+                      class="elInput noMarginLeft"
+                      :placeholder="'请选择配色方案' + (index2 + 1)">
+                      <el-option v-for="item in colourArr"
+                        :key="item.name"
+                        :label="item.name"
+                        :value="item.name">
+                        <div class="bgBlock"
+                          :style="{'background':item.color_code}"></div>
+                        <div class="desc">{{item.name}}</div>
+                      </el-option>
+                    </el-select>
+                    <span class="delete haveBg"
+                      @click="deleteColour(index,index2)">删除</span>
+                  </div>
+                </div>
+                <div class="colorSize"
+                  v-for="(item3,index3) in mainIngredient.color[index][index2].length"
+                  :key="index3">
+                  <div class="selectBox tranY">
+                    <span class="line"></span>
+                    <el-select v-model="mainIngredient.color[index][index2][index3].colorCode"
+                      class="elInput noMarginLeft"
+                      :placeholder="'请选择原料' + (index+1) + '颜色' + (index3+1)">
+                      <el-option v-for="item in options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                      </el-option>
+                    </el-select>
+                    <span class="delete"
+                      @click="deleteColor(index,index2,index3)">删除</span>
+                  </div>
+                  <div class="rightBox">
+                    <div class="sizeBox tranY"
                       v-for="(item4,index4) in mainIngredient.color[index][index2][index3].value.length"
                       :key="index4">
-                      <span class="labeled">{{mainIngredient.color[index][index2][index3].value[index4].size}}</span>
-                      <input class="input1"
-                        placeholder="数量"
-                        :disabled="!state"
-                        v-model="mainIngredient.color[index][index2][index3].value[index4].number" />
-                      <input class="input2"
-                        :disabled="!state"
-                        @blur="commonUnit1=mainIngredient.color[index][index2][index3].value[index4].unit"
-                        placeholder="单位"
-                        v-model="mainIngredient.color[index][index2][index3].value[index4].unit" />
+                      <el-input v-model="mainIngredient.color[index][index2][index3].value[index4].number"
+                        placeholder="克重"
+                        class="elInput">
+                        <span slot="prepend"
+                          class="size">{{mainIngredient.color[index][index2][index3].value[index4].size}}</span>
+                        <span slot="append"
+                          class="unit">克</span>
+                      </el-input>
                     </div>
-                    <i class="el-icon-delete delete"
-                      @click="deleteColor(index,index2,index3)"></i>
                   </div>
-                  <div class="addBtn"
-                    style="background:#fff;margin-left:0;margin-bottom:15px;"
-                    @click="addColor(index,index2)">
-                    <span>添加颜色</span>
-                    <span>+</span>
+                </div>
+                <div class="colorSize">
+                  <div class="selectBox">
+                    <span class="line"></span>
+                    <span class="addBtn noMarginLeft tranY"
+                      @click="addColor(index,index2)">添加原料颜色</span>
                   </div>
+                </div>
+              </div>
+              <div class="proColorInfo">
+                <div class="proColorBox">
+                  <span class="line"></span>
+                  <span class="addBtn haveBg noMarginLeft tranY"
+                    @click="addColour(index)">添加产品配色</span>
                 </div>
               </div>
               <div class="deleteIcon"
@@ -168,33 +193,30 @@
         </div>
         <div class="lineCtn">
           <div class="inputCtn oneLine">
+            <span class="label must">主要原料:</span>
+            <div class="addBtn"
+              @click="addMainMaterial">
+              <span>添加纱线原料</span>
+              <span>+</span>
+            </div>
+          </div>
+        </div>
+        <div class="lineCtn">
+          <div class="inputCtn oneLine">
             <span class="label must">净重:</span>
-            <el-input :disabled="!state"
+            <el-input :disabled="!state||hasIngredient==='0'"
               class="elInput"
-              placeholder="原料净重"
+              placeholder="净重"
               v-model="weight[index]"
               v-for="(item,index) in sizeKey"
               :key="index">
-              <template slot="prepend">{{item}}</template>
-              <template slot="append">克</template>
+              <span class="size"
+                slot="prepend">{{item}}</span>
+              <span class="unit"
+                slot="append">克</span>
             </el-input>
           </div>
         </div>
-        <!-- <div class="lineCtn">
-          <div class="inputCtn oneLine">
-            <span class="label must">纱线系数:</span>
-            <el-input :disabled="!state"
-              style="width:300px"
-              class="elInput"
-              placeholder="纱线系数"
-              v-model="xishu[index]"
-              v-for="(item,index) in ingredientCmp"
-              :key="index">
-              <template slot="prepend">{{item}}</template>
-              <template slot="append">克/厘米</template>
-            </el-input>
-          </div>
-        </div> -->
       </div>
       <div class="stepCtn">
         <div class="stepTitle">辅料信息</div>
@@ -202,145 +224,140 @@
           <div class="cicle"></div>
           <div class="border"></div>
         </div>
+        <div class="lineCtn"
+          v-show="otherIngredient.ingredient.length>0">
+          <div class="inputCtn oneLine rowLine"
+            v-for="(item,index) in otherIngredient.ingredient.length"
+            :key="index">
+            <span class="label">辅料列表:</span>
+            <div class="specialCtn">
+              <div class="materialInfo">
+                <el-select v-model="mainIngredient.ingredient[index]"
+                  class="elInput noMarginLeft"
+                  placeholder="请选择纱线原料">
+                  <el-option v-for="item in ingredientArr"
+                    :key="item.name"
+                    :label="item.name"
+                    :value="item.name">
+                  </el-option>
+                </el-select>
+                <el-select v-model="value"
+                  class="elInput"
+                  placeholder="请选择包装属性">
+                  <el-option v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+                <el-input v-model="value"
+                  class="elInput"
+                  placeholder="原料备注"></el-input>
+              </div>
+              <div class="proColorInfo"
+                v-for="(item2,index2) in mainIngredient.colour[index].length"
+                :key="index2"
+                style="padding-top:12px;">
+                <div class="proColorBox">
+                  <span class="line"></span>
+                  <div class="tranY">
+                    <el-select v-model="mainIngredient.colour[index][index2]"
+                      class="elInput noMarginLeft"
+                      :placeholder="'请选择配色方案' + (index2 + 1)">
+                      <el-option v-for="item in colourArr"
+                        :key="item.name"
+                        :label="item.name"
+                        :value="item.name">
+                        <div class="bgBlock"
+                          :style="{'background':item.color_code}"></div>
+                        <div class="desc">{{item.name}}</div>
+                      </el-option>
+                    </el-select>
+                    <span class="delete haveBg"
+                      @click="deleteColour(index,index2)">删除</span>
+                  </div>
+                </div>
+                <div class="colorSize"
+                  v-for="(item3,index3) in mainIngredient.color[index][index2].length"
+                  :key="index3">
+                  <div class="selectBox tranY">
+                    <span class="line"></span>
+                    <el-select v-model="mainIngredient.color[index][index2][index3].colorCode"
+                      class="elInput noMarginLeft"
+                      :placeholder="'请选择原料' + (index+1) + '颜色' + (index3+1)">
+                      <el-option v-for="item in options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                      </el-option>
+                    </el-select>
+                    <span class="delete"
+                      @click="deleteColor(index,index2,index3)">删除</span>
+                  </div>
+                  <div class="rightBox">
+                    <div class="sizeBox tranY"
+                      v-for="(item4,index4) in mainIngredient.color[index][index2][index3].value.length"
+                      :key="index4">
+                      <el-input v-model="mainIngredient.color[index][index2][index3].value[index4].number"
+                        placeholder="克重"
+                        class="elInput">
+                        <span slot="prepend"
+                          class="size">{{mainIngredient.color[index][index2][index3].value[index4].size}}</span>
+                        <span slot="append"
+                          class="unit">克</span>
+                      </el-input>
+                    </div>
+                  </div>
+                </div>
+                <div class="colorSize">
+                  <div class="selectBox">
+                    <span class="line"></span>
+                    <span class="addBtn noMarginLeft tranY"
+                      @click="addColor(index,index2)">添加原料颜色</span>
+                  </div>
+                </div>
+              </div>
+              <div class="proColorInfo">
+                <div class="proColorBox">
+                  <span class="line"></span>
+                  <span class="addBtn haveBg noMarginLeft tranY"
+                    @click="addColour(index)">添加产品配色</span>
+                </div>
+              </div>
+              <div class="deleteIcon"
+                @click="deleteOtherMaterial(index)"><i class="el-icon-close"></i></div>
+            </div>
+          </div>
+        </div>
         <div class="lineCtn">
           <div class="inputCtn oneLine">
             <span class="label">主要辅料:</span>
             <div class="addBtn"
               @click="addOtherMaterial">
-              <span>添加辅料</span>
+              <span>添加装饰辅料</span>
               <span>+</span>
             </div>
           </div>
         </div>
-        <div class="lineCtn"
-          v-show="otherIngredient.ingredient.length>0">
-          <div class="inputCtn oneLine rowLine">
-            <span class="label">辅料列表:</span>
-            <div class="specialCtn"
-              v-for="(item,index) in otherIngredient.ingredient.length"
-              :key="index">
-              <div class="blockCtn">
-                <el-select :disabled="index<otherIngredient.old"
-                  style="width:200px"
-                  v-model="otherIngredient.ingredient[index]"
-                  placeholder="请选择主要辅料">
-                  <el-option v-for="item in materialArr"
-                    :key="item.name"
-                    :label="item.name"
-                    :value="item.name">
-                  </el-option>
-                </el-select>
-                <div class="addBtn"
-                  style="background:#fff;"
-                  @click="addOtherColour(index)">
-                  <span>添加配色方案</span>
-                  <span>+</span>
-                </div>
-              </div>
-              <div class="blockCtn"
-                v-for="(item2,index2) in otherIngredient.colour[index].length"
-                :key="index2">
-                <el-select v-model="otherIngredient.colour[index][index2]"
-                  placeholder="请选择配色方案">
-                  <el-option v-for="item in colourArr"
-                    :key="item.name"
-                    :label="item.name"
-                    :value="item.name">
-                    <div class="bgBlock"
-                      :style="{'background':item.color_code}"></div>
-                    <div class="desc">{{item.name}}</div>
-                  </el-option>
-                </el-select>
-                <div class="deleteCtn"
-                  @click="deleteOtherColour(index,index2)"><i class="el-icon-delete"></i></div>
-                <div class="colorsCtn">
-                  <div class="colorOnce"
-                    style="padding-left:0"
-                    v-for="(item3,index3) in otherIngredient.color[index][index2].length"
-                    :key="index3">
-                    <el-input placeholder="请输入属性"
-                      v-model="otherIngredient.color[index][index2][index3].name"
-                      style="width:150px" />
-                    <div class="allInputs"
-                      v-for="(item4,index4) in otherIngredient.color[index][index2][index3].value.length"
-                      :key="index4">
-                      <span class="labeled">{{otherIngredient.color[index][index2][index3].value[index4].size}}</span>
-                      <input class="input1"
-                        placeholder="数量"
-                        v-model="otherIngredient.color[index][index2][index3].value[index4].number" />
-                      <input class="input2"
-                        @blur="commonUnit2=otherIngredient.color[index][index2][index3].value[index4].unit"
-                        placeholder="单位"
-                        v-model="otherIngredient.color[index][index2][index3].value[index4].unit" />
-                    </div>
-                    <i class="el-icon-delete delete"
-                      @click="deleteOtherColor(index,index2,index3)"></i>
-                  </div>
-                  <div class="addBtn"
-                    style="background:#fff;margin-left:0;margin-bottom:15px;"
-                    @click="addOtherColor(index,index2)">
-                    <span>添加属性</span>
-                    <span>+</span>
-                  </div>
-                </div>
-              </div>
-              <div v-show="index>=otherIngredient.old"
-                class="deleteIcon"
-                @click="deleteOtherMaterial(index)"><i class="el-icon-close"></i></div>
-            </div>
-          </div>
-        </div>
       </div>
-      <!-- <div class="stepCtn">
-        <div class="stepTitle">生产流程</div>
-        <div class="borderCtn">
-          <div class="cicle"></div>
-          <div class="border"></div>
-        </div>
-        <div class="lineCtn">
-          <div class="inputCtn oneLine">
-            <span class="label must">生产流程:</span>
-            <el-select v-for="(item,index) in process.length"
-              class="elSelect"
-              style="margin-bottom:24px"
-              v-model="process[index]"
-              placeholder="请选择工序"
-              :key="index">
-              <el-option v-for="item in processArr"
-                :key="item.name"
-                :label="item.name"
-                :value="item.name">
-              </el-option>
-            </el-select>
-            <div @click="addProcess"
-              class="addBtn"
-              style="display:block;width:40px;text-align:center;padding:0;margin-bottom:24px">
-              <i class="el-icon-plus"></i>
-            </div>
-            <div @click="deleteProcess"
-              class="addBtn"
-              style="width:40px;text-align:center;padding:0;margin-bottom:24px">
-              <i class="el-icon-minus"></i>
-            </div>
-          </div>
-        </div>
-      </div> -->
+
       <div class="btnCtn">
         <div class="cancleBtn"
           @click="$router.go(-1)">返回</div>
         <div class="okBtn"
-          @click="saveAll">修改</div>
+          @click="saveAll">添加</div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { porductOne, YarnList, editList, materialList, saveProductPlan, craftProduct, productPlanDetail, YarnColorList } from '@/assets/js/api.js'
+import { porductOne, YarnList, editList, materialList, saveProductPlan, craftProduct, YarnColorList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
       lock: false,
+      hasIngredient: '1',
       loading: true,
       sizeKey: [],
       companyId: window.sessionStorage.getItem('company_id'),
@@ -361,7 +378,7 @@ export default {
       },
       ingredientArr: [], // 原料
       mainIngredient: {
-        ingredient: [[]],
+        ingredient: [''],
         colour: [['']],
         color: [[[{
           colorCode: { name: '', color: '' },
@@ -376,23 +393,22 @@ export default {
       otherIngredient: {
         ingredient: [],
         colour: [],
-        color: [],
-        old: 0
+        color: []
       },
       colourArr: [],
       colorArr: [],
-      process: [''],
-      processArr: [],
       materialArr: [],
       weight: [],
       xishu: [],
+      options: [],
+      value: '',
       state: true // 用于标记是否为工艺单
     }
   },
   mounted () {
     // 初始化接口
     Promise.all([porductOne({
-      id: this.$route.params.productId
+      id: this.$route.params.id
     }), YarnList({
       company_id: this.companyId
     }), editList({
@@ -400,17 +416,17 @@ export default {
     }), materialList({
       company_id: this.companyId
     }), craftProduct({
-      product_id: this.$route.params.productId
-    }), productPlanDetail({
-      product_key: this.$route.params.productId
+      product_id: this.$route.params.id
     }), YarnColorList({
       company_id: this.companyId
     })]).then((res) => {
-      console.log(res)
       this.product = res[0].data.data
-      this.sizeKey = Object.keys(res[0].data.data.size)
+      this.sizeKey = res[0].data.data.size.map(item => {
+        return item.measurement
+      })
+      console.log(this.sizeKey)
       this.colourArr = res[0].data.data.color
-      this.colorArr = res[6].data.data
+      this.colorArr = res[5].data.data
       this.ingredientArr = res[1].data.data
       let value = []
       Object.keys(this.product.size).forEach((key) => {
@@ -424,7 +440,7 @@ export default {
       this.materialArr = res[3].data.data
       // 对有工艺单的情况进行正义的数据改造
       if (res[4].data.code === 200) {
-        this.state = false
+        this.state = true // 工艺单对配料单的限制去除，如需加限制，把这个字段改为false即可
         const gyd = res[4].data.data
         let ingredient = gyd.yarn_coefficient.map((item) => {
           return item.name
@@ -449,6 +465,7 @@ export default {
             color[index].push([])
           })
         })
+        console.log(gyd)
         for (let keyColour in gyd.peise_yarn_wight) {
           for (let keyMaterial in gyd.peise_yarn_wight[keyColour]) {
             for (let keyColor in gyd.peise_yarn_wight[keyColour][keyMaterial]) {
@@ -462,7 +479,7 @@ export default {
                         colorCode: { 'color': keyColor, 'name': name },
                         value: [{
                           size: Object.keys(gyd.product_info.size)[0], // 这里的size理论上只有均码，工艺单产品只有均码，现在为了对应数据稍微改造一下
-                          number: gyd.peise_yarn_wight[keyColour][keyMaterial][keyColor],
+                          number: gyd.peise_yarn_wight[keyColour][keyMaterial][keyColor].toFixed(1),
                           unit: '克'
                         }]
                       })
@@ -483,72 +500,9 @@ export default {
         this.xishu = gyd.yarn_coefficient.map((item) => {
           return item.value
         })
-      } else {
-        // 没有工艺单的情况下，按照产品计划单接口取数据
-        let planData = res[5].data.data
-        this.weight = planData.weight_group
-        let ingredient = []
-        let colour = []
-        let color = []
-        planData.material_data.forEach((itemMaterial) => {
-          if (itemMaterial.type === 0) {
-            ingredient.push(itemMaterial.material)
-            colour.push(itemMaterial.colour.map((itemColour) => itemColour.name))
-            color.push(itemMaterial.colour.map((itemColour) => itemColour.color.map((itemColor) => {
-              return {
-                colorCode: { name: itemColor.name, color: itemColor.value },
-                name: itemColor.name,
-                value: itemColor.size
-              }
-            })))
-            this.mainIngredient = {
-              ingredient: ingredient,
-              colour: colour,
-              color: color
-            }
-            console.log(this.mainIngredient)
-            this.xishu = planData.yarn_coefficient.map((item) => item.value)
-          }
-        })
       }
-      // 不管有没有工艺单，都需要接收的数据，工序和辅料信息
-      res[5].data.status && res[5].data.data.material_data.forEach((itemMaterial) => {
-        if (itemMaterial.type === 1) {
-          this.otherIngredient.ingredient.push(itemMaterial.material)
-          this.otherIngredient.colour.push(itemMaterial.colour.map((itemColour) => itemColour.name))
-          this.otherIngredient.color.push(itemMaterial.colour.map((itemColour) => itemColour.color.map((itemColor) => {
-            return {
-              colorCode: '',
-              name: itemColor.name,
-              value: itemColor.size
-            }
-          })))
-          this.otherIngredient.old++
-        }
-      })
       this.loading = false
-      console.log(this.otherIngredient)
     })
-  },
-  watch: {
-    'otherIngredient.ingredient': {
-      handler: function (newVal) {
-        newVal.forEach((item, index) => {
-          if (item) {
-            let unit = this.materialArr.find((itemFind) => itemFind.name === item).unit
-            for (let index1 in this.otherIngredient.color[index]) {
-              for (let index2 in this.otherIngredient.color[index][index1]) {
-                for (let index3 in this.otherIngredient.color[index][index1][index2].value) {
-                  this.otherIngredient.color[index][index1][index2].value[index3].unit = unit
-                }
-              }
-            }
-            this.commonUnit2 = unit
-          }
-        })
-      },
-      deep: true
-    }
   },
   methods: {
     // 添加主要原料
@@ -772,14 +726,6 @@ export default {
     getOtherColor (json, index, index2, index3) {
       this.otherIngredient.color[index][index2][index3].name = json.name
     },
-    // 添加工序
-    addProcess () {
-      this.process.push('')
-    },
-    // 删除工序
-    deleteProcess () {
-      this.process.pop()
-    },
     // 添加
     saveAll () {
       if (!this.lock) {
@@ -811,7 +757,7 @@ export default {
         this.mainIngredient.color.forEach((itemColor) => {
           itemColor.forEach((item) => {
             item.forEach((item2) => {
-              if (!item2.colorCode.name) {
+              if (!item2.colorCode) {
                 state = true
               }
             })
@@ -878,12 +824,17 @@ export default {
           })
           return
         }
-        // if (this.xishu.length < this.ingredientCmp.length) {
-        //   this.$message.error({
-        //     message: '检测到有未填写的纱线系数，请完善信息'
-        //   })
-        //   return
-        // }
+        this.ingredientCmp.forEach((item, index) => {
+          if (!this.xishu[index]) {
+            this.xishu[index] = [0]
+          }
+        })
+        if (state) {
+          this.$message.error({
+            message: '检测到有未填写的工序信息，请完善信息'
+          })
+          return
+        }
         let materialData = []
         this.mainIngredient.ingredient.forEach((itemMaterial, indexMaterial) => {
           materialData.push({
@@ -921,43 +872,40 @@ export default {
             type: 1
           })
         })
-        // let xishu = this.xishu.map((item, index) => {
-        //   return {
-        //     name: this.ingredientCmp[index],
-        //     value: item
-        //   }
-        // })
         this.lock = true
         this.loading = true
-        saveProductPlan({
-          'is_update': true,
-          'id': this.$route.params.productId,
-          'company_id': this.companyId,
-          'product_id': this.product.id,
-          'user_id': window.sessionStorage.getItem('user_id'),
-          'material_data': materialData,
-          'outside_process': [],
-          'weight_group': this.weight,
-          'yarn_coefficient': []
-        }).then((res) => {
-          if (res.data.status) {
-            this.$message.success({
-              message: '修改成功'
-            })
-            this.$router.push('/index/productPlanList')
-          } else {
-            this.$message.error({
-              message: res.data.message
-            })
-          }
-          this.lock = false
-          this.loading = false
-        })
+        // saveProductPlan({
+        //   'is_update': false,
+        //   'company_id': this.companyId,
+        //   'product_id': this.product.id,
+        //   'user_id': window.sessionStorage.getItem('user_id'),
+        //   'material_data': materialData,
+        //   'outside_process': [], // 外道加工去了
+        //   'weight_group': this.weight,
+        //   'yarn_coefficient': [] // 纱线系数去了
+        // }).then((res) => {
+        //   if (res.data.status) {
+        //     this.$message.success({
+        //       message: '添加成功'
+        //     })
+        //     this.$router.push('/index/productPlanList')
+        //   } else {
+        //     this.$message.error({
+        //       message: res.data.message
+        //     })
+        //   }
+        //   this.lock = false
+        //   this.loading = false
+        // })
       } else {
         this.$message.error({
           message: '请勿频繁操作'
         })
       }
+    },
+    // 清空
+    clearAll () {
+
     }
   },
   computed: {
@@ -970,6 +918,56 @@ export default {
           return '待选原料'
         }
       })
+    }
+  },
+  watch: {
+    hasIngredient (newVal) {
+      console.log(this.colorArr)
+      if (newVal === '0') {
+        this.mainIngredient.ingredient = [this.ingredientArr[0].name]
+        this.mainIngredient.colour = [this.colourArr.map((item) => item.name)]
+        this.mainIngredient.color = [this.colourArr.map((item) => {
+          return [{
+            name: '无',
+            colorCode: {
+              name: this.colorArr[0].name,
+              color: this.colorArr[0].color_code
+            },
+            value: this.mainIngredient.color[0][0][0].value.map((item2) => {
+              return {
+                size: item2.size,
+                number: '0',
+                unit: item2.unit
+              }
+            })
+          }]
+        })]
+        let weightArr = []
+        this.mainIngredient.color[0][0][0].value.forEach((item) => {
+          weightArr.push('0')
+        })
+        this.weight = weightArr
+        this.xishu = ['0']
+      }
+      console.log(this.mainIngredient)
+    },
+    'otherIngredient.ingredient': {
+      handler: function (newVal) {
+        newVal.forEach((item, index) => {
+          if (item) {
+            let unit = this.materialArr.find((itemFind) => itemFind.name === item).unit
+            for (let index1 in this.otherIngredient.color[index]) {
+              for (let index2 in this.otherIngredient.color[index][index1]) {
+                for (let index3 in this.otherIngredient.color[index][index1][index2].value) {
+                  this.otherIngredient.color[index][index1][index2].value[index3].unit = unit
+                }
+              }
+            }
+            this.commonUnit2 = unit
+          }
+        })
+      },
+      deep: true
     }
   },
   filters: {
@@ -993,12 +991,34 @@ export default {
     },
     // 颜色合并
     filterColor (arr) {
-      return arr.map(item => { return item.color_name }).join('/')
+      return arr.map(item => {
+        return item.color_name
+      }).join('/')
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
-@import "~@/assets/css/productPlan.less";
+@import "~@/assets/css/productPlanNew.less";
+</style>
+<style lang="less">
+#productPlan {
+  .el-input-group__append,
+  .el-input-group__prepend {
+    padding: 0;
+    .size {
+      display: flex;
+      width: 60px;
+      justify-content: center;
+      align-items: center;
+    }
+    .unit {
+      display: flex;
+      width: 50px;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}
 </style>
