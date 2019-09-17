@@ -1,0 +1,727 @@
+@font-face{
+  font-family: 'systemfont';
+  font-weight: 100;
+  src: url('../font/SourceHanSansCN-ExtraLight.otf'); 
+}
+@font-face{
+  font-family: 'systemfont';
+  font-weight: 200;
+  src: url('../font/SourceHanSansCN-Light.otf'); 
+}
+@font-face{
+  font-family: 'systemfont';
+  font-weight: 300;
+  src: url('../font/SourceHanSansCN-Normal.otf'); 
+}
+@font-face{
+  font-family: 'systemfont';
+  font-weight: 400;
+  src: url('../font/SourceHanSansCN-Regular.otf'); 
+}
+@font-face{
+  font-family: 'systemfont';
+  font-weight: 500;
+  src: url('../font/SourceHanSansCN-Medium.otf'); 
+}
+@font-face{
+  font-family: 'systemfont';
+  font-weight: 600;
+  src: url('../font/SourceHanSansCN-Bold.otf'); 
+}
+@font-face{
+  font-family: 'systemfont';
+  font-weight: 700;
+  src: url('../font/SourceHanSansCN-Heavy.otf'); 
+}
+// 色系
+@systemBlue:#10AEF5;
+@darkBlue:#1F3C88;
+@blue:#5893D4;
+@lightBlue:#CEDDEF;
+@yellow:#E6A23C;
+@pink:#F87F7F;
+@green:#42D59F;
+@perpul:#7C9DEB;
+@white:#FFFFFF;
+@gray:#ECF0F1;
+// 成功和失败
+@normal:#1A95FF;
+@warning:#E6A23C;
+@error:#F56C6C;
+@success:#67c23a;
+// 输入框常态，选中，移入
+@inputNormal:#E6E6E6;
+@inputFocus:#1A95FF;
+@inputHover:#B5B5B5;
+@inputSuccess:#67C23A;
+@inputError:#F56C6C;
+// 主标题
+@fontTitle:30px;
+// 副标题
+@fontSubhead:22px;
+// 常用文字
+@fontBig:16px;
+@fontMid:14px;
+@fontSmall:12px;
+// 常用文字颜色
+@placeholderColor:#999999;
+@fontNormal:#666666;
+@fontGray:#888888;
+// 按钮样式
+@hoverBlue:#48AAFF;
+@normalBlue:#1A95FF;
+// 常用线条颜色
+@borderGray:#AAAAAA;
+// 常用按钮
+.cancleBtn{
+  font-size: 16px;
+  height: 36px;
+  line-height: 34px;
+  padding: 0 30px;
+  box-sizing: border-box;
+  color: #666666;
+  border:1px solid #AAAAAA;
+  border-radius: 2px;
+  font-family: 'systemfont';
+  cursor: pointer;
+  &:hover{
+    border-color:#48AAFF;
+    color:#48AAFF;
+  }
+}
+.okBtn{
+  font-size: 16px;
+  height: 36px;
+  line-height: 36px;
+  padding: 0 30px;
+  box-sizing: border-box;
+  color: #ffffff;
+  background: @normalBlue;
+  border-radius: 2px;
+  font-family: 'systemfont';
+  cursor: pointer;
+  &:hover{
+    background: @hoverBlue;
+  }
+}
+.banBtn{
+  font-size: 16px;
+  height: 36px;
+  line-height: 36px;
+  padding: 0 30px;
+  box-sizing: border-box;
+  color: #ffffff;
+  background: #b5b5b5;
+  cursor:not-allowed;
+  border-radius: 2px;
+  font-family: 'systemfont';
+}
+::-webkit-input-placeholder{
+  font-family: 'systemfont';
+  font-weight: 200;
+}
+// 表格样式部分
+.tableCtn{
+  font-family: 'systemfont';
+  min-height: 360px;
+  background: #ffffff;
+  border:1px solid #dddddd;
+  box-shadow: 0 0 5px #f0f0f0;
+  .tableRow{
+    height: 60px;
+    display: flex;
+    &.titleTableRow{
+      color:#666;
+      font-weight: 400;
+      font-size: @fontBig;
+      letter-spacing: 1px;
+      background: #f0f0f0!important;
+    }
+    &.bodyTableRow{
+      &:hover{
+        background: #D8EAFF;
+      }
+      color: #666;
+      font-size: @fontMid;
+    }
+    &:nth-child(2n-1){
+      background: #FAFAFA;
+    }
+    .tableColumn{
+      flex: 1;
+      text-align: center;
+      line-height: 60px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      padding: 0 5px;
+      .imgCtn{
+        position: relative;
+        width: 100%;
+        height: 100%;
+        &:hover{
+          .toolTips{
+            display: block;
+          }
+        }
+        .img{
+          width:48px;
+          padding: 6px;
+          height: 48px;
+        }
+        .toolTips{
+          display: none;
+          position: absolute;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0,0,0,0.7);  
+          text-align: center;
+          cursor: pointer;
+          span{
+            color: #fff;
+            &:hover{
+              color: @normalBlue;
+            }
+          }
+        }
+      }
+      .btns{
+        padding: 6px 12px;
+        margin:0 6px;
+        border-radius: 2px;
+        color: #ffffff;
+        cursor: pointer;
+        &.error{
+          background: @error;
+        }
+        &.normal{
+          background: #1A95FF;
+        }
+        &.warning{
+          background: @yellow;
+        }
+        &.success{
+          background: @success;
+        }
+        &.ban{
+          background: #b5b5b5;
+          cursor:not-allowed;
+        }
+        &.copy{
+          background: #793bdb;
+        }
+      }
+      &.flexHalf{
+        flex: 0.5;
+      }
+      &.flexSamll{
+        flex: 0.8;
+      }
+      &.flex1{
+        flex: 1;
+      }
+      &.flex2{
+        flex: 1.2;
+      }
+      &.flex3{
+        flex: 1.3;
+      }
+      &.flex4{
+        flex: 1.4;
+      }
+      &.flex5{
+        flex: 1.5;
+      }
+      &.flex6{
+        flex: 1.6;
+      }
+      &.flex7{
+        flex: 1.7;
+      }
+      &.flex8{
+        flex: 1.8;
+      }
+      &.flex9{
+        flex: 1.9;
+      }
+    }
+  }
+}
+// 可合并单元格的特殊表格结构
+.mergeTable{
+  font-family: 'systemfont';
+  background: #ffffff;
+  border:1px solid #dddddd;
+  box-shadow: 0 0 5px #f0f0f0;
+  color:@fontNormal;
+  .mergeHeader{
+    min-height: 60px;
+    display: flex;
+    background: #f0f0f0!important;
+    font-weight: 400;
+    font-size: @fontBig;
+    letter-spacing: 1px;
+    line-height: 60px;
+    
+  }
+  .mergeBody{
+    display: flex;
+    min-height: 60px;
+    font-size: @fontMid;
+    &:hover{
+      background: #D8EAFF!important;
+    }
+    &:nth-child(2n-1){
+      background: #FAFAFA;
+    }
+    &:nth-last-child(1){
+      .tableColumn{
+        border-bottom: 0;
+      }
+    }
+  }
+  .tableColumn{
+    flex: 1;
+    text-align: center;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-right: 1px solid #dddddd;
+    border-bottom: 1px solid #dddddd;
+    &:nth-last-child(1){
+      border-right: 0;
+    }
+    .small{
+      display: flex;
+      align-items: center;
+      width: 100%;
+      border-bottom: 1px solid #dddddd;
+      box-sizing: border-box;
+      &:nth-last-child(1){
+        border-bottom: 0;
+      }
+      &.column{
+        flex-direction: column;
+      }
+      .smallChild{
+        width: 100%;
+        height: 60px;
+        border-bottom: 1px solid #dddddd;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        margin: auto;
+        &:nth-last-child(1){
+          border-bottom: 0;
+        }
+      }
+    }
+    .once{
+      margin: 5px 0;
+    }
+    .btns{
+      padding: 6px 12px;
+      margin:0 6px;
+      border-radius: 2px;
+      color: #ffffff;
+      cursor: pointer;
+      &.error{
+        background: @error;
+      }
+      &.normal{
+        background: #1A95FF;
+      }
+      &.warning{
+        background: @yellow;
+      }
+      &.success{
+        background: @success;
+      }
+      &.ban{
+        background: #b5b5b5;
+        cursor:not-allowed;
+      }
+      &.copy{
+        background: #793bdb;
+      }
+    }
+  }
+}
+// 右下角悬浮窗
+.suspend{
+  position: fixed;
+  right: 35px;
+  bottom: 45px;
+  font-size: @fontBig;
+  color: @fontNormal;
+  color: #fff;
+  cursor: pointer;
+  .blue{
+    display: block;
+    background: @normalBlue;
+    padding: 5px 10px;
+    width: 2em;
+    border-radius: 4px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    &:hover{
+      background: @hoverBlue;
+    }
+  }
+  .border{
+    height: 1px;
+    background: #b5b5b5;
+  }
+  .red{
+    display: block;
+    background: @error;
+    padding: 5px 10px;
+    width: 2em;
+    border-radius: 4px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    &:hover{
+      background: #f8a6a6;
+    }
+  }
+}
+.pageCtn{
+  margin: 50px 0;
+  text-align: center;
+}
+// 物料表格样式部分
+.tablesCtn {
+  position: relative;
+  border: 1px solid #DDD;
+  width: 1200px;
+  li {
+    justify-content: center;
+    display: flex;
+    border-bottom: 1px solid #DDD;
+    &:last-of-type {
+      border-bottom: none;
+    }
+    span {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+  }
+  .title {
+    display: flex;
+    background-color: rgb(240,240,240);
+    span{
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      border-right: 1px solid #DDD;
+      &:last-child {
+        border-right:none;
+      }
+    }
+  }
+  .content {
+    .tableRow{
+      border-right: 1px solid #DDD;
+      align-items: center;
+      &:last-child {
+        border-right: none;
+      }
+      .twoLine{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        line-height: 1.2em;
+      }
+    }
+    .tableColumn {
+      border-bottom: 1px solid #DDD;
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+    .col {
+      flex-direction: column;
+      align-items: unset;
+    }
+  }
+}
+//弹窗样式一
+.shade{
+  position: fixed;
+  top:0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0,0,0,0.8);
+  .main{
+    width: 1000px;
+    height: 600px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    margin: auto;
+    .imgList{
+      max-height: 550px;
+      margin: auto;
+      display: block;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+    }
+    .closeBtn{
+      position: absolute;
+      right: 0;
+      top: -78px;
+      color: #fff;
+      width: 100%;
+      text-align: center;
+      font-size: 26px;
+      cursor: pointer;
+      &:hover{
+        color: @normalBlue;
+      }
+    }
+  }
+}
+//弹窗样式二
+.message{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.3);
+  z-index: 5;
+  color: @fontNormal;
+  .messageBox{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    background: #FFF;
+    width:520px;
+    height:auto;
+    min-height: 300px;
+    box-shadow:0px 2px 24px rgba(0,0,0,0.36);
+    border-radius: 8px;
+    display: flex;
+    max-height: 580px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    // align-items: center;
+    // justify-content: center;
+    flex-direction: column;
+    padding: 50px 46px;
+    box-sizing: border-box;
+    .item{
+      margin-bottom:16px;
+      min-height: 40px;
+      display: flex;
+      position: relative;
+      padding-left: 5em;
+      box-sizing: border-box;
+      .label{
+        width: 5em;
+        height: 40px;
+        line-height: 40px;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      .content{
+        display: flex;
+        align-items: center;
+        &.blue{
+          color:@normalBlue;
+        }
+        .input_item{
+          height: 100%;
+          width: 354px;
+        }
+      } 
+    }
+    .close{
+      position: absolute;
+      top: 16px;
+      right: 18px;
+      width: 18px;
+      height: 18px;
+      font-size: 18px;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: all 0.1s ease-in-out;
+      &:hover{
+        background: @normalBlue;
+        color: #FFF;
+      }
+    }
+    .title{
+      position: absolute;
+      top: 0;
+      left: 0;
+      box-sizing: border-box;
+      color: @fontNormal;
+    }
+    .footer{
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      line-height: 50px;
+      height: 50px;
+      width: inherit;
+      padding-right: 18px;
+      box-sizing: border-box;
+      color: @fontNormal;
+      border-top: 1px solid rgb(233,233,233);
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      span{
+        padding: 0 1em;
+        border-radius:4px;
+        cursor: pointer;
+        text-align: center;
+        height: 32px;
+        line-height: 32px;
+        margin-left: 16px;
+        &.ok{
+          background: rgba(26,148,255,1);
+          color:#FFF;
+        }
+        &.cancel{
+          border:1px solid rgba(217,217,217,1);
+        }
+      }
+    }
+  }
+}
+// 步骤条形式页面样式
+.stepCtn{
+  position: relative;
+  padding: 40px 0 40px 20px;
+  &:nth-last-child(2){
+    padding-bottom: 0;
+  }
+  .stepTitle{
+    position: absolute;
+    top: -17px;
+    left: 0;
+    padding-left: 20px;
+    line-height: 50px;
+    color: @normalBlue;
+    font-size: @fontSubhead;
+    font-weight:400;
+  }
+  .borderCtn{
+    position: absolute;
+    top: 0;
+    left: -4px;
+    width: 14px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .border{
+      flex: 1;
+      width: 4px;
+      background: @normalBlue;
+    }
+    .cicle{
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: @normalBlue;
+    }
+  }
+}
+// 页面头部的一些附加信息 如：很多页面上面需要展示产品信息
+.appendInfo{
+  max-width: 1000px;
+  .row{
+    display: flex;
+    margin: 16px 0;
+    .box{
+      position: relative;
+      font-size: @fontBig;
+      &.box1{
+        width: 100%;
+      }
+      &.box2{
+        width: 50%;
+      }
+      &.box3{
+        width: 33%;
+      }
+      &.box4{
+        width: 25%;
+      }
+      &.em5{
+        .content{
+          padding-left: 6em;
+        }
+        .label{
+          width: 5em;
+        }
+      }
+      &.em6{
+        .content{
+          padding-left: 7em;
+        }
+        .label{
+          width: 6em;
+        }
+      }
+      &.em7{
+        .content{
+          padding-left: 8em;
+        }
+        .label{
+          width: 7em;
+        }
+      }
+      .label{
+        width: 6em;
+        text-align: right;
+        position: absolute;
+        line-height: 30px;
+        left: 0;
+        top: 0;
+        color:#333;
+        &.must{
+          &::before{
+            content:'*';
+            color: @error;
+          }
+        }
+      }
+      .content{
+        color:#666;
+        line-height: 30px;
+        padding-left: 7em;
+        &.important{
+          color:@normalBlue;
+        }
+      }
+    }
+  }
+}
+// 页面底部的按钮
+.bottomBtnCtn{
+  display: flex;
+  padding-left: 6em;
+  justify-content: space-around;
+  width: 400px;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}

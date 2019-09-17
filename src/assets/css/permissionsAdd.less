@@ -1,0 +1,173 @@
+@import './common.less';
+#permissionsAdd {
+  height: 100%;
+  font-family: 'systemfont';
+  font-weight: 300;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  .head {
+    min-height: 60px;
+    border-bottom: 1px solid #ECF0F1;
+    padding: 20px 40px;
+    h2 {
+      line-height: 60px;
+      margin: 0;
+      font-size: 24px;
+      color:@fontNormal;
+      font-weight: 400;
+    }
+  }
+  .body{
+    padding: 20px 40px;
+    flex: 1;
+    .addBtn{
+        background-color: @normalBlue;
+        width: 8em;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        border-radius: 0.2em;
+        color: #FFF;
+        margin-bottom: 40px;
+        cursor: pointer;
+        transition: opacity 0.05s linear;
+        opacity: 0.85;
+        &:hover{
+          opacity: 1;
+        }
+    }
+    .roleBox{
+      border:1px solid rgb(221,219,219);
+      width: 720px;
+      min-height: 300px;
+      margin-top: 40px;
+      display: flex;
+      flex-direction: column;
+      .title {
+        height: 70px;
+        width: 100%;
+        background: rgb(247, 247, 247);
+        border-bottom: 1px solid rgb(221,219,219);
+        padding: 10px 20px;
+        box-sizing: border-box;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .info{
+          width: auto;
+          height: 100%;
+          .name{
+            padding-left: 5em;
+            position: relative;
+            height: 30px;
+            line-height: 30px;
+            color: @fontNormal;
+            &::before{
+              content: '角色名称:';
+              position: absolute;
+              top: 0px;
+              left: 0px;
+              width: 5em;
+              height: 30px;
+              line-height: 30px;
+            }
+          }
+          .time{
+            color: #DDD;
+            font-size: 12px;
+          }
+        }
+        .handle{
+          display: flex;
+          justify-content: space-around;
+          width: 8em;
+          div{
+            width: 2em;
+            background: #999;
+            padding: 5px 10px;
+            color: #FFF;
+            border-radius: 5px;
+            cursor: pointer;
+              opacity: 0.85;
+            &.change{
+              background-color: @normalBlue;
+            }
+            &.delete{
+              background-color: @error;
+            }
+            &:hover {
+              opacity: 1;
+            }
+          }
+        }
+      }
+      .contentBox{
+        flex: 1;
+        padding: 20px 30px;
+        max-height: 230px;
+        overflow-y: scroll;
+        box-sizing: border-box;
+        &>span {
+          color:@fontNormal;
+        }
+      }
+    }
+    .lineCtn{
+      width: 100%;
+      display: flex;
+      color: @fontNormal;
+      margin: 24px 0;
+      flex-direction: column;
+      .inputCtn{
+        display: flex;
+        align-items: center;
+        width: 500px;
+        box-sizing: border-box;
+        line-height: 40px;
+        margin-right: 20px;
+        position: relative;
+        font-size: @fontBig;
+        padding-left: 7em;
+        flex-wrap: wrap;
+        min-height: 40px;
+        position: relative;
+        .label{
+          font-size: @fontBig;
+          width: 7em;
+          text-align: right;
+          position: absolute;
+          line-height: 40px;
+          left: 0;
+          top: 0;
+          &.must{
+            &::before{
+              content:'*';
+              color: @error;
+            }
+          }
+        }
+        .inputContent {
+          width: 300px;
+        }
+        .search{
+          position: absolute;
+          top: 50%;
+          right: 0;
+          transform: translate(50%,-50%);
+          cursor: pointer;
+          &:hover{
+            color: @normalBlue;
+          }
+        }
+      }
+    }
+    .btnCtn{
+      display: flex;
+      padding-left: 6em;
+      justify-content: space-around;
+      width: 400px;
+      margin-top: 40px;
+    }
+  }
+}

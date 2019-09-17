@@ -1,0 +1,45 @@
+@import './common.less';
+#foreignTradeList{
+  height: 100%;
+  font-family: 'systemfont';
+  font-weight: 300;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  .head{
+    min-height: 60px;
+    border-bottom: 1px solid #ECF0F1;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    h2{
+      line-height: 60px;
+      margin: 0;
+      font-size: 24px;
+      color:@fontNormal;
+      font-weight: 400;
+    }
+    .el-input{
+      width: 250px;
+    }
+  }
+  .body{
+    padding: 20px 40px;
+    flex: 1;
+    .filterMenu{
+      margin-bottom: 20px;
+      font-size: @fontBig;
+      .selectLine{
+        height: 60px;
+        display: flex;
+        align-items: center;
+        position: relative;
+        justify-content: space-between;
+        .rightFilter{
+          display: flex;
+        }
+      }
+    }
+  }
+}

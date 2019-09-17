@@ -1,0 +1,350 @@
+@import './common.less';
+ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+#semiExaminationDetail {
+  height: 100%;
+  font-family: 'systemfont';
+  font-weight: 300;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  .head {
+    min-height: 60px;
+    border-bottom: 1px solid #ECF0F1;
+    padding: 20px 40px;
+    h2 {
+      line-height: 60px;
+      margin: 0;
+      font-size: 24px;
+      color:@fontNormal;
+      font-weight: 400;
+    }
+  }
+  .body{
+    padding: 20px 40px;
+    flex: 1;
+    .stepCtn{
+      position: relative;
+      padding: 40px 0 40px 20px;
+      height: auto;
+      .stepTitle{
+        position: absolute;
+        top: -17px;
+        left: 0;
+        padding-left: 20px;
+        line-height: 50px;
+        color: @normalBlue;
+        font-size: @fontSubhead;
+        font-weight:400;
+      }
+      .borderCtn{
+        position: absolute;
+        top: 0;
+        left: -4px;
+        width: 14px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        .border{
+          flex: 1;
+          width: 4px;
+          background: @normalBlue;
+        }
+        .cicle{
+          width: 14px;
+          height: 14px;
+          border-radius: 50%;
+          background: @normalBlue;
+        }
+      }
+      .lineCtn{
+        width: 100%;
+        display: flex;
+        color: @fontNormal;
+        margin: 24px 0;
+        .inputCtn{  
+          display: flex;
+          width: 450px;
+          box-sizing: border-box;
+          line-height: 40px;
+          margin-right: 20px;
+          position: relative;
+          font-size: @fontBig;
+          padding-left: 7em;
+          flex-wrap: wrap;
+          min-height: 40px;
+          &.noPadding {
+            padding-left: 0;
+          }
+          &>.content {
+            position: relative;
+            font-size: @fontMid;
+            margin-left: 40px;
+            &.important{
+              color:@normalBlue;
+              cursor: pointer;
+            }
+            .logList {
+              display: inline-block;
+              position: absolute;
+              line-height: 30px;
+              bottom: 0;
+              right: 0;
+              transform: translateY(100%);
+              color: @normalBlue;
+              cursor: pointer;
+            }
+            .blue {
+              color: @normalBlue;
+              cursor: pointer;
+            }
+            .noDate{
+              color: #BBB;
+            }
+            .compiled {
+              color: @success
+            }
+            .unCompiled {
+              color: @warning
+            }
+            &>.handle {
+              position: absolute;
+              top: 0;
+              right: 0;
+              transform: translateY(-100%);
+              &>div {
+                cursor: pointer;
+                margin-left: 20px;
+                color: @normalBlue;
+                line-height: 25px;
+                &.disabled{
+                  cursor:  not-allowed;
+                  color:#DDD;
+                }
+                &>.icon {
+                  width: 12px;
+                  height: 12px;
+                  color: #DDD;
+                  margin-right: 5px;
+                }
+              }
+            }
+            &>.log {
+              position: relative;
+              width: 1200px;
+              border: 1px solid #DDD;
+              margin-top: 30px;
+              padding-top: 40px;
+              &>div:first-child {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                background-color: rgb(240,240,240);
+              }
+              &>div {
+                max-height: 240px;
+                overflow-y: scroll;
+              }
+                li {
+                  justify-content: center;
+                  font-size: @fontSmall;
+                  display: flex;
+                  &>span {
+                    flex: 1;
+                    text-align: center;
+                    font-size: 12px;
+                    &.remark {
+                      overflow: hidden;
+                      display: flex;
+                      align-items: center;
+                      &>i {
+                        display: inline-block;
+                        font-style: normal;
+                        width: inherit;
+                        padding: 0 30px;
+                        margin: 0 auto;
+                        height: 1.3rem;
+                        overflow: hidden;
+                        max-width: inherit;
+                        position: relative;
+                        line-height: 1.3rem;
+                        &>span {
+                          position: absolute;
+                          top: 0;
+                          right: 0;
+                          line-height: 1.3rem;
+                          cursor: pointer;
+                          color: @normalBlue;
+                          padding-left: 1em;
+                          background:linear-gradient(90deg,rgba(255,255,255,0.56) 0%,rgba(255,255,255,1) 30%);
+                        }
+                      }
+                    }
+                    &.flexBig {
+                      flex: 1.2;
+                    }
+                    &.flexMid {
+                      flex: 0.7;
+                    }
+                  }
+                }
+            }
+          }
+          .label{
+            font-size: @fontBig;
+            width: 7em;
+            text-align: right;
+            position: absolute;
+            line-height: 40px;
+            left: 0;
+            top: 0;
+            &.smallFont {
+              font-size: @fontBig;
+              font-weight: 500;
+            }
+            &.must{
+              &::before{
+                content:'*';
+                color: @error;
+              }
+            }
+          }
+        }
+      }
+    }
+    .btnCtn{
+      display: flex;
+      padding-left: 60px;
+      justify-content: space-between;
+      width: 300px;
+      margin-bottom: 40px;
+    }
+  }
+  .confirm{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.2);
+    color: @fontNormal;
+    font-size: 14px;
+    .box{
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      border-radius: 10px;
+      transform: translate(-50%,-50%);
+      width: 400px;
+      height:auto;
+      background: #FFF;
+      overflow: hidden;
+      padding: 15px 45px;
+      .content{
+        margin-top:30px;
+        .tishi{
+          &::before{
+            content: '';
+            display: inline-block;
+            background: url('../../assets/image/icon/tishi.png') no-repeat;
+            height: 1em;
+            width: 1em;
+            background-size: cover;
+            vertical-align: text-bottom;
+            margin-right: 0.5em;
+          }
+        }
+        ul{
+          max-height: 250px;
+          overflow-y: scroll;
+          li{
+            display: flex;
+            padding: 5px 10px;
+            &>span{
+              display: flex;
+              align-items: center;
+              &::before{
+                content: '';
+                display: inline-block;
+                border-radius: 50%;
+                background: @normalBlue;
+                width: 0.8em;
+                height: 0.8em;
+                margin-right: 0.5em;
+              }
+            }
+          }
+        }
+        .btn{
+          margin-top: 30px;
+          text-align: center;
+          padding: 0 3em;
+          display: flex;
+          justify-content: space-between;
+          &>span{
+            display: inline-block;
+            width: 5em;
+            height: 30px;
+            border: 1px solid #DDD;
+            line-height: 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            &.yes{
+              background: @normalBlue;
+              color: #FFF;
+              border: none;
+            }
+          }
+        }
+      }
+      .close{
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        padding: 5px;
+        cursor: pointer;
+        &:hover{
+          background: @normalBlue;
+          color: #FFF;
+          border-radius: 50%;
+        }
+      }
+    }
+  }
+}
+.tablesCtn,.log{
+  position: relative;
+  .handle{
+    position: absolute;
+    font-size: 14px!important;
+    top: 0;
+    right: 0;
+    transform: translateY(-100%);
+    cursor: pointer;
+    color: @normalBlue;
+    line-height: 25px;
+  }
+}
+.flex45{
+  flex: 4.5!important
+}
+.flex17{
+  flex: 1.7!important;
+}
+.flex13{
+  flex: 1.3!important;
+}
+.flex4 {
+  flex: 4!important;
+}
+.flex55 {
+  flex: 5.5!important;
+}
+.flex3 {
+  flex: 3!important;
+}

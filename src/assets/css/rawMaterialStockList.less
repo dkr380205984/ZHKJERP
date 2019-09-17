@@ -1,0 +1,99 @@
+@import './common.less';
+#rawMaterialStockList{
+  height: 100%;
+  font-family: 'systemfont';
+  font-weight: 300;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  .head{
+    min-height: 60px;
+    border-bottom: 1px solid #ECF0F1;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    h2{
+      line-height: 60px;
+      margin: 0;
+      font-size: 24px;
+      color:@fontNormal;
+      font-weight: 400;
+    }
+    .el-input{
+      width: 250px;
+    }
+  }
+  .body{
+    padding: 20px 40px;
+    flex: 1;
+    color:@fontNormal;
+    .filterCtn{
+      margin-bottom: 20px;
+      font-size: @fontBig;
+      .filterLine{
+        height: 60px;
+        display: flex;
+        align-items: center;
+        padding-left: 5em;
+        position: relative;
+        .label{
+          position: absolute;
+          line-height: 60px;
+          left: 0;
+          font-size: @fontBig;
+        }
+        .el-tag{
+          font-size: @fontBig;
+          margin-right: 20px;
+        }
+      }
+      .selectLine{
+        height: 60px;
+        display: flex;
+        align-items: center;
+        padding-left: 5em;
+        position: relative;
+        justify-content: space-between;
+        .el-select{
+          margin-right:25px;
+          width: 130px;
+        }
+        .label{
+          position: absolute;
+          line-height: 60px;
+          left: 0;
+          font-size: 16px;
+        }
+      }
+    }
+  }
+  .mergeBody {
+    .tableColumn.col {
+      &>span {
+        width: 100%;
+        display: flex;
+        height: auto;
+        border-bottom: 1px solid #DDD;
+        justify-content: center;
+        &:last-child {
+          border-bottom: none;
+        }
+        &>span {
+          height: auto;
+          border-right: 1px solid #DDD;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          &:last-child {
+            border-right: none;
+            flex-direction: column;
+          }
+          &>span {
+            line-height: 60px;
+          }
+        }
+      }
+    }
+  }
+}

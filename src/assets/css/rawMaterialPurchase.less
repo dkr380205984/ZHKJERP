@@ -1,0 +1,184 @@
+@import './common.less';
+.el-input,
+.el-select{
+  width: 300px;
+}
+.el-textarea {
+  width: 625px;
+}
+#rawMaterialPurchase{
+  height: 100%;
+  font-family: 'systemfont';
+  font-weight: 300;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  .head{
+    min-height: 60px;
+    border-bottom: 1px solid #ECF0F1;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    h2{
+      line-height: 60px;
+      margin: 0;
+      font-size: 24px;
+      color:@fontNormal;
+      font-weight: 400;
+    }
+  }
+  .body{
+    padding: 20px 40px;
+    flex: 1;
+    .lineCtn{
+      width: 100%;
+      display: flex;
+      color: @fontNormal;
+      margin: 24px 0;
+      flex-direction: column;
+      .inputCtn{
+        display: flex;
+        align-items: center;
+        width: 800px;
+        box-sizing: border-box;
+        line-height: 40px;
+        margin-right: 20px;
+        position: relative;
+        font-size: @fontBig;
+        padding-left: 7em;
+        flex-wrap: wrap;
+        min-height: 40px;
+        &.oneLine{
+          width: 100%;
+        }
+        .label{
+          font-size: @fontBig;
+          width: 7em;
+          text-align: right;
+          position: absolute;
+          line-height: 40px;
+          left: 0;
+          top: 0;
+          // &.must{
+          //   &::before{
+          //     content:'*';
+          //     color: @error;
+          //   }
+          // }
+        }
+        .content {
+          line-height: 40px;
+          margin-left: 15px;
+          color:@fontNormal;
+          font-size: @fontMid;
+          display: flex;
+          flex-wrap: wrap;
+          &.btn{
+            width: 100%;
+            &>span {
+              display: inline-block;
+              width: 100px;
+              height: 35px;
+              line-height: 35px;
+              text-align: center;
+              margin-right: 84px;
+              cursor: pointer;
+            }
+            .clean {
+              border: 1px solid #AAA;
+            }
+            .save {
+              background-color: @normalBlue;
+              color: #fff;
+            }
+          }
+          .material {
+            position: relative;
+            width: 300px;
+            height: 280px;
+            background: rgb(250,250,250);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 0 25px;
+            box-sizing: border-box;
+            margin-right: 30px; 
+            margin-bottom: 30px;
+            h4 {
+              padding: 0;
+              margin: 0;
+              text-align: center;
+              font-size: 14px;
+              color: #999;
+              font-weight: 400;
+              line-height: 40px;
+            }
+            div.inputBox {
+              flex: 1;
+              display: flex;
+              flex-direction: column;
+              justify-content: space-around;
+              padding-bottom: 10px;
+              &>* {
+                width: 100%;
+                .small {
+                  font-size: 12px;
+                }
+              }
+            }
+            .delet {
+              position: absolute;
+              top: 10px;
+              right: 10px;
+              display: block;
+              box-sizing: border-box;
+              width: 20px;
+              height: 20px;
+              border: 1px solid transparent;
+              border-radius: 50%;
+              text-align: center;
+              line-height: 20px;
+              transition: all 0.2s linear;
+              cursor: pointer;
+              &:hover {
+                border: 1px solid rgb(230,230,230);
+                color: @normalBlue
+              }
+            }
+          }
+        }
+        .addBtn{
+          padding: 0 18px;
+          height: 38px;
+          line-height: 38px;
+          border-radius: 2px;
+          margin-left: 15px;
+          cursor: pointer;
+          color: #909399;
+          border:1px solid #E6E6E6;
+          display: inline-block;
+          &:hover{
+            color: #10AEF5;
+            border-color: #10AEF5;
+          }
+          span{
+            font-size: 16px;
+            &:nth-child(2){
+              margin-left: 5px;
+              font-size: 20px;
+              vertical-align: -1px;;
+            }
+          }
+        }
+      }
+    }
+    .bottom{
+      display: flex;
+      padding-left: 6em;
+      justify-content: space-around;
+      width: 400px;
+      margin-top: 40px;
+    }
+  }
+}

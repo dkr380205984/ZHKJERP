@@ -1,0 +1,140 @@
+@import './common.less';
+#foreignTradeCreate{
+  height: 100%;
+  font-family: 'systemfont';
+  font-weight: 300;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  .head{
+    min-height: 60px;
+    border-bottom: 1px solid #ECF0F1;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    h2{
+      line-height: 60px;
+      margin: 0;
+      font-size: 24px;
+      color:@fontNormal;
+      font-weight: 400;
+    }
+  }
+  .body{
+    padding: 20px 40px;
+    flex: 1;
+    .inputCtn{
+      min-height: 40px;
+      margin:24px 0;
+      display: flex;
+      flex-wrap: wrap;
+      padding-left: 7em;
+      position: relative;
+      .lineCtn{
+        width: 100%;
+      }
+      .label{
+        position: absolute;
+        width: 6em;
+        line-height: 40px;
+        text-align: right;
+        font-size: @fontBig;
+        color: @fontNormal;
+        left: 0;
+        &.must{
+          &::before{
+            content:'*';
+            color: @error;
+          }
+        }
+      }
+      .elInput{
+        line-height: 38px;
+        margin-left: 15px;
+        width: 400px;
+        color: @fontNormal;
+      }
+      .elSelect{
+        line-height: 38px;
+        margin-left: 15px;
+        width: 200px;
+        color: @fontNormal;
+        margin-bottom:24px;
+      }
+      .textarea{
+        margin-left: 15px;
+        width: 400px;
+      }
+    }
+    .btnCtn{
+      display: flex;
+      padding-left: 6em;
+      justify-content: space-around;
+      width: 400px;
+      margin-top: 40px;
+    }
+    .specialTable{
+      width: 700px;
+      border:1px solid #ECF0F1;
+      margin-left: 15px;
+      color: @fontNormal;
+      font-size: @fontMid;
+      .tableHead{
+        line-height: 60px;
+        display: flex;
+        border-bottom: 1px solid #ECF0F1;
+        background: #FAFAFA;
+      }
+      .tableFirstLine{
+        line-height: 60px;
+        display: flex;
+        border-bottom: 1px solid #ECF0F1;
+      }
+      .tableBody{
+        max-height: 120px;
+        overflow: auto;
+        .line{
+          line-height: 40px;
+          display: flex;
+        }    
+      }
+      .once{
+        flex: 1;
+        text-align: center;
+        .noborder{
+          line-height: 60px;
+          display: block;
+          width: 100%;
+          box-sizing: border-box;
+          padding: 0 10px;
+          border: 0;
+          text-align: center;
+          cursor:text;
+          &:focus{
+            outline: none;
+          }
+        }
+        .btns{
+          padding: 6px 12px;
+          margin:0 6px;
+          border-radius: 2px;
+          color: #ffffff;
+          cursor: pointer;
+          &.error{
+            background: @error;
+          }
+          &.normal{
+            background: #1A95FF;
+          }
+          &.warning{
+            background: @yellow;
+          }
+          &.success{
+            background: @success;
+          }
+        }
+      }
+    }
+  }
+}

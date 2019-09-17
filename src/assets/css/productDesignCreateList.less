@@ -1,0 +1,78 @@
+@import './common.less';
+#productDesignCreateList{
+  height: 100%;
+  font-family: 'systemfont';
+  font-weight: 300;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  .head{
+    min-height: 60px;
+    border-bottom: 1px solid #ECF0F1;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    h2{
+      line-height: 60px;
+      margin: 0;
+      font-size: 24px;
+      color:@fontNormal;
+      font-weight: 400;
+    }
+    .el-input{
+      width: 250px;
+    }
+  }
+  .body{
+    padding: 20px 40px;
+    flex: 1;
+    color:@fontNormal;
+    .filterCtn{
+      margin-bottom: 20px;
+      font-size: @fontBig;
+      .filterLine{
+        height: 40px;
+        display: flex;
+        align-items: center;
+        padding-left: 5em;
+        position: relative;
+        margin: 20px 0;
+        .label{
+          position: absolute;
+          line-height: 60px;
+          left: 0;
+          font-size: @fontBig;
+        }
+        .el-tag{
+          font-size: @fontBig;
+          margin-right: 20px;
+        }
+      }
+      .selectLine{
+        min-height: 40px;
+        display: flex;
+        padding-left: 5em;
+        position: relative;
+        margin:20px 0 5px 0;
+        justify-content: space-between;
+        .el-select{
+          margin-right:25px;
+          width: 130px;
+          margin-bottom: 15px;
+        }
+        .label{
+          position: absolute;
+          line-height: 40px;
+          left: 0;
+          font-size: 16px;
+        }
+      }
+    }
+    .sum{
+      margin-top: 15px;
+      font-size: @fontBig;
+      font-weight: 400;
+    }
+  }
+}

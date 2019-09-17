@@ -1,0 +1,209 @@
+@import './common.less';
+#productSetting{
+  height: 100%;
+  font-family: 'systemfont';
+  font-weight: 300;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  .head{
+    min-height: 60px;
+    border-bottom: 1px solid #ECF0F1;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    h2{
+      line-height: 60px;
+      margin: 0;
+      font-size: 24px;
+      color:@fontNormal;
+      font-weight: 400;
+    }
+  }
+  .body{
+    padding: 20px 40px;
+    flex: 1;
+    .lineCtn{
+      display: flex;
+      flex-wrap: wrap;
+      background: #ECF0F1;
+      max-width: 1000px;
+      max-height: 64px;
+      margin-bottom: 24px;
+      overflow: hidden;
+      transition: 0.8s;
+      .inputCtn{
+        min-height: 40px;
+        display: flex;
+        flex-wrap: wrap;
+        padding:24px 280px 0px 6em;
+        width: 100%;
+        position: relative;
+        align-items: center;
+        background: #fff;
+        border-bottom: 12px solid #fff;
+        .label{
+          position: absolute;
+          width: 6em;
+          line-height: 40px;
+          text-align: right;
+          font-size:@fontBig;
+          color: #666666;
+          left: 0;
+        }
+        .okBtn{
+          position: absolute;
+          right: 185px;
+          line-height: 38px;
+          height: 38px;
+        }
+        .floatDiv{
+          position: absolute;
+          top: 0px;
+          font-size: @fontSmall;
+          margin-left: 15px;
+          color:@normalBlue;
+          .title{
+            margin-right: 5px;
+          }
+        }
+        .showAll{
+          position: absolute;
+          right: 0px;
+          line-height: 40px;
+          padding: 0 20px;
+          background: #ECF0F1;
+          border-bottom: 12px solid #ECF0F1;
+          bottom: -12px;
+          color: #666666;
+          cursor: pointer;
+          &:hover{
+            color:@inputFocus;
+          }
+          .el-icon-d-arrow-right{
+            margin-left: 10px;
+          }
+          .showIcon{
+            transform: rotate(90deg)
+          }
+          .hideIcon{
+            transform: rotate(-90deg)
+          }
+        }
+      }
+      .allInfo{
+        width: 100%;
+        display: flex;
+        .bgWhite{
+          height: 100%;
+          width: calc(6em + 15px);
+          background: #fff;
+        }
+        .list{
+          padding: 20px 20px 5px;
+          display: flex;
+          justify-content: flex-start;
+          flex-wrap: wrap;
+          flex: 1;
+          .btnCtn{
+            line-height: 40px;
+            padding: 0 18px;
+            cursor: pointer;
+            position: relative;
+            color: @fontNormal;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            &:hover{
+              .iconCancle{
+                display: block;
+              }
+            }
+            .iconCancle{
+              display: none;
+              position: absolute;
+              font-style: normal;
+              color: #fff;
+              font-size: 16px;
+              right:1px;
+              top: 1px;
+              height: 16px;
+              width: 16px;
+              border-radius: 50%;
+              line-height: 14px;
+              text-align: center;
+              vertical-align: 5px;
+              &:hover{
+                background: #fff;
+                color: @normalBlue;
+              }
+            }
+            &:hover{
+              background: @normalBlue;
+              color: #fff;
+            }
+            .colorBlock{
+              width: 15px;
+              height: 15px;
+              margin-right: 5px;
+              border-radius: 2px;
+            }
+          }
+          .line{
+            height: 40px;
+            display: flex;
+            width: 100%;
+            align-items: center;
+            .lineTitle{
+              color: @fontNormal;
+              font-size: @fontBig;
+              line-height: 40px;
+              margin-bottom: 15px;
+              margin-right: 15px;
+            }
+          }
+        }
+      }
+    }
+    .treeCtn{
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 48px;
+      margin-bottom: 24px;
+      overflow: hidden;
+      min-height: 40px;
+      max-width: 1000px;
+      box-sizing: border-box;
+      padding:0px 280px 0px 6em;
+      position: relative;
+      .label{
+        position: absolute;
+        width: 6em;
+        line-height: 40px;
+        text-align: right;
+        font-size:@fontBig;
+        color: #666666;
+        left: 0;
+      }
+      .treeMain{
+        margin-top: 24px;
+        margin-left: 15px;
+        padding-top: 6px;
+        min-width: 500px;
+      }
+      .okBtn{
+        position: absolute;
+        right: 185px;
+        line-height: 38px;
+        height: 38px;
+      }
+    }
+    .elInput{
+      line-height: 38px;
+      margin-left: 15px;
+      width: 290px;
+      color: @fontNormal;
+    }
+  }
+}

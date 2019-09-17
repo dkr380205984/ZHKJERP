@@ -1,0 +1,122 @@
+.colorPicker{
+  font-family: 'systemfont';
+  font-size: 14px;
+  line-height: 40px;
+  min-width: 40px;
+  text-align: center;
+  box-sizing: border-box;
+  padding: 0 8px;
+  position: relative;
+  border:1px solid #e4e4e4;
+  border-radius: 2px;
+  cursor: pointer;
+  .placeHolder{
+    padding: 0;
+    line-height: 40px;
+  }
+  .getFocus{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    z-index: 1;
+    color:transparent;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    &:focus{
+      outline: none;
+    }
+  }
+  .realContent{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    color: #fff;
+    background: rgba(0,0,0,.1);
+    z-index: 2;
+    pointer-events:none
+  }
+  .selectList{
+    position: absolute;
+    left: 0;
+    width: 180px;
+    margin-top: 12px;
+    border-radius: 4px;
+    border:1px solid #e4e7ed;
+    z-index: 3;
+    &::after{
+      content: "";
+      position: absolute;
+      font-size: 0;
+      line-height: 0;
+      margin: 0 auto;/*居中*/
+      display: block;/*独占一行*/
+      border:1px solid #e4e7ed;
+      box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+      background-color: #fff;
+      width: 8px;
+      height: 8px;
+      top: 0;
+      left: 20px;
+      transform:translate(-5px,-5px) rotate(45deg); /*一个正方形倾斜四十五度就是三角了但是要把下半部分藏起来*/
+      z-index: 0; /*果断的隐藏下半部分*/
+    }
+    .selectListCtn{
+      position: relative;
+      z-index: 2;
+      padding: 5px 0;
+      background-color: #fff;
+      box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+      background: #fff;
+      border-radius: 4px;
+      overflow: auto;
+      max-height: 300px;
+      .searchOpt{
+        padding: 5px 10px 5px 10px;
+        input{
+          border:1px solid #ddd;
+          line-height: 28px;
+          display: block;
+          width: 100%;
+          border-radius: 12px;
+          background: #fff;
+          padding: 0 10px;
+          box-sizing: border-box;
+          &:focus{
+            outline: none;
+          }
+        }
+      }
+    }
+    .selectListChild{
+      display: flex;
+      padding: 0 20px;
+      line-height: 36px;
+      align-items: center;
+      cursor: pointer;
+      &:hover{
+        background-color: #f5f7fa;
+      }
+      .bgColorBlock{
+        width: 40px;
+        height: 20px;
+        background: red;
+        margin-right: 10px;
+      }
+      .bgColorLabel{
+        color: #666666;
+        overflow: hidden;
+        max-height: 36px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+  }
+}

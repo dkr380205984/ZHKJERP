@@ -1,0 +1,123 @@
+@import './common.less';
+#sampleCreate{
+  height: 100%;
+  font-family: 'systemfont';
+  font-weight: 300;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  .head{
+    min-height: 60px;
+    border-bottom: 1px solid #ECF0F1;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    h2{
+      line-height: 60px;
+      margin: 0;
+      font-size: 24px;
+      color:@fontNormal;
+      font-weight: 400;
+    }
+  }
+  .body{
+    padding: 20px 40px;
+    flex: 1;
+    .inputCtn{
+      min-height: 40px;
+      margin:24px 0;
+      display: flex;
+      flex-wrap: wrap;
+      padding-left: 7em;
+      position: relative;
+      flex-direction: column;
+      .inputItem{
+        width: 400px;
+        height: 40px;
+        margin-right: 16px;
+        &.autoHeight{
+          height: auto;
+        }
+      }
+      .content{
+        margin-left: 15px;
+        display: flex;
+        align-items: center;
+        margin-top: 24px;
+        min-height: 40px;
+        &.blue{
+          color: @normalBlue;
+        }
+        &:first-of-type{
+          margin-top: 0;
+        }
+        &.col{
+          flex-direction: column;
+          justify-content: center;
+          align-items: flex-start;
+          .column{
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+            &:last-child{
+              margin-bottom: 0;
+            }
+          }
+        }
+        .addBtn{
+          color: @normalBlue;
+          cursor: pointer;
+          font-size: 12px;
+          white-space: nowrap;
+        }
+        .deleteBtn{
+          color: @error;
+          cursor: pointer;
+          font-size: 12px;
+        }
+      }
+      .smallInputItem{
+        width: 191px;
+        height: 40px;
+        margin-right: 16px;
+      }
+      
+      .label{
+        position: absolute;
+        width: 6em;
+        line-height: 40px;
+        text-align: right;
+        font-size: @fontBig;
+        color: @fontNormal;
+        left: 0;
+        &.must{
+          &::before{
+            content:'*';
+            color: @error;
+          }
+        }
+      }
+      .tooltips{
+        position: absolute;
+        bottom: 0;
+        font-size: 12px;
+        margin-left: 18px;
+        color: @error;
+      }
+    }
+    .btnCtn{
+      display: flex;
+      padding-left: 6em;
+      justify-content: space-around;
+      width: 400px;
+      margin-top: 40px;
+    }
+    .border{
+      height: 1px;
+      margin: 0 -40px;
+      background:#ECF0F1;
+      left: 0;
+    }
+  }
+}

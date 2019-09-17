@@ -1,0 +1,150 @@
+@import './common.less';
+#productStockCreate{
+  height: 100%;
+  font-family: 'systemfont';
+  font-weight: 300;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  .head{
+    min-height: 60px;
+    border-bottom: 1px solid #ECF0F1;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    h2{
+      line-height: 60px;
+      margin: 0;
+      font-size: 24px;
+      color:@fontNormal;
+      font-weight: 400;
+    }
+  }
+  .body{
+    padding: 20px 40px;
+    flex: 1;
+    .lineCtn{
+      width: 100%;
+      display: flex;
+      color: @fontNormal;
+      margin: 24px 0;
+      max-width: 1000px;
+      .inputCtn{  
+        display: flex;
+        align-items: center;
+        width: 350px;
+        box-sizing: border-box;
+        line-height: 40px;
+        margin-right: 20px;
+        position: relative;
+        font-size: @fontBig;
+        padding-left: 7em;
+        flex-wrap: wrap;
+        min-height: 40px;
+        &.oneLine{
+          width: 100%;
+        }
+        .label{
+          font-size: @fontBig;
+          width: 7em;
+          text-align: right;
+          position: absolute;
+          line-height: 40px;
+          left: 0;
+          top: 0;
+          &.must{
+            &::before{
+              content:'*';
+              color: @error;
+            }
+          }
+        }
+        .content{
+          font-size: @fontMid;
+          margin-left: 15px;
+          &.contentLine{
+            width: 100%;
+            .size{
+              margin-right: 40px;
+            }
+            .sizeDetail{
+              .sizeOnce{
+                margin-right: 40px;
+              }
+            }
+          }
+          &.important{
+            color:@normalBlue;
+          }
+          .img{
+            height: 200px;
+            margin-right: 30px;
+          }
+        }
+        .elSelect{
+          line-height: 38px;
+          margin-left: 15px;
+          width: 200px;
+          color: @fontNormal;
+          margin-left: 15px;
+        }
+        .radioCtn{
+          margin-left: 15px;
+        }
+        .block{
+          margin-top: 15px;
+          .el-icon-delete{
+            margin-left: 15px;
+            cursor: pointer;
+            &:hover{
+              color: @normalBlue;
+            }
+          }
+        }
+        .addBtn{
+          padding: 0 18px;
+          height: 38px;
+          line-height: 38px;
+          border-radius: 2px;
+          cursor: pointer;
+          color: #909399;
+          border:1px solid #E6E6E6;
+          display: inline-block;
+          &:hover{
+            color: #10AEF5;
+            border-color: #10AEF5;
+          }
+          span{
+            font-size: 16px;
+            &:nth-child(2){
+              margin-left: 5px;
+              font-size: 20px;
+              vertical-align: -1px;;
+            }
+          }
+        }
+      }
+    }
+    .btnCtn{
+      display: flex;
+      padding-left: 6em;
+      justify-content: space-around;
+      width: 400px;
+      margin-top: 40px;
+    }
+    .border{
+      height: 1px;
+      margin: 0 -40px;
+      background:#ECF0F1;
+      left: 0;
+    }
+    .bottom{
+      display: flex;
+      padding-left: 6em;
+      justify-content: space-around;
+      width: 400px;
+      margin-top: 40px;
+    }
+  }
+}
