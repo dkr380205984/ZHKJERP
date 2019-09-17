@@ -370,7 +370,7 @@
 </template>
 
 <script>
-import { porductOne, priceListDetail, productStockOne } from '@/assets/js/api.js'
+import { porductOne, priceListDetail } from '@/assets/js/api.js'
 const QRCode = require('qrcode')
 export default {
   data () {
