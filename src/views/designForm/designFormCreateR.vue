@@ -30,7 +30,7 @@
               <div class="content">
                 <span v-for="(item,index) in productInfo.color"
                   :key="index">
-                  <span>{{item.name}}</span>
+                  <span>{{item.color_name}}</span>
                   <span v-if="index<productInfo.color.length - 1">/</span>
                 </span>
               </div>
@@ -60,14 +60,9 @@
                 <div class="oneLine"
                   v-for="(item,index) in productInfo.size"
                   :key="index">
-                  <span>{{item.name}}</span>
-                  <span style="margin-left:16px"
-                    v-for="itemSize in item.value"
-                    :key="itemSize.id">
-                    <span>{{itemSize.size_name}}：</span>
-                    <span>{{itemSize.size_value}}cm</span>
-                  </span>
-                  <span style="margin-left:16px">{{item.value[0].weight}}g</span>
+                  <span>{{item.measurement}}：</span>
+                  <span style="margin-left:16px">{{item.size_info}}</span>
+                  <span style="margin-left:16px">{{item.weight}}g</span>
                 </div>
               </div>
             </div>
@@ -93,8 +88,8 @@
                 v-model="itemColour.value">
                 <el-option v-for="(item,index) in productInfo.color"
                   :key="index"
-                  :label="item.name"
-                  :value="item.name"></el-option>
+                  :label="item.color_name"
+                  :value="item.color_name"></el-option>
               </el-select>
               <color-picker v-for="(itemColor,indexColor) in itemColour.colorWarp"
                 :key="indexColor + (itemColor.color?itemColor.color:0)"
@@ -755,8 +750,8 @@
                 v-model="itemColour.value">
                 <el-option v-for="(item,index) in productInfo.color"
                   :key="index"
-                  :label="item.name"
-                  :value="item.name"></el-option>
+                  :label="item.color_name"
+                  :value="item.color_name"></el-option>
               </el-select>
               <color-picker v-for="(itemColor,indexColor) in itemColour.colorWeft"
                 :key="indexColor + (itemColor.color?itemColor.color:0)"
@@ -2352,7 +2347,7 @@ export default {
           this.$message.success({
             message: '添加成功'
           })
-          this.$router.push('/index/designFormUpdate/' + res.data.data.id)
+          this.$router.push('/index/designFormDetail/' + res.data.data.id)
         } else {
           this.$message.error({
             message: res.data.message
@@ -2466,12 +2461,6 @@ export default {
     })]).then((res) => {
       // console.log(res)
       this.productInfo = res[0].data.data
-      this.productInfo.size = Object.keys(this.productInfo.size).map((key) => {
-        return {
-          name: key,
-          value: this.productInfo.size[key]
-        }
-      })
       this.yarn.yarnArr = res[1].data.data
       this.sideArr = res[2].data.data.side
       this.modeleArr = res[2].data.data.type
@@ -2479,6 +2468,7 @@ export default {
       this.colorArr = this.colorArr.concat(res[3].data.data)
       // this.material.materialArr = res[4].data.data
       this.commonPMArr = res[5].data.data
+      this.loading = false
     })
     // 监听快捷键，给表格插入列
     document.onkeydown = (e) => {
@@ -2496,7 +2486,6 @@ export default {
         this.deleteOneCol('weft')
       }
     }
-    this.loading = false
   }
 }
 </script>

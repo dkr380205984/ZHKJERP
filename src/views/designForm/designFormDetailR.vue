@@ -58,16 +58,11 @@
               <div class="label">产品规格：</div>
               <div class="content">
                 <div class="oneLine"
-                  v-for="(value,key,index) in productInfo.size"
+                  v-for="(item,index) in productInfo.size"
                   :key="index">
-                  <span>{{key}}</span>
-                  <span style="margin-left:16px"
-                    v-for="itemSize in value"
-                    :key="itemSize.id">
-                    <span>{{itemSize.size_name}}：</span>
-                    <span>{{itemSize.size_value}}cm</span>
-                  </span>
-                  <span style="margin-left:16px">{{value[0].weight}}g</span>
+                  <span>{{item.measurement}}</span>
+                  <span style="margin-left:16px">{{item.size_info}}</span>
+                  <span style="margin-left:16px">{{item.weight}}g</span>
                 </div>
               </div>
             </div>
@@ -94,7 +89,12 @@
                   v-for="(itemColor,indexColor) in item.color_scheme"
                   :key="indexColor"
                   :style="{'background':itemColor.value}">
-                  <span class="colorText">{{filterMethods(indexColor)}}</span>
+                  <el-tooltip class="item"
+                    effect="dark"
+                    :content="itemColor.name"
+                    placement="top">
+                    <span class="colorText">{{filterMethods(indexColor)}}</span>
+                  </el-tooltip>
                 </div>
               </div>
             </div>
@@ -108,7 +108,12 @@
                 <div class="colorBox"
                   v-for="(item,index) in yarn.yarnWarp.apply"
                   :key="index">
-                  <span class="colorText">{{filterMethods(item)}}</span>
+                  <el-tooltip class="item"
+                    effect="dark"
+                    :content="colorWeight.warp[item]==='NaN'?'0g':colorWeight.warp[item] + 'g'"
+                    placement="top">
+                    <span class="colorText">{{filterMethods(item)}}</span>
+                  </el-tooltip>
                 </div>
               </div>
             </div>
@@ -124,7 +129,12 @@
                 <div class="colorBox"
                   v-for="(item,index) in item.apply"
                   :key="index">
-                  <span class="colorText">{{filterMethods(item)}}</span>
+                  <el-tooltip class="item"
+                    effect="dark"
+                    :content="colorWeight.warp[item]==='NaN'?'0g':colorWeight.warp[item] + 'g'"
+                    placement="top">
+                    <span class="colorText">{{filterMethods(item)}}</span>
+                  </el-tooltip>
                 </div>
               </div>
             </div>
@@ -156,7 +166,8 @@
               </div>
             </div>
           </div>
-          <!-- <div class="row">
+          <div class="row"
+            v-show="warpInfo.back_status===1">
             <div class="box box1">
               <div class="label">经向反面：</div>
               <div class="content">
@@ -165,7 +176,7 @@
                 </hot-table>
               </div>
             </div>
-          </div> -->
+          </div>
           <div class="row">
             <div class="box box2">
               <div class="label">整经头纹：</div>
@@ -235,7 +246,12 @@
                   v-for="(itemColor,indexColor) in item.color_scheme"
                   :key="indexColor"
                   :style="{'background':itemColor.value}">
-                  <span class="colorText">{{filterMethods(indexColor)}}</span>
+                  <el-tooltip class="item"
+                    effect="dark"
+                    :content="itemColor.name"
+                    placement="top">
+                    <span class="colorText">{{filterMethods(indexColor)}}</span>
+                  </el-tooltip>
                 </div>
               </div>
             </div>
@@ -249,7 +265,12 @@
                 <div class="colorBox"
                   v-for="(item,index) in yarn.yarnWeft.apply"
                   :key="index">
-                  <span class="colorText">{{filterMethods(item)}}</span>
+                  <el-tooltip class="item"
+                    effect="dark"
+                    :content="colorWeight.weft[item]==='NaN'?'0g':colorWeight.weft[item] + 'g'"
+                    placement="top">
+                    <span class="colorText">{{filterMethods(item)}}</span>
+                  </el-tooltip>
                 </div>
               </div>
             </div>
@@ -265,7 +286,12 @@
                 <div class="colorBox"
                   v-for="(item,index) in item.apply"
                   :key="index">
-                  <span class="colorText">{{filterMethods(item)}}</span>
+                  <el-tooltip class="item"
+                    effect="dark"
+                    :content="colorWeight.weft[item]==='NaN'?'0g':colorWeight.weft[item] + 'g'"
+                    placement="top">
+                    <span class="colorText">{{filterMethods(item)}}</span>
+                  </el-tooltip>
                 </div>
               </div>
             </div>
@@ -293,6 +319,17 @@
               <div class="content">
                 <hot-table :settings="tableData.weft"
                   ref="weft">
+                </hot-table>
+              </div>
+            </div>
+          </div>
+          <div class="row"
+            v-show="weftInfo.back_status === 1">
+            <div class="box box1">
+              <div class="label">纬向排列：</div>
+              <div class="content">
+                <hot-table :settings="tableData.weftBack"
+                  ref="weftBack">
                 </hot-table>
               </div>
             </div>
@@ -458,6 +495,22 @@
           <div class="cicle"></div>
           <div class="border"></div>
         </div>
+        <div class="appendInfo">
+          <div class="row">
+            <div class="box box1">
+              <div class="label">物料系数：</div>
+              <div class="content"
+                v-for="(item,index) in coefficient"
+                :key="index">{{item.name}}：{{item.value}}g</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="box box1">
+              <div class="label">产品净重：</div>
+              <div class="content">{{weight.toFixed(1)}}g</div>
+            </div>
+          </div>
+        </div>
         <div class="lineCtn">
           <div class="label">选择配色：</div>
           <div class="buttons">
@@ -468,7 +521,12 @@
               @click="getColour(index)">{{item.product_color}}</div>
           </div>
         </div>
-        <div class="canvasCtn">
+        <div class="canvasCtn"
+          v-show="selectColour!==-1">
+          <div class="mark"
+            v-show="warpInfo.back_status===1||weftInfo.back_status===1">
+            <span>正面</span>
+          </div>
           <canvas ref="myCanvas"
             style="display:none"
             width="2400"
@@ -476,7 +534,6 @@
           </canvas>
           <!-- canvas转图像的容器 -->
           <img ref="img"
-            v-show="selectColour!==-1"
             @mousedown.prevent="showMagnifier=true"
             @mousemove="enlargeImg($event)"
             @mouseup="showMagnifier=false"
@@ -487,6 +544,35 @@
           <!-- 利用canvas实现放大镜的容器 -->
           <canvas class="floatRightTop"
             ref="magnifier"
+            width="400"
+            height="400" />
+          <!-- 放大镜鼠标位置 -->
+          <!-- <div class="mouse"
+            :style="{'left':mouseX + 'px','top':mouseY + 'px'}"></div> -->
+        </div>
+        <!-- 反面 -->
+        <div class="canvasCtn"
+          v-show="selectColour!==-1&&(warpInfo.back_status===1||weftInfo.back_status===1)">
+          <div class="mark">
+            <span>反面</span>
+          </div>
+          <canvas ref="myCanvasBack"
+            style="display:none"
+            width="2400"
+            :height="canvasHeight">
+          </canvas>
+          <!-- canvas转图像的容器 -->
+          <img ref="imgBack"
+            @mousedown.prevent="showMagnifierBack=true"
+            @mousemove="enlargeImg($event,'back')"
+            @mouseup="showMagnifierBack=false"
+            style="width:600px"
+            :style="{'height':canvasHeight/4 + 'px'}"
+            :class="{'cursorMagnifier':showMagnifierBack}"
+            src="" />
+          <!-- 利用canvas实现放大镜的容器 -->
+          <canvas class="floatRightTop"
+            ref="magnifierBack"
             width="400"
             height="400" />
           <!-- 放大镜鼠标位置 -->
@@ -783,9 +869,22 @@ export default {
       romanNum: ['Ⅰ', 'Ⅱ', 'Ⅲ', 'Ⅳ', 'Ⅴ', 'Ⅵ', 'Ⅶ', 'Ⅷ', 'Ⅸ', 'Ⅹ', 'Ⅺ', 'Ⅻ'],
       canvasHeight: 0, // 图像高度
       showMagnifier: false,
+      showMagnifierBack: false,
       warpCanvas: [], // 经纬向绘图数据
       weftCanvas: [],
-      selectColour: -1// 选择配色方案
+      warpCanvasBack: [], // 反面
+      weftCanvasBack: [],
+      selectColour: -1, // 选择配色方案
+      colorNumber: {
+        warp: [],
+        weft: []
+      }, // 根数信息
+      colorWeight: {
+        warp: [],
+        weft: []
+      },
+      weight: 0,
+      coefficient: []
     }
   },
   methods: {
@@ -888,14 +987,24 @@ export default {
       }
     },
     // 放大镜效果实现
-    enlargeImg (point) {
+    enlargeImg (point, ifBack) {
       // 放大镜效果实现
-      if (this.showMagnifier) {
+      if (this.showMagnifier && !ifBack) {
         const drawWidth = 100
         const drawHeight = 100
         let dom = this.$refs.magnifier
         let ctx = dom.getContext('2d')
         let img = this.$refs.img
+        ctx.clearRect(0, 0, 400, 400)
+        ctx.beginPath()
+        ctx.drawImage(img, point.offsetX * 4 - drawWidth / 2, point.offsetY * 4 - drawHeight / 2, drawWidth, drawHeight, 0, 0, drawWidth * 4, drawHeight * 4)
+      }
+      if (this.showMagnifierBack && ifBack === 'back') {
+        const drawWidth = 100
+        const drawHeight = 100
+        let dom = this.$refs.magnifierBack
+        let ctx = dom.getContext('2d')
+        let img = this.$refs.imgBack
         ctx.clearRect(0, 0, 400, 400)
         ctx.beginPath()
         ctx.drawImage(img, point.offsetX * 4 - drawWidth / 2, point.offsetY * 4 - drawHeight / 2, drawWidth, drawHeight, 0, 0, drawWidth * 4, drawHeight * 4)
@@ -909,11 +1018,25 @@ export default {
         let warpColor = this.warpInfo.color_data[index].color_scheme
         let weftColor = this.warpInfo.color_data[index].color_scheme
         let canvasMatrix = []
+        let canvasMatrixBack = []
         let warpWidth = 600 / this.warpCanvas.length * 4
         let weftWidth = this.canvasHeight / this.weftCanvas.length
         this.warpCanvas.reduce((totalWarp, itemWarp) => {
           this.weftCanvas.reduce((totalWeft, itemWeft) => {
             canvasMatrix.push({
+              x: totalWarp,
+              y: totalWeft,
+              width: warpWidth,
+              height: weftWidth,
+              color: itemWeft.GL.replace(/，/g, ',').split(',').find((item) => item === itemWarp.PM) ? warpColor[itemWarp.color].value : weftColor[itemWeft.color].value
+            })
+            return totalWeft + weftWidth
+          }, 0)
+          return totalWarp + warpWidth
+        }, 0)
+        this.warpCanvasBack.reduce((totalWarp, itemWarp) => {
+          this.weftCanvasBack.reduce((totalWeft, itemWeft) => {
+            canvasMatrixBack.push({
               x: totalWarp,
               y: totalWeft,
               width: warpWidth,
@@ -932,8 +1055,18 @@ export default {
           ctx.fillStyle = item.color
           ctx.fillRect(item.x, item.y, item.width, item.height)
         })
+        let domBack = this.$refs.myCanvasBack
+        let ctxBack = domBack.getContext('2d')
+        ctxBack.beginPath()
+        ctxBack.clearRect(0, 0, 600, this.canvasHeight)
+        canvasMatrixBack.forEach((item) => {
+          ctxBack.fillStyle = item.color
+          ctxBack.fillRect(item.x, item.y, item.width, item.height)
+        })
         let img = this.$refs.img
         img.src = dom.toDataURL() // canvas转图片
+        let imgBack = this.$refs.imgBack
+        imgBack.src = domBack.toDataURL()
         this.loading = false
       }, 100)
     }
@@ -952,23 +1085,103 @@ export default {
       this.yarn.yarnOtherWeft = this.weftInfo.material_data.filter((item) => item.type_material === 2)
       this.material.materialWarp = JSON.parse(this.warpInfo.assist_material)
       this.material.materialWeft = JSON.parse(this.weftInfo.assist_material)
+      this.coefficient = data.yarn_coefficient
       this.$refs.warp.hotInstance.loadData(JSON.parse(this.warpInfo.warp_rank).map((item, index) => {
         return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
       }))
       this.$refs.weft.hotInstance.loadData(JSON.parse(this.weftInfo.weft_rank).map((item, index) => {
         return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
       }))
+      this.$refs.warpBack.hotInstance.loadData(JSON.parse(this.warpInfo.warp_rank_back).map((item, index) => {
+        return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
+      }))
+      this.$refs.weftBack.hotInstance.loadData(JSON.parse(this.weftInfo.weft_rank_back).map((item, index) => {
+        return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
+      }))
       this.tableData.warp.mergeCells = JSON.parse(this.warpInfo.merge_data)
       this.tableData.weft.mergeCells = JSON.parse(this.weftInfo.merge_data)
+      this.tableData.warpBack.mergeCells = JSON.parse(this.warpInfo.merge_data_back)
+      this.tableData.weftBack.mergeCells = JSON.parse(this.weftInfo.merge_data_back)
       this.GL = data.draft_method.GL
       this.GLFlag = data.draft_method.GLFlag
       this.PM = data.draft_method.PM
       this.PMFlag = data.draft_method.PMFlag
+      // 计算克重信息
+      let arrWarp = JSON.parse(this.warpInfo.warp_rank).slice(1, 5)
+      this.tableData.warp.mergeCells.forEach((item) => {
+        if (item.row === 3 || item.row === 4) {
+          for (let i = (item.col + 1); i < (item.col + item.colspan); i++) {
+            arrWarp[item.row - 1][i] = arrWarp[item.row - 1][item.col]
+          }
+        }
+      })
+      let arrWeft = JSON.parse(this.weftInfo.weft_rank).slice(1, 5)
+      this.tableData.weft.mergeCells.forEach((item) => {
+        if (item.row === 3 || item.row === 4) {
+          for (let i = (item.col + 1); i < (item.col + item.colspan); i++) {
+            arrWeft[item.row - 1][i] = arrWeft[item.row - 1][item.col]
+          }
+        }
+      })
+      let arrWarpBack = JSON.parse(this.warpInfo.warp_rank_back).slice(1, 5)
+      this.tableData.warpBack.mergeCells.forEach((item) => {
+        if (item.row === 3 || item.row === 4) {
+          for (let i = (item.col + 1); i < (item.col + item.colspan); i++) {
+            arrWarpBack[item.row - 1][i] = arrWarpBack[item.row - 1][item.col]
+          }
+        }
+      })
+      let arrWeftBack = JSON.parse(this.weftInfo.weft_rank_back).slice(1, 5)
+      this.tableData.weftBack.mergeCells.forEach((item) => {
+        if (item.row === 3 || item.row === 4) {
+          for (let i = (item.col + 1); i < (item.col + item.colspan); i++) {
+            arrWeftBack[item.row - 1][i] = arrWeftBack[item.row - 1][item.col]
+          }
+        }
+      })
+      for (let i = 0; i < arrWarp[0].length; i++) {
+        const x = arrWarp[1][i] ? arrWarp[1][i] : 1
+        const y = arrWarp[2][i] ? arrWarp[2][i] : 1
+        const z = arrWarp[3][i] ? arrWarp[3][i] : 1
+        this.colorNumber.warp[arrWarp[0][i]] = this.colorNumber.warp[arrWarp[0][i]] ? this.colorNumber.warp[arrWarp[0][i]] : 0
+        this.colorNumber.warp[arrWarp[0][i]] += x * y * z
+      }
+      for (let i = 0; i < arrWeft[0].length; i++) {
+        const x = arrWeft[1][i] ? arrWeft[1][i] : 1
+        const y = arrWeft[2][i] ? arrWeft[2][i] : 1
+        const z = arrWeft[3][i] ? arrWeft[3][i] : 1
+        this.colorNumber.weft[arrWeft[0][i]] = this.colorNumber.weft[arrWeft[0][i]] ? this.colorNumber.weft[arrWeft[0][i]] : 0
+        this.colorNumber.weft[arrWeft[0][i]] += x * y * z
+      }
+      for (let i = 0; i < arrWarpBack[0].length; i++) {
+        const x = arrWarpBack[1][i] ? arrWarpBack[1][i] : 1
+        const y = arrWarpBack[2][i] ? arrWarpBack[2][i] : 1
+        const z = arrWarpBack[3][i] ? arrWarpBack[3][i] : 1
+        this.colorNumber.warp[arrWarpBack[0][i]] += x * y * z
+      }
+      for (let i = 0; i < arrWeftBack[0].length; i++) {
+        const x = arrWeftBack[1][i] ? arrWeftBack[1][i] : 1
+        const y = arrWeftBack[2][i] ? arrWeftBack[2][i] : 1
+        const z = arrWeftBack[3][i] ? arrWeftBack[3][i] : 1
+        this.colorNumber.weft[arrWeftBack[0][i]] += x * y * z
+      }
+      this.warpInfo.material_data.forEach((item) => {
+        item.apply.forEach((itemChild) => {
+          this.colorWeight.warp[itemChild] = (this.colorNumber.warp[itemChild] * (this.weftInfo.neichang + this.weftInfo.rangwei) * data.yarn_coefficient.find((itemFind) => itemFind.name === item.material_name).value / 100).toFixed(1)
+        })
+      })
+      this.weftInfo.material_data.forEach((item) => {
+        item.apply.forEach((itemChild) => {
+          this.colorWeight.weft[itemChild] = (this.colorNumber.weft[itemChild] * this.warpInfo.reed_width * data.yarn_coefficient.find((itemFind) => itemFind.name === item.material_name).value / 100).toFixed(1)
+        })
+      })
+      this.colorWeight.warp.forEach((item) => {
+        this.weight += item === 'NaN' ? 0 : Number(item)
+      })
+      this.colorWeight.weft.forEach((item) => {
+        this.weight += item === 'NaN' ? 0 : Number(item)
+      })
       this.canvasHeight = (this.weftInfo.neichang + this.weftInfo.rangwei) / this.warpInfo.reed_width * 600 * 4
-      console.log('经向表格:', JSON.parse(this.warpInfo.warp_rank))
-      console.log('纬向表格:', JSON.parse(this.weftInfo.weft_rank))
-      // console.log('纹版图:', this.GL)
-      // console.log('穿综法:', this.PM)
       // 展平合并信息
       let warpTable = this.getFlatTable(this.warpInfo.warp_rank, 'warpInfo', 'merge_data').map((item) => {
         if (!item.GLorPM) {
@@ -982,9 +1195,23 @@ export default {
         }
         return item
       })
+      let warpTableBack = this.getFlatTable(this.warpInfo.warp_rank_back, 'warpInfo', 'merge_data_back').map((item) => {
+        if (!item.GLorPM) {
+          item.GLorPM = 'Ⅰ'
+        }
+        return item
+      })
+      let weftTableBack = this.getFlatTable(this.weftInfo.weft_rank_back, 'weftInfo', 'merge_data_back').map((item) => {
+        if (!item.GLorPM) {
+          item.GLorPM = 'A'
+        }
+        return item
+      })
       // 将展开的合并信息结合穿综和纹版信息
       let warpGetPMNum = []
       let weftGetGLNum = []
+      let warpGetPMNumBack = []
+      let weftGetGLNumBack = []
       warpTable.forEach((item) => {
         let len = warpGetPMNum.length
         if (len > 0) {
@@ -1021,8 +1248,46 @@ export default {
           })
         }
       })
+      warpTableBack.forEach((item) => {
+        let len = warpGetPMNumBack.length
+        if (len > 0) {
+          if (warpGetPMNumBack[len - 1].PM === item.GLorPM) {
+            warpGetPMNumBack[len - 1].number += parseInt(item.number)
+          } else {
+            warpGetPMNumBack.push({
+              PM: item.GLorPM,
+              number: parseInt(item.number)
+            })
+          }
+        } else {
+          warpGetPMNumBack.push({
+            PM: item.GLorPM,
+            number: parseInt(item.number)
+          })
+        }
+      })
+      weftTableBack.forEach((item) => {
+        let len = weftGetGLNumBack.length
+        if (len > 0) {
+          if (weftGetGLNumBack[len - 1].GL === item.GLorPM) {
+            weftGetGLNumBack[len - 1].number += parseInt(item.number)
+          } else {
+            weftGetGLNumBack.push({
+              GL: item.GLorPM,
+              number: parseInt(item.number)
+            })
+          }
+        } else {
+          weftGetGLNumBack.push({
+            GL: item.GLorPM,
+            number: parseInt(item.number)
+          })
+        }
+      })
       let warpGetPM = []
       let weftGetGL = []
+      let warpGetPMBack = []
+      let weftGetGLBack = []
       warpGetPMNum.forEach((item) => {
         // 高级穿综
         if (this.PMFlag === 'complex') {
@@ -1068,9 +1333,56 @@ export default {
         }
         weftGetGL = weftGetGL.concat(GL.filter((item, index) => index < remainder))
       })
+      warpGetPMNumBack.forEach((item) => {
+        // 高级穿综
+        if (this.PMFlag === 'complex') {
+          let PM = this.PM[this.romanNum.indexOf(item.PM)]
+          let PMFlatArr = []
+          PM.children.forEach((itemPM) => {
+            let PMVal = []
+            itemPM.children.forEach((itemChildren) => {
+              for (let i = 0; i < parseInt(itemChildren.repeat); i++) {
+                PMVal = PMVal.concat(itemChildren.value.split(','))
+              }
+            })
+            let times = parseInt(itemPM.number / PMVal.length) // 循环次数
+            let remainder = itemPM.number % PMVal.length // 取余数
+            for (let i = 0; i < times; i++) {
+              PMFlatArr = PMFlatArr.concat(PMVal)
+            }
+            PMFlatArr = PMFlatArr.concat(PMVal.filter((item, index) => index < remainder))
+          })
+          let times = parseInt(item.number / PMFlatArr.length)
+          let remainder = item.number % PMFlatArr.length
+          for (let i = 0; i < times; i++) {
+            warpGetPMBack = warpGetPMBack.concat(PMFlatArr)
+          }
+          warpGetPMBack = warpGetPMBack.concat(PMFlatArr.filter((item, index) => index < remainder))
+        } else {
+          let PM = this.PM[this.romanNum.indexOf(item.PM)]
+          let PMArr = PM.value.split(',')
+          let times = parseInt(PM.number / PMArr.length)
+          let remainder = PM.number % PMArr.length
+          for (let i = 0; i < times; i++) {
+            warpGetPMBack = warpGetPMBack.concat(PMArr)
+          }
+          warpGetPMBack = warpGetPMBack.concat(PMArr.filter((item, index) => index < remainder))
+        }
+      })
+      weftGetGLNumBack.forEach((item) => {
+        let GL = this.mergeArray(this.GL[this.alphabet.indexOf(item.GL)]).filter((item) => item) // 剔除null
+        let times = item.number / GL.length
+        let remainder = item.number % GL.length
+        for (let i = 0; i < times; i++) {
+          weftGetGLBack = weftGetGLBack.concat(GL)
+        }
+        weftGetGLBack = weftGetGLBack.concat(GL.filter((item, index) => index < remainder))
+      })
       // 获取画图数据
       let warpCanvas = []
       let weftCanvas = []
+      let warpCanvasBack = []
+      let weftCanvasBack = []
       warpTable.forEach((item) => {
         for (let i = 0; i < item.number; i++) {
           warpCanvas.push({
@@ -1087,9 +1399,35 @@ export default {
           })
         }
       })
+      warpTableBack.forEach((item) => {
+        for (let i = 0; i < item.number; i++) {
+          warpCanvasBack.push({
+            color: item.color,
+            PM: warpGetPMBack[warpCanvasBack.length]
+          })
+        }
+      })
+      weftTableBack.forEach((item) => {
+        for (let i = 0; i < item.number; i++) {
+          weftCanvasBack.push({
+            color: item.color,
+            GL: weftGetGLBack[weftCanvasBack.length]
+          })
+        }
+      })
       // 保存下画图数据，方便在切换配色的时候使用
       this.warpCanvas = warpCanvas
       this.weftCanvas = weftCanvas
+      if (this.warpInfo.back_status === 1 && this.weftInfo.back_status === 1) {
+        this.warpCanvasBack = warpCanvasBack
+        this.weftCanvasBack = weftCanvasBack
+      } else if (this.warpInfo.back_status === 1 && this.weftInfo.back_status === 0) {
+        this.warpCanvasBack = warpCanvasBack
+        this.weftCanvasBack = weftCanvas
+      } else if (this.warpInfo.back_status === 0 && this.weftInfo.back_status === 1) {
+        this.warpCanvasBack = warpCanvas
+        this.weftCanvasBack = weftCanvasBack
+      }
       // 用JS 处理矩阵数据，优化画图
       // let canvasMatrix = []
       // let warpWidth = 600 / warpCanvas.length * 4

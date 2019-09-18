@@ -312,8 +312,9 @@
       }
     }
     .canvasCtn{
-      display: inline-block;
+      display: block;
       font-size: 0;
+      margin:20px;
       position: relative;
       .floatRightTop{
         position: absolute;
@@ -321,6 +322,24 @@
       }
       .cursorMagnifier{
         cursor:crosshair ;
+      }
+      .mark{
+        width: 0px;
+        height: 0px;
+        position: absolute;
+        border: 40px solid;
+        border-color: @normalBlue @normalBlue rgba(0,0,0,0) rgba(0,0,0,0);
+        left: 520px;
+        top: 0;
+        white-space: nowrap;
+        span{
+          position: absolute;
+          color: #fff;
+          width: 100px;
+          text-align: center;
+          font-size: @fontBig;
+          transform: rotate(45deg) translate(-41px,10px);
+        }
       }
     }
     .appendInfo{

@@ -96,7 +96,7 @@
             style="color: rgb(26, 149, 255);">{{item.product_code}}</div>
           <div class="tableColumn flex9">{{item|filterType}}</div>
           <div class="tableColumn">{{item.flower_id}}</div>
-          <div class="tableColumn">{{item.size|filterSize}}</div>
+          <div class="tableColumn">{{item.size.length}}</div>
           <div class="tableColumn flexSamll">{{item.color.length}}</div>
           <div class="tableColumn">
             <div class="imgCtn">
