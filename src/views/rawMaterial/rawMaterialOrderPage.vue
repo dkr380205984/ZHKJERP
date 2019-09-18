@@ -194,7 +194,7 @@
                 <i>元</i>
               </li>
               <li>
-                <span>订购日期:</span>
+                <span>完成日期:</span>
                 <el-date-picker v-model="iten.orderTime"
                   type="date"
                   placeholder="选择日期"

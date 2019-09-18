@@ -6,7 +6,7 @@
     <div class="body">
       <div class="lineCtn">
         <div class="inputCtn">
-          <span class="label">辅料名称:</span>
+          <span class="label must">辅料名称:</span>
           <el-input class="elInput"
             v-model="pack_name"
             :disabled="id ? true : false"
