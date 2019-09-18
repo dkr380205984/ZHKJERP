@@ -419,7 +419,7 @@ export default {
       company_id: this.companyId
     })]).then((res) => {
       this.product = res[0].data.data
-      this.sizeKey = Object.keys(res[0].data.data.size)
+      this.sizeKey = res[0].data.data.size.map(item => { return item.measurement })
       this.colourArr = res[0].data.data.color
       this.colorArr = res[5].data.data
       // this.processArr = res[2].data.data.process

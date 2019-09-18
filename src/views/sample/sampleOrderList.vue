@@ -3,13 +3,13 @@
     v-getHash="{'categoryVal':categoryVal,'typesVal':typesVal,'styleVal':styleVal,'company':company,'searchVal':searchVal,'searchVal2':searchVal2,'group':group,'pages':pages}"
     v-loading="loading">
     <div class="head">
-      <h2>订单列表</h2>
+      <h2>样单列表</h2>
       <div>
-        <el-input placeholder="输入订单号精确搜索"
+        <el-input placeholder="输入样单标题搜索"
           suffix-icon="el-icon-search"
           style="margin-right:25px"
           v-model="searchVal"></el-input>
-        <el-input placeholder="输入产品编号号搜索"
+        <el-input placeholder="输入产品编号搜索"
           suffix-icon="el-icon-search"
           v-model="searchVal2"></el-input>
       </div>
@@ -109,8 +109,7 @@
             style="flex:0.7">负责小组</div>
           <div class="tableColumn"
             style="flex:0.7">订单状态</div>
-          <div class="tableColumn"
-            style="flex:0.7">下单日期</div>
+          <div class="tableColumn">下单日期</div>
           <div class="tableColumn">样单交货</div>
           <div class="tableColumn"
             style="flex:1.3">操作</div>
@@ -118,19 +117,19 @@
         <div class="mergeBody"
           v-for="(item ,index) in list"
           :key="index">
-          <div class="tableColumn">{{item.order_title}}</div>
+          <div class="tableColumn">{{item.order_code}}</div>
           <div class="tableColumn">{{item.client_name}}</div>
           <div class="tableColumn"
             style="flex:2">
             <div class="small"
-              v-for="(itemProduct,indexProduct) in JSON.parse(item.product_info)"
+              v-for="(itemProduct,indexProduct) in item.productList"
               :key="indexProduct"
               style="height:60px;text-align:center;justify-content:space-around">
               <span style="display:inline-block">
                 <span class="hoverBlue"
                   style="margin:0 5px;cursor:pointer"
                   @click="open('/index/productDetail/'+itemProduct.productInfo.id)">{{itemProduct.productCode}}</span>
-                <!-- <span style="margin:0 5px">{{itemProduct.productInfo.category_info.product_category}}/{{itemProduct.productInfo.type_name}}/{{itemProduct.productInfo.style_name}}/{{itemProduct.productInfo.flower_id}}</span> -->
+                <span style="margin:0 5px">{{itemProduct.productInfo.category_info.product_category}}/{{itemProduct.productInfo.type_name}}/{{itemProduct.productInfo.style_name}}/{{itemProduct.productInfo.flower_id}}</span>
               </span>
             </div>
           </div>
@@ -155,7 +154,7 @@
               :key="indexProduct"
               style="height:60px;text-align:center;justify-content:space-around">
               <span style="display:inline-block">
-                <!-- <span style="margin:0 5px">{{itemProduct.sum}}{{itemProduct.productInfo.category_info.name}}</span> -->
+                <span style="margin:0 5px">{{itemProduct.sum}}{{itemProduct.productInfo.category_info.name}}</span>
               </span>
             </div>
           </div>
@@ -163,17 +162,9 @@
             style="flex:0.7">{{item.group_name}}</div>
           <div class="tableColumn"
             style="flex:0.7"
-            :style="{'color':statusStyle(item.status,item.has_log)}">{{orderStatus(item.status,item.has_log)}}</div>
-          <div class="tableColumn"
-            style="flex:0.7">{{item.order_time}}</div>
-          <div class="tableColumn">
-            <div class="once"
-              v-for="(itemTime,indexTime) in item.delivery_time"
-              :key="indexTime">
-              <span>第 {{indexTime+1}} 批：</span>
-              <span>{{itemTime}}</span>
-            </div>
-          </div>
+            :style="{'color':statusStyle(item.status,item.has_log)}">{{sampleTypeArr.find(key=>key.id === item.order_type).name}}</div>
+          <div class="tableColumn">{{item.order_time}}</div>
+          <div class="tableColumn">{{item.delivery_time[0]}}</div>
           <div class="tableColumn"
             style="flex-direction:row;flex:1.3">
             <div style="margin:auto">
@@ -223,7 +214,7 @@
 </template>
 
 <script>
-import { sampleOrderList, productTppeList, clientList, getGroup, orderDelete } from '@/assets/js/api.js'
+import { productTppeList, clientList, getGroup, orderDelete, orderList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -262,6 +253,25 @@ export default {
           }
         }]
       },
+      sampleTypeArr: [{
+        id: 0,
+        name: '开发样'
+      }, {
+        id: 1,
+        name: '修改样'
+      }, {
+        id: 2,
+        name: '销售样'
+      }, {
+        id: 3,
+        name: '确认样'
+      }, {
+        id: 4,
+        name: '产前样'
+      }, {
+        id: 5,
+        name: '大货样'
+      }],
       total: 0,
       pages: 1,
       list: [],
@@ -315,7 +325,7 @@ export default {
     },
     getOrderList () {
       this.loading = true
-      sampleOrderList({
+      orderList({
         'company_id': window.sessionStorage.getItem('company_id'),
         'limit': 5,
         'page': this.pages,
@@ -328,11 +338,51 @@ export default {
         'order_code': this.searchVal,
         'product_code': this.searchVal2,
         'start_time': this.start_time,
-        'end_time': this.end_time
+        'end_time': this.end_time,
+        'type': 2
       }).then((res) => {
         this.loading = false
         this.total = res.data.meta.total
-        this.list = res.data.data
+        this.list = res.data.data.map((item) => {
+          let productList = []
+          item.order_batch.forEach((itemOrder) => {
+            itemOrder.batch_info.forEach((itemBatch) => {
+              if (productList.find((itemFind) => itemFind.productCode === itemBatch.productCode)) {
+                let mark = -1
+                productList.forEach((itemFind, index) => {
+                  if (itemFind.productCode === itemBatch.productCode) {
+                    mark = index
+                  }
+                })
+                productList[mark].sum = productList[mark].sum + itemBatch.size.reduce((total, current) => {
+                  return total + parseInt(current.numbers)
+                }, 0)
+              } else {
+                productList.push({
+                  productInfo: itemBatch.productInfo,
+                  productCode: itemBatch.productCode,
+                  sum: itemBatch.size.reduce((total, current) => {
+                    return total + parseInt(current.numbers)
+                  }, 0)
+                })
+              }
+            })
+          })
+          return {
+            id: item.id,
+            has_log: item.has_log,
+            status: item.status,
+            order_type: item.sample_order_type,
+            group_name: item.group_name,
+            order_code: item.order_code,
+            order_time: item.order_time,
+            client_name: item.client_name,
+            contacts: item.contacts,
+            delivery_time: item.order_batch.map((item) => item.delivery_time),
+            productList: productList,
+            lineNum: productList.length // 这个参数用于计算每行的高度
+          }
+        })
         console.log(this.list)
         this.first = false
       })

@@ -309,7 +309,8 @@
               </li>
               <li v-else>暂无库存信息</li>
               <span class="addNewBtn"
-                v-if="!false">新增库存</span>
+                v-if="!false"
+                @click="$router.push('/index/productStockCreate/' + $route.params.id)">新增库存</span>
             </ul>
           </div>
         </div>

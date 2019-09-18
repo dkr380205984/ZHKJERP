@@ -254,12 +254,16 @@ const menu = [{
   }, {
     name: '添加产品报价单',
     url: '/index/priceListCreate'
-  }, {
+  },
+  {
     name: '产品报价单列表',
     url: '/index/priceListList'
     // }, {
     //   name: '产品电子手册',
     //   url: '/productMenu'
+  }, {
+    name: '产品库存列表',
+    url: '/index/productStockList'
   }]
 }, {
   name: '工艺单管理',
@@ -362,22 +366,18 @@ const menu = [{
 }, {
   name: '装箱出库管理',
   children: [{
-    name: '包装订购列表',
-    url: '/index/packagList'
-  }, {
+    //   name: '包装订购列表',
+    //   url: '/index/packagList'
+    // }, {
     name: '装箱出库列表',
     url: '/index/packagOutStockList'
   }]
 }, {
   name: '库存管理',
   children: [{
-    name: '添加产品库存',
-    url: '/index/stockProductList'
-  }, {
-    name: '产品库存列表',
-    url: '/index/productStockList'
-  },
-  {
+    //   name: '添加产品库存',
+    //   url: '/index/stockProductList'
+    // }, {
     name: '添加物料库存',
     url: '/index/mainMaterialStockCreate'
   },

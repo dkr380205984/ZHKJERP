@@ -4,11 +4,11 @@
     <div class="head"
       style="overflow:auto"
       id="top">
-      <h2>订单详情</h2>
+      <h2>样单详情</h2>
     </div>
     <div class="body">
       <div class="stepCtn">
-        <div class="stepTitle">订单信息</div>
+        <div class="stepTitle">样单信息</div>
         <div class="borderCtn">
           <div class="cicle"></div>
           <div class="border"></div>
@@ -22,7 +22,7 @@
               type="primary">
               {{'操作'}}
               <el-dropdown-menu slot="dropdown">
-                <!-- <el-dropdown-item>订单异常</el-dropdown-item> -->
+                <!-- <el-dropdown-item>样单异常</el-dropdown-item> -->
                 <el-dropdown-item v-show="order_info.status!==2"
                   command="ok">客户确认</el-dropdown-item>
                 <el-dropdown-item v-show="order_info.status!==2"
@@ -34,14 +34,14 @@
           </div>
           <div class="infoCtn">
             <div class="labelInfo">
-              <span class="label">订单状态</span>
+              <span class="label">样单状态</span>
               <span class="info"
                 :style="{'color':orderStateColor}">
                 {{orderState}}
                 <el-tooltip class="item"
                   v-show="!hasPlan"
                   effect="dark"
-                  content="该订单还未填写生产计划单,点击按钮前往填写"
+                  content="该样单还未填写生产计划单,点击按钮前往填写"
                   placement="top">
                   <i class="el-icon-question"
                     @click="$router.push('/index/productDesignCreate/'+$route.params.id)"></i>
@@ -52,19 +52,23 @@
         </div>
         <div class="lineCtn">
           <div class="inputCtn small">
-            <span class="label">订单号:</span>
+            <span class="label">样单号:</span>
             <span class="content">{{order_info.order_code}}</span>
           </div>
+        </div>
+        <div class="lineCtn">
           <div class="inputCtn small">
-            <span class="label">订单公司:</span>
+            <span class="label">样单公司:</span>
             <span class="content">{{order_info.client_name}}</span>
           </div>
+        </div>
+        <div class="lineCtn">
           <div class="inputCtn small">
             <span class="label">联系人:</span>
             <span class="content">{{order_info.contacts}}</span>
           </div>
         </div>
-        <div class="lineCtn">
+        <!-- <div class="lineCtn">
           <div class="inputCtn small">
             <span class="label">汇率:</span>
             <span class="content">100{{order_info.account_unit}} = {{order_info.exchange_rate}}元</span>
@@ -73,7 +77,7 @@
             <span class="label">税率:</span>
             <span class="content">{{order_info.tax_rate}}%</span>
           </div>
-        </div>
+        </div> -->
         <div class="lineCtn"
           v-show="order_info.fileArr.length>0">
           <div class="inputCtn"
@@ -150,7 +154,7 @@
         </div>
         <div class="processCtn">
           <div class="leaveTime">
-            <span class="text">订单已经生产<em class="blue">{{useTime}}</em>天，还剩<em class="red">{{leaveTime}}</em>天</span>
+            <span class="text">样单已经生产<em class="blue">{{useTime}}</em>天，还剩<em class="red">{{leaveTime}}</em>天</span>
           </div>
           <div class="processOuter">
             <div class="processInner"
@@ -324,7 +328,7 @@
               <div style="height:100%"
                 class="backBottom complete"></div>
             </div>
-            <div class="label">订单下单</div>
+            <div class="label">样单下单</div>
           </div>
           <div class="iconOnce">
             <div class="imgCtn">
@@ -343,7 +347,7 @@
               <img class="icon"
                 src="@/assets/image/icon/订单物料.png" />
             </div>
-            <div class="label">物料订购</div>
+            <div class="label">物料样购</div>
           </div>
           <div class="iconOnce">
             <div class="imgCtn">
@@ -416,6 +420,54 @@
             <div class="label">财务结算</div>
           </div>
         </div>
+        <div class="hrefCtn"
+          id="href1">
+          <div class="titleLine">
+            <div class="titleCtn">
+              <span class="title">制版工艺</span>
+              <i class="border"></i>
+            </div>
+            <div class="oprationCtn">
+              <span class="opration"
+                v-if="order_info.status_material_order===0&&order_info.status!==2"
+                @click="designShare = true">工艺制版确认</span>
+              <span class="opration"
+                style="color:#67c23a"
+                v-else-if="order_info.status_material_order===1||order_info.status===1">已完成</span>
+              <span class="opration"
+                style="color:#ddd;cursor:not-allowed"
+                v-else-if="order_info.status===2">已取消</span>
+            </div>
+          </div>
+          <div class="table">
+            <li class="title">
+              <span style="flex:2">样品信息</span>
+              <span style="flex:4">
+                <span>工艺/制版类型</span>
+                <span>操作人</span>
+                <span>工艺制版状态</span>
+                <span>确认时间</span>
+              </span>
+              <span>样品状态</span>
+            </li>
+            <li class="material_info"
+              v-for="(item,index) in design"
+              :key="index">
+              <span style="flex:2">{{item.product_code}}({{item.category_info.product_category + '/' + item.type_name + '/' + item.style_name}})</span>
+              <span class="col"
+                style="flex:4">
+                <span v-for="(itemType,indexType) in item.type"
+                  :key="indexType">
+                  <span>{{itemType.type}}</span>
+                  <span :style="{color:!itemType.user_name ? '#DDD' : false}">{{itemType.user_name ? itemType.user_name : '暂无信息'}}</span>
+                  <span :style="{color:!itemType.status ? '#DDD' : false}">{{itemType.status ? '完成' : '未完成'}}</span>
+                  <span :style="{color:!itemType.time ? '#DDD' : false}">{{itemType.time ? itemType.time : '暂无信息'}}</span>
+                </span>
+              </span>
+              <span :style="{'color':parseInt(item.order_number)/parseInt(item.plan_number)>=1||order_info.status_material_order===1?'#67C23A':'#E6A23C'}">{{parseInt(item.order_number)/parseInt(item.plan_number)>=1||order_info.status_material_order===1?'完成':'未完成'}}</span>
+            </li>
+          </div>
+        </div>
         <div v-show="hasPlan"
           class="hrefCtn"
           id="href1">
@@ -453,7 +505,7 @@
             <li class="title">
               <span style="flex:2">物料名称</span>
               <span>计划数量</span>
-              <span>订购数量</span>
+              <span>样购数量</span>
               <span style="flex:2">
                 <span>加工类型</span>
                 <span>加工数量</span>
@@ -758,9 +810,9 @@
             <li class="title">
               <span style="flex:1.7">物料名称</span>
               <span>合计费用</span>
-              <span>订购公司</span>
-              <span>订购数量</span>
-              <span>订购费用</span>
+              <span>样购公司</span>
+              <span>样购数量</span>
+              <span>样购费用</span>
               <span style="flex:4">
                 <span>加工公司</span>
                 <span>加工类型</span>
@@ -838,16 +890,16 @@
               </span>
             </li>
           </div>
-          <span class="title">包装订购成本</span>
+          <span class="title">包装样购成本</span>
           <div class="tablesCtn"
             style="line-height:40px;width:1220px;box-sizing:border-box">
             <li class="title">
               <span>包装名称</span>
-              <span>订购公司</span>
+              <span>样购公司</span>
               <span>尺寸</span>
               <span>属性</span>
               <span>单价</span>
-              <span>订购数量</span>
+              <span>样购数量</span>
               <span>总价</span>
             </li>
             <li class="content"
@@ -943,7 +995,7 @@
       </div>
       <div class="stepCtn"
         v-show="order_info.status===2">
-        <div class="stepTitle">订单取消日志</div>
+        <div class="stepTitle">样单取消日志</div>
         <div class="borderCtn">
           <div class="cicle"></div>
           <div class="border"></div>
@@ -1027,7 +1079,7 @@
       <li class="ahref"><a href="#href6">财务概述</a></li>
       <li class="ahref"><a href="#href7">发货信息</a></li>
       <li class="ahref"
-        v-show="order_info.status===2"><a href="#href8">订单取消日志</a></li>
+        v-show="order_info.status===2"><a href="#href8">样单取消日志</a></li>
     </div>
     <div class="suspend">
       <span class="blue"
@@ -1064,7 +1116,7 @@
         <div class="title">{{stepTitle[step]}}</div>
         <div class="content"><i class="el-icon-info"
             style="margin-right:5px;"></i>
-          <span>{{materialDetail.length===0&&step===0?'检测到该产品还未订购过任何原料，请直接跳过本步骤':stepContent[step]}}</span></div>
+          <span>{{materialDetail.length===0&&step===0?'检测到该产品还未样购过任何原料，请直接跳过本步骤':stepContent[step]}}</span></div>
         <div class="inputCtn"
           v-show="step===0">
           <el-input v-for="item in materialDetail"
@@ -1100,7 +1152,7 @@
           <div class="success"
             v-show="showMsg">
             <i class="el-icon-check"></i>
-            <span class="des">订单取消成功</span>
+            <span class="des">样单取消成功</span>
           </div>
         </div>
         <div class="btnCtn">
@@ -1117,50 +1169,6 @@
       v-if="showMessageBox">
       <div class="messageBox">
         <div :class="{'title':true,'success':handleType === 'ok','change': handleType === 'change','cancle' : handleType === 'cancle'}">{{handleType === 'ok' ? '客户确认样' : (handleType === 'change' ? '客户修改样' : '样单取消')}}</div>
-        <!-- <div class="item"
-          style="margin-top:27px;">
-          <span class="label">产品编号:</span>
-          <div class="content blue">{{sample_code|filterCode}}</div>
-        </div>
-        <div class="item">
-          <span class="label">样品编号:</span>
-          <div class="content">
-            <el-input v-model="sample_code"
-              class="input_item"
-              placeholder="样品编号"
-              disabled></el-input>
-          </div>
-        </div>
-        <div class="item">
-          <span class="label">选择工艺:</span>
-          <div class="content">
-            <el-select v-model="isCategory"
-              class="input_item"
-              placeholder="请选择工艺版本">
-              <el-option v-for="item in []"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </div>
-        </div>
-        <div class="item"
-          style="margin-bottom:27px;">
-          <span class="label">选择配料:</span>
-          <div class="content">
-            <el-select v-model="isCategory"
-              class="input_item"
-              placeholder="请选择工艺版本">
-              <el-option v-for="item in []"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </div>
-        </div> -->
-        <!-- 取消样单弹窗 -->
         <template v-if="handleType !== 'cancle'">
           <div class="item"
             v-if="handleType === 'ok'"
@@ -1292,6 +1300,7 @@
             </div>
           </template>
         </template>
+        <!-- 取消样单弹窗 -->
         <template v-else>
           <div class="item"
             style="margin-top:27px">
@@ -1330,6 +1339,33 @@
           @click="showMessageBox = false"></span>
       </div>
     </div>
+    <div class="message"
+      v-if="designShare">
+      <div class="messageBox">
+        <div class="title">工艺制版确认</div>
+        <div class="item"
+          v-for="(item,key) in design"
+          :key="key"
+          style="margin-top:27px;">
+          <span class="label">产品信息:</span>
+          <div class="content">
+            <span>{{item.product_code}}({{item.category_info.product_category + '/' + item.type_name + '/' + item.style_name}})</span>
+            <el-checkbox-group v-model="item.checked">
+              <el-checkbox v-for="(val,ind) in item.type"
+                :key="ind"
+                :label="val.type"></el-checkbox>
+            </el-checkbox-group>
+          </div>
+        </div>
+        <div class="footer">
+          <span class="cancel"
+            @click="designShare = false">取消</span>
+          <span class="ok">确定</span>
+        </div>
+        <span class="close el-icon-close"
+          @click="showMessageBox = false"></span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -1345,7 +1381,7 @@ export default {
       showLoading: false,
       showStep: false,
       stepTitle: ['物料结余', '产品结余', '确认提交'],
-      stepContent: ['该订单已经订购过以下物料，请按实际情况填写物料剩余数量。', '该订单包含以下产品，请按实际情况填写需要入库的产品数量。', '警告！执行取消订单操作后会导致该订单无法继续执行相关生产操作，是否确认取消订单？'],
+      stepContent: ['该样单已经样购过以下物料，请按实际情况填写物料剩余数量。', '该样单包含以下产品，请按实际情况填写需要入库的产品数量。', '警告！执行取消样单操作后会导致该样单无法继续执行相关生产操作，是否确认取消样单？'],
       step: 0,
       loading: true,
       defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
@@ -1386,7 +1422,7 @@ export default {
       outStockList: [], // 出库概述
       productPriceList: [], // 产品价格信息
       storeList: [], // 收发概述
-      packOrderList: [], // 包装订购
+      packOrderList: [], // 包装样购
       showMessageBox: false,
       handleType: 'ok',
       submitInfo: {
@@ -1409,7 +1445,9 @@ export default {
             number: 40
           }
         ]
-      }
+      },
+      design: [], // 制版工艺
+      designShare: false
     }
   },
   methods: {
@@ -1534,9 +1572,9 @@ export default {
       return parseInt(rate) + '%'
     },
     orderStatus (state) {
-      let filterArr = ['', '订单状态', '订单生产状态', '订单物料状态', '订单检验状态', '订单收发状态', '订单出库状态']
+      let filterArr = ['', '样单状态', '样单生产状态', '样单物料状态', '样单检验状态', '样单收发状态', '样单出库状态']
       if (state < 8) {
-        this.$confirm('该操作将直接修改' + filterArr[state] + ',你无法再对该订单的相关步骤进行操作, 请确认是否修改?', '提示', {
+        this.$confirm('该操作将直接修改' + filterArr[state] + ',你无法再对该样单的相关步骤进行操作, 请确认是否修改?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -1588,7 +1626,7 @@ export default {
             this.showStep = true
           } else {
             this.$message.error({
-              message: '该订单已取消，请勿重复操作'
+              message: '该样单已取消，请勿重复操作'
             })
           }
         }
@@ -1614,7 +1652,7 @@ export default {
       }
       window.open(urlJson[cmd])
     },
-    // 取消订单
+    // 取消样单
     orderCancle () {
       if (this.order_info.status === 2 && this.firstCancle) {
         this.showStep = false
@@ -1653,7 +1691,7 @@ export default {
             total_price: parseInt(item.cost * (item.number ? item.number : 0)),
             store_id: 0,
             storage_time: this.getTime(new Date()),
-            remark: '订单取消结余'
+            remark: '样单取消结余'
           }
         })
         orderCheck({
@@ -1678,11 +1716,11 @@ export default {
     }
   },
   computed: {
-    // 订单金额
+    // 样单金额
     moneyCmp () {
       return moneyArr.find((itemFind) => itemFind.name === this.order_info.account_unit).sign + this.order_info.total_price.toLocaleString()
     },
-    // 订单状态
+    // 样单状态
     orderState () {
       if (this.order_info.status === 1) {
         return '已完成'
@@ -1697,7 +1735,7 @@ export default {
         return '已创建'
       }
     },
-    // 订单状态的样式
+    // 样单状态的样式
     orderStateColor () {
       if (this.order_info.status === 1) {
         return '#67c23a'
@@ -1712,7 +1750,7 @@ export default {
         return '#E6A23C'
       }
     },
-    // 订单状态操作
+    // 样单状态操作
     // orderStateOpr () {
     //   const state = ['确认完成', '已完成', '已取消']
     //   return state[this.order_info.status]
@@ -1816,7 +1854,6 @@ export default {
       this.timeAxis.forEach((item) => {
         item.rate = (this.getTimeDif(new Date(item.time), new Date(this.timeAxis[0].time)) / allTime).toFixed(2) * 100 + '%'
       })
-
       // 流程进度,按产品
       const productPlan = res[2].data.status ? res[2].data.data.production_detail.product_info : []
       this.hasPlan = res[2].data.status
@@ -1874,7 +1911,7 @@ export default {
             }
           })
         })
-        // 出库数值统计不了,根据订单状态来确定
+        // 出库数值统计不了,根据样单状态来确定
         if (res[0].data.data.order_info.status || res[0].data.data.order_info.status_stock_out) {
           proOutNum = itemProduct.info.reduce((total, current) => {
             return total + Number(current.production_num)
@@ -1909,6 +1946,30 @@ export default {
         })
       })
       console.log(this.productRate)
+      // 制版工艺初始化
+      this.order_info.order_batch.forEach(valBat => {
+        valBat.batch_info.forEach(valPro => {
+          if (!this.design.find(item => item.id === valPro.productInfo.id)) {
+            this.design.push({
+              ...valPro.productInfo,
+              checked: [],
+              type: [
+                {
+                  type: '工艺',
+                  user_name: '',
+                  status: '',
+                  time: ''
+                }, {
+                  type: '制版',
+                  user_name: '',
+                  status: '',
+                  time: ''
+                }
+              ]
+            })
+          }
+        })
+      })
       // 物料概述
       let materialInfo = res[1].data.data
       let processInfo = this.order_log.material_production
@@ -1930,7 +1991,7 @@ export default {
           }
         }
       })
-      // 物料加工值，订购值
+      // 物料加工值，样购值
       this.materialList.map(res => {
         if (materialInfo.total_weight_order[res.material_name]) {
           res.order_number = materialInfo.total_weight_order[res.material_name]
@@ -1950,7 +2011,7 @@ export default {
           flag.out_stock_number = Number(flag.out_stock_number ? flag.out_stock_number : 0) + Number(item.total_weight)
         }
       })
-      // 物料订购值
+      // 物料样购值
       materialPageInfo.forEach(item => {
         let flag = this.materialList.find(keys => keys.material_name === item.material_name)
         if (flag && item.replenish_id !== null) {
@@ -2207,14 +2268,14 @@ export default {
         })
       })
       this.productPriceList = orderInfo.order_batch
-      let stockOutInfo = this.order_log.stock_out_info // 订单出库日志
+      let stockOutInfo = this.order_log.stock_out_info // 样单出库日志
       stockOutInfo.forEach(item => {
         let flag = this.outStockList.find(key => key.batch_id === item.batch_id)
         if (flag) {
           flag.pack_number = Number(flag.pack_number ? flag.pack_number : 0) + Number(item.number)
         }
       })
-      // 包装订购成本统计
+      // 包装样购成本统计
       let packOrderInfo = this.order_log.pack_order
       console.log(packOrderInfo)
       packOrderInfo.forEach(item => {
@@ -2278,7 +2339,7 @@ export default {
           })
         }
       })
-      // 订单取消的时候需要拿物料订购日志（分颜色），下单产品信息（分尺码颜色）
+      // 样单取消的时候需要拿物料样购日志（分颜色），下单产品信息（分尺码颜色）
       this.order_log.material_order.forEach((item) => {
         const finded = this.materialDetail.find((itemFind) => itemFind.material_name === item.material_name && itemFind.color_code === item.color_code)
         if (!finded) {
@@ -2335,6 +2396,15 @@ export default {
   }
 }
 #orderDetail {
+  .messageBox {
+    .title {
+      line-height: 50px;
+      height: 50px;
+      width: inherit;
+      padding-left: 16px;
+      border-bottom: 1px solid rgb(233, 233, 233);
+    }
+  }
   .imgCtn {
     position: relative;
     width: 100%;

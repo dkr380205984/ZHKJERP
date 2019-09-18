@@ -81,7 +81,8 @@
         <div class="tableRow titleTableRow">
           <div class="tableColumn">编号</div>
           <div class="tableColumn flex9">品类</div>
-          <div class="tableColumn ">花型</div>
+          <div class="tableColumn">样品名称</div>
+          <div class="tableColumn">花型</div>
           <div class="tableColumn">尺码</div>
           <div class="tableColumn flexSamll">配色(种)</div>
           <div class="tableColumn">图片</div>
@@ -95,6 +96,7 @@
           <div class="tableColumn"
             style="color:#1A95FF">{{item.product_code}}</div>
           <div class="tableColumn flex9">{{item|filterType}}</div>
+          <div class="tableColumn">{{item.sample_title}}</div>
           <div class="tableColumn">{{item.flower_id}}</div>
           <div class="tableColumn">{{item.size|filterSize}}</div>
           <div class="tableColumn flexSamll">{{item.color.length}}</div>

@@ -328,7 +328,8 @@ export default {
         'order_code': this.searchVal,
         'product_code': this.searchVal2,
         'start_time': this.start_time,
-        'end_time': this.end_time
+        'end_time': this.end_time,
+        'type': 1
       }).then((res) => {
         this.loading = false
         this.total = res.data.meta.total

@@ -957,9 +957,9 @@ export default {
       this.$nextTick(() => {
         this.productArr.forEach((product) => {
           let arr = []
-          Object.keys(product.size).forEach((itemSize) => {
+          product.size.forEach((itemSize) => {
             product.color.forEach((itemColor) => {
-              arr.push(itemSize + '/' + itemColor.name)
+              arr.push(itemSize.measurement + '/' + itemColor.color_name)
             })
           })
           product.colorSizeArr = arr

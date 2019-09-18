@@ -116,9 +116,11 @@
                         <div class="sizeCtn"
                           v-for="(value,index) in item.product_info.size"
                           :key="index">
-                          <span>{{index}}</span>
+                          <span>{{value.measurement}}</span>
                           (
-                          <template v-for="(val,ind) in value">
+                          <span>{{value.size_info}}</span>
+                          <span>克重：{{value.weight}}g</span>
+                          <!-- <template v-for="(val,ind) in value">
                             <span :key="ind">{{val.size_name}}:</span>
                             <span :key="val.id">{{val.size_value}}cm</span>
                             <span v-if="ind === value.length - 1"
@@ -129,7 +131,7 @@
                               :key="ind+'y'">
                               {{val.weight}}g
                             </span>
-                          </template>
+                          </template> -->
                           )
                         </div>
                       </span>
@@ -221,10 +223,10 @@
       <div class="bottom">
         <span class="total">费用合计:<span style="font-size:24px;color:#1A94FF;margin:0 8px;font-weight:500">{{priceTableDetail.totalPrice}}</span>元</span>
         <div class="btnCtn">
-          <span class="clear"
-            @click="$router.push('/index/priceListList')">返回</span>
           <span class="change"
             @click="$router.push('/priceListTable/' + $route.params.id)">打印</span>
+          <span class="clear"
+            @click="$router.push('/index/priceListList')">返回</span>
           <span class="submit"
             @click="showBox = true">审核</span>
         </div>
@@ -377,11 +379,10 @@ export default {
     //   return arr[val]
     // },
     filterColor (item) {
-      let str = ''
-      item.color.forEach((value, index) => {
-        str += ((index !== 0 ? '/' : '') + value.name)
-      })
-      return str
+      console.log(item)
+      return item.color.map(val => {
+        return val.color_name
+      }).join('/')
       // return item.color.reduce((str, str1) => {
       //   return ((str.name ? str.name : str) + str1.name)
       // })

@@ -138,7 +138,7 @@
                 <div class="tableColumn">工厂生产</div>
                 <div class="tableColumn">总计</div>
                 <div class="tableColumn"
-                  style="flex:1.3">生产损耗(%)</div>
+                  style="flex:1.3">物料损耗(%)</div>
               </div>
               <div class="tableRow bodyTableRow"
                 v-for="(item) in productInfo"

@@ -879,7 +879,8 @@ export default {
           order_contract: JSON.stringify(orderContract),
           pack_means: JSON.stringify(packMeans),
           store_means: JSON.stringify(storeMeans),
-          other_info: JSON.stringify(otherInfo)
+          other_info: JSON.stringify(otherInfo),
+          type: 1
         }
         this.lock = true
         this.loading = true

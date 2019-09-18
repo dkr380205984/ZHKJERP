@@ -193,9 +193,10 @@ export default {
             unit: item.unit
           }
         }),
-        ...JSON.parse(data.pack_material_info).map(item => {
+        ...JSON.parse(data.weave_info).map(item => {
           return {
-            name: item.key ? item.key : '包装',
+            name: item.key ? item.key : '织造',
+            other: item.number,
             totalPrice: item.price
           }
         }),
@@ -205,25 +206,31 @@ export default {
             totalPrice: item.price
           }
         }),
-        ...JSON.parse(data.weave_info).map(item => {
+        ...JSON.parse(data.production_info).map(item => {
           return {
-            name: item.key ? item.key : '织造',
-            other: item.number,
+            name: item.key && item.key.length !== 0 ? item.key.join('/') : '成品加工',
             totalPrice: item.price
           }
         }),
-        ...JSON.parse(data.user_info).map(item => {
+        ...JSON.parse(data.pack_material_info).map(item => {
           return {
-            name: item.key ? item.key : '非生产费用',
+            name: item.key ? item.key : '包装',
             totalPrice: item.price
           }
         }),
+        // ...JSON.parse(data.user_info).map(item => {
+        //   return {
+        //     name: item.key ? item.key : '非生产费用',
+        //     totalPrice: item.price
+        //   }
+        // }),
         ...JSON.parse(data.desc_info).map(item => {
           return {
             name: item.key ? item.key : '其他',
             totalPrice: item.price
           }
         }),
+        { name: '非生产费用', totalPrice: data.no_product_cost },
         { name: '运输', totalPrice: data.transport_cost }
       )
       console.log(this.info, this.product_info)

@@ -808,13 +808,9 @@ export default {
     },
     // 规格合并
     filterSize (item) {
-      let str = ''
-      for (let prop in item) {
-        item[prop].forEach((value, index) => {
-          str += (index === 0 ? '' : '*') + value.size_value
-        })
-      }
-      return str
+      return item.map(val => {
+        return val.size_info
+      }).join(';')
     }
   },
   created () {

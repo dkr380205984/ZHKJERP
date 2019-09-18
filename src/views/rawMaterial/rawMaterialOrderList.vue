@@ -3,7 +3,7 @@
     v-getHash="{'categoryVal':categoryVal,'typesVal':typesVal,'styleVal':styleVal,'clientVal':clientVal,'searchVal':searchVal,'groupVal':groupVal,'pages':pages}"
     v-loading='loading'>
     <div class="head">
-      <h2>物料详情列表</h2>
+      <h2>物料订购列表</h2>
       <el-input placeholder="输入文字精确搜索"
         suffix-icon="el-icon-search"
         v-model="searchVal"></el-input>
@@ -148,14 +148,27 @@
           </div>
           <div class="tableColumn"
             style="flex-direction:row;">
-            <div class="margin:auto">
+            <!-- <div class="margin:auto">
               <span class="btns success"
                 @click="$router.push('/index/rawMaterialOrderDetail/'+item.id + '/0')">原料</span>
             </div>
             <div class="margin:auto">
               <span class="btns success"
                 @click="$router.push('/index/rawMaterialOrderDetail/' + item.id + '/1')">辅料</span>
-            </div>
+            </div> -->
+            <el-dropdown @command="openWin($event,item.id)"
+              trigger="hover"
+              class="btns normal">
+              <span class="el-dropdown-link opration"
+                style="color:#FFF">
+                订购加工<i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item command="纱线原料">纱线原料</el-dropdown-item>
+                <el-dropdown-item command="装饰辅料">装饰辅料</el-dropdown-item>
+                <el-dropdown-item command="包装辅料">包装辅料</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </div>
         </div>
       </div>
@@ -246,6 +259,14 @@ export default {
     }
   },
   methods: {
+    openWin (cmd, id) {
+      let urlJson = {
+        '纱线原料': '/index/rawMaterialOrderDetail/' + id + '/0',
+        '装饰辅料': '/index/rawMaterialOrderDetail/' + id + '/1',
+        '包装辅料': '/index/packagDetail/' + id
+      }
+      this.$router.push(urlJson[cmd])
+    },
     getOrderList () {
       this.loading = true
       productionList({
