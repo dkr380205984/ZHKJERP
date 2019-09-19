@@ -362,9 +362,9 @@ export default {
     // 类型展示
     filterSize (item) {
       let str = ''
-      for (let key in item) {
-        str += key + '/'
-      }
+      item.forEach((key) => {
+        str += key.measurement + '/'
+      })
       return str.substring(0, str.length - 1)
     }
 

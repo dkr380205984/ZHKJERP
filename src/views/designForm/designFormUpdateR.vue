@@ -58,16 +58,11 @@
               <div class="label">产品规格：</div>
               <div class="content">
                 <div class="oneLine"
-                  v-for="(value,key,index) in productInfo.size"
+                  v-for="(item,index) in productInfo.size"
                   :key="index">
-                  <span>{{key}}</span>
-                  <span style="margin-left:16px"
-                    v-for="itemSize in value"
-                    :key="itemSize.id">
-                    <span>{{itemSize.size_name}}：</span>
-                    <span>{{itemSize.size_value}}cm</span>
-                  </span>
-                  <span style="margin-left:16px">{{value[0].weight}}g</span>
+                  <span>{{item.measurement}}：</span>
+                  <span style="margin-left:16px">{{item.size_info}}</span>
+                  <span style="margin-left:16px">{{item.weight}}g</span>
                 </div>
               </div>
             </div>

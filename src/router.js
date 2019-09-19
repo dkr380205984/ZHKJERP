@@ -149,11 +149,11 @@ let router = new Router({
     }, {
       path: 'productPlanUpdate/:productId',
       name: 'productPlanUpdate',
-      component: () => import('./views/productPlan/productPlanUpdate.vue')
+      component: () => import('./views/productPlan/productPlanUpdateR.vue')
     }, {
       path: 'productPlanCreate/:id',
       name: 'productPlanCreate',
-      component: () => import('./views/productPlan/productPlanCreate.vue')
+      component: () => import('./views/productPlan/productPlanCreateR.vue')
     }, {
       path: 'personManage',
       name: 'personManage',
@@ -530,10 +530,6 @@ let router = new Router({
       path: 'companyInfoSetting',
       name: 'companyInfoSetting',
       component: () => import('./views/setting/companyInfoSetting.vue')
-    }, {
-      path: 'productPlanCreateNew/:id',
-      name: 'productPlanCreateNew',
-      component: () => import('./views/productPlan/productPlanCreateNew.vue')
     }]
   }
   ]
