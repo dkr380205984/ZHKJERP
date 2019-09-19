@@ -28,25 +28,20 @@
         <div class="inputCtn">
           <span class="label">产品规格:</span>
           <span class="content contentLine"
-            v-for="(item,key,index) in product_info.size"
-            :key="key">
+            v-for="(item,index) in product_info.size"
+            :key="index">
             <span class="size"
-              style="margin-right:15px">{{key}}</span>
+              style="margin-right:15px">{{item.measurement}}</span>
             <span class="sizeDetail">
-              <span class="sizeOnce"
-                style="margin-right:15px"
-                v-for="itemChild in item"
-                :key="itemChild.id">{{itemChild.size_name + '：' + itemChild.size_value + (itemChild.size_name == '克重' ? 'g' : 'cm')}}</span>
-              <span class="sizeOnce"
-                style="margin-right:20px">{{'克重：'+item[index].weight+'g'}}</span>
-              <span class="sizeOnce"
-                style="margin-right:20px">{{'净重：'+weight_group[index]+'g'}}</span>
-              <template v-for="(value,index) in weight">
-                <span :key="index"
-                  v-if="(key === index) || index === '均码'">
-                  {{'原料：' + value.toFixed(2) + 'g'}}
-                </span>
-              </template>
+              <span class="sizeOnce">
+                {{item.size_info}}
+              </span>
+              <span class="sizeOnce">
+                克重：{{item.weight}}g
+              </span>
+              <span class="sizeOnce">
+                净重：{{weight_group[index]}}g
+              </span>
             </span>
           </span>
         </div>
@@ -169,7 +164,6 @@ export default {
       id: this.$route.params.id
     }).then((res) => {
       const data = res.data.data
-      console.log(data)
       this.plan_code = data.plan_code
       this.product_info = data.product_info
       this.liucheng = data.outside_precess

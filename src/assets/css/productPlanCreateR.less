@@ -1,6 +1,6 @@
 @import '~@/assets/css/common.less';
 #productPlan{
-  height: 100%;
+  min-height: 100%;
   font-family: 'systemfont';
   font-weight: 300;
   box-sizing: border-box;
@@ -65,19 +65,19 @@
         width: 100%;
         display: flex;
         color: @fontNormal;
-        margin: 24px 0;
+        margin: 16px 0;
         .inputCtn{  
           display: flex;
           align-items: center;
           width: 300px;
           box-sizing: border-box;
-          line-height: 40px;
+          line-height: 32px;
           margin-right: 20px;
           position: relative;
           font-size: @fontBig;
-          padding-left: 7em;
+          padding-left: 6em;
           flex-wrap: wrap;
-          min-height: 40px;
+          min-height: 32px;
           &.oneLine{
             width: 100%;
           }
@@ -87,10 +87,10 @@
           }
           .specialCtn{
             width: 840px;
-            min-height: 40px;
+            min-height: 32px;
             background: #FAFAFA;
             margin-left: 15px;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
             padding: 36px 0px 56px 36px;
             position: relative;
             display: flex;
@@ -117,23 +117,23 @@
               display: flex;
             }
             .proColorInfo{
-              border-left: 2px solid #DDD;
-              padding-top: 32px;
+              border-left: 1px solid #DDD;
+              padding-top: 22px;
               margin-left: 24px;
               .proColorBox{
                 display: flex;
                 // align-items: center;
                 .line{
                   width: 24px;
-                  border-bottom: 2px solid #DDD;
+                  border-bottom: 1px solid #DDD;
                 }
               }
               .colorSize{
                 display: flex;
                 // align-items: center;
                 align-items: flex-start;
-                margin-left: 50px;
-                padding-top: 32px;
+                margin-left: 45px;
+                padding-top: 20px;
                 border-left: 1px solid #DDD;
                 .line{
                   width: 24px;
@@ -169,10 +169,10 @@
           }
           .label{
             font-size: @fontBig;
-            width: 7em;
+            width: 6em;
             text-align: right;
             position: absolute;
-            line-height: 40px;
+            line-height: 32px;
             left: 0;
             top: 0;
             &.must{
@@ -227,13 +227,14 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 200px;
-            height: 40px;
+            height: 30px;
             border-radius: 4px;
             cursor: pointer;
             border: 1px solid #10AEF5;
             color: #10AEF5;
             margin-left: 15px;
+            line-height: 30px;
+            padding: 0 16px;
             &.haveBg{
               background: #10AEF5;
               color: #FFF;
