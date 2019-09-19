@@ -105,13 +105,15 @@
     }
   }
   .body{
-    width: calc(100% - 5.5px);
+    // width: calc(100% - 5.5px);
     height: calc(100% - 130px);
-    overflow: hidden;
-    &:hover{
-      width: 100%;
-      overflow-y: scroll;
-    }
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    // &:hover{
+    //   width: 100%;
+    //   overflow-y: scroll;
+    // }
     .about{
       height: auto;
       padding: 10px 30px; 
@@ -281,7 +283,7 @@
           width:200px;
           height: 200px;
           overflow: hidden;
-          margin: 24px 40px;
+          margin: 20px auto;
           box-shadow:0px 2px 12px rgba(0,0,0,0.16);
           &.addNewPro{
             background: #D9D9D9;

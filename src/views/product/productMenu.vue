@@ -322,6 +322,11 @@ export default {
         company_id: window.sessionStorage.getItem('company_id')
       })
     ]).then(res => {
+      // 修改最小宽度限制
+      let body = document.body
+      let html = document.getElementsByTagName('html')[0]
+      body.style.minWidth = '930px'
+      html.style.minWidth = '930px'
       let data = res[0].data.data
       this.logoUrl = data.logo
       this.client_name = data.company_name

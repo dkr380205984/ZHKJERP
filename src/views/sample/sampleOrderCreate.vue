@@ -292,7 +292,7 @@
 </template>
 
 <script>
-import { clientList, productList, productTppeList, flowerList, getGroup, getToken, sampleOrderCreate, orderSave } from '@/assets/js/api.js'
+import { clientList, productList, productTppeList, flowerList, getGroup, getToken, orderSave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -562,7 +562,12 @@ export default {
           type: 2
         }
         orderSave(obj).then((res) => {
-          console.log(res)
+          if (res.data.status) {
+            this.$message.success('添加成功')
+            setTimeout(() => {
+              this.$router.push('/index/sampleOrderDetail/' + res.data.data)
+            })
+          }
         })
       } else {
         this.$message.error({
