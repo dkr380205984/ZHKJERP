@@ -122,9 +122,9 @@
                       class="elInput noMarginLeft"
                       placeholder='请选择配色方案'>
                       <el-option v-for="item in colourArr"
-                        :key="item.color_name"
-                        :label="item.color_name"
-                        :value="item.color_name">
+                        :key="item.name"
+                        :label="item.name"
+                        :value="item.name">
                       </el-option>
                     </el-select>
                     <span class="delete haveBg"
@@ -228,7 +228,7 @@
             <span class="label must">辅助原料{{indexMaterial+1}}:</span>
             <div class="specialCtn">
               <div class="materialInfo">
-                <el-select v-model="itemMaterial.name"
+                <el-select v-model="itemMaterial.material"
                   class="elInput noMarginLeft"
                   placeholder="请选择辅助原料"
                   @change="getUnit(indexMaterial)">
@@ -254,9 +254,9 @@
                       class="elInput noMarginLeft"
                       placeholder='请选择配色方案'>
                       <el-option v-for="item in colourArr"
-                        :key="item.color_name"
-                        :label="item.color_name"
-                        :value="item.color_name">
+                        :key="item.name"
+                        :label="item.name"
+                        :value="item.name">
                       </el-option>
                     </el-select>
                     <span class="delete haveBg"
@@ -389,7 +389,7 @@ export default {
           unit: ''
         }
       })
-      this.colourArr = res[0].data.data.color
+      this.colourArr = this.product.color
       this.colorArr = res[4].data.data
       this.ingredientArr = res[0].data.data
       this.materialArr = res[2].data.data
@@ -551,8 +551,7 @@ export default {
     },
     // 获取辅料单位信息
     getUnit (indexMaterial) {
-      console.log(indexMaterial)
-      const unit = this.materialArr.find((item) => item.name === this.otherIngredient[indexMaterial].name).unit
+      const unit = this.materialArr.find((item) => item.material === this.otherIngredient[indexMaterial].name).unit
       this.otherIngredient[indexMaterial].unit = unit
       this.otherIngredient[indexMaterial].colour.forEach((itemColour) => {
         itemColour.color.forEach((itemColor) => {
@@ -667,7 +666,7 @@ export default {
         state = this.weight.some((item) => !item) || this.weight.length < this.sizeKey.length
         if (state) {
           this.$message.error({
-            message: '检测到有填写的产品净重信息，请完善'
+            message: '检测到有未填写的产品净重信息，请完善'
           })
           return
         }
@@ -723,7 +722,7 @@ export default {
         // 该数据结构为后台需要
         let mtd = materialData.map((item) => {
           return {
-            product_id: this.product.id,
+            product_id: this.product.product_id,
             desc: item.remark ? item.remark : null,
             material_name: item.material
           }
@@ -733,7 +732,7 @@ export default {
         saveProductPlan({
           'is_update': true,
           'company_id': this.companyId,
-          'product_id': this.product.id,
+          'product_id': this.product.product_id,
           'user_id': window.sessionStorage.getItem('user_id'),
           'material_data': materialData,
           'weight_group': this.weight,
@@ -741,7 +740,7 @@ export default {
         }).then((res) => {
           if (res.data.status) {
             this.$message.success({
-              message: '添加成功'
+              message: '修改成功'
             })
             this.$router.push('/index/productPlanList')
           } else {
@@ -788,7 +787,7 @@ export default {
     // 颜色合并
     filterColor (arr) {
       return arr.map(item => {
-        return item.color_name
+        return item.name
       }).join('/')
     }
   }

@@ -292,7 +292,7 @@
 </template>
 
 <script>
-import { clientList, productList, productTppeList, flowerList, getGroup, getToken, sampleOrderCreate, orderSave } from '@/assets/js/api.js'
+import { clientList, productList, productTppeList, flowerList, getGroup, getToken, orderSave } from '@/assets/js/api.js'
 export default {
   data () {
     return {

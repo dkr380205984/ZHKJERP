@@ -129,7 +129,7 @@ let router = new Router({
     }, {
       path: 'designFormPlanCreate',
       name: 'designFormPlanCreate',
-      component: () => import('./views/designForm/designFormPlanCreate.vue')
+      component: () => import('./views/designForm/designFormPlanCreateR.vue')
     }, {
       path: 'designFormPlanUpdate/:id',
       name: 'designFormPlanUpdate',

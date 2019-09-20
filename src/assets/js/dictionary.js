@@ -273,12 +273,12 @@ const menu = [{
   }, {
     name: '工艺单列表',
     url: '/index/designFormList'
-    // }, {
-    //   name: '添加设计单',
-    //   url: '/index/designFormPlanCreate'
-    // }, {
-    //   name: '设计单列表',
-    //   url: '/index/designFormPlanList'
+  }, {
+    name: '添加设计单',
+    url: '/index/designFormPlanCreate'
+  }, {
+    name: '设计单列表',
+    url: '/index/designFormPlanList'
   }]
 }, {
   name: '配料单管理',
