@@ -204,7 +204,7 @@
             </div>
             <div class="box box2">
               <div class="label">穿筘法：</div>
-              <div class="content">{{warpInfo.drafting_method?warpInfo.drafting_method+'根/筘':'暂无'}}</div>
+              <div class="content">{{warpInfo.reed_method?warpInfo.reed_method+'根/筘':'暂无'}}</div>
             </div>
           </div>
           <div class="row">

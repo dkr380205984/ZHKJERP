@@ -228,7 +228,7 @@
             <span class="label must">辅助原料{{indexMaterial+1}}:</span>
             <div class="specialCtn">
               <div class="materialInfo">
-                <el-select v-model="itemMaterial.name"
+                <el-select v-model="itemMaterial.material"
                   class="elInput noMarginLeft"
                   placeholder="请选择辅助原料"
                   @change="getUnit(indexMaterial)">

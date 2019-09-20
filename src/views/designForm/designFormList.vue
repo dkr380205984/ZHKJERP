@@ -210,7 +210,7 @@ export default {
         'start_time': this.start_time,
         'end_time': this.end_time,
         'craft_code': this.searchVal,
-        'is_draft': 0
+        'is_draft': 1
       }).then((res) => {
         console.log(res)
         this.loading = false
