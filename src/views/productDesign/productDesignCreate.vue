@@ -230,7 +230,7 @@
                 <span v-for="(valColor,indColor) in value.sizeColorInfo[val]"
                   :key="indColor">
                   <span>{{indColor}}</span>
-                  <span>{{valColor.number + valColor.unit}}</span>
+                  <span>{{valColor|filterFixed}}</span>
                 </span>
               </span>
               <template v-if="item.material.length < 3">
@@ -480,6 +480,14 @@ export default {
         return item.category_info.product_category + '/' + item.type_name
       } else {
         return item.category_info.product_category + '/' + item.type_name + '/' + item.style_name
+      }
+    },
+    filterFixed (item) {
+      console.log(item)
+      if (item) {
+        return item.unit === 'g' || item.unit === '克' ? ((item.number / 1000).toFixed(1) + 'kg') : (item.unit === '千克' ? (Number(item.number).toFixed(1) + 'kg') : (Number(item.number).toFixed(1) + item.unit))
+      } else {
+        return 0
       }
     }
   },

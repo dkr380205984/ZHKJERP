@@ -2,7 +2,7 @@
   <div id="packagInfoCreate"
     v-loading="loading">
     <div class="head">
-      <h2>包装辅料订购(未启用)</h2>
+      <h2>包装辅料订购</h2>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -171,7 +171,7 @@
                 </el-input>
               </li>
               <li>
-                <span>订购日期:</span>
+                <span>完成日期:</span>
                 <el-date-picker v-model="item.order_time"
                   type="date"
                   placeholder="选择日期"

@@ -660,13 +660,13 @@ export default {
                       material: itemPlan.material_name,
                       colorWeight: [{
                         color: itemPlan.color_name,
-                        weight: (itemPlan.number * (itemInfo.order_num - itemInfo.stock_pick > 0 ? (itemInfo.order_num - itemInfo.stock_pick) : itemInfo.production_num) * (1 + itemInfo.production_sunhao / 100) / 1000).toFixed(2)
+                        weight: (itemPlan.number * (itemInfo.order_num - itemInfo.stock_pick > 0 ? (itemInfo.order_num - itemInfo.stock_pick) : itemInfo.production_num) * (1 + itemInfo.production_sunhao / 100) / 1000).toFixed(1)
                       }]
                     })
                   } else {
                     json.colorArr[mark].colorWeight.push({
                       color: itemPlan.color_name,
-                      weight: (itemPlan.number * (itemInfo.order_num - itemInfo.stock_pick > 0 ? (itemInfo.order_num - itemInfo.stock_pick) : itemInfo.production_num) * (1 + itemInfo.production_sunhao / 100) / 1000).toFixed(2)
+                      weight: (itemPlan.number * (itemInfo.order_num - itemInfo.stock_pick > 0 ? (itemInfo.order_num - itemInfo.stock_pick) : itemInfo.production_num) * (1 + itemInfo.production_sunhao / 100) / 1000).toFixed(1)
                     })
                   }
                 }
@@ -689,7 +689,7 @@ export default {
         if (finded.state === 2) {
           newItem.colorArr = colorArr.map((itemMat) => {
             itemMat.colorWeight = itemMat.colorWeight.map((itemColor) => {
-              itemColor.weight = (itemColor.weight * itemLog.number / finded.info.find((itemInfo, indexInfo) => itemInfo.color === itemLog.color && itemInfo.size === itemLog.size).production_num).toFixed(2)
+              itemColor.weight = (itemColor.weight * itemLog.number / finded.info.find((itemInfo, indexInfo) => itemInfo.color === itemLog.color && itemInfo.size === itemLog.size).production_num).toFixed(1)
               return itemColor
             })
             return itemMat

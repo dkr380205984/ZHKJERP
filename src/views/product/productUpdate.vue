@@ -58,6 +58,7 @@
           class="content">
           <el-select v-model="item.ingredient_name"
             clearable
+            @change="noRepeat(item.ingredient_name,key,ingredient,'ingredient_name')"
             class="smallInputItem"
             placeholder="选择成分">
             <el-option v-for="item in ingredientArr"
@@ -94,7 +95,9 @@
           <div class="column">
             <el-select clearable
               v-model="item.size"
+              :disabled="item.disabled"
               class="smallInputItem"
+              @change="noRepeat(item.size,key,size,'size')"
               placeholder="选择规格">
               <el-option v-for="item in sizeArr"
                 :key="item.id"
@@ -114,7 +117,7 @@
               v-if="key === 0">添加</div>
             <div class="deleteBtn"
               v-else
-              @click="deleteSize(key)">删除</div>
+              @click="item.disabled ? $message.warning('不可删除原有项') :deleteSize(key)">删除</div>
           </div>
           <div class="column">
             <el-input class="inputItem"
@@ -135,6 +138,8 @@
             filterable
             class="inputItem"
             v-model="item.color"
+            :disabled="item.disabled"
+            @change="noRepeat(item.color,key,color,'color')"
             placeholder="请选择配色">
             <el-option v-for="item in colorArr"
               :key="item.id"
@@ -293,12 +298,14 @@ export default {
         return {
           size: item.measurement,
           desc: item.size_info,
-          weight: item.weight
+          weight: item.weight,
+          disabled: true
         }
       })
       this.color = productInfo.color.map(item => {
         return {
-          color: item.color_name
+          color: item.color_name,
+          disabled: true
         }
       })
       this.types[0] = this.treeData.find(item =>
@@ -316,6 +323,13 @@ export default {
     })
   },
   methods: {
+    noRepeat (value, index, item, key) {
+      let flag = item.filter(val => val[key] === value)
+      if (flag.length > 1) {
+        item[index][key] = ''
+        this.$message.warning('检测到已选择过该项(' + value + ')，请勿重复选择')
+      }
+    },
     beforeAvatarUpload: function (file) {
       let fileName = file.name.lastIndexOf('.')// 取到文件名开始到最后一个点的长度
       let fileNameLength = file.name.length// 取到文件名长度

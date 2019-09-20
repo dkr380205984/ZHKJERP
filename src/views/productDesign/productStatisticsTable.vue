@@ -48,14 +48,14 @@
               <span>原料名称</span>
               <span>{{key}}</span>
               <span>合计</span>
-              <span v-if="item.type===0">{{(item.total_number/1000).toFixed(2) + '千' + item.unit}}</span>
+              <span v-if="item.type===0">{{(item.total_number/1000).toFixed(1) + 'kg'}}</span>
               <span v-if="item.type===1">{{parseInt(item.total_number) + item.unit}}</span>
             </li>
             <template v-for="(value,index) in item">
               <li :key="index"
                 v-if="index !== 'total_number' && index !== 'type'&&index !== 'unit'">
                 <span>{{item.type===1?'数量':'颜色重量'}}</span>
-                <span v-if="item.type===0">{{index + " " + (value/1000).toFixed(2) + '千' + item.unit}}</span>
+                <span v-if="item.type===0">{{index + " " + (value/1000).toFixed(1) +  'kg'}}</span>
                 <span v-if="item.type===1">{{index + " " + parseInt(value) + item.unit}}</span>
               </li>
             </template>

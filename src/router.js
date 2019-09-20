@@ -295,7 +295,7 @@ let router = new Router({
       name: 'productStockList',
       component: () => import('./views/stock/productStockList.vue')
     }, {
-      path: 'productStockDetail/:productId/:size/:color',
+      path: 'productStockDetail/:productId',
       name: 'productStockDetail',
       component: () => import('./views/stock/productStockDetail.vue')
     }, {

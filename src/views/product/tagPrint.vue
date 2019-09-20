@@ -18,13 +18,13 @@
         <span class="labels">规格:</span>
         <div class="contents col"
           style="align-items:flex-start">
-          <span style="white-space:nowrap;">{{$route.params.size}}</span>
-          <span style="word-break: break-word;">{{size[$route.params.size]|filterSize}}cm</span>
+          <span style="white-space:nowrap;">{{size.measurement}}</span>
+          <span style="word-break: break-word;">{{size.size_info}}</span>
         </div>
       </div>
       <div class="items">
         <span class="labels">克重:</span>
-        <div class="contents">{{size[$route.params.size] ? size[$route.params.size][0].weight : ''}}g</div>
+        <div class="contents">{{size.weight ? size.weight : ''}}g</div>
       </div>
       <div class="items">
         <span class="labels">颜色:</span>
@@ -57,7 +57,7 @@ export default {
     return {
       loading: true,
       product_code: '',
-      size: {},
+      size: [],
       description: '',
       type: '',
       qrCodeUrl: '',
@@ -76,7 +76,7 @@ export default {
       if (res.data.status) {
         let detail = res.data.data
         this.product_code = detail.product_code
-        this.size = detail.size
+        this.size = detail.size.find(key => key.measurement === this.$route.params.size)
         this.description = detail.description
         this.materials = detail.materials
         this.type = detail.category_info.product_category + '/' + detail.type_name + '/' + detail.style_name + (detail.flower_id ? '/' + detail.flower_id : '')
@@ -94,15 +94,6 @@ export default {
         return item.ingredient_value + '%' + item.ingredient_name
       })
       return arr.join(',')
-    },
-    filterSize (sizeArr) {
-      if (sizeArr) {
-        return sizeArr.map(item => {
-          return item.size_value
-        }).join('*')
-      } else {
-        return ''
-      }
     }
   }
 }

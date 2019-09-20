@@ -305,6 +305,12 @@
                         <span style="font-size:12px">{{item.product_code}}({{item.category_info.product_category}}/{{item.type_name}}/{{item.style_name}})</span>
                       </el-option>
                     </el-select>
+                    <span class="showImg">预览
+                      <div class="showImgBox">
+                        <img :src="getImgUrl(orderArr[indexOrder].product[indexProduct].name)"
+                          alt="">
+                      </div>
+                    </span>
                     <i class="el-icon-delete"
                       @click="deleteProductOne (indexOrder, indexProduct)"></i>
                   </div>
@@ -402,7 +408,6 @@
                     :before-upload="beforeAvatarUpload"
                     :file-list="fileArr"
                     :data="postData"
-                    :show-file-list='false'
                     ref="uploada2">
                     <el-button size="small"
                       type="primary">点击上传</el-button>
@@ -418,7 +423,6 @@
                     :before-upload="beforeAvatarUpload"
                     :file-list="fileArr"
                     :data="postData"
-                    :show-file-list='false'
                     ref="uploada3">
                     <el-button size="small"
                       type="primary">点击上传</el-button>
@@ -434,7 +438,6 @@
                     :before-upload="beforeAvatarUpload"
                     :file-list="fileArr"
                     :data="postData"
-                    :show-file-list='false'
                     ref="uploada4">
                     <el-button size="small"
                       type="primary">点击上传</el-button>
@@ -526,6 +529,10 @@ export default {
     }
   },
   methods: {
+    getImgUrl (code) {
+      let isHave = this.productArr.find(item => item.product_code === code)
+      return (isHave ? (isHave.img[0] ? isHave.img[0].image_url : require('@/assets/image/index/noPic.png')) : require('@/assets/image/index/noPic.png'))
+    },
     // 获取到人名币后自动填汇率
     getRMB (ev) {
       if (ev === '元') {
@@ -738,6 +745,7 @@ export default {
       // }
     },
     handleSuccess (res, file) {
+      console.log(this.$refs)
       console.log(res)
     },
     // 清空
@@ -1024,13 +1032,46 @@ export default {
 
 <style lang="less" scoped>
 #orderCreate {
+  .showImg {
+    margin: 0 1em;
+    font-size: 14px;
+    cursor: pointer;
+    color: #409eff;
+    position: relative;
+    & > .showImgBox {
+      width: 300px;
+      height: 200px;
+      padding: 0 30px;
+      box-sizing: border-box;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
+      position: absolute;
+      bottom: 0;
+      right: -10px;
+      transform: translateX(100%);
+      background: #fff;
+      border-radius: 10px;
+      img {
+        max-width: 100%;
+        max-height: 100%;
+      }
+    }
+    &:hover > .showImgBox {
+      display: flex;
+    }
+  }
   .tableRow {
     &.noCenter {
       justify-content: flex-start;
       align-items: flex-start;
+      overflow: hidden;
     }
   }
   .upload-demo {
+    max-width: 100%;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;

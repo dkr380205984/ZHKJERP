@@ -566,7 +566,7 @@ export default {
             this.$message.success('添加成功')
             setTimeout(() => {
               this.$router.push('/index/sampleOrderDetail/' + res.data.data)
-            })
+            }, 800)
           }
         })
       } else {

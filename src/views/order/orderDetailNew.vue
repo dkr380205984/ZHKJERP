@@ -62,6 +62,10 @@
                 :key="key">{{item}}</span>
             </span>
           </div>
+          <div class="inputCtn small">
+            <span class="label">系统编号:</span>
+            <span class="content">{{order_info.inside_order_code}}</span>
+          </div>
         </div>
         <div class="lineCtn">
           <div class="inputCtn small">

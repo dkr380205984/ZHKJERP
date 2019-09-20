@@ -106,13 +106,13 @@
                   <span class="labels">规格:</span>
                   <div class="contents col"
                     style="align-items:flex-start">
-                    <span style="white-space:nowrap;">{{selectSize}}</span>
-                    <span style="word-break: break-word;">({{productDetail.size[selectSize]|filterSize}})cm</span>
+                    <span style="white-space:nowrap;">{{selectSize.measurement}}</span>
+                    <span style="word-break: break-word;">({{selectSize.size_info}})</span>
                   </div>
                 </div>
                 <div class="items">
                   <span class="labels">克重:</span>
-                  <div class="contents">{{productDetail.size[selectSize] ?  productDetail.size[selectSize][0].weight : ''}}g</div>
+                  <div class="contents">{{selectSize.weight}}g</div>
                 </div>
                 <div class="items">
                   <span class="labels">颜色:</span>
@@ -310,7 +310,7 @@
               <li v-else>暂无库存信息</li>
               <span class="addNewBtn"
                 v-if="!false"
-                @click="$router.push('/index/productStockCreate/' + $route.params.id)">新增库存</span>
+                @click="$router.push('/index/productStockDetail/' + $route.params.id)">新增库存</span>
             </ul>
           </div>
         </div>
@@ -344,10 +344,10 @@
         <div class="item">
           <span class="label">产品规格:</span>
           <div class="content">
-            <el-radio-group v-model="selectSize">
+            <el-radio-group v-model="selectSize.measurement">
               <el-radio v-for="(item,key) in productDetail.size"
-                :label="key"
-                :key="key">{{key}}</el-radio>
+                :label="item.measurement"
+                :key="key">{{item.measurement}}</el-radio>
             </el-radio-group>
           </div>
         </div>
@@ -357,7 +357,7 @@
             <el-radio-group v-model="selectColor">
               <el-radio v-for="(item,key) in productDetail.color"
                 :key="key"
-                :label="item.name">{{item.name}}</el-radio>
+                :label="item.color_name">{{item.color_name}}</el-radio>
             </el-radio-group>
           </div>
         </div>
@@ -423,10 +423,9 @@ export default {
       return arr.join(',')
     },
     filterSize (sizeArr) {
+      console.log(sizeArr)
       if (sizeArr) {
-        return sizeArr.map(item => {
-          return item.size_value
-        }).join('*')
+        return sizeArr.find(key => key.measurement === this.selectSize).size_info
       } else {
         return ''
       }
@@ -455,7 +454,7 @@ export default {
   methods: {
     // 打印产品标签
     print (size, color) {
-      window.open('/tagPrint/' + this.$route.params.id + '/' + size + '/' + color)
+      window.open('/tagPrint/' + this.$route.params.id + '/' + size.measurement + '/' + color)
     },
     open (url) {
       window.open(url)
@@ -481,7 +480,7 @@ export default {
       if (res.data.status) {
         console.log(res.data.data)
         this.productDetail = res.data.data
-        this.selectSize = res.data.data.size[0].measurement
+        this.selectSize = res.data.data.size[0]
         this.selectColor = res.data.data.color[0].color_name
         // 计算配料单原料
         if (this.productDetail.has_plan === 1) {

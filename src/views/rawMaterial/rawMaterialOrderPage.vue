@@ -122,6 +122,21 @@
             <ul class="buyFrom"
               v-for="(iten,kay) in item.buyInfo"
               :key="kay">
+              <li>
+                <span>订购来源:</span>
+                <!-- <el-select v-model="iten.company"
+                  placeholder="请选择订购来源"
+                  size="small">
+                  <el-option v-for="value in options.companyList"
+                    :key="value.id"
+                    :label="value.name"
+                    :value="value.id">
+                  </el-option>
+                </el-select> -->
+                <el-cascader v-model="iten.company"
+                  :options="companyList"
+                  style="width:243px;margin-left:15px;"></el-cascader>
+              </li>
               <li v-for="(value,index) in iten.buyMaterialInfo"
                 :key="index"
                 class="col">
@@ -155,8 +170,9 @@
                         :value="attr">
                       </el-option>
                     </el-select>
-                    <strong>—</strong>
+                    <strong v-show="!item.company || item.company[0] !== 1">—</strong>
                     <el-input size="small"
+                      v-show="!item.company || item.company[0] !== 1"
                       placeholder="单价"
                       v-model="value.price">
                     </el-input>
@@ -168,21 +184,6 @@
                 <em v-else
                   class="el-icon-delete"
                   @click="deleteBuyMaterialInfo(key,kay,index)"></em>
-              </li>
-              <li>
-                <span>订购来源:</span>
-                <!-- <el-select v-model="iten.company"
-                  placeholder="请选择订购来源"
-                  size="small">
-                  <el-option v-for="value in options.companyList"
-                    :key="value.id"
-                    :label="value.name"
-                    :value="value.id">
-                  </el-option>
-                </el-select> -->
-                <el-cascader v-model="iten.company"
-                  :options="companyList"
-                  style="width:243px;margin-left:15px;"></el-cascader>
               </li>
               <li>
                 <span>总价:</span>

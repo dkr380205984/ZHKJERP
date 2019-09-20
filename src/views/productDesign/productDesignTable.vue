@@ -13,8 +13,8 @@
         </div>
       </li>
       <li class="information">
-        <span>产品类别</span>
-        <span>{{product_calss}}</span>
+        <span>产品编号</span>
+        <span>{{product_code}}({{product_calss}})</span>
         <span>产品创建日期</span>
         <span>{{create_time}}</span>
       </li>
@@ -27,12 +27,12 @@
       <li class="size-info">
         <div class="title"><span>产品详情</span></div>
         <div class="content">
-          <div v-for="(item,key,n) in sizeInfo"
+          <!-- {{sizeInfo}} -->
+          <div v-for="(item,key) in sizeInfo"
             :key="key">
-            {{key}}
-            <span v-for="(value,index) in item"
-              :key="index">{{value.size_name + ':' + value.size_value + 'cm'}}</span>
-            <span>克重:{{weight_group[n] + 'g'}}</span>
+            {{item.measurement}}
+            <span>{{item.size_info}}</span>
+            <span>克重:{{item.weight + 'g'}}</span>
           </div>
         </div>
       </li>
@@ -98,6 +98,7 @@ export default {
         user_name: '',
         id: ''
       },
+      product_code: '',
       product_calss: '',
       create_time: '',
       product: {},
@@ -132,6 +133,7 @@ export default {
       this.sizeInfo = res[0].data.data.product_info.size
       this.weight_group = res[0].data.data.weight_group
       let obj = res[0].data.data.product_info
+      this.product_code = obj.product_code
       this.product_calss = (obj.category_info.product_category ? obj.category_info.product_category + '/' : '') + (obj.type_name ? obj.type_name + '/' : '') + (obj.style_name ? obj.style_name + '/' : '') + (obj.flower_id ? obj.flower_id : '')
       this.order = res[1].data.data.production_detail.order_info
       // 第一步，把符合product_code的产品筛选出来
@@ -219,7 +221,7 @@ export default {
                   colorList: obj ? obj.color.map((itemColor) => {
                     return {
                       name: itemColor.name,
-                      number: (itemColor.size.find((item) => item.size === itemSize.size).number * itemColour.number * (1 + itemColour.production_sunhao / 100) / 1000).toFixed(2),
+                      number: (itemColor.size.find((item) => item.size === itemSize.size).number * itemColour.number * (1 + itemColour.production_sunhao / 100) / 1000).toFixed(1),
                       unit: '千克',
                       value: itemColor.value
                     }

@@ -57,7 +57,8 @@
           <el-select v-model="item.ingredient_name"
             clearable
             class="smallInputItem"
-            placeholder="选择成分">
+            placeholder="选择成分"
+            @change="noRepeat(item.ingredient_name,key,ingredient,'ingredient_name')">
             <el-option v-for="item in ingredientArr"
               :key="item.id"
               :label="item.name"
@@ -93,6 +94,7 @@
             <el-select clearable
               v-model="item.size"
               class="smallInputItem"
+              @change="noRepeat(item.size,key,size,'size')"
               placeholder="选择规格">
               <el-option v-for="item in sizeArr"
                 :key="item.id"
@@ -134,7 +136,8 @@
             allow-create
             class="inputItem"
             v-model="item.color"
-            placeholder="请选择配色">
+            placeholder="请选择配色"
+            @change="noRepeat(item.color,key,color,'color')">
             <el-option v-for="item in colorArr"
               :key="item.id"
               :label="item.name"
@@ -335,21 +338,13 @@ export default {
     }
   },
   methods: {
-    // 潘通色号
-    // remoteColor (newVal) {
-    //   console.log(newVal)
-    //   pantongList({
-    //     keyword: newVal
-    //   }).then((res) => {
-    //     if (newVal) {
-    //       this.colorArr = this.nopantongColorArr.filter((item) => {
-    //         return item.name.indexOf(newVal) !== -1
-    //       }).concat(res.data.data)
-    //     } else {
-    //       this.colorArr = this.nopantongColorArr
-    //     }
-    //   })
-    // },
+    noRepeat (value, index, item, key) {
+      let flag = item.filter(val => val[key] === value)
+      if (flag.length > 1) {
+        item[index][key] = ''
+        this.$message.warning('检测到已选择过该项(' + value + ')，请勿重复选择')
+      }
+    },
     beforeAvatarUpload: function (file) {
       let fileName = file.name.lastIndexOf('.')// 取到文件名开始到最后一个点的长度
       let fileNameLength = file.name.length// 取到文件名长度

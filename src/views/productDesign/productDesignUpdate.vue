@@ -236,7 +236,7 @@
                 <span v-for="(valColor,indColor) in value.sizeColorInfo[val]"
                   :key="indColor">
                   <span>{{indColor}}</span>
-                  <span>{{valColor.number + valColor.unit}}</span>
+                  <span>{{valColor|filterFixed}}</span>
                 </span>
               </span>
               <template v-if="item.material.length < 3">
@@ -482,6 +482,13 @@ export default {
         return '入库' + (item.stock_pick - item.stock_pick_now) + item.unit_name
       } else {
         return '出库' + (item.stock_pick_now - item.stock_pick) + item.unit_name
+      }
+    },
+    filterFixed (item) {
+      if (item) {
+        return item.unit === 'g' || item.unit === '克' ? ((item.number / 1000).toFixed(1) + 'kg') : (item.unit === '千克' ? (Number(item.number).toFixed(1) + 'kg') : (Number(item.number).toFixed(1) + item.unit))
+      } else {
+        return 0
       }
     }
   },

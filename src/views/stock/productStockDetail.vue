@@ -47,15 +47,9 @@
                 :key="key"
                 class="itemBox">
                 <div class="item">
-                  <span>尺码:{{key}}</span>
-                  <span>克重:{{item[0].weight}}</span>
-                </div>
-                <div class="item">
-                  <span v-for="(value,index) in item"
-                    :key="index">
-                    {{value.size_name}}:
-                    {{value.size_value}}cm
-                  </span>
+                  <span>尺码:{{item.measurement}}</span>
+                  <span>克重:{{item.weight}}g</span>
+                  <span>尺寸:{{item.size_info}}</span>
                 </div>
               </div>
             </div>
@@ -77,7 +71,7 @@
               <img v-for="(item,index) in product_info.img"
                 :key="index"
                 class="img"
-                :src="item.img_url"
+                :src="item.image_url"
                 :onerror="defaultImg" />
             </span>
           </div>
@@ -97,30 +91,28 @@
               <span class="flex15">库存操作</span>
               <span>库存日志</span>
             </li>
-            <template v-for="(item,key) in product_info.size">
-              <template v-for="(value,index) in product_info.color">
-                <li class="content"
-                  :key="key + index">
-                  <span class="tableRow">{{key + '/' + value.name}}</span>
-                  <span class="tableRow"></span>
-                  <span class="tableRow flex15">
-                    <span class="important"
-                      @click="stock('go',key + '/' + value.name)">
-                      <img class="icon"
-                        :src="require('@/assets/image/icon/goStock.png')" />
-                      入库
-                    </span>
-                    <span class="important"
-                      @click="stock('out',key + '/' + value.name)">
-                      <img class="icon"
-                        :src="require('@/assets/image/icon/outStock.png')" />
-                      出库
-                    </span>
-                  </span>
-                  <span class="tableRow important">查看日志</span>
-                </li>
-              </template>
-            </template>
+            <li class="content"
+              v-for="(item,key) in stock_detail"
+              :key="key ">
+              <span class="tableRow">{{item.size + '/' + item.color}}</span>
+              <span class="tableRow">{{item.stock_number ? item.stock_number : 0}}{{product_info.category_info.name}}</span>
+              <span class="tableRow flex15">
+                <span class="important"
+                  @click="stock('go',item.size + '/' + item.color)">
+                  <img class="icon"
+                    :src="require('@/assets/image/icon/goStock.png')" />
+                  入库
+                </span>
+                <span class="important"
+                  @click="stock('out',item.size + '/' + item.color)">
+                  <img class="icon"
+                    :src="require('@/assets/image/icon/outStock.png')" />
+                  出库
+                </span>
+              </span>
+              <span class="tableRow important"
+                @click="filterList.colorSize = (item.size + '/' + item.color),go('logBox')">查看日志</span>
+            </li>
           </ul>
         </div>
       </div>
@@ -136,26 +128,28 @@
               <span class="label">筛选列表:</span>
               <el-tag closable
                 v-if="colorSizeComp"
-                @close="colorSize = ''">{{colorSizeComp}}</el-tag>
+                @close="filterList.colorSize = ''">{{colorSizeComp}}</el-tag>
               <el-tag closable
+                style="margin-left:8px;"
                 v-if="stockTypeComp"
-                @close="stockType = ''">{{stockTypeComp}}</el-tag>
+                @close="filterList.stockType = ''">{{stockTypeComp}}</el-tag>
               <el-tag closable
                 v-if="dateComp"
-                @close="date = ''">{{dateComp}}</el-tag>
+                style="margin-left:8px;"
+                @close="filterList.date = ''">{{dateComp}}</el-tag>
             </div>
             <div class="filterInput">
               <span class="label">筛选条件:</span>
-              <el-select v-model="colorSize"
+              <el-select v-model="filterList.colorSize"
                 class="elInput"
                 placeholder="筛选尺码颜色">
-                <el-option v-for="item in colorSizeArr"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
+                <el-option v-for="item in stock_detail"
+                  :key="item.size + '/' + item.color"
+                  :label="item.size + '/' + item.color"
+                  :value="item.size + '/' + item.color">
                 </el-option>
               </el-select>
-              <el-select v-model="stockType"
+              <el-select v-model="filterList.stockType"
                 class="elInput"
                 placeholder="筛选出入库类型">
                 <el-option v-for="item in stockTypeArr"
@@ -164,7 +158,7 @@
                   :value="item.id">
                 </el-option>
               </el-select>
-              <el-date-picker v-model="date"
+              <el-date-picker v-model="filterList.date"
                 class="elInput"
                 type="date"
                 value-format="yyyy-MM-dd"
@@ -172,7 +166,8 @@
               </el-date-picker>
             </div>
           </div>
-          <div class="logBox">
+          <div class="logBox"
+            id="logBox">
             <div class="title">
               <span>时间</span>
               <span>订单号</span>
@@ -184,15 +179,15 @@
             </div>
             <ul class="logUl">
               <li class="item"
-                v-for="item in 6"
-                :key="item">
-                <span>1111</span>
-                <span>1111</span>
-                <span>1111</span>
-                <span>1111</span>
-                <span>1111</span>
-                <span>1111</span>
-                <span>1111</span>
+                v-for="item in filterLog"
+                :key="item.id">
+                <span>{{item.created_at}}</span>
+                <span>{{item.order_code}}</span>
+                <span>{{item.size + '/' + item.color}}</span>
+                <span>{{item.user_name}}</span>
+                <span>{{stockTypeArr.find(val=>val.id === item.type).name}}</span>
+                <span>{{item.stock_number}}{{product_info.category_info.name}}</span>
+                <span>{{item.remark}}</span>
               </li>
             </ul>
           </div>
@@ -253,10 +248,10 @@
           </div>
         </div>
         <div class="btnCtn">
-          <div class="okBtn"
-            @click="submit(type)">提交</div>
           <div class="cancleBtn"
             @click="showShade=false">取消</div>
+          <div class="okBtn"
+            @click="submit(type)">提交</div>
         </div>
       </div>
     </div>
@@ -264,7 +259,7 @@
 </template>
 
 <script>
-import { productStockDetail } from '@/assets/js/api.js'
+import { productStockOne, productStockSave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -280,7 +275,6 @@ export default {
         img: []
       },
       defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
-      stockType: '',
       stockTypeArr: [
         {
           id: 1,
@@ -297,16 +291,38 @@ export default {
         time: '',
         desc: ''
       },
-      colorSize: '',
-      colorSizeArr: [],
-      date: '',
       type: '',
+      log: [],
+      filterLog: [],
+      filterList: {
+        stockType: '',
+        colorSize: '',
+        date: ''
+      },
+      stock_detail: [],
       showShade: false
     }
   },
   methods: {
+    go (idName) {
+      document.getElementById(idName).scrollIntoView(true)
+    },
     submit (type) {
-
+      productStockSave({
+        data: [{
+          user_id: window.sessionStorage.getItem('user_id'),
+          remark: this.stockObj.desc,
+          storage_time: this.stockObj.time,
+          stock_number: (type === 'go' ? this.stockObj.number : 0 - this.stockObj.number),
+          company_id: window.sessionStorage.getItem('company_id'),
+          color: this.stockObj.colorSize.split('/')[1],
+          size: this.stockObj.colorSize.split('/')[0],
+          product_id: this.$route.params.productId,
+          order_code: (type === 'go' ? this.stockObj.order_code : '')
+        }]
+      }).then(res => {
+        console.log(res.data.data)
+      })
     },
     stock (type, item) {
       this.showShade = true
@@ -316,22 +332,22 @@ export default {
   },
   computed: {
     stockTypeComp () {
-      if (this.stockType) {
-        return this.stockTypeArr.find(item => item.id === this.stockType).name
+      if (this.filterList.stockType) {
+        return this.stockTypeArr.find(item => item.id === this.filterList.stockType).name
       } else {
         return ''
       }
     },
     colorSizeComp () {
-      if (this.colorSize) {
-        return this.colorSize
+      if (this.filterList.colorSize) {
+        return this.filterList.colorSize
       } else {
         return '全部分类'
       }
     },
     dateComp () {
-      if (this.date) {
-        return this.date
+      if (this.filterList.date) {
+        return this.filterList.date
       } else {
         return ''
       }
@@ -369,21 +385,42 @@ export default {
     }
   },
   mounted () {
-    productStockDetail({
-      product_id: this.$route.params.productId,
-      size: this.$route.params.size,
-      color: this.$route.params.color
+    productStockOne({
+      product_id: this.$route.params.productId
     }).then((res) => {
       console.log(res)
       let data = res.data.data
-      this.product_info = data[0].product_info
-      this.color = data[0].color
-      this.size = data[0].size
-      this.list = data
-      this.total = this.list.reduce((total, current) => {
-        return total + current.stock_number
-      }, 0)
+      this.product_info = data.product_info
+      this.product_info.size.forEach(valSize => {
+        this.product_info.color.forEach(valColor => {
+          this.stock_detail.push({
+            size: valSize.measurement,
+            color: valColor.color_name
+          })
+        })
+      })
+      this.stock_detail.forEach(item => {
+        let flag = data.data_detail.find(val => (val.color === item.color && val.size === item.size))
+        if (flag) {
+          item.stock_number = flag.total_stock
+        }
+      })
+      this.log = data.data_log
+      this.filterLog = this.log
+      // this.total = this.list.reduce((total, current) => {
+      //   return total + current.stock_number
+      // }, 0)
     })
+  },
+  watch: {
+    filterList: {
+      deep: true,
+      handler (newVal) {
+        newVal.colorSize ? this.filterLog = this.log.filter(item => (item.size === newVal.colorSize.split('/')[0] && item.color === newVal.colorSize.split('/')[1])) : this.filterLog = this.log
+        newVal.stockType ? this.filterLog = this.filterLog.filter(item => (item.type === newVal.stockType)) : this.filterLog = this.filterLog
+        newVal.date ? this.filterLog = this.filterLog.filter(item => item.created_at.split(' ')[0] === newVal.date) : this.filterLog = this.filterLog
+      }
+    }
   }
 }
 </script>

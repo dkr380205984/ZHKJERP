@@ -118,7 +118,7 @@
                         </span>
                       </span>
                       <span>总价</span>
-                      <span>下单日期</span>
+                      <span>完成日期</span>
                       <span>操作</span></span>
                   </span>
                 </li>
@@ -156,7 +156,7 @@
                 <div>
                   <li>
                     <span class="flexMid">订购属性</span>
-                    <span class="flexBig">下单日期</span>
+                    <span class="flexBig">完成日期</span>
                     <span class="flexBig">订购来源</span>
                     <span>{{type === '0' ? '原' : '辅'}}料名称</span>
                     <span class="flexMid">{{type==='0'?'颜色':'属性'}}</span>
@@ -232,7 +232,7 @@
                         <span>数量</span>
                       </span>
                     </span>
-                    <span>下单日期</span>
+                    <span>完成日期</span>
                     <span>操作</span>
                   </span>
                 </li>
@@ -652,7 +652,7 @@ export default {
               company: (item.client_name ? item.client_name : '仓库'),
               where: (item.type_source === 1 ? '库存调取' : '工厂订购'),
               total_price: Math.ceil(item.price * item.weight),
-              create_time: item.order_time.split(' ')[0],
+              create_time: item.complete_time.split(' ')[0],
               remark: item.desc,
               materials: [{
                 material: item.material_name,
@@ -701,7 +701,7 @@ export default {
             price: item.price,
             weight: item.weight,
             total_price: item.price * item.weight,
-            order_time: item.order_time.split(' ')[0],
+            order_time: item.complete_time.split(' ')[0],
             remark: item.desc,
             user: item.user_name,
             replenish_id: item.replenish_id,
@@ -723,7 +723,7 @@ export default {
                 companys: [{
                   company: item.client_name,
                   total_price: item.total_price,
-                  create_time: item.order_time.split(' ')[0],
+                  create_time: item.complete_time.split(' ')[0],
                   remark: item.desc,
                   materials: [{
                     material: item.material_name,
@@ -741,7 +741,7 @@ export default {
                 flag.companys.push({
                   company: item.client_name,
                   total_price: item.total_price,
-                  create_time: item.order_time.split(' ')[0],
+                  create_time: item.complete_time.split(' ')[0],
                   remark: item.desc,
                   materials: [{
                     material: item.material_name,
@@ -790,7 +790,7 @@ export default {
               material: item.material_name,
               color: value.color,
               weight: value.value,
-              order_time: item.order_time.split(' ')[0],
+              order_time: item.complete_time.split(' ')[0],
               remark: item.desc,
               user: item.user_name,
               unit: item.unit ? item.unit : 'kg'

@@ -55,6 +55,10 @@
             <span class="label">样单号:</span>
             <span class="content">{{order_info.order_code}}</span>
           </div>
+          <div class="inputCtn small">
+            <span class="label">系统编号:</span>
+            <span class="content">{{order_info.inside_order_code}}</span>
+          </div>
         </div>
         <div class="lineCtn">
           <div class="inputCtn small">
@@ -1238,7 +1242,7 @@
               v-if="submitInfo.isCustomerPay">
               <div class="content">
                 <el-input v-model="submitInfo.price"
-                  class="elInput"
+                  class="elInput marginRight"
                   placeholder="输入数量">
                   <template slot="append">元/条</template>
                 </el-input>
@@ -1363,7 +1367,7 @@
           <span class="ok">确定</span>
         </div>
         <span class="close el-icon-close"
-          @click="showMessageBox = false"></span>
+          @click="designShare = false"></span>
       </div>
     </div>
   </div>

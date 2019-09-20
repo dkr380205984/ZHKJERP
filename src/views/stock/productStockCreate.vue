@@ -41,13 +41,11 @@
           <span class="content contentLine"
             v-for="(item,key) in product.size"
             :key="key">
-            <span class="size">{{key}}</span>
+            <span class="size">{{item.measurement}}</span>
             <span class="sizeDetail">
-              <span class="sizeOnce"
-                v-for="itemChild in item"
-                :key="itemChild.id">{{itemChild.size_name + '：' + itemChild.size_value + 'cm'}}</span>
+              <span class="sizeOnce">{{item.size_info}}</span>
             </span>
-            <span class="size">{{item[0].weight}}g(克重)</span>
+            <span class="size">{{item.weight}}g(克重)</span>
           </span>
         </div>
       </div>

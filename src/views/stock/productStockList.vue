@@ -1,5 +1,6 @@
 <template>
-  <div id="productStockList">
+  <div id="productStockList"
+    v-loading='loading'>
     <div class="head">
       <h2>产品列表</h2>
       <el-input placeholder="输入产品编号精确搜索"
@@ -88,32 +89,32 @@
           <div class="tableColumn">操作</div>
         </div>
         <div class="tableRow bodyTableRow"
-          v-for="(item) in list"
-          :key="item.id">
+          v-for="(item,key) in list"
+          :key="key">
           <div class="tableColumn"
-            style="color:#1A95FF">{{item.product_info.product_code}}</div>
-          <div class="tableColumn flex9">{{item.product_info|filterType}}</div>
-          <div class="tableColumn">{{item.product_info.flower_id}}</div>
+            style="color:#1A95FF">{{item.product_code}}</div>
+          <div class="tableColumn flex9">{{item|filterType}}</div>
+          <div class="tableColumn">{{item.flower_name ? item.flower_name : '暂无花型'}}</div>
           <div class="tableColumn">{{item.size }}</div>
           <div class="tableColumn">{{item.color}}</div>
-          <div class="tableColumn">{{item.stock_number + item.product_info.category_info.name}}</div>
+          <div class="tableColumn">{{item.stock_number}}</div>
           <div class="tableColumn">
             <div class="tableColumn">
               <div class="imgCtn">
                 <img class="img"
-                  :src="item.product_info.img.length>0?item.product_info.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
+                  :src="item.images.length>0?item.images[0].thumb:require('@/assets/image/index/noPic.jpg')"
                   :onerror="defaultImg" />
                 <div class="toolTips"
-                  v-if="item.product_info.img.length>0"><span @click="showImg(item.product_info.img)">点击查看大图</span></div>
+                  v-if="item.images.length>0"><span @click="showImg(item.images)">点击查看大图</span></div>
                 <div class="toolTips"
-                  v-if="item.product_info.img.length===0"><span>没有预览图</span></div>
+                  v-if="item.images.length===0"><span>没有预览图</span></div>
               </div>
             </div>
           </div>
           <div class="tableColumn">{{item.update_time}}</div>
           <div class="tableColumn">
             <span class="btns success"
-              @click="$router.push('/index/productStockDetail/'+item.product_info.id+'/'+item.size+'/'+item.color)">详情</span>
+              @click="$router.push('/index/productStockDetail/'+item.id)">详情</span>
           </div>
         </div>
       </div>
@@ -151,6 +152,7 @@ import { productStockList, productTppeList, flowerList } from '@/assets/js/api.j
 export default {
   data () {
     return {
+      loading: true,
       defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
       showShade: false,
       searchVal: '',
@@ -201,21 +203,44 @@ export default {
   },
   methods: {
     getProductList () {
+      this.loading = true
+      this.list = []
       productStockList({
         'company_id': window.sessionStorage.getItem('company_id'),
-        'limit': 5,
         'category_id': this.categoryVal,
         'type_id': this.typesVal,
         'style_id': this.styleVal,
         'flower_id': this.flowerVal,
-        'page': this.pages,
         'start_time': this.start_time,
         'end_time': this.end_time,
         'product_code': this.searchVal
       }).then((res) => {
-        this.total = res.data.meta.total
-        this.list = res.data.data
-        console.log(res)
+        for (let prop in res.data.data) {
+          let item = res.data.data[prop].data
+          this.list.push({
+            product_code: prop,
+            color: this.arrNoRepeat(item.map(value => {
+              return value.color
+            })).join('/'),
+            size: this.arrNoRepeat(item.map(value => {
+              return value.size
+            })).join('/'),
+            stock_number: item.map(value => {
+              return Number(value.total_stock)
+            }).reduce((total, item) => {
+              return total + item
+            }),
+            update_time: item.map(value => {
+              return value.updated_at
+            }).sort((val1, val2) => {
+              return (new Date(val1).getTime() > new Date(val2).getTime())
+            })[0],
+            ...res.data.data[prop].product_info
+          })
+        }
+        this.total = this.list.length
+        this.loading = false
+        console.log(this.list)
       })
     },
     // 删除条件
@@ -250,6 +275,16 @@ export default {
     showImg (imgList) {
       this.imgList = imgList
       this.showShade = true
+    },
+    // 简单的数组去重
+    arrNoRepeat (arr) {
+      let newArr = []
+      arr.forEach(item => {
+        if (newArr.indexOf(item) === -1) {
+          newArr.push(item)
+        }
+      })
+      return newArr
     }
   },
   watch: {
@@ -318,11 +353,11 @@ export default {
     // 类型合并
     filterType (item) {
       if (!item.type_name) {
-        return item.category_info.product_category
+        return item.category_name
       } else if (!item.style_name) {
-        return item.category_info.product_category + '/' + item.type_name
+        return item.category_name + '/' + item.type_name
       } else {
-        return item.category_info.product_category + '/' + item.type_name + '/' + item.style_name
+        return item.category_name + '/' + item.type_name + '/' + item.style_name
       }
     },
     // 类型展示

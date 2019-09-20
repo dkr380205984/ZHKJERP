@@ -328,11 +328,9 @@ export default {
     },
     // 类型展示
     filterSize (item) {
-      let str = ''
-      for (let key in item) {
-        str += key + '/'
-      }
-      return str.substring(0, str.length - 1)
+      return item.map(value => {
+        return value.measurement
+      }).join('/')
     },
     // 原料合并
     filterMaterial (material) {

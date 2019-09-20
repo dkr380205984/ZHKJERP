@@ -246,7 +246,7 @@
               </span>
             </div>
             <div class="print rightTop btn"
-              @click="$router.push('/productDesignTable/' + $route.params.id + '/' + item.product_code + '?type=' + (item.nowType ==='main' ? 0 : 1))">打印</div>
+              @click="openWin('/productDesignTable/' + $route.params.id + '/' + item.product_code + '?type=' + (item.nowType ==='main' ? 0 : 1))">打印</div>
             <div class="catBtn">
               <span :class="{'active': item.nowType === 'main'}"
                 @click="item.nowType = 'main'">纱线原料</span>
@@ -293,7 +293,7 @@
               </div>
             </template>
             <div class="print rightTop btn"
-              @click="$router.push('/productStatisticsTable/' + $route.params.id + '?type=' + (totalPlanMaterial.nowType ==='main' ? 0 : 1))">打印</div>
+              @click="openWin('/productStatisticsTable/' + $route.params.id + '?type=' + (totalPlanMaterial.nowType ==='main' ? 0 : 1))">打印</div>
             <div class="catBtn">
               <span :class="{'active': totalPlanMaterial.nowType === 'main'}"
                 @click="totalPlanMaterial.nowType = 'main'">纱线原料</span>
@@ -366,6 +366,9 @@ export default {
     }
   },
   methods: {
+    openWin (url) {
+      window.open(url)
+    },
     go (idName) {
       document.getElementById(idName).scrollIntoView(true)
     },
