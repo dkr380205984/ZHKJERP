@@ -4,98 +4,130 @@
       <h2>配料单详情</h2>
     </div>
     <div class="body">
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">配料单编号:</span>
-          <span class="content">{{plan_code}}</span>
+      <div class="stepCtn">
+        <span class="stepTitle">产品信息</span>
+        <div class="borderCtn">
+          <div class="cicle"></div>
+          <div class="border"></div>
         </div>
-        <div class="inputCtn">
-          <span class="label">产品编号:</span>
-          <span class="content">{{product_info.product_code}}</span>
+        <div class="lineCtn">
+          <div class="inputCtn">
+            <span class="label">产品编号:</span>
+            <span class="content">{{product_info.product_code}}</span>
+          </div>
+          <div class="inputCtn">
+            <span class="label">产品名称:</span>
+            <span class="content">{{product_info.product_title}}</span>
+          </div>
         </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">产品名称:</span>
-          <span class="content">{{product_info|filterType}}</span>
+        <div class="lineCtn">
+          <div class="inputCtn">
+            <span class="label">产品品类:</span>
+            <span class="content">{{product_info|filterType}}</span>
+          </div>
+          <div class="inputCtn">
+            <span class="label">产品花型:</span>
+            <span class="content">{{product_info.flower_id}}</span>
+          </div>
         </div>
-        <div class="inputCtn">
-          <span class="label">产品花型:</span>
-          <span class="content">{{product_info.flower_id}}</span>
+        <div class="lineCtn">
+          <div class="inputCtn">
+            <span class="label">产品成分:</span>
+            <span class="content">{{product_info.materials.map(item=>{return item.ingredient_value + '%' + item.ingredient_name}).join('/')}}</span>
+          </div>
+          <div class="inputCtn">
+            <span class="label">配色色组:</span>
+            <span class="content">{{product_info.color.map(item=>{return item.name}).join('/')}}</span>
+          </div>
         </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">产品规格:</span>
-          <span class="content contentLine"
-            v-for="(item,index) in product_info.size"
-            :key="index">
-            <span class="size"
-              style="margin-right:15px">{{item.measurement}}</span>
-            <span class="sizeDetail">
-              <span class="sizeOnce">
-                {{item.size_info}}
-              </span>
-              <span class="sizeOnce">
-                克重：{{item.weight}}g
-              </span>
-              <span class="sizeOnce">
-                净重：{{weight_group[index]}}g
+        <div class="lineCtn">
+          <div class="inputCtn">
+            <span class="label">规格尺码:</span>
+            <span class="content contentLine"
+              v-for="(item,index) in product_info.size"
+              :key="index">
+              <span class="size"
+                style="margin-right:15px">{{item.measurement}}</span>
+              <span class="sizeDetail">
+                <span class="sizeOnce">
+                  {{item.size_info}}
+                </span>
+                <span class="sizeOnce">
+                  克重：{{item.weight}}g
+                </span>
+                <!-- <span class="sizeOnce">
+                  净重：{{weight_group[index]}}g
+                </span> -->
               </span>
             </span>
-          </span>
+          </div>
         </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">产品图片:</span>
-          <span class="content">
-            <img v-if="product_info.img.length === 0"
-              class="img"
-              src="@/assets/image/index/noPic.jpg" />
-            <img v-for="(item,index) in product_info.img"
-              :key="index"
-              class="img"
-              :src="item.image_url"
-              :onerror="defaultImg" />
-          </span>
+        <div class="lineCtn">
+          <div class="inputCtn">
+            <span class="label">产品描述:</span>
+            <span class="content">{{product_info.miaoshu}}</span>
+          </div>
         </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">损耗比例:</span>
-          <span class="content">
-            <span v-for="(loss,size) in loss"
-              :key="size">
-              {{size}}:{{loss}}
-            </span>
-          </span>
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">主要原料:</span>
-          <div class="content tableBox">
-            <template v-for="(item,index) in material_data.main_material">
-              <yl-table color="#1A95FF"
-                :date='item'
+        <div class="lineCtn">
+          <div class="inputCtn">
+            <span class="label">产品图片:</span>
+            <span class="content">
+              <img v-if="product_info.img.length === 0"
+                class="img"
+                src="@/assets/image/index/noPic.jpg" />
+              <img v-for="(item,index) in product_info.img"
                 :key="index"
-                :class="{'maT': (index !== 0)}" />
-            </template>
+                class="img"
+                :src="item.image_url"
+                :onerror="defaultImg" />
+            </span>
           </div>
         </div>
       </div>
-      <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">主要辅料:</span>
-          <div class="content tableBox">
-            {{material_data.main_ingredients.length !== 0 ? '' : '暂无信息'}}
-            <template v-for="(item,index) in material_data.main_ingredients">
-              <yl-table color="#1A05FF"
-                :date='item'
-                :class="{'marT': (index !== 0)}"
-                :key="index" />
-            </template>
+      <div class="stepCtn">
+        <span class="stepTitle">配料信息</span>
+        <div class="borderCtn">
+          <div class="cicle"></div>
+          <div class="border"></div>
+        </div>
+        <div class="lineCtn">
+          <div class="inputCtn">
+            <span class="label">净重损耗:</span>
+            <span class="content">
+              <span v-for="(loss,size) in loss"
+                :key="size">
+                <span style="margin-right:28px;">{{size}}</span>
+                <span style="margin-right:28px;">{{loss.weight + 'g'}}</span>
+                <span>{{loss.prop}}</span>
+              </span>
+            </span>
+          </div>
+        </div>
+        <div class="lineCtn">
+          <div class="inputCtn">
+            <span class="label">纱线原料:</span>
+            <div class="content tableBox">
+              <template v-for="(item,index) in material_data.main_material">
+                <yl-table color="#1A95FF"
+                  :date='item'
+                  :key="index"
+                  :class="{'maT': (index !== 0)}" />
+              </template>
+            </div>
+          </div>
+        </div>
+        <div class="lineCtn">
+          <div class="inputCtn">
+            <span class="label">主要辅料:</span>
+            <div class="content tableBox">
+              {{material_data.main_ingredients.length !== 0 ? '' : '暂无信息'}}
+              <template v-for="(item,index) in material_data.main_ingredients">
+                <yl-table color="#1A05FF"
+                  :date='item'
+                  :class="{'marT': (index !== 0)}"
+                  :key="index" />
+              </template>
+            </div>
           </div>
         </div>
       </div>
@@ -134,7 +166,9 @@ export default {
         category_info: {
           product_category: ''
         },
-        size: {},
+        size: [],
+        color: [],
+        marterials: [],
         img: []
       },
       color: [],
@@ -180,6 +214,7 @@ export default {
                 obj.materialList = []
                 let materialList = {}
                 materialList.material = value.material
+                materialList.remark = value.remark
                 materialList.colorInfo = []
                 let colorInfo = {}
                 colorInfo.name = index.name
@@ -227,6 +262,7 @@ export default {
                       } else if (m === size.materialList.length - 1 && material.material !== value.material && flag2) {
                         size.materialList.push({
                           material: value.material,
+                          remark: value.remark,
                           colorInfo: [{
                             name: index.name,
                             colorList: [{
@@ -244,6 +280,7 @@ export default {
                       size: item.size,
                       materialList: [{
                         material: value.material,
+                        remark: value.remark,
                         colorInfo: [{
                           name: index.name,
                           colorList: [{
@@ -276,7 +313,10 @@ export default {
       })
       let index = 0
       for (let prop in this.weight) {
-        this.loss[prop] = ((this.weight[prop] - this.weight_group[index]) / this.weight_group[index] * 100).toFixed(2) + '%'
+        this.loss[prop] = {
+          prop: ((this.weight[prop] - this.weight_group[index]) / this.weight_group[index] * 100).toFixed(2) + '%',
+          weight: this.weight_group[index]
+        }
         index++
       }
     })

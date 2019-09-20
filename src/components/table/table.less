@@ -5,7 +5,7 @@ ul {
 }
 #table {
   position: relative;
-  width: 781px;
+  width: 1000px;
   display: flex;
   height: auto;
   overflow-x: scroll;
@@ -28,7 +28,7 @@ ul {
         flex: 1;
         font-size: 12PX;
         display: inline-block;
-        min-width: 130px;
+        min-width: 166px;
         height: 40px;
         border-left: 1px solid #999;
         box-sizing: border-box;
@@ -42,9 +42,11 @@ ul {
       }
       &:first-child {
         background-color: #eee;
-      }
-      &:first-child>span {
-        width: 100%;
+        &>span{
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+        }
       }
       &:last-child {
         border-bottom: none;

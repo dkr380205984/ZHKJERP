@@ -1315,6 +1315,7 @@ export default {
           warpGetPM = warpGetPM.concat(PMFlatArr.filter((item, index) => index < remainder))
         } else {
           let PM = this.PM[this.romanNum.indexOf(item.PM)]
+          console.log(item.PM)
           let PMArr = PM.value.split(',')
           let times = parseInt(PM.number / PMArr.length)
           let remainder = PM.number % PMArr.length

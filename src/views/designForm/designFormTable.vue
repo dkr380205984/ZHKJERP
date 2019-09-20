@@ -1,7 +1,7 @@
 <template>
   <div id="designFormTable"
     @click.right='goTop'>
-    <div class="table">
+    <!-- <div class="table">
       <p class="company">桐庐凯瑞针纺有限公司工艺单</p>
       <div class="page_header">
         <span>工艺单编号:{{craft_code}}</span>
@@ -115,7 +115,7 @@
             </div>
             <div class="through-methods">
               <div class="through-title">穿综法</div>
-              <!-- <span>{{warp_data.drafting_method?warp_data.drafting_method:''}}</span> -->
+              <span>{{warp_data.drafting_method?warp_data.drafting_method:''}}</span>
               <div class="through-content">
                 <div class="through-for">{{warp_data.additional_data}}</div>
                 <div class="content-box">
@@ -311,14 +311,14 @@
                   :key="index"
                   :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999',background: (consol(item,b,value,index) && value.value !== 'no') ? 'rgb(240,240,240)' : false}">
                   {{value.value === 'no' ? '' : value.value}}
-                  <!-- <span v-if="consol(item,b,value,index) && value.value !== 'no'"
+                  <span v-if="consol(item,b,value,index) && value.value !== 'no'"
                     class="jiantou">
                     <span v-if="consol(item,b,value,index,true) === '' && b !== 0 && b !== add(warp_data.warp_rank_bottom,'all').length -1"></span>
                     <span v-else-if="(((item[(b + 1) * 12] === item[(b + 1) * 12 - 1] && item[( b + 1 ) * 12 ] === '' ) || item[(b + 1) * 12] === null) && index === changeArr(add(item, b)).length - 1)"
                       class="el-icon-back left"></span>
                     <span v-else-if="(((item[b * 12] === item[b * 12 - 1] && item[b * 12] === '') || item[b * 12] === null) && index === 0 && b !== 0)"
                       class="el-icon-back right"></span>
-                  </span> -->
+                  </span>
                 </span>
               </template>
             </div>
@@ -351,14 +351,14 @@
                   :key="index"
                   :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999',background: (consol(item,b,value,index) && value.value !== 'no') ? 'rgb(240,240,240)' : false}">
                   {{value.value === 'no' ? '' : value.value}}
-                  <!-- <span v-if="consol(item,b,value,index) && value.value !== 'no'"
+                  <span v-if="consol(item,b,value,index) && value.value !== 'no'"
                     class="jiantou">
                     <span v-if="consol(item,b,value,index,true) === '' && b !== 0 && b !== add(warp_data.warp_rank_bottom_back,'all').length -1"></span>
                     <span v-else-if="(((item[(b + 1) * 12] === item[(b + 1) * 12 - 1] && item[( b + 1 ) * 12 ] === '' ) || item[(b + 1) * 12] === null) && index === changeArr(add(item, b)).length - 1)"
                       class="el-icon-back left"></span>
                     <span v-else-if="(((item[b * 12] === item[b * 12 - 1] && item[b * 12] === '') || item[b * 12] === null) && index === 0 && b !== 0)"
                       class="el-icon-back right"></span>
-                  </span> -->
+                  </span>
                 </span>
               </template>
             </div>
@@ -565,7 +565,7 @@
           </template>
         </ul>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -574,54 +574,16 @@ import { craftOne } from '@/assets/js/api.js'
 export default {
   data () {
     return {
-      weight_info: {},
-      craft_code: '',
+      company: '',
+      design_code: '',
+      create_user: '',
       create_time: '',
-      product_info: {
-        materials: [],
-        product_code: '',
-        description: '',
-        category_info: {
-          product_category: ''
-        },
-        size: {}
-      },
+      product_name: '',
+      product_type: '',
+      product_code: '',
+      size: '',
       weight: '',
-      size: {},
-      // companyName: 'xx',
-      material_data: {
-        warpMaterialMain: {
-          name: '',
-          value: []
-        },
-        warpMaterialOther: [],
-        weftMaterialMain: {},
-        weftMaterialOther: []
-      },
-      warp_data: {
-        weft: '', // 整理总头纹,需要计算
-        side_id: '',
-        width: '',
-        machine_id: '',
-        reed: '',
-        reed_method: '',
-        reed_width: '',
-        sum_up: '',
-        drafting_method: '',
-        warp_rank_bottom: []
-      },
-      weft_data: {
-        organization_id: '',
-        peifu: '',
-        weimi: '',
-        shangchiya: '',
-        xiachiya: '',
-        neichang: '',
-        rangwei: '',
-        total: '',
-        weft_rank_bottom: []
-      },
-      color_data: []
+      ingredient: ''
     }
   },
   methods: {
@@ -787,31 +749,7 @@ export default {
     }
   },
   filters: {
-    // 成分合并
-    filterIngredient (item) {
-      let str = ''
-      item.forEach((value, index) => {
-        str += (value.ingredient_value + '%' + value.ingredient_name)
-        str += (index === (item.length - 1)) ? '' : '/'
-      })
-      return str
-    },
-    // 类型合并
-    filterType (item) {
-      if (!item.type_name) {
-        return item.category_info.product_category
-      } else if (!item.style_name) {
-        return item.category_info.product_category + ' / ' + item.type_name
-      } else {
-        return item.category_info.product_category + ' / ' + item.type_name + ' / ' + item.style_name
-      }
-    },
-    // 规格合并
-    filterSize (item) {
-      return item.map(val => {
-        return val.size_info
-      }).join(';')
-    }
+
   },
   created () {
     craftOne({
@@ -819,201 +757,18 @@ export default {
     }).then((res) => {
       console.log(res.data.data)
       const data = res.data.data
-      this.product_info = data.product_info
-      this.craft_code = data.craft_code
+      this.design_code = data.craft_code
+      this.create_user = data.user_name
       this.create_time = data.create_time
-      this.weight = data.weight
-      data.warp_data.drafting_method = JSON.parse(data.warp_data.drafting_method)
-      this.warp_data = data.warp_data
-      this.weft_data = data.weft_data
-      data.material_data.forEach((item) => {
-        if (item.type === 0 && item.type_material === 0) {
-          this.material_data.warpMaterialMain.name = item.material_name
-          this.material_data.warpMaterialMain.value = item.apply
-        }
-        if (item.type === 1 && item.type_material === 0) {
-          this.material_data.weftMaterialMain.name = item.material_name
-          this.material_data.weftMaterialMain.value = item.apply
-        }
-        if (item.type === 0 && item.type_material === 1) {
-          this.material_data.warpMaterialOther.push({
-            name: item.material_name,
-            value: item.apply
-          })
-        }
-        if (item.type === 1 && item.type_material === 1) {
-          this.material_data.weftMaterialOther.push({
-            name: item.material_name,
-            value: item.apply
-          })
-        }
-      })
-      console.log(data.color_data)
-      data.color_data.forEach(item => {
-        item.color_scheme.forEach((index, n) => {
-          let flag = this.color_data.find(key => key.product_color === item.product_color)
-          if (!flag) {
-            let obj = {}
-            if (item.type === 0) {
-              obj.warp = { name: index.name, value: index.value }
-            } else {
-              obj.weft = { name: index.name, value: index.value }
-            }
-            this.color_data.push({
-              product_color: item.product_color,
-              color_scheme: [obj]
-            })
-          } else {
-            if (flag.color_scheme[n]) {
-              if (item.type === 0) {
-                flag.color_scheme[n].warp = { name: index.name, value: index.value }
-              } else {
-                flag.color_scheme[n].weft = { name: index.name, value: index.value }
-              }
-            } else {
-              let obj = {}
-              if (item.type === 0) {
-                obj.warp = { name: index.name, value: index.value }
-              } else {
-                obj.weft = { name: index.name, value: index.value }
-              }
-              flag.color_scheme.push(obj)
-            }
-          }
-          // if (this.color_data.length === 0) {
-          //   let obj = {}
-          //   obj.product_color = item.product_color
-          //   obj.color_scheme = []
-          //   let info = {}
-          //   info[(item.type) === 0 ? 'warp' : 'weft'] = {
-          //     name: index.name,
-          //     value: index.value
-          //   }
-          //   obj.color_scheme.push(info)
-          //   this.color_data.push(obj)
-          // } else {
-          //   let flag = true
-          //   this.color_data.forEach((value, x) => {
-          //     if (value.product_color === item.product_color) {
-          //       flag = false
-          //       if (item.type === 0) {
-          //         value.color_scheme.push({
-          //           warp: {
-          //             'name': index.name,
-          //             'value': index.value
-          //           },
-          //           weft: {
-
-          //           }
-          //         })
-          //       } else if (item.type === 1) {
-          //         if (value.color_scheme[n]) {
-          //           value.color_scheme[n].weft = {
-          //             name: index.name,
-          //             value: index.value
-          //           }
-          //         }
-          //       }
-          //     } else if (x === this.color_data.length - 1 && value.product_color !== item.product_color && flag) {
-          //       let obj = {}
-          //       obj.product_color = item.product_color
-          //       obj.color_scheme = []
-          //       let info = {}
-          //       info[(item.type) === 0 ? 'warp' : 'weft'] = {
-          //         name: index.name,
-          //         value: index.value
-          //       }
-          //       obj.color_scheme.push(info)
-          //       this.color_data.push(obj)
-          //     }
-          //   })
-          // }
-        })
-      })
-      console.log(this.color_data)
-      // 经纬向数据整理
-      this.warp_data.warp_rank.forEach((item, key) => {
-        item.forEach((val, ind) => {
-          if (val === null) {
-            item[ind] = item[ind - 1]
-          } else if (val === '') {
-            item[ind] = 1
-          }
-        })
-      })
-      this.weft_data.weft_rank.forEach((item, key) => {
-        item.forEach((val, ind) => {
-          if (val === null) {
-            item[ind] = item[ind - 1]
-          } else if (val === '') {
-            item[ind] = 1
-          }
-        })
-      })
-      // 计算经纬根数
-      this.warp_data.warp_rank_bottom.forEach((item, key) => {
-        let flag = this.weight_info[item]
-        if (!flag) {
-          this.weight_info[item] = {
-            name: item,
-            data: {
-              warp: {
-                value: this.warp_data.warp_rank[0][key] * this.warp_data.warp_rank[1][key] * this.warp_data.warp_rank[2][key]
-              }
-            }
-          }
-        } else {
-          if (!flag.data.warp) {
-            flag.data.warp = {}
-          }
-          flag.data.warp.value = Number(flag.data.warp.value ? flag.data.warp.value : 0) + (this.warp_data.warp_rank[0][key] * this.warp_data.warp_rank[1][key] * this.warp_data.warp_rank[2][key])
-        }
-      })
-      this.weft_data.weft_rank_bottom.forEach((item, key) => {
-        let flag = this.weight_info[item]
-        if (!flag) {
-          this.weight_info[item] = {
-            name: item,
-            data: {
-              weft: {
-                value: this.weft_data.weft_rank[0][key] * this.weft_data.weft_rank[1][key] * this.weft_data.weft_rank[2][key]
-              }
-            }
-          }
-        } else {
-          if (!flag.data.weft) {
-            flag.data.weft = {}
-          }
-          flag.data.weft.value = Number(flag.data.weft.value ? flag.data.weft.value : 0) + (this.weft_data.weft_rank[0][key] * this.weft_data.weft_rank[1][key] * this.weft_data.weft_rank[2][key])
-        }
-      })
-      // 与原料关联
-      data.material_data.forEach((item, key) => {
-        item.apply.forEach((value, index) => {
-          let flag = this.weight_info[value]
-          if (flag) {
-            if (item.type === 1) {
-              if (!flag.data.weft) {
-                flag.data.weft = {}
-              }
-              flag.data.weft.material = item.material_name
-              let flag1 = data.yarn_coefficient.find(val => val.name === item.material_name)
-              // console.log(flag1)
-              flag.data.weft.weight = ((flag.data.weft.value ? flag.data.weft.value : 0) * flag1.value * (this.warp_data.reed_width / 100)).toFixed(2)
-            } else {
-              if (!flag.data.warp) {
-                flag.data.warp = {}
-              }
-              flag.data.warp.material = item.material_name
-              let flag1 = data.yarn_coefficient.find(val => val.name === item.material_name)
-              // console.log(flag1)
-              flag.data.warp.weight = ((flag.data.warp.value ? flag.data.warp.value : 0) * flag1.value * ((this.weft_data.neichang + this.weft_data.rangwei) / 100)).toFixed(2)
-            }
-          }
-        })
-      })
+      // this.product_name = data.product_info.
+      this.product_type = data.product_info.category_info.product_category + '/' + data.product_info.type_name + '/' + data.product_info.style_name + '/' + data.product_info.flower_id
+      this.product_code = data.product_info.product_code
+      this.size = data.product_info.size[0].size_info
+      this.weight = data.product_info.size[0].weight
+      this.ingredient = data.product_info.materials.map(item => {
+        return (item.ingredient_value + '%' + item.ingredient_name)
+      }).join('/')
     })
-    // console.log(this)
   },
   updated () {
     // window.print()

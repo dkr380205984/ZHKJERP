@@ -14,7 +14,10 @@
       v-for="(item,key) in data.materialList"
       :key="key+item">
       <span>
-        <span>{{item.material}}</span>
+        <span>
+          <span>{{item.material}}</span>
+          <span>{{item.remark}}</span>
+        </span>
       </span>
       <template v-for="(value,index) in item.colorInfo">
         <span :key="index+value">

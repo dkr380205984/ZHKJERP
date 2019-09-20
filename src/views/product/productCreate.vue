@@ -411,10 +411,6 @@ export default {
           this.$message.error('请填写产品克重信息')
           flag = false
         }
-        if (!item.desc) {
-          this.$message.error('请填写产品尺寸信息')
-          flag = false
-        }
       })
       this.ingredient.forEach(item => {
         if (!item.ingredient_name) {
