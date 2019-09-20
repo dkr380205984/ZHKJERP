@@ -475,7 +475,7 @@ export default {
         unit: '',
         material: '',
         remark: '',
-        type: 0,
+        type: 1,
         colour: [{
           name: '',
           color: [{
