@@ -374,7 +374,7 @@
               <div class="label">穿筘法：</div>
               <div class="content">
                 <el-input style="width:294px"
-                  v-model="warpInfo.drafting_method"
+                  v-model="warpInfo.reed_method"
                   placeholder="请输入穿筘法">
                   <template slot="append">根/筘</template>
                 </el-input>
@@ -1679,15 +1679,7 @@ export default {
     },
     // 表格里的纹版图下拉框
     PMArr () {
-      let normal = new Array(this.GL.length).fill('').map((item, index) => this.alphabet[index]).concat(new Array(this.repeatPM.length).fill('').map((item, index) => this.romanNum[index]))
-      if (this.PMFlag === 'complex') {
-        this.repeatPM.forEach((item, index) => {
-          if (item.GL) {
-            normal.push(item.GL + this.romanNum[index])
-          }
-        })
-      }
-      return normal
+      return new Array(this.repeatPM.length).fill('').map((item, index) => this.romanNum[index])
     },
     weimi () {
       if (this.weftInfo.neichang && this.weftInfo.rangwei) {
@@ -2143,7 +2135,7 @@ export default {
       }
       let formData = {
         id: this.$route.params.id,
-        is_draft: 0,
+        is_draft: 1,
         company_id: window.sessionStorage.getItem('company_id'),
         product_id: this.$route.params.id,
         weight: this.weight,

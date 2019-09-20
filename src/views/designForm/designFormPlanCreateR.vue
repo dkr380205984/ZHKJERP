@@ -2,68 +2,23 @@
   <div id="designFormCreateR"
     v-loading="loading">
     <div class="head">
-      <h2>添加工艺单</h2>
+      <h2>添加设计单</h2>
     </div>
     <div class="body">
       <div class="stepCtn">
-        <div class="stepTitle">产品基本信息</div>
+        <div class="stepTitle">设计单名称</div>
         <div class="borderCtn">
           <div class="cicle"></div>
           <div class="border"></div>
         </div>
         <div class="appendInfo">
           <div class="row">
-            <div class="box box4">
-              <div class="label">产品编号：</div>
-              <div class="content important">{{productInfo.product_code}}</div>
-            </div>
-            <div class="box box4">
-              <div class="label">产品名称：</div>
-              <div class="content">{{productInfo.category_info.product_category}}/{{productInfo.type_name}}/{{productInfo.style_name}}</div>
-            </div>
-            <div class="box box4">
-              <div class="label">产品花型：</div>
-              <div class="content">{{productInfo.flower_id}}</div>
-            </div>
-            <div class="box box4">
-              <div class="label">产品配色：</div>
+            <div class="box box2">
+              <div class="label">设计单名称：</div>
               <div class="content">
-                <span v-for="(item,index) in productInfo.color"
-                  :key="index">
-                  <span>{{item.color_name}}</span>
-                  <span v-if="index<productInfo.color.length - 1">/</span>
-                </span>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="box box4">
-              <div class="label">产品成分：</div>
-              <div class="content">
-                <span v-for="(item,index) in productInfo.materials"
-                  :key="item.id">{{item.ingredient_value}}%{{item.ingredient_name}}{{index===(productInfo.materials.length-1)?'':'/'}}</span>
-              </div>
-            </div>
-            <div class="box box4">
-              <div class="label">创建日期：</div>
-              <div class="content">{{productInfo.create_time}}</div>
-            </div>
-            <div class="box box4">
-              <div class="label">创建人：</div>
-              <div class="content">{{productInfo.user_name}}</div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="box box1">
-              <div class="label">产品规格：</div>
-              <div class="content">
-                <div class="oneLine"
-                  v-for="(item,index) in productInfo.size"
-                  :key="index">
-                  <span>{{item.measurement}}：</span>
-                  <span style="margin-left:16px">{{item.size_info}}</span>
-                  <span style="margin-left:16px">{{item.weight}}g</span>
-                </div>
+                <el-input placeholder="请输入设计单名称"
+                  style="width:294px"
+                  v-model="name"></el-input>
               </div>
             </div>
           </div>
@@ -76,6 +31,16 @@
           <div class="border"></div>
         </div>
         <div class="lineCtn">
+          <div class="label must">经向缩率：</div>
+          <div class="content">
+            <el-input placeholder="请输入缩率"
+              style="width:294px;"
+              v-model="warpInfo.rate">
+              <template slot="append">%</template>
+            </el-input>
+          </div>
+        </div>
+        <div class="lineCtn">
           <div class="label must">配色方案：</div>
           <div class="content">
             <div class="button"
@@ -84,13 +49,7 @@
             <div class="formCtn"
               v-for="(itemColour,indexColour) in colour"
               :key="indexColour">
-              <el-select placeholder="请选择配色方案"
-                v-model="itemColour.value">
-                <el-option v-for="(item,index) in productInfo.color"
-                  :key="index"
-                  :label="item.color_name"
-                  :value="item.color_name"></el-option>
-              </el-select>
+              <span style="line-height:32px;color:#666;vertical-align: middle;">{{'配色'+(indexColour+1)}}：</span>
               <color-picker v-for="(itemColor,indexColor) in itemColour.colorWarp"
                 :key="indexColor + (itemColor.color?itemColor.color:0)"
                 v-model="itemColour.colorWarp[indexColor]"
@@ -403,6 +362,28 @@
           </div>
           <div class="row">
             <div class="box box2">
+              <div class="label">筘系数：</div>
+              <div class="content">
+                <el-input style="width:294px"
+                  v-model="warpInfo.xishu"
+                  placeholder="请输入筘系数">
+                </el-input>
+              </div>
+            </div>
+            <div class="box box2">
+              <div class="label">经密：</div>
+              <div class="content">
+                <el-input style="width:294px"
+                  v-model="jingmi"
+                  disabled
+                  placeholder="请输入精密">
+                  <template slot="append">根/cm</template>
+                </el-input>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="box box2">
               <div class="label">综页：</div>
               <div class="content">
                 <el-input style="width:294px"
@@ -625,6 +606,16 @@
           <div class="cicle"></div>
           <div class="border"></div>
         </div>
+        <div class="lineCtn">
+          <div class="label must">纬向缩率：</div>
+          <div class="content">
+            <el-input placeholder="请输入缩率"
+              style="width:294px;"
+              v-model="weftInfo.rate">
+              <template slot="append">%</template>
+            </el-input>
+          </div>
+        </div>
         <div class="appendInfo">
           <div class="row">
             <div class="box box2">
@@ -646,7 +637,6 @@
               <div class="content">
                 <el-input style="width:294px"
                   v-model="weimi"
-                  disabled
                   placeholder="请输入纬密">
                   <template slot="append">梭/cm</template>
                 </el-input>
@@ -746,13 +736,7 @@
             <div class="formCtn"
               v-for="(itemColour,indexColour) in colour"
               :key="indexColour">
-              <el-select placeholder="请选择配色方案"
-                v-model="itemColour.value">
-                <el-option v-for="(item,index) in productInfo.color"
-                  :key="index"
-                  :label="item.color_name"
-                  :value="item.color_name"></el-option>
-              </el-select>
+              <span style="line-height:32px;color:#666;vertical-align: middle;">{{'配色'+(indexColour+1)}}：</span>
               <color-picker v-for="(itemColor,indexColor) in itemColour.colorWeft"
                 :key="indexColor + (itemColor.color?itemColor.color:0)"
                 v-model="itemColour.colorWeft[indexColor]"
@@ -1002,6 +986,26 @@
             </div>
           </div>
           <div class="row">
+            <div class="box box1">
+              <span class="label">上传图片：</span>
+              <div class="content">
+                <el-upload class="upload-demo"
+                  action="http://upload.qiniup.com/"
+                  accept="image/jpeg,image/gif,image/png,image/bmp"
+                  :before-upload="beforeAvatarUpload"
+                  :file-list="fileArr"
+                  :data="postData"
+                  ref="uploada"
+                  list-type="picture">
+                  <el-button size="small"
+                    type="primary">点击上传</el-button>
+                  <div slot="tip"
+                    class="el-upload__tip">建议预览图片，保存到本地后上传</div>
+                </el-upload>
+              </div>
+            </div>
+          </div>
+          <div class="row">
             <div class="box box2">
               <div class="label">备注信息：</div>
               <div class="content">
@@ -1019,11 +1023,39 @@
         <div class="okBtn"
           @click="saveAll">添加</div>
       </div>
+      <div class="suspend">
+        <div class="blue"
+          style="border-radius:4px"
+          @click="loadImg">图像预览</div>
+      </div>
+      <div class="shade"
+        v-show="getImg"
+        style="z-index:999">
+        <div class="main"
+          v-loading="getImgLoading"
+          style="width:600px"
+          :style="{'height':canvasHeight/4 + 'px'}">
+          <canvas ref="myCanvas"
+            style="display:none"
+            width="2400"
+            :height="canvasHeight">
+          </canvas>
+          <!-- canvas转图像的容器 -->
+          <img ref="img"
+            style="width:600px"
+            :style="{'height':canvasHeight/4 + 'px'}"
+            src="" />
+          <div class="closeButton"
+            @click="getImg=false">
+            <em class="el-icon-close"></em>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 <script>
-import { porductOne, YarnList, editList, YarnColorList, materialList, saveCraft, savePM, PMList, deletePM } from '@/assets/js/api.js'
+import { YarnList, editList, YarnColorList, materialList, saveCraft, savePM, PMList, deletePM, getToken } from '@/assets/js/api.js'
 import { HotTable } from '@handsontable/vue'
 import enCH from '@/assets/js/languages.js'
 import Handsontable from 'handsontable'
@@ -1036,7 +1068,12 @@ export default {
   data () {
     return {
       loading: true,
+      getImg: false,
+      getImgLoading: true,
       // 正式数据
+      postData: { token: '' },
+      fileArr: [],
+      name: '',
       productInfo: {
         product_code: '',
         type_name: '',
@@ -1098,6 +1135,7 @@ export default {
         colorWarp: []
       }],
       warpInfo: {
+        rate: 100, // 经向缩率
         weft: null, // 总头纹
         side_id: null, // 边形
         width: null, // 整经门幅
@@ -1105,16 +1143,17 @@ export default {
         reed: null, // 筘号
         reed_method: null, // 穿筘法
         reed_width: null, // 筘幅
+        xishu: 5.08, // 筘系数
         reed_width_data: null, // 筘幅说明
         sum_up: null, // 综页
         drafting_method: null // 穿综法
         // additional_data: null// 穿综法备注
       },
       weftInfo: {
+        rate: 100, // 纬向缩率
         organization_id: null, // 组织法
         peifu: null, // 胚服
         peifu_data: null, // 胚幅说明
-        weimi: null, // 纬密
         shangchiya: null, // 上齿牙
         xiachiya: null, // 下齿牙
         neichang: null, // 内长
@@ -1154,10 +1193,11 @@ export default {
             [null],
             [null],
             [null],
+            [null],
             [null]
           ],
           rowHeaders: (index) => {
-            let headerArr = ['序号', '主/夹', '根数', '合并项', '合并项', '穿综法']
+            let headerArr = ['序号', '主/夹', '厘米数', '根数', '合并项', '合并项', '穿综法']
             return `<div style="height:38px;line-height:38px;color:#666;display:table-row">${headerArr[index]}</div>`
           },
           rowHeaderWidth: 80,
@@ -1172,7 +1212,7 @@ export default {
               cellProperties.type = 'dropdown'
               cellProperties.source = this.colorLength.map(item => item.label)
             }
-            if (row === 5) {
+            if (row === 6) {
               cellProperties.type = 'dropdown'
               cellProperties.source = this.PMArr
             }
@@ -1223,21 +1263,27 @@ export default {
           afterChange: (changes, opt) => {
             // 计算整经头文
             if (opt === 'edit') {
-              let arrWarp = JSON.parse(JSON.stringify(this.tableData.warp.data.slice(2, 5)))
-              let arrWarpBack = JSON.parse(JSON.stringify(this.tableData.warpBack.data.slice(2, 5)))
+              // 如果输入厘米数，计算根数 changes是一个二维数组，取第一个数组，第一个参数是行，第二个参数是列，第三个参数是旧值，第四个参数是新值
+              let change = changes[0]
+              if (change[0] === 2) {
+                this.$set(this.tableData.warp.data[3], change[1], Math.round(change[3] * 100 * this.jingmi / 100))
+                this.$refs.warp.hotInstance.setDataAtCell([[3, change[1], Math.round(change[3] * 100 * this.jingmi / 100)]])
+              }
+              let arrWarp = JSON.parse(JSON.stringify(this.tableData.warp.data.slice(3, 6)))
+              let arrWarpBack = JSON.parse(JSON.stringify(this.tableData.warpBack.data.slice(3, 6)))
               let merge = this.$refs.warp.hotInstance.getPlugin('MergeCells').mergedCellsCollection.mergedCells
               let mergeBack = this.$refs.warpBack.hotInstance.getPlugin('MergeCells').mergedCellsCollection.mergedCells
               merge.forEach((item) => {
-                if (item.row === 3 || item.row === 4) {
+                if (item.row === 4 || item.row === 5) {
                   for (let i = (item.col + 1); i < (item.col + item.colspan); i++) {
-                    arrWarp[item.row - 2][i] = arrWarp[item.row - 2][item.col]
+                    arrWarp[item.row - 3][i] = arrWarp[item.row - 3][item.col]
                   }
                 }
               })
               mergeBack.forEach((item) => {
-                if (item.row === 3 || item.row === 4) {
+                if (item.row === 4 || item.row === 5) {
                   for (let i = (item.col + 1); i < (item.col + item.colspan); i++) {
-                    arrWarpBack[item.row - 2][i] = arrWarpBack[item.row - 2][item.col]
+                    arrWarpBack[item.row - 3][i] = arrWarpBack[item.row - 3][item.col]
                   }
                 }
               })
@@ -1260,7 +1306,7 @@ export default {
           licenseKey: 'non-commercial-and-evaluation', // 申明非商业用途
           mergeCells: true,
           width: '100%',
-          height: 250
+          height: 280
         },
         warpBack: {
           data: [
@@ -1269,10 +1315,11 @@ export default {
             [null],
             [null],
             [null],
+            [null],
             [null]
           ],
           rowHeaders: (index) => {
-            let headerArr = ['序号', '主/夹', '根数', '合并项', '合并项', '穿综法']
+            let headerArr = ['序号', '主/夹', '厘米数', '根数', '合并项', '合并项', '穿综法']
             return `<div style="height:38px;line-height:38px;color:#666;display:table-row">${headerArr[index]}</div>`
           },
           rowHeaderWidth: 80,
@@ -1287,7 +1334,7 @@ export default {
               cellProperties.type = 'dropdown'
               cellProperties.source = this.colorLength.map(item => item.label)
             }
-            if (row === 5) {
+            if (row === 6) {
               cellProperties.type = 'dropdown'
               cellProperties.source = this.PMArr
             }
@@ -1338,21 +1385,27 @@ export default {
           afterChange: (changes, opt) => {
             // 计算整经头文
             if (opt === 'edit') {
-              let arrWarp = JSON.parse(JSON.stringify(this.tableData.warp.data.slice(2, 5)))
-              let arrWarpBack = JSON.parse(JSON.stringify(this.tableData.warpBack.data.slice(2, 5)))
+              // 如果输入厘米数，计算根数 changes是一个二维数组，取第一个数组，第一个参数是行，第二个参数是列，第三个参数是旧值，第四个参数是新值
+              let change = changes[0]
+              if (change[0] === 2) {
+                this.$set(this.tableData.warpBack.data[3], change[1], Math.round(change[3] * 100 * this.jingmi / 100))
+                this.$refs.warpBack.hotInstance.setDataAtCell([[3, change[1], Math.round(change[3] * 100 * this.jingmi / 100)]])
+              }
+              let arrWarp = JSON.parse(JSON.stringify(this.tableData.warp.data.slice(3, 6)))
+              let arrWarpBack = JSON.parse(JSON.stringify(this.tableData.warpBack.data.slice(3, 6)))
               let merge = this.$refs.warp.hotInstance.getPlugin('MergeCells').mergedCellsCollection.mergedCells
               let mergeBack = this.$refs.warpBack.hotInstance.getPlugin('MergeCells').mergedCellsCollection.mergedCells
               merge.forEach((item) => {
-                if (item.row === 3 || item.row === 4) {
+                if (item.row === 4 || item.row === 5) {
                   for (let i = (item.col + 1); i < (item.col + item.colspan); i++) {
-                    arrWarp[item.row - 2][i] = arrWarp[item.row - 2][item.col]
+                    arrWarp[item.row - 3][i] = arrWarp[item.row - 3][item.col]
                   }
                 }
               })
               mergeBack.forEach((item) => {
-                if (item.row === 3 || item.row === 4) {
+                if (item.row === 4 || item.row === 5) {
                   for (let i = (item.col + 1); i < (item.col + item.colspan); i++) {
-                    arrWarpBack[item.row - 2][i] = arrWarpBack[item.row - 2][item.col]
+                    arrWarpBack[item.row - 3][i] = arrWarpBack[item.row - 3][item.col]
                   }
                 }
               })
@@ -1375,7 +1428,7 @@ export default {
           licenseKey: 'non-commercial-and-evaluation', // 申明非商业用途
           mergeCells: true,
           width: '100%',
-          height: 250
+          height: 280
         },
         weft: {
           data: [
@@ -1384,10 +1437,11 @@ export default {
             [null],
             [null],
             [null],
+            [null],
             [null]
           ],
           rowHeaders: (index) => {
-            let headerArr = ['序号', '主/夹', '根数', '合并项', '合并项', '纹版图']
+            let headerArr = ['序号', '主/夹', '厘米数', '根数', '合并项', '合并项', '纹版图']
             return `<div style="height:38px;line-height:38px;color:#666;display:table-row">${headerArr[index]}</div>`
           },
           rowHeaderWidth: 80,
@@ -1402,7 +1456,7 @@ export default {
               cellProperties.type = 'dropdown'
               cellProperties.source = this.colorLength.map(item => item.label)
             }
-            if (row === 5) {
+            if (row === 6) {
               cellProperties.type = 'dropdown'
               cellProperties.source = this.GLArr
             }
@@ -1453,19 +1507,24 @@ export default {
           afterChange: (changes, opt) => {
             // 计算纬向总计
             if (opt === 'edit') {
-              let arrWeft = JSON.parse(JSON.stringify(this.tableData.weft.data.slice(2, 5)))
-              let arrWeftBack = JSON.parse(JSON.stringify(this.tableData.weftBack.data.slice(2, 5)))
+              let change = changes[0]
+              if (change[0] === 2) {
+                this.$set(this.tableData.weft.data[3], change[1], Math.round(change[3] * 100 * this.weimi / 100))
+                this.$refs.weft.hotInstance.setDataAtCell([[3, change[1], Math.round(change[3] * 100 * this.weimi / 100)]])
+              }
+              let arrWeft = JSON.parse(JSON.stringify(this.tableData.weft.data.slice(3, 6)))
+              let arrWeftBack = JSON.parse(JSON.stringify(this.tableData.weftBack.data.slice(3, 6)))
               let merge = this.$refs.weft.hotInstance.getPlugin('MergeCells').mergedCellsCollection.mergedCells
               let mergeBack = this.$refs.weftBack.hotInstance.getPlugin('MergeCells').mergedCellsCollection.mergedCells
               merge.forEach((item) => {
-                if (item.row === 3 || item.row === 4) {
+                if (item.row === 4 || item.row === 5) {
                   for (let i = (item.col + 1); i < (item.col + item.colspan); i++) {
                     arrWeft[item.row - 2][i] = arrWeft[item.row - 2][item.col]
                   }
                 }
               })
               mergeBack.forEach((item) => {
-                if (item.row === 3 || item.row === 4) {
+                if (item.row === 4 || item.row === 5) {
                   for (let i = (item.col + 1); i < (item.col + item.colspan); i++) {
                     arrWeftBack[item.row - 2][i] = arrWeftBack[item.row - 2][item.col]
                   }
@@ -1490,7 +1549,7 @@ export default {
           licenseKey: 'non-commercial-and-evaluation', // 申明非商业用途
           mergeCells: true,
           width: '100%',
-          height: 250
+          height: 280
         },
         weftBack: {
           data: [
@@ -1499,10 +1558,11 @@ export default {
             [null],
             [null],
             [null],
+            [null],
             [null]
           ],
           rowHeaders: (index) => {
-            let headerArr = ['序号', '主/夹', '根数', '合并项', '合并项', '纹版图']
+            let headerArr = ['序号', '主/夹', '厘米数', '根数', '合并项', '合并项', '纹版图']
             return `<div style="height:38px;line-height:38px;color:#666;display:table-row">${headerArr[index]}</div>`
           },
           rowHeaderWidth: 80,
@@ -1517,7 +1577,7 @@ export default {
               cellProperties.type = 'dropdown'
               cellProperties.source = this.colorLength.map(item => item.label)
             }
-            if (row === 5) {
+            if (row === 6) {
               cellProperties.type = 'dropdown'
               cellProperties.source = this.GLArr
             }
@@ -1568,21 +1628,26 @@ export default {
           afterChange: (changes, opt) => {
             // 计算纬向总计
             if (opt === 'edit') {
-              let arrWeft = JSON.parse(JSON.stringify(this.tableData.weft.data.slice(2, 5)))
-              let arrWeftBack = JSON.parse(JSON.stringify(this.tableData.weftBack.data.slice(2, 5)))
+              let change = changes[0]
+              if (change[0] === 2) {
+                this.$set(this.tableData.weftBack.data[3], change[1], Math.round(change[3] * 100 * this.weimi / 100))
+                this.$refs.weftBack.hotInstance.setDataAtCell([[3, change[1], Math.round(change[3] * 100 * this.weimi / 100)]])
+              }
+              let arrWeft = JSON.parse(JSON.stringify(this.tableData.weft.data.slice(3, 6)))
+              let arrWeftBack = JSON.parse(JSON.stringify(this.tableData.weftBack.data.slice(3, 6)))
               let merge = this.$refs.weft.hotInstance.getPlugin('MergeCells').mergedCellsCollection.mergedCells
               let mergeBack = this.$refs.weftBack.hotInstance.getPlugin('MergeCells').mergedCellsCollection.mergedCells
               merge.forEach((item) => {
-                if (item.row === 3 || item.row === 4) {
+                if (item.row === 4 || item.row === 5) {
                   for (let i = (item.col + 1); i < (item.col + item.colspan); i++) {
-                    arrWeft[item.row - 2][i] = arrWeft[item.row - 2][item.col]
+                    arrWeft[item.row - 3][i] = arrWeft[item.row - 3][item.col]
                   }
                 }
               })
               mergeBack.forEach((item) => {
-                if (item.row === 3 || item.row === 4) {
+                if (item.row === 4 || item.row === 5) {
                   for (let i = (item.col + 1); i < (item.col + item.colspan); i++) {
-                    arrWeftBack[item.row - 2][i] = arrWeftBack[item.row - 2][item.col]
+                    arrWeftBack[item.row - 3][i] = arrWeftBack[item.row - 3][item.col]
                   }
                 }
               })
@@ -1605,7 +1670,7 @@ export default {
           licenseKey: 'non-commercial-and-evaluation', // 申明非商业用途
           mergeCells: true,
           width: '100%',
-          height: 250
+          height: 280
         }
       },
       // 是否为双面巾
@@ -1627,9 +1692,11 @@ export default {
         warpBack: ['', ''],
         weftBack: ['', '']
       },
+      weimi: 0,
       weight: '',
       coefficient: [],
-      desc: ''
+      desc: '',
+      canvasHeight: 0
     }
   },
   watch: {
@@ -1681,9 +1748,10 @@ export default {
     PMArr () {
       return new Array(this.repeatPM.length).fill('').map((item, index) => this.romanNum[index])
     },
-    weimi () {
-      if (this.weftInfo.neichang && this.weftInfo.rangwei) {
-        return ((this.weftInfo.total / (this.weftInfo.neichang + this.weftInfo.rangwei)) * 100).toFixed(2)
+    //  精密
+    jingmi () {
+      if (this.warpInfo.reed && this.warpInfo.xishu && this.warpInfo.reed_method) {
+        return (1 / this.warpInfo.xishu * this.warpInfo.reed * this.warpInfo.reed_method).toFixed(2)
       } else {
         return 0
       }
@@ -1922,16 +1990,17 @@ export default {
         return '夹' + index
       }
     },
+    // 反向匹配主夹
+    filterMethodsF (name) {
+      if (name === '主') {
+        return 0
+      } else {
+        return name.substring(1)
+      }
+    },
     saveAll () {
-      // saveCraft
-      // console.log(this.allMaterial)
-      // 获取合并单元格信息
-      // console.log(this.$refs)
       let errorInput = false
       errorInput = this.colour.some((itemColour) => {
-        if (!itemColour.value) {
-          return true
-        }
         return itemColour.colorWarp.some((itemColor) => {
           if (!itemColor.name) {
             return true
@@ -2004,7 +2073,7 @@ export default {
         return
       }
       errorInput = this.tableData.warp.data.some((item, index) => {
-        if (index === 2 || index === 1) {
+        if (index === 3 || index === 1) {
           return item.some((value) => {
             return !value
           })
@@ -2020,7 +2089,7 @@ export default {
       }
       if (this.ifDouble.warp) {
         errorInput = this.tableData.warpBack.data.some((item, index) => {
-          if (index === 2 || index === 1) {
+          if (index === 3 || index === 1) {
             return item.some((value) => {
               return !value
             })
@@ -2036,7 +2105,7 @@ export default {
         return
       }
       errorInput = this.tableData.weft.data.some((item, index) => {
-        if (index === 2 || index === 1) {
+        if (index === 3 || index === 1) {
           return item.some((value) => {
             return !value
           })
@@ -2052,7 +2121,7 @@ export default {
       }
       if (this.ifDouble.weft) {
         errorInput = this.tableData.weftBack.data.some((item, index) => {
-          if (index === 2 || index === 1) {
+          if (index === 3 || index === 1) {
             return item.some((value) => {
               return !value
             })
@@ -2121,7 +2190,9 @@ export default {
       }
       let formData = {
         id: null,
-        is_draft: 1,
+        is_draft: 2,
+        title: this.name,
+        design_url: this.$refs.uploada.uploadFiles.map((item) => { return 'http://zhihui.tlkrzf.com/' + item.response.key }),
         company_id: window.sessionStorage.getItem('company_id'),
         product_id: this.$route.params.id,
         weight: this.weight,
@@ -2417,12 +2488,357 @@ export default {
       if (this.number > 1) {
         this.tableData[type].number--
       }
+    },
+    beforeAvatarUpload (file) {
+      let fileName = file.name.lastIndexOf('.')// 取到文件名开始到最后一个点的长度
+      let fileNameLength = file.name.length// 取到文件名长度
+      let fileFormat = file.name.substring(fileName + 1, fileNameLength)// 截
+      this.postData.key = Date.parse(new Date()) + '.' + fileFormat
+      const isJPG = file.type === 'image/jpeg'
+      const isPNG = file.type === 'image/png'
+      const isLt2M = file.size / 1024 / 1024 < 20
+      if (!isJPG && !isPNG) {
+        this.$message.error('图片只能是 JPG/PNG 格式!')
+        return false
+      }
+      if (!isLt2M) {
+        this.$message.error('图片大小不能超过 20MB!')
+        return false
+      }
+    },
+    // 图像预览
+    loadImg () {
+      let errorInput = false
+      errorInput = this.colour.some((itemColour) => {
+        return itemColour.colorWarp.some((itemColor) => {
+          if (!itemColor.name) {
+            return true
+          }
+        }) || itemColour.colorWeft.some((itemColor) => {
+          if (!itemColor.name) {
+            return true
+          }
+        })
+      })
+      if (errorInput) {
+        this.$message.error({
+          message: '检测到配色方案信息不完整'
+        })
+        return
+      }
+      errorInput = this.tableData.warp.data.some((item, index) => {
+        if (index === 3 || index === 1) {
+          return item.some((value) => {
+            return !value
+          })
+        } else {
+          return false
+        }
+      })
+      if (errorInput) {
+        this.$message.error({
+          message: '检测到经向排列信息不完整'
+        })
+        return
+      }
+      errorInput = this.tableData.weft.data.some((item, index) => {
+        if (index === 3 || index === 1) {
+          return item.some((value) => {
+            return !value
+          })
+        } else {
+          return false
+        }
+      })
+      if (errorInput) {
+        this.$message.error({
+          message: '检测到纬向排列信息不完整'
+        })
+        return
+      }
+      if (!this.warpInfo.reed_width) {
+        this.$message.error({
+          message: '请输入筘幅'
+        })
+        return
+      }
+      if (!this.weftInfo.neichang) {
+        this.$message.error({
+          message: '请输入内长'
+        })
+        return
+      }
+      if (!this.weftInfo.rangwei) {
+        this.$message.error({
+          message: '请输入让位'
+        })
+        return
+      }
+      if (this.PMFlag === 'normal') {
+        errorInput = this.repeatPM.some((item) => {
+          return item.number === '' || Number(item.number) === 0
+        })
+      } else {
+        this.repeatPM.forEach((item) => {
+          item.children.forEach((itemChild) => {
+            if (itemChild.number === '') {
+              errorInput = true
+            }
+          })
+        })
+      }
+      if (errorInput) {
+        this.$message.error({
+          message: '请填写穿综循环的根数'
+        })
+        return
+      }
+      this.canvasHeight = (Number(this.weftInfo.neichang) + Number(this.weftInfo.rangwei)) / this.warpInfo.reed_width * 600 * 4
+      this.getImg = true
+      // 展平合并信息
+      let warpTable = this.getFlatTable(this.tableData.warp.data, 'warp').map((item) => {
+        if (!item.GLorPM) {
+          item.GLorPM = 'Ⅰ'
+        }
+        return item
+      })
+      let weftTable = this.getFlatTable(this.tableData.weft.data, 'weft').map((item) => {
+        if (!item.GLorPM) {
+          item.GLorPM = 'A'
+        }
+        return item
+      })
+      // 将展开的合并信息结合穿综和纹版信息
+      let warpGetPMNum = []
+      let weftGetGLNum = []
+      warpTable.forEach((item) => {
+        let len = warpGetPMNum.length
+        if (len > 0) {
+          if (warpGetPMNum[len - 1].PM === item.GLorPM) {
+            warpGetPMNum[len - 1].number += parseInt(item.number)
+          } else {
+            warpGetPMNum.push({
+              PM: item.GLorPM,
+              number: parseInt(item.number)
+            })
+          }
+        } else {
+          warpGetPMNum.push({
+            PM: item.GLorPM,
+            number: parseInt(item.number)
+          })
+        }
+      })
+      weftTable.forEach((item) => {
+        let len = weftGetGLNum.length
+        if (len > 0) {
+          if (weftGetGLNum[len - 1].GL === item.GLorPM) {
+            weftGetGLNum[len - 1].number += parseInt(item.number)
+          } else {
+            weftGetGLNum.push({
+              GL: item.GLorPM,
+              number: parseInt(item.number)
+            })
+          }
+        } else {
+          weftGetGLNum.push({
+            GL: item.GLorPM,
+            number: parseInt(item.number)
+          })
+        }
+      })
+      let warpGetPM = []
+      let weftGetGL = []
+      warpGetPMNum.forEach((item) => {
+        // 高级穿综
+        if (this.PMFlag === 'complex') {
+          let PM = this.repeatPM[this.romanNum.indexOf(item.PM)]
+          let PMFlatArr = []
+          PM.children.forEach((itemPM) => {
+            let PMVal = []
+            itemPM.children.forEach((itemChildren) => {
+              for (let i = 0; i < parseInt(itemChildren.repeat); i++) {
+                PMVal = PMVal.concat(itemChildren.value.split(','))
+              }
+            })
+            let times = parseInt(itemPM.number / PMVal.length) // 循环次数
+            let remainder = itemPM.number % PMVal.length // 取余数
+            for (let i = 0; i < times; i++) {
+              PMFlatArr = PMFlatArr.concat(PMVal)
+            }
+            PMFlatArr = PMFlatArr.concat(PMVal.filter((item, index) => index < remainder))
+          })
+          let times = parseInt(item.number / PMFlatArr.length)
+          let remainder = item.number % PMFlatArr.length
+          for (let i = 0; i < times; i++) {
+            warpGetPM = warpGetPM.concat(PMFlatArr)
+          }
+          warpGetPM = warpGetPM.concat(PMFlatArr.filter((item, index) => index < remainder))
+        } else {
+          let PM = this.repeatPM[this.romanNum.indexOf(item.PM)]
+          let PMArr = PM.value.split(',')
+          let times = parseInt(PM.number / PMArr.length)
+          let remainder = PM.number % PMArr.length
+          for (let i = 0; i < times; i++) {
+            warpGetPM = warpGetPM.concat(PMArr)
+          }
+          warpGetPM = warpGetPM.concat(PMArr.filter((item, index) => index < remainder))
+        }
+      })
+      weftGetGLNum.forEach((item) => {
+        let GL = this.mergeArray(this.GL[this.alphabet.indexOf(item.GL)]).filter((item) => item) // 剔除null
+        let times = item.number / GL.length
+        let remainder = item.number % GL.length
+        for (let i = 0; i < times; i++) {
+          weftGetGL = weftGetGL.concat(GL)
+        }
+        weftGetGL = weftGetGL.concat(GL.filter((item, index) => index < remainder))
+      })
+      // 获取画图数据
+      let warpCanvas = []
+      let weftCanvas = []
+      warpTable.forEach((item) => {
+        for (let i = 0; i < item.number; i++) {
+          warpCanvas.push({
+            color: item.color,
+            PM: warpGetPM[warpCanvas.length]
+          })
+        }
+      })
+      weftTable.forEach((item) => {
+        for (let i = 0; i < item.number; i++) {
+          weftCanvas.push({
+            color: item.color,
+            GL: weftGetGL[weftCanvas.length]
+          })
+        }
+      })
+      let warpColor = this.colour[0].colorWarp
+      let weftColor = this.colour[0].colorWeft
+      let canvasMatrix = []
+      let warpWidth = 600 / warpCanvas.length * 4
+      let weftWidth = this.canvasHeight / weftCanvas.length
+      warpCanvas.reduce((totalWarp, itemWarp) => {
+        weftCanvas.reduce((totalWeft, itemWeft) => {
+          canvasMatrix.push({
+            x: totalWarp,
+            y: totalWeft,
+            width: warpWidth,
+            height: weftWidth,
+            color: itemWeft.GL.replace(/，/g, ',').split(',').find((item) => item === itemWarp.PM) ? warpColor[itemWarp.color].color : weftColor[itemWeft.color].color
+          })
+          return totalWeft + weftWidth
+        }, 0)
+        return totalWarp + warpWidth
+      }, 0)
+      this.getImgLoading = true
+      setTimeout(() => {
+        let dom = this.$refs.myCanvas
+        let ctx = dom.getContext('2d')
+        ctx.beginPath()
+        ctx.clearRect(0, 0, 600, this.canvasHeight)
+        canvasMatrix.forEach((item) => {
+          ctx.fillStyle = item.color
+          ctx.fillRect(item.x, item.y, item.width, item.height)
+        })
+        let img = this.$refs.img
+        img.src = dom.toDataURL() // canvas转图片
+        this.getImgLoading = false
+      }, 100)
+    },
+    // 展平合并信息
+    getFlatTable (table, type) {
+      let tableArr = JSON.parse(JSON.stringify(table))
+      let mergeTable = JSON.parse(JSON.stringify(this.$refs[type].hotInstance.getPlugin('MergeCells').mergedCellsCollection.mergedCells))
+      // 获取完整的合并项信息
+      let firstMerge = this.getMergeInfo(mergeTable, 4, tableArr[0].length)
+      let secondMerge = this.getMergeInfo(mergeTable, 5, tableArr[0].length)
+      // 第一步，处理纹版图的合并信息
+      let GLMerge = mergeTable.filter(item => item.row === 6)
+      GLMerge.forEach((item) => {
+        for (let i = (item.col + 1); i < (item.col + item.colspan); i++) {
+          tableArr[item.row][i] = tableArr[item.row][item.col]
+        }
+      })
+      // 第二步，处理合并项的合并信息
+      let firstArr = []
+      firstMerge.forEach((item) => {
+        let temporaryStorage = [] // 临时存储合并项
+        for (let i = item.col; i < (item.col + item.colspan); i++) {
+          temporaryStorage.push({
+            order: tableArr[0][i],
+            color: this.filterMethodsF(tableArr[1][i]),
+            number: tableArr[3][i],
+            GLorPM: tableArr[6][i]
+          })
+        }
+        for (let i = 0; i < (tableArr[item.row][item.col] || 1); i++) {
+          firstArr.push(temporaryStorage)
+        }
+      })
+      let secondArr = []
+      secondMerge.forEach((item) => {
+        let temporaryStorage = firstArr.filter((itemFilter) => {
+          return itemFilter[0].order > item.col && itemFilter[0].order <= (item.col + item.colspan)
+        })
+        for (let i = 0; i < (tableArr[item.row][item.col] || 1); i++) {
+          secondArr.push(temporaryStorage)
+        }
+      })
+      // 多维数组展平
+      let flattenArr = this.mergeArray(secondArr)
+      return flattenArr
+    },
+    // 合并项信息处理
+    getMergeInfo (mergeTable, row, length) {
+      let mergeArr = mergeTable.filter(item => item.row === row).sort((a, b) => { return a.col - b.col })
+      let saveMerge = []
+      let col = 0
+      let mergeIndex = 0
+      while (col < length) {
+        if (mergeArr[mergeIndex]) {
+          if (col < mergeArr[mergeIndex].col) {
+            saveMerge.push({
+              col: col,
+              colspan: mergeArr[mergeIndex].col - col,
+              row: row
+            })
+            col = mergeArr[mergeIndex].col
+          } else {
+            saveMerge.push({
+              col: mergeArr[mergeIndex].col,
+              colspan: mergeArr[mergeIndex].colspan,
+              row: row
+            })
+            col = mergeArr[mergeIndex].col + mergeArr[mergeIndex].colspan
+            mergeIndex++
+          }
+        } else {
+          saveMerge.push({
+            col: col,
+            colspan: length - col,
+            row: row
+          })
+          col = length
+        }
+      }
+      return saveMerge
+    },
+    // 合并数组
+    mergeArray (arr, saveArr) {
+      let array = saveArr || []
+      arr.forEach((item) => {
+        if (Array.isArray(item)) {
+          this.mergeArray(item, array)
+        } else {
+          array.push(item)
+        }
+      })
+      return array
     }
   },
   mounted () {
-    Promise.all([porductOne({
-      id: this.$route.params.id
-    }), YarnList({
+    Promise.all([YarnList({
       company_id: this.companyId
     }), editList({
       company_id: this.companyId
@@ -2432,16 +2848,15 @@ export default {
       company_id: this.companyId
     }), PMList({
 
-    })]).then((res) => {
-      // console.log(res)
-      this.productInfo = res[0].data.data
-      this.yarn.yarnArr = res[1].data.data
-      this.sideArr = res[2].data.data.side
-      this.modeleArr = res[2].data.data.type
-      this.methodArr = res[2].data.data.method
-      this.colorArr = this.colorArr.concat(res[3].data.data)
+    }), getToken()]).then((res) => {
+      this.yarn.yarnArr = res[0].data.data
+      this.sideArr = res[1].data.data.side
+      this.modeleArr = res[1].data.data.type
+      this.methodArr = res[1].data.data.method
+      this.colorArr = this.colorArr.concat(res[2].data.data)
       // this.material.materialArr = res[4].data.data
-      this.commonPMArr = res[5].data.data
+      this.commonPMArr = res[4].data.data
+      this.postData.token = res[5].data.data
       this.loading = false
     })
     // 监听快捷键，给表格插入列
@@ -2544,6 +2959,23 @@ export default {
     cursor: pointer;
     &:hover {
       color: #1a95ff;
+    }
+  }
+  .closeButton {
+    font-size: 26px;
+    line-height: 40px;
+    width: 40px;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(0, 0, 0, 0.6);
+    text-align: center;
+    cursor: pointer;
+    &:hover {
+      color: #fff;
+      background: #1a95ff;
     }
   }
 }
