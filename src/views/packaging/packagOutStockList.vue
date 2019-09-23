@@ -260,35 +260,37 @@ export default {
         this.total = res.data.meta.total
         this.list = res.data.data.map((item) => {
           let productList = []
-          item.order_info.order_batch.forEach((itemOrder) => {
-            itemOrder.batch_info.forEach((itemBatch) => {
-              if (productList.find((itemFind) => itemFind.productCode === itemBatch.productCode)) {
+          let deliveryTime = []
+          for (let prop in item.order_info.order_batch) {
+            let itemOrder = item.order_info.order_batch[prop]
+            for (let index in itemOrder) {
+              let itemBatch = itemOrder[index]
+              if (productList.find((itemFind) => itemFind.productCode === itemBatch.product_code)) {
                 let mark = -1
                 productList.forEach((itemFind, index) => {
-                  if (itemFind.productCode === itemBatch.productCode) {
+                  if (itemFind.productCode === itemBatch.product_code) {
                     mark = index
                   }
                 })
-                productList[mark].sum = productList[mark].sum + itemBatch.size.reduce((total, current) => {
-                  return total + parseInt(current.numbers)
-                }, 0)
+                productList[mark].sum = productList[mark].sum + itemBatch.numbers
               } else {
                 productList.push({
-                  productInfo: itemBatch.productInfo,
-                  productCode: itemBatch.productCode,
-                  sum: itemBatch.size.reduce((total, current) => {
-                    return total + parseInt(current.numbers)
-                  }, 0)
+                  productInfo: itemBatch,
+                  productCode: itemBatch.product_code,
+                  sum: itemBatch.numbers
                 })
               }
-            })
-          })
+              if (deliveryTime.indexOf(itemBatch.delivery_time) === -1) {
+                deliveryTime.push(itemBatch.delivery_time)
+              }
+            }
+          }
           // 统计产品库存调取数量
           productList = productList.map((itemProduct) => {
             return {
-              img: itemProduct.productInfo.img,
+              img: itemProduct.productInfo.category_info.images,
               productCode: itemProduct.productCode,
-              productType: (itemProduct.productInfo.category_info.product_category ? itemProduct.productInfo.category_info.product_category + '/' : '') + (itemProduct.productInfo.type_name ? itemProduct.productInfo.type_name + '/' : '') + (itemProduct.productInfo.style_name ? itemProduct.productInfo.style_name : '') + (itemProduct.productInfo.flower_id ? '/' + itemProduct.productInfo.flower_id : ''),
+              productType: (itemProduct.productInfo.category_info.category_name ? itemProduct.productInfo.category_info.category_name + '/' : '') + (itemProduct.productInfo.category_info.type_name ? itemProduct.productInfo.category_info.type_name + '/' : '') + (itemProduct.productInfo.category_info.style_name ? itemProduct.productInfo.category_info.style_name : '') + (itemProduct.productInfo.category_info.flower_name ? '/' + itemProduct.productInfo.category_info.flower_name : ''),
               sum: itemProduct.sum
             }
           })
@@ -298,7 +300,7 @@ export default {
             order_code: item.order_info.order_code,
             order_time: item.order_info.order_time,
             client_name: item.order_info.client_name,
-            delivery_time: item.order_info.order_batch.map((item) => item.delivery_time),
+            delivery_time: deliveryTime,
             productList: productList
           }
         })

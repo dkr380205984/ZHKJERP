@@ -481,47 +481,46 @@ export default {
         }
       })
       // 初始化产品信息
-      orderInfo.order_batch.forEach(item => {
-        item.batch_info.forEach(value => {
-          value.size.forEach(val => {
-            if (this.$route.params.product_code === value.productCode) {
-              this.productList.product_code = value.productCode
-              this.productList.type = value.productInfo.category_info.product_category + '/' + value.productInfo.type_name + '/' + value.productInfo.style_name + (value.productInfo.flower_id ? '/' + value.productInfo.flower_id : '')
-              if (!this.productList.batch_info) {
-                this.productList.batch_info = []
-              }
-              let flag = this.productList.batch_info.find(key => key.batch_id === item.batch_id)
-              if (!flag) {
-                this.productList.batch_info.push({
-                  batch_id: item.batch_id,
-                  delivery_time: item.delivery_time,
-                  size_info: [{
-                    size: val.name[0],
-                    color: val.name[1],
-                    number: val.numbers
-                  }]
+      for (let prop in orderInfo.order_batch) {
+        let item = orderInfo.order_batch[prop]
+        item.forEach(valPro => {
+          if (this.$route.params.product_code === valPro.product_code) {
+            this.productList.product_code = valPro.product_code
+            this.productList.type = valPro.category_info.category_name + '/' + valPro.category_info.type_name + '/' + valPro.category_info.style_name + (valPro.category_info.flower_name ? '/' + valPro.category_info.flower_name : '')
+            if (!this.productList.batch_info) {
+              this.productList.batch_info = []
+            }
+            let flag = this.productList.batch_info.find(key => key.batch_id === valPro.batch_id)
+            if (!flag) {
+              this.productList.batch_info.push({
+                batch_id: valPro.batch_id,
+                delivery_time: valPro.delivery_time,
+                size_info: [{
+                  size: valPro.size,
+                  color: valPro.color,
+                  number: valPro.numbers
+                }]
+              })
+            } else {
+              let flag1 = flag.size_info.find(key => (key.size === valPro.size && key.color === valPro.color))
+              if (!flag1) {
+                flag.size_info.push({
+                  size: valPro.size,
+                  color: valPro.color,
+                  number: valPro.numbers
                 })
               } else {
-                let flag1 = flag.size_info.find(key => (key.size === val.name[0] && key.color === val.name[1]))
-                if (!flag1) {
-                  flag.size_info.push({
-                    size: val.name[0],
-                    color: val.name[1],
-                    number: val.numbers
-                  })
-                } else {
-                  flag1.number = Number(flag1.number) + Number(val.numbers)
-                }
-              }
-              // 初始化颜色尺码数组
-              let sizeColor = this.options.colorList.find(key => key === (val.name[0] + '/' + val.name[1]))
-              if (!sizeColor) {
-                this.options.colorList.push((val.name[0] + '/' + val.name[1]))
+                flag1.number = Number(flag1.number) + Number(valPro.numbers)
               }
             }
-          })
+            // 初始化颜色尺码数组
+            let sizeColor = this.options.colorList.find(key => key === (valPro.size + '/' + valPro.color))
+            if (!sizeColor) {
+              this.options.colorList.push((valPro.size + '/' + valPro.color))
+            }
+          }
         })
-      })
+      }
       this.list.product_code = this.productList.product_code
       this.list.product_class = this.productList.type
       this.productList.batch_info.forEach(item => {

@@ -322,12 +322,45 @@ export default {
         }]
       }).then(res => {
         console.log(res.data.data)
+        if (res.data.status) {
+          this.showShade = false
+          this.$message.success('添加成功')
+          this.getStockInfo()
+        }
       })
     },
     stock (type, item) {
       this.showShade = true
       this.stockObj.colorSize = item
       this.type = type
+    },
+    getStockInfo () {
+      this.log = []
+      this.filterLog = []
+      this.stock_detail = []
+      productStockOne({
+        product_id: this.$route.params.productId
+      }).then((res) => {
+        console.log(res)
+        let data = res.data.data
+        this.product_info = data.product_info
+        this.product_info.size.forEach(valSize => {
+          this.product_info.color.forEach(valColor => {
+            this.stock_detail.push({
+              size: valSize.measurement,
+              color: valColor.color_name
+            })
+          })
+        })
+        this.stock_detail.forEach(item => {
+          let flag = data.data_detail.find(val => (val.color === item.color && val.size === item.size))
+          if (flag) {
+            item.stock_number = flag.total_stock
+          }
+        })
+        this.log = data.data_log
+        this.filterLog = this.log
+      })
     }
   },
   computed: {
@@ -385,32 +418,7 @@ export default {
     }
   },
   mounted () {
-    productStockOne({
-      product_id: this.$route.params.productId
-    }).then((res) => {
-      console.log(res)
-      let data = res.data.data
-      this.product_info = data.product_info
-      this.product_info.size.forEach(valSize => {
-        this.product_info.color.forEach(valColor => {
-          this.stock_detail.push({
-            size: valSize.measurement,
-            color: valColor.color_name
-          })
-        })
-      })
-      this.stock_detail.forEach(item => {
-        let flag = data.data_detail.find(val => (val.color === item.color && val.size === item.size))
-        if (flag) {
-          item.stock_number = flag.total_stock
-        }
-      })
-      this.log = data.data_log
-      this.filterLog = this.log
-      // this.total = this.list.reduce((total, current) => {
-      //   return total + current.stock_number
-      // }, 0)
-    })
+    this.getStockInfo()
   },
   watch: {
     filterList: {

@@ -457,7 +457,7 @@
             <li class="material_info"
               v-for="(item,index) in design"
               :key="index">
-              <span style="flex:2">{{item.product_code}}({{item.category_info.product_category + '/' + item.type_name + '/' + item.style_name}})</span>
+              <span style="flex:2">{{item.product_code}}({{item.category_info.category_name + '/' + item.category_info.type_name + '/' + item.category_info.style_name}})</span>
               <span class="col"
                 style="flex:4">
                 <span v-for="(itemType,indexType) in item.type"
@@ -1206,8 +1206,22 @@
               <span class="label">打样样品:</span>
               <div class="content">
                 <el-select v-model="submitInfo.sample"
-                  class="input_item elInput marginRight"
+                  class="input_item elInput"
                   placeholder="请选择打样样品">
+                  <el-option v-for="item in []"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </div>
+            </div>
+            <div class="item">
+              <span class="label"></span>
+              <div class="content">
+                <el-select v-model="submitInfo.sample_size_color"
+                  class="input_item elInput marginRight"
+                  placeholder="尺寸颜色">
                   <el-option v-for="item in []"
                     :key="item.value"
                     :label="item.label"
@@ -1226,6 +1240,16 @@
                 <el-input v-model="submitInfo.sampleIdea"
                   class="elInput"
                   placeholder="请输入该样品修改意见"></el-input>
+              </div>
+            </div>
+            <div class="item">
+              <span class="label">完成时间:</span>
+              <div class="content">
+                <el-date-picker v-model="submitInfo.sample_complete_time"
+                  type="date"
+                  class="elInput"
+                  placeholder="选择日期">
+                </el-date-picker>
               </div>
             </div>
             <div class="item">
@@ -1431,10 +1455,13 @@ export default {
       handleType: 'ok',
       submitInfo: {
         isSample: true,
+        sample_info: [{
+          sample: '',
+          number: '',
+          sampleIdea: '',
+          sample_size_color: ''
+        }],
         sampleType: '',
-        sample: '',
-        number: '',
-        sampleIdea: '',
         isCustomerPay: false,
         price: '',
         totalNum: '',
@@ -1448,7 +1475,8 @@ export default {
             name: '36支单股晴纶',
             number: 40
           }
-        ]
+        ],
+        sample_complete_time: ''
       },
       design: [], // 制版工艺
       designShare: false
@@ -1829,19 +1857,13 @@ export default {
         this.process[key] = this.process[key] > 100 ? 100 : this.process[key].toFixed(1)
       }
       // 整理时间线 并排序
-      this.order_info.order_batch.forEach((item, index) => {
-        if (index === this.order_info.order_batch.length - 1) {
-          this.timeAxis.push({
-            name: '交货日期',
-            time: item.delivery_time
-          })
-        } else {
-          this.timeAxis.push({
-            name: '第' + (index + 1) + '批',
-            time: item.delivery_time
-          })
-        }
-      })
+      for (let prop in this.order_info.order_batch) {
+        let item = this.order_info.order_batch[prop]
+        this.timeAxis.push({
+          name: '第' + prop + '批',
+          time: item[0].delivery_time
+        })
+      }
       this.timeAxis.push({
         name: '今天',
         time: this.getTime(new Date())
@@ -1951,11 +1973,12 @@ export default {
       })
       console.log(this.productRate)
       // 制版工艺初始化
-      this.order_info.order_batch.forEach(valBat => {
-        valBat.batch_info.forEach(valPro => {
-          if (!this.design.find(item => item.id === valPro.productInfo.id)) {
+      for (let prop in this.order_info.order_batch) {
+        let valBat = this.order_info.order_batch[prop]
+        valBat.forEach(valPro => {
+          if (!this.design.find(item => item.category_info.product_id === valPro.category_info.product_id)) {
             this.design.push({
-              ...valPro.productInfo,
+              ...valPro,
               checked: [],
               type: [
                 {
@@ -1973,7 +1996,30 @@ export default {
             })
           }
         })
-      })
+      }
+      // this.order_info.order_batch.forEach(valBat => {
+      //   valBat.batch_info.forEach(valPro => {
+      //     if (!this.design.find(item => item.id === valPro.productInfo.id)) {
+      //       this.design.push({
+      //         ...valPro.productInfo,
+      //         checked: [],
+      //         type: [
+      //           {
+      //             type: '工艺',
+      //             user_name: '',
+      //             status: '',
+      //             time: ''
+      //           }, {
+      //             type: '制版',
+      //             user_name: '',
+      //             status: '',
+      //             time: ''
+      //           }
+      //         ]
+      //       })
+      //     }
+      //   })
+      // })
       // 物料概述
       let materialInfo = res[1].data.data
       let processInfo = this.order_log.material_production
@@ -2233,44 +2279,46 @@ export default {
       })
       // 出库概述
       let orderInfo = this.order_info
-      orderInfo.order_batch.forEach(item => {
-        item.batch_info.forEach(val => {
-          val.size.forEach(valSize => {
-            let flag = this.outStockList.find(key => key.batch_id === item.batch_id)
-            if (!flag) {
-              this.outStockList.push({
-                batch_id: item.batch_id,
-                delivery_time: item.delivery_time,
+      for (let prop in orderInfo.order_batch) {
+        let item = orderInfo.order_batch[prop]
+        item.forEach(val => {
+          let flag = this.outStockList.find(key => key.batch_id === val.batch_id)
+          if (!flag) {
+            this.outStockList.push({
+              batch_id: val.batch_id,
+              delivery_time: val.delivery_time,
+              product_info: [{
+                product_code: val.product_code,
+                product_type: val.category_info.category_name + '/' + val.category_info.type_name + '/' + val.category_info.style_name,
+                number: val.numbers,
+                img: val.category_info.images.map(value => {
+                  return value.image
+                }),
+                unit: val.category_info.unit
+              }]
+            })
+          } else {
+            let flag1 = flag.product_info.find(key => key.product_code === val.product_code)
+            if (!flag1) {
+              flag.product_info.push({
+                batch_id: val.batch_id,
+                delivery_time: val.delivery_time,
                 product_info: [{
-                  product_code: val.productCode,
-                  product_type: val.productInfo.category_info.product_category + '/' + val.productInfo.type_name + '/' + val.productInfo.style_name,
-                  number: valSize.numbers,
-                  img: [...val.productInfo.img],
-                  unit: val.productInfo.category_info.name
+                  product_code: val.product_code,
+                  product_type: val.category_info.category_name + '/' + val.category_info.type_unit + '/' + val.category_info.style_name,
+                  number: val.numbers,
+                  img: val.category_info.images.map(value => {
+                    return value.image
+                  }),
+                  unit: val.category_info.name
                 }]
               })
             } else {
-              let flag1 = flag.product_info.find(key => key.product_code === val.productCode)
-              if (!flag1) {
-                flag.product_info.push({
-                  product_code: val.productCode,
-                  product_type: val.productInfo.category_info.product_category + '/' + val.productInfo.type_name + '/' + val.productInfo.style_name,
-                  number: valSize.numbers,
-                  img: [...val.productInfo.img],
-                  unit: val.productInfo.category_info.name
-                })
-              } else {
-                flag1.number = Number(flag1.number) + Number(valSize.numbers)
-                flag1.img.push(...val.productInfo.img)
-              }
+              flag1.number = Number(flag1.number) + Number(val.numbers)
             }
-            let fleg = this.designList.find(key => key.product_code === val.productCode)
-            if (fleg) {
-              fleg.img = val.productInfo.img
-            }
-          })
+          }
         })
-      })
+      }
       this.productPriceList = orderInfo.order_batch
       let stockOutInfo = this.order_log.stock_out_info // 样单出库日志
       stockOutInfo.forEach(item => {
@@ -2359,25 +2407,25 @@ export default {
           })
         }
       })
-      this.order_info.order_batch.forEach((itemBacth) => {
-        itemBacth.batch_info.forEach((itemPro) => {
-          itemPro.size.forEach((itemSize) => {
-            const finded = this.productDetail.find((itemFind) => itemFind.productCode === itemPro.productCode && itemFind.size === itemSize.name.join('/'))
-            if (!finded) {
-              this.productDetail.push({
-                product_info: itemPro.productInfo,
-                id: itemPro.productInfo.id,
-                number: '',
-                cost: itemSize.unitPrice,
-                productCode: itemPro.productCode,
-                size: itemSize.name.join('/'),
-                unit: itemPro.productInfo.category_info.name,
-                type: itemPro.productInfo.category_info.product_category + '/' + itemPro.productInfo.type_name + '/' + itemPro.productInfo.style_name
-              })
-            }
-          })
+      for (let prop in this.order_info.order_batch) {
+        let itemBacth = this.order_info.order_batch[prop]
+        itemBacth.forEach(itemPro => {
+          const finded = this.productDetail.find((itemFind) => itemFind.productCode === itemPro.product_code && itemFind.size === (itemPro.size + '/' + itemPro.color))
+          console.log(finded)
+          if (!finded) {
+            this.productDetail.push({
+              product_info: itemPro,
+              id: itemPro.id,
+              number: '',
+              cost: itemPro.unit_price,
+              productCode: itemPro.product_code,
+              size: itemPro.size + '/' + itemPro.color,
+              unit: itemPro.category_info.unit,
+              type: itemPro.category_info.category_name + '/' + itemPro.category_info.type_name + '/' + itemPro.category_info.style_name
+            })
+          }
         })
-      })
+      }
       this.loading = false
     })
   }

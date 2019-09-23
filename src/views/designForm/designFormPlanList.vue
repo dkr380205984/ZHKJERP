@@ -32,12 +32,11 @@
           :ref="'ctn'+item.id">
           <i class="el-icon-close"
             @click.stop="deleteCraft(item.id)"></i>
-          <img :src="item.design_url?item.design_url[0]:''"
-            :onerror="defaultImg"
-            height="170"
-            width="170"
-            style="padding:10px 10px 5px 10px" />
-
+          <div style="width:170px;height:170px;padding:10px 10px 5px 10px;display:flex;justify-content: center;align-items: center;">
+            <img :src="item.design_url?item.design_url[0]:''"
+              :onerror="defaultImg"
+              style="max-width:100%;max-height:100%" />
+          </div>
           <div class="canvasContent">{{item.title}}</div>
           <div class="canvasContent2">{{item.user_name}} / {{item.create_time}}</div>
         </div>

@@ -2392,7 +2392,7 @@ export default {
           this.$message.success({
             message: '添加成功'
           })
-          this.$router.push('/index/designFormDetail/' + res.data.data.id)
+          this.$router.push('/index/designFormPlanDetail/' + res.data.data.id)
         } else {
           this.$message.error({
             message: res.data.message

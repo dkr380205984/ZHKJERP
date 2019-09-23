@@ -2137,7 +2137,7 @@ export default {
         id: this.$route.params.id,
         is_draft: 1,
         company_id: window.sessionStorage.getItem('company_id'),
-        product_id: this.$route.params.id,
+        product_id: this.productInfo.product_id,
         weight: this.weight,
         desc: this.desc,
         yarn_coefficient: this.allMaterial.map((item, index) => {

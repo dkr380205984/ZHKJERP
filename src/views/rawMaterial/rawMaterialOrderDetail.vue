@@ -569,35 +569,34 @@ export default {
       // 初始化产品信息
       console.log(info)
       let arr = []
-      orderInfo.order_batch.forEach((item, key) => {
-        item.batch_info.forEach((value, index) => {
-          let types = value.productInfo.category_info.product_category + (value.productInfo.type_name ? '/' + value.productInfo.type_name : '') + (value.productInfo.style_name ? '/' + value.productInfo.type_name : '') + (value.productInfo.flower_id ? '/' + value.productInfo.flower_id : '')
-          value.size.forEach((val, ind) => {
-            // 判断产品是否有配料单
-            let flag = true
-            if (orderProductInfo[value.productCode]) {
-              let keys = orderProductInfo[value.productCode].find(a => ((a.size === val.name[0]) && (a.color_match_name === val.name[1])))
-              if (!keys) {
-                flag = false
-              }
-            } else {
+      for (let prop in orderInfo.order_batch) {
+        let item = orderInfo.order_batch[prop]
+        item.forEach(value => {
+          let types = value.category_info.category_name + (value.category_info.type_name ? '/' + value.category_info.type_name : '') + (value.category_info.style_name ? '/' + value.category_info.type_name : '') + (value.category_info.flower_name ? '/' + value.category_info.flower_name : '')
+          // 判断产品是否有配料单
+          let flag = true
+          if (orderProductInfo[value.product_code]) {
+            let keys = orderProductInfo[value.product_code].find(a => ((a.size === value.size) && (a.color_match_name === value.color)))
+            if (!keys) {
               flag = false
             }
-            //
-            arr.push({
-              type: types,
-              flag: flag,
-              id: value.productInfo.id,
-              product_code: value.productCode,
-              product_size: val.name[0],
-              product_color: val.name[1],
-              number: Math.ceil(val.numbers),
-              has_craft: value.productInfo.has_craft,
-              craft_id: value.productInfo.category_info.id
-            })
+          } else {
+            flag = false
+          }
+          //
+          arr.push({
+            type: types,
+            flag: flag,
+            id: value.product_id,
+            product_code: value.product_code,
+            product_size: value.size,
+            product_color: value.color,
+            number: Math.ceil(value.numbers)
+            // has_craft: value.has_craft,
+            // craft_id: value.category_info.id
           })
         })
-      })
+      }
       arr.forEach(item => {
         let flag = this.productList.find(val => (val.product_code === item.product_code && val.product_size === item.product_size && val.product_color === item.product_color))
         if (!flag) {

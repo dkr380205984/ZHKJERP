@@ -766,36 +766,35 @@ export default {
       this.order_time = orderInfo.order_time
       this.group_name = orderInfo.group_name
       // 初始化产品信息
-      orderInfo.order_batch.forEach(item => {
-        item.batch_info.forEach(value => {
-          value.size.forEach(val => {
-            let flag = this.productList.find(key => key.product_code === value.productCode)
-            if (!flag) {
-              let type = value.productInfo.category_info.product_category + '/' + value.productInfo.type_name + '/' + value.productInfo.style_name + (value.productInfo.flower_id ? '/' + value.productInfo.flower_id : '')
-              this.productList.push({
-                product_code: value.productCode,
-                type: type,
-                size_info: [{
-                  size: val.name[0],
-                  color: val.name[1],
-                  plan_number: val.numbers
-                }]
+      for (let prop in orderInfo.order_batch) {
+        let item = orderInfo.order_batch[prop]
+        item.forEach(value => {
+          let flag = this.productList.find(key => key.product_code === value.product_code)
+          if (!flag) {
+            let type = value.category_info.category_name + '/' + value.category_info.type_name + '/' + value.category_info.style_name + (value.category_info.flower_name ? '/' + value.category_info.flower_name : '')
+            this.productList.push({
+              product_code: value.product_code,
+              type: type,
+              size_info: [{
+                size: value.size,
+                color: value.color,
+                plan_number: value.numbers
+              }]
+            })
+          } else {
+            let flag1 = flag.size_info.find(key => (key.size === value.size && key.color === value.color))
+            if (!flag1) {
+              flag.size_info.push({
+                size: value.size,
+                color: value.color,
+                plan_number: value.numbers
               })
             } else {
-              let flag1 = flag.size_info.find(key => (key.size === val.name[0] && key.color === val.name[1]))
-              if (!flag1) {
-                flag.size_info.push({
-                  size: val.name[0],
-                  color: val.name[1],
-                  plan_number: val.numbers
-                })
-              } else {
-                flag1.plan_number = Number(flag1.plan_number) + Number(val.numbers)
-              }
+              flag1.plan_number = Number(flag1.plan_number) + Number(value.numbers)
             }
-          })
+          }
         })
-      })
+      }
       this.packagPageClientList = res[1].data.data.filter(key => (key.type.indexOf(7) !== -1))
       this.packagMaterialList = res[2].data.data
       this.loading = false

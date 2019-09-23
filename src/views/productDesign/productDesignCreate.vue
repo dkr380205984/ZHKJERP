@@ -67,37 +67,35 @@
               :key="key">
               <span class="tableRow">
                 <div class="twoLine">
-                  <span>第{{item.batch_id}}批</span>
-                  <span>{{item.delivery_time}}</span>
+                  <span>第{{key}}批</span>
+                  <span>{{item[0].delivery_time}}</span>
                 </div>
               </span>
               <span class="tableRow col flex3">
                 <span class="tableColumn"
-                  v-for="(value,index) in item.batch_info"
+                  v-for="(value,index) in item"
                   :key="index">
                   <span class="tableRow">
                     <div class="twoLine">
-                      <span>{{value.productCode}}</span>
-                      <span>{{value.productInfo|filterType}}</span>
+                      <span>{{value.product_code}}</span>
+                      <span>{{value.category_info.category_name + '/' + value.category_info.type_name + '/' + value.category_info.style_name}}</span>
                     </div>
                   </span>
                   <span class="tableRow flex08">
                     <div class="imgCtn small">
                       <img class="img"
-                        :src="value.productInfo.img.length>0?value.productInfo.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
+                        :src="value.category_info.images.length>0?value.category_info.images[0].thumb:require('@/assets/image/index/noPic.jpg')"
                         :onerror="defaultImg" />
                       <div class="toolTips"
-                        v-if="value.productInfo.img.length>0"><span @click="showImg(value.productInfo.img)">点击查看大图</span></div>
+                        v-if="value.category_info.images.length>0"><span @click="showImg(value.category_info.images)">点击查看大图</span></div>
                       <div class="toolTips"
-                        v-if="value.productInfo.img.length===0"><span>没有预览图</span></div>
+                        v-if="value.category_info.images.length===0"><span>没有预览图</span></div>
                     </div>
                   </span>
                   <span class="tableRow col flex12">
-                    <span class="tableColumn"
-                      v-for="(val,ind) in value.size"
-                      :key="ind">
-                      <span class="tableRow">{{val.name.join('/')}}</span>
-                      <span class="tableRow">{{val.numbers + value.productInfo.category_info.name}}</span>
+                    <span class="tableColumn">
+                      <span class="tableRow">{{value.size + '/' + value.color}}</span>
+                      <span class="tableRow">{{value.numbers + value.category_info.unit}}</span>
                     </span>
                   </span>
                 </span>
@@ -498,10 +496,17 @@ export default {
     }).then((res) => {
       console.log(res)
       this.order = res.data.data.order
-      this.order.order_batch.forEach(item => {
-        item.batch_info.forEach(value => {
-          this.getProductPlanInfo(value.productInfo.product_code)
+      let productCodeArr = []
+      for (let prop in this.order.order_batch) {
+        let item = this.order.order_batch[prop]
+        item.forEach(value => {
+          if (productCodeArr.indexOf(value.product_code) === -1) {
+            productCodeArr.push(value.product_code)
+          }
         })
+      }
+      productCodeArr.forEach(code => {
+        this.getProductPlanInfo(code)
       })
       let obj = res.data.data.stock_data
       Object.keys(obj).forEach((key) => {

@@ -118,7 +118,8 @@
               <span class="flex2"
                 style="border-right:1px solid #DDD;">
                 <span>{{itemProduct.productCode}}</span>
-                <span>{{itemProduct.productType}}</span>
+                <!-- <span>{{itemProduct.productType}}</span> -->
+                <span>{{itemProduct.productInfo.category_info.category_name}}/{{itemProduct.productInfo.category_info.type_name}}/{{itemProduct.productInfo.category_info.style_name}}/{{itemProduct.productInfo.category_info.flower_name}}</span>
               </span>
               <span class="flex06"
                 style="border-right:1px solid #DDD;">{{itemProduct.sum + '条'}}</span>
@@ -126,12 +127,12 @@
                 style="height:60px;">
                 <div class="imgCtn">
                   <img class="img"
-                    :src="itemProduct.img.length>0?itemProduct.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
+                    :src="itemProduct.productInfo.category_info.images.length>0?itemProduct.productInfo.category_info.images[0].thumb:require('@/assets/image/index/noPic.jpg')"
                     :onerror="defaultImg" />
                   <div class="toolTips"
-                    v-if="itemProduct.img.length>0"><span @click="showImg(itemProduct.img)">点击查看大图</span></div>
+                    v-if="itemProduct.productInfo.category_info.images.length>0"><span @click="showImg(itemProduct.productInfo.category_info.images)">点击查看大图</span></div>
                   <div class="toolTips"
-                    v-if="itemProduct.img.length===0"><span>没有预览图</span></div>
+                    v-if="itemProduct.productInfo.category_info.images.length===0"><span>没有预览图</span></div>
                 </div>
               </span>
             </div>
@@ -261,46 +262,65 @@ export default {
         this.total = res.data.meta.total
         this.list = res.data.data.map((item) => {
           let productList = []
-          item.order_info.order_batch.forEach((itemOrder) => {
-            itemOrder.batch_info.forEach((itemBatch) => {
-              if (productList.find((itemFind) => itemFind.productCode === itemBatch.productCode)) {
+          let deliveryTime = []
+          for (let prop in item.order_info.order_batch) {
+            let itemOrder = item.order_info.order_batch[prop]
+            for (let index in itemOrder) {
+              let itemBatch = itemOrder[index]
+              if (productList.find((itemFind) => itemFind.productCode === itemBatch.product_code)) {
                 let mark = -1
                 productList.forEach((itemFind, index) => {
-                  if (itemFind.productCode === itemBatch.productCode) {
+                  if (itemFind.productCode === itemBatch.product_code) {
                     mark = index
                   }
                 })
-                productList[mark].sum = productList[mark].sum + itemBatch.size.reduce((total, current) => {
-                  return total + parseInt(current.numbers)
-                }, 0)
+                productList[mark].sum = productList[mark].sum + itemBatch.numbers
               } else {
                 productList.push({
-                  productInfo: itemBatch.productInfo,
-                  productCode: itemBatch.productCode,
-                  sum: itemBatch.size.reduce((total, current) => {
-                    return total + parseInt(current.numbers)
-                  }, 0)
+                  productInfo: itemBatch,
+                  productCode: itemBatch.product_code,
+                  sum: itemBatch.numbers
                 })
               }
-            })
-          })
+              if (deliveryTime.indexOf(itemBatch.delivery_time) === -1) {
+                deliveryTime.push(itemBatch.delivery_time)
+              }
+            }
+          }
           // 统计产品库存调取数量
           productList = productList.map((itemProduct) => {
             return {
-              img: itemProduct.productInfo.img,
               productCode: itemProduct.productCode,
-              productType: (itemProduct.productInfo.category_info.product_category ? itemProduct.productInfo.category_info.product_category + '/' : '') + (itemProduct.productInfo.type_name ? itemProduct.productInfo.type_name + '/' : '') + (itemProduct.productInfo.style_name ? itemProduct.productInfo.style_name : '') + (itemProduct.productInfo.flower_id ? '/' + itemProduct.productInfo.flower_id : ''),
-              sum: itemProduct.sum
+              productInfo: itemProduct.productInfo,
+              sum: itemProduct.sum,
+              stockSum: item.product_info.reduce((total, itemFind) => {
+                if (itemFind.product_code === itemProduct.productCode) {
+                  return parseInt(total) + parseInt(itemFind.stock_pick)
+                } else {
+                  return total
+                }
+              }, 0),
+              total: item.product_info.reduce((total, itemFind) => {
+                if (itemFind.product_code === itemProduct.productCode) {
+                  return parseInt(total) + parseInt(itemFind.total_num)
+                } else {
+                  return total
+                }
+              }, 0)
             }
           })
           return {
+            plan_id: item.id,
             id: item.order_info.id,
+            total_price: item.order_info.total_price + item.order_info.account_unit,
             group_name: item.order_info.group_name,
             order_code: item.order_info.order_code,
             order_time: item.order_info.order_time,
             client_name: item.order_info.client_name,
-            delivery_time: item.order_info.order_batch.map((item) => item.delivery_time),
-            productList: productList
+            contacts: item.order_info.contacts,
+            delivery_time: deliveryTime,
+            productList: productList,
+            lineNum: productList.length
           }
         })
         this.first = false

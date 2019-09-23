@@ -437,6 +437,8 @@
               <span>物料状态</span>
             </li>
             <li class="material_info"
+              v-if="materialList.length === 0">暂无物料信息</li>
+            <li class="material_info"
               v-for="(item,index) in materialList"
               :key="index">
               <span style="flex:2">{{item.material_name}}</span>
@@ -850,6 +852,8 @@
                 </span>
               </span>
             </li>
+            <li class="content"
+              v-if="packOrderList.length === 0">暂无包装订购信息</li>
           </div>
         </div>
       </div>
@@ -880,34 +884,32 @@
               v-for="(item,key) in productPriceList"
               :key="key">
               <span class="tableRow"
-                style="flex:1.7">第{{item.batch_id}}批{{item.delivery_time}}</span>
+                style="flex:1.7">第{{key}}批{{item['0'].delivery_time}}</span>
               <span class="tableRow col"
                 style="flex:7">
                 <span class="tableColumn"
-                  v-for="(valPro,indPro) in item.batch_info"
+                  v-for="(valPro,indPro) in item"
                   :key="indPro">
                   <span class="tableRow"
-                    style="flex:2">{{valPro.productCode}}({{valPro.productInfo.category_info.product_category + '/' + valPro.productInfo.type_name + '/' + valPro.productInfo.style_name}})</span>
+                    style="flex:2">{{valPro.product_code}}({{valPro.category_info.category_name + '/' + valPro.category_info.type_name + '/' + valPro.category_info.style_name}})</span>
                   <span class="tableRow">
                     <div class="imgCtn">
                       <img class="img"
-                        :src="valPro.productInfo.img.length>0?valPro.productInfo.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
+                        :src="valPro.category_info.images.length>0?valPro.category_info.images[0].thumb:require('@/assets/image/index/noPic.jpg')"
                         :onerror="defaultImg" />
                       <div class="toolTips"
-                        v-if="valPro.productInfo.img.length>0"><span @click="showImg(valPro.productInfo.img)">点击查看大图</span></div>
+                        v-if="valPro.category_info.images.length>0"><span @click="showImg(valPro.category_info.images)">点击查看大图</span></div>
                       <div class="toolTips"
-                        v-if="valPro.productInfo.img.length===0"><span>没有预览图</span></div>
+                        v-if="valPro.category_info.images.length===0"><span>没有预览图</span></div>
                     </div>
                   </span>
                   <span class="tableRow col"
                     style="flex:4">
-                    <span class="tableColumn"
-                      v-for="(valSize,indSize) in valPro.size"
-                      :key="indSize">
-                      <span class="tableRow">{{valSize.name[0] + '/' + valSize.name[1]}}</span>
-                      <span class="tableRow">{{valSize.numbers}}{{valPro.productInfo.category_info.name}}</span>
-                      <span class="tableRow">{{valSize.unitPrice}}{{order_info.account_unit}}/{{valPro.productInfo.category_info.name}}</span>
-                      <span class="tableRow">{{parseInt(valSize.numbers * valSize.unitPrice)}}{{order_info.account_unit}}</span>
+                    <span class="tableColumn">
+                      <span class="tableRow">{{valPro.size + '/' + valPro.color}}</span>
+                      <span class="tableRow">{{valPro.numbers}}{{valPro.category_info.unit}}</span>
+                      <span class="tableRow">{{valPro.unit_price}}{{order_info.account_unit}}/{{valPro.category_info.unit}}</span>
+                      <span class="tableRow">{{parseInt(valPro.numbers * valPro.unit_price)}}{{order_info.account_unit}}</span>
                     </span>
                   </span>
                 </span>
@@ -1517,19 +1519,26 @@ export default {
         this.process[key] = this.process[key] > 100 ? 100 : this.process[key].toFixed(1)
       }
       // 整理时间线 并排序
-      this.order_info.order_batch.forEach((item, index) => {
-        if (index === this.order_info.order_batch.length - 1) {
-          this.timeAxis.push({
-            name: '交货日期',
-            time: item.delivery_time
-          })
-        } else {
-          this.timeAxis.push({
-            name: '第' + (index + 1) + '批',
-            time: item.delivery_time
-          })
-        }
-      })
+      for (let prop in this.order_info.order_batch) {
+        let item = this.order_info.order_batch[prop]
+        this.timeAxis.push({
+          name: '第' + prop + '批',
+          time: item[0].delivery_time
+        })
+      }
+      // this.order_info.order_batch.forEach((item, index) => {
+      //   if (index === this.order_info.order_batch.length - 1) {
+      //     this.timeAxis.push({
+      //       name: '交货日期',
+      //       time: item.delivery_time
+      //     })
+      //   } else {
+      //     this.timeAxis.push({
+      //       name: '第' + (index + 1) + '批',
+      //       time: item.delivery_time
+      //     })
+      //   }
+      // })
       this.timeAxis.push({
         name: '今天',
         time: this.getTime(new Date())
@@ -1898,44 +1907,57 @@ export default {
       })
       // 出库概述
       let orderInfo = this.order_info
-      orderInfo.order_batch.forEach(item => {
-        item.batch_info.forEach(val => {
-          val.size.forEach(valSize => {
-            let flag = this.outStockList.find(key => key.batch_id === item.batch_id)
-            if (!flag) {
-              this.outStockList.push({
-                batch_id: item.batch_id,
-                delivery_time: item.delivery_time,
+      console.log(orderInfo)
+      for (let prop in orderInfo.order_batch) {
+        let item = orderInfo.order_batch[prop]
+        item.forEach(val => {
+          let flag = this.outStockList.find(key => key.batch_id === val.batch_id)
+          if (!flag) {
+            this.outStockList.push({
+              batch_id: val.batch_id,
+              delivery_time: val.delivery_time,
+              product_info: [{
+                product_code: val.product_code,
+                product_type: val.category_info.category_name + '/' + val.category_info.type_name + '/' + val.category_info.style_name,
+                number: val.numbers,
+                img: val.category_info.images.map(value => {
+                  return value.image
+                }),
+                unit: val.category_info.unit
+              }]
+            })
+          } else {
+            let flag1 = flag.product_info.find(key => key.product_code === val.product_code)
+            if (!flag1) {
+              flag.product_info.push({
+                batch_id: val.batch_id,
+                delivery_time: val.delivery_time,
                 product_info: [{
-                  product_code: val.productCode,
-                  product_type: val.productInfo.category_info.product_category + '/' + val.productInfo.type_name + '/' + val.productInfo.style_name,
-                  number: valSize.numbers,
-                  img: [...val.productInfo.img],
-                  unit: val.productInfo.category_info.name
+                  product_code: val.product_code,
+                  product_type: val.category_info.category_name + '/' + val.category_info.type_unit + '/' + val.category_info.style_name,
+                  number: val.numbers,
+                  img: val.category_info.images.map(value => {
+                    return value.image
+                  }),
+                  unit: val.category_info.name
                 }]
               })
             } else {
-              let flag1 = flag.product_info.find(key => key.product_code === val.productCode)
-              if (!flag1) {
-                flag.product_info.push({
-                  product_code: val.productCode,
-                  product_type: val.productInfo.category_info.product_category + '/' + val.productInfo.type_name + '/' + val.productInfo.style_name,
-                  number: valSize.numbers,
-                  img: [...val.productInfo.img],
-                  unit: val.productInfo.category_info.name
-                })
-              } else {
-                flag1.number = Number(flag1.number) + Number(valSize.numbers)
-                flag1.img.push(...val.productInfo.img)
-              }
+              flag1.number = Number(flag1.number) + Number(val.numbers)
             }
-            let fleg = this.designList.find(key => key.product_code === val.productCode)
-            if (fleg) {
-              fleg.img = val.productInfo.img
-            }
-          })
+          }
         })
-      })
+      }
+      // orderInfo.order_batch.forEach(item => {
+      //   item.batch_info.forEach(val => {
+      //     val.size.forEach(valSize => {
+      //       let fleg = this.designList.find(key => key.product_code === val.productCode)
+      //       if (fleg) {
+      //         fleg.img = val.productInfo.img
+      //       }
+      //     })
+      //   })
+      // })
       this.productPriceList = orderInfo.order_batch
       let stockOutInfo = this.order_log.stock_out_info // 订单出库日志
       stockOutInfo.forEach(item => {
@@ -2024,25 +2046,44 @@ export default {
           })
         }
       })
-      this.order_info.order_batch.forEach((itemBacth) => {
-        itemBacth.batch_info.forEach((itemPro) => {
-          itemPro.size.forEach((itemSize) => {
-            const finded = this.productDetail.find((itemFind) => itemFind.productCode === itemPro.productCode && itemFind.size === itemSize.name.join('/'))
-            if (!finded) {
-              this.productDetail.push({
-                product_info: itemPro.productInfo,
-                id: itemPro.productInfo.id,
-                number: '',
-                cost: itemSize.unitPrice,
-                productCode: itemPro.productCode,
-                size: itemSize.name.join('/'),
-                unit: itemPro.productInfo.category_info.name,
-                type: itemPro.productInfo.category_info.product_category + '/' + itemPro.productInfo.type_name + '/' + itemPro.productInfo.style_name
-              })
-            }
-          })
+      for (let prop in this.order_info.order_batch) {
+        let itemBacth = this.order_info.order_batch[prop]
+        itemBacth.forEach(itemPro => {
+          const finded = this.productDetail.find((itemFind) => itemFind.productCode === itemPro.product_code && itemFind.size === (itemPro.size + '/' + itemPro.color))
+          console.log(finded)
+          if (!finded) {
+            this.productDetail.push({
+              product_info: itemPro,
+              id: itemPro.id,
+              number: '',
+              cost: itemPro.unit_price,
+              productCode: itemPro.product_code,
+              size: itemPro.size + '/' + itemPro.color,
+              unit: itemPro.category_info.unit,
+              type: itemPro.category_info.category_name + '/' + itemPro.category_info.type_name + '/' + itemPro.category_info.style_name
+            })
+          }
         })
-      })
+      }
+      // this.order_info.order_batch.forEach((itemBacth) => {
+      //   itemBacth.batch_info.forEach((itemPro) => {
+      //     itemPro.size.forEach((itemSize) => {
+      //       const finded = this.productDetail.find((itemFind) => itemFind.productCode === itemPro.productCode && itemFind.size === itemSize.name.join('/'))
+      //       if (!finded) {
+      //         this.productDetail.push({
+      //           product_info: itemPro.productInfo,
+      //           id: itemPro.productInfo.id,
+      //           number: '',
+      //           cost: itemSize.unitPrice,
+      //           productCode: itemPro.productCode,
+      //           size: itemSize.name.join('/'),
+      //           unit: itemPro.productInfo.category_info.name,
+      //           type: itemPro.productInfo.category_info.product_category + '/' + itemPro.productInfo.type_name + '/' + itemPro.productInfo.style_name
+      //         })
+      //       }
+      //     })
+      //   })
+      // })
       this.loading = false
     })
   }

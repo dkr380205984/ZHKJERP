@@ -467,8 +467,11 @@
                   v-else
                   @click="deleteProduct(key)"></em>
               </div>
-              <div class="elCtn"
-                style="margin-top:20px;">
+            </div>
+            <div :key="key + 'X'"
+              class="inputCtn">
+              <span class="label"></span>
+              <div class="elCtn">
                 <el-input placeholder="请输入单箱数量"
                   v-model="item.one_number"
                   style="width:143px">
@@ -871,94 +874,93 @@ export default {
         this.order_time = orderInfo.order_time
         this.group_name = orderInfo.group_name
         // 初始化发货批次信息
-        orderInfo.order_batch.forEach(valBatch => {
-          valBatch.batch_info.forEach(valPro => {
-            valPro.size.forEach(valSize => {
-              let flag = this.batchList.find(key => key.id === valBatch.batch_id)
-              if (!flag) {
-                this.batchList.push({
-                  id: valBatch.batch_id,
-                  delivery_time: valBatch.delivery_time,
-                  logFlag: false,
-                  packagInfoList: [],
-                  outStockInfoList: [],
-                  product_info: [{
-                    product_code: valPro.productCode,
-                    product_type: valPro.productInfo.category_info.product_category + '/' + valPro.productInfo.type_name + '/' + valPro.productInfo.style_name + (valPro.productInfo.flower_id ? '/' + valPro.productInfo.flower_id : ''),
-                    size_info: [{
-                      size: valSize.name[0],
-                      color: valSize.name[1],
-                      number: valSize.numbers
-                    }]
+        for (let prop in orderInfo.order_batch) {
+          let valBatch = orderInfo.order_batch[prop]
+          valBatch.forEach(valPro => {
+            let flag = this.batchList.find(key => key.id === valPro.batch_id)
+            if (!flag) {
+              this.batchList.push({
+                id: valPro.batch_id,
+                delivery_time: valPro.delivery_time,
+                logFlag: false,
+                packagInfoList: [],
+                outStockInfoList: [],
+                product_info: [{
+                  product_code: valPro.product_code,
+                  product_type: valPro.category_info.category_name + '/' + valPro.category_info.type_name + '/' + valPro.category_info.style_name + (valPro.category_info.flower_name ? '/' + valPro.category_info.flower_name : ''),
+                  size_info: [{
+                    size: valPro.size,
+                    color: valPro.color,
+                    number: valPro.numbers
+                  }]
+                }]
+              })
+            } else {
+              let flag1 = flag.product_info.find(key => key.product_code === valPro.product_code)
+              if (!flag1) {
+                flag.product_info.push({
+                  product_code: valPro.product_code,
+                  product_type: valPro.category_info.category_name + '/' + valPro.category_info.type_name + '/' + valPro.category_info.style_name + (valPro.category_info.flower_name ? '/' + valPro.category_info.flower_name : ''),
+                  size_info: [{
+                    size: valPro.size,
+                    color: valPro.color,
+                    number: valPro.numbers
                   }]
                 })
               } else {
-                let flag1 = flag.product_info.find(key => key.product_code === valPro.productCode)
-                if (!flag1) {
-                  flag.product_info.push({
-                    product_code: valPro.productCode,
-                    product_type: valPro.productInfo.category_info.product_category + '/' + valPro.productInfo.type_name + '/' + valPro.productInfo.style_name + (valPro.productInfo.flower_id ? '/' + valPro.productInfo.flower_id : ''),
-                    size_info: [{
-                      size: valSize.name[0],
-                      color: valSize.name[1],
-                      number: valSize.numbers
-                    }]
+                let flag2 = flag1.size_info.find(key => (key.size === valPro.size && key.color === valPro.color))
+                if (!flag2) {
+                  flag1.size_info.push({
+                    size: valPro.size,
+                    color: valPro.color,
+                    number: valPro.numbers
                   })
                 } else {
-                  let flag2 = flag1.size_info.find(key => (key.size === valSize.name[0] && key.color === valSize.name[1]))
-                  if (!flag2) {
-                    flag1.size_info.push({
-                      size: valSize.name[0],
-                      color: valSize.name[1],
-                      number: valSize.numbers
-                    })
-                  } else {
-                    flag2.number = Number(flag2.number) + Number(valSize.numbers)
-                  }
+                  flag2.number = Number(flag2.number) + Number(valPro.numbers)
                 }
               }
-              // 初始化装箱产品信息
-              let str = valPro.productCode + ' ' + valPro.productInfo.category_info.product_category + '/' + valPro.productInfo.type_name + '/' + valPro.productInfo.style_name + (valPro.productInfo.flower_id ? '/' + valPro.productInfo.flower_id : '')
-              let fleg = this.productList.find(key => key.value === str)
-              if (!fleg) {
-                this.productList.push({
-                  value: str,
-                  label: str,
-                  children: [
-                    {
-                      label: valSize.name[0],
-                      value: valSize.name[0],
-                      children: [{
-                        label: valSize.name[1],
-                        value: valSize.name[1]
-                      }]
-                    }
-                  ]
+            }
+            // 初始化装箱产品信息
+            let str = valPro.product_code + ' ' + valPro.category_info.category_name + '/' + valPro.category_info.type_name + '/' + valPro.category_info.style_name + (valPro.category_info.flower_name ? '/' + valPro.category_info.flower_name : '')
+            let fleg = this.productList.find(key => key.value === str)
+            if (!fleg) {
+              this.productList.push({
+                value: str,
+                label: str,
+                children: [
+                  {
+                    label: valPro.size,
+                    value: valPro.size,
+                    children: [{
+                      label: valPro.color,
+                      value: valPro.color
+                    }]
+                  }
+                ]
+              })
+            } else {
+              let fleg1 = fleg.children.find(key => key.value === valPro.size)
+              if (!fleg1) {
+                fleg.children.push({
+                  value: valPro.size,
+                  label: valPro.size,
+                  children: [{
+                    value: valPro.color,
+                    label: valPro.color
+                  }]
                 })
               } else {
-                let fleg1 = fleg.children.find(key => key.value === valSize.name[0])
-                if (!fleg1) {
-                  fleg.children.push({
-                    value: valSize.name[0],
-                    label: valSize.name[0],
-                    children: [{
-                      value: valSize.name[1],
-                      label: valSize.name[1]
-                    }]
+                let fleg2 = fleg1.children.find(key => key.value === valPro.color)
+                if (!fleg2) {
+                  fleg1.children.push({
+                    value: valPro.color,
+                    label: valPro.color
                   })
-                } else {
-                  let fleg2 = fleg1.children.find(key => key.value === valSize.name[1])
-                  if (!fleg2) {
-                    fleg1.children.push({
-                      value: valSize.name[1],
-                      label: valSize.name[1]
-                    })
-                  }
                 }
               }
-            })
+            }
           })
-        })
+        }
         this.addPackNumberList = JSON.parse(JSON.stringify(this.batchList))
         console.log(this.addPackNumberList)
         // 初始化包装信息

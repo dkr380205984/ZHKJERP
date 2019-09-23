@@ -515,55 +515,54 @@ export default {
         this.order_time = orderInfo.order_time
         this.group_name = orderInfo.group_name
         // 初始化产品信息
-        orderInfo.order_batch.forEach(item => {
-          item.batch_info.forEach(value => {
-            value.size.forEach(val => {
-              let flag = this.productList.find(key => key.product_code === value.productCode)
-              if (!flag) {
-                let type = value.productInfo.category_info.product_category + '/' + value.productInfo.type_name + '/' + value.productInfo.style_name + (value.productInfo.flower_id ? '/' + value.productInfo.flower_id : '')
-                this.productList.push({
-                  product_code: value.productCode,
-                  type: type,
-                  flag: false,
-                  log: [],
-                  size_info: [{
-                    size: val.name[0],
-                    color: val.name[1],
-                    batch_info: [{
-                      batch_id: item.batch_id,
-                      delivery_time: item.delivery_time,
-                      number: val.numbers
-                    }]
+        for (let prop in orderInfo.order_batch) {
+          let item = orderInfo.order_batch[prop]
+          item.forEach(valPro => {
+            let flag = this.productList.find(key => key.product_code === valPro.product_code)
+            if (!flag) {
+              let type = valPro.category_info.category_name + '/' + valPro.category_info.type_name + '/' + valPro.category_info.style_name + (valPro.category_info.flower_name ? '/' + valPro.category_info.flower_name : '')
+              this.productList.push({
+                product_code: valPro.product_code,
+                type: type,
+                flag: false,
+                log: [],
+                size_info: [{
+                  size: valPro.size,
+                  color: valPro.color,
+                  batch_info: [{
+                    batch_id: valPro.batch_id,
+                    delivery_time: valPro.delivery_time,
+                    number: valPro.numbers
+                  }]
+                }]
+              })
+            } else {
+              let flag1 = flag.size_info.find(key => (key.size === valPro.size && key.color === valPro.color))
+              if (!flag1) {
+                flag.size_info.push({
+                  size: valPro.size,
+                  color: valPro.color,
+                  batch_info: [{
+                    batch_id: valPro.batch_id,
+                    delivery_time: valPro.delivery_time,
+                    number: valPro.numbers
                   }]
                 })
               } else {
-                let flag1 = flag.size_info.find(key => (key.size === val.name[0] && key.color === val.name[1]))
-                if (!flag1) {
-                  flag.size_info.push({
-                    size: val.name[0],
-                    color: val.name[1],
-                    batch_info: [{
-                      batch_id: item.batch_id,
-                      delivery_time: item.delivery_time,
-                      number: val.numbers
-                    }]
+                let flag2 = flag1.batch_info.find(key => key.batch_id === valPro.batch_id)
+                if (!flag2) {
+                  flag1.batch_info.push({
+                    batch_id: valPro.batch_id,
+                    delivery_time: valPro.delivery_time,
+                    number: valPro.numbers
                   })
                 } else {
-                  let flag2 = flag1.batch_info.find(key => key.batch_id === item.batch_id)
-                  if (!flag2) {
-                    flag1.batch_info.push({
-                      batch_id: item.batch_id,
-                      delivery_time: item.delivery_time,
-                      number: val.numbers
-                    })
-                  } else {
-                    flag2.number = Number(flag2.number) + Number(val.numbers)
-                  }
+                  flag2.number = Number(flag2.number) + Number(valPro.numbers)
                 }
               }
-            })
+            }
           })
-        })
+        }
         // 初始化检验数量
         finishedInfo.forEach(item => {
           let flag = this.productList.find(key => key.product_code === item.product_info.product_code)

@@ -130,7 +130,7 @@
                 <span class="hoverBlue"
                   style="margin:0 5px;cursor:pointer"
                   @click="open('/index/productDetail/'+itemProduct.productInfo.id)">{{itemProduct.productCode}}</span>
-                <span style="margin:0 5px">{{itemProduct.productInfo.category_info.product_category}}/{{itemProduct.productInfo.type_name}}/{{itemProduct.productInfo.style_name}}/{{itemProduct.productInfo.flower_id}}</span>
+                <span style="margin:0 5px">{{itemProduct.productInfo.category_info.category_name}}/{{itemProduct.productInfo.category_info.type_name}}/{{itemProduct.productInfo.category_info.style_name}}/{{itemProduct.productInfo.category_info.flower_id}}</span>
               </span>
             </div>
           </div>
@@ -140,12 +140,12 @@
               v-for="(itemProduct,indexProduct) in item.productList"
               :key="indexProduct">
               <img class="img"
-                :src="itemProduct.productInfo.img.length>0?itemProduct.productInfo.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
+                :src="itemProduct.productInfo.category_info.images.length>0?itemProduct.productInfo.category_info.images[0].thumb:require('@/assets/image/index/noPic.jpg')"
                 :onerror="defaultImg" />
               <div class="toolTips"
-                v-if="itemProduct.productInfo.img.length>0"><span @click="showImg(itemProduct.productInfo.img)">点击查看大图</span></div>
+                v-if="itemProduct.productInfo.category_info.images.length>0"><span @click="showImg(itemProduct.productInfo.category_info.images)">点击查看大图</span></div>
               <div class="toolTips"
-                v-if="itemProduct.productInfo.img.length===0"><span>没有预览图</span></div>
+                v-if="itemProduct.productInfo.category_info.images.length===0"><span>没有预览图</span></div>
             </div>
           </div>
           <div class="tableColumn"
@@ -334,30 +334,56 @@ export default {
         this.loading = false
         this.total = res.data.meta.total
         this.list = res.data.data.map((item) => {
+          // let productList = []
+          // item.order_batch.forEach((itemOrder) => {
+          //   itemOrder.batch_info.forEach((itemBatch) => {
+          //     if (productList.find((itemFind) => itemFind.productCode === itemBatch.productCode)) {
+          //       let mark = -1
+          //       productList.forEach((itemFind, index) => {
+          //         if (itemFind.productCode === itemBatch.productCode) {
+          //           mark = index
+          //         }
+          //       })
+          //       productList[mark].sum = productList[mark].sum + itemBatch.size.reduce((total, current) => {
+          //         return total + parseInt(current.numbers)
+          //       }, 0)
+          //     } else {
+          //       productList.push({
+          //         productInfo: itemBatch.productInfo,
+          //         productCode: itemBatch.productCode,
+          //         sum: itemBatch.size.reduce((total, current) => {
+          //           return total + parseInt(current.numbers)
+          //         }, 0)
+          //       })
+          //     }
+          //   })
+          // })
           let productList = []
-          item.order_batch.forEach((itemOrder) => {
-            itemOrder.batch_info.forEach((itemBatch) => {
-              if (productList.find((itemFind) => itemFind.productCode === itemBatch.productCode)) {
+          let deliveryTime = []
+          for (let prop in item.order_batch) {
+            let itemOrder = item.order_batch[prop]
+            for (let index in itemOrder) {
+              let itemBatch = itemOrder[index]
+              if (productList.find((itemFind) => itemFind.productCode === itemBatch.product_code)) {
                 let mark = -1
                 productList.forEach((itemFind, index) => {
-                  if (itemFind.productCode === itemBatch.productCode) {
+                  if (itemFind.productCode === itemBatch.product_code) {
                     mark = index
                   }
                 })
-                productList[mark].sum = productList[mark].sum + itemBatch.size.reduce((total, current) => {
-                  return total + parseInt(current.numbers)
-                }, 0)
+                productList[mark].sum = productList[mark].sum + itemBatch.numbers
               } else {
                 productList.push({
-                  productInfo: itemBatch.productInfo,
-                  productCode: itemBatch.productCode,
-                  sum: itemBatch.size.reduce((total, current) => {
-                    return total + parseInt(current.numbers)
-                  }, 0)
+                  productInfo: itemBatch,
+                  productCode: itemBatch.product_code,
+                  sum: itemBatch.numbers
                 })
               }
-            })
-          })
+              if (deliveryTime.indexOf(itemBatch.delivery_time) === -1) {
+                deliveryTime.push(itemBatch.delivery_time)
+              }
+            }
+          }
           return {
             id: item.id,
             has_log: item.has_log,
@@ -367,7 +393,7 @@ export default {
             order_time: item.order_time,
             client_name: item.client_name,
             contacts: item.contacts,
-            delivery_time: item.order_batch.map((item) => item.delivery_time),
+            delivery_time: deliveryTime,
             productList: productList,
             lineNum: productList.length // 这个参数用于计算每行的高度
           }

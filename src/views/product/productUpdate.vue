@@ -418,7 +418,11 @@ export default {
               this.$message.success('添加成功,即将跳转至详情页')
               setTimeout(() => {
                 this.lock = true
-                this.$router.push('/index/productDetail/' + res.data.data.id)
+                if (this.type === '1') {
+                  this.$router.push('/index/productDetail/' + res.data.data.id)
+                } else if (this.type === '2') {
+                  this.$router.push('/index/sampleDetail/' + res.data.data.id)
+                }
               }, 800)
             }
           })

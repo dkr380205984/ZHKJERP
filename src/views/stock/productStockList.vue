@@ -75,8 +75,8 @@
           </div>
         </div>
       </div>
-      <div class="tableCtn"
-        v-scroll="{fun:getProductList,pageSize:5}">
+      <div class="tableCtn">
+        <!-- v-scroll="{fun:getProductList,pageSize:5}" -->
         <div class="tableRow titleTableRow">
           <div class="tableColumn">产品编号</div>
           <div class="tableColumn flex9">产品类别</div>
@@ -89,7 +89,7 @@
           <div class="tableColumn">操作</div>
         </div>
         <div class="tableRow bodyTableRow"
-          v-for="(item,key) in list"
+          v-for="(item,key) in list[pages-1]"
           :key="key">
           <div class="tableColumn"
             style="color:#1A95FF">{{item.product_code}}</div>
@@ -114,17 +114,16 @@
           <div class="tableColumn">{{item.update_time}}</div>
           <div class="tableColumn">
             <span class="btns success"
-              @click="$router.push('/index/productStockDetail/'+item.id)">详情</span>
+              @click="$router.push('/index/productStockDetail/'+item.product_id)">详情</span>
           </div>
         </div>
       </div>
       <div class="pageCtn">
         <el-pagination background
-          :page-size="5"
+          :page-size="1"
           layout="prev, pager, next"
           :total="total"
-          :current-page.sync="pages"
-          @current-change="getProductList">
+          :current-page.sync="pages">
         </el-pagination>
       </div>
       <div class="shade"
@@ -215,9 +214,14 @@ export default {
         'end_time': this.end_time,
         'product_code': this.searchVal
       }).then((res) => {
+        let list = []
         for (let prop in res.data.data) {
           let item = res.data.data[prop].data
-          this.list.push({
+          if (list.length === 5) {
+            this.list.push(list)
+            list = []
+          }
+          list.push({
             product_code: prop,
             color: this.arrNoRepeat(item.map(value => {
               return value.color
@@ -238,6 +242,7 @@ export default {
             ...res.data.data[prop].product_info
           })
         }
+        this.list.push(list)
         this.total = this.list.length
         this.loading = false
         console.log(this.list)

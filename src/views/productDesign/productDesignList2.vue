@@ -122,7 +122,7 @@
               v-for="(itemProduct,indexProduct) in item.productList"
               :key="indexProduct">
               <span style="margin:0 5px">{{itemProduct.productCode}}</span>
-              <span style="margin:0 5px">{{itemProduct.productInfo.category_info.product_category}}/{{itemProduct.productInfo.type_name}}/{{itemProduct.productInfo.style_name}}/{{itemProduct.productInfo.flower_id}}</span>
+              <span style="margin:0 5px">{{itemProduct.productInfo.category_info.category_name}}/{{itemProduct.productInfo.category_info.type_name}}/{{itemProduct.productInfo.category_info.style_name}}/{{itemProduct.productInfo.category_info.flower_name}}</span>
             </div>
           </div>
           <div class="tableColumn"
@@ -133,12 +133,12 @@
               :key="indexProduct">
               <div class="imgCtn">
                 <img class="img"
-                  :src="itemProduct.productInfo.img.length>0?itemProduct.productInfo.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
+                  :src="itemProduct.productInfo.category_info.images.length>0?itemProduct.productInfo.category_info.images[0].thumb:require('@/assets/image/index/noPic.jpg')"
                   :onerror="defaultImg" />
                 <div class="toolTips"
-                  v-if="itemProduct.productInfo.img.length>0"><span @click="showImg(itemProduct.productInfo.img)">点击查看大图</span></div>
+                  v-if="itemProduct.productInfo.category_info.images.length>0"><span @click="showImg(itemProduct.productInfo.category_info.images)">点击查看大图</span></div>
                 <div class="toolTips"
-                  v-if="itemProduct.productInfo.img.length===0"><span>没有预览图</span></div>
+                  v-if="itemProduct.productInfo.category_info.images.length===0"><span>没有预览图</span></div>
               </div>
             </div>
           </div>
@@ -148,7 +148,7 @@
               style="height:60px;justify-content: center;"
               v-for="(itemProduct,indexProduct) in item.productList"
               :key="indexProduct">
-              <span style="margin:0 5px">{{itemProduct.sum}}{{itemProduct.productInfo.category_info.name}}</span>
+              <span style="margin:0 5px">{{itemProduct.sum}}{{itemProduct.productInfo.category_info.unit}}</span>
             </div>
           </div>
           <div class="tableColumn"
@@ -157,7 +157,7 @@
               style="height:60px;justify-content: center;"
               v-for="(itemProduct,indexProduct) in item.productList"
               :key="indexProduct">
-              <span style="margin:0 5px">{{itemProduct.stockSum}}{{itemProduct.productInfo.category_info.name}}</span>
+              <span style="margin:0 5px">{{itemProduct.stockSum}}{{itemProduct.productInfo.category_info.unit}}</span>
             </div>
           </div>
           <div class="tableColumn"
@@ -166,7 +166,7 @@
               style="height:60px;justify-content: center;"
               v-for="(itemProduct,indexProduct) in item.productList"
               :key="indexProduct">
-              <span style="margin:0 5px">{{itemProduct.total}}{{itemProduct.productInfo.category_info.name}}</span>
+              <span style="margin:0 5px">{{itemProduct.total}}{{itemProduct.productInfo.category_info.unit}}</span>
             </div>
           </div>
           <div class="tableColumn"
@@ -175,7 +175,7 @@
               style="height:60px;justify-content: center;"
               v-for="(itemProduct,indexProduct) in item.productList"
               :key="indexProduct">
-              <span style="margin:0 5px">{{itemProduct.total + itemProduct.stockSum}}{{itemProduct.productInfo.category_info.name}}</span>
+              <span style="margin:0 5px">{{itemProduct.total + itemProduct.stockSum}}{{itemProduct.productInfo.category_info.unit}}</span>
             </div>
           </div>
           <div class="tableColumn"
@@ -301,29 +301,31 @@ export default {
         this.total = res.data.meta.total
         this.list = res.data.data.map((item) => {
           let productList = []
-          item.order_info.order_batch.forEach((itemOrder) => {
-            itemOrder.batch_info.forEach((itemBatch) => {
-              if (productList.find((itemFind) => itemFind.productCode === itemBatch.productCode)) {
+          let deliveryTime = []
+          for (let prop in item.order_info.order_batch) {
+            let itemOrder = item.order_info.order_batch[prop]
+            for (let index in itemOrder) {
+              let itemBatch = itemOrder[index]
+              if (productList.find((itemFind) => itemFind.productCode === itemBatch.product_code)) {
                 let mark = -1
                 productList.forEach((itemFind, index) => {
-                  if (itemFind.productCode === itemBatch.productCode) {
+                  if (itemFind.productCode === itemBatch.product_code) {
                     mark = index
                   }
                 })
-                productList[mark].sum = productList[mark].sum + itemBatch.size.reduce((total, current) => {
-                  return total + parseInt(current.numbers)
-                }, 0)
+                productList[mark].sum = productList[mark].sum + itemBatch.numbers
               } else {
                 productList.push({
-                  productInfo: itemBatch.productInfo,
-                  productCode: itemBatch.productCode,
-                  sum: itemBatch.size.reduce((total, current) => {
-                    return total + parseInt(current.numbers)
-                  }, 0)
+                  productInfo: itemBatch,
+                  productCode: itemBatch.product_code,
+                  sum: itemBatch.numbers
                 })
               }
-            })
-          })
+              if (deliveryTime.indexOf(itemBatch.delivery_time) === -1) {
+                deliveryTime.push(itemBatch.delivery_time)
+              }
+            }
+          }
           // 统计产品库存调取数量
           productList = productList.map((itemProduct) => {
             return {
@@ -355,7 +357,7 @@ export default {
             order_time: item.order_info.order_time,
             client_name: item.order_info.client_name,
             contacts: item.order_info.contacts,
-            delivery_time: item.order_info.order_batch.map((item) => item.delivery_time),
+            delivery_time: deliveryTime,
             productList: productList,
             lineNum: productList.length
           }
