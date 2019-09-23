@@ -35,7 +35,7 @@
           <div class="content">
             <el-input placeholder="请输入缩率"
               style="width:294px;"
-              v-model="warpInfo.rate">
+              v-model="warpInfo.contract_ratio">
               <template slot="append">%</template>
             </el-input>
           </div>
@@ -611,7 +611,7 @@
           <div class="content">
             <el-input placeholder="请输入缩率"
               style="width:294px;"
-              v-model="weftInfo.rate">
+              v-model="weftInfo.contract_ratio">
               <template slot="append">%</template>
             </el-input>
           </div>
@@ -1135,7 +1135,7 @@ export default {
         colorWarp: []
       }],
       warpInfo: {
-        rate: 100, // 经向缩率
+        contract_ratio: 100, // 经向缩率
         weft: null, // 总头纹
         side_id: null, // 边形
         width: null, // 整经门幅
@@ -1150,7 +1150,7 @@ export default {
         // additional_data: null// 穿综法备注
       },
       weftInfo: {
-        rate: 100, // 纬向缩率
+        contract_ratio: 100, // 纬向缩率
         organization_id: null, // 组织法
         peifu: null, // 胚服
         peifu_data: null, // 胚幅说明
@@ -1519,14 +1519,14 @@ export default {
               merge.forEach((item) => {
                 if (item.row === 4 || item.row === 5) {
                   for (let i = (item.col + 1); i < (item.col + item.colspan); i++) {
-                    arrWeft[item.row - 2][i] = arrWeft[item.row - 2][item.col]
+                    arrWeft[item.row - 3][i] = arrWeft[item.row - 3][item.col]
                   }
                 }
               })
               mergeBack.forEach((item) => {
                 if (item.row === 4 || item.row === 5) {
                   for (let i = (item.col + 1); i < (item.col + item.colspan); i++) {
-                    arrWeftBack[item.row - 2][i] = arrWeftBack[item.row - 2][item.col]
+                    arrWeftBack[item.row - 3][i] = arrWeftBack[item.row - 3][item.col]
                   }
                 }
               })
@@ -2277,6 +2277,7 @@ export default {
           reed_method: this.warpInfo.reed_method,
           reed_width: this.warpInfo.reed_width,
           sum_up: this.warpInfo.sum_up,
+          contract_ratio: this.warpInfo.contract_ratio,
           additional_data: '' // 废弃字段
         },
         weft_data: {
@@ -2352,7 +2353,8 @@ export default {
           xiachiya: this.weftInfo.xiachiya,
           neichang: this.weftInfo.neichang,
           rangwei: this.weftInfo.rangwei,
-          total: this.weftInfo.total
+          total: this.weftInfo.total,
+          contract_ratio: this.weftInfo.contract_ratio
         },
         draft_method: {
           PM: this.repeatPM.map((item, index) => {
@@ -2392,7 +2394,7 @@ export default {
           this.$message.success({
             message: '添加成功'
           })
-          this.$router.push('/index/designFormDetail/' + res.data.data.id)
+          this.$router.push('/index/designFormPlanDetail/' + res.data.data.id)
         } else {
           this.$message.error({
             message: res.data.message
@@ -2860,21 +2862,21 @@ export default {
       this.loading = false
     })
     // 监听快捷键，给表格插入列
-    document.onkeydown = (e) => {
-      if (e.keyCode === 187 && e.ctrlKey) {
-        e.preventDefault()
-        this.addOneCol('warp')
-      } else if (e.keyCode === 189 && e.ctrlKey) {
-        e.preventDefault()
-        this.deleteOneCol('warp')
-      } else if (e.keyCode === 187 && e.shiftKey) {
-        e.preventDefault()
-        this.addOneCol('weft')
-      } else if (e.keyCode === 189 && e.shiftKey) {
-        e.preventDefault()
-        this.deleteOneCol('weft')
-      }
-    }
+    // document.onkeydown = (e) => {
+    //   if (e.keyCode === 187 && e.ctrlKey) {
+    //     e.preventDefault()
+    //     this.addOneCol('warp')
+    //   } else if (e.keyCode === 189 && e.ctrlKey) {
+    //     e.preventDefault()
+    //     this.deleteOneCol('warp')
+    //   } else if (e.keyCode === 187 && e.shiftKey) {
+    //     e.preventDefault()
+    //     this.addOneCol('weft')
+    //   } else if (e.keyCode === 189 && e.shiftKey) {
+    //     e.preventDefault()
+    //     this.deleteOneCol('weft')
+    //   }
+    // }
   }
 }
 </script>
@@ -2976,6 +2978,12 @@ export default {
     &:hover {
       color: #fff;
       background: #1a95ff;
+    }
+  }
+  .shade {
+    .main {
+      max-height: 100%;
+      overflow: auto;
     }
   }
 }

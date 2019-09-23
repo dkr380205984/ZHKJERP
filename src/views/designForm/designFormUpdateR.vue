@@ -2220,6 +2220,7 @@ export default {
           reed_method: this.warpInfo.reed_method,
           reed_width: this.warpInfo.reed_width,
           sum_up: this.warpInfo.sum_up,
+          contract_ratio: 100, // 缩率工艺单用不到，默认100
           additional_data: '' // 废弃字段
         },
         weft_data: {
@@ -2295,6 +2296,7 @@ export default {
           xiachiya: this.weftInfo.xiachiya,
           neichang: this.weftInfo.neichang,
           rangwei: this.weftInfo.rangwei,
+          contract_ratio: 100, // 缩率工艺单用不到，默认100
           total: this.weftInfo.total
         },
         draft_method: {

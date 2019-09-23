@@ -3,6 +3,27 @@
     v-loading="loading">
     <div class="head">
       <h2>添加工艺单</h2>
+      <div class="rigth">
+        <el-select class="elSelect"
+          filterable
+          remote
+          reserve-keyword
+          v-model="gyd"
+          :remote-method="remoteMethod"
+          :loading="loadingS"
+          clearable
+          @change="getCraft"
+          style="width:300px"
+          placeholder="输入工艺单编号导入工艺单">
+          <el-option v-for="item in gydArr"
+            :key="item.id"
+            :label="item.craft_code"
+            :value="item.id">
+            <span>{{ item.craft_code }}</span>
+            <span style="margin-left:10px;color: #8492a6; font-size: 13px">({{item.product_info?item.product_info.category_info.product_category +'/'+item.product_info.type_name+'/'+item.product_info.style_name+'/'+item.product_info.flower_id:'设计单' }})</span>
+          </el-option>
+        </el-select>
+      </div>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -1023,7 +1044,7 @@
   </div>
 </template>
 <script>
-import { porductOne, YarnList, editList, YarnColorList, materialList, saveCraft, savePM, PMList, deletePM } from '@/assets/js/api.js'
+import { porductOne, YarnList, editList, YarnColorList, materialList, saveCraft, savePM, PMList, deletePM, craftOne, craftList } from '@/assets/js/api.js'
 import { HotTable } from '@handsontable/vue'
 import enCH from '@/assets/js/languages.js'
 import Handsontable from 'handsontable'
@@ -1629,7 +1650,11 @@ export default {
       },
       weight: '',
       coefficient: [],
-      desc: ''
+      desc: '',
+      // 导入工艺单数据
+      gyd: '',
+      gydArr: [],
+      loadingS: true
     }
   },
   watch: {
@@ -2206,6 +2231,7 @@ export default {
           reed_method: this.warpInfo.reed_method,
           reed_width: this.warpInfo.reed_width,
           sum_up: this.warpInfo.sum_up,
+          contract_ratio: 100, // 缩率工艺单用不到，默认100
           additional_data: '' // 废弃字段
         },
         weft_data: {
@@ -2281,7 +2307,8 @@ export default {
           xiachiya: this.weftInfo.xiachiya,
           neichang: this.weftInfo.neichang,
           rangwei: this.weftInfo.rangwei,
-          total: this.weftInfo.total
+          total: this.weftInfo.total,
+          contract_ratio: 100 // 缩率工艺单用不到，默认100
         },
         draft_method: {
           PM: this.repeatPM.map((item, index) => {
@@ -2417,6 +2444,126 @@ export default {
       if (this.number > 1) {
         this.tableData[type].number--
       }
+    },
+    // 查找工艺单
+    remoteMethod (query) {
+      if (query !== '') {
+        this.loadingS = true
+        craftList({
+          company_id: this.companyId,
+          type_id: null,
+          style_id: null,
+          category_id: null,
+          limit: 20,
+          page: 1,
+          craft_code: query,
+          is_draft: null
+        }).then((res) => {
+          this.gydArr = res.data.data
+          this.loadingS = false
+        })
+      } else {
+        this.gydArr = []
+      }
+    },
+    // 导入单张工艺单
+    getCraft (code) {
+      this.loading = true
+      craftOne({
+        id: code
+      }).then((res) => {
+        let data = res.data.data
+        this.warpInfo = data.warp_data
+        this.weftInfo = data.weft_data
+        this.colour = this.warpInfo.color_data.map((item, index) => {
+          return {
+            value: '', // 配色清空，不同产品配色不同
+            colorWarp: item.color_scheme.map((item) => {
+              return {
+                name: item.name,
+                color: item.value
+              }
+            }),
+            colorWeft: this.weftInfo.color_data[index].color_scheme.map((item) => {
+              return {
+                name: item.name,
+                color: item.value
+              }
+            })
+          }
+        })
+        this.yarn.yarnWarp = this.warpInfo.material_data.find((item) => item.type_material === 1).material_name
+        this.yarn.yarnWeft = this.weftInfo.material_data.find((item) => item.type_material === 1).material_name
+        this.yarn.yarnOtherWarp = this.warpInfo.material_data.filter((item) => item.type_material === 2)
+        this.yarn.yarnOtherWeft = this.weftInfo.material_data.filter((item) => item.type_material === 2)
+        this.material.materialWarp = JSON.parse(this.warpInfo.assist_material)
+        this.material.materialWeft = JSON.parse(this.weftInfo.assist_material)
+        this.warpInfo.warp_rank = JSON.parse(this.warpInfo.warp_rank)
+        this.warpInfo.warp_rank_back = JSON.parse(this.warpInfo.warp_rank_back)
+        this.weftInfo.weft_rank = JSON.parse(this.weftInfo.weft_rank)
+        this.weftInfo.weft_rank_back = JSON.parse(this.weftInfo.weft_rank_back)
+        this.tableData.warp.mergeCells = JSON.parse(this.warpInfo.merge_data)
+        this.tableData.weft.mergeCells = JSON.parse(this.weftInfo.merge_data)
+        this.tableData.warpBack.mergeCells = JSON.parse(this.warpInfo.merge_data_back)
+        this.tableData.weftBack.mergeCells = JSON.parse(this.weftInfo.merge_data_back)
+        if (data.is_draft === 2) {
+          this.warpInfo.warp_rank.splice(2, 1)
+          this.warpInfo.warp_rank_back.splice(2, 1)
+          this.weftInfo.weft_rank.splice(2, 1)
+          this.weftInfo.weft_rank_back.splice(2, 1)
+          this.tableData.warp.mergeCells.forEach((item) => {
+            item.row--
+          })
+          this.tableData.weft.mergeCells.forEach((item) => {
+            item.row--
+          })
+          this.tableData.warpBack.mergeCells.forEach((item) => {
+            item.row--
+          })
+          this.tableData.weftBack.mergeCells.forEach((item) => {
+            item.row--
+          })
+        }
+        this.$refs.warp.hotInstance.loadData(this.warpInfo.warp_rank.map((item, index) => {
+          return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
+        }))
+        this.$refs.weft.hotInstance.loadData(this.weftInfo.weft_rank.map((item, index) => {
+          return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
+        }))
+        this.tableData.warp.data = this.warpInfo.warp_rank.map((item, index) => {
+          return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
+        })
+        this.tableData.weft.data = this.weftInfo.weft_rank.map((item, index) => {
+          return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
+        })
+        if (data.warp_data.back_status === 1) {
+          this.$refs.warpBack.hotInstance.loadData(this.warpInfo.warp_rank_back.map((item, index) => {
+            return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
+          }))
+          this.tableData.warpBack.data = this.warpInfo.warp_rank_back.map((item, index) => {
+            return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
+          })
+        }
+        if (data.weft_data.back_status === 1) {
+          this.$refs.weftBack.hotInstance.loadData(this.weftInfo.weft_rank_back.map((item, index) => {
+            return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
+          }))
+          this.tableData.weftBack.data = this.weftInfo.weft_rank_back.map((item, index) => {
+            return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
+          })
+        }
+        this.ifDouble.warp = data.warp_data.back_status
+        this.ifDouble.weft = data.weft_data.back_status
+
+        this.GL = data.draft_method.GL
+        this.GLFlag = data.draft_method.GLFlag
+        this.repeatPM = data.draft_method.PM
+        this.PMFlag = data.draft_method.PMFlag
+        this.desc = data.desc
+        this.weight = data.weight
+        this.coefficient = data.yarn_coefficient.map((item) => item.value)
+        this.loading = false
+      })
     }
   },
   mounted () {
