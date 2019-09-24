@@ -545,8 +545,7 @@ export default {
             batch_info: this.productArr.map((item) => {
               return {
                 productCode: item.product_code,
-                size: item.info,
-                productInfo: item.productInfo
+                size: item.info
               }
             }),
             delivery_time: this.presentDate,

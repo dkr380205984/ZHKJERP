@@ -873,8 +873,7 @@ export default {
               batch_info: item.product.map((item) => {
                 return {
                   productCode: item.name,
-                  size: item.size,
-                  productInfo: item.product_info
+                  size: item.size
                 }
               }),
               delivery_time: item.date,

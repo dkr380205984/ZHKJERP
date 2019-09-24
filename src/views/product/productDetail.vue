@@ -320,7 +320,7 @@
           @click="$router.go(-1)">返回</div>
         <div class="okBtn"
           v-if="productDetail.has_craft===0&&productDetail.in_order===0&&productDetail.has_plan===0"
-          @click="$router.push('/index/productUpdate/'+productDetail.id)">修改</div>
+          @click="$router.push('/index/productUpdate/'+productDetail.id + '?type=1')">修改</div>
         <el-tooltip v-if="productDetail.has_craft===1||productDetail.in_order===1||productDetail.has_plan===1"
           class="item"
           effect="dark"
