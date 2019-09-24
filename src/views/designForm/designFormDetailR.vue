@@ -184,7 +184,7 @@
             </div>
             <div class="box box2">
               <div class="label">边型：</div>
-              <div class="content">{{warpInfo.side_id}}</div>
+              <div class="content">{{warpInfo.side_name}}</div>
             </div>
           </div>
           <div class="row">
@@ -194,7 +194,7 @@
             </div>
             <div class="box box2">
               <div class="label">机型：</div>
-              <div class="content">{{warpInfo.machine_id}}</div>
+              <div class="content">{{warpInfo.machine_name}}</div>
             </div>
           </div>
           <div class="row">
@@ -337,7 +337,7 @@
           <div class="row">
             <div class="box box2">
               <div class="label">组织法:</div>
-              <div class="content">{{weftInfo.organization_id}}</div>
+              <div class="content">{{weftInfo.organization_name}}</div>
             </div>
             <div class="box box2">
               <div class="label">纬密:</div>

@@ -27,6 +27,12 @@
           <div class="border"></div>
         </div>
         <div class="appendInfo">
+          <div class="row">
+            <div class="box box1">
+              <div class="label">经向缩率：</div>
+              <div class="content">{{warpInfo.contract_ratio}}%</div>
+            </div>
+          </div>
           <div class="row"
             style="margin-bottom:0px;">
             <div class="box box1">
@@ -135,7 +141,7 @@
             </div>
             <div class="box box2">
               <div class="label">边型：</div>
-              <div class="content">{{warpInfo.side_id}}</div>
+              <div class="content">{{warpInfo.side_name}}</div>
             </div>
           </div>
           <div class="row">
@@ -145,7 +151,7 @@
             </div>
             <div class="box box2">
               <div class="label">机型：</div>
-              <div class="content">{{warpInfo.machine_id}}</div>
+              <div class="content">{{warpInfo.machine_name}}</div>
             </div>
           </div>
           <div class="row">
@@ -184,6 +190,12 @@
           <div class="border"></div>
         </div>
         <div class="appendInfo">
+          <div class="row">
+            <div class="box box1">
+              <div class="label">纬向缩率：</div>
+              <div class="content">{{weftInfo.contract_ratio}}%</div>
+            </div>
+          </div>
           <div class="row"
             style="margin-bottom:0">
             <div class="box box1">
@@ -288,7 +300,7 @@
           <div class="row">
             <div class="box box2">
               <div class="label">组织法:</div>
-              <div class="content">{{weftInfo.organization_id}}</div>
+              <div class="content">{{weftInfo.organization_name}}</div>
             </div>
             <div class="box box2">
               <div class="label">纬密:</div>

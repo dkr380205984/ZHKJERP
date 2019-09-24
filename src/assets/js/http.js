@@ -132,9 +132,7 @@ async function post (url, params, contentType, responseType) {
     console.log(response.data)
     if (response.data.code === 501 || response.data.code === 502) {
       Message.Message.error({
-        message: '登录信息过期',
-        duration: 0,
-        showClose: true
+        message: '登录信息过期'
       })
       router.push('/login' + '?nextUrl=' + window.location.href)
       return Promise.reject(response)

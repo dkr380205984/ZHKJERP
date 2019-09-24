@@ -1708,7 +1708,7 @@ export default {
     },
     weimi () {
       if (this.weftInfo.neichang && this.weftInfo.rangwei) {
-        return ((this.weftInfo.total / (this.weftInfo.neichang + this.weftInfo.rangwei)) * 100).toFixed(2)
+        return ((this.weftInfo.total / (this.weftInfo.neichang + this.weftInfo.rangwei))).toFixed(2)
       } else {
         return 0
       }
@@ -2506,6 +2506,10 @@ export default {
         this.tableData.weft.mergeCells = JSON.parse(this.weftInfo.merge_data)
         this.tableData.warpBack.mergeCells = JSON.parse(this.warpInfo.merge_data_back)
         this.tableData.weftBack.mergeCells = JSON.parse(this.weftInfo.merge_data_back)
+        this.tableData.warp.number = this.warpInfo.warp_rank[0].length
+        this.tableData.warpBack.number = this.warpInfo.warp_rank_back[0].length
+        this.tableData.weft.number = this.weftInfo.weft_rank[0].length
+        this.tableData.weftBack.number = this.weftInfo.weft_rank_back[0].length
         if (data.is_draft === 2) {
           this.warpInfo.warp_rank.splice(2, 1)
           this.warpInfo.warp_rank_back.splice(2, 1)
@@ -2592,21 +2596,21 @@ export default {
       this.loading = false
     })
     // 监听快捷键，给表格插入列
-    document.onkeydown = (e) => {
-      if (e.keyCode === 187 && e.ctrlKey) {
-        e.preventDefault()
-        this.addOneCol('warp')
-      } else if (e.keyCode === 189 && e.ctrlKey) {
-        e.preventDefault()
-        this.deleteOneCol('warp')
-      } else if (e.keyCode === 187 && e.shiftKey) {
-        e.preventDefault()
-        this.addOneCol('weft')
-      } else if (e.keyCode === 189 && e.shiftKey) {
-        e.preventDefault()
-        this.deleteOneCol('weft')
-      }
-    }
+    // document.onkeydown = (e) => {
+    //   if (e.keyCode === 187 && e.ctrlKey) {
+    //     e.preventDefault()
+    //     this.addOneCol('warp')
+    //   } else if (e.keyCode === 189 && e.ctrlKey) {
+    //     e.preventDefault()
+    //     this.deleteOneCol('warp')
+    //   } else if (e.keyCode === 187 && e.shiftKey) {
+    //     e.preventDefault()
+    //     this.addOneCol('weft')
+    //   } else if (e.keyCode === 189 && e.shiftKey) {
+    //     e.preventDefault()
+    //     this.deleteOneCol('weft')
+    //   }
+    // }
   }
 }
 </script>

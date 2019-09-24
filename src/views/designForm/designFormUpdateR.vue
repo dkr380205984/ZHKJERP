@@ -2522,6 +2522,12 @@ export default {
           return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
         })
       }
+
+      this.tableData.warp.number = JSON.parse(this.warpInfo.warp_rank)[0].length
+      this.tableData.warpBack.number = JSON.parse(this.warpInfo.warp_rank_back)[0].length
+      this.tableData.weft.number = JSON.parse(this.weftInfo.weft_rank)[0].length
+      this.tableData.weftBack.number = JSON.parse(this.weftInfo.weft_rank_back)[0].length
+
       this.ifDouble.warp = data.warp_data.back_status
       this.ifDouble.weft = data.weft_data.back_status
 
