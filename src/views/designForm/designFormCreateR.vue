@@ -2322,8 +2322,8 @@ export default {
             } else {
               item.children = item.children.map((item2) => {
                 item2.children = item2.children.map((item3) => {
-                  item3.value = item.value.replace(/，/g, ',')
-                  item3.repeat = Number(item.repeat) > 0 ? Number(item.repeat) : 1
+                  item3.value = item3.value.replace(/，/g, ',')
+                  item3.repeat = Number(item3.repeat) > 0 ? Number(item3.repeat) : 1
                   return item3
                 })
                 return item2

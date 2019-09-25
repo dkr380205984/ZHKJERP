@@ -534,6 +534,10 @@ let router = new Router({
       path: 'sendMsg',
       name: 'sendMsg',
       component: () => import('./views/self/sendMsg.vue')
+    }, {
+      path: 'msgList',
+      name: 'msgList',
+      component: () => import('./views/self/msgList.vue')
     }]
   }
   ]
