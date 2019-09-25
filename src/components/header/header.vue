@@ -70,7 +70,7 @@
                 </div>
               </div>
             </div>
-            <div class="msgBottom"><span>查看全部通知</span></div>
+            <div class="msgBottom"><span @click="$router.push('/index/msgList')">查看全部通知</span></div>
           </div>
         </div>
         <i class="el-icon-setting"
@@ -81,7 +81,9 @@
               个人中心<i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="personManage">人员管理</el-dropdown-item>
+              <el-dropdown-item command="sendMsg">发布通知</el-dropdown-item>
+              <el-dropdown-item command="personManage"
+                divided>人员管理</el-dropdown-item>
               <el-dropdown-item command="login"
                 divided>退出登录</el-dropdown-item>
             </el-dropdown-menu>
@@ -155,12 +157,13 @@ export default {
   },
   methods: {
     commondHandler (cmd) {
-      console.log(cmd)
       if (cmd === 'personManage') {
         // 这里刷新页面是为了解决左侧导航栏不能刷新的问题
         window.location.replace('/index/personManage')
       } else if (cmd === 'login') {
         window.location.replace('/login')
+      } else if (cmd === 'sendMsg') {
+        window.location.replace('/index/sendMsg')
       }
     },
     goHome () {
