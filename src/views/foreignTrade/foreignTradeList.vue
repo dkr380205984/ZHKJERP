@@ -19,6 +19,15 @@
                 :value="item.value">
               </el-option>
             </el-select>
+            <el-select v-model="type"
+              style="margin-left:8px;"
+              placeholder="请选择">
+              <el-option v-for="item in companyType"
+                :key="item.value"
+                :label="item.name"
+                :value="item.value">
+              </el-option>
+            </el-select>
           </div>
           <div class="rightFilter">
             <el-date-picker v-model="date"
@@ -135,7 +144,9 @@ export default {
       pages: 1,
       list: [],
       start_time: '',
-      end_time: ''
+      end_time: '',
+      type: '',
+      companyType: companyType
     }
   },
   methods: {

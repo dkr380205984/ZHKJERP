@@ -1,52 +1,55 @@
 <template>
   <div id="designFormTable"
     @click.right='goTop'>
-    <!-- <div class="table">
+    <div class="table">
       <p class="company">桐庐凯瑞针纺有限公司工艺单</p>
       <div class="page_header">
-        <span>工艺单编号:{{craft_code}}</span>
+        <span>工艺单编号:{{design_code}}</span>
         <span>创建时间：{{create_time}}</span>
       </div>
       <ul class="table-box">
         <li class="info">
           <div>产品名称</div>
-          <div>{{product_info|filterType}}</div>
-          <div>成分</div>
-          <div>{{product_info.materials|filterIngredient}}</div>
+          <div>{{product_name}}</div>
+          <div>产品品类</div>
+          <div>{{product_type}}</div>
           <div>产品编号</div>
-          <div>{{product_info.product_code}}</div>
+          <div>{{product_code}}</div>
         </li>
         <li class="info">
           <div>规格</div>
-          <div>
-            {{product_info.size|filterSize}}
-          </div>
+          <div>{{size}}</div>
           <div>克重</div>
           <div>{{weight}}g</div>
-          <div>备注</div>
-          <div>{{product_info.description}}</div>
+          <div>成分</div>
+          <div>{{ingredient}}</div>
         </li>
         <li class="main-arrange">
-          <div class="title">主要原料及配色排列</div>
+          <div class="title">原料经向</div>
           <div class="content">
-            <div class="main-raw-material material">
+            <div class="material">
               <span>主要原料(经)</span>
               <span>
-                {{material_data.warpMaterialMain.name + ':'}}
-                <template v-for="(item,index) in material_data.warpMaterialMain.value">
-                  {{item === 0 ? '主' : '夹' + item}}{{index+1 !== material_data.warpMaterialMain.value.length ? '/' : ''}}
-                </template>
+                主:{{ warp_data.material_data.find(item=>item.apply.indexOf(0) !== -1) ? warp_data.material_data.find(item=>item.apply.indexOf(0) !== -1).material_name : ''}}
               </span>
             </div>
-            <div class="lost-raw-material material">
+            <div class="material">
               <span>次要原料(经)</span>
               <span>
-                <span v-for="(itemMaterial,indexMaterial) in material_data.warpMaterialOther"
+                <span v-for="(itemMaterial,indexMaterial) in warp_data.material_data"
                   :key="indexMaterial">
-                  {{itemMaterial.name}}:
-                  <template v-for="(item,index) in itemMaterial.value">
-                    {{item === 0 ? '主' : '夹' + item}}{{index+1 !== itemMaterial.value.length ? '/' : ''}}
-                  </template>
+                  {{itemMaterial.apply|filterClass}}
+                  {{':' + itemMaterial.material_name }}
+                </span>
+              </span>
+            </div>
+            <div class="material">
+              <span>次要辅料(经)</span>
+              <span>
+                <span v-for="(itemMaterial,indexMaterial) in warp_data.assist_material"
+                  :key="indexMaterial">
+                  {{itemMaterial.apply|filterMaterialClass}}
+                  {{':' + itemMaterial.material_name }}
                 </span>
               </span>
             </div>
@@ -54,26 +57,61 @@
               <div class="title">经向排列</div>
               <div class="content">
                 <div class="particulars"
-                  v-if="warp_data.warp_rank_bottom.length < 13 && weft_data.weft_rank_bottom.length < 13 && (warp_data.warp_rank_bottom_back ? warp_data.warp_rank_bottom_back.length === 0 : !warp_data.warp_rank_bottom_back) && (weft_data.weft_rank_bottom_back ? weft_data.weft_rank_bottom_back.length === 0 : !weft_data.weft_rank_bottom_back)">
+                  v-if="warp_data.warp_rank[1].length <= 16 && weft_data.weft_rank[1].length <= 16">
                   <div>
-                    <span v-for="(item,key) in add(warp_data.warp_rank_bottom)"
-                      :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
-                      :key="key">{{item === 'no' ? '' : (item === 0 ? '主' : '夹' + item)}}</span>
-                  </div>
-                  <div v-for="(item,key) in warp_data.warp_rank"
-                    :key="key">
-                    <template v-if="key === 0">
-                      <span v-for="(item,key) in add(item)"
-                        :style="{minWidth : (100/12) + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
-                        :key="key">
-                        {{item === 'no' ? '' : item}}
+                    <span v-for="(item,key) in warp_data.warp_rank[1]"
+                      :style="{minWidth : 100/16 + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none'}"
+                      :key="key">{{item === 0 ? '主' : '夹' + item}}</span>
+                    <template v-if="warp_data.warp_rank[1].length < 16">
+                      <span v-for="(value,index) in (16-warp_data.warp_rank[1].length)"
+                        :key="index + 'X'"
+                        :style="{minWidth : (100/16) + '%',borderLeft :'1px solid #999'}">
                       </span>
                     </template>
-                    <template v-else>
-                      <span v-for="(value,index) in changeArr(add(item))"
-                        :key="index"
-                        :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999'}">
-                        {{value.value === 'no' ? '' : value.value}}
+                  </div>
+                  <div>
+                    <span v-for="(item,key) in warp_data.warp_rank[2]"
+                      :style="{minWidth : (100/16) + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none'}"
+                      :key="key">
+                      {{item ? item : ''}}
+                    </span>
+                    <template v-if="warp_data.warp_rank[2].length < 16">
+                      <span v-for="(value,index) in (16-warp_data.warp_rank[2].length)"
+                        :key="index + 'X'"
+                        :style="{minWidth : (100/16) + '%',borderLeft :'1px solid #999'}">
+                      </span>
+                    </template>
+                  </div>
+                  <div>
+                    <span v-for="(item,key) in mergeSpan(warp_data,3,'warp_rank')"
+                      :style="{minWidth : (100/16)*item.colspan + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none'}"
+                      :key="key">{{item ? item.value : ''}}</span>
+                    <template v-if="warp_data.warp_rank[3].length < 16">
+                      <span v-for="(value,index) in (16-warp_data.warp_rank[3].length)"
+                        :key="index + 'X'"
+                        :style="{minWidth : (100/16) + '%',borderLeft :'1px solid #999'}">
+                      </span>
+                    </template>
+                  </div>
+                  <div>
+                    <span v-for="(item,key) in mergeSpan(warp_data,4,'warp_rank')"
+                      :style="{minWidth : (100/16) + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none'}"
+                      :key="key">{{item ? item.value : ''}}</span>
+                    <template v-if="warp_data.warp_rank[4].length < 16">
+                      <span v-for="(value,index) in (16-warp_data.warp_rank[4].length)"
+                        :key="index + 'X'"
+                        :style="{minWidth : (100/16) + '%',borderLeft :'1px solid #999'}">
+                      </span>
+                    </template>
+                  </div>
+                  <div>
+                    <span v-for="(item,key) in mergeSpan(warp_data,5,'warp_rank')"
+                      :style="{minWidth : (100/16) + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none'}"
+                      :key="key">{{item ? item.value : ''}}</span>
+                    <template v-if="warp_data.warp_rank[5].length < 16">
+                      <span v-for="(value,index) in (16-warp_data.warp_rank[5].length)"
+                        :key="index + 'X'"
+                        :style="{minWidth : (100/16) + '%',borderLeft :'1px solid #999'}">
                       </span>
                     </template>
                   </div>
@@ -115,17 +153,19 @@
             </div>
             <div class="through-methods">
               <div class="through-title">穿综法</div>
-              <span>{{warp_data.drafting_method?warp_data.drafting_method:''}}</span>
               <div class="through-content">
-                <div class="through-for">{{warp_data.additional_data}}</div>
+                <div class="through-for">
+                  <template v-for="(item) in drafting_method.PM">{{'根数(' + item.number + '根),' +'循环体(' +  item.value + '),重复次数(' + item.repeat + ')'}}</template>
+                </div>
                 <div class="content-box">
                   <div class="box"
-                    v-for="(val,ind) in warp_data.drafting_method"
+                    v-for="(val,ind) in drafting_method.GL[0]"
                     :key='ind'>
                     <span class="index">{{ind+1}}</span>
                     <span class="detail">
                       <span>{{val[0]}}</span>
                       <span>{{val[1]}}</span>
+                      <span>{{val[2]}}</span>
                     </span>
                   </div>
                 </div>
@@ -159,23 +199,29 @@
               <span>总计</span>
               <span class="unit">{{weft_data.total}}</span>
             </div>
-            <div class="main-raw-material material">
+            <div class="material">
               <span>主要原料(纬)</span>
               <span>
-                {{this.material_data.weftMaterialMain.name}}:
-                <template v-for="(item,index) in material_data.weftMaterialMain.value">
-                  {{item === 0 ? '主' : '夹' + item}}{{index+1 !== material_data.weftMaterialMain.value.length ? '/' : ''}}
-                </template>
+                主:{{ weft_data.material_data.find(item=>item.apply.indexOf(0) !== -1) ? weft_data.material_data.find(item=>item.apply.indexOf(0) !== -1).material_name : ''}}
               </span>
             </div>
-            <div class="lost-raw-material material">
+            <div class="material">
               <span>次要原料(纬)</span>
               <span>
-                <span v-for="(itemMaterial,indexMaterial) in material_data.weftMaterialOther"
-                  :key="indexMaterial">{{itemMaterial.name}}:
-                  <template v-for="(item,index) in itemMaterial.value">
-                    {{item === 0 ? '主' : '夹' + item}}{{index+1 !== itemMaterial.value.length ? '/' : ''}}
-                  </template>
+                <span v-for="(itemMaterial,indexMaterial) in weft_data.material_data"
+                  :key="indexMaterial">
+                  {{itemMaterial.apply|filterClass}}
+                  {{":" + itemMaterial.material_name}}
+                </span>
+              </span>
+            </div>
+            <div class="material">
+              <span>次要辅料(纬)</span>
+              <span>
+                <span v-for="(itemMaterial,indexMaterial) in weft_data.assist_material"
+                  :key="indexMaterial">
+                  {{itemMaterial.apply|filterMaterialClass}}
+                  {{":" + itemMaterial.material_name}}
                 </span>
               </span>
             </div>
@@ -183,26 +229,61 @@
               <div class="title">纬向排列</div>
               <div class="content">
                 <div class="particulars"
-                  v-if="weft_data.weft_rank_bottom.length < 13 && warp_data.warp_rank_bottom.length < 13 && (warp_data.warp_rank_bottom_back ? warp_data.warp_rank_bottom_back.length === 0 : !warp_data.warp_rank_bottom_back) && (weft_data.weft_rank_bottom_back ? weft_data.weft_rank_bottom_back.length === 0 : !weft_data.weft_rank_bottom_back)">
+                  v-if="warp_data.warp_rank[1].length <= 16 && weft_data.weft_rank[1].length <= 16">
                   <div>
-                    <span v-for="(item,key) in add(weft_data.weft_rank_bottom)"
-                      :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
-                      :key="key">{{item === 'no' ? '' : (item === 0 ? '主' : '夹' + item)}}</span>
-                  </div>
-                  <div v-for="(item,key) in weft_data.weft_rank"
-                    :key="key">
-                    <template v-if="key === 0">
-                      <span v-for="(item,key) in add(item)"
-                        :style="{minWidth : (100/12) + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
-                        :key="key">
-                        {{item === 'no' ? '' : item}}
+                    <span v-for="(item,key) in weft_data.weft_rank[1]"
+                      :style="{minWidth : 100/16 + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none'}"
+                      :key="key">{{item === 0 ? '主' : '夹' + item}}</span>
+                    <template v-if="weft_data.weft_rank[1].length < 16">
+                      <span v-for="(value,index) in (16-weft_data.weft_rank[1].length)"
+                        :key="index + 'X'"
+                        :style="{minWidth : (100/16) + '%',borderLeft :'1px solid #999'}">
                       </span>
                     </template>
-                    <template v-else>
-                      <span v-for="(value,index) in changeArr(add(item))"
-                        :key="index"
-                        :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999'}">
-                        {{value.value === 'no' ? '' : value.value}}
+                  </div>
+                  <div>
+                    <span v-for="(item,key) in weft_data.weft_rank[2]"
+                      :style="{minWidth : (100/16) + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none'}"
+                      :key="key">
+                      {{item ? item : ''}}
+                    </span>
+                    <template v-if="weft_data.weft_rank[2].length < 16">
+                      <span v-for="(value,index) in (16-weft_data.weft_rank[2].length)"
+                        :key="index + 'X'"
+                        :style="{minWidth : (100/16) + '%',borderLeft :'1px solid #999'}">
+                      </span>
+                    </template>
+                  </div>
+                  <div>
+                    <span v-for="(item,key) in mergeSpan(weft_data,3,'weft_rank')"
+                      :style="{minWidth : (100/16)*item.colspan + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none'}"
+                      :key="key">{{item ? item.value : ''}}</span>
+                    <template v-if="weft_data.weft_rank[3].length < 16">
+                      <span v-for="(value,index) in (16-weft_data.weft_rank[3].length)"
+                        :key="index + 'X'"
+                        :style="{minWidth : (100/16) + '%',borderLeft :'1px solid #999'}">
+                      </span>
+                    </template>
+                  </div>
+                  <div>
+                    <span v-for="(item,key) in mergeSpan(weft_data,4,'weft_rank')"
+                      :style="{minWidth : (100/16) + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none'}"
+                      :key="key">{{item ? item.value : ''}}</span>
+                    <template v-if="weft_data.weft_rank[4].length < 16">
+                      <span v-for="(value,index) in (16-weft_data.weft_rank[4].length)"
+                        :key="index + 'X'"
+                        :style="{minWidth : (100/16) + '%',borderLeft :'1px solid #999'}">
+                      </span>
+                    </template>
+                  </div>
+                  <div>
+                    <span v-for="(item,key) in mergeSpan(weft_data,5,'weft_rank')"
+                      :style="{minWidth : (100/16) + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none'}"
+                      :key="key">{{item ? item.value : ''}}</span>
+                    <template v-if="weft_data.weft_rank[5].length < 16">
+                      <span v-for="(value,index) in (16-weft_data.weft_rank[5].length)"
+                        :key="index + 'X'"
+                        :style="{minWidth : (100/16) + '%',borderLeft :'1px solid #999'}">
                       </span>
                     </template>
                   </div>
@@ -215,7 +296,7 @@
         <li class="match-colors">
           <div class="title">配色工艺</div>
           <div class="content">
-            <template v-if="color_data.length < 7 && panduan() < 7">
+            <template v-if="color_data.length < 7 && zhujia_info.length < 7">
               <div class="table-head-row">
                 <div class="table-head">
                   <span>颜色组</span>
@@ -235,29 +316,24 @@
                   <div class="table-head-col">克重</div>
                   <div v-for="(val,ind) in forArr(6)"
                     :key="ind + 'a'">
-                    <span :style="{fontSize:smallFont(weight_info[ind] ? (weight_info[ind].data ? (weight_info[ind].data.warp ? weight_info[ind].data.warp.weight + 'g' : '') : '') : '') ? '10px' : false}">{{weight_info[ind] ? (weight_info[ind].data ? (weight_info[ind].data.warp ? weight_info[ind].data.warp.weight + 'g' : '') : '') : ''}}</span>
-                    <span :style="{fontSize:smallFont(weight_info[ind] ? (weight_info[ind].data ? (weight_info[ind].data.weft ? weight_info[ind].data.weft.weight + 'g' : '') : '') : '') ? '10px' : false}">{{weight_info[ind] ? (weight_info[ind].data ? (weight_info[ind].data.weft ? weight_info[ind].data.weft.weight + 'g' : '') : '') : ''}}</span>
+                    <span :style="{fontSize:smallFont(colorWeight.warp[ind]) ? '10px' : false}">{{colorWeight.warp[ind] ? colorWeight.warp[ind] === 'NaN' ? '0g' : colorWeight.warp[ind] + 'g' : ''}}</span>
+                    <span :style="{fontSize:smallFont(colorWeight.weft[ind]) ? '10px' : false}">{{colorWeight.weft[ind] ? colorWeight.weft[ind] === 'NaN' ? '0g' : colorWeight.weft[ind] + 'g' : ''}}</span>
                   </div>
                 </li>
                 <template v-for="(value,index) in color_data">
                   <li v-if='index < 5'
                     :key="index">
                     <div class="table-head-col">{{value.product_color}}</div>
-                    <div v-for="(item,key) in value.color_scheme"
+                    <div v-for="(item,key) in 6"
                       :key="key">
-                      <span :style="{fontSize:smallFont(item.warp ? item.warp.name : '') ? '10px' : false}">{{item.warp ? item.warp.name : ''}}</span>
-                      <span :style="{fontSize:smallFont(item.weft ? item.weft.name : '') ? '10px' : false}">{{item.weft ? item.weft.name : ''}}</span>
+                      <span v-if="value.color_scheme.warp[key] && value.color_scheme.weft[key] && (value.color_scheme.warp[key].name === value.color_scheme.weft[key].name) ? value.color_scheme.warp[key].name : ''">{{value.color_scheme.warp[key].name}}</span>
+                      <template v-else>
+                        <span :style="{fontSize:smallFont(value.color_scheme.warp[key] ? value.color_scheme.warp[key].name : '') ? '10px' : false}">{{value.color_scheme.warp[key] ? value.color_scheme.warp[key].name : ''}}</span>
+                        <span :style="{fontSize:smallFont(value.color_scheme.weft[key] ? value.color_scheme.weft[key].name : '') ? '10px' : false}">{{value.color_scheme.weft[key] ? value.color_scheme.weft[key].name : ''}}</span>
+                      </template>
                     </div>
-                    <template v-if="value.color_scheme.length<6">
-                      <div v-for="(x,y) in forArr( 6 - value.color_scheme.length)"
-                        :key="y+'1'">
-                        <span></span>
-                        <span></span>
-                      </div>
-                    </template>
                   </li>
                 </template>
-
                 <template v-if="color_data.length < 6">
                   <li v-for="(b,cdf) in forArr(6 - color_data.length)"
                     :key="cdf+b">
@@ -271,54 +347,78 @@
                 </template>
               </ul>
             </template>
-            <template v-else>
-              <span class="fujian">
-                见附件
-              </span>
-            </template>
+            <span class="fujian"
+              v-else>见附件</span>
           </div>
         </li>
       </ul>
     </div>
     <div class="outTable-arrangement"
-      v-if="warp_data.warp_rank_bottom.length > 12 || weft_data.weft_rank_bottom.length > 12 || (warp_data.warp_rank_bottom_back ? warp_data.warp_rank_bottom_back.length !== 0 : warp_data.warp_rank_bottom_back) || (weft_data.weft_rank_bottom_back ? weft_data.weft_rank_bottom_back.length !== 0 : weft_data.weft_rank_bottom_back)">
+      v-if="warp_data.warp_rank[0].length > 16 || weft_data.weft_rank[0].length > 16 || warp_data.back_status !== 0 || weft_data.back_status !== 0">
       <div class="code">
         <div class="title">工艺单编号:</div>
-        <div class="content">{{craft_code}}</div>
+        <div class="content">{{design_code}}</div>
       </div>
       <div class="warp-wise-arrange">
         <div class="title">经向排列-正:</div>
         <div class="content">
           <div class="particulars"
-            v-for=" (a,b) in add(warp_data.warp_rank_bottom,'all')"
-            :key="b">
+            v-for=" (items,keys) in Math.ceil(warp_data.warp_rank[0].length / 16)"
+            :key="keys">
             <div>
-              <span v-for="(item,key) in add(warp_data.warp_rank_bottom,b)"
-                :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
-                :key="key">{{item === 'no' ? '' : (item === 0 ? '主' : '夹' + item)}}</span>
-            </div>
-            <div v-for="(item,key) in warp_data.warp_rank"
-              :key="key">
-              <template v-if="key === 0">
-                <span v-for="(val,ind) in add(item,b)"
-                  :style="{minWidth : (100/12) + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
-                  :key="ind">
-                  {{val === 'no' ? '' : val}}
+              <span v-for="(item,key) in splitData(warp_data.warp_rank[1],keys)"
+                :style="{minWidth : 100/16 + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none'}"
+                :key="key">{{item === 0 ? '主' : '夹' + item}}</span>
+              <template v-if="splitData(warp_data.warp_rank[1],keys).length < 16">
+                <span v-for="(value,index) in (16-splitData(warp_data.warp_rank[1],keys).length)"
+                  :key="index + 'X'"
+                  :style="{minWidth : (100/16) + '%',borderLeft :'1px solid #999'}">
                 </span>
               </template>
-              <template v-else>
-                <span v-for="(value,index) in changeArr(add(item,b))"
-                  :key="index"
-                  :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999',background: (consol(item,b,value,index) && value.value !== 'no') ? 'rgb(240,240,240)' : false}">
-                  {{value.value === 'no' ? '' : value.value}}
-                  <span v-if="consol(item,b,value,index) && value.value !== 'no'"
-                    class="jiantou">
-                    <span v-if="consol(item,b,value,index,true) === '' && b !== 0 && b !== add(warp_data.warp_rank_bottom,'all').length -1"></span>
-                    <span v-else-if="(((item[(b + 1) * 12] === item[(b + 1) * 12 - 1] && item[( b + 1 ) * 12 ] === '' ) || item[(b + 1) * 12] === null) && index === changeArr(add(item, b)).length - 1)"
-                      class="el-icon-back left"></span>
-                    <span v-else-if="(((item[b * 12] === item[b * 12 - 1] && item[b * 12] === '') || item[b * 12] === null) && index === 0 && b !== 0)"
-                      class="el-icon-back right"></span>
-                  </span>
+            </div>
+            <div>
+              <span v-for="(item,key) in splitData(warp_data.warp_rank[2],keys)"
+                :style="{minWidth : (100/16) + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none'}"
+                :key="key">
+                {{item ? item : ''}}
+              </span>
+              <template v-if="splitData(warp_data.warp_rank[2],keys).length < 16">
+                <span v-for="(value,index) in (16-splitData(warp_data.warp_rank[2],keys).length)"
+                  :key="index + 'X'"
+                  :style="{minWidth : (100/16) + '%',borderLeft :'1px solid #999'}">
+                </span>
+              </template>
+            </div>
+            <div>
+              <span v-for="(item,key) in mergeSpan(warp_data,3,'warp_rank','merge_data',splitData,keys)"
+                :style="{minWidth : (100/16)*item.colspan + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none',background:item.isSplit ? '#DDD' : false}"
+                :key="key">{{item ? item.value : ''}}</span>
+              <template v-if="splitData(warp_data.warp_rank[3],keys).length < 16">
+                <span v-for="(value,index) in (16-splitData(warp_data.warp_rank[3],keys).length)"
+                  :key="index + 'X'"
+                  :style="{minWidth : (100/16) + '%',borderLeft :'1px solid #999'}">
+                </span>
+              </template>
+            </div>
+            <div>
+              <span v-for="(item,key) in mergeSpan(warp_data,4,'warp_rank','merge_data',splitData,keys)"
+                :style="{minWidth : (100/16)*item.colspan + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none',background:item.isSplit ? '#DDD' : false}"
+                :key="key">{{item ? item.value : ''}}</span>
+              <template v-if="splitData(warp_data.warp_rank[4],keys).length < 16">
+                <span v-for="(value,index) in (16-splitData(warp_data.warp_rank[4],keys).length)"
+                  :key="index + 'X'"
+                  :style="{minWidth : (100/16) + '%',borderLeft :'1px solid #999'}">
+                </span>
+              </template>
+            </div>
+            <div>
+              <span v-for="(item,key) in mergeSpan(warp_data,5,'warp_rank','merge_data',splitData,keys)"
+                :style="{minWidth : (100/16)*item.colspan + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none',background:item.isSplit ? '#DDD' : false}"
+                :key="key">{{item ? item.value : ''}}</span>
+              <template v-if="splitData(warp_data.warp_rank[5],keys).length < 16">
+                <span v-for="(value,index) in (16-splitData(warp_data.warp_rank[5],keys).length)"
+                  :key="index + 'X'"
+                  :style="{minWidth : (100/16) + '%',borderLeft :'1px solid #999'}">
                 </span>
               </template>
             </div>
@@ -326,39 +426,66 @@
         </div>
       </div>
       <div class="warp-wise-arrange"
-        v-if="warp_data.warp_rank_bottom_back && warp_data.warp_rank_bottom_back.length !== 0">
+        v-if="warp_data.back_status">
         <div class="title">经向排列-反:</div>
         <div class="content">
           <div class="particulars"
-            v-for=" (a,b) in add(warp_data.warp_rank_bottom_back,'all')"
-            :key="b">
+            v-for=" (items,keys) in Math.ceil(warp_data.warp_rank_back[0].length / 16)"
+            :key="keys">
             <div>
-              <span v-for="(item,key) in add(warp_data.warp_rank_bottom_back,b)"
-                :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
-                :key="key">{{item === 'no' ? '' : (item === 0 ? '主' : '夹' + item)}}</span>
-            </div>
-            <div v-for="(item,key) in warp_data.warp_rank_back"
-              :key="key">
-              <template v-if="key === 0">
-                <span v-for="(val,ind) in add(item,b)"
-                  :style="{minWidth : (100/12) + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
-                  :key="ind">
-                  {{val === 'no' ? '' : val}}
+              <span v-for="(item,key) in splitData(warp_data.warp_rank_back[1],keys)"
+                :style="{minWidth : 100/16 + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none'}"
+                :key="key">{{item === 0 ? '主' : '夹' + item}}</span>
+              <template v-if="splitData(warp_data.warp_rank_back[1],keys).length < 16">
+                <span v-for="(value,index) in (16-splitData(warp_data.warp_rank_back[1],keys).length)"
+                  :key="index + 'X'"
+                  :style="{minWidth : (100/16) + '%',borderLeft :'1px solid #999'}">
                 </span>
               </template>
-              <template v-else>
-                <span v-for="(value,index) in changeArr(add(item,b))"
-                  :key="index"
-                  :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999',background: (consol(item,b,value,index) && value.value !== 'no') ? 'rgb(240,240,240)' : false}">
-                  {{value.value === 'no' ? '' : value.value}}
-                  <span v-if="consol(item,b,value,index) && value.value !== 'no'"
-                    class="jiantou">
-                    <span v-if="consol(item,b,value,index,true) === '' && b !== 0 && b !== add(warp_data.warp_rank_bottom_back,'all').length -1"></span>
-                    <span v-else-if="(((item[(b + 1) * 12] === item[(b + 1) * 12 - 1] && item[( b + 1 ) * 12 ] === '' ) || item[(b + 1) * 12] === null) && index === changeArr(add(item, b)).length - 1)"
-                      class="el-icon-back left"></span>
-                    <span v-else-if="(((item[b * 12] === item[b * 12 - 1] && item[b * 12] === '') || item[b * 12] === null) && index === 0 && b !== 0)"
-                      class="el-icon-back right"></span>
-                  </span>
+            </div>
+            <div>
+              <span v-for="(item,key) in splitData(warp_data.warp_rank_back[2],keys)"
+                :style="{minWidth : (100/16) + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none'}"
+                :key="key">
+                {{item ? item : ''}}
+              </span>
+              <template v-if="splitData(warp_data.warp_rank_back[2],keys).length < 16">
+                <span v-for="(value,index) in (16-splitData(warp_data.warp_rank_back[2],keys).length)"
+                  :key="index + 'X'"
+                  :style="{minWidth : (100/16) + '%',borderLeft :'1px solid #999'}">
+                </span>
+              </template>
+            </div>
+            <div>
+              <span v-for="(item,key) in mergeSpan(warp_data,3,'warp_rank_back','merge_data_back',splitData,keys)"
+                :style="{minWidth : (100/16)*item.colspan + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none',background:item.isSplit ? '#DDD' : false}"
+                :key="key">{{item ? item.value : ''}}</span>
+              <template v-if="splitData(warp_data.warp_rank_back[3],keys).length < 16">
+                <span v-for="(value,index) in (16-splitData(warp_data.warp_rank_back[3],keys).length)"
+                  :key="index + 'X'"
+                  :style="{minWidth : (100/16) + '%',borderLeft :'1px solid #999'}">
+                </span>
+              </template>
+            </div>
+            <div>
+              <span v-for="(item,key) in mergeSpan(warp_data,4,'warp_rank_back','merge_data_back',splitData,keys)"
+                :style="{minWidth : (100/16)*item.colspan + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none',background:item.isSplit ? '#DDD' : false}"
+                :key="key">{{item ? item.value : ''}}</span>
+              <template v-if="splitData(warp_data.warp_rank_back[4],keys).length < 16">
+                <span v-for="(value,index) in (16-splitData(warp_data.warp_rank_back[4],keys).length)"
+                  :key="index + 'X'"
+                  :style="{minWidth : (100/16) + '%',borderLeft :'1px solid #999'}">
+                </span>
+              </template>
+            </div>
+            <div>
+              <span v-for="(item,key) in mergeSpan(warp_data,5,'warp_rank_back','merge_data_back',splitData,keys)"
+                :style="{minWidth : (100/16)*item.colspan + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none',background:item.isSplit ? '#DDD' : false}"
+                :key="key">{{item ? item.value : ''}}</span>
+              <template v-if="splitData(warp_data.warp_rank_back[5],keys).length < 16">
+                <span v-for="(value,index) in (16-splitData(warp_data.warp_rank_back[5],keys).length)"
+                  :key="index + 'X'"
+                  :style="{minWidth : (100/16) + '%',borderLeft :'1px solid #999'}">
                 </span>
               </template>
             </div>
@@ -369,36 +496,62 @@
         <div class="title">纬向排列-正:</div>
         <div class="content">
           <div class="particulars"
-            v-for=" (a,b) in add(weft_data.weft_rank_bottom,'all')"
-            :key="b">
+            v-for=" (items,keys) in Math.ceil(weft_data.weft_rank[0].length / 16)"
+            :key="keys">
             <div>
-              <span v-for="(item,key) in add(weft_data.weft_rank_bottom,b)"
-                :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
-                :key="key">{{item === 'no' ? '' : (item === 0 ? '主' : '夹' + item)}}</span>
-            </div>
-            <div v-for="(item,key) in weft_data.weft_rank"
-              :key="key">
-              <template v-if="key === 0">
-                <span v-for="(items,key) in add(item,b)"
-                  :style="{minWidth : (100/12) + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
-                  :key="key">
-                  {{items === 'no' ? '' : items}}
+              <span v-for="(item,key) in splitData(weft_data.weft_rank[1],keys)"
+                :style="{minWidth : 100/16 + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none'}"
+                :key="key">{{item === 0 ? '主' : '夹' + item}}</span>
+              <template v-if="splitData(weft_data.weft_rank[1],keys).length < 16">
+                <span v-for="(value,index) in (16-splitData(weft_data.weft_rank[1],keys).length)"
+                  :key="index + 'X'"
+                  :style="{minWidth : (100/16) + '%',borderLeft :'1px solid #999'}">
                 </span>
               </template>
-              <template v-else>
-                <span v-for="(value,index) in changeArr(add(item,b))"
-                  :key="index"
-                  :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999',background: consol(item,b,value,index) && value.value !== 'no' ? 'rgb(240,240,240)' : false}">
-                  {{value.value === 'no' ? '' : value.value}}
-
-                  <span v-if="consol(item,b,value,index) && value.value !== 'no' "
-                    class="jiantou">
-                    <span v-if="consol(item,b,value,index,true) === '' && b !== 0 && b !== add(weft_data.weft_rank_bottom,'all').length -1"></span>
-                    <span v-else-if="(((item[(b + 1) * 12] === item[(b + 1) * 12 - 1] && item[( b + 1 ) * 12 ] === '' ) || item[(b + 1) * 12] === null) && index === changeArr(add(item, b)).length - 1)"
-                      class="el-icon-back left"></span>
-                    <span v-else-if="(((item[b * 12] === item[b * 12 - 1] && item[b * 12] === '') || item[b * 12] === null) && index === 0 && b !== 0)"
-                      class="el-icon-back right"></span>
-                  </span>
+            </div>
+            <div>
+              <span v-for="(item,key) in splitData(weft_data.weft_rank[2],keys)"
+                :style="{minWidth : (100/16) + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none'}"
+                :key="key">
+                {{item ? item : ''}}
+              </span>
+              <template v-if="splitData(weft_data.weft_rank[2],keys).length < 16">
+                <span v-for="(value,index) in (16-splitData(weft_data.weft_rank[2],keys).length)"
+                  :key="index + 'X'"
+                  :style="{minWidth : (100/16) + '%',borderLeft :'1px solid #999'}">
+                </span>
+              </template>
+            </div>
+            <div>
+              <span v-for="(item,key) in mergeSpan(weft_data,3,'weft_rank','merge_data',splitData,keys)"
+                :style="{minWidth : (100/16)*item.colspan + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none',background:item.isSplit ? '#DDD' : false}"
+                :key="key">{{item ? item.value : ''}}</span>
+              <template v-if="splitData(weft_data.weft_rank[3],keys).length < 16">
+                <span v-for="(value,index) in (16-splitData(weft_data.weft_rank[3],keys).length)"
+                  :key="index + 'X'"
+                  :style="{minWidth : (100/16) + '%',borderLeft :'1px solid #999'}">
+                </span>
+              </template>
+            </div>
+            <div>
+              <span v-for="(item,key) in mergeSpan(weft_data,4,'weft_rank','merge_data',splitData,keys)"
+                :style="{minWidth : (100/16)*item.colspan + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none',background:item.isSplit ? '#DDD' : false}"
+                :key="key">{{item ? item.value : ''}}</span>
+              <template v-if="splitData(weft_data.weft_rank[4],keys).length < 16">
+                <span v-for="(value,index) in (16-splitData(weft_data.weft_rank[4],keys).length)"
+                  :key="index + 'X'"
+                  :style="{minWidth : (100/16) + '%',borderLeft :'1px solid #999'}">
+                </span>
+              </template>
+            </div>
+            <div>
+              <span v-for="(item,key) in mergeSpan(weft_data,5,'weft_rank','merge_data',splitData,keys)"
+                :style="{minWidth : (100/16)*item.colspan + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none',background:item.isSplit ? '#DDD' : false}"
+                :key="key">{{item ? item.value : ''}}</span>
+              <template v-if="splitData(weft_data.weft_rank[5],keys).length < 16">
+                <span v-for="(value,index) in (16-splitData(weft_data.weft_rank[5],keys).length)"
+                  :key="index + 'X'"
+                  :style="{minWidth : (100/16) + '%',borderLeft :'1px solid #999'}">
                 </span>
               </template>
             </div>
@@ -406,40 +559,66 @@
         </div>
       </div>
       <div class="warp-wise-arrange"
-        v-if="weft_data.weft_rank_bottom_back && weft_data.weft_rank_bottom_back.length !== 0">
+        v-if="weft_data.back_status">
         <div class="title">纬向排列-反:</div>
         <div class="content">
           <div class="particulars"
-            v-for=" (a,b) in add(weft_data.weft_rank_bottom_back,'all')"
-            :key="b">
+            v-for=" (items,keys) in Math.ceil(weft_data.weft_rank_back[0].length / 16)"
+            :key="keys">
             <div>
-              <span v-for="(item,key) in add(weft_data.weft_rank_bottom_back,b)"
-                :style="{minWidth : 100/12 + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
-                :key="key">{{item === 'no' ? '' : (item === 0 ? '主' : '夹' + item)}}</span>
-            </div>
-            <div v-for="(item,key) in weft_data.weft_rank_back"
-              :key="key">
-              <template v-if="key === 0">
-                <span v-for="(items,key) in add(item,b)"
-                  :style="{minWidth : (100/12) + '%',borderRight : key < 11 ? '1px solid #999' : 'none'}"
-                  :key="key">
-                  {{items === 'no' ? '' : items}}
+              <span v-for="(item,key) in splitData(weft_data.weft_rank_back[1],keys)"
+                :style="{minWidth : 100/16 + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none'}"
+                :key="key">{{item === 0 ? '主' : '夹' + item}}</span>
+              <template v-if="splitData(weft_data.weft_rank_back[1],keys).length < 16">
+                <span v-for="(value,index) in (16-splitData(weft_data.weft_rank_back[1],keys).length)"
+                  :key="index + 'X'"
+                  :style="{minWidth : (100/16) + '%',borderLeft :'1px solid #999'}">
                 </span>
               </template>
-              <template v-else>
-                <span v-for="(value,index) in changeArr(add(item,b))"
-                  :key="index"
-                  :style="{minWidth : (100/12) * value.key + '%',borderRight :'1px solid #999',background: consol(item,b,value,index) && value.value !== 'no' ? 'rgb(240,240,240)' : false}">
-                  {{value.value === 'no' ? '' : value.value}}
-
-                  <span v-if="consol(item,b,value,index) && value.value !== 'no' "
-                    class="jiantou">
-                    <span v-if="consol(item,b,value,index,true) === '' && b !== 0 && b !== add(weft_data.weft_rank_bottom_back,'all').length -1"></span>
-                    <span v-else-if="(((item[(b + 1) * 12] === item[(b + 1) * 12 - 1] && item[( b + 1 ) * 12 ] === '' ) || item[(b + 1) * 12] === null) && index === changeArr(add(item, b)).length - 1)"
-                      class="el-icon-back left"></span>
-                    <span v-else-if="(((item[b * 12] === item[b * 12 - 1] && item[b * 12] === '') || item[b * 12] === null) && index === 0 && b !== 0)"
-                      class="el-icon-back right"></span>
-                  </span>
+            </div>
+            <div>
+              <span v-for="(item,key) in splitData(weft_data.weft_rank_back[2],keys)"
+                :style="{minWidth : (100/16) + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none'}"
+                :key="key">
+                {{item ? item : ''}}
+              </span>
+              <template v-if="splitData(weft_data.weft_rank_back[2],keys).length < 16">
+                <span v-for="(value,index) in (16-splitData(weft_data.weft_rank_back[2],keys).length)"
+                  :key="index + 'X'"
+                  :style="{minWidth : (100/16) + '%',borderLeft :'1px solid #999'}">
+                </span>
+              </template>
+            </div>
+            <div>
+              <span v-for="(item,key) in mergeSpan(weft_data,3,'weft_rank_back','merge_data_back',splitData,keys)"
+                :style="{minWidth : (100/16)*item.colspan + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none',background:item.isSplit ? '#DDD' : false}"
+                :key="key">{{item ? item.value : ''}}</span>
+              <template v-if="splitData(weft_data.weft_rank_back[3],keys).length < 16">
+                <span v-for="(value,index) in (16-splitData(weft_data.weft_rank_back[3],keys).length)"
+                  :key="index + 'X'"
+                  :style="{minWidth : (100/16) + '%',borderLeft :'1px solid #999'}">
+                </span>
+              </template>
+            </div>
+            <div>
+              <span v-for="(item,key) in mergeSpan(weft_data,4,'weft_rank_back','merge_data_back',splitData,keys)"
+                :style="{minWidth : (100/16)*item.colspan + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none',background:item.isSplit ? '#DDD' : false}"
+                :key="key">{{item ? item.value : ''}}</span>
+              <template v-if="splitData(weft_data.weft_rank_back[4],keys).length < 16">
+                <span v-for="(value,index) in (16-splitData(weft_data.weft_rank_back[4],keys).length)"
+                  :key="index + 'X'"
+                  :style="{minWidth : (100/16) + '%',borderLeft :'1px solid #999'}">
+                </span>
+              </template>
+            </div>
+            <div>
+              <span v-for="(item,key) in mergeSpan(weft_data,5,'weft_rank_back','merge_data_back',splitData,keys)"
+                :style="{minWidth : (100/16)*item.colspan + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none',background:item.isSplit ? '#DDD' : false}"
+                :key="key">{{item ? item.value : ''}}</span>
+              <template v-if="splitData(weft_data.weft_rank_back[5],keys).length < 16">
+                <span v-for="(value,index) in (16-splitData(weft_data.weft_rank_back[5],keys).length)"
+                  :key="index + 'X'"
+                  :style="{minWidth : (100/16) + '%',borderLeft :'1px solid #999'}">
                 </span>
               </template>
             </div>
@@ -448,10 +627,10 @@
       </div>
     </div>
     <div class="outTable-color"
-      v-if='color_data.length > 6 || panduan() > 6'>
+      v-if='color_data.length > 6 || zhujia_info.length > 6'>
       <div class="code">
         <div class="title">工艺单编号:</div>
-        <div class="content">{{craft_code}}</div>
+        <div class="content">{{design_code}}</div>
       </div>
       <div class="content">
         <div class="table-head-row">
@@ -473,27 +652,21 @@
             <div class="table-head-col">克重</div>
             <div v-for="(val,ind) in forArr(6)"
               :key="ind + 'a'">
-              <span :style="{fontSize:smallFont(weight_info[ind] ? (weight_info[ind].data ? (weight_info[ind].data.warp ? weight_info[ind].data.warp.weight + 'g' : '') : '') : '') ? '10px' : false}">{{weight_info[ind] ? (weight_info[ind].data ? (weight_info[ind].data.warp ? weight_info[ind].data.warp.weight + 'g' : '') : '') : ''}}</span>
-              <span :style="{fontSize:smallFont(weight_info[ind] ? (weight_info[ind].data ? (weight_info[ind].data.weft ? weight_info[ind].data.weft.weight + 'g' : '') : '') : '') ? '10px' : false}">{{weight_info[ind] ? (weight_info[ind].data ? (weight_info[ind].data.weft ? weight_info[ind].data.weft.weight + 'g' : '') : '') : ''}}</span>
+              <span :style="{fontSize:smallFont(colorWeight.warp[ind]) ? '10px' : false}">{{colorWeight.warp[ind] ? colorWeight.warp[ind] === 'NaN' ? '0g' : colorWeight.warp[ind] + 'g' : ''}}</span>
+              <span :style="{fontSize:smallFont(colorWeight.weft[ind]) ? '10px' : false}">{{colorWeight.weft[ind] ? colorWeight.weft[ind] === 'NaN' ? '0g' : colorWeight.weft[ind] + 'g' : ''}}</span>
             </div>
           </li>
           <template v-for="(value,index) in color_data">
             <li :key="index">
               <div class="table-head-col">{{value.product_color}}</div>
-              <template v-for="(item,key) in value.color_scheme">
-                <div :key="key"
-                  v-if="key < 6">
-                  <span :style="{fontSize:smallFont(item.warp ? item.warp.name : '') ? '10px' : false}">{{item.warp ? item.warp.name : ''}}</span>
-                  <span :style="{fontSize:smallFont(item.weft ? item.weft.name : '') ? '10px' : false}">{{item.weft ? item.weft.name : ''}}</span>
-                </div>
-              </template>
-              <template v-if="value.color_scheme.length < 6">
-                <div v-for="(x,y) in forArr( 6 - value.color_scheme.length)"
-                  :key="y">
-                  <span></span>
-                  <span></span>
-                </div>
-              </template>
+              <div v-for="(item,key) in 6"
+                :key="key">
+                <span v-if="value.color_scheme.warp[key] && value.color_scheme.weft[key] && (value.color_scheme.warp[key].name === value.color_scheme.weft[key].name) ? value.color_scheme.warp[key].name : ''">{{value.color_scheme.warp[key].name}}</span>
+                <template v-else>
+                  <span :style="{fontSize:smallFont(value.color_scheme.warp[key] ? value.color_scheme.warp[key].name : '') ? '10px' : false}">{{value.color_scheme.warp[key] ? value.color_scheme.warp[key].name : ''}}</span>
+                  <span :style="{fontSize:smallFont(value.color_scheme.weft[key] ? value.color_scheme.weft[key].name : '') ? '10px' : false}">{{value.color_scheme.weft[key] ? value.color_scheme.weft[key].name : ''}}</span>
+                </template>
+              </div>
             </li>
             <template v-if="color_data.length < 6">
               <li v-for="(value,index) in forArr(6 - color_data.length)"
@@ -510,7 +683,7 @@
         </ul>
       </div>
       <div class="content"
-        v-if="panduan() > 6"
+        v-if="zhujia_info.length > 6"
         style="margin-top:30px;">
         <div class="table-head-row">
           <div class="table-head">
@@ -531,25 +704,21 @@
             <div class="table-head-col">克重</div>
             <div v-for="(val,ind) in forArr(6)"
               :key="ind + 'a'">
-              <span :style="{fontSize:smallFont(weight_info[ind + 6] ? (weight_info[ind + 6].data ? (weight_info[ind + 6].data.warp ? weight_info[ind + 6].data.warp.weight + 'g' : '') : '') : '') ? '10px' : false}">{{weight_info[ind + 6] ? (weight_info[ind + 6].data ? (weight_info[ind + 6].data.warp ? weight_info[ind + 6].data.warp.weight + 'g' : '') : '') : ''}}</span>
-              <span :style="{fontSize:smallFont(weight_info[ind + 6] ? (weight_info[ind + 6].data ? (weight_info[ind + 6].data.weft ? weight_info[ind + 6].data.weft.weight + 'g' : '') : '') : '') ? '10px' : false}">{{weight_info[ind + 6] ? (weight_info[ind + 6].data ? (weight_info[ind + 6].data.weft ? weight_info[ind + 6].data.weft.weight + 'g' : '') : '') : ''}}</span>
+              <span :style="{fontSize:smallFont(colorWeight.warp[ind + 6]) ? '10px' : false}">{{colorWeight.warp[ind + 6] ? colorWeight.warp[ind + 6] === 'NaN' ? '0g' : colorWeight.warp[ind + 6] + 'g' : ''}}</span>
+              <span :style="{fontSize:smallFont(colorWeight.weft[ind + 6]) ? '10px' : false}">{{colorWeight.weft[ind + 6] ? colorWeight.weft[ind + 6] === 'NaN' ? '0g' : colorWeight.weft[ind + 6] + 'g' : ''}}</span>
             </div>
           </li>
           <template v-for="(value,index) in color_data">
             <li :key="index">
               <div class="table-head-col">{{value.product_color}}</div>
-              <div v-for="(item,key) in splices(value.color_scheme)"
+              <div v-for="(item,key) in 6"
                 :key="key">
-                <span :style="{fontSize:smallFont(item.warp ? item.warp.name : '') ? '10px' : false}">{{item.warp ? item.warp.name : ''}}</span>
-                <span :style="{fontSize:smallFont(item.weft ? item.weft.name : '') ? '10px' : false}">{{item.weft ? item.weft.name : ''}}</span>
+                <span v-if="value.color_scheme.warp[key + 6] && value.color_scheme.weft[key + 6] && (value.color_scheme.warp[key + 6].name === value.color_scheme.weft[key + 6].name) ? value.color_scheme.warp[key + 6].name : ''">{{value.color_scheme.warp[key + 6].name}}</span>
+                <template v-else>
+                  <span :style="{fontSize:smallFont(value.color_scheme.warp[key + 6] ? value.color_scheme.warp[key + 6].name : '') ? '10px' : false}">{{value.color_scheme.warp[key + 6] ? value.color_scheme.warp[key + 6].name : ''}}</span>
+                  <span :style="{fontSize:smallFont(value.color_scheme.weft[key + 6] ? value.color_scheme.weft[key + 6].name : '') ? '10px' : false}">{{value.color_scheme.weft[key + 6] ? value.color_scheme.weft[key + 6].name : ''}}</span>
+                </template>
               </div>
-              <template v-if="splices(value.color_scheme).length < 6">
-                <div v-for="(x,y) in forArr( 6 - splices(value.color_scheme).length)"
-                  :key="y+'X'">
-                  <span></span>
-                  <span></span>
-                </div>
-              </template>
             </li>
             <template v-if="color_data.length < 6">
               <li v-for="(value,index) in forArr(6 - color_data.length)"
@@ -565,7 +734,7 @@
           </template>
         </ul>
       </div>
-    </div> -->
+    </div>
   </div>
 </template>
 
@@ -583,25 +752,94 @@ export default {
       product_code: '',
       size: '',
       weight: '',
-      ingredient: ''
+      ingredient: '',
+      warp_data: {
+        material_data: [],
+        warp_rank: [[], [], [], [], [], []],
+        warp_rank_back: [[], [], [], [], [], []],
+        merge_data: [],
+        merge_data_back: []
+      },
+      weft_data: {
+        material_data: [],
+        weft_rank: [[], [], [], [], [], []],
+        weft_rank_back: [[], [], [], [], [], []],
+        merge_data: [],
+        merge_data_back: []
+      },
+      drafting_method: {
+        PM: [],
+        GL: [[]]
+      },
+      color_data: [],
+      colorWeight: {
+        warp: [],
+        weft: []
+      },
+      zhujia_info: []
     }
   },
   methods: {
-    consol (item, b, value, index, fleg) {
-      // console.log(item)
-      let key = (((item[b * 12] === item[b * 12 - 1] || item[b * 12] === '') || item[b * 12] === null) && index === 0 && b !== 0) && ((item[(b + 1) * 12] === item[(b + 1) * 12 - 1] || item[(b + 1) * 12] === null) && index === this.changeArr(this.add(item, b)).length - 1)
-      let flag = (((item[b * 12] === item[b * 12 - 1] || item[b * 12] === '') || item[b * 12] === null) && index === 0 && b !== 0) || ((item[(b + 1) * 12] === item[(b + 1) * 12 - 1] || item[(b + 1) * 12] === null) && index === this.changeArr(this.add(item, b)).length - 1)
-      // 判断条件1：((item[b * 12] === item[b * 12 - 1] || item[b * 12] === null) && index === 0 && b !== 0)
-      // 判断当前元素是否等于上一行的最后一个等于''或者为null 并且当前元素为第一个 当前行数不为第一个
-      // 判断条件2：((item[(b + 1) * 12] === item[(b + 1) * 12 - 1] || item[(b + 1) * 12] === null) && index === this.changeArr(this.add(item, b)).length - 1)
-      // 判断当前元素是否等于下一行的第一个等于'' 并且当前元素为最后一个
-      if (fleg) {
-        // console.log(key ? '' : flag)
-        return key ? '' : flag
+    // 给合并规则里添加value
+    pushValue (item, key, index) {
+      let valueArr = item[key] // value来源数组
+      item[index].forEach(val => {
+        val.value = clone(valueArr[val.row]).splice(val.col, val.colspan).filter(num => num)[0]
+      })
+      this.changeMergeMethod(item[index], Math.ceil(item[key][0].length / 16)) // 处理合并规则
+      function clone (data) {
+        return JSON.parse(JSON.stringify(data))
+      } // 克隆数据
+    },
+    // 对合并规则进行处理
+    changeMergeMethod (item, key) {
+      for (let i = 1; i < key; i++) {
+        // let flag = item.find(val => )
+        // if (flag) {
+
+        // }
+        item.forEach(val => {
+          if (i * 16 >= val.col && (val.col + val.colspan - 1) >= i * 16) {
+            item.push({
+              col: i * 16,
+              colspan: val.colspan - (i * 16 - val.col),
+              removed: val.removed,
+              row: val.row,
+              rowspan: val.rowspan,
+              split: true,
+              value: val.value
+            })
+            val.colspan = i * 16 - val.col
+            val.split = true
+          }
+        })
       }
-      // console.log(item, b, value, index, fleg)
-      // console.log(flag)
-      return flag
+    },
+    // 拆分数据
+    splitData (item, key, flag) {
+      if (flag) {
+        // console.log('测试是否作为callBack进行拆分,没作用', item)
+      }
+      item = JSON.parse(JSON.stringify(item))
+      return item.splice(key * 16, 16)
+    },
+    // 合并单元格
+    mergeSpan (item, index, key, mergeIndex, callBack, keys) {
+      let mergeALLMathod = item[mergeIndex] ? item[mergeIndex] : []
+      let mergeMethod = mergeALLMathod.filter(val => Number(val.row) === Number(index)) // 合并规则
+      let isMergeData = callBack ? callBack(item[key][index], keys, true) : item[key][index] // 需要合并的数据
+      let mergeData = [] // 合并后的数据
+      for (let ind = 0; ind < isMergeData.length; ind++) {
+        let val = isMergeData[ind]
+        let mergeItem = mergeMethod.find(mergeItem => ind >= (mergeItem.col - (keys || 0) * 16) && ((mergeItem.col - (keys || 0) * 16) + mergeItem.colspan - 1) >= ind)
+        if (mergeItem) {
+          mergeData.push({ value: mergeItem.value, colspan: mergeItem.colspan, isSplit: mergeItem.split })
+          ind += (mergeItem.colspan - 1)
+        } else {
+          mergeData.push({ value: val, colspan: 1 })
+        }
+      }
+      return mergeData
     },
     forArr (num) {
       let arr = []
@@ -630,11 +868,13 @@ export default {
     panduan () {
       let len = 0
       this.color_data.forEach(item => {
-        if (len < item.color_scheme.length) {
-          len = item.color_scheme.length
+        if (len < item.color_scheme.warp.length) {
+          len = item.color_scheme.warp.length
+        }
+        if (len < item.color_scheme.weft.length) {
+          len = item.color_scheme.weft.length
         }
       })
-      console.log(len)
       return len
     },
     // 截取颜色长度
@@ -642,114 +882,31 @@ export default {
       let arr = [...item]
       return arr.splice(6, 13)
     },
-    // 如果数据少于12条
-    add (item, flag) {
-      let items = []
-      let arr = []
-      for (let prop in item) {
-        if (item[prop] === '') {
-          items.push(1)
-        } else {
-          items.push(item[prop])
-        }
-      }
-      change(items, arr)
-      function change (items, arr) {
-        if (items.length > 12) {
-          let ar = items.splice(0, 12)
-          arr.push(ar)
-          if (items.length > 12) {
-            change(items, arr)
-          } else {
-            let len = items.length
-            for (let i = len; i < 12; i++) {
-              items.push('no')
-            }
-            arr.push(items)
-          }
-        } else {
-          let len = items.length
-          for (let i = len; i < 12; i++) {
-            items.push('no')
-          }
-          arr.push(items)
-        }
-      }
-      if (flag === 'all') {
-        return arr
-      } else if (typeof flag === 'number') {
-        if (arr[flag][0] === null) {
-          for (let i = flag - 1; i >= 0; i--) {
-            for (let j = 11; j >= 0; j--) {
-              if (arr[i][j] !== null) {
-                arr[flag][0] = arr[i][j]
-                return arr[flag]
-              }
-            }
-          }
-        }
-        return arr[flag]
-      } else {
-        return arr[0]
-      }
-    },
-    // 处理数组
-    changeArr (item) {
-      // console.log(item)
-      let obj = {}
-      let n = 1
-      let firstVal = ''
-      let len = item.length
-      let arr = []
-      let flag = true
-      item.forEach((value, index) => {
-        if (value === 'no') {
-          if (flag) {
-            flag = false
-            obj.value = firstVal
-            obj.key = n
-            arr.push(obj)
-          }
-          arr.push({ value: 'no', key: 1 })
-        } else if (index === len - 1) {
-          if ((firstVal === value && value === 1) || value === null || firstVal === value) {
-            n++
-          }
-          obj.value = firstVal
-          obj.key = n
-          arr.push(obj)
-          if (firstVal !== value && value !== null) {
-            obj = {}
-            obj.value = value
-            obj.key = 1
-            arr.push(obj)
-          }
-        } else if (value === null) {
-          n++
-        } else {
-          if ((value === firstVal) || (value === firstVal && value === 1)) {
-            n++
-          } else {
-            if (index !== 0) {
-              obj.value = firstVal
-              obj.key = n
-              arr.push(obj)
-              obj = {}
-            }
-            firstVal = value
-            n = 1
-          }
-        }
-      })
-      // console.log(arr)
-      return arr
-    },
     goTop () {
       document.body.scrollTop = 0
     }
   },
   filters: {
-
+    filterClass (item) {
+      let arr = []
+      item.forEach(value => {
+        if (value !== 0) {
+          arr.push('夹' + value)
+        }
+      })
+      return arr.join('/')
+    },
+    filterMaterialClass (item) {
+      let arr = []
+      item.forEach(value => {
+        if (value !== 0) {
+          arr.push('夹' + value)
+        } else {
+          arr.push('主')
+        }
+      })
+      return arr.join('/')
+    }
   },
   created () {
     craftOne({
@@ -757,6 +914,14 @@ export default {
     }).then((res) => {
       console.log(res.data.data)
       const data = res.data.data
+      data.warp_data.merge_data = JSON.parse(data.warp_data.merge_data)
+      data.warp_data.merge_data_back = JSON.parse(data.warp_data.merge_data_back)
+      data.warp_data.warp_rank = JSON.parse(data.warp_data.warp_rank)
+      data.warp_data.warp_rank_back = JSON.parse(data.warp_data.warp_rank_back)
+      data.weft_data.merge_data = JSON.parse(data.weft_data.merge_data)
+      data.weft_data.merge_data_back = JSON.parse(data.weft_data.merge_data_back)
+      data.weft_data.weft_rank = JSON.parse(data.weft_data.weft_rank)
+      data.weft_data.weft_rank_back = JSON.parse(data.weft_data.weft_rank_back)
       this.design_code = data.craft_code
       this.create_user = data.user_name
       this.create_time = data.create_time
@@ -768,6 +933,131 @@ export default {
       this.ingredient = data.product_info.materials.map(item => {
         return (item.ingredient_value + '%' + item.ingredient_name)
       }).join('/')
+      this.warp_data = JSON.parse(JSON.stringify(data.warp_data))
+      this.weft_data = JSON.parse(JSON.stringify(data.weft_data))
+      this.drafting_method = JSON.parse(JSON.stringify(data.draft_method))
+      this.pushValue(this.warp_data, 'warp_rank', 'merge_data') // 给合并规则里附上value
+      this.pushValue(this.warp_data, 'warp_rank_back', 'merge_data_back')// 给合并规则里附上value
+      this.pushValue(this.weft_data, 'weft_rank', 'merge_data')// 给合并规则里附上value
+      this.pushValue(this.weft_data, 'weft_rank_back', 'merge_data_back')// 给合并规则里附上value
+      let colorData = []
+      this.warp_data.color_data.forEach(item => {
+        let colorFlag = colorData.find(key => key.product_color === item.product_color)
+        if (!colorFlag) {
+          colorData.push({
+            product_color: item.product_color,
+            color_scheme: {
+              warp: item.color_scheme,
+              weft: []
+            }
+          })
+        } else {
+          colorFlag.color_scheme.warp = item.color_scheme
+        }
+      })
+      this.weft_data.color_data.forEach(item => {
+        let colorFlag = colorData.find(key => key.product_color === item.product_color)
+        if (!colorFlag) {
+          colorData.push({
+            product_color: item.product_color,
+            color_scheme: {
+              warp: [],
+              weft: item.color_scheme
+            }
+          })
+        } else {
+          colorFlag.color_scheme.weft = item.color_scheme
+        }
+      })
+      this.color_data = colorData
+      // 初始化主夹信息
+      this.warp_data.material_data.forEach(item => {
+        item.apply.forEach(val => {
+          if (this.zhujia_info.indexOf(val) === -1) {
+            this.zhujia_info.push(val)
+          }
+        })
+      })
+      this.weft_data.material_data.forEach(item => {
+        item.apply.forEach(val => {
+          if (this.zhujia_info.indexOf(val) === -1) {
+            this.zhujia_info.push(val)
+          }
+        })
+      })
+      // 计算克重信息
+      let arrWarp = data.warp_data.warp_rank.slice(1, 5)
+      data.warp_data.merge_data.forEach((item) => {
+        if (item.row === 3 || item.row === 4) {
+          for (let i = (item.col + 1); i < (item.col + item.colspan); i++) {
+            arrWarp[item.row - 1][i] = arrWarp[item.row - 1][item.col]
+          }
+        }
+      })
+      let arrWeft = data.weft_data.weft_rank.slice(1, 5)
+      data.weft_data.merge_data.forEach((item) => {
+        if (item.row === 3 || item.row === 4) {
+          for (let i = (item.col + 1); i < (item.col + item.colspan); i++) {
+            arrWeft[item.row - 1][i] = arrWeft[item.row - 1][item.col]
+          }
+        }
+      })
+      let arrWarpBack = data.warp_data.warp_rank_back.slice(1, 5)
+      data.warp_data.merge_data_back.forEach((item) => {
+        if (item.row === 3 || item.row === 4) {
+          for (let i = (item.col + 1); i < (item.col + item.colspan); i++) {
+            arrWarpBack[item.row - 1][i] = arrWarpBack[item.row - 1][item.col]
+          }
+        }
+      })
+      let arrWeftBack = data.weft_data.weft_rank_back.slice(1, 5)
+      data.weft_data.merge_data_back.forEach((item) => {
+        if (item.row === 3 || item.row === 4) {
+          for (let i = (item.col + 1); i < (item.col + item.colspan); i++) {
+            arrWeftBack[item.row - 1][i] = arrWeftBack[item.row - 1][item.col]
+          }
+        }
+      })
+      let colorNumber = {
+        warp: [],
+        weft: []
+      }
+      for (let i = 0; i < arrWarp[0].length; i++) {
+        const x = arrWarp[1][i] ? arrWarp[1][i] : 1
+        const y = arrWarp[2][i] ? arrWarp[2][i] : 1
+        const z = arrWarp[3][i] ? arrWarp[3][i] : 1
+        colorNumber.warp[arrWarp[0][i]] = colorNumber.warp[arrWarp[0][i]] ? colorNumber.warp[arrWarp[0][i]] : 0
+        colorNumber.warp[arrWarp[0][i]] += x * y * z
+      }
+      for (let i = 0; i < arrWeft[0].length; i++) {
+        const x = arrWeft[1][i] ? arrWeft[1][i] : 1
+        const y = arrWeft[2][i] ? arrWeft[2][i] : 1
+        const z = arrWeft[3][i] ? arrWeft[3][i] : 1
+        colorNumber.weft[arrWeft[0][i]] = colorNumber.weft[arrWeft[0][i]] ? colorNumber.weft[arrWeft[0][i]] : 0
+        colorNumber.weft[arrWeft[0][i]] += x * y * z
+      }
+      for (let i = 0; i < arrWarpBack[0].length; i++) {
+        const x = arrWarpBack[1][i] ? arrWarpBack[1][i] : 1
+        const y = arrWarpBack[2][i] ? arrWarpBack[2][i] : 1
+        const z = arrWarpBack[3][i] ? arrWarpBack[3][i] : 1
+        colorNumber.warp[arrWarpBack[0][i]] += x * y * z
+      }
+      for (let i = 0; i < arrWeftBack[0].length; i++) {
+        const x = arrWeftBack[1][i] ? arrWeftBack[1][i] : 1
+        const y = arrWeftBack[2][i] ? arrWeftBack[2][i] : 1
+        const z = arrWeftBack[3][i] ? arrWeftBack[3][i] : 1
+        colorNumber.weft[arrWeftBack[0][i]] += x * y * z
+      }
+      this.warp_data.material_data.forEach((item) => {
+        item.apply.forEach((itemChild) => {
+          this.colorWeight.warp[itemChild] = (colorNumber.warp[itemChild] * (this.weft_data.neichang + this.weft_data.rangwei) * data.yarn_coefficient.find((itemFind) => itemFind.name === item.material_name).value / 100).toFixed(1)
+        })
+      })
+      this.weft_data.material_data.forEach((item) => {
+        item.apply.forEach((itemChild) => {
+          this.colorWeight.weft[itemChild] = (colorNumber.weft[itemChild] * this.warp_data.reed_width * data.yarn_coefficient.find((itemFind) => itemFind.name === item.material_name).value / 100).toFixed(1)
+        })
+      })
     })
   },
   updated () {

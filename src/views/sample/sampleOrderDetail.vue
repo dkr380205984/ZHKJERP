@@ -24,11 +24,14 @@
               <el-dropdown-menu slot="dropdown">
                 <!-- <el-dropdown-item>样单异常</el-dropdown-item> -->
                 <el-dropdown-item v-show="order_info.status!==2"
-                  command="ok">客户确认</el-dropdown-item>
+                  command="ok"
+                  style="color:#1A94FF">客户确认</el-dropdown-item>
                 <el-dropdown-item v-show="order_info.status!==2"
-                  command="change">修改样单</el-dropdown-item>
+                  command="change"
+                  style="color:#E6A23C">修改样单</el-dropdown-item>
                 <el-dropdown-item v-show="order_info.status!==2"
-                  command="cancle">样单取消</el-dropdown-item>
+                  command="cancle"
+                  style="color:#FF4D4D">样单取消</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
@@ -1173,198 +1176,233 @@
       v-if="showMessageBox">
       <div class="messageBox">
         <div :class="{'title':true,'success':handleType === 'ok','change': handleType === 'change','cancle' : handleType === 'cancle'}">{{handleType === 'ok' ? '客户确认样' : (handleType === 'change' ? '客户修改样' : '样单取消')}}</div>
-        <template v-if="handleType !== 'cancle'">
-          <div class="item"
-            v-if="handleType === 'ok'"
-            style="margin-top:27px;">
-            <span class="label">是否打样:</span>
-            <div class="content">
-              <el-radio-group v-model="submitInfo.isSample"
-                class="elInput">
-                <el-radio :label="true">是</el-radio>
-                <el-radio :label="false">否</el-radio>
-              </el-radio-group>
-            </div>
-          </div>
-          <template v-if="submitInfo.isSample">
+        <div class="inputBox">
+          <template v-if="handleType !== 'cancle'">
             <div class="item"
-              :style="{'margin-top':handleType === 'change' ? '27px' : false}">
-              <span class="label">样单类型:</span>
+              v-if="handleType === 'ok'"
+              style="margin-top:27px;">
+              <span class="label">是否打样:</span>
               <div class="content">
-                <el-select v-model="submitInfo.sampleType"
-                  class="input_item elInput"
-                  placeholder="请选择样单类型">
-                  <el-option v-for="item in []"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
+                <el-radio-group v-model="submitInfo.isSample"
+                  class="elInput">
+                  <el-radio :label="true">是</el-radio>
+                  <el-radio :label="false">否</el-radio>
+                </el-radio-group>
               </div>
             </div>
-            <div class="item">
-              <span class="label">打样样品:</span>
-              <div class="content">
-                <el-select v-model="submitInfo.sample"
-                  class="input_item elInput"
-                  placeholder="请选择打样样品">
-                  <el-option v-for="item in []"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
+            <template v-if="submitInfo.isSample">
+              <div class="item"
+                :style="{'margin-top':handleType === 'change' ? '27px' : false}">
+                <span class="label">样单类型:</span>
+                <div class="content">
+                  <el-select v-model="submitInfo.sampleType"
+                    class="input_item elInput"
+                    placeholder="请选择样单类型">
+                    <el-option v-for="item in []"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </div>
               </div>
-            </div>
-            <div class="item">
-              <span class="label"></span>
-              <div class="content">
-                <el-select v-model="submitInfo.sample_size_color"
-                  class="input_item elInput marginRight"
-                  placeholder="尺寸颜色">
-                  <el-option v-for="item in []"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
-                <el-input v-model="submitInfo.number"
-                  class="elInput"
-                  placeholder="打样数量">
-                  <template slot="append">条</template>
-                </el-input>
+              <template v-for="(item,key) in submitInfo.sample_info">
+                <div class="item"
+                  :key="key + 'X'">
+                  <span class="label"
+                    v-if="key === 0">打样样品:</span>
+                  <div class="content">
+                    <el-select v-model="item.sample"
+                      class="input_item elInput"
+                      placeholder="请选择打样样品">
+                      <el-option v-for="items in []"
+                        :key="items.value"
+                        :label="items.label"
+                        :value="items.value">
+                      </el-option>
+                    </el-select>
+                  </div>
+                </div>
+                <div class="item"
+                  :key="key + 'Y'">
+                  <span class="label"></span>
+                  <div class="content">
+                    <el-select v-model="item.sample_size_color"
+                      class="input_item elInput marginRight"
+                      placeholder="尺寸颜色">
+                      <el-option v-for="items in []"
+                        :key="items.value"
+                        :label="items.label"
+                        :value="items.value">
+                      </el-option>
+                    </el-select>
+                    <el-input v-model="item.number"
+                      class="elInput"
+                      placeholder="打样数量">
+                      <template slot="append">条</template>
+                    </el-input>
+                  </div>
+                </div>
+                <div class="item"
+                  :key="key+'Z'"
+                  style="margin-bottom:46px;">
+                  <div class="content">
+                    <el-input v-model="item.sampleIdea"
+                      class="elInput"
+                      placeholder="请输入该样品修改意见"></el-input>
+                  </div>
+                  <div class="addBtn"
+                    @click="addSampleInfo"
+                    v-if="key === 0">添加样品</div>
+                  <div class="addBtn deleteBtn"
+                    @click="deleteSampleInfo(key)"
+                    v-else>删除样品</div>
+                </div>
+              </template>
+              <div class="item">
+                <span class="label">完成时间:</span>
+                <div class="content">
+                  <el-date-picker v-model="submitInfo.sample_complete_time"
+                    type="date"
+                    class="elInput"
+                    placeholder="选择日期">
+                  </el-date-picker>
+                </div>
               </div>
-            </div>
-            <div class="item">
-              <div class="content">
-                <el-input v-model="submitInfo.sampleIdea"
-                  class="elInput"
-                  placeholder="请输入该样品修改意见"></el-input>
+              <div class="item">
+                <span class="label">客户付费:</span>
+                <div class="content">
+                  <el-switch v-model="submitInfo.isCustomerPay"
+                    class="elInput"
+                    active-text="是"
+                    inactive-text="否">
+                  </el-switch>
+                </div>
               </div>
-            </div>
-            <div class="item">
-              <span class="label">完成时间:</span>
-              <div class="content">
-                <el-date-picker v-model="submitInfo.sample_complete_time"
-                  type="date"
-                  class="elInput"
-                  placeholder="选择日期">
-                </el-date-picker>
+              <template v-if="submitInfo.isCustomerPay">
+                <template v-for="(item,key) in submitInfo.sample_info">
+                  <div class="item"
+                    :key="key + 'X1'">
+                    <div class="content">
+                      <el-select v-model="item.sample"
+                        class="elInput"
+                        disabled
+                        placeholder="请选择样品">
+                        <el-option v-for="item in []"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value">
+                        </el-option>
+                      </el-select>
+                    </div>
+                  </div>
+                  <div class="item"
+                    :key="key + 'Y1'">
+                    <div class="content">
+                      <el-input v-model="item.price"
+                        class="elInput marginRight"
+                        placeholder="输入数量">
+                        <template slot="append">元/条</template>
+                      </el-input>
+                      <el-input v-model="item.totalNum"
+                        class="elInput"
+                        placeholder="输入数量">
+                        <template slot="append">条</template>
+                      </el-input>
+                    </div>
+                  </div>
+                  <div class="item"
+                    :key="key + 'Z1'">
+                    <div class="content">
+                      <el-input placeholder="总价"
+                        class="elInput"
+                        disabled
+                        v-model="item.total_price">
+                        <template slot="append">元</template>
+                      </el-input>
+                    </div>
+                  </div>
+                </template>
+              </template>
+            </template>
+            <template v-else>
+              <div class="item">
+                <span class="label">建立产品:</span>
+                <div class="content">
+                  <el-select v-model="submitInfo.sample_odd"
+                    class="elInput"
+                    placeholder="请选择样品添加至产品库">
+                    <el-option v-for="item in []"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </div>
               </div>
-            </div>
-            <div class="item">
-              <span class="label">客户付费:</span>
+              <div class="item">
+                <div class="content">
+                  <el-select v-model="submitInfo.design_odd"
+                    class="elInput marginRight"
+                    placeholder="请选择样品工艺单">
+                    <el-option v-for="item in []"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                  <el-select v-model="submitInfo.plan_odd"
+                    class="elInput"
+                    placeholder="请选择样品配料单">
+                    <el-option v-for="item in []"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </div>
+              </div>
+            </template>
+          </template>
+          <!-- 取消样单弹窗 -->
+          <template v-else>
+            <div class="item"
+              style="margin-top:27px">
+              <span class="label">物料入库:</span>
               <div class="content">
-                <el-switch v-model="submitInfo.isCustomerPay"
-                  class="elInput"
-                  active-text="是"
-                  inactive-text="否">
-                </el-switch>
+                <el-radio-group v-model="submitInfo.isStockForMaterial"
+                  class="elInput">
+                  <el-radio :label="true">是</el-radio>
+                  <el-radio :label="false">否</el-radio>
+                </el-radio-group>
               </div>
             </div>
             <div class="item"
-              v-if="submitInfo.isCustomerPay">
+              v-for="(item,key) in submitInfo.material_info"
+              :key="key">
               <div class="content">
-                <el-input v-model="submitInfo.price"
+                <el-input placeholder="原料"
                   class="elInput marginRight"
-                  placeholder="输入数量">
-                  <template slot="append">元/条</template>
-                </el-input>
-                <el-input v-model="submitInfo.totalNum"
-                  class="elInput"
-                  placeholder="输入数量">
-                  <template slot="append">条</template>
-                </el-input>
-              </div>
-            </div>
-            <div class="item"
-              v-if="submitInfo.isCustomerPay">
-              <div class="content">
-                <el-input placeholder="总价"
+                  disabled
+                  v-model="item.name"></el-input>
+                <el-input placeholder="克重/数量"
                   class="elInput"
                   disabled
-                  v-model="submitInfo.total_price">
-                  <template slot="append">元</template>
+                  v-model="item.number">
+                  <template slot="append">kg</template>
                 </el-input>
               </div>
             </div>
           </template>
-          <template v-else>
-            <div class="item">
-              <span class="label">建立产品:</span>
-              <div class="content">
-                <el-select v-model="submitInfo.sample_odd"
-                  class="elInput"
-                  placeholder="请选择样品添加至产品库">
-                  <el-option v-for="item in []"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
-              </div>
-            </div>
-            <div class="item">
-              <div class="content">
-                <el-select v-model="submitInfo.design_odd"
-                  class="elInput marginRight"
-                  placeholder="请选择样品工艺单">
-                  <el-option v-for="item in []"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
-                <el-select v-model="submitInfo.plan_odd"
-                  class="elInput"
-                  placeholder="请选择样品配料单">
-                  <el-option v-for="item in []"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
-              </div>
-            </div>
-          </template>
-        </template>
-        <!-- 取消样单弹窗 -->
-        <template v-else>
-          <div class="item"
-            style="margin-top:27px">
-            <span class="label">物料入库:</span>
-            <div class="content">
-              <el-radio-group v-model="submitInfo.isStockForMaterial"
-                class="elInput">
-                <el-radio :label="true">是</el-radio>
-                <el-radio :label="false">否</el-radio>
-              </el-radio-group>
-            </div>
-          </div>
-          <div class="item"
-            v-for="(item,key) in submitInfo.material_info"
-            :key="key">
-            <div class="content">
-              <el-input placeholder="原料"
-                class="elInput marginRight"
-                disabled
-                v-model="item.name"></el-input>
-              <el-input placeholder="克重/数量"
-                class="elInput"
-                disabled
-                v-model="item.number">
-                <template slot="append">kg</template>
-              </el-input>
-            </div>
-          </div>
-        </template>
+        </div>
         <div class="footer">
           <span class="cancel"
             @click="showMessageBox = false">取消</span>
           <span class="ok">确定</span>
         </div>
         <span class="close el-icon-close"
-          @click="showMessageBox = false"></span>
+          @click="showMessageBox = false"
+          style="z-index:3;"></span>
       </div>
     </div>
     <div class="message"
@@ -1459,12 +1497,12 @@ export default {
           sample: '',
           number: '',
           sampleIdea: '',
-          sample_size_color: ''
+          sample_size_color: '',
+          price: '',
+          totalNum: ''
         }],
         sampleType: '',
         isCustomerPay: false,
-        price: '',
-        totalNum: '',
         total_price: '',
         sample_odd: '',
         design_odd: '',
@@ -1483,6 +1521,14 @@ export default {
     }
   },
   methods: {
+    addSampleInfo () {
+      this.submitInfo.sample_info.push({
+
+      })
+    },
+    deleteSampleInfo (index) {
+      this.submitInfo.sample_info.splice(index, 1)
+    },
     showMessage (type) {
       this.showMessageBox = true
       this.handleType = type
@@ -2449,12 +2495,43 @@ export default {
 }
 #orderDetail {
   .messageBox {
+    overflow: hidden;
+    padding: 0;
+    .inputBox {
+      width: 100%;
+      height: calc(100% - 100px);
+      overflow-y: scroll;
+      margin: 50px 0px;
+      padding: 0 46px;
+      box-sizing: border-box;
+    }
     .title {
       line-height: 50px;
       height: 50px;
       width: inherit;
       padding-left: 16px;
       border-bottom: 1px solid rgb(233, 233, 233);
+      background: #fff;
+      z-index: 2;
+    }
+    .footer {
+      background: #fff;
+      z-index: 2;
+    }
+    .addBtn {
+      position: absolute;
+      bottom: -38px;
+      width: 74px;
+      height: 29px;
+      border: 1px solid #1a95ff;
+      border-radius: 4px;
+      text-align: center;
+      color: #1a95ff;
+      cursor: pointer;
+      &.deleteBtn {
+        color: #ee3f59;
+        border-color: #ee3f59;
+      }
     }
   }
   .imgCtn {

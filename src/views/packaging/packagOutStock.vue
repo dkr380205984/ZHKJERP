@@ -354,42 +354,41 @@ export default {
       this.order_time = orderInfo.order_time
       this.group_name = orderInfo.group_name
       // 初始化发货批次信息
-      orderInfo.order_batch.forEach(valBatch => {
-        valBatch.batch_info.forEach(valPro => {
-          valPro.size.forEach(valSize => {
-            if (valBatch.batch_id === Number(this.$route.params.batchId)) {
-              this.batchList.id = valBatch.batch_id
-              this.batchList.delivery_time = valBatch.delivery_time
-              if (!this.batchList.product_info) {
-                this.batchList.product_info = []
-              }
-              let flag = this.batchList.product_info.find(key => key.product_code === valPro.productCode)
-              if (!flag) {
-                this.batchList.product_info.push({
-                  product_code: valPro.productCode,
-                  product_type: valPro.productInfo.category_info.product_category + '/' + valPro.productInfo.type_name + '/' + valPro.productInfo.style_name + (valPro.productInfo.flower_id ? '/' + valPro.productInfo.flower_id : ''),
-                  size_info: [{
-                    size: valSize.name[0],
-                    color: valSize.name[1],
-                    number: valSize.numbers
-                  }]
+      for (let prop in orderInfo.order_batch) {
+        let valBatch = orderInfo.order_batch[prop]
+        valBatch.forEach(valPro => {
+          if (valPro.batch_id === Number(this.$route.params.batchId)) {
+            this.batchList.id = valPro.batch_id
+            this.batchList.delivery_time = valPro.delivery_time
+            if (!this.batchList.product_info) {
+              this.batchList.product_info = []
+            }
+            let flag = this.batchList.product_info.find(key => key.product_code === valPro.product_code)
+            if (!flag) {
+              this.batchList.product_info.push({
+                product_code: valPro.product_code,
+                product_type: valPro.category_info.category_name + '/' + valPro.category_info.type_name + '/' + valPro.category_info.style_name + (valPro.category_info.flower_name ? '/' + valPro.category_info.flower_name : ''),
+                size_info: [{
+                  size: valPro.size,
+                  color: valPro.color,
+                  number: valPro.numbers
+                }]
+              })
+            } else {
+              let flag1 = flag.size_info.find(key => (key.size === valPro.size && key.color === valPro.color))
+              if (!flag1) {
+                flag.size_info.push({
+                  size: valPro.size,
+                  color: valPro.color,
+                  number: valPro.numbers
                 })
               } else {
-                let flag1 = flag.size_info.find(key => (key.size === valSize.name[0] && key.color === valSize.name[1]))
-                if (!flag1) {
-                  flag.size_info.push({
-                    size: valSize.name[0],
-                    color: valSize.name[1],
-                    number: valSize.numbers
-                  })
-                } else {
-                  flag1.number = Number(flag1.number) + Number(valSize.numbers)
-                }
+                flag1.number = Number(flag1.number) + Number(valPro.numbers)
               }
             }
-          })
+          }
         })
-      })
+      }
       this.ship_client = shipClientInfo.filter(res => (res.type.indexOf(8) !== -1))
       console.log(this.ship_client)
       this.loading = false
