@@ -137,8 +137,10 @@
                 v-for="(itemProduct,indexProduct) in itemOrder.batch_info"
                 :key="indexProduct">
                 <div style="margin:auto">
-                  <span style="margin:0 5px">{{itemProduct.productCode}}</span>
-                  <span style="margin:0 5px">{{itemProduct.productInfo.category_info.product_category}}/{{itemProduct.productInfo.type_name}}/{{itemProduct.productInfo.style_name}}/{{itemProduct.productInfo.flower_id}}</span>
+                  <span class="hoverBlue"
+                    style="margin:0 5px;cursor:pointer"
+                    @click="open('/index/productDetail/'+itemProduct.productInfo.product_id)">{{itemProduct.productCode}}</span>
+                  <span style="margin:0 5px">{{itemProduct.productInfo.category_name}}/{{itemProduct.productInfo.type_name}}/{{itemProduct.productInfo.style_name}}/{{itemProduct.productInfo.flower_name}}</span>
                 </div>
               </div>
             </div>
@@ -153,12 +155,12 @@
                 :key="indexProduct">
                 <div class="imgCtn">
                   <img class="img"
-                    :src="itemProduct.productInfo.img.length>0?itemProduct.productInfo.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
+                    :src="itemProduct.productInfo.images.length>0?itemProduct.productInfo.images[0].thumb:require('@/assets/image/index/noPic.jpg')"
                     :onerror="defaultImg" />
                   <div class="toolTips"
-                    v-if="itemProduct.productInfo.img.length>0"><span @click="showImg(itemProduct.productInfo.img)">点击查看大图</span></div>
+                    v-if="itemProduct.productInfo.images.length>0"><span @click="showImg(itemProduct.productInfo.images)">点击查看大图</span></div>
                   <div class="toolTips"
-                    v-if="itemProduct.productInfo.img.length===0"><span>没有预览图</span></div>
+                    v-if="itemProduct.productInfo.images.length===0"><span>没有预览图</span></div>
                 </div>
               </div>
             </div>
@@ -172,7 +174,7 @@
                 v-for="(itemProduct,indexProduct) in itemOrder.batch_info"
                 :key="indexProduct">
                 <div style="margin:auto">
-                  <span style="margin:0 5px">{{itemProduct.sum}}{{itemProduct.productInfo.category_info.name}}</span>
+                  <span style="margin:0 5px">{{itemProduct.sum}}</span>
                 </div>
               </div>
             </div>
@@ -300,8 +302,10 @@ export default {
     }
   },
   methods: {
+    open (url) {
+      window.open(url)
+    },
     getStatus (time, totalNumber, compiledNumber) {
-      console.log(time, totalNumber, compiledNumber)
       if (new Date().getTime() > new Date(time).getTime()) {
         let num = Math.floor((new Date().getTime() - new Date(time).getTime()) / 1000 / 60 / 60 / 24)
         if (num < 1 && totalNumber > compiledNumber) {
@@ -333,14 +337,13 @@ export default {
         'end_time': this.end_time
       }).then((res) => {
         let json = res.data.data.data
-        console.log(json)
         this.list = Object.keys(json).map((key) => {
           let arr = []
           json[key].forEach((item) => {
             let productList = []
             let totalNumber = 0
             let compiledNumber = 0
-            JSON.parse(item.batch_info).forEach((itemBatch) => {
+            item.batch_info.forEach((itemBatch) => {
               if (productList.find((itemFind) => itemFind.productCode === itemBatch.productCode)) {
                 let mark = -1
                 productList.forEach((itemFind, index) => {
@@ -359,7 +362,7 @@ export default {
                   return total + parseInt(current.numbers)
                 }, 0)
                 productList.push({
-                  productInfo: itemBatch.productInfo,
+                  productInfo: itemBatch.category_info,
                   productCode: itemBatch.productCode,
                   sum: itemBatch.size.reduce((total, current) => {
                     return total + parseInt(current.numbers)
@@ -376,7 +379,7 @@ export default {
               order_code: item.order_code,
               total_number: totalNumber,
               compiled_number: compiledNumber,
-              lineNum: JSON.parse(item.batch_info).length
+              lineNum: item.batch_info.length
             })
           })
           return {
@@ -607,6 +610,11 @@ export default {
       &:hover {
         color: #1a95ff;
       }
+    }
+  }
+  .hoverBlue {
+    &:hover {
+      color: #1a95ff;
     }
   }
 }

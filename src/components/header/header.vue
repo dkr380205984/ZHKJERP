@@ -13,11 +13,66 @@
           @click="goHome"></div>
       </div>
       <div class="menuRight">
-        <el-badge :value="200"
-          :max="99"
-          class="item">
-          <i class="el-icon-bell"></i>
-        </el-badge>
+        <div class="item">
+          <el-badge :value="200"
+            :max="99">
+            <i class="el-icon-bell"></i>
+          </el-badge>
+          <div class="msgBox">
+            <div class="msgOpr">
+              <span>消息通知</span>
+              <span>全部标记已读</span>
+            </div>
+            <div class="msgContent">
+              <div class="oneMsg">
+                <div class="oneMsgLeft">
+                  <div class="oneMsgLine1">
+                    <span class="oneMsgTitle must">工艺单紧急通知</span>
+                    <span class="mark blue">工序</span>
+                  </div>
+                  <div class="oneMsgLine2">
+                    <div class="oneMsgInfo">添加新产品添加新产品添加新产品添加新产品添加新产品添加新产品添加新产品添加新产品</div>
+                  </div>
+                </div>
+                <div class="oneMsgRight">
+                  <div class="oneMsgLine1">7:30</div>
+                  <div class="oneMsgLine2">隔壁老王</div>
+                </div>
+              </div>
+              <div class="oneMsg">
+                <div class="oneMsgLeft">
+                  <div class="oneMsgLine1">
+                    <span class="oneMsgTitle normal">工艺单紧急通知</span>
+                    <span class="mark purple">公司</span>
+                  </div>
+                  <div class="oneMsgLine2">
+                    <div class="oneMsgInfo">添加新产品</div>
+                  </div>
+                </div>
+                <div class="oneMsgRight">
+                  <div class="oneMsgLine1">7:30</div>
+                  <div class="oneMsgLine2">隔壁老王</div>
+                </div>
+              </div>
+              <div class="oneMsg">
+                <div class="oneMsgLeft">
+                  <div class="oneMsgLine1">
+                    <span class="oneMsgTitle important">工艺单紧急通知</span>
+                    <span class="mark yellow">系统</span>
+                  </div>
+                  <div class="oneMsgLine2">
+                    <div class="oneMsgInfo">添加新产品</div>
+                  </div>
+                </div>
+                <div class="oneMsgRight">
+                  <div class="oneMsgLine1">7:30</div>
+                  <div class="oneMsgLine2">隔壁老王</div>
+                </div>
+              </div>
+            </div>
+            <div class="msgBottom"><span>查看全部通知</span></div>
+          </div>
+        </div>
         <i class="el-icon-setting"
           @click="showSetting=true"></i>
         <div class="selectCtn">

@@ -11,7 +11,7 @@
     "@handsontable/vue": "^4.0.0",
     "axios": "^0.18.0",
     "ele-multi-cascader": "^2.2.4",
-    "element-ui": "^2.5.4",
+    "element-ui": "^2.12.0",
     "handsontable": "^7.0.0",
     "html2canvas": "^1.0.0-rc.3",
     "qrcode": "^1.4.1",

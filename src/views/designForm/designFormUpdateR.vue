@@ -319,7 +319,7 @@
               </div>
             </div>
             <div class="box box2">
-              <div class="label must">边型：</div>
+              <div class="label">边型：</div>
               <div class="content">
                 <el-select v-model="warpInfo.side_id"
                   placeholder="请选择边型"
@@ -345,7 +345,7 @@
               </div>
             </div>
             <div class="box box2">
-              <div class="label must">机型：</div>
+              <div class="label">机型：</div>
               <div class="content">
                 <el-select v-model="warpInfo.machine_id"
                   placeholder="请选择机型"
@@ -628,7 +628,7 @@
         <div class="appendInfo">
           <div class="row">
             <div class="box box2">
-              <div class="label must">组织法:</div>
+              <div class="label">组织法:</div>
               <div class="content">
                 <el-select v-model="weftInfo.organization_id"
                   placeholder="请选择组织法"
@@ -2063,27 +2063,9 @@ export default {
         })
         return
       }
-      if (!this.warpInfo.side_id) {
-        this.$message.error({
-          message: '请选择边型'
-        })
-        return
-      }
-      if (!this.warpInfo.machine_id) {
-        this.$message.error({
-          message: '请选择机型'
-        })
-        return
-      }
       if (!this.warpInfo.reed_width) {
         this.$message.error({
           message: '请输入筘幅'
-        })
-        return
-      }
-      if (!this.weftInfo.organization_id) {
-        this.$message.error({
-          message: '请选择组织法'
         })
         return
       }
@@ -2184,7 +2166,9 @@ export default {
               type_material: 2
             }
           })),
-          assist_material: this.material.materialWarp.map((item) => {
+          assist_material: this.material.materialWarp.filter((item) => {
+            return item.value !== ''
+          }).map((item) => {
             return {
               material_name: item.value,
               number: item.number,
@@ -2261,7 +2245,9 @@ export default {
               type_material: 2
             }
           })),
-          assist_material: this.material.materialWeft.map((item) => {
+          assist_material: this.material.materialWeft.filter((item) => {
+            return item.value !== ''
+          }).map((item) => {
             return {
               material_name: item.value,
               number: item.number,

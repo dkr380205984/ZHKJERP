@@ -2,7 +2,12 @@
   <div id="sampleCreate"
     v-loading="loading">
     <div class="head">
-      <h2>添加新产品</h2>
+      <h2>添加新产品
+        <i class="el-icon-message-solid"
+          :class="{'active':sendMsg}"
+          @click="msgOnOff"></i>
+        <div @click="test">提交按钮触发消息通知</div>
+      </h2>
     </div>
     <div class="body">
       <div class="inputCtn">
@@ -191,6 +196,8 @@
           @click="saveAll">保存</div>
       </div>
     </div>
+    <my-message :show="showMsg"
+      source="产品添加"></my-message>
   </div>
 </template>
 
@@ -200,6 +207,8 @@ import { productTppeList, flowerList, ingredientList, colorList, getToken, saveP
 export default {
   data () {
     return {
+      showMsg: false,
+      sendMsg: window.localStorage.getItem('产品添加'),
       loading: true,
       product_code: ['00', 'X', 'X', 'X', '00'],
       sampleName: '',
@@ -338,6 +347,33 @@ export default {
     }
   },
   methods: {
+    test () {
+      this.showMsg = true
+    },
+    msgOnOff () {
+      let str = this.sendMsg ? '是否要关闭产品添加页面的消息通知，关闭后添加产品时不会通知任何人' : '是否要开启产品添加页面的消息通知，开启后添加产品时需要发送通知信息'
+      this.$confirm(str, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        window.localStorage.setItem('产品添加', !this.sendMsg)
+        this.sendMsg = !this.sendMsg
+        this.$message({
+          type: 'success',
+          message: '操作成功'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消操作'
+        })
+      })
+    },
+    handlerClose (done) {
+      console.log('nihao')
+      done()
+    },
     noRepeat (value, index, item, key) {
       let flag = item.filter(val => val[key] === value)
       if (flag.length > 1) {

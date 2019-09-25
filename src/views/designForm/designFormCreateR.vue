@@ -2195,7 +2195,9 @@ export default {
               type_material: 2
             }
           })),
-          assist_material: this.material.materialWarp.map((item) => {
+          assist_material: this.material.materialWarp.filter((item) => {
+            return item.value !== ''
+          }).map((item) => {
             return {
               material_name: item.value,
               number: item.number,
@@ -2272,7 +2274,9 @@ export default {
               type_material: 2
             }
           })),
-          assist_material: this.material.materialWeft.map((item) => {
+          assist_material: this.material.materialWeft.filter((item) => {
+            return item.value !== ''
+          }).map((item) => {
             return {
               material_name: item.value,
               number: item.number,

@@ -14,7 +14,7 @@
         <div class="appendInfo">
           <div class="row">
             <div class="box box2">
-              <div class="label">设计单名称：</div>
+              <div class="label must">设计单名称：</div>
               <div class="content">
                 <el-input placeholder="请输入设计单名称"
                   style="width:294px"
@@ -2000,6 +2000,12 @@ export default {
     },
     saveAll () {
       let errorInput = false
+      if (!this.name) {
+        this.$message.error({
+          message: '检测到设计单名称未填写'
+        })
+        return
+      }
       errorInput = this.colour.some((itemColour) => {
         return itemColour.colorWarp.some((itemColor) => {
           if (!itemColor.name) {
@@ -2241,7 +2247,9 @@ export default {
               type_material: 2
             }
           })),
-          assist_material: this.material.materialWarp.map((item) => {
+          assist_material: this.material.materialWarp.filter((item) => {
+            return item.value !== ''
+          }).map((item) => {
             return {
               material_name: item.value,
               number: item.number,
@@ -2318,7 +2326,9 @@ export default {
               type_material: 2
             }
           })),
-          assist_material: this.material.materialWeft.map((item) => {
+          assist_material: this.material.materialWeft.filter((item) => {
+            return item.value !== ''
+          }).map((item) => {
             return {
               material_name: item.value,
               number: item.number,
