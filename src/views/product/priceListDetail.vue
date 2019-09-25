@@ -76,6 +76,14 @@
           </div>
         </div>
         <div class="lineCtn">
+          <div class="inputCtn">
+            <span class="label">起订数量:</span>
+            <div class="content">
+              {{priceTableDetail.number ? priceTableDetail.number + '件' : '暂无起订数量'}}
+            </div>
+          </div>
+        </div>
+        <div class="lineCtn">
           <div class="inputCtn auto">
             <span class="label">产品信息:</span>
             <div class="content"
@@ -406,7 +414,7 @@ export default {
       this.priceTableDetail.linkMan = data.contact_name
       this.priceTableDetail.unit = data.account_unit
       this.priceTableDetail.exchangeRate = data.exchange_rate
-      // this.priceTableDetail.reasonText = data.reason_text
+      this.priceTableDetail.number = data.number
       this.priceTableDetail.updateTime = data.updated_at
       this.priceTableDetail.info.push(
         ...JSON.parse(data.material_info).map(item => {

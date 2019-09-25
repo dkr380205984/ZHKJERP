@@ -189,6 +189,18 @@
           </div>
         </div>
         <div class="lineCtn">
+          <div class="inputCtn">
+            <span class="label">起订数量：</span>
+            <el-input v-model="startNum"
+              style="width:312px;"
+              placeholder="请输入起订数量">
+              <div slot="append"
+                style="padding: 0 1em"
+                class='unit'>件</div>
+            </el-input>
+          </div>
+        </div>
+        <div class="lineCtn">
           <div class="inputCtn oneLine">
             <span class="label">产品需求：</span>
             <el-input placeholder="请输入产品需求"
@@ -815,7 +827,8 @@ export default {
         prop: '',
         price: 0
       },
-      total_price: 0
+      total_price: 0,
+      startNum: ''
     }
   },
   methods: {
@@ -1103,6 +1116,7 @@ export default {
           this.user_info_price = detail.no_product_cost
           this.otherArr = JSON.parse(detail.desc_info)
           this.desc = detail.desc
+          this.startNum = detail.number
           this.product_need = detail.product_need
           this.productArr = JSON.parse(detail.product_info)
           this.productArr.forEach((item) => {
@@ -1186,6 +1200,7 @@ export default {
           commission: JSON.stringify(this.yongjin),
           tax: JSON.stringify(this.shuifei),
           desc: this.desc,
+          number: this.startNum,
           total_price: this.total_price
         }
         priceListCreate(json).then((res) => {
@@ -1301,6 +1316,7 @@ export default {
         this.user_info_price = detail.no_product_cost
         this.otherArr = JSON.parse(detail.desc_info)
         this.desc = detail.desc
+        this.startNum = detail.number
         this.product_need = detail.product_need
         this.productArr = JSON.parse(detail.product_info)
         this.productArr.forEach((item) => {

@@ -735,17 +735,17 @@
                 </template>
               </div>
             </li>
-            <template v-if="color_data.length < 6">
-              <li v-for="(value,index) in forArr(6 - color_data.length)"
-                :key="index+'1'">
-                <div class="table-head-col"></div>
-                <div v-for="(item,key) in forArr(6)"
-                  :key="key+'1'">
-                  <span></span>
-                  <span></span>
-                </div>
-              </li>
-            </template>
+          </template>
+          <template v-if="color_data.length < 6">
+            <li v-for="(value,index) in forArr(6 - color_data.length)"
+              :key="index+'1'">
+              <div class="table-head-col"></div>
+              <div v-for="(item,key) in forArr(6)"
+                :key="key+'1'">
+                <span></span>
+                <span></span>
+              </div>
+            </li>
           </template>
         </ul>
       </div>
@@ -937,16 +937,16 @@ export default {
       let str = ''
       if (items.PMFlag === 'normal') {
         items.PM.forEach((item, key) => {
-          str = '【' + item.number + '根（' + item.value + '）' + '】' + (item.repeat && item.repeat !== 1 ? 'X' + item.repeat + '遍' : '') + (key !== items.PM.length - 1 ? '。' : '')
+          str = '【' + item.number + '根（' + item.value + '）' + '】' + (item.repeat && item.repeat !== 1 ? 'x' + item.repeat + '遍' : '') + (key !== items.PM.length - 1 ? '。' : '')
         })
       } else if (items.PMFlag === 'complex') {
         items.PM.forEach((item, key) => {
           item.children.forEach((value, index) => {
             str += ('【' + value.number + '根')
             value.children.forEach((val, ind) => {
-              str += '（' + val.value + '）' + (val.repeat && val.repeat !== 1 ? 'X' + val.repeat + '遍' : '') + (ind !== value.children.length - 1 ? '，' : '')
+              str += '（' + val.value + '）' + (val.repeat && val.repeat !== 1 ? 'x' + val.repeat + '遍' : '') + (ind !== value.children.length - 1 ? '，' : '')
             })
-            str += ('】' + (item.repeat && item.repeat !== 1 ? 'X' + item.repeat + '遍' : '') + (index !== item.children.length - 1 ? '。' : ''))
+            str += ('】' + (item.repeat && item.repeat !== 1 ? 'x' + item.repeat + '遍' : '') + (index !== item.children.length - 1 ? '。' : ''))
           })
         })
       }
