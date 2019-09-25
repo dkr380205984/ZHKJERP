@@ -69,6 +69,7 @@
           </el-select>
           <el-input class="smallInputItem"
             placeholder="输入比例"
+            :disabled="item.ingredient_name ? false : true"
             v-model="item.ingredient_value">
             <span class="unit"
               slot="append">%</span>
@@ -117,7 +118,7 @@
               v-if="key === 0">添加</div>
             <div class="deleteBtn"
               v-else
-              @click="item.disabled ? $message.warning('不可删除原有项') :deleteSize(key)">删除</div>
+              @click="item.disabled ? showMessage() :deleteSize(key)">删除</div>
           </div>
           <div class="column">
             <el-input class="inputItem"
@@ -154,7 +155,7 @@
             @click="addColor"
             v-if="key === 0">添加</div>
           <div class="deleteBtn"
-            @click="deleteColor(key)"
+            @click="item.disabled ? showMessage() : deleteColor(key)"
             v-else>删除</div>
         </div>
       </div>
@@ -224,7 +225,10 @@ export default {
       postData: { token: '' },
       fileArr: [],
       lock: true,
-      type: ''
+      type: '',
+      has_craft: '',
+      has_plan: '',
+      in_order: ''
     }
   },
   created () {
@@ -247,7 +251,9 @@ export default {
         id: this.$route.params.id
       })
     ]).then(res => {
-      console.log(res[5].data.data)
+      this.has_craft = res[5].data.data.has_craft
+      this.has_plan = res[5].data.data.has_plan
+      this.in_order = res[5].data.data.in_order
       this.treeData = res[0].data.data.map((item) => {
         return {
           value: item.id,
@@ -322,7 +328,32 @@ export default {
       this.loading = false
     })
   },
+  watch: {
+    ingredient: {
+      deep: true,
+      handler (newVal) {
+        let total = 0
+        newVal.forEach(item => {
+          total += Number(item.ingredient_value ? item.ingredient_value : 0)
+        })
+        if (total === 100) {
+          this.showError = false
+        } else {
+          this.showError = true
+        }
+      }
+    }
+  },
   methods: {
+    showMessage () {
+      if (this.has_plan === 1) {
+        this.$message.error('已有配料单,不可删除原有项')
+      } else if (this.has_craft === 1) {
+        this.$message.error('已有工艺单,不可删除原有项')
+      } else if (this.in_order === 1) {
+        this.$message.error('已有相关订单,不可删除原有项')
+      }
+    },
     noRepeat (value, index, item, key) {
       let flag = item.filter(val => val[key] === value)
       if (flag.length > 1) {
@@ -378,12 +409,53 @@ export default {
         this.$message.error('请选择' + (this.type === '1' ? '产' : '样') + '品花型')
         flag = false
       }
+      if (this.type === '2') {
+        let total = 0
+        this.ingredient.filter(item => (item.ingredient_name && item.ingredient_value !== '' && item.ingredient_value !== '0')).forEach(item => {
+          total += Number(item.ingredient_value)
+        })
+        if (this.ingredient.filter(item => (item.ingredient_name && item.ingredient_value !== '' && item.ingredient_value !== '0')).length !== 0 && total !== 100) {
+          this.$message.error('样品成分比例总和不等于100%，请检查比例')
+          flag = false
+          return
+        }
+      } else if (this.type === '1') {
+        this.ingredient.forEach(item => {
+          if (!item.ingredient_name) {
+            this.$message.error('请将产品成分填写完整')
+            flag = false
+          }
+          if (!item.ingredient_value) {
+            this.$message.error('请将产品成分填写完整')
+            flag = false
+          }
+        })
+        let arr = this.ingredient.map(item => {
+          return item.ingredient_value
+        })
+        let total = arr.reduce((total, item) => {
+          return Number(total) + Number(item)
+        })
+        if (Number(total) !== 100) {
+          this.$message.error('产品成分比例总和不等于100%，请检查比例')
+          flag = false
+        }
+      }
       this.size.forEach(item => {
         if (!item.size) {
           this.$message.error('请将' + (this.type === '1' ? '产' : '样') + '品规格填写完整')
           flag = false
         }
+        if (this.type === '1' && !item.weight) {
+          this.$message.error('请填写产品克重')
+          flag = false
+        }
       })
+      if (this.type === '1' && this.color.filter(item => item.color).length === 0) {
+        this.$message.error('请选择配色方案')
+        flag = false
+        return
+      }
       const imgArr = this.$refs.uploada.uploadFiles.map((item) => { return (item.response ? 'http://zhihui.tlkrzf.com/' + item.response.key : item.url) })
       let data = {
         id: this.$route.params.id,
@@ -397,7 +469,7 @@ export default {
         description: this.textarea,
         user_id: window.sessionStorage.getItem('user_id'),
         img: imgArr,
-        color: this.color.map(item => {
+        color: this.color.filter(item => item.color).map(item => {
           return item.color
         }),
         sample_title: this.sampleName,

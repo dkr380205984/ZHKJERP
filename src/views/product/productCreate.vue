@@ -461,12 +461,10 @@ export default {
       let arr = this.ingredient.map(item => {
         return item.ingredient_value
       })
-      console.log(arr.reduce((total, item) => {
+      let total = arr.reduce((total, item) => {
         return Number(total) + Number(item)
-      }))
-      if (arr.reduce((total, item) => {
-        return Number(total) + Number(item)
-      }) !== '100') {
+      })
+      if (Number(total) !== 100) {
         this.$message.error('产品成分比例总和不等于100%，请检查比例')
         flag = false
       }
