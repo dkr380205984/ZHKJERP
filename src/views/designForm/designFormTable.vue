@@ -169,8 +169,8 @@
               <div class="through-content">
                 <div class="through-for">{{drafting_method|filterThroughMethod}}</div>
                 <div class="content-box"
-                  :style="{'justify-content':drafting_method.GLFlag !== 'normal' ? 'center' : 'space-between'}">
-                  <template v-if="drafting_method.GLFlag === 'normal'">
+                  :style="{'justify-content':(drafting_method.GLFlag !== 'normal' || drafting_method.GL[0].length >= 4) ? 'center' : 'space-between'}">
+                  <template v-if="drafting_method.GLFlag === 'normal' && 4 >= drafting_method.GL[0].length ">
                     <div class="box"
                       v-for="(val,ind) in drafting_method.GL[0]"
                       :key='ind'>
@@ -751,7 +751,7 @@
       </div>
     </div>
     <div class="outTable-through"
-      v-if="drafting_method.GLFlag !== 'normal'">
+      v-if="drafting_method.GLFlag !== 'normal' || drafting_method.GL[0].length">
       <div class="code">
         <div class="title">工艺单编号:</div>
         <div class="content">{{design_code}}</div>
@@ -775,6 +775,7 @@
       </div>
       <div class="wenbantu">
         <div class="title">穿综法循环:</div>
+        <div class="content">{{drafting_method|filterThroughMethod}}</div>
       </div>
     </div>
   </div>
