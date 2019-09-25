@@ -2203,6 +2203,7 @@ export default {
           reed: this.warpInfo.reed,
           reed_method: this.warpInfo.reed_method,
           reed_width: this.warpInfo.reed_width,
+          reed_width_data: this.warpInfo.reed_width_data,
           sum_up: this.warpInfo.sum_up,
           contract_ratio: 100, // 缩率工艺单用不到，默认100
           additional_data: '' // 废弃字段
@@ -2277,6 +2278,7 @@ export default {
           merge_data_back: this.$refs.weftBack.hotInstance.getPlugin('MergeCells').mergedCellsCollection.mergedCells,
           organization_id: this.weftInfo.organization_id,
           peifu: this.weftInfo.peifu,
+          peifu_data: this.weftInfo.peifu_data,
           weimi: this.weimi,
           shangchiya: this.weftInfo.shangchiya,
           xiachiya: this.weftInfo.xiachiya,
