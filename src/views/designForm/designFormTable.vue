@@ -154,9 +154,7 @@
             <div class="through-methods">
               <div class="through-title">穿综法</div>
               <div class="through-content">
-                <div class="through-for">
-                  <template v-for="(item) in drafting_method.PM">{{'根数(' + item.number + '根),' +'循环体(' +  item.value + '),重复次数(' + item.repeat + ')'}}</template>
-                </div>
+                <div class="through-for">{{drafting_method|filterThroughMethod}}</div>
                 <div class="content-box">
                   <div class="box"
                     v-for="(val,ind) in drafting_method.GL[0]"
@@ -735,6 +733,32 @@
         </ul>
       </div>
     </div>
+    <div class="outTable-through">
+      <div class="code">
+        <div class="title">工艺单编号:</div>
+        <div class="content">{{design_code}}</div>
+      </div>
+      <div class="wenbantu"
+        v-for="(item,key) in drafting_method.GL"
+        :key="key">
+        <div class="title">纹版图{{key !== 0 ? key + 1 : ''}}:</div>
+        <div class="content">
+          <div class="box"
+            v-for="(val,ind) in item"
+            :key='ind'>
+            <span class="index">{{ind+1}}</span>
+            <span class="detail">
+              <span>{{val[0]}}</span>
+              <span>{{val[1]}}</span>
+              <span>{{val[2]}}</span>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="wenbantu">
+        <div class="title">穿综法循环:</div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -887,6 +911,9 @@ export default {
     }
   },
   filters: {
+    filterThroughMethod (item) {
+      console.log(item)
+    },
     filterClass (item) {
       let arr = []
       item.forEach(value => {
