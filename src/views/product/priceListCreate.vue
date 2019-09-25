@@ -163,6 +163,8 @@
         <div class="lineCtn">
           <div class="inputCtn product oneLine">
             <span class="label">尺码颜色：</span>
+            <div class="noInfo"
+              v-show="productArr.length===0">产品待添加</div>
             <div class="twoCol"
               v-for="(itemPro,indexPro) in productArr"
               :key="indexPro">
@@ -184,8 +186,18 @@
                 </el-select>
               </div>
             </div>
-            <div class="noInfo"
-              v-show="productArr.length===0">产品待添加</div>
+          </div>
+        </div>
+        <div class="lineCtn">
+          <div class="inputCtn">
+            <span class="label">起订数量：</span>
+            <el-input v-model="startNum"
+              style="width:312px;"
+              placeholder="请输入起订数量">
+              <div slot="append"
+                style="padding: 0 1em"
+                class='unit'>件</div>
+            </el-input>
           </div>
         </div>
         <div class="lineCtn">
@@ -809,7 +821,8 @@ export default {
         prop: '',
         price: 0
       },
-      total_price: 0
+      total_price: 0,
+      startNum: ''
     }
   },
   methods: {
@@ -1179,7 +1192,8 @@ export default {
           production_info: JSON.stringify(this.production_info),
           tax: JSON.stringify(this.shuifei),
           desc: this.desc,
-          total_price: this.total_price
+          total_price: this.total_price,
+          number: this.startNum
         }
         priceListCreate(json).then((res) => {
           if (res.data.status) {

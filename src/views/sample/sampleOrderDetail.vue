@@ -24,11 +24,14 @@
               <el-dropdown-menu slot="dropdown">
                 <!-- <el-dropdown-item>样单异常</el-dropdown-item> -->
                 <el-dropdown-item v-show="order_info.status!==2"
-                  command="ok">客户确认</el-dropdown-item>
+                  command="ok"
+                  style="color:#1A94FF">客户确认</el-dropdown-item>
                 <el-dropdown-item v-show="order_info.status!==2"
-                  command="change">修改样单</el-dropdown-item>
+                  command="change"
+                  style="color:#E6A23C">修改样单</el-dropdown-item>
                 <el-dropdown-item v-show="order_info.status!==2"
-                  command="cancle">样单取消</el-dropdown-item>
+                  command="cancle"
+                  style="color:#FF4D4D">样单取消</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
