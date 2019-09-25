@@ -530,6 +530,10 @@ let router = new Router({
       path: 'companyInfoSetting',
       name: 'companyInfoSetting',
       component: () => import('./views/setting/companyInfoSetting.vue')
+    }, {
+      path: 'sendMsg',
+      name: 'sendMsg',
+      component: () => import('./views/self/sendMsg.vue')
     }]
   }
   ]

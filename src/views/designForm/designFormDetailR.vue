@@ -146,10 +146,10 @@
               <div class="content"
                 v-for="(item,index) in material.materialWarp"
                 :key="index">
-                <span>{{item.value}}</span>
-                <span style="margin-left:16px">{{item.number}}</span>
+                <span>{{item.material_name}}</span>
+                <span style="margin-left:16px">{{item.number}}根</span>
                 <div class="colorBox"
-                  v-for="(item,index) in item.array"
+                  v-for="(item,index) in item.apply"
                   :key="index">
                   <span class="colorText">{{filterMethods(item)}}</span>
                 </div>
@@ -303,10 +303,10 @@
               <div class="content"
                 v-for="(item,index) in material.materialWeft"
                 :key="index">
-                <span>{{item.value}}</span>
-                <span style="margin-left:16px">{{item.number}}</span>
+                <span>{{item.material_name}}</span>
+                <span style="margin-left:16px">{{item.number}}根</span>
                 <div class="colorBox"
-                  v-for="(item,index) in item.array"
+                  v-for="(item,index) in item.apply"
                   :key="index">
                   <span class="colorText">{{filterMethods(item)}}</span>
                 </div>

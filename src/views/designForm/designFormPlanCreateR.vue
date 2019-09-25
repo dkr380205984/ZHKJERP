@@ -14,7 +14,7 @@
         <div class="appendInfo">
           <div class="row">
             <div class="box box2">
-              <div class="label must">设计单名称：</div>
+              <div class="label must">显示名称：</div>
               <div class="content">
                 <el-input placeholder="请输入设计单名称"
                   style="width:294px"

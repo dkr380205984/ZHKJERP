@@ -2500,8 +2500,20 @@ export default {
         this.yarn.yarnWeft = this.weftInfo.material_data.find((item) => item.type_material === 1).material_name
         this.yarn.yarnOtherWarp = this.warpInfo.material_data.filter((item) => item.type_material === 2)
         this.yarn.yarnOtherWeft = this.weftInfo.material_data.filter((item) => item.type_material === 2)
-        this.material.materialWarp = JSON.parse(this.warpInfo.assist_material)
-        this.material.materialWeft = JSON.parse(this.weftInfo.assist_material)
+        this.material.materialWarp = this.warpInfo.assist_material.map((item) => {
+          return {
+            value: item.material_name,
+            number: item.number,
+            array: item.apply
+          }
+        })
+        this.material.materialWeft = this.weftInfo.assist_material.map((item) => {
+          return {
+            value: item.material_name,
+            number: item.number,
+            array: item.apply
+          }
+        })
         this.warpInfo.warp_rank = JSON.parse(this.warpInfo.warp_rank)
         this.warpInfo.warp_rank_back = JSON.parse(this.warpInfo.warp_rank_back)
         this.weftInfo.weft_rank = JSON.parse(this.weftInfo.weft_rank)

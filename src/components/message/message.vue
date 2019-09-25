@@ -1,6 +1,6 @@
 <template>
   <div class="myMessage"
-    v-show="selfShow">
+    v-show="visible">
     <div class="main">
       <div class="top">
         <span>消息通知</span>
@@ -115,7 +115,7 @@ export default {
         return source.indexOf(value) !== -1
       }
     },
-    show: {
+    visible: {
       type: Boolean,
       required: true
     },
@@ -140,7 +140,6 @@ export default {
   data () {
     return {
       title: this.defaultTitle,
-      selfShow: false,
       group: [{
         name: '张三',
         check: true
@@ -199,20 +198,18 @@ export default {
     }
   },
   watch: {
-    show (val) {
-      if (val) {
-        this.selfShow = true
-      } else {
-        this.selfShow = false
-      }
-    }
+
   },
   methods: {
     sendMsg () {
 
     },
     closeWin () {
-
+      // <comp :foo.sync="bar"></comp>
+      // 将被扩展为<comp :foo="bar" @update:foo="val => bar = val"></comp>
+      // 用与子组件触发父组件值更新的语法糖
+      // 在子组件中需要显示触发这个update事件:this.$emit('update:foo', newValue)
+      this.$emit('update:visible', false)
     }
   },
   mounted () {

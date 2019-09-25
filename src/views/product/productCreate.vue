@@ -196,7 +196,7 @@
           @click="saveAll">保存</div>
       </div>
     </div>
-    <my-message :show="showMsg"
+    <my-message :visible.sync="showMsg"
       source="产品添加"></my-message>
   </div>
 </template>

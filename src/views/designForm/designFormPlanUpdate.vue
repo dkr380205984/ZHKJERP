@@ -14,7 +14,7 @@
         <div class="appendInfo">
           <div class="row">
             <div class="box box2">
-              <div class="label must">设计单名称：</div>
+              <div class="label must">显示名称：</div>
               <div class="content">
                 <el-input placeholder="请输入设计单名称"
                   style="width:294px"
@@ -2902,8 +2902,20 @@ export default {
       this.yarn.yarnWeft = this.weftInfo.material_data.find((item) => item.type_material === 1).material_name
       this.yarn.yarnOtherWarp = this.warpInfo.material_data.filter((item) => item.type_material === 2)
       this.yarn.yarnOtherWeft = this.weftInfo.material_data.filter((item) => item.type_material === 2)
-      this.material.materialWarp = JSON.parse(this.warpInfo.assist_material)
-      this.material.materialWeft = JSON.parse(this.weftInfo.assist_material)
+      this.material.materialWarp = this.warpInfo.assist_material.map((item) => {
+        return {
+          value: item.material_name,
+          number: item.number,
+          array: item.apply
+        }
+      })
+      this.material.materialWeft = this.weftInfo.assist_material.map((item) => {
+        return {
+          value: item.material_name,
+          number: item.number,
+          array: item.apply
+        }
+      })
       this.$refs.warp.hotInstance.loadData(JSON.parse(this.warpInfo.warp_rank).map((item, index) => {
         return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
       }))
