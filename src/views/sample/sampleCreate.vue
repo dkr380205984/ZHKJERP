@@ -26,14 +26,14 @@
             v-model="types"
             class="inputItem"
             clearable
-            placeholder="请选择产品品类">
+            placeholder="请选择样品品类">
           </el-cascader>
         </div>
         <div class="tooltips"
           style="bottom:-20px"
           v-show="warning">
           <i class="el-icon-warning"></i>
-          警告：系统暂时不支持没有三级分类的产品，请联系管理员完善产品信息
+          警告：系统暂时不支持没有三级分类的样品，请联系管理员完善样品信息
         </div>
       </div>
       <div class="inputCtn">
@@ -66,6 +66,7 @@
           </el-select>
           <el-input class="smallInputItem"
             placeholder="输入比例"
+            :disabled="!item.ingredient_name"
             v-model="item.ingredient_value">
             <span class="unit"
               slot="append">%</span>
@@ -81,7 +82,7 @@
           style="bottom:-20px;"
           v-show="showError">
           <i class="el-icon-warning"></i>
-          产品成分比例总和不等于100%，请检查比例
+          样品成分比例总和不等于100%，请检查比例
         </div>
       </div>
       <div class="inputCtn">
@@ -318,8 +319,8 @@ export default {
       deep: true,
       handler (newVal) {
         let total = 0
-        newVal.forEach(item => {
-          total += Number(item.ingredient_value ? item.ingredient_value : 0)
+        this.ingredient.filter(item => (item.ingredient_name && item.ingredient_value !== '' && item.ingredient_value !== '0')).forEach(item => {
+          total += Number(item.ingredient_value)
         })
         if (total === 100) {
           this.showError = false
@@ -392,6 +393,15 @@ export default {
         flag = false
         return
       }
+      let total = 0
+      this.ingredient.filter(item => (item.ingredient_name && item.ingredient_value !== '' && item.ingredient_value !== '0')).forEach(item => {
+        total += Number(item.ingredient_value)
+      })
+      if (this.ingredient.filter(item => (item.ingredient_name && item.ingredient_value !== '' && item.ingredient_value !== '0')).length !== 0 && total !== 100) {
+        this.$message.error('样品成分比例总和不等于100%，请检查比例')
+        flag = false
+        return
+      }
       this.size.forEach(item => {
         if (!item.size) {
           this.$message.error('请将样品规格填写完整')
@@ -421,7 +431,7 @@ export default {
           }
         }),
         sample_title: this.sampleName,
-        materials: this.ingredient
+        materials: this.ingredient.filter(item => (item.ingredient_name && item.ingredient_value !== '' && item.ingredient_value !== '0'))
       }
       if (flag) {
         if (this.lock) {

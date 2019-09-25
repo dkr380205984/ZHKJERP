@@ -2,10 +2,23 @@
   <div id="designFormTable"
     @click.right='goTop'>
     <div class="table">
-      <p class="company">桐庐凯瑞针纺有限公司工艺单</p>
-      <div class="page_header">
-        <span>工艺单编号:{{design_code}}</span>
-        <span>创建时间：{{create_time}}</span>
+      <div class="head">
+        <div class="left">
+          <p class="company">桐庐凯瑞针纺有限公司工艺单</p>
+          <span><span class="label">工艺单编号:</span>{{design_code}}</span>
+          <span><span class="label">创建人:</span>{{create_user}}</span>
+          <span><span class="label">创建日期:</span>{{create_time}}</span>
+        </div>
+        <div class="right">
+          <img :src="qrCodeUrl"
+            alt=""
+            ref="qrcodeCanvas"
+            class="qrcode">
+          <div class="message">
+            <span>扫一扫</span>
+            <span>获取电子图稿</span>
+          </div>
+        </div>
       </div>
       <ul class="table-box">
         <li class="info">
@@ -155,17 +168,21 @@
               <div class="through-title">穿综法</div>
               <div class="through-content">
                 <div class="through-for">{{drafting_method|filterThroughMethod}}</div>
-                <div class="content-box">
-                  <div class="box"
-                    v-for="(val,ind) in drafting_method.GL[0]"
-                    :key='ind'>
-                    <span class="index">{{ind+1}}</span>
-                    <span class="detail">
-                      <span>{{val[0]}}</span>
-                      <span>{{val[1]}}</span>
-                      <span>{{val[2]}}</span>
-                    </span>
-                  </div>
+                <div class="content-box"
+                  :style="{'justify-content':drafting_method.GLFlag !== 'normal' ? 'center' : 'space-between'}">
+                  <template v-if="drafting_method.GLFlag === 'normal'">
+                    <div class="box"
+                      v-for="(val,ind) in drafting_method.GL[0]"
+                      :key='ind'>
+                      <span class="index">{{ind+1}}</span>
+                      <span class="detail">
+                        <span>{{val[0]}}</span>
+                        <span>{{val[1]}}</span>
+                        <span>{{val[2]}}</span>
+                      </span>
+                    </div>
+                  </template>
+                  <template v-else>见附件</template>
                 </div>
                 <div class="through-desc"></div>
               </div>
@@ -733,7 +750,8 @@
         </ul>
       </div>
     </div>
-    <div class="outTable-through">
+    <div class="outTable-through"
+      v-if="drafting_method.GLFlag !== 'normal'">
       <div class="code">
         <div class="title">工艺单编号:</div>
         <div class="content">{{design_code}}</div>
@@ -764,6 +782,7 @@
 
 <script>
 import { craftOne } from '@/assets/js/api.js'
+const QRCode = require('qrcode')
 export default {
   data () {
     return {
@@ -800,7 +819,8 @@ export default {
         warp: [],
         weft: []
       },
-      zhujia_info: []
+      zhujia_info: [],
+      qrCodeUrl: ''
     }
   },
   methods: {
@@ -911,8 +931,25 @@ export default {
     }
   },
   filters: {
-    filterThroughMethod (item) {
-      console.log(item)
+    filterThroughMethod (items) {
+      console.log(items)
+      let str = ''
+      if (items.PMFlag === 'normal') {
+        items.PM.forEach((item, key) => {
+          str = '【' + item.number + '根（' + item.value + '）' + '】' + (item.repeat && item.repeat !== 1 ? 'X' + item.repeat + '遍' : '') + (key !== items.PM.length - 1 ? '。' : '')
+        })
+      } else if (items.PMFlag === 'complex') {
+        items.PM.forEach((item, key) => {
+          item.children.forEach((value, index) => {
+            str += ('【' + value.number + '根')
+            value.children.forEach((val, ind) => {
+              str += '（' + val.value + '）' + (val.repeat && val.repeat !== 1 ? 'X' + val.repeat + '遍' : '') + (ind !== value.children.length - 1 ? '，' : '')
+            })
+            str += ('】' + (item.repeat && item.repeat !== 1 ? 'X' + item.repeat + '遍' : '') + (index !== item.children.length - 1 ? '。' : ''))
+          })
+        })
+      }
+      return str
     },
     filterClass (item) {
       let arr = []
@@ -952,7 +989,7 @@ export default {
       this.design_code = data.craft_code
       this.create_user = data.user_name
       this.create_time = data.create_time
-      // this.product_name = data.product_info.
+      this.product_name = data.product_info.title
       this.product_type = data.product_info.category_info.product_category + '/' + data.product_info.type_name + '/' + data.product_info.style_name + '/' + data.product_info.flower_id
       this.product_code = data.product_info.product_code
       this.size = data.product_info.size[0].size_info
@@ -1085,6 +1122,15 @@ export default {
           this.colorWeight.weft[itemChild] = (colorNumber.weft[itemChild] * this.warp_data.reed_width * data.yarn_coefficient.find((itemFind) => itemFind.name === item.material_name).value / 100).toFixed(1)
         })
       })
+    })
+  },
+  mounted () {
+    this.urlVal = window.location.host + '/index/designFromDetail/' + this.$route.params.id
+    // 画二维码里的logo[注意添加logo图片的时候需要使用服务器]
+    QRCode.toDataURL(this.urlVal, { errorCorrectionLevel: 'H' }, (err, url) => {
+      console.log(err)
+      this.qrCodeUrl = url
+      console.log(url)
     })
   },
   updated () {
