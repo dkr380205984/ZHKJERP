@@ -109,15 +109,15 @@ let router = new Router({
     }, {
       path: 'designFormCreate/:id',
       name: 'designFormCreate',
-      component: () => import('./views/designForm/designFormCreateR.vue')
+      component: () => import('./views/designForm/designFormCreate.vue')
     }, {
       path: 'designFormDetail/:id',
       name: 'designFormDetail',
-      component: () => import('./views/designForm/designFormDetailR.vue')
+      component: () => import('./views/designForm/designFormDetail.vue')
     }, {
       path: 'designFormUpdate/:id',
       name: 'designFormUpdate',
-      component: () => import('./views/designForm/designFormUpdateR.vue')
+      component: () => import('./views/designForm/designFormUpdate.vue')
     }, {
       path: 'designFormList',
       name: 'designFormList',
@@ -129,7 +129,7 @@ let router = new Router({
     }, {
       path: 'designFormPlanCreate',
       name: 'designFormPlanCreate',
-      component: () => import('./views/designForm/designFormPlanCreateR.vue')
+      component: () => import('./views/designForm/designFormPlanCreate.vue')
     }, {
       path: 'designFormPlanUpdate/:id',
       name: 'designFormPlanUpdate',
@@ -149,11 +149,11 @@ let router = new Router({
     }, {
       path: 'productPlanUpdate/:productId',
       name: 'productPlanUpdate',
-      component: () => import('./views/productPlan/productPlanUpdateR.vue')
+      component: () => import('./views/productPlan/productPlanUpdate.vue')
     }, {
       path: 'productPlanCreate/:id',
       name: 'productPlanCreate',
-      component: () => import('./views/productPlan/productPlanCreateR.vue')
+      component: () => import('./views/productPlan/productPlanCreate.vue')
     }, {
       path: 'personManage',
       name: 'personManage',
