@@ -96,7 +96,7 @@
                     </template>
                   </div>
                   <div>
-                    <span v-for="(item,key) in mergeSpan(warp_data,3,'warp_rank')"
+                    <span v-for="(item,key) in mergeSpan(warp_data,3,'warp_rank','merge_data')"
                       :style="{minWidth : (100/16)*item.colspan + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none'}"
                       :key="key">{{item ? item.value : ''}}</span>
                     <template v-if="warp_data.warp_rank[3].length < 16">
@@ -107,7 +107,7 @@
                     </template>
                   </div>
                   <div>
-                    <span v-for="(item,key) in mergeSpan(warp_data,4,'warp_rank')"
+                    <span v-for="(item,key) in mergeSpan(warp_data,4,'warp_rank','merge_data')"
                       :style="{minWidth : (100/16) + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none'}"
                       :key="key">{{item ? item.value : ''}}</span>
                     <template v-if="warp_data.warp_rank[4].length < 16">
@@ -118,7 +118,7 @@
                     </template>
                   </div>
                   <div>
-                    <span v-for="(item,key) in mergeSpan(warp_data,5,'warp_rank')"
+                    <span v-for="(item,key) in mergeSpan(warp_data,5,'warp_rank','merge_data')"
                       :style="{minWidth : (100/16) + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none'}"
                       :key="key">{{item ? item.value : ''}}</span>
                     <template v-if="warp_data.warp_rank[5].length < 16">
@@ -169,8 +169,8 @@
               <div class="through-content">
                 <div class="through-for">{{drafting_method|filterThroughMethod}}</div>
                 <div class="content-box"
-                  :style="{'justify-content':(drafting_method.GLFlag !== 'normal' || drafting_method.GL[0].length >= 4) ? 'center' : 'space-between'}">
-                  <template v-if="drafting_method.GLFlag === 'normal' && 4 >= drafting_method.GL[0].length ">
+                  :style="{'justify-content':(drafting_method.GLFlag !== 'normal' || drafting_method.GL[0].length > 4) ? 'center' : 'space-between'}">
+                  <template v-if="drafting_method.GLFlag === 'normal' && 6 > drafting_method.GL[0].length ">
                     <div class="box"
                       v-for="(val,ind) in drafting_method.GL[0]"
                       :key='ind'>
@@ -270,7 +270,7 @@
                     </template>
                   </div>
                   <div>
-                    <span v-for="(item,key) in mergeSpan(weft_data,3,'weft_rank')"
+                    <span v-for="(item,key) in mergeSpan(weft_data,3,'weft_rank','merge_data')"
                       :style="{minWidth : (100/16)*item.colspan + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none'}"
                       :key="key">{{item ? item.value : ''}}</span>
                     <template v-if="weft_data.weft_rank[3].length < 16">
@@ -281,7 +281,7 @@
                     </template>
                   </div>
                   <div>
-                    <span v-for="(item,key) in mergeSpan(weft_data,4,'weft_rank')"
+                    <span v-for="(item,key) in mergeSpan(weft_data,4,'weft_rank','merge_data')"
                       :style="{minWidth : (100/16) + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none'}"
                       :key="key">{{item ? item.value : ''}}</span>
                     <template v-if="weft_data.weft_rank[4].length < 16">
@@ -292,7 +292,7 @@
                     </template>
                   </div>
                   <div>
-                    <span v-for="(item,key) in mergeSpan(weft_data,5,'weft_rank')"
+                    <span v-for="(item,key) in mergeSpan(weft_data,5,'weft_rank','merge_data')"
                       :style="{minWidth : (100/16) + '%',borderLeft : key !== 0 ? '1px solid #999' : 'none'}"
                       :key="key">{{item ? item.value : ''}}</span>
                     <template v-if="weft_data.weft_rank[5].length < 16">
@@ -683,17 +683,17 @@
                 </template>
               </div>
             </li>
-            <template v-if="color_data.length < 6">
-              <li v-for="(value,index) in forArr(6 - color_data.length)"
-                :key="index+'1'">
-                <div class="table-head-col"></div>
-                <div v-for="(item,key) in forArr(6)"
-                  :key="key+'1'">
-                  <span></span>
-                  <span></span>
-                </div>
-              </li>
-            </template>
+          </template>
+          <template v-if="color_data.length < 6">
+            <li v-for="(value,index) in forArr(6 - color_data.length)"
+              :key="index+'1'">
+              <div class="table-head-col"></div>
+              <div v-for="(item,key) in forArr(6)"
+                :key="key+'1'">
+                <span></span>
+                <span></span>
+              </div>
+            </li>
           </template>
         </ul>
       </div>
@@ -751,7 +751,7 @@
       </div>
     </div>
     <div class="outTable-through"
-      v-if="drafting_method.GLFlag !== 'normal' || drafting_method.GL[0].length">
+      v-if="drafting_method.GLFlag !== 'normal' || drafting_method.GL[0].length >= 6">
       <div class="code">
         <div class="title">工艺单编号:</div>
         <div class="content">{{design_code}}</div>
@@ -870,13 +870,15 @@ export default {
     },
     // 合并单元格
     mergeSpan (item, index, key, mergeIndex, callBack, keys) {
-      let mergeALLMathod = item[mergeIndex] ? item[mergeIndex] : []
+      let mergeALLMathod = item[mergeIndex]
       let mergeMethod = mergeALLMathod.filter(val => Number(val.row) === Number(index)) // 合并规则
       let isMergeData = callBack ? callBack(item[key][index], keys, true) : item[key][index] // 需要合并的数据
       let mergeData = [] // 合并后的数据
+      // console.log(isMergeData, mergeMethod, item[mergeIndex])
       for (let ind = 0; ind < isMergeData.length; ind++) {
         let val = isMergeData[ind]
         let mergeItem = mergeMethod.find(mergeItem => ind >= (mergeItem.col - (keys || 0) * 16) && ((mergeItem.col - (keys || 0) * 16) + mergeItem.colspan - 1) >= ind)
+        // console.log(mergeItem)
         if (mergeItem) {
           mergeData.push({ value: mergeItem.value, colspan: mergeItem.colspan, isSplit: mergeItem.split })
           ind += (mergeItem.colspan - 1)
@@ -884,6 +886,7 @@ export default {
           mergeData.push({ value: val, colspan: 1 })
         }
       }
+      // console.log(mergeData)
       return mergeData
     },
     forArr (num) {
@@ -933,14 +936,15 @@ export default {
   },
   filters: {
     filterThroughMethod (items) {
-      console.log(items)
       let str = ''
+      let romanNum = ['Ⅰ', 'Ⅱ', 'Ⅲ', 'Ⅳ', 'Ⅴ', 'Ⅵ', 'Ⅶ', 'Ⅷ', 'Ⅸ', 'Ⅹ', 'Ⅺ', 'Ⅻ']
       if (items.PMFlag === 'normal') {
         items.PM.forEach((item, key) => {
           str = '【' + item.number + '根（' + item.value + '）' + '】' + (item.repeat && item.repeat !== 1 ? 'x' + item.repeat + '遍' : '') + (key !== items.PM.length - 1 ? '。' : '')
         })
       } else if (items.PMFlag === 'complex') {
         items.PM.forEach((item, key) => {
+          str += romanNum[key]
           item.children.forEach((value, index) => {
             str += ('【' + value.number + '根')
             value.children.forEach((val, ind) => {

@@ -55,10 +55,10 @@ let router = new Router({
     name: 'changePsd',
     component: () => import('./views/changePsd.vue')
   }, {
-    path: '/screenShipments',
-    name: 'screenShipments',
-    component: () => import('./views/order/screenShipments.vue')
-  }, {
+    //   path: '/screenShipments',
+    //   name: 'screenShipments',
+    //   component: () => import('./views/order/screenShipments.vue')
+    // }, {
     path: '/screenShipmentsList',
     name: 'screenShipmentsList',
     component: () => import('./views/order/screenShipmentsList.vue')
@@ -251,17 +251,17 @@ let router = new Router({
       name: 'mainMaterialStockCreate',
       component: () => import('./views/stock/mainMaterialStockCreate.vue')
     }, {
-      path: 'materialStockList',
-      name: 'materialStockList',
-      component: () => import('./views/stock/materialStockList.vue')
-    }, {
+      //   path: 'materialStockList',
+      //   name: 'materialStockList',
+      //   component: () => import('./views/stock/materialStockList.vue')
+      // }, {
       path: 'materialStockListNew',
       name: 'materialStockListNew',
       component: () => import('./views/stock/materialStockListNew.vue')
-    }, {
-      path: 'materialStockDetail/:stockId',
-      name: 'materialStockDetail',
-      component: () => import('./views/stock/materialStockDetail.vue')
+      // }, {
+      //   path: 'materialStockDetail/:stockId',
+      //   name: 'materialStockDetail',
+      //   component: () => import('./views/stock/materialStockDetail.vue')
     }, {
       path: 'mainMaterialStockChange/:id',
       name: 'mainMaterialStockChange',
@@ -270,27 +270,27 @@ let router = new Router({
       path: 'mainMaterialStockDetail/:stockId/:id',
       name: 'mainMaterialStockDetail',
       component: () => import('./views/stock/mainMaterialStockDetail.vue')
+      // }, {
+      //   path: 'otherMaterialStockCreate',
+      //   name: 'otherMaterialStockCreate',
+      //   component: () => import('./views/stock/otherMaterialStockCreate.vue')
+      // }, {
+      //   path: 'otherMaterialStockList',
+      //   name: 'otherMaterialStockList',
+      //   component: () => import('./views/stock/otherMaterialStockList.vue')
+      // }, {
+      //   path: 'otherMaterialStockDetail/:id',
+      //   name: 'otherMaterialStockDetail',
+      //   component: () => import('./views/stock/otherMaterialStockDetail.vue')
     }, {
-      path: 'otherMaterialStockCreate',
-      name: 'otherMaterialStockCreate',
-      component: () => import('./views/stock/otherMaterialStockCreate.vue')
-    }, {
-      path: 'otherMaterialStockList',
-      name: 'otherMaterialStockList',
-      component: () => import('./views/stock/otherMaterialStockList.vue')
-    }, {
-      path: 'otherMaterialStockDetail/:id',
-      name: 'otherMaterialStockDetail',
-      component: () => import('./views/stock/otherMaterialStockDetail.vue')
-    }, {
-      path: 'stockProductList',
-      name: 'stockProductList',
-      component: () => import('./views/stock/productList.vue')
-    }, {
-      path: 'productStockCreate/:id',
-      name: 'productStockCreate',
-      component: () => import('./views/stock/productStockCreate.vue')
-    }, {
+      //   path: 'stockProductList',
+      //   name: 'stockProductList',
+      //   component: () => import('./views/stock/productList.vue')
+      // }, {
+      //   path: 'productStockCreate/:id',
+      //   name: 'productStockCreate',
+      //   component: () => import('./views/stock/productStockCreate.vue')
+      // }, {
       path: 'productStockList',
       name: 'productStockList',
       component: () => import('./views/stock/productStockList.vue')
@@ -451,10 +451,10 @@ let router = new Router({
       name: 'finishedExamination',
       component: () => import('./views/productExamination/finishedExamination.vue')
     }, {
-      path: 'packagList',
-      name: 'packagList',
-      component: () => import('./views/packaging/packagList.vue')
-    }, {
+      //   path: 'packagList',
+      //   name: 'packagList',
+      //   component: () => import('./views/packaging/packagList.vue')
+      // }, {
       path: 'packagDetail/:id',
       name: 'packagDetail',
       component: () => import('./views/packaging/packagDetail.vue')
@@ -487,10 +487,10 @@ let router = new Router({
       name: 'packagMaterialSetting',
       component: () => import('./views/setting/packagMaterialSetting.vue')
     }, {
-      path: 'sampleAdd',
-      name: 'sampleAdd',
-      component: () => import('./views/order/sampleAdd.vue')
-    }, {
+      //   path: 'sampleAdd',
+      //   name: 'sampleAdd',
+      //   component: () => import('./views/order/sampleAdd.vue')
+      // }, {
       path: 'orderDetailNew/:id',
       name: 'orderDetailNew',
       component: () => import('./views/order/orderDetailNew.vue')
