@@ -14,59 +14,39 @@
       </div>
       <div class="menuRight">
         <div class="item">
-          <el-badge :value="200"
+          <el-badge :value="total"
             :max="99">
             <i class="el-icon-bell"></i>
           </el-badge>
+          <!-- 这个节点只用于连接盒子和铃铛之间的空白,触发hover区域变大 -->
+          <div class="msgTop"></div>
           <div class="msgBox">
             <div class="msgOpr">
               <span>消息通知</span>
-              <span>全部标记已读</span>
+              <span @click="readAll">全部标记已读</span>
             </div>
             <div class="msgContent">
-              <div class="oneMsg">
+              <div class="noMsg"
+                v-show="msgList.length===0">暂无新通知</div>
+              <div class="oneMsg"
+                v-for="item in msgList"
+                :key="item.id">
                 <div class="oneMsgLeft">
                   <div class="oneMsgLine1">
-                    <span class="oneMsgTitle must">工艺单紧急通知</span>
-                    <span class="mark blue">工序</span>
+                    <span class="oneMsgTitle"
+                      @click="readMsg(item)"
+                      :class="{'must':item.type==='紧急','normal':item.type==='普通','important':item.type==='重要'}">{{item.title}}</span>
+                    <span class="mark"
+                      :class="{'blue':item.tag==='工序','purple':item.tag==='公司','yellow':item.tag==='系统'}">{{item.tag}}</span>
                   </div>
                   <div class="oneMsgLine2">
-                    <div class="oneMsgInfo">添加新产品添加新产品添加新产品添加新产品添加新产品添加新产品添加新产品添加新产品</div>
+                    <div class="oneMsgInfo"
+                      v-html="item.content"></div>
                   </div>
                 </div>
                 <div class="oneMsgRight">
-                  <div class="oneMsgLine1">7:30</div>
-                  <div class="oneMsgLine2">隔壁老王</div>
-                </div>
-              </div>
-              <div class="oneMsg">
-                <div class="oneMsgLeft">
-                  <div class="oneMsgLine1">
-                    <span class="oneMsgTitle normal">工艺单紧急通知</span>
-                    <span class="mark purple">公司</span>
-                  </div>
-                  <div class="oneMsgLine2">
-                    <div class="oneMsgInfo">添加新产品</div>
-                  </div>
-                </div>
-                <div class="oneMsgRight">
-                  <div class="oneMsgLine1">7:30</div>
-                  <div class="oneMsgLine2">隔壁老王</div>
-                </div>
-              </div>
-              <div class="oneMsg">
-                <div class="oneMsgLeft">
-                  <div class="oneMsgLine1">
-                    <span class="oneMsgTitle important">工艺单紧急通知</span>
-                    <span class="mark yellow">系统</span>
-                  </div>
-                  <div class="oneMsgLine2">
-                    <div class="oneMsgInfo">添加新产品</div>
-                  </div>
-                </div>
-                <div class="oneMsgRight">
-                  <div class="oneMsgLine1">7:30</div>
-                  <div class="oneMsgLine2">隔壁老王</div>
+                  <div class="oneMsgLine1">{{item.create_time.slice(0,10)}}</div>
+                  <div class="oneMsgLine2">{{item.user_name}}</div>
                 </div>
               </div>
             </div>
@@ -123,6 +103,7 @@
 
 <script>
 import './header.less'
+import { notifyList, notifyRead } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -152,10 +133,23 @@ export default {
         name: '包装设置',
         img: require('../../assets/image/setting/包装设置-蓝.png'),
         url: '/index/packagMaterialList'
-      }]
+      }],
+      msgList: [],
+      total: 0
     }
   },
   methods: {
+    getNotify () {
+      notifyList({
+        limit: 5,
+        page: 1,
+        status: 1,
+        type: null
+      }).then((res) => {
+        this.msgList = res.data.data
+        this.total = res.data.meta.total
+      })
+    },
     commondHandler (cmd) {
       if (cmd === 'personManage') {
         // 这里刷新页面是为了解决左侧导航栏不能刷新的问题
@@ -173,6 +167,48 @@ export default {
       this.goSetting = true
       window.open(url)
     },
+    readMsg (item) {
+      if (item.tag === '公司') {
+        this.$alert('通知详情：' + item.content, item.title, {
+          confirmButtonText: '确定'
+        })
+      } else {
+        window.open(item.router_url)
+      }
+      notifyRead({
+        id: item.id
+      }).then((res) => {
+        if (res.data.status) {
+          this.getNotify()
+        } else {
+          this.$message.error({
+            message: res.data.message
+          })
+        }
+      })
+    },
+    readAll () {
+      this.$confirm('是否已读所有通知', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        notifyRead({
+          id: null
+        }).then((res) => {
+          this.$message({
+            type: 'success',
+            message: '操作成功'
+          })
+          this.msgList = []
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消操作'
+        })
+      })
+    },
     closeWin () {
       if (this.goSetting) {
         window.location.reload()
@@ -180,6 +216,9 @@ export default {
         this.showSetting = false
       }
     }
+  },
+  mounted () {
+    this.getNotify()
   }
 }
 </script>

@@ -4,9 +4,8 @@
     <div class="head">
       <h2>添加新产品
         <i class="el-icon-message-solid"
-          :class="{'active':sendMsg}"
-          @click="msgOnOff"></i>
-        <div @click="test">提交按钮触发消息通知</div>
+          :class="{'active':msgFlag}"
+          @click="showMsg = true"></i>
       </h2>
     </div>
     <div class="body">
@@ -199,18 +198,22 @@
       </div>
     </div>
     <my-message :visible.sync="showMsg"
-      source="产品添加"></my-message>
+      :url="localName"
+      :afterSave="afterSave"></my-message>
   </div>
 </template>
 
 <script>
 import { letterArr } from '@/assets/js/dictionary.js'
-import { productTppeList, flowerList, ingredientList, colorList, getToken, saveProduct } from '@/assets/js/api.js'
+import { productTppeList, flowerList, ingredientList, colorList, getToken, saveProduct, notifySave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      localName: 'productCreate',
       showMsg: false,
-      sendMsg: window.localStorage.getItem('产品添加'),
+      msgFlag: window.localStorage.getItem('productCreate') ? JSON.parse(window.localStorage.getItem('productCreate')).msgFlag : false,
+      msgUrl: '',
+      content: '',
       loading: true,
       product_code: ['00', 'X', 'X', 'X', '00'],
       sampleName: '',
@@ -253,7 +256,6 @@ export default {
       }),
       getToken()
     ]).then(res => {
-      console.log(res[0].data.data)
       this.treeData = res[0].data.data.map((item) => {
         return {
           value: item.id,
@@ -349,32 +351,25 @@ export default {
     }
   },
   methods: {
-    test () {
-      this.showMsg = true
+    afterSave (data) {
+      this.msgFlag = data.msgFlag
     },
-    msgOnOff () {
-      let str = this.sendMsg ? '是否要关闭产品添加页面的消息通知，关闭后添加产品时不会通知任何人' : '是否要开启产品添加页面的消息通知，开启后添加产品时需要发送通知信息'
-      this.$confirm(str, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        window.localStorage.setItem('产品添加', !this.sendMsg)
-        this.sendMsg = !this.sendMsg
-        this.$message({
-          type: 'success',
-          message: '操作成功'
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消操作'
-        })
+    sendMsg () {
+      let data = JSON.parse(window.localStorage.getItem(this.localName))
+      let formData = {
+        title: data.title,
+        type: data.type,
+        tag: '工序',
+        content: this.content,
+        router_url: this.msgUrl,
+        receive_user: data.receive_user
+      }
+      notifySave(formData).then((res) => {
+        if (res.data.status) {
+          this.$message.success('添加成功,即将跳转至详情页')
+          this.$router.push(this.msgUrl)
+        }
       })
-    },
-    handlerClose (done) {
-      console.log('nihao')
-      done()
     },
     noRepeat (value, index, item, key) {
       let flag = item.filter(val => val[key] === value)
@@ -506,18 +501,25 @@ export default {
           this.lock = false
           saveProduct(data).then(res => {
             if (res.data.status) {
-              this.$message.success('添加成功,即将跳转至详情页')
-              setTimeout(() => {
-                this.lock = true
+              this.lock = true
+              if (this.msgFlag) {
+                this.msgUrl = '/index/productDetail/' + res.data.data.id
+                this.content = '<span style="color:#1A95FF">添加</span>了一个新产品<span style="color:#1A95FF">' + res.data.data.product_code + '</span>(' + res.data.data.category_info.product_category + '/' + res.data.data.type_name + '/' + res.data.data.style_name + '/' + res.data.data.flower_id + ')'
+                this.sendMsg()
+              } else {
+                this.$message.success('添加成功,即将跳转至详情页')
                 this.$router.push('/index/productDetail/' + res.data.data.id)
-              }, 800)
+              }
+            } else {
+              this.$message.error({
+                message: res.data.message
+              })
             }
           })
         } else {
           this.$message.warning('请勿频繁点击')
         }
       }
-      console.log(data)
     }
   }
 }

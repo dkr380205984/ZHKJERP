@@ -350,8 +350,20 @@ const sampleOrderCreate = (params) => http.post(`${baseUrl}/order/sample/save`, 
 const sampleOrderList = (params) => http.get(`${baseUrl}/order/sample/list`, params)
 // 样品转产品后绑定配料单和工艺单product/check/sample
 const isCheckedPlanAndCraft = (params) => http.post(`${baseUrl}/product/check/sample`, params, 'application/json')
+// 新建消息
+const notifySave = (params) => http.post(`${baseUrl}/notify/save`, params, 'application/json')
+// 消息列表
+const notifyList = (params) => http.get(`${baseUrl}/notify/all`, params)
+// 消息读取
+const notifyRead = (params) => http.post(`${baseUrl}/notify/check/status`, params, 'application/json')
+// 未读消息数量
+const notifyNum = (params) => http.get(`${baseUrl}/notify/no/read`, params)
 export {
   isCheckedPlanAndCraft,
+  notifyNum,
+  notifySave,
+  notifyList,
+  notifyRead,
   sampleOrderList,
   sampleOrderCreate,
   savePM,
