@@ -2,7 +2,11 @@
   <div id="sampleCreate"
     v-loading="loading">
     <div class="head">
-      <h2>添加样品</h2>
+      <h2>添加样品
+        <i class="el-icon-message-solid"
+          :class="{'active':msgFlag}"
+          @click="showMsg = true"></i>
+      </h2>
     </div>
     <div class="body">
       <div class="inputCtn">
@@ -189,15 +193,23 @@
           @click="saveAll">保存</div>
       </div>
     </div>
+    <my-message :visible.sync="showMsg"
+      :url="localName"
+      :afterSave="afterSave"></my-message>
   </div>
 </template>
 
 <script>
 import { letterArr } from '@/assets/js/dictionary.js'
-import { productTppeList, flowerList, ingredientList, colorList, getToken, saveProduct } from '@/assets/js/api.js'
+import { productTppeList, flowerList, ingredientList, colorList, getToken, saveProduct, notifySave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      localName: 'sampleCreate',
+      showMsg: false,
+      msgFlag: window.localStorage.getItem('sampleCreate') ? JSON.parse(window.localStorage.getItem('sampleCreate')).msgFlag : false,
+      msgUrl: '',
+      content: '',
       loading: true,
       product_code: ['00', 'Y', 'X', 'X', 'X', '00'],
       sampleName: '',
@@ -336,6 +348,26 @@ export default {
     }
   },
   methods: {
+    afterSave (data) {
+      this.msgFlag = data.msgFlag
+    },
+    sendMsg () {
+      let data = JSON.parse(window.localStorage.getItem(this.localName))
+      let formData = {
+        title: data.title,
+        type: data.type,
+        tag: '工序',
+        content: this.content,
+        router_url: this.msgUrl,
+        receive_user: data.receive_user
+      }
+      notifySave(formData).then((res) => {
+        if (res.data.status) {
+          this.$message.success('添加成功')
+          this.$router.push(this.msgUrl)
+        }
+      })
+    },
     beforeAvatarUpload: function (file) {
       let fileName = file.name.lastIndexOf('.')// 取到文件名开始到最后一个点的长度
       let fileNameLength = file.name.length// 取到文件名长度
@@ -442,11 +474,15 @@ export default {
           this.lock = false
           saveProduct(data).then(res => {
             if (res.data.status) {
-              this.$message.success('添加成功,即将跳转至详情页')
-              setTimeout(() => {
-                this.lock = true
+              this.lock = true
+              if (this.msgFlag) {
+                this.msgUrl = '/index/sampleDetail/' + res.data.data.id
+                this.content = '<span style="color:#1A95FF">添加</span>了一个新样品<span style="color:#1A95FF">' + res.data.data.product_code + '</span>(' + res.data.data.category_info.product_category + '/' + res.data.data.type_name + '/' + res.data.data.style_name + '/' + res.data.data.flower_id + ')'
+                this.sendMsg()
+              } else {
+                this.$message.success('sampleDetail')
                 this.$router.push('/index/sampleDetail/' + res.data.data.id)
-              }, 800)
+              }
             }
           })
         } else {

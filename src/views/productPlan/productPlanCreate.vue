@@ -636,8 +636,7 @@ export default {
     },
     // 获取辅料单位信息
     getUnit (indexMaterial) {
-      console.log(indexMaterial)
-      const unit = this.materialArr.find((item) => item.name === this.otherIngredient[indexMaterial].name).unit
+      const unit = this.materialArr.find((item) => item.name === this.otherIngredient[indexMaterial].material).unit
       this.otherIngredient[indexMaterial].unit = unit
       this.otherIngredient[indexMaterial].colour.forEach((itemColour) => {
         itemColour.color.forEach((itemColor) => {

@@ -2,7 +2,11 @@
   <div id="orderCreate"
     v-loading="loading">
     <div class="head">
-      <h2>添加样单</h2>
+      <h2>添加样单
+        <i class="el-icon-message-solid"
+          :class="{'active':msgFlag}"
+          @click="showMsg = true"></i>
+      </h2>
     </div>
     <div class="body">
       <div class="lineCtn">
@@ -288,14 +292,22 @@
           @click="saveAll">提交</div>
       </div>
     </div>
+    <my-message :visible.sync="showMsg"
+      :url="localName"
+      :afterSave="afterSave"></my-message>
   </div>
 </template>
 
 <script>
-import { clientList, productList, productTppeList, flowerList, getGroup, getToken, orderSave } from '@/assets/js/api.js'
+import { clientList, productList, productTppeList, flowerList, getGroup, getToken, orderSave, notifySave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      localName: 'sampleOrderCreate',
+      showMsg: false,
+      msgFlag: window.localStorage.getItem('sampleOrderCreate') ? JSON.parse(window.localStorage.getItem('sampleOrderCreate')).msgFlag : false,
+      msgUrl: '',
+      content: '',
       loading: true,
       orderTitle: '',
       orderType: '',
@@ -360,6 +372,26 @@ export default {
     }
   },
   methods: {
+    afterSave (data) {
+      this.msgFlag = data.msgFlag
+    },
+    sendMsg () {
+      let data = JSON.parse(window.localStorage.getItem(this.localName))
+      let formData = {
+        title: data.title,
+        type: data.type,
+        tag: '工序',
+        content: this.content,
+        router_url: this.msgUrl,
+        receive_user: data.receive_user
+      }
+      notifySave(formData).then((res) => {
+        if (res.data.status) {
+          this.$message.success('添加成功')
+          this.$router.push(this.msgUrl)
+        }
+      })
+    },
     // 添加已选样品尺寸
     addSizeInfo (item) {
       item.info.push({
@@ -562,10 +594,14 @@ export default {
         }
         orderSave(obj).then((res) => {
           if (res.data.status) {
-            this.$message.success('添加成功')
-            setTimeout(() => {
-              this.$router.push('/index/sampleOrderDetail/' + res.data.data)
-            }, 800)
+            if (this.msgFlag) {
+              this.msgUrl = '/index/sampleOrderDetail/' + res.data.data.id
+              this.content = '<span style="color:#1A95FF">添加</span>了一张新样单<span style="color:#1A95FF">' + res.data.data.order_code + '</span>'
+              this.sendMsg()
+            } else {
+              this.$message.success('添加成功')
+              this.$router.push('/index/sampleOrderDetail/' + res.data.data.id)
+            }
           }
         })
       } else {

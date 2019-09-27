@@ -33,7 +33,7 @@
         <div class="lineCtn">
           <div class="inputCtn">
             <span class="label">产品成分:</span>
-            <span class="content">{{product_info.materials.map(item=>{return item.ingredient_value + '%' + item.ingredient_name}).join('/')}}</span>
+            <span class="content">{{product_info.materials}}</span>
           </div>
           <div class="inputCtn">
             <span class="label">配色色组:</span>
@@ -168,7 +168,7 @@ export default {
         },
         size: [],
         color: [],
-        marterials: [],
+        marterials: '',
         img: []
       },
       color: [],
@@ -200,6 +200,7 @@ export default {
       const data = res.data.data
       this.plan_code = data.plan_code
       this.product_info = data.product_info
+      this.product_info.materials = this.product_info.materials.map(item => { return item.ingredient_value + '%' + item.ingredient_name }).join('/')
       this.liucheng = data.outside_precess
       this.color = data.product_info.color
       this.weight_group = data.weight_group

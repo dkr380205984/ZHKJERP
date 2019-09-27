@@ -2,7 +2,11 @@
   <div id="orderCreate"
     v-loading="loading">
     <div class="head">
-      <h2>添加订单</h2>
+      <h2>添加订单
+        <i class="el-icon-message-solid"
+          :class="{'active':msgFlag}"
+          @click="showMsg = true"></i>
+      </h2>
     </div>
     <div class="body">
       <div class="lineCtn">
@@ -467,15 +471,23 @@
           @click="saveAll">保存</div>
       </div>
     </div>
+    <my-message :visible.sync="showMsg"
+      :url="localName"
+      :afterSave="afterSave"></my-message>
   </div>
 </template>
 
 <script>
 import { moneyArr } from '@/assets/js/dictionary.js'
-import { clientList, productList, productTppeList, flowerList, orderSave, getGroup, getToken } from '@/assets/js/api.js'
+import { clientList, productList, productTppeList, flowerList, orderSave, getGroup, getToken, notifySave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      localName: 'orderCreate',
+      showMsg: false,
+      msgFlag: window.localStorage.getItem('orderCreate') ? JSON.parse(window.localStorage.getItem('orderCreate')).msgFlag : false,
+      msgUrl: '',
+      content: '',
       fileArr: [],
       postData: { token: '' },
       lock: false,
@@ -529,6 +541,26 @@ export default {
     }
   },
   methods: {
+    afterSave (data) {
+      this.msgFlag = data.msgFlag
+    },
+    sendMsg () {
+      let data = JSON.parse(window.localStorage.getItem(this.localName))
+      let formData = {
+        title: data.title,
+        type: data.type,
+        tag: '工序',
+        content: this.content,
+        router_url: this.msgUrl,
+        receive_user: data.receive_user
+      }
+      notifySave(formData).then((res) => {
+        if (res.data.status) {
+          this.$message.success('添加成功')
+          this.$router.push(this.msgUrl)
+        }
+      })
+    },
     getImgUrl (code) {
       let isHave = this.productArr.find(item => item.product_code === code)
       return (isHave ? (isHave.img[0] ? isHave.img[0].image_url : require('@/assets/image/index/noPic.png')) : require('@/assets/image/index/noPic.png'))
@@ -892,13 +924,14 @@ export default {
         this.lock = true
         this.loading = true
         orderSave(obj).then((res) => {
-          console.log(res)
           if (res.data.status) {
-            this.$message.success({
-              message: '添加订单成功'
-            })
-            if (res.data && res.data.data) {
-              this.$router.push('/index/orderDetailNew/' + res.data.data)
+            if (this.msgFlag) {
+              this.msgUrl = '/index/orderDetailNew/' + res.data.data.id
+              this.content = '<span style="color:#1A95FF">添加</span>了一张新订单<span style="color:#1A95FF">' + res.data.data.order_code + '</span>'
+              this.sendMsg()
+            } else {
+              this.$message.success('添加成功')
+              this.$router.push('/index/orderDetailNew/' + res.data.data.id)
             }
           } else {
             this.$message.error({

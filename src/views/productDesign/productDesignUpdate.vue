@@ -2,7 +2,11 @@
   <div id="productDesignCreate"
     v-loading="loading">
     <div class="head">
-      <h2>修改生产计划单</h2>
+      <h2>修改生产计划单
+        <i class="el-icon-message-solid"
+          :class="{'active':msgFlag}"
+          @click="showMsg = true"></i>
+      </h2>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -187,7 +191,6 @@
           @click="saveAll">修改</div>
       </div>
     </div>
-
     <div class="shade"
       v-show="showShade">
       <div class="main">
@@ -248,14 +251,22 @@
           @click="showPreview = false"></div>
       </div>
     </div>
+    <my-message :visible.sync="showMsg"
+      :url="localName"
+      :afterSave="afterSave"></my-message>
   </div>
 </template>
 
 <script>
-import { productionDetail, productionSave, orderStockDetail, productPlanDetail } from '@/assets/js/api.js'
+import { productionDetail, productionSave, orderStockDetail, productPlanDetail, notifySave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      localName: 'productDesignUpdate',
+      showMsg: false,
+      msgFlag: window.localStorage.getItem('productDesignUpdate') ? JSON.parse(window.localStorage.getItem('productDesignUpdate')).msgFlag : false,
+      msgUrl: '',
+      content: '',
       lock: false,
       loading: true,
       showShade: false,
@@ -285,6 +296,26 @@ export default {
     }
   },
   methods: {
+    afterSave (data) {
+      this.msgFlag = data.msgFlag
+    },
+    sendMsg () {
+      let data = JSON.parse(window.localStorage.getItem(this.localName))
+      let formData = {
+        title: data.title,
+        type: data.type,
+        tag: '工序',
+        content: this.content,
+        router_url: this.msgUrl,
+        receive_user: data.receive_user
+      }
+      notifySave(formData).then((res) => {
+        if (res.data.status) {
+          this.$message.success('修改成功')
+          this.$router.push(this.msgUrl)
+        }
+      })
+    },
     clearAll () {
 
     },
@@ -342,12 +373,15 @@ export default {
         this.loading = true
         this.lock = true
         productionSave(json).then((res) => {
-          console.log(res)
           if (res.data.status) {
-            this.$message.success({
-              message: '修改成功'
-            })
-            this.$router.push('/index/productDesignList')
+            if (this.msgFlag) {
+              this.msgUrl = '/index/productDesignDetail/' + res.data.data.id
+              this.content = '订单<span style="color:#1A95FF">' + res.data.data.order_info.order_code + '</span><span style="color:#1A95FF;margin-left:"5px>修改</span>了生产计划单'
+              this.sendMsg()
+            } else {
+              this.$message.success('修改成功')
+              this.$router.push('/index/productDesignDetail/' + res.data.data.id)
+            }
           } else {
             this.$message.error({
               message: '库存变动,请刷新页面后重试'

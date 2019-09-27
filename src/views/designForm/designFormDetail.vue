@@ -583,14 +583,26 @@
       <div class="bottomBtnCtn">
         <div class="cancleBtn"
           @click="$router.go(-1)">返回</div>
-        <div class="okBtn"
-          @click="$router.push('/index/designFormUpdate/'+$route.params.id)">修改</div>
+        <div class="okBtn">
+          <el-dropdown @command="openWin"
+            class="btns normal">
+            <span class="el-dropdown-link opration"
+              style="color:#FFF">
+              操作<i class="el-icon-arrow-down el-icon--right"></i>
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="修改">修改</el-dropdown-item>
+              <el-dropdown-item command="删除">删除</el-dropdown-item>
+              <el-dropdown-item command="添加配料单">添加配料单</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import { craftOne } from '@/assets/js/api.js'
+import { craftOne, craftDelete } from '@/assets/js/api.js'
 import { HotTable } from '@handsontable/vue'
 import enCH from '@/assets/js/languages.js'
 import Handsontable from 'handsontable'
@@ -888,6 +900,41 @@ export default {
     }
   },
   methods: {
+    openWin (cmd) {
+      if (cmd === '修改') {
+        this.$router.push('/index/designFormUpdate/' + this.$route.params.id)
+      }
+      if (cmd === '删除') {
+        this.$confirm('是否删除该工艺单?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          craftDelete({
+            id: this.$route.params.id
+          }).then((res) => {
+            if (res.data.status) {
+              this.$message.success({
+                message: '删除成功'
+              })
+              this.$router.push('/index/designFormList')
+            } else {
+              this.$message.error({
+                message: res.data.message
+              })
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+      }
+      if (cmd === '添加配料单') {
+        this.$router.push('/index/productPlanCreate/' + this.productInfo.product_id)
+      }
+    },
     // 展平合并信息
     getFlatTable (table, type, merge) {
       let tableArr = JSON.parse(table)
@@ -1315,7 +1362,6 @@ export default {
           warpGetPM = warpGetPM.concat(PMFlatArr.filter((item, index) => index < remainder))
         } else {
           let PM = this.PM[this.romanNum.indexOf(item.PM)]
-          console.log(item.PM)
           let PMArr = PM.value.split(',')
           let times = parseInt(PM.number / PMArr.length)
           let remainder = PM.number % PMArr.length

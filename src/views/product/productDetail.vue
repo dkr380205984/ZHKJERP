@@ -302,14 +302,15 @@
                 <span>查看信息</span>
               </li>
               <li class="material_info"
-                v-if="false">
-                <span>待计算</span>
-                <span>待计算</span>
-                <span>待计算</span>
+                v-for="(item,index) in productDetail.stock_info"
+                :key="index">
+                <span>{{item.size}}/{{item.color}}</span>
+                <span>{{item.total_stock}}</span>
+                <span style="color:#1A95FF;cursor:pointer"
+                  @click="open('/index/productStockDetail/' + item.id)">查看详情</span>
               </li>
-              <li v-else>暂无库存信息</li>
+              <li v-if="productDetail.stock_info.length===0">暂无库存信息</li>
               <span class="addNewBtn"
-                v-if="!false"
                 @click="$router.push('/index/productStockDetail/' + $route.params.id)">新增库存</span>
             </ul>
           </div>
@@ -405,8 +406,8 @@ export default {
         has_craft: 0,
         has_plan: 0,
         in_order: 0,
-        order_list: []
-
+        order_list: [],
+        stock_info: []
       },
       qrCodeUrl: '',
       showMessageBox: false,

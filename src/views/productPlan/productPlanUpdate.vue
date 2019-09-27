@@ -2,7 +2,11 @@
   <div id="productPlan"
     v-loading="loading">
     <div class="head">
-      <h2>修改配料单</h2>
+      <h2>修改配料单
+        <i class="el-icon-message-solid"
+          :class="{'active':msgFlag}"
+          @click="showMsg = true"></i>
+      </h2>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -317,14 +321,22 @@
           @click="saveAll">修改</div>
       </div>
     </div>
+    <my-message :visible.sync="showMsg"
+      :url="localName"
+      :afterSave="afterSave"></my-message>
   </div>
 </template>
 
 <script>
-import { YarnList, editList, materialList, craftProduct, YarnColorList, pantongList, saveProductPlan, productPlanDetail } from '@/assets/js/api.js'
+import { YarnList, editList, materialList, craftProduct, YarnColorList, pantongList, saveProductPlan, productPlanDetail, notifySave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      localName: 'productPlanUpadate',
+      showMsg: false,
+      msgFlag: window.localStorage.getItem('productPlanUpadate') ? JSON.parse(window.localStorage.getItem('productPlanUpadate')).msgFlag : false,
+      msgUrl: '',
+      content: '',
       lock: false,
       hasIngredient: '1',
       loading: true,
@@ -363,7 +375,7 @@ export default {
     }), materialList({
       company_id: this.companyId
     }), craftProduct({
-      product_id: this.$route.params.id
+      product_id: this.$route.params.productId
     }), YarnColorList({
       company_id: this.companyId
     }), pantongList({
@@ -402,6 +414,26 @@ export default {
     })
   },
   methods: {
+    afterSave (data) {
+      this.msgFlag = data.msgFlag
+    },
+    sendMsg () {
+      let data = JSON.parse(window.localStorage.getItem(this.localName))
+      let formData = {
+        title: data.title,
+        type: data.type,
+        tag: '工序',
+        content: this.content,
+        router_url: this.msgUrl,
+        receive_user: data.receive_user
+      }
+      notifySave(formData).then((res) => {
+        if (res.data.status) {
+          this.$message.success('修改成功')
+          this.$router.push(this.msgUrl)
+        }
+      })
+    },
     // 添加主要原料
     addMainMaterial () {
       this.mainIngredient.push({
@@ -551,7 +583,7 @@ export default {
     },
     // 获取辅料单位信息
     getUnit (indexMaterial) {
-      const unit = this.materialArr.find((item) => item.material === this.otherIngredient[indexMaterial].name).unit
+      const unit = this.materialArr.find((item) => item.name === this.otherIngredient[indexMaterial].material).unit
       this.otherIngredient[indexMaterial].unit = unit
       this.otherIngredient[indexMaterial].colour.forEach((itemColour) => {
         itemColour.color.forEach((itemColor) => {
@@ -739,10 +771,14 @@ export default {
           'product_material_attribute': mtd
         }).then((res) => {
           if (res.data.status) {
-            this.$message.success({
-              message: '修改成功'
-            })
-            this.$router.push('/index/productPlanList')
+            if (this.msgFlag) {
+              this.msgUrl = '/index/productPlanDetail/' + res.data.data.id
+              this.content = '<span style="color:#E6A23C">修改</span>了一张配料单<span style="color:#1A95FF">' + res.data.data.plan_code + '</span>'
+              this.sendMsg()
+            } else {
+              this.$message.success('修改成功')
+              this.$router.push('/index/productPlanDetail/' + res.data.data.id)
+            }
           } else {
             this.$message.error({
               message: res.data.message
