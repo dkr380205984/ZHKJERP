@@ -348,7 +348,19 @@ const productMenuList = (params) => http.get(`${baseUrl}/product/handbook/list`,
 const sampleOrderCreate = (params) => http.post(`${baseUrl}/order/sample/save`, params, 'application/json')
 // 获取样单列表order/sample/list
 const sampleOrderList = (params) => http.get(`${baseUrl}/order/sample/list`, params)
+// 新建消息
+const notifySave = (params) => http.post(`${baseUrl}/notify/save`, params, 'application/json')
+// 消息列表
+const notifyList = (params) => http.get(`${baseUrl}/notify/all`, params)
+// 消息读取
+const notifyRead = (params) => http.post(`${baseUrl}/notify/check/status`, params, 'application/json')
+// 未读消息数量
+const notifyNum = (params) => http.get(`${baseUrl}/notify/no/read`, params)
 export {
+  notifyNum,
+  notifySave,
+  notifyList,
+  notifyRead,
   sampleOrderList,
   sampleOrderCreate,
   savePM,

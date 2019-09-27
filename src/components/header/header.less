@@ -69,12 +69,21 @@
         }
       }
       .item{
-        margin-right: 30px;
+        padding: 0 15px;
+        margin-right: 15px;
         position: relative;
         &:hover{
           .msgBox{
             display: block;
           }
+        }
+        .msgTop{
+          position: absolute;
+          opacity: 0;
+          z-index:999;
+          width: 457px;
+          height: 20px;
+          right: -35px;
         }
         .msgBox{
           display: none;
@@ -82,7 +91,7 @@
           box-shadow:0px 2px 8px rgba(0,0,0,0.15);
           background: #fff;
           z-index:999;
-          right: -50px;
+          right: -35px;
           top: 38px;
           width: 457px;
           &::after{
@@ -124,6 +133,11 @@
           }
           .msgContent{
             padding: 10px 20px;
+            .noMsg{
+              color: #999;
+              text-align: center;
+              margin: 35px 0px;
+            }
             .oneMsg{
               display: flex;
               justify-content: space-between;
@@ -177,12 +191,16 @@
                   }
                 }
                 .oneMsgInfo{
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  white-space: nowrap;
+                  max-width: 300px;
                   color: #999999;
                   font-size: 12px;
                 }
               }
               .oneMsgRight{
-                width: 60px;
+                width: 90px;
                 font-size: 12px;
                 .oneMsgLine1{
                   text-align: right;

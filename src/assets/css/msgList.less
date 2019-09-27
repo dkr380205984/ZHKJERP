@@ -6,6 +6,7 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  overflow: auto;
   .head{
     min-height: 60px;
     border-bottom: 1px solid #ECF0F1;
@@ -19,6 +20,17 @@
       font-size: 24px;
       color:@fontNormal;
       font-weight: 400;
+      width: 1000px;
+    }
+    .readAll{
+      font-size: 14px;
+      color: #999;
+      line-height: 60px;
+      float: right;
+      cursor: pointer;
+      &:hover{
+        color: #1890FF;
+      }
     }
   }
   .body{
@@ -34,7 +46,24 @@
         display: flex;
         justify-content: space-between;
         padding: 12px 0px;
+        position: relative;
         border-bottom: 1px dotted #E8E8E8;
+        &.unread{
+          &::before{
+            content: '';
+            width:8px;
+            height:8px;
+            background: #FF7E7E;
+            border-radius: 50%;
+            margin-top: 8px;
+            margin-right: 5px;
+          }
+        }
+        &.readed{
+          .oneMsgTitle{
+            color: #999!important;
+          }
+        }
         &:nth-last-child(1){
           border-bottom: 0;
         }
@@ -83,12 +112,16 @@
             }
           }
           .oneMsgInfo{
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 800px;
             color: #999999;
             font-size: 12px;
           }
         }
         .oneMsgRight{
-          width: 60px;
+          width: 90px;
           font-size: 12px;
           .oneMsgLine1{
             text-align: right;

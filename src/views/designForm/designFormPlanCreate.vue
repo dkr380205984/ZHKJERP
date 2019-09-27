@@ -2,7 +2,11 @@
   <div id="designFormCreateR"
     v-loading="loading">
     <div class="head">
-      <h2>添加设计单</h2>
+      <h2>添加设计单
+        <i class="el-icon-message-solid"
+          :class="{'active':msgFlag}"
+          @click="showMsg = true"></i>
+      </h2>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -1052,10 +1056,13 @@
         </div>
       </div>
     </div>
+    <my-message :visible.sync="showMsg"
+      :url="localName"
+      :afterSave="afterSave"></my-message>
   </div>
 </template>
 <script>
-import { YarnList, editList, YarnColorList, materialList, saveCraft, savePM, PMList, deletePM, getToken } from '@/assets/js/api.js'
+import { YarnList, editList, YarnColorList, materialList, saveCraft, savePM, PMList, deletePM, getToken, notifySave } from '@/assets/js/api.js'
 import { HotTable } from '@handsontable/vue'
 import enCH from '@/assets/js/languages.js'
 import Handsontable from 'handsontable'
@@ -1067,6 +1074,11 @@ export default {
   },
   data () {
     return {
+      localName: 'designFormPlanCreate',
+      showMsg: false,
+      msgFlag: window.localStorage.getItem('designFormPlanCreate') ? JSON.parse(window.localStorage.getItem('designFormPlanCreate')).msgFlag : false,
+      msgUrl: '',
+      content: '',
       loading: true,
       getImg: false,
       getImgLoading: true,
@@ -1758,6 +1770,26 @@ export default {
     }
   },
   methods: {
+    afterSave (data) {
+      this.msgFlag = data.msgFlag
+    },
+    sendMsg () {
+      let data = JSON.parse(window.localStorage.getItem(this.localName))
+      let formData = {
+        title: data.title,
+        type: data.type,
+        tag: '工序',
+        content: this.content,
+        router_url: this.msgUrl,
+        receive_user: data.receive_user
+      }
+      notifySave(formData).then((res) => {
+        if (res.data.status) {
+          this.$message.success('添加成功')
+          this.$router.push(this.msgUrl)
+        }
+      })
+    },
     addColour () {
       let maxLen = this.colour[0].colorWeft.length // 保持新增的配色方案和之前的配色方案主夹长度相同
       let array = new Array(maxLen).fill('')
@@ -2401,12 +2433,15 @@ export default {
         }
       }
       saveCraft(formData).then((res) => {
-        console.log(res)
         if (res.data.code === 200) {
-          this.$message.success({
-            message: '添加成功'
-          })
-          this.$router.push('/index/designFormPlanDetail/' + res.data.data.id)
+          if (this.msgFlag) {
+            this.msgUrl = '/index/designFormPlanDetail/' + res.data.data.id
+            this.content = '<span style="color:#1A95FF">添加</span>了一张新设计单<span style="color:#1A95FF">' + res.data.data.craft_code + '</span>'
+            this.sendMsg()
+          } else {
+            this.$message.success('添加成功')
+            this.$router.push('/index/designFormPlanDetail/' + res.data.data.id)
+          }
         } else {
           this.$message.error({
             message: res.data.message
