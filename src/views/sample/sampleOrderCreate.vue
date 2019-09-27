@@ -615,7 +615,7 @@ export default {
       console.log(res[1])
       this.companyArr = res[0].data.data.filter((item) => (item.type.indexOf(1) !== -1))
       this.seachProduct = res[1].data.data.map(item => {
-        return {
+        let data = {
           ...item,
           productInfo: JSON.parse(JSON.stringify(item)),
           sizeColor: item.size.map(value => {
@@ -632,6 +632,12 @@ export default {
           }),
           info: [{ name: [], numbers: '', unitPrice: null }]
         }
+        // 判断进入页面是否需要默认选中产品
+        if (this.$route.fullPath.split('?')[1] === item.id) {
+          data.checked = true
+          this.productArr.push(data)
+        }
+        return data
       })
       this.typeArr = res[2].data.data.map((item) => {
         return {

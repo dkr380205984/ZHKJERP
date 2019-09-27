@@ -402,12 +402,16 @@ export default {
         flag = false
         return
       }
-      this.size.forEach(item => {
-        if (!item.size) {
-          this.$message.error('请将样品规格填写完整')
-          flag = false
-        }
-      })
+      if (this.size.filter(item => item.size).map(item => { return item.size }).length === 0) {
+        this.$message.error('请将样品规格填写完整')
+        flag = false
+        return
+      }
+      if (this.color.filter(item => item.color).map(item => { return item.color }).length === 0) {
+        this.$message.error('请选择样品配色')
+        flag = false
+        return
+      }
       const imgArr = this.$refs.uploada.uploadFiles.map((item) => { return 'http://zhihui.tlkrzf.com/' + item.response.key })
       let data = {
         product_code: this.product_code.join(''),
@@ -420,10 +424,10 @@ export default {
         description: this.textarea,
         user_id: window.sessionStorage.getItem('user_id'),
         img: imgArr,
-        color: this.color.map(item => {
+        color: this.color.filter(item => item.color).map(item => {
           return item.color
         }),
-        size: this.size.map(key => {
+        size: this.size.filter(item => item.size).map(key => {
           return {
             size_info: key.desc,
             weight: key.weight,

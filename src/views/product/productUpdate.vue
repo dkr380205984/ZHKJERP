@@ -297,7 +297,7 @@ export default {
       if (this.ingredient.length === 0) {
         this.ingredient.push({
           ingredient_name: '',
-          ingredient_value: 100
+          ingredient_value: ''
         })
       }
       this.size = productInfo.size.map(item => {

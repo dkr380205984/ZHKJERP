@@ -348,7 +348,10 @@ const productMenuList = (params) => http.get(`${baseUrl}/product/handbook/list`,
 const sampleOrderCreate = (params) => http.post(`${baseUrl}/order/sample/save`, params, 'application/json')
 // 获取样单列表order/sample/list
 const sampleOrderList = (params) => http.get(`${baseUrl}/order/sample/list`, params)
+// 样品转产品后绑定配料单和工艺单product/check/sample
+const isCheckedPlanAndCraft = (params) => http.post(`${baseUrl}/product/check/sample`, params, 'application/json')
 export {
+  isCheckedPlanAndCraft,
   sampleOrderList,
   sampleOrderCreate,
   savePM,

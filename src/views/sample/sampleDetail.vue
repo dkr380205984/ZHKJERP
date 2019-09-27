@@ -108,14 +108,17 @@
                 <span>创建时间</span>
                 <span>查看信息</span>
               </li>
-              <li class="material_info"
-                v-if="productDetail.craft_info">
-                <span>{{productDetail.craft_info.user_name}}</span>
-                <span>工艺图</span>
-                <span>{{productDetail.craft_info.create_time}}</span>
-                <span style="color:#1A95FF;cursor:pointer"
-                  @click="open('/index/designFormDetail/' + productDetail.craft_info.id)">查看详情</span>
-              </li>
+              <template v-if="productDetail.craft_info && productDetail.craft_info.length > 0">
+                <li class="material_info"
+                  v-for="(item,key) in productDetail.craft_info"
+                  :key="key">
+                  <span>{{item.user_name}}</span>
+                  <span>工艺图</span>
+                  <span>{{item.create_time}}</span>
+                  <span style="color:#1A95FF;cursor:pointer"
+                    @click="open('/index/designFormDetail/' + item.id)">查看详情</span>
+                </li>
+              </template>
               <li v-else>暂无相关工艺单</li>
               <span class="addNewBtn"
                 @click="$router.push('/index/designFormCreate/' + $route.params.id)">新增工艺单</span>
@@ -136,34 +139,38 @@
                 <span>克重</span>
                 <span>查看信息</span>
               </li>
-              <li class="material_info"
-                v-if="productDetail.has_plan">
-                <span class="col"
-                  style="flex:3">
-                  <span v-for="(itemMat,indexMat) in productDetail.product_plan_info.material_data"
-                    :key="indexMat">
-                    <span>{{itemMat.material}}</span>
-                    <span class="col"
-                      style="flex:2">
-                      <span v-for="(itemColour,indexColour) in itemMat.colour"
-                        :key="indexColour">
-                        <span class="col"
-                          style="flex:1">
-                          <span v-for="(itemColor,indexColor) in itemColour.color"
-                            :key="indexColor">
-                            <span>{{itemColor.name}}</span>
-                            <span>{{itemColor.total}}{{itemColor.size[0].unit}}</span>
+              <template v-if="productDetail.has_plan">
+                <li class="material_info"
+                  v-for="(item,key) in productDetail.product_plan_info"
+                  :key="key">
+                  <span class="col"
+                    style="flex:3">
+                    <span v-for="(itemMat,indexMat) in item.material_data"
+                      :key="indexMat">
+                      <span>{{itemMat.material}}</span>
+                      <span class="col"
+                        style="flex:2">
+                        <span v-for="(itemColour,indexColour) in itemMat.colour"
+                          :key="indexColour">
+                          <span class="col"
+                            style="flex:1">
+                            <span v-for="(itemColor,indexColor) in itemColour.color"
+                              :key="indexColor">
+                              <span>{{itemColor.name}}</span>
+                              <span>{{itemColor.total}}{{itemColor.size[0].unit}}</span>
+                            </span>
                           </span>
                         </span>
                       </span>
                     </span>
                   </span>
-                </span>
-                <span style="flex:1">
-                  <span style="color:#1A95FF;cursor:pointer"
-                    @click="open('/index/productPlanDetail/' + productDetail.product_plan_info.id)">查看详情</span>
-                </span>
-              </li>
+                  <span style="flex:1">
+                    <span style="color:#1A95FF;cursor:pointer"
+                      @click="open('/index/productPlanDetail/' + item.id)">查看详情</span>
+                  </span>
+                </li>
+
+              </template>
               <li v-else>暂无配料单</li>
               <span class="addNewBtn"
                 @click="$router.push('/index/productPlanCreate/' + $route.params.id)">新增配料单</span>
@@ -198,7 +205,8 @@
                 </span>
               </li>
               <li v-else>暂无相关样品订单</li>
-              <span class="addNewBtn">新增样单</span>
+              <span class="addNewBtn"
+                @click="$router.push('/index/sampleOrderCreate?' + $route.params.id)">新增样单</span>
             </ul>
           </div>
         </div>
@@ -227,7 +235,8 @@
                   @click="open('/index/priceListDetail/' + item.id)">查看详情</span>
               </li>
               <li v-show="priceList.length === 0">暂无相关报价单</li>
-              <span class="addNewBtn">新增报价单</span>
+              <span class="addNewBtn"
+                @click="$router.push('/index/priceListCreate?' + $route.params.id)">新增报价单</span>
             </ul>
           </div>
         </div>
@@ -271,53 +280,65 @@
       v-if="showMessageBox">
       <div class="messageBox">
         <div class="title">新建产品</div>
-        <div class="item"
-          style="margin-top:27px;">
-          <span class="label">产品编号:</span>
-          <div class="content blue">{{productDetail.product_code|filterCode}}</div>
-        </div>
-        <div class="item">
-          <span class="label">样品编号:</span>
-          <div class="content">
-            <el-input v-model="productDetail.product_code"
-              class="input_item"
-              placeholder="样品编号"
-              disabled></el-input>
+        <div class="inputBox">
+
+          <div class="item"
+            style="margin-top:27px;">
+            <span class="label">产品编号:</span>
+            <div class="content blue">{{productDetail.product_code|filterCode}}</div>
           </div>
-        </div>
-        <div class="item">
-          <span class="label">选择工艺:</span>
-          <div class="content">
-            <el-select v-model="isCategory"
-              class="input_item"
-              placeholder="请选择工艺版本">
-              <el-option v-for="item in []"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
+          <div class="item">
+            <span class="label">样品编号:</span>
+            <div class="content">
+              <el-input v-model="productDetail.product_code"
+                class="input_item"
+                placeholder="样品编号"
+                disabled></el-input>
+            </div>
           </div>
-        </div>
-        <div class="item"
-          style="margin-bottom:27px;">
-          <span class="label">选择配料:</span>
-          <div class="content">
-            <el-select v-model="isCategory"
-              class="input_item"
-              placeholder="请选择工艺版本">
-              <el-option v-for="item in []"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
+          <div class="item">
+            <span class="label">选择工艺:</span>
+            <div class="content">
+              <el-select v-model="isCraft"
+                class="input_item"
+                placeholder="请选择工艺版本">
+                <el-option v-for="item in productDetail.craft_info"
+                  :key="item.id"
+                  :label="item.craft_code + '('+ item.create_time +')'"
+                  :value="item.id">
+                  <div style="width:100%;height:100%">
+                    <span style="float: left">{{ item.craft_code }}</span>
+                    <span style="float: right; color: #8492a6; font-size: 13px">{{ item.create_time }}</span>
+                  </div>
+                </el-option>
+              </el-select>
+            </div>
+          </div>
+          <div class="item"
+            style="margin-bottom:27px;">
+            <span class="label">选择配料:</span>
+            <div class="content">
+              <el-select v-model="isPlan"
+                class="input_item"
+                placeholder="请选择工艺版本">
+                <el-option v-for="item in productDetail.product_plan_info"
+                  :key="item.id"
+                  :label="item.plan_code + '('+ item.create_time +')'"
+                  :value="item.id">
+                  <div style="width:100%;height:100%">
+                    <span style="float: left">{{ item.plan_code }}</span>
+                    <span style="float: right; color: #8492a6; font-size: 13px">{{ item.create_time }}</span>
+                  </div>
+                </el-option>
+              </el-select>
+            </div>
           </div>
         </div>
         <div class="footer">
           <span class="cancel"
             @click="showMessageBox">取消</span>
-          <span class="ok">确定</span>
+          <span class="ok"
+            @click="pushProduct">确定</span>
         </div>
         <span class="close el-icon-close"
           @click="showMessageBox = false"></span>
@@ -327,7 +348,7 @@
 </template>
 
 <script>
-import { porductOne, priceListDetail } from '@/assets/js/api.js'
+import { porductOne, priceListDetail, saveProduct, isCheckedPlanAndCraft } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -360,14 +381,16 @@ export default {
       },
       showMessageBox: false,
       loading: true,
-      isCategory: '',
-      isProduct: ''
+      isCraft: '',
+      isPlan: '',
+      lock: true,
+      id: ''// 转成产品后的id
     }
   },
   filters: {
     // 拟定编号
     filterCode (item) {
-      return item.split('Y').join('')
+      return item.split('').splice(0, 8).join('').split('Y').join('')
     },
     // 类型合并
     filterType (item) {
@@ -388,6 +411,63 @@ export default {
     }
   },
   methods: {
+    pushProduct () {
+      let data = {
+        product_code: this.productDetail.product_code.split('').splice(0, 8).join('').split('Y').join(''),
+        company_id: window.sessionStorage.getItem('company_id'),
+        category_id: this.productDetail.category_id,
+        type_id: this.productDetail.type_id,
+        style_id: this.productDetail.style_id,
+        type: 1,
+        flower_id: this.productDetail.flower_id_new,
+        description: this.productDetail.description,
+        user_id: window.sessionStorage.getItem('user_id'),
+        img: this.productDetail.img.map(item => {
+          return item.image_url
+        }),
+        color: this.productDetail.color.map(item => {
+          return item.color_name
+        }),
+        size: this.productDetail.size.map(key => {
+          return {
+            size_info: key.size_info,
+            weight: key.weight,
+            measurement: key.measurement
+          }
+        }),
+        sample_title: this.productDetail.sampleName,
+        materials: this.productDetail.materials.map(item => {
+          return {
+            ingredient_name: item.ingredient_name,
+            ingredient_value: item.ingredient_value
+          }
+        })
+      }
+      if (this.lock) {
+        this.lock = false
+        saveProduct(data).then(res => {
+          this.id = res.data.data.id
+          if (res.data.status) {
+            isCheckedPlanAndCraft({
+              product_id: this.id,
+              craft_id: this.isCraft,
+              plan_id: this.isPlan,
+              is_delete: true
+            }).then(res => {
+              if (res.status) {
+                this.$message.success('添加成功,即将跳转至产品详情页')
+                setTimeout(() => {
+                  this.lock = true
+                  this.$router.push('/index/productDetail/' + this.id)
+                }, 800)
+              }
+            })
+          }
+        })
+      } else {
+        this.$message.warning('请勿频繁点击')
+      }
+    },
     open (url) {
       window.open(url)
     },
@@ -415,12 +495,14 @@ export default {
         this.productDetail.size = this.productDetail.size
         // 计算配料单原料
         if (this.productDetail.has_plan === 1) {
-          this.productDetail.product_plan_info.material_data.forEach((itemMat) => {
-            itemMat.colour.forEach((itemColour) => {
-              itemColour.color.forEach((itemColor) => {
-                itemColor.total = itemColor.size.reduce((total, current) => {
-                  return total + Number(current.number)
-                }, 0)
+          this.productDetail.product_plan_info.forEach(itemPlan => {
+            itemPlan.material_data.forEach((itemMat) => {
+              itemMat.colour.forEach((itemColour) => {
+                itemColour.color.forEach((itemColor) => {
+                  itemColor.total = itemColor.size.reduce((total, current) => {
+                    return total + Number(current.number)
+                  }, 0)
+                })
               })
             })
           })

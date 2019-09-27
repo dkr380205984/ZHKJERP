@@ -139,7 +139,7 @@
               v-for="(itemProduct,indexProduct) in item.productList"
               :key="indexProduct">
               <img class="img"
-                :src="itemProduct.productInfo.category_info.images.length>0?itemProduct.productInfo.category_info.iameg[0].thumb:require('@/assets/image/index/noPic.jpg')"
+                :src="itemProduct.productInfo.category_info.images.length>0?itemProduct.productInfo.category_info.images[0].thumb:require('@/assets/image/index/noPic.jpg')"
                 :onerror="defaultImg" />
               <div class="toolTips"
                 v-if="itemProduct.productInfo.category_info.images.length>0"><span @click="showImg(itemProduct.productInfo.category_info.images)">点击查看大图</span></div>

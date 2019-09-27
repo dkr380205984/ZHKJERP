@@ -245,11 +245,11 @@ export default {
       }).then(res => {
         if (res.status) {
           let orderInfo = res.data.data
-          // console.log(orderInfo)
+          console.log(orderInfo)
           for (let prop in orderInfo.data) {
             let valTime = orderInfo.data[prop]
             valTime.forEach((valOrder, indOrder) => {
-              valOrder.batch_info = JSON.parse(valOrder.batch_info)
+              // valOrder.batch_info = JSON.parse(valOrder.batch_info)
               valOrder.batch_info.forEach((valPro, indPro) => {
                 valPro.size.forEach((valSize, indSize) => {
                   // 拆分数据  利于切割分页
@@ -263,11 +263,11 @@ export default {
                         order_client: valOrder.client_name,
                         group_name: valOrder.group_name,
                         total_number: valSize.numbers,
-                        unit: valPro.productInfo.category_info.name,
+                        unit: valPro.category_info.unit,
                         compiled_number: 0,
                         product_code: valPro.productCode,
-                        product_type: valPro.productInfo.category_info.product_category + '/' + valPro.productInfo.type_name + '/' + valPro.productInfo.style_name + (valPro.productInfo.flower_id ? ('/' + valPro.productInfo.flower_id) : ''),
-                        img: [...valPro.productInfo.img],
+                        product_type: valPro.category_info.category_name + '/' + valPro.category_info.type_name + '/' + valPro.category_info.style_name + (valPro.category_info.flower_name ? ('/' + valPro.category_info.flower_name) : ''),
+                        img: [...valPro.category_info.images],
                         size: valSize.name[0],
                         color: valSize.name[1],
                         number: valSize.numbers
@@ -282,95 +282,6 @@ export default {
                       }
                     })
                   }
-                  // 仅用于比对数据  无用
-                  // let time = this.lists.find(item => item.delivery_time === valOrder.delivery_time)
-                  // if (!time) {
-                  //   this.lists.push(
-                  //     {
-                  //       delivery_time: valOrder.delivery_time,
-                  //       data: [
-                  //         {
-                  //           order_code: valOrder.order_code,
-                  //           order_time: valOrder.create_time,
-                  //           order_client: valOrder.client_name,
-                  //           group_name: valOrder.group_name,
-                  //           total_number: valSize.numbers,
-                  //           unit: valPro.productInfo.category_info.name,
-                  //           compiled_number: 0,
-                  //           product_info: [
-                  //             {
-                  //               product_code: valPro.productCode,
-                  //               product_type: valPro.productInfo.category_info.product_category + '/' + valPro.productInfo.type_name + '/' + valPro.productInfo.style_name + (valPro.productInfo.flower_id ? ('/' + valPro.productInfo.flower_id) : ''),
-                  //               img: [...valPro.productInfo.img],
-                  //               size_info: [
-                  //                 {
-                  //                   size: valSize.name[0],
-                  //                   color: valSize.name[1],
-                  //                   number: valSize.numbers
-                  //                 }
-                  //               ]
-                  //             }
-                  //           ]
-                  //         }
-                  //       ]
-                  //     }
-                  //   )
-                  // } else {
-                  //   let order = time.data.find(item => item.order_code === valOrder.order_code)
-                  //   if (!order) {
-                  //     time.data.push({
-                  //       order_code: valOrder.order_code,
-                  //       order_time: valOrder.create_time,
-                  //       order_client: valOrder.client_name,
-                  //       group_name: valOrder.group_name,
-                  //       total_number: valSize.numbers,
-                  //       unit: valPro.productInfo.category_info.name,
-                  //       compiled_number: 0,
-                  //       product_info: [
-                  //         {
-                  //           product_code: valPro.productCode,
-                  //           product_type: valPro.productInfo.category_info.product_category + '/' + valPro.productInfo.type_name + '/' + valPro.productInfo.style_name + (valPro.productInfo.flower_id ? ('/' + valPro.productInfo.flower_id) : ''),
-                  //           img: [...valPro.productInfo.img],
-                  //           size_info: [
-                  //             {
-                  //               size: valSize.name[0],
-                  //               color: valSize.name[1],
-                  //               number: valSize.numbers
-                  //             }
-                  //           ]
-                  //         }
-                  //       ]
-                  //     })
-                  //   } else {
-                  //     order.total_number = Number(order.total_number) + Number(valSize.numbers)
-                  //     let product = order.product_info.find(item => item.product_code === valPro.productCode)
-                  //     if (!product) {
-                  //       order.product_info.push({
-                  //         product_code: valPro.productCode,
-                  //         product_type: valPro.productInfo.category_info.product_category + '/' + valPro.productInfo.type_name + '/' + valPro.productInfo.style_name + (valPro.productInfo.flower_id ? ('/' + valPro.productInfo.flower_id) : ''),
-                  //         img: [...valPro.productInfo.img],
-                  //         size_info: [
-                  //           {
-                  //             size: valSize.name[0],
-                  //             color: valSize.name[1],
-                  //             number: valSize.numbers
-                  //           }
-                  //         ]
-                  //       })
-                  //     } else {
-                  //       let size = product.size_info.find(item => (item.size === valSize.name[0] && item.color === valSize.name[1]))
-                  //       if (!size) {
-                  //         product.size_info.push({
-                  //           size: valSize.name[0],
-                  //           color: valSize.name[1],
-                  //           number: valSize.numbers
-                  //         })
-                  //       } else {
-                  //         size.number = Number(size.number) + Number(valSize.numbers)
-                  //       }
-                  //     }
-                  //   }
-                  // }
                 })
               })
               valOrder.log.forEach(valPro => {
@@ -379,21 +290,6 @@ export default {
                 if (flags) {
                   flags.compiled_number = Number(flags.compiled_number ? flags.compiled_number : 0) + Number(valPro.number)
                 }
-                // 仅用于比对数据  无用
-                // let flag = this.lists.find(item => item.delivery_time === valOrder.delivery_time)
-                // if (flag) {
-                //   let flag1 = flag.data.find(item => item.order_code === valOrder.order_code)
-                //   if (flag1) {
-                //     let flag2 = flag1.product_info.find(item => item.product_code === valPro.product_info.product_code)
-                //     if (flag2) {
-                //       let flag3 = flag2.size_info.find(item => (item.size === valPro.size && item.color === valPro.color))
-                //       if (flag3) {
-                //         flag3.compiled_number = Number(flag3.compiled_number ? flag3.compiled_number : 0) + Number(valPro.number)
-                //         flag1.compiled_number = Number(flag1.compiled_number ? flag1.compiled_number : 0) + Number(valPro.number)
-                //       }
-                //     }
-                //   }
-                // }
               })
             })
           }
@@ -411,7 +307,7 @@ export default {
           }
         }
       }).catch(res => {
-        console.log('error')
+        throw res
       })
     },
     // 切割list数组进行分页

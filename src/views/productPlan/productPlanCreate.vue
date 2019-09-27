@@ -408,7 +408,8 @@ export default {
       this.materialArr = res[3].data.data
       // 如果有工艺单的处理下工艺单数据
       if (res[4].data.code === 200) {
-        const data = res[4].data.data.peise_yarn_wight
+        const data = this.product.type === 2 ? res[4].data.data[res[4].data.data.length - 1].peise_yarn_wight : res[4].data.data.peise_yarn_wight
+        console.log(data)
         let flatArr = []
         Object.keys(data).forEach((keyColour) => {
           Object.keys(data[keyColour]).forEach((keyMaterial) => {

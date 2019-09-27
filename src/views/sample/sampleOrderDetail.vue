@@ -15,14 +15,12 @@
         </div>
         <div class="appendInfos">
           <div class="keyBtn">
-            <!-- <span class="btns">确认完成</span> -->
             <el-dropdown size="medium"
               @command="showMessage"
               split-button
               type="primary">
               {{'操作'}}
               <el-dropdown-menu slot="dropdown">
-                <!-- <el-dropdown-item>样单异常</el-dropdown-item> -->
                 <el-dropdown-item v-show="order_info.status!==2"
                   command="ok"
                   style="color:#1A94FF">客户确认</el-dropdown-item>
@@ -75,16 +73,6 @@
             <span class="content">{{order_info.contacts}}</span>
           </div>
         </div>
-        <!-- <div class="lineCtn">
-          <div class="inputCtn small">
-            <span class="label">汇率:</span>
-            <span class="content">100{{order_info.account_unit}} = {{order_info.exchange_rate}}元</span>
-          </div>
-          <div class="inputCtn small">
-            <span class="label">税率:</span>
-            <span class="content">{{order_info.tax_rate}}%</span>
-          </div>
-        </div> -->
         <div class="lineCtn"
           v-show="order_info.fileArr.length>0">
           <div class="inputCtn"
@@ -986,17 +974,6 @@
             <template slot="append">{{item.unit}}</template>
           </el-input>
         </div>
-        <!-- <div class="inputCtn"
-          v-show="step===1">
-          <el-input v-for="(item,index) in productDetail"
-            :key="index"
-            class="inputs"
-            v-model="item.number"
-            placeholder="请填写剩余数量">
-            <template slot="prepend">{{item.productCode}} {{item.type}}({{item.size}})</template>
-            <template slot="append">{{item.unit}}</template>
-          </el-input>
-        </div> -->
         <div class="loading"
           v-show="step===1">
           <div class="spinner"
@@ -1079,7 +1056,8 @@
                   :key="key + 'Y'">
                   <span class="label"></span>
                   <div class="content">
-                    <el-select v-model="item.sizeColor" disabled
+                    <el-select v-model="item.sizeColor"
+                      disabled
                       class="input_item elInput marginRight">
                       <el-option v-for="(items,keys) in productInfo"
                         :key="keys"
@@ -1115,14 +1093,15 @@
                 </div>
               </div>
             </template>
-            <template v-if ="handleType === 'ok'">
-              <div class="item" style='margin-top:27px;'>
+            <template v-if="handleType === 'ok'">
+              <div class="item"
+                style='margin-top:27px;'>
                 <span class="label">建立产品:</span>
                 <div class="content">
                   <el-select v-model="submitInfo.sample_odd"
                     class="elInput"
                     placeholder="请选择样品添加至产品库">
-                    <el-option v-for="item in []"
+                    <el-option v-for="item in productInfo"
                       :key="item.value"
                       :label="item.label"
                       :value="item.value">
@@ -1153,7 +1132,8 @@
                 </div>
               </div>
             </template>
-            <div class="item" v-if="handleType === 'ok' || (handleType === 'change' && !isFirstPage)">
+            <div class="item"
+              v-if="handleType === 'ok' || (handleType === 'change' && !isFirstPage)">
               <span class="label">客户付费:</span>
               <div class="content">
                 <el-switch v-model="submitInfo.isCustomerPay"
@@ -1240,17 +1220,21 @@
           </template> -->
         </div>
         <div class="footer">
-          <span class="cancel" v-if="!isFirstPage && handleType === 'change'"
-            @click="isFirstPage = true">上一页</span>
-          <span class="cancel" v-else
-            @click="showMessageBox = false">取消</span>
-          <span class="ok" v-if="isFirstPage && handleType === 'change'"
-            @click="isFirstPage = false">下一页</span>
-          <span class="ok" v-else
+          <span class="cancel"
+            v-if="!isFirstPage && handleType === 'change'"
+            @click="isFirstPage = true">上一步</span>
+          <span class="cancel"
+            v-else
+            @click="showMessageBox = false,submitInfo.isCustomerPay = false,isFirstPage = true">取消</span>
+          <span class="ok"
+            v-if="isFirstPage && handleType === 'change'"
+            @click="isFirstPage = false">下一步</span>
+          <span class="ok"
+            v-else
             @click="submitChange(handleType)">确定</span>
         </div>
         <span class="close el-icon-close"
-          @click="showMessageBox = false"
+          @click="showMessageBox = false,submitInfo.isCustomerPay = false,isFirstPage = true"
           style="z-index:3;"></span>
       </div>
     </div>
@@ -1258,19 +1242,22 @@
       v-if="designShare">
       <div class="messageBox">
         <div class="title">工艺制版确认</div>
-        <div class="item"
-          v-for="(item,key) in design"
-          :key="key"
-          style="margin-top:27px;">
-          <span class="label">产品信息:</span>
-          <div class="content">
-            <span>{{item.product_code}}({{item.category_info.product_category + '/' + item.type_name + '/' + item.style_name}})</span>
-            <el-checkbox-group v-model="item.checked">
-              <el-checkbox v-for="(val,ind) in item.type"
-                :key="ind"
-                :label="val.type"></el-checkbox>
-            </el-checkbox-group>
+        <div class="inputBox">
+          <div class="item"
+            v-for="(item,key) in design"
+            :key="key"
+            style="margin-top:27px;">
+            <span class="label">产品信息:</span>
+            <div class="content">
+              <span>{{item.product_code}}({{item.category_info.category_name + '/' + item.category_info.type_name + '/' + item.category_info.style_name}})</span>
+              <el-checkbox-group v-model="item.checked">
+                <el-checkbox v-for="(val,ind) in item.type"
+                  :key="ind"
+                  :label="val.type"></el-checkbox>
+              </el-checkbox-group>
+            </div>
           </div>
+
         </div>
         <div class="footer">
           <span class="cancel"
@@ -1285,7 +1272,7 @@
 </template>
 
 <script>
-import { orderDetailNew, rawMaterialOrderInit, productionDetail, packagNumberDetail, orderCheck, orderCancleLog, orderMaterialSotckDetail, orderSave } from '@/assets/js/api.js'
+import { orderDetailNew, rawMaterialOrderInit, productionDetail, packagNumberDetail, orderCheck, orderCancleLog, orderMaterialSotckDetail, orderSave, porductOne } from '@/assets/js/api.js'
 import { moneyArr } from '@/assets/js/dictionary.js'
 export default {
   data () {
@@ -1372,7 +1359,8 @@ export default {
       design: [], // 制版工艺
       productInfo: [], // 样单产品数据
       isFirstPage: true,
-      designShare: false
+      designShare: false,
+      productDetailInfo: []// 产品详情
     }
   },
   methods: {
@@ -1752,11 +1740,6 @@ export default {
         return '#E6A23C'
       }
     },
-    // 样单状态操作
-    // orderStateOpr () {
-    //   const state = ['确认完成', '已完成', '已取消']
-    //   return state[this.order_info.status]
-    // },
     // (今天 + 1) - 下单日期
     useTime () {
       if (this.timeAxis.length > 0) {
@@ -1986,37 +1969,15 @@ export default {
               payMoneyNumber: '',
               price: '',
               total_price: ''
-              // size_info: [{
-              //   value: valPro.size,
-              //   label: valPro.size,
-              //   children: [{
-              //     value: valPro.color,
-              //     label: valPro.color
-              //   }]
-              // }]
             })
           }
-          //  else {
-          //   let flagSize = flagPro.size_info.find(item => item.value === valPro.size)
-          //   if (!flagSize) {
-          //     flagPro.size_info.push({
-          //       value: valPro.size,
-          //       label: valPro.size,
-          //       children: [{
-          //         value: valPro.color,
-          //         label: valPro.color
-          //       }]
-          //     })
-          //   } else {
-          //     let flagColor = flagSize.children.find(item => item.value === valPro.color)
-          //     if (!flagColor) {
-          //       flagSize.children.push({
-          //         value: valPro.color,
-          //         label: valPro.color
-          //       })
-          //     }
-          //   }
-          // }
+          // 初始化产品详情
+          let flagProNew = this.productDetailInfo.find(item => item.product_id === valPro.category_info.product_id)
+          if (!flagProNew) {
+            this.productDetailInfo.push({
+              product_id: valPro.category_info.product_id
+            })
+          }
         })
       }
       // 物料概述
@@ -2165,231 +2126,17 @@ export default {
             flag1.total_price_semiProcess = Number(flag1.total_price_semiProcess ? flag1.total_price_semiProcess : 0) + Number(item.price * item.number)
             flag1.number = Number(flag1.number ? flag1.number : 0) + Number(item.number)
           }
-          // flag.total_price_semiProcess = Number(flag.total_price_semiProcess ? flag.total_price_semiProcess : 0) + Number(item.price * item.number)
         }
       })
-      // 收发概述
-      let storeIn = this.order_log.product_pop
-      let storeOut = this.order_log.product_push
-      storeIn.forEach(item => {
-        let flag = this.designList.find(key => key.product_code === item.product_info.product_code)
-        if (!flag) {
-          this.designList.push({
-            product_code: item.product_info.product_code,
-            store: [{
-              type: item.type,
-              store_in_count: item.count,
-              store_in_number: item.number
-            }]
-          })
-        } else {
-          if (!flag.store) {
-            flag.store = []
-          }
-          let flag1 = flag.store.find(key => key.type === item.type)
-          if (!flag1) {
-            flag.store.push({
-              type: item.type,
-              store_in_count: item.count,
-              store_in_number: item.number
-            })
-          } else {
-            flag1.store_in_number = Number(flag1.store_in_number ? flag1.store_in_number : 0) + Number(item.number)
-            flag1.store_in_count = Number(flag1.store_in_count ? flag1.store_in_count : 0) + Number(item.count)
-          }
-          // if (flag.store_in.indexOf(item.type) === -1) {
-          //   flag.store_in.push(item.type)
-          // }
-        }
-      })
-      storeOut.forEach(item => {
-        let flag = this.designList.find(key => key.product_code === item.product_info.product_code)
-        if (!flag) {
-          this.designList.push({
-            product_code: item.product_info.product_code,
-            store: [{
-              type: item.type,
-              store_out_count: item.count,
-              store_out_number: item.number
-            }]
-          })
-        } else {
-          if (!flag.store) {
-            flag.store = []
-          }
-          let flag1 = flag.store.find(key => key.type === item.type)
-          if (!flag1) {
-            flag.store.push({
-              type: item.type,
-              store_out_count: item.count,
-              store_out_number: item.number
-            })
-          } else {
-            flag1.store_out_number = Number(flag1.store_out_number ? flag1.store_out_number : 0) + Number(item.number)
-            flag1.store_out_count = Number(flag1.store_out_count ? flag1.store_out_count : 0) + Number(item.count)
-          }
-          // if (flag.store_out.indexOf(item.type) === -1) {
-          //   flag.store_out.push(item.type)
-          // }
-          // flag.store_out_number = Number(flag.store_out_number ? flag.store_out_number : 0) + Number(item.number)
-          // flag.store_out_count = Number(flag.store_out_count ? flag.store_out_count : 0) + Number(item.count)
-        }
-      })
-      // 检验概述
-      let semiInfo = this.order_log.semi_product_inspection
-      let finishedInfo = this.order_log.product_inspection
-      semiInfo.forEach(item => {
-        item.rejects_info = JSON.parse(item.rejects_info)
-        let num = 0
-        item.rejects_info.map(keys => {
-          num += Number(keys.number ? keys.number : 0)
-        })
-        let flag = this.designList.find(key => key.product_code === item.product_info.product_code)
-        if (!flag) {
-          this.designList.push({
-            product_code: item.product_info.product_code,
-            img: [],
-            semi_number: item.number,
-            semi_defective: num
-          })
-        } else {
-          flag.semi_number = Number(item.number) + Number(flag.semi_number ? flag.semi_number : 0)
-          flag.semi_defective = Number(flag.semi_defective ? flag.semi_defective : 0) + Number(num)
-        }
-      })
-      finishedInfo.forEach(item => {
-        item.rejects_info = JSON.parse(item.rejects_info)
-        let num = 0
-        item.rejects_info.map(keys => {
-          num += Number(keys.number ? keys.number : 0)
-        })
-        let flag = this.designList.find(key => key.product_code === item.product_info.product_code)
-        if (!flag) {
-          this.designList.push({
-            product_code: item.product_info.product_code,
-            img: [],
-            finished_number: item.number,
-            finished_defective: num
-          })
-        } else {
-          flag.finished_number = Number(item.number) + Number(flag.finished_number ? flag.finished_number : 0)
-          flag.finished_defective = Number(flag.finished_defective ? flag.finished_defective : 0) + Number(num)
-        }
-      })
-      // 出库概述
-      let orderInfo = this.order_info
-      console.log(this.order_info)
-      for (let prop in orderInfo.order_batch) {
-        let item = orderInfo.order_batch[prop]
-        item.forEach(val => {
-          let flag = this.outStockList.find(key => key.batch_id === val.batch_id)
-          if (!flag) {
-            this.outStockList.push({
-              batch_id: val.batch_id,
-              delivery_time: val.delivery_time,
-              product_info: [{
-                product_code: val.product_code,
-                product_type: val.category_info.category_name + '/' + val.category_info.type_name + '/' + val.category_info.style_name,
-                number: val.numbers,
-                img: val.category_info.images.map(value => {
-                  return value.image
-                }),
-                unit: val.category_info.unit
-              }]
-            })
-          } else {
-            let flag1 = flag.product_info.find(key => key.product_code === val.product_code)
-            if (!flag1) {
-              flag.product_info.push({
-                batch_id: val.batch_id,
-                delivery_time: val.delivery_time,
-                product_info: [{
-                  product_code: val.product_code,
-                  product_type: val.category_info.category_name + '/' + val.category_info.type_unit + '/' + val.category_info.style_name,
-                  number: val.numbers,
-                  img: val.category_info.images.map(value => {
-                    return value.image
-                  }),
-                  unit: val.category_info.name
-                }]
-              })
-            } else {
-              flag1.number = Number(flag1.number) + Number(val.numbers)
-            }
+      this.productDetailInfo.forEach(item => {
+        porductOne({
+          id: item.product_id
+        }).then(res => {
+          let item = this.productDetailInfo.find(val => Number(val.product_id) === Number(res.data.data.id))
+          if (item) {
+            item.detail = res.data.data
           }
         })
-      }
-      this.productPriceList = orderInfo.order_batch
-      let stockOutInfo = this.order_log.stock_out_info // 样单出库日志
-      stockOutInfo.forEach(item => {
-        let flag = this.outStockList.find(key => key.batch_id === item.batch_id)
-        if (flag) {
-          flag.pack_number = Number(flag.pack_number ? flag.pack_number : 0) + Number(item.number)
-        }
-      })
-      // 包装样购成本统计
-      let packOrderInfo = this.order_log.pack_order
-      // console.log(packOrderInfo)
-      packOrderInfo.forEach(item => {
-        let pack = this.packOrderList.find(key => key.pack_name === item.material_name)
-        if (!pack) {
-          this.packOrderList.push({
-            pack_name: item.material_name,
-            client_info: [{
-              client_name: item.client_name,
-              client_id: item.client_id,
-              size_info: [{
-                size: item.size,
-                attr: JSON.parse(item.attribute),
-                number: item.number,
-                price: item.price
-              }]
-            }]
-          })
-        } else {
-          let client = pack.client_info.find(key => key.client_id === item.client_id)
-          if (!client) {
-            pack.client_info.push({
-              client_name: item.client_name,
-              client_id: item.client_id,
-              size_info: [{
-                size: item.size,
-                attr: JSON.parse(item.attribute),
-                number: item.number,
-                price: item.price
-              }]
-            })
-          } else {
-            let size = client.size_info.find(key => (key.size === item.size && key.price === item.price))
-            if (!size) {
-              size.size_info.push({
-                size: item.size,
-                attr: JSON.parse(item.attribute),
-                number: item.number,
-                price: item.price
-              })
-            } else {
-              size.number = Number(size.number ? size.number : 0) + Number(item.number)
-            }
-          }
-        }
-      })
-      // console.log(this.packOrderList)
-      // 出库概述添加装箱实际数量
-      let outStockNumberInfo = res[3].data.data
-      outStockNumberInfo.forEach(item => {
-        let flag = this.outStockList.find(key => key.batch_id === item.batch_id)
-        if (flag) {
-          item.product_info = JSON.parse(item.product_info)
-          item.product_info.forEach(valPro => {
-            let flag1 = flag.product_info.find(key => key.product_code === valPro.product_code)
-            if (flag1) {
-              let num = 0
-              valPro.size_info.forEach(key => { num += Number(key.pack_number) })
-              flag1.product_number = num
-            }
-          })
-        }
       })
       // 样单取消的时候需要拿物料样购日志（分颜色），下单产品信息（分尺码颜色）
       this.order_log.material_order.forEach((item) => {
@@ -2426,6 +2173,7 @@ export default {
           }
         })
       }
+      // 获取此样单相关的产品详情
       this.loading = false
     })
   }

@@ -72,6 +72,7 @@
           </el-select>
           <el-input class="smallInputItem"
             placeholder="输入比例"
+            :disabled="item.ingredient_name ? false : true"
             v-model="item.ingredient_value">
             <span class="unit"
               slot="append">%</span>
@@ -109,6 +110,7 @@
             </el-select>
             <el-input placeholder="输入克重"
               class="smallInputItem"
+              :disabled="item.size ? false : true"
               v-model="item.weight"
               :key="item.id">
               <span slot="append"
@@ -468,12 +470,11 @@ export default {
         this.$message.error('产品成分比例总和不等于100%，请检查比例')
         flag = false
       }
-      this.color.forEach(item => {
-        if (!item.color) {
-          this.$message.error('请将产品配色填写完整')
-          flag = false
-        }
-      })
+      if (this.color.filter(item => item.color).map(item => { return item.color }).length === 0) {
+        this.$message.error('请将产品配色填写完整')
+        flag = false
+        return
+      }
       const imgArr = this.$refs.uploada.uploadFiles.map((item) => { return 'http://zhihui.tlkrzf.com/' + item.response.key })
       let data = {
         product_code: this.product_code.join(''),
@@ -486,13 +487,13 @@ export default {
         description: this.textarea,
         user_id: window.sessionStorage.getItem('user_id'),
         img: imgArr,
-        color: this.color.map(item => {
+        color: this.color.filter(item => item.color).map(item => {
           return item.color
         }),
         // sample_size: JSON.stringify(this.size),
         sample_title: this.sampleName,
         materials: this.ingredient,
-        size: this.size.map(item => {
+        size: this.size.filter(item => item.size).map(item => {
           return {
             weight: item.weight,
             measurement: item.size,
