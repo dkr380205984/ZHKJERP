@@ -2,7 +2,11 @@
   <div id="sampleCreate"
     v-loading="loading">
     <div class="head">
-      <h2>修改{{type === '1' ? '产' : '样'}}品</h2>
+      <h2>修改{{type === '1' ? '产' : '样'}}品
+        <i class="el-icon-message-solid"
+          :class="{'active':msgFlag}"
+          @click="showMsg = true"></i>
+      </h2>
     </div>
     <div class="body">
       <div class="inputCtn">
@@ -192,17 +196,25 @@
         <div class="cancleBtn"
           @click="$router.go(-1)">返回</div>
         <div class="okBtn"
-          @click="saveAll">保存</div>
+          @click="saveAll">修改</div>
       </div>
+      <my-message :visible.sync="showMsg"
+        :url="localName"
+        :afterSave="afterSave"></my-message>
     </div>
   </div>
 </template>
 
 <script>
-import { productTppeList, flowerList, ingredientList, colorList, getToken, saveProduct, porductOne } from '@/assets/js/api.js'
+import { productTppeList, flowerList, ingredientList, colorList, getToken, saveProduct, porductOne, notifySave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      showMsg: false,
+      localName: 'productUpdate',
+      msgFlag: window.localStorage.getItem('productUpdate') ? JSON.parse(window.localStorage.getItem('productUpdate')).msgFlag : false,
+      msgUrl: '',
+      content: '',
       loading: true,
       product_code: '',
       sampleName: '',
@@ -345,6 +357,27 @@ export default {
     }
   },
   methods: {
+    afterSave (data) {
+      this.msgFlag = data.msgFlag
+    },
+    sendMsg () {
+      let data = JSON.parse(window.localStorage.getItem(this.localName))
+      let formData = {
+        title: data.title,
+        type: data.type,
+        tag: '工序',
+        content: this.content,
+        router_url: this.msgUrl,
+        receive_user: data.receive_user
+      }
+      notifySave(formData).then((res) => {
+        this.lock = true
+        if (res.data.status) {
+          this.$message.success('修改成功')
+          this.$router.push(this.msgUrl)
+        }
+      })
+    },
     showMessage () {
       if (this.has_plan === 1) {
         this.$message.error('已有配料单,不可删除原有项')
@@ -487,15 +520,23 @@ export default {
           this.lock = false
           saveProduct(data).then(res => {
             if (res.data.status) {
-              this.$message.success('添加成功,即将跳转至详情页')
-              setTimeout(() => {
+              if (this.msgFlag) {
+                if (this.type === '1') {
+                  this.msgUrl = '/index/productDetail/' + res.data.data.id
+                } else if (this.type === '2') {
+                  this.msgUrl = '/index/sampleDetail/' + res.data.data.id
+                }
+                this.content = '<span style="color:#E6A23C">修改</span>了一个' + (this.type === '1' ? '产' : '样') + '品<span style="color:#1A95FF">' + res.data.data.product_code + '</span>(' + res.data.data.category_info.product_category + '/' + res.data.data.type_name + '/' + res.data.data.style_name + '/' + res.data.data.flower_id + ')'
+                this.sendMsg()
+              } else {
                 this.lock = true
+                this.$message.success('修改成功')
                 if (this.type === '1') {
                   this.$router.push('/index/productDetail/' + res.data.data.id)
                 } else if (this.type === '2') {
                   this.$router.push('/index/sampleDetail/' + res.data.data.id)
                 }
-              }, 800)
+              }
             }
           })
         } else {
