@@ -803,34 +803,32 @@
               v-for="(item,key) in productPriceList"
               :key="key">
               <span class="tableRow"
-                style="flex:1.7">第{{item.batch_id}}批{{item.delivery_time}}</span>
+                style="flex:1.7">第{{key}}批{{item[0].delivery_time}}</span>
               <span class="tableRow col"
                 style="flex:7">
                 <span class="tableColumn"
-                  v-for="(valPro,indPro) in item.batch_info"
+                  v-for="(valPro,indPro) in item"
                   :key="indPro">
                   <span class="tableRow"
-                    style="flex:2">{{valPro.productCode}}({{valPro.productInfo.category_info.product_category + '/' + valPro.productInfo.type_name + '/' + valPro.productInfo.style_name}})</span>
+                    style="flex:2">{{valPro.product_code}}({{valPro.category_info.category_name + '/' + valPro.category_info.type_name + '/' + valPro.category_info.style_name}})</span>
                   <span class="tableRow">
                     <div class="imgCtn">
                       <img class="img"
-                        :src="valPro.productInfo.img.length>0?valPro.productInfo.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
+                        :src="valPro.category_info.images.length>0?valPro.category_info.images[0].thumb:require('@/assets/image/index/noPic.jpg')"
                         :onerror="defaultImg" />
                       <div class="toolTips"
-                        v-if="valPro.productInfo.img.length>0"><span @click="showImg(valPro.productInfo.img)">点击查看大图</span></div>
+                        v-if="valPro.category_info.images.length>0"><span @click="showImg(valPro.category_info.images)">点击查看大图</span></div>
                       <div class="toolTips"
-                        v-if="valPro.productInfo.img.length===0"><span>没有预览图</span></div>
+                        v-if="valPro.category_info.images.length===0"><span>没有预览图</span></div>
                     </div>
                   </span>
                   <span class="tableRow col"
                     style="flex:4">
-                    <span class="tableColumn"
-                      v-for="(valSize,indSize) in valPro.size"
-                      :key="indSize">
-                      <span class="tableRow">{{valSize.name[0] + '/' + valSize.name[1]}}</span>
-                      <span class="tableRow">{{valSize.numbers}}{{valPro.productInfo.category_info.name}}</span>
-                      <span class="tableRow">{{valSize.unitPrice}}{{order_info.account_unit}}/{{valPro.productInfo.category_info.name}}</span>
-                      <span class="tableRow">{{parseInt(valSize.numbers * valSize.unitPrice)}}{{order_info.account_unit}}</span>
+                    <span class="tableColumn">
+                      <span class="tableRow">{{valPro.size + '/' + valPro.color}}</span>
+                      <span class="tableRow">{{valPro.numbers}}{{valPro.category_info.unit}}</span>
+                      <span class="tableRow">{{'-'}}</span>
+                      <span class="tableRow">{{'-'}}</span>
                     </span>
                   </span>
                 </span>
@@ -1006,18 +1004,6 @@
         <div :class="{'title':true,'success':handleType === 'ok','change': handleType === 'change','cancle' : handleType === 'cancle'}">{{handleType === 'ok' ? '客户确认样' : (handleType === 'change' ? '客户修改样' : '样单取消')}}</div>
         <div class="inputBox">
           <template v-if="handleType !== 'cancle'">
-            <!-- <div class="item"
-              v-if="handleType === 'ok'"
-              style="margin-top:27px;">
-              <span class="label">是否打样:</span>
-              <div class="content">
-                <el-radio-group v-model="submitInfo.isSample"
-                  class="elInput">
-                  <el-radio :label="true">是</el-radio>
-                  <el-radio :label="false">否</el-radio>
-                </el-radio-group>
-              </div>
-            </div> -->
             <template v-if="handleType === 'change' && isFirstPage">
               <div class="item"
                 style="margin-top:27px">
@@ -1094,42 +1080,65 @@
               </div>
             </template>
             <template v-if="handleType === 'ok'">
-              <div class="item"
-                style='margin-top:27px;'>
-                <span class="label">建立产品:</span>
-                <div class="content">
-                  <el-select v-model="submitInfo.sample_odd"
-                    class="elInput"
-                    placeholder="请选择样品添加至产品库">
-                    <el-option v-for="item in productInfo"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
-                  </el-select>
+              <div v-for="(item,key) in submitInfo.createProInfo"
+                :key="key">
+                <div class="item"
+                  style='margin-top:27px;'>
+                  <span class="label">建立产品{{submitInfo.createProInfo.length > 1 ? key+1 : ''}}:</span>
+                  <div class="content">
+                    <el-select v-model="item.sample_odd"
+                      class="elInput"
+                      placeholder="请选择样品添加至产品库">
+                      <el-option v-for="item in productDetailInfo"
+                        :key="item.product_id"
+                        :label="item.detail.product_code"
+                        :value="item.product_id">
+                      </el-option>
+                    </el-select>
+                  </div>
                 </div>
-              </div>
-              <div class="item">
-                <div class="content">
-                  <el-select v-model="submitInfo.design_odd"
-                    class="elInput marginRight"
-                    placeholder="请选择样品工艺单">
-                    <el-option v-for="item in []"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
-                  </el-select>
-                  <el-select v-model="submitInfo.plan_odd"
-                    class="elInput"
-                    placeholder="请选择样品配料单">
-                    <el-option v-for="item in []"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
-                  </el-select>
+                <div class="item">
+                  <div class="content">
+                    <el-select v-model="item.design_odd"
+                      class="elInput"
+                      placeholder="请选择样品工艺单">
+                      <el-option v-for="item in getCraftInfo(item.sample_odd,'craft_info')"
+                        :key="item.id"
+                        :label="item.craft_code + '('+ item.create_time +')'"
+                        :value="item.id">
+                        <div style="width:100%;height:100%">
+                          <span style="float: left">{{ item.craft_code }}</span>
+                          <span style="float: right; color: #8492a6; font-size: 13px">{{ item.create_time }}</span>
+                        </div>
+                      </el-option>
+                    </el-select>
+                  </div>
                 </div>
+                <div class="item"
+                  style="margin-bottom:46px">
+                  <div class="content">
+                    <el-select v-model="item.plan_odd"
+                      class="elInput"
+                      placeholder="请选择样品配料单">
+                      <el-option v-for="item in getCraftInfo(item.sample_odd,'product_plan_info')"
+                        :key="item.id"
+                        :label="item.plan_code + '('+ item.create_time +')'"
+                        :value="item.id">
+                        <div style="width:100%;height:100%">
+                          <span style="float: left">{{ item.plan_code }}</span>
+                          <span style="float: right; color: #8492a6; font-size: 13px">{{ item.create_time }}</span>
+                        </div>
+                      </el-option>
+                    </el-select>
+                  </div>
+                  <span class="addBtn"
+                    v-if="key === 0"
+                    @click="submitInfo.createProInfo.push({sample_odd:'',plan_odd:'',design_odd:''})">添加样品</span>
+                  <span class="addBtn deleteBtn"
+                    v-else
+                    @click="submitInfo.createProInfo.splice(key,1)">删除样品</span>
+                </div>
+
               </div>
             </template>
             <div class="item"
@@ -1331,11 +1340,13 @@ export default {
         sampleType: '',
         isCustomerPay: false,
         total_price: '',
-        sample_odd: '',
-        design_odd: '',
-        plan_odd: '',
         isStockForMaterial: true,
-        sample_complete_time: ''
+        sample_complete_time: '',
+        createProInfo: [{
+          sample_odd: '',
+          design_odd: '',
+          plan_odd: ''
+        }]
       },
       sampleTypeArr: [{
         id: 0,
@@ -1364,6 +1375,20 @@ export default {
     }
   },
   methods: {
+    getCraftInfo (item, key) {
+      console.log(item)
+      if (!item) {
+        return []
+      } else {
+        let flag = this.productDetailInfo.find(vals => vals.product_id === item)
+        console.log(flag)
+        if (flag) {
+          return flag.detail[key]
+        } else {
+          return []
+        }
+      }
+    },
     submitChange (type) {
       if (type === 'ok') {
 
@@ -1669,19 +1694,14 @@ export default {
         const productDetail = this.productDetail.map((item) => {
           return {
             user_id: window.sessionStorage.getItem('user_id'),
-            order_code: this.order_info.order_code,
-            company_id: window.sessionStorage.getItem('company_id'),
-            product_id: item.id,
-            product_info: item.product_info,
-            size: item.size.split('/')[0],
-            color: item.size.split('/')[1],
-            stock_number: item.number ? item.number : 0,
-            rejects_product: '',
-            cost_price: item.cost,
-            total_price: parseInt(item.cost * (item.number ? item.number : 0)),
-            store_id: 0,
+            remark: '样单取消结余',
             storage_time: this.getTime(new Date()),
-            remark: '样单取消结余'
+            stock_number: item.number ? item.number : 0,
+            company_id: window.sessionStorage.getItem('company_id'),
+            color: item.size.split('/')[1],
+            size: item.size.split('/')[0],
+            order_code: this.order_info.order_code,
+            product_id: item.id
           }
         })
         orderCheck({
@@ -2173,6 +2193,7 @@ export default {
           }
         })
       }
+      this.productPriceList = this.order_info.order_batch
       // 获取此样单相关的产品详情
       this.loading = false
     })
@@ -2229,6 +2250,7 @@ export default {
       border-radius: 4px;
       text-align: center;
       color: #1a95ff;
+      line-height: 29px;
       cursor: pointer;
       &.deleteBtn {
         color: #ee3f59;

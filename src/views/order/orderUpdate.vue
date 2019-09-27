@@ -2,7 +2,7 @@
   <div id="orderCreate"
     v-loading="loading">
     <div class="head">
-      <h2>添加订单</h2>
+      <h2>修改订单</h2>
     </div>
     <div class="body">
       <div class="lineCtn">
@@ -433,19 +433,20 @@ export default {
       seachProduct: [],
       product: [],
       productArr: [],
-      orderArr: [{
-        date: '',
-        product: [{
-          product_info: {},
-          name: '',
-          colorSizeArr: [],
-          size: [{
-            name: [],
-            unitPrice: '',
-            numbers: ''
-          }]
-        }]
-      }],
+      orderArr: [],
+      // {
+      //   date: '',
+      //   product: [{
+      //     product_info: {},
+      //     name: '',
+      //     colorSizeArr: [],
+      //     size: [{
+      //       name: [],
+      //       unitPrice: '',
+      //       numbers: ''
+      //     }]
+      //   }]
+      // }
       group: '',
       groupArr: [],
       has_plan: 0,
@@ -643,18 +644,18 @@ export default {
     getColorSize (id, indexOrder, indexProduct) {
       let arr = []
       let obj = this.productArr.find((item) => item.product_code === id)
-      for (let key in obj.size) {
+      obj.size.forEach(valSize => {
         arr.push({
-          value: key,
-          label: key,
-          children: obj.color.map((item) => {
+          value: valSize.measurement,
+          label: valSize.measurement,
+          children: obj.color.map((valColor) => {
             return {
-              value: item.name,
-              label: item.name
+              value: valColor.color_name,
+              label: valColor.color_name
             }
           })
         })
-      }
+      })
       this.orderArr[indexOrder].product[indexProduct].colorSizeArr = arr
       this.orderArr[indexOrder].product[indexProduct].product_info = obj
     },
@@ -940,66 +941,75 @@ export default {
         }
       }) : []
       // 过滤产品
-      orderInfo.order_batch.forEach((orderBatch) => {
-        orderBatch.batch_info.forEach((item) => {
-          const finded = this.productArr.find((itemFind) => itemFind.product_code === item.productCode)
+      for (let prop in orderInfo.order_batch) {
+        let orderBatch = orderInfo.order_batch[prop]
+        orderBatch.forEach(valPro => {
+          const finded = this.productArr.find((itemFind) => itemFind === valPro.id)
           if (!finded) {
-            this.productArr.push(item.productInfo)
+            this.productArr.push({
+              id: valPro.category_info.product_id,
+              category_info: { product_category: valPro.category_info.category_name },
+              type_name: valPro.category_info.type_name,
+              style_name: valPro.category_info.style_name
+            })
           }
         })
-      })
-      this.orderArr = orderInfo.order_batch.map((item) => {
-        return {
-          date: item.delivery_time,
-          product: item.batch_info.map((itemPro) => {
-            let arr = []
-            let obj = itemPro.productInfo
-            for (let key in obj.size) {
-              arr.push({
-                value: key,
-                label: key,
-                children: obj.color.map((item) => {
-                  return {
-                    value: item.name,
-                    label: item.name
-                  }
-                })
-              })
-            }
-            return {
-              name: itemPro.productCode,
-              product_info: itemPro.productInfo,
-              size: itemPro.size,
-              colorSizeArr: arr
-            }
-          })
+      }
+      for (let prop in orderInfo.order_batch) {
+        let orderBatch = orderInfo.order_batch[prop]
+        let obj = {
+          date: orderBatch[0].delivery_time,
+          product: []
         }
-      })
+        orderBatch.forEach(valPro => {
+          let flag = obj.product.find(vals => vals.name === valPro.product_code)
+          if (!flag) {
+            obj.product.push({
+              name: valPro.product_code,
+              product_info: valPro,
+              colorSizeArr: [{
+                value: valPro.size,
+                label: valPro.size,
+                children: [{
+                  value: valPro.color,
+                  label: valPro.color
+                }]
+              }],
+              size: [{
+                name: [valPro.size, valPro.color],
+                unitPrice: valPro.unit_price,
+                numbers: valPro.numbers
+              }]
+            })
+          }
+        })
+        this.orderArr.push(JSON.parse(JSON.stringify(obj)))
+      }
       // 由于产品信息不会更新，因此需要获取最新的产品数据（尺码/颜色），可以在修改订单的时候选到最新的产品尺码/颜色
       console.log(this.orderArr)
       // 第一步，根据productArr里的产品id数组，获取产品数组详情
       porductOne({
-        id: this.productArr.map((item) => item.id)
+        id: this.productArr.map(vals => { return vals.id })
       }).then((res) => {
         this.productArr = res.data.data
         // 第二步，把最新的产品信息更新到批次信息里
         this.orderArr.forEach((item) => {
           item.product.forEach((itemPro) => {
-            const finded = this.productArr.find((itemFind) => itemPro.product_info.id === itemFind.id)
+            const finded = this.productArr.find((itemFind) => Number(itemPro.product_info.id) === Number(itemFind.id))
             if (finded) {
               itemPro.colorSizeArr = []
-              for (const key in finded.size) {
+              finded.size.forEach(valSize => {
                 itemPro.colorSizeArr.push({
-                  value: key,
-                  label: key,
-                  children: finded.color.map((item) => {
+                  value: valSize.measurement,
+                  label: valSize.measurement,
+                  children: finded.color.map((valColor) => {
                     return {
-                      value: item.name,
-                      label: item.name
+                      value: valColor.color_name,
+                      label: valColor.color_name
                     }
                   })
                 })
-              }
+              })
             }
           })
         })
@@ -1017,7 +1027,6 @@ export default {
       this.batchNum = this.orderArr.length
       this.loading = false
     })
-
     // 给产品列表做优化
     this.$refs.scrollBox.addEventListener('scroll', (ev) => {
       clearTimeout(this.timer)

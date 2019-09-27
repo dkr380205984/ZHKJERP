@@ -320,7 +320,7 @@
             <div class="content">
               <el-select v-model="isPlan"
                 class="input_item"
-                placeholder="请选择工艺版本">
+                placeholder="请选择配料单版本">
                 <el-option v-for="item in productDetail.product_plan_info"
                   :key="item.id"
                   :label="item.plan_code + '('+ item.create_time +')'"
