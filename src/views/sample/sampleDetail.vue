@@ -193,7 +193,7 @@
                     <span>{{item.client_name}}</span>
                     <span>{{item.total_number}}{{productDetail.category_info.name}}</span>
                     <span style="color:#1A95FF;cursor:pointer"
-                      @click="open('/index/orderDetailNew/' + item.id)">查看详情</span>
+                      @click="open('/index/sampleOrderDetail/' + item.order_id)">查看详情</span>
                   </span>
                 </span>
               </li>
@@ -274,12 +274,12 @@
         <div class="item"
           style="margin-top:27px;">
           <span class="label">产品编号:</span>
-          <div class="content blue">{{sample_code|filterCode}}</div>
+          <div class="content blue">{{productDetail.product_code|filterCode}}</div>
         </div>
         <div class="item">
           <span class="label">样品编号:</span>
           <div class="content">
-            <el-input v-model="sample_code"
+            <el-input v-model="productDetail.product_code"
               class="input_item"
               placeholder="样品编号"
               disabled></el-input>
@@ -367,7 +367,7 @@ export default {
   filters: {
     // 拟定编号
     filterCode (item) {
-      return item + '111'
+      return item.split('Y').join('')
     },
     // 类型合并
     filterType (item) {

@@ -112,18 +112,29 @@ export default {
       this.order.client_name = res[1].data.data.client_name
       console.log(res[1].data.data.order_batch)
       let arr = []
-      res[1].data.data.order_batch.forEach((item, key) => {
-        item.batch_info.forEach((value, index) => {
-          let types = value.productInfo.category_info.product_category + (value.productInfo.type_name ? '/' + value.productInfo.type_name : '') + (value.productInfo.style_name ? '/' + value.productInfo.type_name : '') + (value.productInfo.flower_id ? '/' + value.productInfo.flower_id : '')
-          value.size.forEach((val, ind) => {
-            arr.push({
-              type: types,
-              product_code: value.productCode,
-              number: val.numbers
-            })
+      for (let prop in res[1].data.data.order_batch) {
+        let item = res[1].data.data.order_batch[prop]
+        item.forEach(valPro => {
+          let types = valPro.category_info.category_name + '/' + valPro.category_info.type_name + '/' + valPro.category_info.style_name + '/' + valPro.category_info.flower_name
+          arr.push({
+            type: types,
+            product_code: valPro.product_code,
+            number: valPro.numbers
           })
         })
-      })
+      }
+      // res[1].data.data.order_batch.forEach((item, key) => {
+      //   item.batch_info.forEach((value, index) => {
+      //     let types = value.productInfo.category_info.product_category + (value.productInfo.type_name ? '/' + value.productInfo.type_name : '') + (value.productInfo.style_name ? '/' + value.productInfo.type_name : '') + (value.productInfo.flower_id ? '/' + value.productInfo.flower_id : '')
+      //     value.size.forEach((val, ind) => {
+      //       arr.push({
+      //         type: types,
+      //         product_code: value.productCode,
+      //         number: val.numbers
+      //       })
+      //     })
+      //   })
+      // })
       arr.forEach(item => {
         let flag = this.order.order_batch.find(val => val.product_code === item.product_code)
         if (!flag) {

@@ -248,7 +248,7 @@
                     <span>{{item.client_name}}{{item.id}}</span>
                     <span>{{item.total_number}}{{productDetail.category_info.name}}</span>
                     <span style="color:#1A95FF;cursor:pointer"
-                      @click="open('/index/orderDetailNew/' + item.id)">查看详情</span>
+                      @click="open('/index/orderDetailNew/' + item.order_id)">查看详情</span>
                   </span>
                 </span>
               </li>
