@@ -137,7 +137,7 @@
               :style="{left:item.rate}">
               <div class="time">{{item.time}}</div>
               <div class="line"></div>
-              <div class="info">{{item.name}}</div>
+              <div class="info">{{index === timeAxis.length -1 ? '交货日期' : item.name}}</div>
             </div>
             <div class="processInner todoy"
               :style="{'width':useTimeRate}">
@@ -884,7 +884,7 @@
               v-for="(item,key) in productPriceList"
               :key="key">
               <span class="tableRow"
-                style="flex:1.7">第{{key}}批{{item['0'].delivery_time}}</span>
+                style="flex:1.7">第{{key}}批{{item[0].delivery_time}}</span>
               <span class="tableRow col"
                 style="flex:7">
                 <span class="tableColumn"
@@ -944,14 +944,14 @@
                 <span class="tableColumn"
                   v-for="itemPro in item.product_info"
                   :key="itemPro.product_id">
-                  <span class="tableRow">{{itemPro.info[0].product_info.product_code}}({{itemPro.info[0].product_info.category_info.product_category}}/{{itemPro.info[0].product_info.type_name}}/{{itemPro.info[0].product_info.style_name}})</span>
+                  <span class="tableRow">{{itemPro.info[0].product_info.product_code}}({{itemPro.info[0].product_info.category_name}}/{{itemPro.info[0].product_info.type_name}}/{{itemPro.info[0].product_info.style_name}})</span>
                   <span class="tableRow col"
                     style="flex:2">
                     <span class="tableColumn"
                       v-for="(itemColor,indexColor) in itemPro.info"
                       :key="indexColor">
                       <span class="tableRow">{{itemColor.size}}/{{itemColor.color}}</span>
-                      <span class="tableRow">{{itemColor.stock_number}}{{itemColor.product_info.category_info.name}}</span>
+                      <span class="tableRow">{{itemColor.stock_number}}{{itemColor.product_info.unit}}</span>
                     </span>
                   </span>
                 </span>
@@ -1123,7 +1123,7 @@ export default {
         order_time: '',
         remark: '',
         status: 0,
-        fileArr: []
+        order_contract: '[]'
       },
       timeAxis: [],
       order_log: {},
@@ -1373,19 +1373,14 @@ export default {
         const productDetail = this.productDetail.map((item) => {
           return {
             user_id: window.sessionStorage.getItem('user_id'),
-            order_code: this.order_info.order_code,
+            remark: '订单取消结余',
+            storage_time: this.getTime(new Date()),
+            stock_number: item.number ? item.number : 0,
             company_id: window.sessionStorage.getItem('company_id'),
-            product_id: item.id,
-            product_info: item.product_info,
             size: item.size.split('/')[0],
             color: item.size.split('/')[1],
-            stock_number: item.number ? item.number : 0,
-            rejects_product: '',
-            cost_price: item.cost,
-            total_price: parseInt(item.cost * (item.number ? item.number : 0)),
-            store_id: 0,
-            storage_time: this.getTime(new Date()),
-            remark: '订单取消结余'
+            order_code: this.order_info.order_code,
+            product_id: item.id
           }
         })
         orderCheck({
@@ -1507,9 +1502,10 @@ export default {
     })]).then((res) => {
       const data = res[0].data.data
       this.order_info = data.order_info
-      this.order_info.fileArr = this.order_info.file_url ? JSON.parse(this.order_info.file_url) : []
+      // this.order_info.fileArr = this.order_info.file_url ? JSON.parse(this.order_info.file_url) : []
       this.order_log = data.order_log
       this.process = data.order_schedule
+      console.log(res[4])
       this.logList = res[4].data.data.map((item) => {
         item.material_info = this.jsonMerge(item.material_info, ['material_name'])
         item.product_info = this.jsonMerge(item.product_info, ['product_id'])
@@ -1705,6 +1701,7 @@ export default {
           flag.total_price_order = Number(flag.total_price_order ? flag.total_price_order : 0) + Number(item.price * item.weight)
         }
       })
+      console.log(processInfo)
       // 物料加工类型
       processInfo.forEach(item => {
         let flag = this.materialList.find(keys => keys.material_name === item.material_name)
