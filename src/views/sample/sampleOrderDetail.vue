@@ -1380,7 +1380,8 @@
         <div class="footer">
           <span class="cancel"
             @click="designShare = false">取消</span>
-          <span class="ok">确定</span>
+          <span class="ok"
+            @click="setCraftStatu">确定</span>
         </div>
         <span class="close el-icon-close"
           @click="designShare = false"></span>
@@ -1481,7 +1482,8 @@
 </template>
 
 <script>
-import { orderDetailNew, rawMaterialOrderInit, productionDetail, packagNumberDetail, orderCheck, orderCancleLog, orderMaterialSotckDetail, orderSave, porductOne, orderList, isCheckedPlanAndCraft } from '@/assets/js/api.js'
+import { orderDetailNew, rawMaterialOrderInit, productionDetail, packagNumberDetail, orderCheck, orderCancleLog, orderMaterialSotckDetail, orderSave, porductOne, orderList, isCheckedPlanAndCraft, confirmCraft } from '@/assets/js/api.js'
+// import { orderDetailNew, rawMaterialOrderInit, productionDetail, packagNumberDetail, orderCheck, orderCancleLog, orderMaterialSotckDetail, orderSave, porductOne} from '@/assets/js/api.js'
 import { moneyArr } from '@/assets/js/dictionary.js'
 export default {
   data () {
@@ -1603,6 +1605,22 @@ export default {
         this.sample_order_list = res.data.data.sort((itemA, itemB) => {
           return Number(itemA.id) > Number(itemB.id)
         })
+      })
+    },
+    //
+    setCraftStatu () {
+      console.log(this.design)
+      let data = this.design.map(item => {
+        return {
+          product_code: item.product_code,
+          status_craft: ((item.checked.indexOf('工艺') !== -1) ? 2 : 1),
+          status_print: ((item.checked.indexOf('制版') !== -1) ? 2 : 1)
+        }
+      })
+      confirmCraft({
+        data: data
+      }).then(res => {
+
       })
     },
     getCraftInfo (item, key) {

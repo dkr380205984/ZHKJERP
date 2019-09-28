@@ -243,8 +243,8 @@
                 </template>
               </span>
             </div>
-            <div class="print rightTop btn"
-              @click="openWin('/productDesignTable/' + $route.params.id + '/' + item.product_code + '?type=' + (item.nowType ==='main' ? 0 : 1))">打印</div>
+            <!-- <div class="print rightTop btn"
+              @click="openWin('/productDesignTable/' + $route.params.id + '/' + item.product_code + '?type=' + (item.nowType ==='main' ? 0 : 1))">打印</div> -->
             <div class="catBtn">
               <span :class="{'active': item.nowType === 'main'}"
                 @click="item.nowType = 'main'">纱线原料</span>
@@ -291,7 +291,7 @@
               </div>
             </template>
             <div class="print rightTop btn"
-              @click="openWin('/productStatisticsTable/' + $route.params.id + '?type=' + (totalPlanMaterial.nowType ==='main' ? 0 : 1))">打印</div>
+              @click="openWin('/productStatisticsTable/' + $route.params.id + '?type=' + (totalPlanMaterial.nowType ==='main' ? 0 : 1))">打印配色单</div>
             <div class="catBtn">
               <span :class="{'active': totalPlanMaterial.nowType === 'main'}"
                 @click="totalPlanMaterial.nowType = 'main'">纱线原料</span>
@@ -454,6 +454,7 @@ export default {
         })
       }
       // 合并相同编号的产品数据
+      console.log(JSON.parse(JSON.stringify(this.productInfo)))
       this.productInfo.forEach((item) => {
         let finded = this.product.find((itemFind, index) => itemFind.product_code === item.product_code)
         if (!finded) {
