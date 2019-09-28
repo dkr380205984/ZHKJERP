@@ -124,7 +124,7 @@
         </div>
       </div>
       <div class="inputCtn">
-        <span class="label">样品配色:</span>
+        <span class="label must">样品配色:</span>
         <div class="content"
           v-for="(item,key) in color"
           :key="key">

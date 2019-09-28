@@ -5,7 +5,7 @@
     <ul class="tableBox">
       <li class="title-info">
         <div class="title">
-          <h2>桐庐凯瑞针纺有限公司{{type === '0' ? '原' : '辅'}}料统计单</h2>
+          <h2>桐庐凯瑞针纺有限公司{{type === '0' ? '原' : '辅'}}料配色单</h2>
         </div>
         <div class="info">
           <span>订单编号：<em class="bold12">KR{{year + (type === '0' ? 'YL' : 'FL' ) + order.order_code}}</em></span>

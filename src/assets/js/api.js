@@ -358,7 +358,10 @@ const notifyList = (params) => http.get(`${baseUrl}/notify/all`, params)
 const notifyRead = (params) => http.post(`${baseUrl}/notify/check/status`, params, 'application/json')
 // 未读消息数量
 const notifyNum = (params) => http.get(`${baseUrl}/notify/no/read`, params)
+// 确定制版工艺product/confirm/craft
+const confirmCraft = (params) => http.post(`${baseUrl}/product/confirm/craft`, params, 'application/json')
 export {
+  confirmCraft,
   isCheckedPlanAndCraft,
   notifyNum,
   notifySave,
