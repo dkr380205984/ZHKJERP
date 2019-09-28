@@ -448,11 +448,11 @@ export default {
           if (!sizeColorInfo[value.material_name]) {
             sizeColorInfo[value.material_name] = {}
           }
+          console.log(item)
           if (sizeColorInfo[value.material_name][value.material_color]) {
-            sizeColorInfo[value.material_name][value.material_color].number += Number((item.production_num ? item.production_num : 0) * ((item.production_sunhao ? item.production_sunhao : 0) / 100 + 1) * value.number)
+            sizeColorInfo[value.material_name][value.material_color].number += Number(((item.order_num ? item.order_num : 0) - (item.stock_pick ? item.stock_pick : 0)) * ((item.production_sunhao ? item.production_sunhao : 0) / 100 + 1) * value.number)
           } else {
-            console.log(value)
-            sizeColorInfo[value.material_name][value.material_color] = { number: (item.production_num ? item.production_num : 0) * ((item.production_sunhao ? item.production_sunhao : 0) / 100 + 1) * value.number, unit: value.unit }
+            sizeColorInfo[value.material_name][value.material_color] = { number: ((item.order_num ? item.order_num : 0) - (item.stock_pick ? item.stock_pick : 0)) * ((item.production_sunhao ? item.production_sunhao : 0) / 100 + 1) * value.number, unit: value.unit }
           }
         })
         let pro = this.material_plan.find(key => (key.product_code === item.product_code))

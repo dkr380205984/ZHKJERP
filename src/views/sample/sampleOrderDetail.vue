@@ -21,10 +21,10 @@
               type="primary">
               {{'操作'}}
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item v-show="order_info.status!==2"
+                <el-dropdown-item v-show="order_info.status!==1"
                   command="ok"
                   style="color:#1A94FF">客户确认</el-dropdown-item>
-                <el-dropdown-item v-show="order_info.status!==2"
+                <el-dropdown-item v-show="order_info.status!==1 && order_info.status !== 2"
                   command="change"
                   style="color:#E6A23C">修改样单</el-dropdown-item>
                 <el-dropdown-item v-show="order_info.status!==2"
@@ -40,7 +40,7 @@
                 :style="{'color':orderStateColor}">
                 {{orderState}}
                 <el-tooltip class="item"
-                  v-show="!hasPlan"
+                  v-show="!hasPlan && !isOK"
                   effect="dark"
                   content="该样单还未填写生产计划单,点击按钮前往填写"
                   placement="top">
@@ -66,6 +66,10 @@
             <span class="label">样单公司:</span>
             <span class="content">{{order_info.client_name}}</span>
           </div>
+          <div class="inputCtn small">
+            <span class="label">负责小组:</span>
+            <span class="content">{{order_info.group_name}}</span>
+          </div>
         </div>
         <div class="lineCtn">
           <div class="inputCtn small">
@@ -73,7 +77,7 @@
             <span class="content">{{order_info.contacts}}</span>
           </div>
         </div>
-        <div class="lineCtn"
+        <!-- <div class="lineCtn"
           v-show="order_info.fileArr.length>0">
           <div class="inputCtn"
             style="width:100%">
@@ -89,27 +93,132 @@
               </a>
             </span>
           </div>
-        </div>
+        </div> -->
         <div class="lineCtn sampleCtn">
           <div class="catBtn">
-            <span class="active">三次打样</span>
-            <span>二次打样</span>
-            <span>一次打样</span>
+            <span v-for="(item,key) in sample_order_list"
+              :key="key"
+              :class="{'active':item.id === $route.params.id}"
+              @click="reloadPage(item.id)">{{key+1}}次打样</span>
           </div>
           <div class="applyProcess">
             <div class="title">申请流程</div>
             <div class="info row">
-              <div class="item col"
-                v-for="item in 4"
-                :key="item">
+              <div class="item col">
                 <div class="borderCtn">
                   <div class="leftBorder"></div>
-                  <div class="circle"></div>
-                  <div class="border"></div>
+                  <div class="circle isOk"></div>
+                  <!-- <el-popover placement="top"
+                    width="200"
+                    trigger="hover">
+                    <div class="popover-title">
+                      <span class="user">隔壁老王</span>
+                      <span :class="{'status':true,'ok':true}">{{'未响应'}}</span>
+                    </div>
+                    <p class="useTime">耗时：{{getUseTime('2019-06-12 15:30')}}</p>
+                    <span class="hurry">催一下</span>
+                    <div class="circle"
+                      slot="reference"></div>
+                  </el-popover> -->
+                  <div class="border isOk"></div>
                 </div>
                 <span>提交样单修改申请</span>
-                <span>王经理</span>
-                <span>2016-12-12 12:32</span>
+                <!-- <span>王经理</span> -->
+                <!-- <span>2016-12-12 12:32</span> -->
+              </div>
+              <div class="item col">
+                <div class="borderCtn">
+                  <div class="leftBorder isOk"></div>
+                  <div :class="{'circle':true,'isOk':order_info.sample_order_apply_status> 1}"></div>
+                  <!-- <el-popover placement="top"
+                    width="200"
+                    trigger="hover">
+                    <div class="popover-title">
+                      <span class="user">隔壁老王</span>
+                      <span :class="{'status':true,'ok':true}">{{'未响应'}}</span>
+                    </div>
+                    <p class="useTime">耗时：{{getUseTime('2019-06-12 15:30')}}</p>
+                    <span class="hurry">催一下</span>
+                    <div class="circle"
+                      slot="reference"></div>
+                  </el-popover> -->
+                  <div :class="{'border':true,'isOk':order_info.sample_order_apply_status> 1}"></div>
+                </div>
+                <span>修改样品<span style="color:#1a95ff;margin-left:8px;cursor: pointer;font-weight:400;"
+                    @click="handleType = 'changeSample'"
+                    v-if="10>order_info.sample_order_apply_status">去修改</span></span>
+                <!-- <span>王经理</span> -->
+                <!-- <span>2016-12-12 12:32</span> -->
+              </div>
+              <div class="item col">
+                <div class="borderCtn">
+                  <div :class="{'leftBorder':true,'isOk':order_info.sample_order_apply_status> 1}"></div>
+                  <div :class="{'circle':true,'isOk':order_info.sample_order_apply_status> 10}"></div>
+                  <!-- <el-popover placement="top"
+                    width="200"
+                    trigger="hover">
+                    <div class="popover-title">
+                      <span class="user">隔壁老王</span>
+                      <span :class="{'status':true,'ok':true}">{{'未响应'}}</span>
+                    </div>
+                    <p class="useTime">耗时：{{getUseTime('2019-06-12 15:30')}}</p>
+                    <span class="hurry">催一下</span>
+                    <div class="circle"
+                      slot="reference"></div>
+                  </el-popover> -->
+                  <div :class="{'border':true,'isOk':order_info.sample_order_apply_status> 10}"></div>
+                </div>
+                <span>修改工艺单<span style="color:#1a95ff;margin-left:8px;cursor: pointer;font-weight:400;"
+                    @click="handleType = 'changeCraft'"
+                    v-if="10 === order_info.sample_order_apply_status">去修改</span></span>
+                <!-- <span>王经理</span> -->
+                <!-- <span>2016-12-12 12:32</span> -->
+              </div>
+              <div class="item col">
+                <div class="borderCtn">
+                  <div :class="{'leftBorder':true,'isOk':order_info.sample_order_apply_status> 10}"></div>
+                  <div :class="{'circle':true,'isOk':order_info.sample_order_apply_status> 11}"></div>
+                  <!-- <el-popover placement="top"
+                    width="200"
+                    trigger="hover">
+                    <div class="popover-title">
+                      <span class="user">隔壁老王</span>
+                      <span :class="{'status':true,'ok':true}">{{'未响应'}}</span>
+                    </div>
+                    <p class="useTime">耗时：{{getUseTime('2019-06-12 15:30')}}</p>
+                    <span class="hurry">催一下</span>
+                    <div class="circle"
+                      slot="reference"></div>
+                  </el-popover> -->
+                  <div :class="{'border':true,'isOk':order_info.sample_order_apply_status> 11}"></div>
+                </div>
+                <span>修改配料单<span style="color:#1a95ff;margin-left:8px;cursor: pointer;font-weight:400;"
+                    @click="handleType = 'changePlan'"
+                    v-if="11 === order_info.sample_order_apply_status">去修改</span></span>
+                <!-- <span>王经理</span> -->
+                <!-- <span>2016-12-12 12:32</span> -->
+              </div>
+              <div class="item col">
+                <div class="borderCtn">
+                  <div :class="{'leftBorder':true,'isOk':order_info.sample_order_apply_status> 11}"></div>
+                  <div :class="{'circle':true,'isOk':order_info.sample_order_apply_status> 11}"></div>
+                  <!-- <el-popover placement="top"
+                    width="200"
+                    trigger="hover">
+                    <div class="popover-title">
+                      <span class="user">隔壁老王</span>
+                      <span :class="{'status':true,'ok':true}">{{'未响应'}}</span>
+                    </div>
+                    <p class="useTime">耗时：{{getUseTime('2019-06-12 15:30')}}</p>
+                    <span class="hurry">催一下</span>
+                    <div class="circle"
+                      slot="reference"></div>
+                  </el-popover> -->
+                  <div :class="{'border':true,'isOk':order_info.sample_order_apply_status> 11}"></div>
+                </div>
+                <span>样单修改完成</span>
+                <!-- <span>王经理</span> -->
+                <!-- <span>2016-12-12 12:32</span> -->
               </div>
             </div>
           </div>
@@ -120,21 +229,21 @@
               <div class="item-info">
                 <div class="items">
                   <span class="label">客户确认:</span>
-                  <span :class="{'content':true,'success':true,'error':true,'running':true}"></span>
+                  <span :class="{'content':true,'success':order_info.client_confirm,'error':(!order_info.client_confirm)  && order_info.status === 1,'running':!order_info.client_confirm && order_info.status === 0}">{{order_info.client_confirm ? '已确认' : (order_info.status  === 1 ? '未确认' : '待确认')}}</span>
                 </div>
                 <div class="items">
                   <span class="label">样单类型:</span>
-                  <span class="content"></span>
+                  <span class="content">{{(order_info.sample_order_type || order_info.sample_order_type === 0) ? sampleTypeArr.find(item=>Number(item.id) === Number(order_info.sample_order_type)).name : '暂无'}}</span>
                 </div>
               </div>
               <div class="item-info">
                 <div class="items">
                   <span class="label">下单日期:</span>
-                  <span class="content"></span>
+                  <span class="content">{{order_info.order_time ? order_info.order_time : '暂无'}}</span>
                 </div>
                 <div class="items">
                   <span class="label">备注:</span>
-                  <span class="content"></span>
+                  <span class="content">{{order_info.remark ? order_info.remark : '暂无'}}</span>
                 </div>
               </div>
             </div>
@@ -863,7 +972,7 @@
                 <span class="tableColumn"
                   v-for="itemPro in item.product_info"
                   :key="itemPro.product_id">
-                  <span class="tableRow">{{itemPro.info[0].product_info.product_code}}({{itemPro.info[0].product_info.category_info.product_category}}/{{itemPro.info[0].product_info.type_name}}/{{itemPro.info[0].product_info.style_name}})</span>
+                  <span class="tableRow">{{itemPro.info[0].product_info.product_code}}({{itemPro.info[0].product_info.category_name}}/{{itemPro.info[0].product_info.type_name}}/{{itemPro.info[0].product_info.style_name}})</span>
                   <span class="tableRow col"
                     style="flex:2">
                     <span class="tableColumn"
@@ -1058,15 +1167,14 @@
                     </el-input>
                   </div>
                 </div>
-                <div class="item"
-                  :key="key+'Z'">
-                  <div class="content">
-                    <el-input v-model="item.sampleIdea"
-                      class="elInput"
-                      placeholder="请输入该样品修改意见"></el-input>
-                  </div>
-                </div>
               </template>
+              <div class="item">
+                <div class="content">
+                  <el-input v-model="submitInfo.sampleIdea"
+                    class="elInput"
+                    placeholder="请输入该样品修改意见"></el-input>
+                </div>
+              </div>
               <div class="item">
                 <span class="label">完成时间:</span>
                 <div class="content">
@@ -1174,12 +1282,14 @@
                   <div class="content">
                     <el-input v-model="item.price"
                       class="elInput marginRight"
-                      placeholder="输入数量">
+                      placeholder="输入数量"
+                      @input="(item.total_price = ((item.totalNum ? item.totalNum : 0) * (item.price ? item.price : 0)).toFixed(1))">
                       <template slot="append">元/条</template>
                     </el-input>
                     <el-input v-model="item.totalNum"
                       class="elInput"
-                      placeholder="输入数量">
+                      placeholder="输入数量"
+                      @input="(item.total_price = ((item.totalNum ? item.totalNum : 0) * (item.price ? item.price : 0)).toFixed(1))">
                       <template slot="append">条</template>
                     </el-input>
                   </div>
@@ -1189,7 +1299,6 @@
                   <div class="content">
                     <el-input placeholder="总价"
                       class="elInput"
-                      disabled
                       v-model="item.total_price">
                       <template slot="append">元</template>
                     </el-input>
@@ -1277,11 +1386,102 @@
           @click="designShare = false"></span>
       </div>
     </div>
+    <!-- 点击去修改样品时候的弹窗 -->
+    <div class="message"
+      v-show="handleType === 'changeSample'">
+      <div class="messageBox">
+        <div class="title">请选择你要修改的产品<span @click="orderStatus(10)"
+            style="color:#1a95ff;cursor: pointer;margin-left:20px;">完成</span></div>
+        <div class="inputBox"
+          style="padding: 20px 0;">
+          <div class="item">
+            <el-radio-group v-model="submitInfo.changeSamplePro">
+              <el-radio v-for="item in productDetailInfo"
+                :key="item.product_id"
+                style="color:#999;margin:0.5em 0;"
+                :label="item.product_id + '?type=' + (item.detail ? item.detail.type : '' )">{{item.detail ? item.detail.product_code : ''}}({{item.detail ?(item.detail.category_info.product_category + '/' + item.detail.type_name + '/' + item.detail.style_name + (item.detail.flower_id ? '/' + item.detail.flower_id : '')) : ''}})</el-radio>
+            </el-radio-group>
+            <!-- /index/productUpdate/41?type=2 -->
+          </div>
+        </div>
+        <div class="footer">
+          <span class="cancel"
+            @click="handleType = 'ok'">取消</span>
+          <span class="ok"
+            @click="$router.push('/index/productUpdate/' + submitInfo.changeSamplePro)">去修改</span>
+        </div>
+        <span class="close el-icon-close"
+          style="z-index:3;"
+          @click="handleType = 'ok'"></span>
+      </div>
+    </div>
+    <!-- 点击去修改工艺单时候的弹窗 -->
+    <div class="message"
+      v-show="handleType === 'changeCraft'">
+      <div class="messageBox">
+        <div class="title">请选择你要修改的工艺单<span @click="orderStatus(11)"
+            style="color:#1a95ff;cursor: pointer;margin-left:20px;">完成</span></div>
+        <div class="inputBox"
+          style="padding: 20px 0;">
+          <div class="item">
+            <el-radio-group v-model="submitInfo.changeCraft">
+              <template v-for="(value) in productDetailInfo">
+                <el-radio v-for="item in (value.detail ? value.detail.craft_info : [])"
+                  :key="item.id"
+                  style="color:#999;margin:0.5em 0;"
+                  :label="item.id">{{item.craft_code}}(创建于:{{item.create_time}})</el-radio>
+              </template>
+              <!-- /index/designFormUpdate/33 -->
+            </el-radio-group>
+          </div>
+        </div>
+        <div class="footer">
+          <span class="cancel"
+            @click="handleType = 'ok'">取消</span>
+          <span class="ok"
+            @click="$router.push('/index/designFormUpdate/' + submitInfo.changeCraft)">去修改</span>
+        </div>
+        <span class="close el-icon-close"
+          style="z-index:3;"
+          @click="handleType = 'ok'"></span>
+      </div>
+    </div>
+    <!-- 点击去修改样品时候的弹窗 -->
+    <div class="message"
+      v-show="handleType === 'changePlan'">
+      <div class="messageBox">
+        <div class="title">请选择你要修改的配料单<span @click="orderStatus(12)"
+            style="color:#1a95ff;cursor: pointer;margin-left:20px;">完成</span></div>
+        <div class="inputBox"
+          style="padding: 20px 0;">
+          <div class="item">
+            <el-radio-group v-model="submitInfo.changePlan">
+              <template v-for="(value) in productDetailInfo">
+                <el-radio v-for="item in (value.detail ? value.detail.product_plan_info : [])"
+                  :key="item.id"
+                  style="color:#999;margin:0.5em 0;"
+                  :label="item.id">{{item.plan_code}}(创建于:{{item.create_time}})</el-radio>
+              </template>
+            </el-radio-group>
+            <!-- /index/productPlanUpdate/19YCAA0241 -->
+          </div>
+        </div>
+        <div class="footer">
+          <span class="cancel"
+            @click="handleType = 'ok'">取消</span>
+          <span class="ok"
+            @click="$router.push('/index/productPlanUpdate/')">去修改</span>
+        </div>
+        <span class="close el-icon-close"
+          style="z-index:3;"
+          @click="handleType = 'ok'"></span>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { orderDetailNew, rawMaterialOrderInit, productionDetail, packagNumberDetail, orderCheck, orderCancleLog, orderMaterialSotckDetail, orderSave, porductOne } from '@/assets/js/api.js'
+import { orderDetailNew, rawMaterialOrderInit, productionDetail, packagNumberDetail, orderCheck, orderCancleLog, orderMaterialSotckDetail, orderSave, porductOne, orderList, isCheckedPlanAndCraft } from '@/assets/js/api.js'
 import { moneyArr } from '@/assets/js/dictionary.js'
 export default {
   data () {
@@ -1292,7 +1492,7 @@ export default {
       showLoading: false,
       showStep: false,
       stepTitle: ['物料结余', '确认提交'],
-      stepContent: ['该样单已经样购过以下物料，请按实际情况填写物料剩余数量。', '警告！执行取消样单操作后会导致该样单无法继续执行相关生产操作，是否确认取消样单？'],
+      stepContent: ['该样单已经订购过以下物料，请按实际情况填写物料剩余数量。', '警告！执行取消样单操作后会导致该样单无法继续执行相关生产操作，是否确认取消样单？'],
       step: 0,
       loading: true,
       defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
@@ -1339,14 +1539,17 @@ export default {
       submitInfo: {
         sampleType: '',
         isCustomerPay: false,
-        total_price: '',
         isStockForMaterial: true,
         sample_complete_time: '',
+        sampleIdea: '',
         createProInfo: [{
           sample_odd: '',
           design_odd: '',
           plan_odd: ''
-        }]
+        }],
+        changeSamplePro: '',
+        changeCraft: '',
+        changePlan: ''
       },
       sampleTypeArr: [{
         id: 0,
@@ -1371,10 +1574,37 @@ export default {
       productInfo: [], // 样单产品数据
       isFirstPage: true,
       designShare: false,
-      productDetailInfo: []// 产品详情
+      productDetailInfo: [], // 产品详情
+      lock: true,
+      sample_order_list: [], // 多次打样信息
+      isOK: false // 判断流程是否全部完成
     }
   },
   methods: {
+    // 获取已用时间
+    getUseTime (startTime, endTime) {
+      let start = new Date(startTime).getTime()
+      let end = endTime ? new Date(endTime).getTime : new Date().getTime()
+      let useTime = (start - end) / 1000 / 60
+      console.log(useTime)
+      return parseInt(useTime / 60) + '小时' + parseInt(useTime % 60) + '分钟'
+    },
+    // 刷新页面
+    reloadPage (id) {
+      this.$router.push('/index/sampleOrderDetail/' + id)
+      window.location.reload()
+    },
+    getSampleOrderList (code) {
+      orderList({
+        'company_id': window.sessionStorage.getItem('company_id'),
+        'type': 2,
+        'inside_order_code': code
+      }).then(res => {
+        this.sample_order_list = res.data.data.sort((itemA, itemB) => {
+          return Number(itemA.id) > Number(itemB.id)
+        })
+      })
+    },
     getCraftInfo (item, key) {
       console.log(item)
       if (!item) {
@@ -1390,81 +1620,129 @@ export default {
       }
     },
     submitChange (type) {
-      if (type === 'ok') {
-
-      } else if (type === 'change') {
-        let batchInfo = []
-        this.productInfo.forEach(item => {
-          let flagPro = batchInfo.find(val => val.productCode === item.product_code)
-          if (!flagPro) {
-            batchInfo.push({
-              productCode: item.product_code,
-              size: [{
-                name: [item.size, item.color],
-                unitPrice: this.submitInfo.isCustomerPay ? item.price : null,
-                numbers: item.number
-              }]
-            })
-          } else {
-            let flagSizeColor = flagPro.size.find(val => val.name[0] === item.size && val.name[1] === item.color)
-            if (!flagSizeColor) {
-              flagPro.size.push({
-                name: [item.size, item.color],
-                unitPrice: this.submitInfo.isCustomerPay ? item.price : null,
-                numbers: item.number
+      if (this.lock) {
+        this.lock = false
+        let dataPro = this.submitInfo.isCustomerPay ? this.productInfo.map(vals => {
+          return {
+            order_id: this.$route.params.id,
+            product_code: vals.product_code,
+            size: vals.size,
+            color: vals.color,
+            price: vals.price,
+            number: vals.totalNum,
+            total_price: vals.total_price
+          }
+        }) : null
+        if (type === 'ok') {
+          let data = this.submitInfo.createProInfo.filter(items => items.sample_odd).map(items => {
+            return {
+              product_id: items.sample_odd,
+              craft_id: items.design_odd,
+              plan_id: items.plan_odd,
+              product_code: this.productDetailInfo.find(val => val.product_id === items.sample_odd).detail.product_code.split('Y').join('')
+            }
+          })
+          isCheckedPlanAndCraft({
+            data_client_info: dataPro,
+            data: data,
+            order_id: this.$route.params.id
+          }).then(res => {
+            this.lock = true
+            this.showMessageBox = false
+            if (res.status) {
+              this.$message.success({
+                message: '确认成功'
+              })
+            } else {
+              this.$message.error({
+                message: res.data.message
               })
             }
-          }
-        })
-        let data = {
-          id: null,
-          company_id: window.sessionStorage.getItem('company_id'),
-          user_id: window.sessionStorage.getItem('user_id'),
-          order_code: this.order_info.order_code,
-          inside_order_code: this.order_info.inside_order_code,
-          group_id: this.order_info.group_id,
-          client_id: this.order_info.client_id,
-          contacts: this.order_info.contacts_id,
-          account_unit: null,
-          exchange_rate: null,
-          tax_rate: null,
-          order_time: this.getTime(new Date()),
-          order_info: [{
-            batch_id: 1,
-            batch_info: batchInfo,
-            delivery_time: this.submitInfo.sample_complete_time
-          }],
-          order_type: this.submitInfo.sampleType,
-          total_price: null,
-          remark: this.order_info.remark,
-          total_price_RMB: null,
-          order_contract: JSON.stringify(this.order_info.order_contract),
-          pack_means: JSON.stringify(this.order_info.pack_means),
-          store_means: JSON.stringify(this.order_info.store_means),
-          other_info: JSON.stringify(this.order_info.others_info),
-          type: 2
-        }
-        orderSave(data).then((res) => {
-          console.log(res)
-          if (res.data.status) {
-            this.$message.success({
-              message: '修改成功'
-            })
-            if (res.data && res.data.data) {
-              this.$router.push('/index/sampleOrderDetail/' + res.data.data)
+          })
+        } else if (type === 'change') {
+          let batchInfo = []
+          this.productInfo.forEach(item => {
+            let flagPro = batchInfo.find(val => val.productCode === item.product_code)
+            if (!flagPro) {
+              batchInfo.push({
+                productCode: item.product_code,
+                size: [{
+                  name: [item.size, item.color],
+                  unitPrice: null,
+                  numbers: item.number
+                }]
+              })
+            } else {
+              let flagSizeColor = flagPro.size.find(val => val.name[0] === item.size && val.name[1] === item.color)
+              if (!flagSizeColor) {
+                flagPro.size.push({
+                  name: [item.size, item.color],
+                  unitPrice: null,
+                  numbers: item.number
+                })
+              }
             }
-          } else {
-            this.$message.error({
-              message: res.data.message
-            })
+          })
+          if (!this.submitInfo.sampleType) {
+            this.$message.error('请选择样单类型')
+            return
           }
-        })
-        console.log(data)
+          let data = {
+            data_client_info: dataPro, // 客户是否付费
+            id: null,
+            company_id: window.sessionStorage.getItem('company_id'),
+            user_id: window.sessionStorage.getItem('user_id'),
+            order_code: this.order_info.order_code,
+            inside_order_code: this.order_info.inside_order_code,
+            group_id: this.order_info.group_id,
+            client_id: this.order_info.client_id,
+            contacts: this.order_info.contacts_id,
+            account_unit: null,
+            exchange_rate: null,
+            tax_rate: null,
+            order_time: this.getTime(new Date()),
+            order_info: [{
+              batch_id: 1,
+              batch_info: batchInfo,
+              delivery_time: this.submitInfo.sample_complete_time
+            }],
+            sample_order_type: this.submitInfo.sampleType,
+            total_price: null,
+            remark: this.submitInfo.sampleIdea,
+            total_price_RMB: null,
+            order_contract: this.order_info.order_contract ? JSON.stringify(this.order_info.order_contract) : null,
+            pack_means: this.order_info.pack_means ? JSON.stringify(this.order_info.pack_means) : null,
+            store_means: this.order_info.store_means ? JSON.stringify(this.order_info.store_means) : null,
+            other_info: this.order_info.others_info ? JSON.stringify(this.order_info.others_info) : null,
+            type: 2
+          }
+          orderSave(data).then((res) => {
+            this.lock = true
+            console.log(res)
+            if (res.data.status) {
+              this.$message.success({
+                message: '修改成功'
+              })
+              if (res.data && res.data.data) {
+                this.$router.push('/index/sampleOrderDetail/' + res.data.data.id)
+              }
+            } else {
+              this.$message.error({
+                message: res.data.message
+              })
+            }
+          })
+          console.log(data)
+        } else if (type === 'changeSample') {
+
+        }
       }
     },
     showMessage (type) {
       if (type === 'cancle') {
         this.showStep = true
+      } else if (type === 'yes') {
+        this.orderStatus(1)
       } else {
         this.showMessageBox = true
         this.handleType = type
@@ -1587,7 +1865,7 @@ export default {
       return parseInt(rate) + '%'
     },
     orderStatus (state) {
-      let filterArr = ['', '样单状态', '样单生产状态', '样单物料状态', '样单检验状态', '样单收发状态', '样单出库状态']
+      let filterArr = ['', '样单状态', '样单生产状态', '样单物料状态', '样单检验状态', '样单收发状态', '样单出库状态', '', '', '', '申请流程样品状态', '申请流程工艺单状态', '申请流程配料单状态']
       if (state < 8) {
         this.$confirm('该操作将直接修改' + filterArr[state] + ',你无法再对该样单的相关步骤进行操作, 请确认是否修改?', '提示', {
           confirmButtonText: '确定',
@@ -1635,7 +1913,7 @@ export default {
             message: '已取消操作'
           })
         })
-      } else {
+      } else if (state === '8' || state === '9') {
         if (state === '8') {
           if (this.order_info.status !== 2) {
             this.showStep = true
@@ -1648,6 +1926,38 @@ export default {
         if (state === '9') {
           this.showStep = true
         }
+      } else {
+        this.$confirm('该操作将直接修改' + filterArr[state] + ',你无法再对该样单的相关步骤进行操作, 请确认是否修改?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          orderCheck({
+            id: this.$route.params.id,
+            company_id: window.sessionStorage.getItem('company_id'),
+            type: 9,
+            sample_order_apply_status: state,
+            product_data: [],
+            material_data: []
+          }).then((res) => {
+            if (res.data.status) {
+              this.$message.success({
+                message: '修改成功'
+              })
+              this.order_info.sample_order_apply_status = state
+              this.handleType = 'ok'
+            } else {
+              this.$message.error({
+                message: res.data.message
+              })
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消操作'
+          })
+        })
       }
     },
     // 打开详情页
@@ -1820,7 +2130,7 @@ export default {
     })]).then((res) => {
       const data = res[0].data.data
       this.order_info = data.order_info
-      this.order_info.fileArr = this.order_info.file_url ? JSON.parse(this.order_info.file_url) : []
+      // this.order_info.fileArr = this.order_info.file_url ? JSON.parse(this.order_info.file_url) : []
       this.order_log = data.order_log
       this.process = data.order_schedule
       this.logList = res[4].data.data.map((item) => {
@@ -1985,7 +2295,6 @@ export default {
               unit: valPro.category_info.unit,
               number: 0,
               sizeColor: valPro.size + '/' + valPro.color,
-              sampleIdea: '',
               payMoneyNumber: '',
               price: '',
               total_price: ''
@@ -2194,7 +2503,8 @@ export default {
         })
       }
       this.productPriceList = this.order_info.order_batch
-      // 获取此样单相关的产品详情
+      // 获取多次打样信息
+      this.getSampleOrderList(this.order_info.inside_order_code)
       this.loading = false
     })
   }
@@ -2359,6 +2669,12 @@ export default {
               top: 0;
               left: 0;
             }
+            .content {
+              display: flex;
+              width: auto;
+              height: 40px;
+              line-height: 40px;
+            }
             .success {
               color: #67c23a;
             }
@@ -2394,17 +2710,20 @@ export default {
             .leftBorder {
               width: 28px;
               height: 2px;
-              background: #1a95ff;
+              background: #e9e9e9;
             }
             .circle {
               width: 10px;
               height: 10px;
-              background: #1a95ff;
               border-radius: 50%;
+              background: #e9e9e9;
             }
             .border {
               width: 100%;
               height: 2px;
+              background: #e9e9e9;
+            }
+            .isOk {
               background: #1a95ff;
             }
           }
@@ -2453,6 +2772,50 @@ export default {
   }
   .el-carousel__arrow {
     background: #1a95ff;
+  }
+}
+.el-popover {
+  padding: 40px 1em 20px;
+  box-sizing: border-box;
+  .popover-title {
+    position: absolute;
+    box-sizing: border-box;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 0 1em;
+    line-height: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: space-between;
+    & > .status {
+      color: #aaa;
+      &::before {
+        content: "";
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        background: #aaa;
+        border-radius: 50%;
+        margin-right: 8px;
+      }
+      &.ok {
+        color: #67c23a !important;
+        &::before {
+          background: #67c23a !important;
+        }
+      }
+    }
+  }
+  .useTime {
+    height: 40px;
+    line-height: 40px;
+    padding: 0;
+    margin: 0;
+  }
+  .hurry {
+    color: #1a95ff;
+    cursor: pointer;
   }
 }
 </style>

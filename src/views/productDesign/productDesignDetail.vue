@@ -533,6 +533,8 @@ export default {
             sizeColor: [{
               size: item.size,
               color: item.color,
+              order_num: item.order_num,
+              stock_pick: item.stock_pick,
               production_num: item.production_num,
               productiong_sunhao: item.production_sunhao,
               unit_name: item.unit_name,
@@ -548,6 +550,8 @@ export default {
             flag.sizeColor.push({
               size: item.size,
               color: item.color,
+              order_num: item.order_num,
+              stock_pick: item.stock_pick,
               production_num: item.production_num,
               productiong_sunhao: item.production_sunhao,
               unit_name: item.unit_name,
@@ -583,9 +587,9 @@ export default {
                 sizeColorInfo[valNum.material_name] = {}
               }
               if (sizeColorInfo[valNum.material_name][valNum.color_name]) {
-                sizeColorInfo[valNum.material_name][valNum.color_name].number += Number((val.production_num ? val.production_num : 0) * ((val.productiong_sunhao ? val.productiong_sunhao : 0) / 100 + 1) * valNum.number)
+                sizeColorInfo[valNum.material_name][valNum.color_name].number += Number(((val.order_num ? val.order_num : 0) - (val.stock_pick ? val.stock_pick : 0)) * ((val.productiong_sunhao ? val.productiong_sunhao : 0) / 100 + 1) * valNum.number)
               } else {
-                sizeColorInfo[valNum.material_name][valNum.color_name] = { number: (val.production_num ? val.production_num : 0) * ((val.productiong_sunhao ? val.productiong_sunhao : 0) / 100 + 1) * valNum.number, unit: valNum.unit }
+                sizeColorInfo[valNum.material_name][valNum.color_name] = { number: ((val.order_num ? val.order_num : 0) - (val.stock_pick ? val.stock_pick : 0)) * ((val.productiong_sunhao ? val.productiong_sunhao : 0) / 100 + 1) * valNum.number, unit: valNum.unit }
               }
             })
           }

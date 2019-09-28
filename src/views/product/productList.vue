@@ -350,12 +350,15 @@ export default {
         productDelete({
           id: id
         }).then((res) => {
-          console.log(res)
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          })
-          this.getProductList()
+          if (res.data.status) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.getProductList()
+          } else {
+            this.$message.error(res.data.message)
+          }
         })
       }).catch(() => {
         this.$message({

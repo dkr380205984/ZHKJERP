@@ -390,7 +390,7 @@ export default {
   filters: {
     // 拟定编号
     filterCode (item) {
-      return item.split('').splice(0, 8).join('').split('Y').join('')
+      return item.split('Y').join('')
     },
     // 类型合并
     filterType (item) {
@@ -412,58 +412,60 @@ export default {
   },
   methods: {
     pushProduct () {
-      let data = {
-        product_code: this.productDetail.product_code.split('').splice(0, 8).join('').split('Y').join(''),
-        company_id: window.sessionStorage.getItem('company_id'),
-        category_id: this.productDetail.category_id,
-        type_id: this.productDetail.type_id,
-        style_id: this.productDetail.style_id,
-        type: 1,
-        flower_id: this.productDetail.flower_id_new,
-        description: this.productDetail.description,
-        user_id: window.sessionStorage.getItem('user_id'),
-        img: this.productDetail.img.map(item => {
-          return item.image_url
-        }),
-        color: this.productDetail.color.map(item => {
-          return item.color_name
-        }),
-        size: this.productDetail.size.map(key => {
-          return {
-            size_info: key.size_info,
-            weight: key.weight,
-            measurement: key.measurement
-          }
-        }),
-        sample_title: this.productDetail.sampleName,
-        materials: this.productDetail.materials.map(item => {
-          return {
-            ingredient_name: item.ingredient_name,
-            ingredient_value: item.ingredient_value
-          }
-        })
-      }
+      // let data = {
+
+      //   company_id: window.sessionStorage.getItem('company_id'),
+      //   category_id: this.productDetail.category_id,
+      //   type_id: this.productDetail.type_id,
+      //   style_id: this.productDetail.style_id,
+      //   type: 1,
+      //   flower_id: this.productDetail.flower_id_new,
+      //   description: this.productDetail.description,
+      //   user_id: window.sessionStorage.getItem('user_id'),
+      //   img: this.productDetail.img.map(item => {
+      //     return item.image_url
+      //   }),
+      //   color: this.productDetail.color.map(item => {
+      //     return item.color_name
+      //   }),
+      //   size: this.productDetail.size.map(key => {
+      //     return {
+      //       size_info: key.size_info,
+      //       weight: key.weight,
+      //       measurement: key.measurement
+      //     }
+      //   }),
+      //   sample_title: this.productDetail.sampleName,
+      //   materials: this.productDetail.materials.map(item => {
+      //     return {
+      //       ingredient_name: item.ingredient_name,
+      //       ingredient_value: item.ingredient_value
+      //     }
+      //   })
+      // }
       if (this.lock) {
         this.lock = false
-        saveProduct(data).then(res => {
-          this.id = res.data.data.id
-          if (res.data.status) {
-            isCheckedPlanAndCraft({
-              product_id: this.id,
-              craft_id: this.isCraft,
-              plan_id: this.isPlan,
-              is_delete: true
-            }).then(res => {
-              if (res.status) {
-                this.$message.success('添加成功,即将跳转至产品详情页')
-                setTimeout(() => {
-                  this.lock = true
-                  this.$router.push('/index/productDetail/' + this.id)
-                }, 800)
-              }
-            })
+        // saveProduct(data).then(res => {
+        //   this.id = res.data.data.id
+        //   if (res.data.status) {
+        isCheckedPlanAndCraft({
+          data: [{
+            product_id: this.$route.params.id,
+            craft_id: this.isCraft,
+            plan_id: this.isPlan,
+            product_code: this.productDetail.product_code.split('Y').join('')
+          }]
+        }).then(res => {
+          this.lock = true
+          if (res.status) {
+            this.$message.success('添加成功,即将跳转至产品详情页')
+            setTimeout(() => {
+              this.$router.push('/index/productDetail/' + this.$route.params.id)
+            }, 800)
           }
         })
+        // }
+        // })
       } else {
         this.$message.warning('请勿频繁点击')
       }

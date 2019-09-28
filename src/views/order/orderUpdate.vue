@@ -232,8 +232,8 @@
             </div>
             <div class="lineBody">
               <div class="list"
-                v-for="item in productArr"
-                :key="item.id">
+                v-for="(item,key) in productArr"
+                :key="key">
                 <div class="flex"
                   style="color:#10AEF5">{{item.product_code}}</div>
                 <div class="flex">{{item|filterType}}</div>
@@ -995,7 +995,8 @@ export default {
         // 第二步，把最新的产品信息更新到批次信息里
         this.orderArr.forEach((item) => {
           item.product.forEach((itemPro) => {
-            const finded = this.productArr.find((itemFind) => Number(itemPro.product_info.id) === Number(itemFind.id))
+            console.log(JSON.parse(JSON.stringify(itemPro)))
+            const finded = this.productArr.find((itemFind) => Number(itemPro.product_info.category_info.product_id) === Number(itemFind.id))
             if (finded) {
               itemPro.colorSizeArr = []
               finded.size.forEach(valSize => {
@@ -1010,6 +1011,7 @@ export default {
                   })
                 })
               })
+              // console.log(itemPro)
             }
           })
         })

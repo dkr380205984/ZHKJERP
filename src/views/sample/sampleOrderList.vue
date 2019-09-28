@@ -170,8 +170,8 @@
             <div style="margin:auto">
               <span class="btns success"
                 @click="$router.push('/index/sampleOrderDetail/' + item.id)">详情</span>
-              <span class="btns warning"
-                @click="$router.push('/index/orderUpdate/' + item.id)">修改</span>
+              <!-- <span class="btns warning"
+                @click="$router.push('/index/orderUpdate/' + item.id)">修改</span> -->
               <span class="btns error"
                 style="display:none"
                 @click="deleteOrder(item.id)">删除</span>

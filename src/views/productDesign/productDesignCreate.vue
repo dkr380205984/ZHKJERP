@@ -381,12 +381,12 @@ export default {
         productionSave(json).then((res) => {
           if (res.data.status) {
             if (this.msgFlag) {
-              this.msgUrl = '/index/productDesignDetail/' + res.data.data.id
+              this.msgUrl = '/index/productDesignDetail/' + res.data.data.order_info.id
               this.content = '订单<span style="color:#1A95FF">' + res.data.data.order_info.order_code + '</span><span style="color:#1A95FF;margin-left:"5px>添加</span>了一张生产计划单'
               this.sendMsg()
             } else {
               this.$message.success('添加成功')
-              this.$router.push('/index/productDesignDetail/' + res.data.data.id)
+              this.$router.push('/index/productDesignDetail/' + res.data.data.order_info.id)
             }
           } else {
             this.$message.error({
@@ -455,9 +455,9 @@ export default {
             sizeColorInfo[value.material_name] = {}
           }
           if (sizeColorInfo[value.material_name][value.material_color]) {
-            sizeColorInfo[value.material_name][value.material_color].number += Number((item.production_num ? item.production_num : 0) * ((item.production_sunhao ? item.production_sunhao : 0) / 100 + 1) * value.number)
+            sizeColorInfo[value.material_name][value.material_color].number += Number((item.numbers ? item.numbers : 0) - (item.stock_pick ? item.stock_pick : 0) * ((item.production_sunhao ? item.production_sunhao : 0) / 100 + 1) * value.number)
           } else {
-            sizeColorInfo[value.material_name][value.material_color] = { number: (item.production_num ? item.production_num : 0) * ((item.production_sunhao ? item.production_sunhao : 0) / 100 + 1) * value.number, unit: value.unit }
+            sizeColorInfo[value.material_name][value.material_color] = { number: (item.numbers ? item.numbers : 0) - (item.stock_pick ? item.stock_pick : 0) * ((item.production_sunhao ? item.production_sunhao : 0) / 100 + 1) * value.number, unit: value.unit }
           }
         })
         let pro = this.material_plan.find(key => (key.product_code === item.product_code))
