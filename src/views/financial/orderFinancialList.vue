@@ -424,47 +424,46 @@ export default {
           list.total_pop = item.total_pop
           list.exchange_rate = item.exchange_rate / 100
           // 订单产品信息
-          item.order_batch.forEach(item => {
-            item.batch_info.forEach(valBat => {
+          for (let prop in item.order_batch) {
+            let itemBatch = item.order_batch[prop]
+            itemBatch.forEach(valPro => {
               if (!list.product_info) {
                 list.product_info = []
               }
-              valBat.size.forEach(valSize => {
-                list.order_number = Number(list.order_number ? list.order_number : 0) + Number(valSize.numbers)
-                let pro = list.product_info.find(key => key.product_code === valBat.productCode)
-                if (!pro) {
-                  list.product_info.push({
-                    product_code: valBat.productCode,
-                    product_type: valBat.productInfo.category_info.product_category + '/' + valBat.productInfo.type_name + '/' + valBat.productInfo.style_name + (valBat.productInfo.flower_id ? '/' + valBat.productInfo.flower_id : ''),
-                    order_total_price: valSize.unitPrice * valSize.numbers,
-                    img: valBat.productInfo.img,
-                    unit: valBat.productInfo.category_info.name,
-                    size_info: [{
-                      size: valSize.name[0],
-                      color: valSize.name[1],
-                      batch_id: item.batch_id,
-                      one_price: valSize.unitPrice,
-                      order_number: valSize.numbers
-                    }]
+              list.order_number = Number(list.order_number ? list.order_number : 0) + Number(valPro.numbers)
+              let pro = list.product_info.find(key => key.product_code === valPro.product_code)
+              if (!pro) {
+                list.product_info.push({
+                  product_code: valPro.product_code,
+                  product_type: valPro.category_info.category_name + '/' + valPro.category_info.type_name + '/' + valPro.category_info.style_name + (valPro.category_info.flower_name ? '/' + valPro.category_info.flower_name : ''),
+                  order_total_price: valPro.unit_price * valPro.numbers,
+                  img: valPro.category_info.images,
+                  unit: valPro.category_info.unit,
+                  size_info: [{
+                    size: valPro.size,
+                    color: valPro.color,
+                    batch_id: valPro.batch_id,
+                    one_price: valPro.unit_price,
+                    order_number: valPro.numbers
+                  }]
+                })
+              } else {
+                pro.order_total_price = Number(pro.order_total_price ? pro.order_total_price : 0) + Number(valPro.unit_price * valPro.numbers)
+                let size = pro.size_info.find(key => (key.size === valPro.size && key.color === valPro.color && key.one_price === valPro.unit_price))
+                if (!size) {
+                  pro.size_info.push({
+                    size: valPro.size,
+                    color: valPro.color,
+                    batch_id: valPro.batch_id,
+                    one_price: valPro.unit_price,
+                    order_number: valPro.numbers
                   })
                 } else {
-                  pro.order_total_price = Number(pro.order_total_price ? pro.order_total_price : 0) + Number(valSize.unitPrice * valSize.numbers)
-                  let size = pro.size_info.find(key => (key.size === valSize.name[0] && key.color === valSize.name[1] && key.one_price === valSize.unitPrice))
-                  if (!size) {
-                    pro.size_info.push({
-                      size: valSize.name[0],
-                      color: valSize.name[1],
-                      batch_id: item.batch_id,
-                      one_price: valSize.unitPrice,
-                      order_number: valSize.numbers
-                    })
-                  } else {
-                    size.order_number = Number(size.order_number ? size.order_number : 0) + Number(valSize.numbers)
-                  }
+                  size.order_number = Number(size.order_number ? size.order_number : 0) + Number(valPro.numbers)
                 }
-              })
+              }
             })
-          })
+          }
           this.nowCount.order_total_price += (list.order_total_price * list.exchange_rate)
           this.nowCount.order_total_number += Number(list.order_number)
           this.nowCount.order_total_real_price += Number(list.total_real)
@@ -479,8 +478,8 @@ export default {
           } else {
             this.isOk = true
           }
+          if (this.list.length >= 20 || this.isOk) { this.loading = false }
         }, 500)
-        if (this.list.length >= 20 || this.isOk) { this.loading = false }
       })
     },
     showData (e) {

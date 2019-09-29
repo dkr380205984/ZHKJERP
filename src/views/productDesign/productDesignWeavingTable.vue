@@ -350,7 +350,7 @@ export default {
     }).then(res => {
       let clientList = res.data.data
       console.log(clientList)
-      this.order_company = clientList.find(val => val.name === this.order_company).abbreviation
+      this.order_company = clientList.find(val => val.name === this.order_company).abbreviation || this.order_company
     })
   },
   updated () {

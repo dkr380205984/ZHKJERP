@@ -19,7 +19,7 @@
         <div class="contents col"
           style="align-items:flex-start">
           <span style="white-space:nowrap;">{{size.measurement}}</span>
-          <span style="word-break: break-word;">{{size.size_info}}</span>
+          <span style="word-break: break-word;">{{size.size_info}}cm</span>
         </div>
       </div>
       <div class="items">

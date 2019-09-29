@@ -38,10 +38,10 @@
         </div>
       </div>
       <div class="lineCtn">
-        <div class="inputCtn">
+        <!-- <div class="inputCtn">
           <span class="label">样品克重:</span>
           <span class="content">{{productDetail.weight}}克</span>
-        </div>
+        </div> -->
         <div class="inputCtn">
           <span class="label">样品成分:</span>
           <span class="content">{{productDetail.materials|filterMaterials}}</span>
@@ -55,7 +55,7 @@
             :key="key">
             <span class="size">{{item.measurement}}</span>
             <span class="sizeDetail">
-              <span class="sizeOnce">{{item.size_info}}</span>
+              <span class="sizeOnce">{{item.size_info}}cm</span>
               <span class="sizeOnce">{{ '克重' + '：'+item.weight + 'g'}}</span>
             </span>
           </span>

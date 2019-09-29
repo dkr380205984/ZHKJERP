@@ -1500,6 +1500,10 @@ export default {
       id: this.$route.params.id,
       company_id: window.sessionStorage.getItem('company_id')
     })]).then((res) => {
+      if (res[0].data.data.order_info.type === 2) {
+        this.$router.push('/index/sampleOrderDetail/' + res[0].data.data.order_info.id)
+        return
+      }
       const data = res[0].data.data
       this.order_info = data.order_info
       // this.order_info.fileArr = this.order_info.file_url ? JSON.parse(this.order_info.file_url) : []

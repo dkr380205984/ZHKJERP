@@ -49,7 +49,7 @@
             :key="key">
             <span class="size">{{item.measurement}}</span>
             <span class="sizeDetail">
-              <span class="sizeOnce">{{item.size_info}}</span>
+              <span class="sizeOnce">{{item.size_info}}cm</span>
               <span class="sizeOnce">{{ '克重' + '：'+item.weight + 'g'}}</span>
             </span>
           </span>
@@ -107,7 +107,7 @@
                   <div class="contents col"
                     style="align-items:flex-start">
                     <span style="white-space:nowrap;">{{selectSize.measurement}}</span>
-                    <span style="word-break: break-word;">({{selectSize.size_info}})</span>
+                    <span style="word-break: break-word;">({{selectSize.size_info}}cm)</span>
                   </div>
                 </div>
                 <div class="items">

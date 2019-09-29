@@ -284,7 +284,14 @@ export default {
         company_id: window.sessionStorage.getItem('company_id'),
         product_id: this.checkedProList.map(key => { return key.product_id })
       }).then(res => {
-        this.$message.success('保存成功')
+        if (res.data.status) {
+          this.$message.success('保存成功,即将跳转至产品手册页')
+          setTimeout(() => {
+            this.$router.push('/productMenu')
+          }, 800)
+        } else {
+          this.$message.error(res.data.message)
+        }
       })
     }
   },

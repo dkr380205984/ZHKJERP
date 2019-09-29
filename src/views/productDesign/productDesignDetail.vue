@@ -233,7 +233,7 @@
                     :key="indSize"
                     class="planRow">
                     <span>{{indSize}}</span>
-                    <span>{{filterWeight(valSize,item.nowType)}}</span>
+                    <span>{{filterWeights(valSize,item.nowType)}}</span>
                   </span>
                 </span>
                 <template v-if="item.material[item.nowType].length < 4">
@@ -272,11 +272,11 @@
                 :key="index"
                 class="info">
                 <span>{{value.name}}</span>
-                <span>{{filterWeight(value,totalPlanMaterial.nowType)}}</span>
+                <span>{{filterWeights(value,totalPlanMaterial.nowType)}}</span>
               </span>
               <span class="info"
-                v-for="item in MaxTotalMaterialAttr-item.attrInfo.length"
-                :key="item+'null'"></span>
+                v-for="itemNumber in MaxTotalMaterialAttr - item.attrInfo.length"
+                :key="itemNumber+'null'"></span>
               <span class="total">合计:{{filterTotal(item.attrInfo,totalPlanMaterial.nowType)}}</span>
             </div>
             <template v-if="totalPlanMaterial[totalPlanMaterial.nowType].length % 5 !== 0">
@@ -384,7 +384,7 @@ export default {
       }
       return max
     },
-    filterWeight (item, type) {
+    filterWeights (item, type) {
       if (type === 'main') {
         if (item.unit === 'g' || item.unit === '克') {
           return (item.number / 1000).toFixed(1) + 'kg'
@@ -635,9 +635,9 @@ export default {
       this.MaxTotalMaterialAttr = this.totalPlanMaterial.main.map(item => {
         return item.attrInfo.length
       }).sort((a, b) => {
-        return a > b
+        return b - a
       })[0]
-      console.log(this.product)
+      console.log(this.MaxTotalMaterialAttr)
       this.loading = false
     })
   },

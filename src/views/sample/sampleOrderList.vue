@@ -108,6 +108,8 @@
           <div class="tableColumn"
             style="flex:0.7">负责小组</div>
           <div class="tableColumn"
+            style="flex:0.7">订单类型</div>
+          <div class="tableColumn"
             style="flex:0.7">订单状态</div>
           <div class="tableColumn">下单日期</div>
           <div class="tableColumn">样单交货</div>
@@ -129,7 +131,7 @@
                 <span class="hoverBlue"
                   style="margin:0 5px;cursor:pointer"
                   @click="open('/index/productDetail/'+itemProduct.productInfo.id)">{{itemProduct.productCode}}</span>
-                <span style="margin:0 5px">{{itemProduct.productInfo.category_info.category_name}}/{{itemProduct.productInfo.category_info.type_name}}/{{itemProduct.productInfo.category_info.style_name}}/{{itemProduct.productInfo.category_info.flower_id}}</span>
+                <span style="margin:0 5px">{{itemProduct.productInfo.category_info.category_name}}/{{itemProduct.productInfo.category_info.type_name}}/{{itemProduct.productInfo.category_info.style_name}}/{{itemProduct.productInfo.category_info.flower_name}}</span>
               </span>
             </div>
           </div>
@@ -161,8 +163,10 @@
           <div class="tableColumn"
             style="flex:0.7">{{item.group_name}}</div>
           <div class="tableColumn"
+            style="flex:0.7">{{sampleTypeArr.find(key=>key.id === item.order_type).name}}</div>
+          <div class="tableColumn"
             style="flex:0.7"
-            :style="{'color':statusStyle(item.status,item.has_log)}">{{sampleTypeArr.find(key=>key.id === item.order_type).name}}</div>
+            :style="{'color':statusStyle(item.status,item.has_log)}">{{orderStatus(item.status,item.has_log)}}</div>
           <div class="tableColumn">{{item.order_time}}</div>
           <div class="tableColumn">{{item.delivery_time[0]}}</div>
           <div class="tableColumn"
