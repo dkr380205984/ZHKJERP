@@ -480,7 +480,7 @@ export default {
                 this.content = '<span style="color:#1A95FF">添加</span>了一个新样品<span style="color:#1A95FF">' + res.data.data.product_code + '</span>(' + res.data.data.category_info.product_category + '/' + res.data.data.type_name + '/' + res.data.data.style_name + '/' + res.data.data.flower_id + ')'
                 this.sendMsg()
               } else {
-                this.$message.success('sampleDetail')
+                this.$message.success('添加成功')
                 this.$router.push('/index/sampleDetail/' + res.data.data.id)
               }
             }

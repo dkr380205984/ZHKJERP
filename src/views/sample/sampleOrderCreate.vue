@@ -287,7 +287,7 @@
       </div>
       <div class="bottom">
         <div class="cancleBtn"
-          @click="$router.push('/index/orderList')">返回</div>
+          @click="$router.go(-1)">返回</div>
         <div class="okBtn"
           @click="saveAll">提交</div>
       </div>

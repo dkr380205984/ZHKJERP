@@ -119,9 +119,9 @@
                 v-for="(item,index) in product"
                 :style="{height:(index!==product.length-1)?(61*item.num)+'px':(61*item.num)-1+'px'}"
                 :key="item.product_code">
-                <span @click="$router.push('/index/productDetail/'+item.product_code)"
+                <span @click="$router.push('/index/productDetail/'+item.id)"
                   style="color:#1A95FF;cursor:pointer">{{item.product_code}}</span>
-                <span @click="$router.push('/index/productDetail/'+item.product_code)"
+                <span @click="$router.push('/index/productDetail/'+item.id)"
                   style="color:#1A95FF;cursor:pointer">{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
               </div>
             </div>
@@ -478,6 +478,7 @@ export default {
             type_name: item.type_name,
             style_name: item.style_name,
             num: 1,
+            id: item.product_id,
             state: state
           })
         } else {
@@ -503,6 +504,7 @@ export default {
                 category_name: itemPro.category_name,
                 type_name: itemPro.type_name,
                 style_name: itemPro.style_name,
+                id: item.id,
                 num: (itemPro.num + 1),
                 state: state
               }
