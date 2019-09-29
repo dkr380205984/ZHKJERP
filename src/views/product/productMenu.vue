@@ -269,7 +269,8 @@ export default {
       productList({
         'company_id': window.sessionStorage.getItem('company_id'),
         'limit': 20,
-        'page': this.pages
+        'page': this.pages,
+        'type': 1
       }).then((res) => {
         this.total = res.data.meta.total
         this.productList = res.data.data

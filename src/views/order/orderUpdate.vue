@@ -887,7 +887,8 @@ export default {
       plan_code: null,
       has_plan: null,
       limit: 5,
-      page: 1
+      page: 1,
+      type: 1
     }), productTppeList({
       company_id: this.companyId
     }), flowerList({

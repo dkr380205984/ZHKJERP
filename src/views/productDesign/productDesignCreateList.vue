@@ -276,7 +276,8 @@ export default {
         'order_code': this.searchVal,
         'start_time': this.start_time,
         'end_time': this.end_time,
-        'has_plan': 0
+        'has_plan': 0,
+        'status': 1
       }).then((res) => {
         this.loading = false
         this.total = res.data.meta.total

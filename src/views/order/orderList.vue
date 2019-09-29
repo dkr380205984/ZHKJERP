@@ -329,7 +329,8 @@ export default {
         'product_code': this.searchVal2,
         'start_time': this.start_time,
         'end_time': this.end_time,
-        'type': 1
+        'type': 1,
+        'status': 0
       }).then((res) => {
         this.loading = false
         this.total = res.data.meta.total

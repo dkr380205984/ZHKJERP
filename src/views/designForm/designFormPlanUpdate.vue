@@ -116,6 +116,7 @@
                 v-for="(itemJia,indexJia) in item.array"
                 :key="indexJia"
                 placeholder="夹"
+                filterable
                 v-model="item.array[indexJia]">
                 <el-option v-for="item in colorLength"
                   :key="item.value"
@@ -2937,8 +2938,22 @@ export default {
       })
       this.yarn.yarnWarp = this.warpInfo.material_data.find((item) => item.type_material === 1).material_name
       this.yarn.yarnWeft = this.weftInfo.material_data.find((item) => item.type_material === 1).material_name
-      this.yarn.yarnOtherWarp = this.warpInfo.material_data.filter((item) => item.type_material === 2)
-      this.yarn.yarnOtherWeft = this.weftInfo.material_data.filter((item) => item.type_material === 2)
+      this.yarn.yarnOtherWarp = this.warpInfo.material_data.filter((item) => item.type_material === 2).map((item) => {
+        return {
+          type: item.type,
+          array: item.apply,
+          value: item.material_name,
+          type_material: item.type_material
+        }
+      })
+      this.yarn.yarnOtherWeft = this.weftInfo.material_data.filter((item) => item.type_material === 2).map((item) => {
+        return {
+          type: item.type,
+          array: item.apply,
+          value: item.material_name,
+          type_material: item.type_material
+        }
+      })
       this.material.materialWarp = this.warpInfo.assist_material.map((item) => {
         return {
           value: item.material_name,
