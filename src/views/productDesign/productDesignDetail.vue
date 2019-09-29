@@ -169,7 +169,7 @@
                     @click="$router.push('/index/productPlanUpdate/'+item.product_code)">配料单(修改)</span>
                   <span class="btns normal"
                     v-if="item.state===0"
-                    @click="$router.push('/index/productPlanCreate/'+item.product_code)">配料单(添加)</span>
+                    @click="$router.push('/index/productPlanCreate/'+item.product_id)">配料单(添加)</span>
                 </div>
               </div>
             </div>
@@ -426,33 +426,33 @@ export default {
       this.productInfo = res[0].data.data.production_detail.product_info
       let productPlan = res[0].data.data.product_plan
       // 订单更新后把订单数据更新到生产计划单里
-      for (let key in res[1].data.data.stock_data) {
-        res[1].data.data.stock_data[key].forEach((item) => {
-          let finded = this.productInfo.find((itemFind) => { return itemFind.product_code === key && itemFind.size === item.size && itemFind.color === item.color })
-          if (finded) {
-            finded.order_num = item.numbers
-          } else {
-            this.productInfo.push({
-              category_name: item.category_name,
-              color: item.color,
-              size: item.size,
-              production_num: 0,
-              production_sunhao: 10,
-              stock_number: 0,
-              stock_pick: 0,
-              stock_pick_change: 0,
-              stock_pick_now: 0,
-              stock_pick_real: 0,
-              total_num: item.numbers,
-              order_num: item.numbers,
-              unit_name: item.unit_name,
-              type_name: item.type_name,
-              style_name: item.style_name,
-              product_code: key
-            })
-          }
-        })
-      }
+      // for (let key in res[1].data.data.stock_data) {
+      //   res[1].data.data.stock_data[key].forEach((item) => {
+      //     let finded = this.productInfo.find((itemFind) => { return itemFind.product_code === key && itemFind.size === item.size && itemFind.color === item.color })
+      //     if (finded) {
+      //       finded.order_num = item.numbers
+      //     } else {
+      //       this.productInfo.push({
+      //         category_name: item.category_name,
+      //         color: item.color,
+      //         size: item.size,
+      //         production_num: 0,
+      //         production_sunhao: 10,
+      //         stock_number: 0,
+      //         stock_pick: 0,
+      //         stock_pick_change: 0,
+      //         stock_pick_now: 0,
+      //         stock_pick_real: 0,
+      //         total_num: item.numbers,
+      //         order_num: item.numbers,
+      //         unit_name: item.unit_name,
+      //         type_name: item.type_name,
+      //         style_name: item.style_name,
+      //         product_code: key
+      //       })
+      //     }
+      //   })
+      // }
       // 合并相同编号的产品数据
       console.log(JSON.parse(JSON.stringify(this.productInfo)))
       this.productInfo.forEach((item) => {
@@ -473,7 +473,7 @@ export default {
             state = 0
           }
           this.product.push({
-            product_code: item.product_code,
+            product_id: item.product_id,
             category_name: item.category_name,
             type_name: item.type_name,
             style_name: item.style_name,
@@ -568,7 +568,6 @@ export default {
       })
       productionNumber.forEach(value => {
         value.sizeColor.forEach(val => {
-          console.log(productPlan[value.product_code])
           if (productPlan[value.product_code]) {
             let filtersArr = productPlan[value.product_code].filter(key => (key.size === val.size && key.color_match_name === val.color))
             filtersArr.forEach(valNum => {
@@ -598,7 +597,6 @@ export default {
       })
       this.materials = productionNumber
       // 统计订单总共物料
-      console.log(this.materials)
       this.materials.forEach(item => {
         item.sizeColor.forEach(value => {
           for (let type in value.sizeColor) {
@@ -637,7 +635,7 @@ export default {
       }).sort((a, b) => {
         return a > b
       })[0]
-      console.log(this.MaxTotalMaterialAttr)
+      console.log(this.product)
       this.loading = false
     })
   },

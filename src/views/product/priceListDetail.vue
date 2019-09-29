@@ -2,7 +2,11 @@
   <div id="priceListDetail"
     v-loading='loading'>
     <div class="head">
-      <h2>报价单详情</h2>
+      <h2>报价单详情
+        <i class="el-icon-message-solid"
+          :class="{'active':msgFlag}"
+          @click="showMsg = true"></i>
+      </h2>
     </div>
     <div class="body">
       <div class="card">
@@ -296,14 +300,22 @@
         </div>
       </div>
     </div>
+    <my-message :visible.sync="showMsg"
+      :url="localName"
+      :afterSave="afterSave"></my-message>
   </div>
 </template>
 
 <script>
-import { priceListDetail, priceListCheck } from '@/assets/js/api.js'
+import { priceListDetail, priceListCheck, notifySave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      localName: 'priceListDetail',
+      showMsg: false,
+      msgFlag: window.localStorage.getItem('priceListDetail') ? JSON.parse(window.localStorage.getItem('priceListDetail')).msgFlag : false,
+      msgUrl: '',
+      content: '',
       loading: true,
       showBox: false,
       ifPass: true,
@@ -338,15 +350,44 @@ export default {
     }
   },
   methods: {
+    afterSave (data) {
+      this.msgFlag = data.msgFlag
+    },
+    sendMsg () {
+      let data = JSON.parse(window.localStorage.getItem(this.localName))
+      let formData = {
+        title: data.title,
+        type: data.type,
+        tag: '工序',
+        content: this.content,
+        router_url: this.msgUrl,
+        receive_user: data.receive_user
+      }
+      notifySave(formData).then((res) => {
+        if (res.data.status) {
+          if (this.ifPass) {
+            this.$message.success('审核通过')
+          } else {
+            this.$message.success('该报价单已驳回')
+          }
+          this.$router.push(this.msgUrl)
+        }
+      })
+    },
     check () {
       // 1初始 2通过 3驳回
       if (this.ifPass) {
         priceListCheck({
           id: this.$route.params.id
         }).then((res) => {
-          this.$message.success({
-            message: '审批通过'
-          })
+          if (this.msgFlag) {
+            this.msgUrl = '/index/priceListDetail/' + this.$route.params.id
+            this.content = '<span style="color:#1A95FF">审核通过</span>报价单' + '<span style="color:#1A95FF">' + this.priceTableDetail.code + '</span>'
+            this.sendMsg()
+          } else {
+            this.$message.success('审核通过')
+            this.$router.push('/index/priceListDetail/' + this.$route.params.id)
+          }
           this.showBox = false
         })
       } else {
@@ -355,9 +396,14 @@ export default {
           reason: JSON.stringify(this.checkList),
           reason_text: this.reasonText
         }).then((res) => {
-          this.$message.success({
-            message: '该报价单已驳回'
-          })
+          if (this.msgFlag) {
+            this.msgUrl = '/index/priceListDetail/' + this.$route.params.id
+            this.content = '<span style="color:#FF4D4D">驳回</span>报价单' + '<span style="color:#1A95FF">' + this.priceTableDetail.code + '</span>'
+            this.sendMsg()
+          } else {
+            this.$message.success('该报价单已驳回')
+            this.$router.push('/index/priceListDetail/' + this.$route.params.id)
+          }
         })
       }
     },

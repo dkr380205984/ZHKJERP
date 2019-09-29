@@ -191,7 +191,7 @@
             </div>
           </div>
         </div>
-        <div class="lineCtn"
+        <!-- <div class="lineCtn"
           style="margin-top:0">
           <div class="inputCtn oneLine">
             <span class="label must">净重:</span>
@@ -206,7 +206,7 @@
                 slot="append">克</span>
             </el-input>
           </div>
-        </div>
+        </div> -->
       </div>
       <div class="stepCtn">
         <div class="stepTitle">辅料信息</div>
@@ -748,13 +748,13 @@ export default {
           })
           return
         }
-        state = this.weight.some((item) => !item) || this.weight.length < this.sizeKey.length
-        if (state) {
-          this.$message.error({
-            message: '检测到有填写的产品净重信息，请完善'
-          })
-          return
-        }
+        // state = this.weight.some((item) => !item) || this.weight.length < this.sizeKey.length
+        // if (state) {
+        //   this.$message.error({
+        //     message: '检测到有填写的产品净重信息，请完善'
+        //   })
+        //   return
+        // }
         state = this.otherIngredient.some((item) => {
           return !item.material
         })
@@ -820,7 +820,7 @@ export default {
           'product_id': this.product.id,
           'user_id': window.sessionStorage.getItem('user_id'),
           'material_data': materialData,
-          'weight_group': this.weight,
+          'weight_group': this.weight.map((item) => { return 1 }),
           'product_material_attribute': mtd
         }).then((res) => {
           if (res.data.status) {
