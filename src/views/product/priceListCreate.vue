@@ -2,7 +2,11 @@
   <div id="priceListCreate"
     v-loading="loading">
     <div class="head">
-      <h2>添加产品报价单</h2>
+      <h2>添加产品报价单
+        <i class="el-icon-message-solid"
+          :class="{'active':msgFlag}"
+          @click="showMsg = true"></i>
+      </h2>
     </div>
     <div class="body">
       <div class="card"
@@ -650,15 +654,23 @@
         </div>
       </div>
     </div>
+    <my-message :visible.sync="showMsg"
+      :url="localName"
+      :afterSave="afterSave"></my-message>
   </div>
 </template>
 
 <script>
 import { machiningType, moneyArr } from '@/assets/js/dictionary.js'
-import { clientList, productList, productTppeList, flowerList, getGroup, YarnList, materialList, priceListCreate, productPlanDetail, priceListList, priceListDetail } from '@/assets/js/api.js'
+import { clientList, productList, productTppeList, flowerList, getGroup, YarnList, materialList, priceListCreate, productPlanDetail, priceListList, priceListDetail, notifySave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      localName: 'priceListCreate',
+      showMsg: false,
+      msgFlag: window.localStorage.getItem('priceListCreate') ? JSON.parse(window.localStorage.getItem('priceListCreate')).msgFlag : false,
+      msgUrl: '',
+      content: '',
       loading: true,
       loadingS: false,
       selectVal: '',
@@ -826,6 +838,26 @@ export default {
     }
   },
   methods: {
+    afterSave (data) {
+      this.msgFlag = data.msgFlag
+    },
+    sendMsg () {
+      let data = JSON.parse(window.localStorage.getItem(this.localName))
+      let formData = {
+        title: data.title,
+        type: data.type,
+        tag: '工序',
+        content: this.content,
+        router_url: this.msgUrl,
+        receive_user: data.receive_user
+      }
+      notifySave(formData).then((res) => {
+        if (res.data.status) {
+          this.$message.success('添加成功')
+          this.$router.push(this.msgUrl)
+        }
+      })
+    },
     // 切换辅料单位
     resUnit (item, value) {
       item.unit = this.otherMaterialList.find(key => key.name === value) ? this.otherMaterialList.find(key => key.name === value).unit : '个'
@@ -1197,10 +1229,14 @@ export default {
         }
         priceListCreate(json).then((res) => {
           if (res.data.status) {
-            this.$message.success({
-              message: '添加成功'
-            })
-            this.$router.push('/index/priceListDetail/' + res.data.data.id)
+            if (this.msgFlag) {
+              this.msgUrl = '/index/priceListDetail/' + res.data.data.id
+              this.content = this.productArr.map(item => item.product_code).join('/') + '<span style="color:#1A95FF">添加</span>了一张新报价单'
+              this.sendMsg()
+            } else {
+              this.$message.success('添加成功')
+              this.$router.push('/index/priceListDetail/' + res.data.data.id)
+            }
           } else {
             this.$message.error({
               message: res.data.message

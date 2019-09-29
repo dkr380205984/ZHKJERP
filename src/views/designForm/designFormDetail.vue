@@ -583,7 +583,8 @@
       <div class="bottomBtnCtn">
         <div class="cancleBtn"
           @click="$router.go(-1)">返回</div>
-        <div class="okBtn">
+        <div class="okBtn"
+          style="padding:0">
           <el-dropdown @command="openWin"
             class="btns normal">
             <span class="el-dropdown-link opration"
@@ -1516,6 +1517,9 @@ export default {
 </style>
 <style lang="less">
 #designFormDetail {
+  .el-dropdown-link {
+    padding: 11px 25px;
+  }
   .el-input.is-disabled .el-input__inner {
     background: #fff;
     cursor: default;

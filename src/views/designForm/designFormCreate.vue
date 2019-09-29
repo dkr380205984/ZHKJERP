@@ -999,7 +999,7 @@
           <div class="border"></div>
         </div>
         <div class="appendInfo">
-          <div class="row must">
+          <!-- <div class="row must">
             <div class="box box2">
               <div class="label must">产品克重：</div>
               <div class="content">
@@ -1010,7 +1010,7 @@
                 </el-input>
               </div>
             </div>
-          </div>
+          </div> -->
           <div class="row">
             <div class="box box2">
               <div class="label must">物料系数：</div>
@@ -2142,12 +2142,12 @@ export default {
         })
         return
       }
-      if (!this.weight) {
-        this.$message.error({
-          message: '请输入产品克重'
-        })
-        return
-      }
+      // if (!this.weight) {
+      //   this.$message.error({
+      //     message: '请输入产品克重'
+      //   })
+      //   return
+      // }
       errorInput = this.coefficient.some((item) => {
         return item === ''
       })

@@ -191,7 +191,7 @@
             </div>
           </div>
         </div>
-        <div class="lineCtn"
+        <!-- <div class="lineCtn"
           style="margin-top:0">
           <div class="inputCtn oneLine">
             <span class="label must">净重:</span>
@@ -206,7 +206,7 @@
                 slot="append">克</span>
             </el-input>
           </div>
-        </div>
+        </div> -->
       </div>
       <div class="stepCtn">
         <div class="stepTitle">辅料信息</div>
@@ -328,7 +328,7 @@
 </template>
 
 <script>
-import { YarnList, editList, materialList, craftProduct, YarnColorList, pantongList, saveProductPlan, productPlanDetail, notifySave } from '@/assets/js/api.js'
+import { YarnList, editList, materialList, craftProduct, YarnColorList, pantongList, saveProductPlan, productPlanOne, notifySave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -380,8 +380,8 @@ export default {
       company_id: this.companyId
     }), pantongList({
 
-    }), productPlanDetail({
-      product_key: this.$route.params.productId
+    }), productPlanOne({
+      id: this.$route.params.productId
     })]).then((res) => {
       this.product = res[6].data.data.product_info
       this.sizeKey = this.product.size.map(item => {
@@ -695,13 +695,13 @@ export default {
           })
           return
         }
-        state = this.weight.some((item) => !item) || this.weight.length < this.sizeKey.length
-        if (state) {
-          this.$message.error({
-            message: '检测到有未填写的产品净重信息，请完善'
-          })
-          return
-        }
+        // state = this.weight.some((item) => !item) || this.weight.length < this.sizeKey.length
+        // if (state) {
+        //   this.$message.error({
+        //     message: '检测到有未填写的产品净重信息，请完善'
+        //   })
+        //   return
+        // }
         state = this.otherIngredient.some((item) => {
           return !item.material
         })
@@ -765,9 +765,10 @@ export default {
           'is_update': true,
           'company_id': this.companyId,
           'product_id': this.product.product_id,
+          'id': this.$route.params.productId,
           'user_id': window.sessionStorage.getItem('user_id'),
           'material_data': materialData,
-          'weight_group': this.weight,
+          'weight_group': this.weight.map((item) => { return 1 }),
           'product_material_attribute': mtd
         }).then((res) => {
           if (res.data.status) {

@@ -90,7 +90,7 @@
           <div class="cicle"></div>
           <div class="border"></div>
         </div>
-        <div class="lineCtn">
+        <!-- <div class="lineCtn">
           <div class="inputCtn">
             <span class="label">净重损耗:</span>
             <span class="content">
@@ -102,7 +102,7 @@
               </span>
             </span>
           </div>
-        </div>
+        </div> -->
         <div class="lineCtn">
           <div class="inputCtn">
             <span class="label">纱线原料:</span>
