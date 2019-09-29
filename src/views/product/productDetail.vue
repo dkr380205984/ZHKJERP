@@ -10,6 +10,10 @@
           <span class="label">产品编号:</span>
           <span class="content blue">{{productDetail.product_code}}</span>
         </div>
+        <div class="inputCtn">
+          <span class="label">产品名称:</span>
+          <span class="content">{{productDetail.sample_title}}克</span>
+        </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
@@ -32,10 +36,6 @@
         </div>
       </div>
       <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">产品克重:</span>
-          <span class="content">{{productDetail.weight}}克</span>
-        </div>
         <div class="inputCtn">
           <span class="label">产品成分:</span>
           <span class="content">{{productDetail.materials|filterMaterials}}</span>
@@ -479,7 +479,9 @@ export default {
       id: this.$route.params.id
     }).then((res) => {
       if (res.data.status) {
-        console.log(res.data.data)
+        if (res.data.data.type === 2) {
+          this.$router.push('/index/sampleDetail/' + res.data.data.id)
+        }
         this.productDetail = res.data.data
         this.selectSize = res.data.data.size[0]
         this.selectColor = res.data.data.color[0].color_name

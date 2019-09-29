@@ -56,7 +56,7 @@
         </el-select>
       </div>
       <div class="inputCtn">
-        <span class="label">{{type === '1' ? '产' : '样'}}品成分:</span>
+        <span :class="{'label':true,'must':type === '1'}">{{type === '1' ? '产' : '样'}}品成分:</span>
         <div v-for="(item,key) in ingredient"
           :key="key"
           class="content">
@@ -100,7 +100,7 @@
           <div class="column">
             <el-select clearable
               v-model="item.size"
-              :disabled="item.disabled"
+              :disabled="item.disabled && (has_craft !== 0 || has_plan !== 0 || in_order !== 0)"
               class="smallInputItem"
               @change="noRepeat(item.size,key,size,'size')"
               placeholder="选择规格">
@@ -133,7 +133,7 @@
         </div>
       </div>
       <div class="inputCtn">
-        <span class="label">{{type === '1' ? '产' : '样'}}品配色:</span>
+        <span class="label must">{{type === '1' ? '产' : '样'}}品配色:</span>
         <div class="content"
           v-for="(item,key) in color"
           :key="key">
@@ -143,7 +143,7 @@
             filterable
             class="inputItem"
             v-model="item.color"
-            :disabled="item.disabled"
+            :disabled="item.disabled && (has_craft !== 0 || has_plan !== 0 || in_order !== 0)"
             @change="noRepeat(item.color,key,color,'color')"
             placeholder="请选择配色">
             <el-option v-for="item in colorArr"

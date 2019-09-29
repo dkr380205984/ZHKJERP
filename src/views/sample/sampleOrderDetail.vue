@@ -101,7 +101,10 @@
               :class="{'active':item.id === $route.params.id}"
               @click="reloadPage(item.id)">{{key+1}}次打样</span>
           </div>
-          <div class="applyProcess">
+          <!-- iderror -->
+          <div class="applyProcess"
+            v-if="$route.params.id !== (sample_order_list[0] ? sample_order_list[0].id : '')"
+            style="margin-bottom:33px;">
             <div class="title">申请流程</div>
             <div class="info row">
               <div class="item col">
@@ -222,8 +225,7 @@
               </div>
             </div>
           </div>
-          <div class="applyInfo"
-            style="margin-top:33px;">
+          <div class="applyInfo">
             <div class="title">打样信息</div>
             <div class="info col">
               <div class="item-info">
@@ -451,7 +453,7 @@
               <img class="icon"
                 src="@/assets/image/icon/订单物料.png" />
             </div>
-            <div class="label">物料样购</div>
+            <div class="label">物料订购</div>
           </div>
           <div class="iconOnce">
             <div class="imgCtn">
@@ -465,19 +467,6 @@
                 class="backBottom"></div>
             </div>
             <div class="label">生产织造</div>
-          </div>
-          <div class="iconOnce">
-            <div class="imgCtn">
-              <div class="shadeInfo"><span>{{order_info.status_pop_push===0?process.product_pop_push + '%':'100%'}}</span></div>
-              <div :style="{height:order_info.status_pop_push===0?(100-process.product_pop_push) + '%':'0%'}"
-                class="backTop"></div>
-              <img class="icon"
-                src="@/assets/image/icon/订单收发.png" />
-              <div :style="{height:order_info.status_pop_push===0?process.product_pop_push + '%':'100%'}"
-                :class="{'complete':process.product_pop_push>=100 || order_info.status_pop_push===1}"
-                class="backBottom"></div>
-            </div>
-            <div class="label">产品收发</div>
           </div>
           <div class="iconOnce">
             <div class="imgCtn">
@@ -523,20 +512,21 @@
               <span>样品状态</span>
             </li>
             <li class="material_info"
-              v-for="(item,index) in design"
+              v-for="(item,index) in productDetailInfo"
               :key="index">
-              <span style="flex:2">{{item.product_code}}({{item.category_info.category_name + '/' + item.category_info.type_name + '/' + item.category_info.style_name}})</span>
+              <span style="flex:2;color:#1a95ff;cursor: pointer;"
+                @click="$router.push('/index/productDetail/' + item.product_id)">{{item.product_code}}({{item.product_type}})</span>
               <span class="col"
                 style="flex:4">
                 <span v-for="(itemType,indexType) in item.type"
                   :key="indexType">
                   <span>{{itemType.type}}</span>
-                  <span :style="{color:!itemType.user_name ? '#DDD' : false}">{{itemType.user_name ? itemType.user_name : '暂无信息'}}</span>
-                  <span :style="{color:!itemType.status ? '#DDD' : false}">{{itemType.status ? '完成' : '未完成'}}</span>
-                  <span :style="{color:!itemType.time ? '#DDD' : false}">{{itemType.time ? itemType.time : '暂无信息'}}</span>
+                  <span :style="{color:!itemType.user_name ? '#DDD' : '#67C23A'}">{{itemType.user_name ? itemType.user_name : '暂无信息'}}</span>
+                  <span :style="{color:!itemType.status ? '#DDD' : '#67C23A'}">{{itemType.status ? '完成' : '未完成'}}</span>
+                  <span :style="{color:!itemType.time ? '#DDD' : '#67C23A'}">{{itemType.time ? itemType.time : '暂无信息'}}</span>
                 </span>
               </span>
-              <span :style="{'color':parseInt(item.order_number)/parseInt(item.plan_number)>=1||order_info.status_material_order===1?'#67C23A':'#E6A23C'}">{{parseInt(item.order_number)/parseInt(item.plan_number)>=1||order_info.status_material_order===1?'完成':'未完成'}}</span>
+              <span :style="{'color': item.type.filter(vals=> !vals.status).length > 0 ? '#E6A23C':'#67C23A'}">{{item.type.filter(vals=> !vals.status).length > 0 ?'未完成':'完成'}}</span>
             </li>
           </div>
         </div>
@@ -587,6 +577,8 @@
               <span>补充数量</span>
               <span>物料状态</span>
             </li>
+            <li class="material_info"
+              v-if="materialList.length === 0">暂无物料订购加工信息</li>
             <li class="material_info"
               v-for="(item,index) in materialList"
               :key="index">
@@ -679,71 +671,6 @@
                 暂无加工信息
               </span>
               <span :style="{'color':order_info.status_weave===1?'#67C23A':'#E6A23C'}">{{order_info.status_weave===1?'完成':'未完成'}}</span>
-            </li>
-          </div>
-        </div>
-        <div v-show="hasPlan"
-          class="hrefCtn"
-          id="href3">
-          <div class="titleLine">
-            <div class="titleCtn">
-              <span class="title">收发概述</span>
-              <i class="border"></i>
-            </div>
-            <div class="oprationCtn">
-              <el-dropdown trigger="click"
-                @command="openWin">
-                <span class="el-dropdown-link opration"
-                  style="color:#1A95FF">
-                  收发详情<i class="el-icon-arrow-down el-icon--right"></i>
-                </span>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="收发详情">收发详情</el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
-              <span v-if="order_info.status_pop_push===0&&order_info.status!==2"
-                class="opration"
-                @click="orderStatus(5)">确认完成</span>
-              <span class="opration"
-                style="color:#67c23a"
-                v-else-if="order_info.status_pop_push===1||order_info.status===1">已完成</span>
-              <span class="opration"
-                style="color:#ddd;cursor:not-allowed"
-                v-else-if="order_info.status===2">已取消</span>
-            </div>
-          </div>
-          <div class="table">
-            <li class="title">
-              <span style="flex:2">产品信息</span>
-              <span>工序</span>
-              <span>出库捆数</span>
-              <span>出库数量</span>
-              <span>入库捆数</span>
-              <span>入库数量</span>
-              <span>收发状态</span>
-            </li>
-            <li class="material_info"
-              v-for="(item,index) in designList"
-              :key="index">
-              <span style="flex:2">{{item.product_code}}({{item.type}})</span>
-              <span class="col"
-                v-if="item.store"
-                style="flex:5">
-                <span v-for="(val,ind) in item.store"
-                  :key="ind">
-                  <span>{{val.type}}</span>
-                  <span>{{val.store_out_count ? val.store_out_count : 0}}</span>
-                  <span>{{val.store_out_number ? val.store_out_number : 0}}{{item.unit}}</span>
-                  <span>{{val.store_in_count ? val.store_in_count : 0}}</span>
-                  <span>{{val.store_in_number ? val.store_in_number : 0}}{{item.unit}}</span>
-                </span>
-              </span>
-              <span class="col"
-                v-else
-                style="flex:5;text-align:center">
-                暂无收发信息
-              </span>
-              <span :style="{'color':order_info.status_pop_push===1?'#67C23A':'#E6A23C'}">{{order_info.status_pop_push===1?'完成':'未完成'}}</span>
             </li>
           </div>
         </div>
@@ -841,44 +768,6 @@
                   <span class="tableRow">{{valType.type}}</span>
                   <span class="tableRow">{{valType.number ? valType.number : 0}}{{item.unit}}</span>
                   <span class="tableRow">{{valType.total_price_semiProcess ? valType.total_price_semiProcess : 0}}元</span>
-                </span>
-              </span>
-            </li>
-          </div>
-          <span class="title">包装样购成本</span>
-          <div class="tablesCtn"
-            style="line-height:40px;width:1220px;box-sizing:border-box">
-            <li class="title">
-              <span>包装名称</span>
-              <span>样购公司</span>
-              <span>尺寸</span>
-              <span>属性</span>
-              <span>单价</span>
-              <span>样购数量</span>
-              <span>总价</span>
-            </li>
-            <li class="content"
-              v-for="(item,key) in packOrderList"
-              :key="key">
-              <span class="tableRow">{{item.pack_name}}</span>
-              <span class="tableRow col"
-                style="flex:6">
-                <span class="tableColumn"
-                  v-for="(value,index) in item.client_info"
-                  :key="index">
-                  <span class="tableRow">{{value.client_name}}</span>
-                  <span class="tableRow col"
-                    style="flex:5">
-                    <span class="tableColumn"
-                      v-for="(val,ind) in value.size_info"
-                      :key="ind">
-                      <span class="tableRow">{{val.size}}</span>
-                      <span class="tableRow"><template v-for="(valAttr,indAttr) in val.attr">{{(indAttr !== 0 && !valAttr) ? '/' : ''}}{{valAttr.pack_attr ? valAttr.pack_attr : '无'}}</template></span>
-                      <span class="tableRow">{{val.price}}</span>
-                      <span class="tableRow">{{val.number}}</span>
-                      <span class="tableRow">{{val.number*val.price}}元</span>
-                    </span>
-                  </span>
                 </span>
               </span>
             </li>
@@ -1026,9 +915,6 @@
       <div class="title">详情目录</div>
       <li class="ahref"><a href="#href1">物料概述</a></li>
       <li class="ahref"><a href="#href2">生产概述</a></li>
-      <li class="ahref"><a href="#href3">收发概述</a></li>
-      <li class="ahref"><a href="#href4">检验概述</a></li>
-      <li class="ahref"><a href="#href5">出库概述</a></li>
       <li class="ahref"><a href="#href6">财务概述</a></li>
       <li class="ahref"><a href="#href7">发货信息</a></li>
       <li class="ahref"
@@ -1362,12 +1248,12 @@
         <div class="title">工艺制版确认</div>
         <div class="inputBox">
           <div class="item"
-            v-for="(item,key) in design"
+            v-for="(item,key) in productDetailInfo"
             :key="key"
             style="margin-top:27px;">
             <span class="label">产品信息:</span>
             <div class="content">
-              <span>{{item.product_code}}({{item.category_info.category_name + '/' + item.category_info.type_name + '/' + item.category_info.style_name}})</span>
+              <span>{{item.product_code}}({{item.product_type}})</span>
               <el-checkbox-group v-model="item.checked">
                 <el-checkbox v-for="(val,ind) in item.type"
                   :key="ind"
@@ -1375,7 +1261,6 @@
               </el-checkbox-group>
             </div>
           </div>
-
         </div>
         <div class="footer">
           <span class="cancel"
@@ -1417,6 +1302,7 @@
       </div>
     </div>
     <!-- 点击去修改工艺单时候的弹窗 -->
+    <!-- /index/designFormUpdate/33 -->
     <div class="message"
       v-show="handleType === 'changeCraft'">
       <div class="messageBox">
@@ -1432,7 +1318,6 @@
                   style="color:#999;margin:0.5em 0;"
                   :label="item.id">{{item.craft_code}}(创建于:{{item.create_time}})</el-radio>
               </template>
-              <!-- /index/designFormUpdate/33 -->
             </el-radio-group>
           </div>
         </div>
@@ -1448,6 +1333,7 @@
       </div>
     </div>
     <!-- 点击去修改样品时候的弹窗 -->
+    <!-- /index/productPlanUpdate/19YCAA0241 -->
     <div class="message"
       v-show="handleType === 'changePlan'">
       <div class="messageBox">
@@ -1464,7 +1350,6 @@
                   :label="item.id">{{item.plan_code}}(创建于:{{item.create_time}})</el-radio>
               </template>
             </el-radio-group>
-            <!-- /index/productPlanUpdate/19YCAA0241 -->
           </div>
         </div>
         <div class="footer">
@@ -1534,7 +1419,6 @@ export default {
       designList: [], //  生产概述
       outStockList: [], // 出库概述
       productPriceList: [], // 产品价格信息
-      storeList: [], // 收发概述
       packOrderList: [], // 包装样购
       showMessageBox: false,
       handleType: 'ok',
@@ -1609,8 +1493,7 @@ export default {
     },
     //
     setCraftStatu () {
-      console.log(this.design)
-      let data = this.design.map(item => {
+      let data = this.productDetailInfo.map(item => {
         return {
           product_code: item.product_code,
           status_craft: ((item.checked.indexOf('工艺') !== -1) ? 2 : 1),
@@ -1620,7 +1503,12 @@ export default {
       confirmCraft({
         data: data
       }).then(res => {
-
+        if (res.data.status) {
+          this.$message.success('修改成功')
+          window.location.reload()
+        } else {
+          this.$message.error(res.data.message)
+        }
       })
     },
     getCraftInfo (item, key) {
@@ -1657,7 +1545,7 @@ export default {
               product_id: items.sample_odd,
               craft_id: items.design_odd,
               plan_id: items.plan_odd,
-              product_code: this.productDetailInfo.find(val => val.product_id === items.sample_odd).detail.product_code.split('Y').join('')
+              product_code: this.productDetailInfo.find(val => val.product_id === items.sample_odd).detail.product_code
             }
           })
           isCheckedPlanAndCraft({
@@ -1669,8 +1557,11 @@ export default {
             this.showMessageBox = false
             if (res.status) {
               this.$message.success({
-                message: '确认成功'
+                message: '确认成功,即将刷新页面。'
               })
+              setTimeout(() => {
+                window.location.reload()
+              }, 800)
             } else {
               this.$message.error({
                 message: res.data.message
@@ -1743,6 +1634,7 @@ export default {
               })
               if (res.data && res.data.data) {
                 this.$router.push('/index/sampleOrderDetail/' + res.data.data.id)
+                window.location.reload()
               }
             } else {
               this.$message.error({
@@ -1751,8 +1643,6 @@ export default {
             }
           })
           console.log(data)
-        } else if (type === 'changeSample') {
-
         }
       }
     },
@@ -1982,7 +1872,7 @@ export default {
     openWin (cmd) {
       const orderId = this.$route.params.id
       let urlJson = {
-        '原料详��': '/index/rawMaterialOrderDetail/' + orderId + '/0',
+        '原料详情': '/index/rawMaterialOrderDetail/' + orderId + '/0',
         '辅料详情': '/index/rawMaterialOrderDetail/' + orderId + '/1',
         '原料出入库': '/index/rawMaterialStockDetail/' + orderId + '/0',
         '辅料出入库': '/index/rawMaterialStockDetail/' + orderId + '/1',
@@ -2190,6 +2080,8 @@ export default {
       this.hasPlan = res[2].data.status
       // 合并下产品编号相同的产品
       const productPlanMerge = this.jsonMerge(productPlan, ['product_code'])
+      console.log(productPlanMerge)
+      console.log(this.order_log.product_weave)
       productPlanMerge.forEach((itemProduct, indexPorduct) => {
         // 统计织造
         let weaveNum = 0 // 织造分配数量
@@ -2282,25 +2174,12 @@ export default {
         let valBat = this.order_info.order_batch[prop]
         valBat.forEach(valPro => {
           // 初始化制版工艺
-          if (!this.design.find(item => item.category_info.product_id === valPro.category_info.product_id)) {
-            this.design.push({
-              ...valPro,
-              checked: [],
-              type: [
-                {
-                  type: '工艺',
-                  user_name: '',
-                  status: '',
-                  time: ''
-                }, {
-                  type: '制版',
-                  user_name: '',
-                  status: '',
-                  time: ''
-                }
-              ]
-            })
-          }
+          // if (!this.design.find(item => item.category_info.product_id === valPro.category_info.product_id)) {
+          //   this.design.push({
+          //     ...valPro
+
+          //   })
+          // }
           // 初始化产品信息
           let flagPro = this.productInfo.find(item => (item.product_id === valPro.category_info.product_id && item.size === valPro.size && item.color === valPro.color))
           if (!flagPro) {
@@ -2322,7 +2201,23 @@ export default {
           let flagProNew = this.productDetailInfo.find(item => item.product_id === valPro.category_info.product_id)
           if (!flagProNew) {
             this.productDetailInfo.push({
-              product_id: valPro.category_info.product_id
+              product_id: valPro.category_info.product_id,
+              product_code: valPro.product_code,
+              product_type: valPro.category_info.category_name + '/' + valPro.category_info.type_name + '/' + valPro.category_info.style_name,
+              checked: [],
+              type: [
+                {
+                  type: '工艺',
+                  user_name: '',
+                  status: '',
+                  time: ''
+                }, {
+                  type: '制版',
+                  user_name: '',
+                  status: '',
+                  time: ''
+                }
+              ]
             })
           }
         })
@@ -2420,6 +2315,7 @@ export default {
         }
       }
       let weaveInfo = this.order_log.product_weave
+      console.log(weaveInfo)
       let halfProductInfo = this.order_log.semi_finished_production
       designInfo.production_detail.product_info.forEach(item => {
         let flag = this.designList.find(key => key.product_code === item.product_code)
@@ -2475,6 +2371,7 @@ export default {
           }
         }
       })
+      // 更新产品数据
       this.productDetailInfo.forEach(item => {
         porductOne({
           id: item.product_id
@@ -2482,6 +2379,14 @@ export default {
           let item = this.productDetailInfo.find(val => Number(val.product_id) === Number(res.data.data.id))
           if (item) {
             item.detail = res.data.data
+            item.type.find(vals => vals.type === '工艺').status = (res.data.data.status_craft === 2)
+            item.type.find(vals => vals.type === '制版').status = (res.data.data.status_print === 2)
+            if (res.data.data.status_craft === 2) {
+              item.checked.push('工艺')
+            }
+            if (res.data.data.status_print === 2) {
+              item.checked.push('制版')
+            }
           }
         })
       })

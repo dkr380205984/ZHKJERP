@@ -348,7 +348,7 @@
 </template>
 
 <script>
-import { porductOne, priceListDetail, saveProduct, isCheckedPlanAndCraft } from '@/assets/js/api.js'
+import { porductOne, priceListDetail, isCheckedPlanAndCraft } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -453,15 +453,17 @@ export default {
             product_id: this.$route.params.id,
             craft_id: this.isCraft,
             plan_id: this.isPlan,
-            product_code: this.productDetail.product_code.split('Y').join('')
+            product_code: this.productDetail.product_code
           }]
         }).then(res => {
           this.lock = true
-          if (res.status) {
+          if (res.data.status) {
             this.$message.success('添加成功,即将跳转至产品详情页')
             setTimeout(() => {
               this.$router.push('/index/productDetail/' + this.$route.params.id)
             }, 800)
+          } else {
+            this.$message.error(res.data.message)
           }
         })
         // }
