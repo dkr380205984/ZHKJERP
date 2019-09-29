@@ -123,6 +123,8 @@
             <el-input class="inputItem"
               placeholder="输入尺寸信息"
               v-model="item.desc">
+              <span slot="append"
+                class="unit">cm</span>
             </el-input>
           </div>
         </div>

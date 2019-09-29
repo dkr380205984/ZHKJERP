@@ -20,14 +20,15 @@
               split-button
               type="primary">
               {{'操作'}}
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item v-show="order_info.status!==1"
+              <el-dropdown-menu slot="dropdown"
+                v-if="order_info.status === 0">
+                <el-dropdown-item v-show="order_info.sample_order_apply_status === 12 || sample_order_list[0] === $route.params.id"
                   command="ok"
                   style="color:#1A94FF">客户确认</el-dropdown-item>
-                <el-dropdown-item v-show="order_info.status!==1 && order_info.status !== 2"
+                <el-dropdown-item v-show="order_info.sample_order_apply_status === 12 || sample_order_list[0] === $route.params.id"
                   command="change"
                   style="color:#E6A23C">修改样单</el-dropdown-item>
-                <el-dropdown-item v-show="order_info.status!==2"
+                <el-dropdown-item v-show="order_info.status===0"
                   command="cancle"
                   style="color:#FF4D4D">样单取消</el-dropdown-item>
               </el-dropdown-menu>
@@ -99,7 +100,7 @@
             <span v-for="(item,key) in sample_order_list"
               :key="key"
               :class="{'active':item.id === $route.params.id}"
-              @click="reloadPage(item.id)">{{key+1}}次打样</span>
+              @click="reloadPage(item.id)">第{{key+1|filterChinese}}次打样</span>
           </div>
           <!-- iderror -->
           <div class="applyProcess"
@@ -173,7 +174,7 @@
                 </div>
                 <span>修改工艺单<span style="color:#1a95ff;margin-left:8px;cursor: pointer;font-weight:400;"
                     @click="handleType = 'changeCraft'"
-                    v-if="10 === order_info.sample_order_apply_status">去修改</span></span>
+                    v-if="11 > order_info.sample_order_apply_status">去修改</span></span>
                 <!-- <span>王经理</span> -->
                 <!-- <span>2016-12-12 12:32</span> -->
               </div>
@@ -1277,7 +1278,7 @@
       v-show="handleType === 'changeSample'">
       <div class="messageBox">
         <div class="title">请选择你要修改的产品<span @click="orderStatus(10)"
-            style="color:#1a95ff;cursor: pointer;margin-left:20px;">完成</span></div>
+            style="color:#1a95ff;cursor: pointer;margin-left:20px;">无需修改</span></div>
         <div class="inputBox"
           style="padding: 20px 0;">
           <div class="item">
@@ -1294,7 +1295,7 @@
           <span class="cancel"
             @click="handleType = 'ok'">取消</span>
           <span class="ok"
-            @click="$router.push('/index/productUpdate/' + submitInfo.changeSamplePro)">去修改</span>
+            @click="submitInfo.changeSamplePro ? $router.push('/index/productUpdate/' + submitInfo.changeSamplePro) : $message.warning('请选择要修改的样品')">去修改</span>
         </div>
         <span class="close el-icon-close"
           style="z-index:3;"
@@ -1307,7 +1308,7 @@
       v-show="handleType === 'changeCraft'">
       <div class="messageBox">
         <div class="title">请选择你要修改的工艺单<span @click="orderStatus(11)"
-            style="color:#1a95ff;cursor: pointer;margin-left:20px;">完成</span></div>
+            style="color:#1a95ff;cursor: pointer;margin-left:20px;">无需修改</span></div>
         <div class="inputBox"
           style="padding: 20px 0;">
           <div class="item">
@@ -1325,7 +1326,7 @@
           <span class="cancel"
             @click="handleType = 'ok'">取消</span>
           <span class="ok"
-            @click="$router.push('/index/designFormUpdate/' + submitInfo.changeCraft)">去修改</span>
+            @click="submitInfo.changeCraft ? $router.push('/index/designFormUpdate/' + submitInfo.changeCraft) : $message.waring('请选择要修改的工艺单')">去修改</span>
         </div>
         <span class="close el-icon-close"
           style="z-index:3;"
@@ -1338,7 +1339,7 @@
       v-show="handleType === 'changePlan'">
       <div class="messageBox">
         <div class="title">请选择你要修改的配料单<span @click="orderStatus(12)"
-            style="color:#1a95ff;cursor: pointer;margin-left:20px;">完成</span></div>
+            style="color:#1a95ff;cursor: pointer;margin-left:20px;">无需修改</span></div>
         <div class="inputBox"
           style="padding: 20px 0;">
           <div class="item">
@@ -1356,7 +1357,7 @@
           <span class="cancel"
             @click="handleType = 'ok'">取消</span>
           <span class="ok"
-            @click="$router.push('/index/productPlanUpdate/')">去修改</span>
+            @click="submitInfo.changePlan ? $router.push('/index/productPlanUpdate/' + submitInfo.changePlan) : $message.warning('请选择需要修改的配料单')">去修改</span>
         </div>
         <span class="close el-icon-close"
           style="z-index:3;"
@@ -1594,6 +1595,10 @@ export default {
           })
           if (!this.submitInfo.sampleType) {
             this.$message.error('请选择样单类型')
+            return
+          }
+          if (!this.submitInfo.sample_complete_time) {
+            this.$message.error('请选择样单完成时间')
             return
           }
           let data = {
@@ -2004,6 +2009,11 @@ export default {
     }
   },
   filters: {
+    // 转换中文数字
+    filterChinese (item) {
+      let chinese = ['', '一', '二', '三', '四', '五', '六', '七', '八', '九']
+      return chinese[item]
+    },
     // 物料合计费用
     filterTotal (item) {
       let price = 0

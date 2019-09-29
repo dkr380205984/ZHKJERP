@@ -593,6 +593,7 @@
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="修改">修改</el-dropdown-item>
+              <el-dropdown-item command="打印">打印</el-dropdown-item>
               <el-dropdown-item command="删除">删除</el-dropdown-item>
               <el-dropdown-item command="添加配料单">添加配料单</el-dropdown-item>
             </el-dropdown-menu>
@@ -904,6 +905,9 @@ export default {
     openWin (cmd) {
       if (cmd === '修改') {
         this.$router.push('/index/designFormUpdate/' + this.$route.params.id)
+      }
+      if (cmd === '打印') {
+        this.$router.push('/designFormTable/' + this.$route.params.id)
       }
       if (cmd === '删除') {
         this.$confirm('是否删除该工艺单?', '提示', {

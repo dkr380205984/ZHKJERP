@@ -43,16 +43,20 @@
             <div class="material">
               <span>主要原料(经)</span>
               <span>
-                主:{{ warp_data.material_data.find(item=>item.apply.indexOf(0) !== -1) ? warp_data.material_data.find(item=>item.apply.indexOf(0) !== -1).material_name : ''}}
+                <span v-for="(item,key) in warp_data.material_data.filter(vals=>vals.type_material === 1)"
+                  :key="key">
+                  {{item.apply|filterMaterialClass}}
+                  {{':' + item.material_name }}
+                </span>
               </span>
             </div>
             <div class="material">
               <span>次要原料(经)</span>
               <span>
-                <span v-for="(itemMaterial,indexMaterial) in warp_data.material_data"
-                  :key="indexMaterial">
-                  {{itemMaterial.apply|filterClass}}
-                  {{':' + itemMaterial.material_name }}
+                <span v-for="(item,key) in warp_data.material_data.filter(vals=>vals.type_material === 2)"
+                  :key="key">
+                  {{item.apply|filterMaterialClass}}
+                  {{':' + item.material_name }}
                 </span>
               </span>
             </div>
@@ -217,15 +221,19 @@
             <div class="material">
               <span>主要原料(纬)</span>
               <span>
-                主:{{ weft_data.material_data.find(item=>item.apply.indexOf(0) !== -1) ? weft_data.material_data.find(item=>item.apply.indexOf(0) !== -1).material_name : ''}}
+                <span v-for="(itemMaterial,indexMaterial) in weft_data.material_data.filter(vals=>vals.type_material === 1)"
+                  :key="indexMaterial">
+                  {{itemMaterial.apply|filterMaterialClass}}
+                  {{":" + itemMaterial.material_name}}
+                </span>
               </span>
             </div>
             <div class="material">
               <span>次要原料(纬)</span>
               <span>
-                <span v-for="(itemMaterial,indexMaterial) in weft_data.material_data"
+                <span v-for="(itemMaterial,indexMaterial) in weft_data.material_data.filter(vals=>vals.type_material === 2)"
                   :key="indexMaterial">
-                  {{itemMaterial.apply|filterClass}}
+                  {{itemMaterial.apply|filterMaterialClass}}
                   {{":" + itemMaterial.material_name}}
                 </span>
               </span>
@@ -955,15 +963,6 @@ export default {
         })
       }
       return str
-    },
-    filterClass (item) {
-      let arr = []
-      item.forEach(value => {
-        if (value !== 0) {
-          arr.push('夹' + value)
-        }
-      })
-      return arr.join('/')
     },
     filterMaterialClass (item) {
       let arr = []
