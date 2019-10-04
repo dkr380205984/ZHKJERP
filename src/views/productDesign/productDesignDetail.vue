@@ -275,7 +275,7 @@
                 <span>{{filterWeights(value,totalPlanMaterial.nowType)}}</span>
               </span>
               <span class="info"
-                v-for="itemNumber in MaxTotalMaterialAttr - item.attrInfo.length"
+                v-for="itemNumber in MaxTotalMaterialAttr[totalPlanMaterial.nowType] - item.attrInfo.length"
                 :key="itemNumber+'null'"></span>
               <span class="total">合计:{{filterTotal(item.attrInfo,totalPlanMaterial.nowType)}}</span>
             </div>
@@ -285,7 +285,7 @@
                 :key="item+'null'">
                 <span class="title"></span>
                 <span class="info"
-                  v-for="item in MaxTotalMaterialAttr"
+                  v-for="item in MaxTotalMaterialAttr[totalPlanMaterial.nowType]"
                   :key="item"></span>
                 <span class="total"></span>
               </div>
@@ -360,7 +360,10 @@ export default {
         other: [],
         nowType: 'main'
       },
-      MaxTotalMaterialAttr: 1
+      MaxTotalMaterialAttr: {
+        'main': 1,
+        'other': 1
+      }
     }
   },
   methods: {
@@ -473,6 +476,7 @@ export default {
             state = 0
           }
           this.product.push({
+            product_code: item.product_code,
             product_id: item.product_id,
             category_name: item.category_name,
             type_name: item.type_name,
@@ -632,7 +636,12 @@ export default {
           }
         })
       })
-      this.MaxTotalMaterialAttr = this.totalPlanMaterial.main.map(item => {
+      this.MaxTotalMaterialAttr.main = this.totalPlanMaterial.main.map(item => {
+        return item.attrInfo.length
+      }).sort((a, b) => {
+        return b - a
+      })[0]
+      this.MaxTotalMaterialAttr.other = this.totalPlanMaterial.other.map(item => {
         return item.attrInfo.length
       }).sort((a, b) => {
         return b - a

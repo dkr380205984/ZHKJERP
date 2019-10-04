@@ -154,24 +154,16 @@
               :content="toolTips(item)"
               placement="top-start">
               <span class="btns warning"
-                v-if="item.has_craft===1||item.in_order===1||item.has_plan===1"
+                v-if="item.has_craft===1||item.has_plan===1"
                 @click="$router.push('/index/productUpdate/'+item.id + '?type=1')">修改</span>
             </el-tooltip>
             <span class="btns warning"
-              v-if="item.has_craft===0&&item.in_order===0&&item.has_plan===0"
+              v-if="item.has_craft===0&&item.has_plan===0"
               @click="$router.push('/index/productUpdate/'+item.id + '?type=1')">修改</span>
             <span class="btns success"
               @click="$router.push('/index/productDetail/'+item.id)">详情</span>
             <span class="btns error"
-              v-if="item.has_plan===0"
               @click="deleteProduct(item.id)">删除</span>
-            <el-tooltip class="item"
-              effect="dark"
-              content="该产品已有订单信息，不能删除"
-              placement="top-start">
-              <span class="btns ban"
-                v-if="item.has_plan===1">删除</span>
-            </el-tooltip>
           </div>
         </div>
       </div>
@@ -358,6 +350,7 @@ export default {
             this.getProductList()
           } else {
             this.$message.error(res.data.message)
+            this.loading = false
           }
         })
       }).catch(() => {

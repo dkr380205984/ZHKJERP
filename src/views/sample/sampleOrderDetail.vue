@@ -22,10 +22,10 @@
               {{'操作'}}
               <el-dropdown-menu slot="dropdown"
                 v-if="order_info.status === 0">
-                <el-dropdown-item v-show="order_info.sample_order_apply_status === 12 || sample_order_list[0] === $route.params.id"
+                <el-dropdown-item v-show="order_info.sample_order_apply_status === 12 || (sample_order_list[0] ? sample_order_list[0].id:'') === $route.params.id"
                   command="ok"
                   style="color:#1A94FF">客户确认</el-dropdown-item>
-                <el-dropdown-item v-show="order_info.sample_order_apply_status === 12 || sample_order_list[0] === $route.params.id"
+                <el-dropdown-item v-show="order_info.sample_order_apply_status === 12 || (sample_order_list[0] ? sample_order_list[0].id:'') === $route.params.id"
                   command="change"
                   style="color:#E6A23C">修改样单</el-dropdown-item>
                 <el-dropdown-item v-show="order_info.status===0"
@@ -174,7 +174,7 @@
                 </div>
                 <span>修改工艺单<span style="color:#1a95ff;margin-left:8px;cursor: pointer;font-weight:400;"
                     @click="handleType = 'changeCraft'"
-                    v-if="11 > order_info.sample_order_apply_status">去修改</span></span>
+                    v-if="10 === order_info.sample_order_apply_status">去修改</span></span>
                 <!-- <span>王经理</span> -->
                 <!-- <span>2016-12-12 12:32</span> -->
               </div>
@@ -869,7 +869,7 @@
                       v-for="(itemColor,indexColor) in itemPro.info"
                       :key="indexColor">
                       <span class="tableRow">{{itemColor.size}}/{{itemColor.color}}</span>
-                      <span class="tableRow">{{itemColor.stock_number}}{{itemColor.product_info.category_info.name}}</span>
+                      <span class="tableRow">{{itemColor.stock_number}}{{itemColor.product_info.unit}}</span>
                     </span>
                   </span>
                 </span>
@@ -1593,12 +1593,14 @@ export default {
               }
             }
           })
-          if (!this.submitInfo.sampleType) {
+          if (!this.submitInfo.sampleType && this.submitInfo.sampleType !== 0) {
             this.$message.error('请选择样单类型')
+            this.lock = true
             return
           }
           if (!this.submitInfo.sample_complete_time) {
             this.$message.error('请选择样单完成时间')
+            this.lock = true
             return
           }
           let data = {
@@ -1924,7 +1926,7 @@ export default {
             color: item.size.split('/')[1],
             size: item.size.split('/')[0],
             order_code: this.order_info.order_code,
-            product_id: item.id
+            product_id: item.product_info.category_info.product_id
           }
         })
         orderCheck({

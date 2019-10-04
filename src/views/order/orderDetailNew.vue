@@ -1380,7 +1380,7 @@ export default {
             size: item.size.split('/')[0],
             color: item.size.split('/')[1],
             order_code: this.order_info.order_code,
-            product_id: item.id
+            product_id: item.product_info.category_info.product_id
           }
         })
         orderCheck({
