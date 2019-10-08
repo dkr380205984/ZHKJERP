@@ -95,14 +95,12 @@
               <div class="proBox"
                 style="transform: translateX(0);"
                 ref="proBox">
-                <div class="proCtn"
+                <div class="proCtn active"
                   v-for="(item,key) in product_info"
-                  :key="key"
-                  @click="item.show = !item.show"
-                  :class="{'active':item.show}">
+                  :key="key">
                   <div class="
                   left">
-                    <img :src="item.product_info.img.length > 0 ? item.product_info.img[0].img_url : require('@/assets/image/index/noPic.png')"
+                    <img :src="item.product_info.img.length > 0 ? item.product_info.img[0].image_url : require('@/assets/image/index/noPic.png')"
                       :alt="item.product_info.category_info.product_category + '图片'"
                       :title="item.product_info.category_info.product_category"
                       class="imgItem">
@@ -237,6 +235,8 @@
         <div class="btnCtn">
           <span class="change"
             @click="$router.push('/priceListTable/' + $route.params.id)">打印</span>
+          <span class="change"
+            @click="$router.push('/index/priceListUpdate/' + $route.params.id)">修改</span>
           <span class="clear"
             @click="$router.push('/index/priceListList')">返回</span>
           <span class="submit"

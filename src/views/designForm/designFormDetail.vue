@@ -46,7 +46,7 @@
             </div>
             <div class="box box4">
               <div class="label">创建日期：</div>
-              <div class="content">{{productInfo.create_time}}</div>
+              <div class="content">{{productInfo.category_info.create_time}}</div>
             </div>
             <div class="box box4">
               <div class="label">创建人：</div>

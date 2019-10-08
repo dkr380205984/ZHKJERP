@@ -237,10 +237,19 @@ const menu = [{
     name: '样品列表',
     url: '/index/sampleList'
   }, {
-    name: '新建样品订单',
+    name: '添加报价单',
+    url: '/index/priceListCreate'
+  }, {
+    name: '报价单列表',
+    url: '/index/priceListList'
+    // }, {
+    //   name: '产品电子手册',
+    //   url: '/productMenu'
+  }, {
+    name: '添加新样单',
     url: '/index/sampleOrderCreate'
   }, {
-    name: '样品订单列表',
+    name: '样单列表',
     url: '/index/sampleOrderList'
   }]
 }, {
@@ -251,16 +260,6 @@ const menu = [{
   }, {
     name: '产品列表',
     url: '/index/productList'
-  }, {
-    name: '添加产品报价单',
-    url: '/index/priceListCreate'
-  },
-  {
-    name: '产品报价单列表',
-    url: '/index/priceListList'
-    // }, {
-    //   name: '产品电子手册',
-    //   url: '/productMenu'
   }, {
     name: '产品库存列表',
     url: '/index/productStockList'

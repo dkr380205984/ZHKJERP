@@ -147,7 +147,7 @@
                   :key="item.id">
                   <div class="flex"
                     style="color:#10AEF5;cursor:help"
-                    @click="openUrl('/index/productDetail/'+item.product_code)">{{item.product_code}}</div>
+                    @click="openUrl('/index/productDetail/'+item.id)">{{item.product_code}}</div>
                   <div class="flex">{{item|filterType}}</div>
                   <div class="flex">{{item.flower_id}}</div>
                   <div class="flex">{{item.user_name}}</div>
@@ -172,7 +172,11 @@
               :key="indexPro">
               <div class="leftCol">
                 <div class="box">{{itemPro.product_code}} ( {{itemPro.category_info.product_category}}/{{itemPro.type_name}}/{{itemPro.style_name}} )</div>
-                <div class="deleteBtn"
+                <span class="deleteBtn"
+                  @click="openUrl('/index/productDetail/'+itemPro.id)"
+                  style="color:blue">查看</span>
+                <div class="
+                  deleteBtn"
                   @click="deleteProduct(itemPro.id)">删除</div>
               </div>
               <div class="rightCol">
@@ -1200,7 +1204,7 @@ export default {
         // 生成产品报价单编号
         let quotationCode = ''
         this.productArr.forEach((item) => {
-          quotationCode = quotationCode + item.product_code.slice(2, 5) + '-'
+          quotationCode = quotationCode + item.product_code.slice(2, 5) + '-' + this.$route.params.id
         })
         let json = {
           id: this.$route.params.id,

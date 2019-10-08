@@ -767,7 +767,7 @@
       <div class="wenbantu"
         v-for="(item,key) in drafting_method.GL"
         :key="key">
-        <div class="title">纹版图{{key !== 0 ? key + 1 : ''}}:</div>
+        <div class="title">纹版图{{letterArr[key]}}:</div>
         <div class="content">
           <div class="box"
             v-for="(val,ind) in item"
@@ -790,6 +790,7 @@
 </template>
 
 <script>
+import { letterArr } from '@/assets/js/dictionary.js'
 import { craftOne } from '@/assets/js/api.js'
 const QRCode = require('qrcode')
 export default {
@@ -829,7 +830,8 @@ export default {
         weft: []
       },
       zhujia_info: [],
-      qrCodeUrl: ''
+      qrCodeUrl: '',
+      letterArr: letterArr
     }
   },
   methods: {
@@ -948,7 +950,7 @@ export default {
       let romanNum = ['Ⅰ', 'Ⅱ', 'Ⅲ', 'Ⅳ', 'Ⅴ', 'Ⅵ', 'Ⅶ', 'Ⅷ', 'Ⅸ', 'Ⅹ', 'Ⅺ', 'Ⅻ']
       if (items.PMFlag === 'normal') {
         items.PM.forEach((item, key) => {
-          str = '【' + item.number + '根（' + item.value + '）' + '】' + (item.repeat && item.repeat !== 1 ? 'x' + item.repeat + '遍' : '') + (key !== items.PM.length - 1 ? '。' : '')
+          str += romanNum[key] + '【' + item.number + '根（' + item.value + '）' + '】' + (item.repeat && item.repeat !== 1 ? 'x' + item.repeat + '遍' : '') + (key !== items.PM.length - 1 ? '。' : '')
         })
       } else if (items.PMFlag === 'complex') {
         items.PM.forEach((item, key) => {

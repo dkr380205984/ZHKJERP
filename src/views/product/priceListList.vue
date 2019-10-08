@@ -65,7 +65,7 @@
             style="flex:1.5">产品信息</div>
           <div class="tableColumn">产品图片</div>
           <div class="tableColumn">产品报价</div>
-          <div class="tableColumn">联系人</div>
+          <div class="tableColumn">起订数量</div>
           <div class="tableColumn">创建日期</div>
           <div class="tableColumn">审核状态</div>
           <div class="tableColumn">操作</div>
@@ -99,7 +99,7 @@
             </div>
           </div>
           <div class="tableColumn">{{item|cmpPrice}}元</div>
-          <div class="tableColumn">{{item.contact_name}}</div>
+          <div class="tableColumn">{{item.number}}件</div>
           <div class="tableColumn">{{item.created_at}}</div>
           <div class="tableColumn"
             :style="{'color':getColor(item.status)}">{{item.status|filterStatus}}</div>
@@ -279,8 +279,8 @@ export default {
         return total + Number(current.price ? current.price : 0)
       }, 0) + (val.pack_material_info).reduce((total, current) => {
         return total + Number(current.price ? current.price : 0)
-        // }, 0) + (val.user_info).reduce((total, current) => {
-        //   return total + Number(current.total_price ? current.total_price : 0)
+      }, 0) + (val.production_info).reduce((total, current) => {
+        return total + Number(current.price ? current.price : 0)
       }, 0) + (val.desc_info).reduce((total, current) => {
         return total + Number(current.price ? current.price : 0)
       }, 0) + Number(val.transport_cost) + Number(val.no_product_cost) + Number(JSON.parse(val.profit).price) + Number(JSON.parse(val.commission).price) + Number(JSON.parse(val.tax).price)).toFixed(2)
@@ -319,6 +319,7 @@ export default {
             weave_info: JSON.parse(item.weave_info),
             semi_product_info: JSON.parse(item.semi_product_info),
             pack_material_info: JSON.parse(item.pack_material_info),
+            production_info: JSON.parse(item.production_info),
             no_product_cost: item.no_product_cost,
             desc_info: JSON.parse(item.desc_info),
             transport_cost: item.transport_cost,
@@ -390,12 +391,14 @@ export default {
           weave_info: JSON.parse(item.weave_info),
           semi_product_info: JSON.parse(item.semi_product_info),
           pack_material_info: JSON.parse(item.pack_material_info),
+          production_info: JSON.parse(item.production_info),
           no_product_cost: item.no_product_cost,
           desc_info: JSON.parse(item.desc_info),
           transport_cost: item.transport_cost,
           profit: item.profit,
           commission: item.commission,
           tax: item.tax,
+          number: item.number,
           desc: item.desc,
           created_at: item.created_at,
           status: item.status

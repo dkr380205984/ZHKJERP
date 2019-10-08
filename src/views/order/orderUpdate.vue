@@ -350,25 +350,84 @@
             disabled></el-input>
         </div>
       </div>
+
       <div class="lineCtn">
-        <div class="inputCtn oneLine">
-          <span class="label">上传文件：</span>
-          <el-upload class="upload-demo"
-            action="http://upload.qiniup.com/"
-            accept=""
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :on-success="handleSuccess"
-            :before-upload="beforeAvatarUpload"
-            :file-list="fileArr"
-            :data="postData"
-            ref="uploada"
-            list-type="picture">
-            <el-button size="small"
-              type="primary">点击上传</el-button>
-            <div slot="tip"
-              class="el-upload__tip">请不要上传超过20M的文件</div>
-          </el-upload>
+        <div class="inputCtn">
+          <span class="label">订单资料：</span>
+          <div class="content">
+            <ul class="tablesCtn"
+              style="list-style:none;margin:0;padding:0;width:670px;">
+              <li class="content">
+                <span class="tableRow">订单合同</span>
+                <span class="tableRow">包装资料</span>
+                <span class="tableRow">装箱资料</span>
+                <span class="tableRow">其他文件</span>
+              </li>
+              <li class="content"
+                style="min-height:60px;">
+                <span class="tableRow noCenter">
+                  <el-upload class="upload-demo"
+                    action="http://upload.qiniup.com/"
+                    accept=""
+                    :on-preview="handlePreview"
+                    :on-remove="handleRemove"
+                    :on-success="handleSuccess"
+                    :before-upload="beforeAvatarUpload"
+                    :file-list="fileArr"
+                    :data="postData"
+                    ref="uploada1">
+                    <el-button size="small"
+                      type="primary">点击上传</el-button>
+                  </el-upload>
+                </span>
+                <span class="tableRow noCenter">
+                  <el-upload class="upload-demo"
+                    action="http://upload.qiniup.com/"
+                    accept=""
+                    :on-preview="handlePreview"
+                    :on-remove="handleRemove"
+                    :on-success="handleSuccess"
+                    :before-upload="beforeAvatarUpload"
+                    :file-list="fileArr"
+                    :data="postData"
+                    ref="uploada2">
+                    <el-button size="small"
+                      type="primary">点击上传</el-button>
+                  </el-upload>
+                </span>
+                <span class="tableRow noCenter">
+                  <el-upload class="upload-demo"
+                    action="http://upload.qiniup.com/"
+                    accept=""
+                    :on-preview="handlePreview"
+                    :on-remove="handleRemove"
+                    :on-success="handleSuccess"
+                    :before-upload="beforeAvatarUpload"
+                    :file-list="fileArr"
+                    :data="postData"
+                    ref="uploada3">
+                    <el-button size="small"
+                      type="primary">点击上传</el-button>
+                  </el-upload>
+                </span>
+                <span class="tableRow noCenter">
+                  <el-upload class="upload-demo"
+                    action="http://upload.qiniup.com/"
+                    accept=""
+                    :on-preview="handlePreview"
+                    :on-remove="handleRemove"
+                    :on-success="handleSuccess"
+                    :before-upload="beforeAvatarUpload"
+                    :file-list="fileArr"
+                    :data="postData"
+                    ref="uploada4">
+                    <el-button size="small"
+                      type="primary">点击上传</el-button>
+                  </el-upload>
+                </span>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
       <div class="lineCtn">
@@ -783,13 +842,17 @@ export default {
           })
           return
         }
-        const fileArr = this.$refs.uploada.uploadFiles.map((item) => {
-          if (item.response) {
-            return 'http://zhihui.tlkrzf.com/' + item.response.key
-          } else {
-            return item.url
-          }
-        })
+        // const fileArr = this.$refs.uploada.uploadFiles.map((item) => {
+        //   if (item.response) {
+        //     return 'http://zhihui.tlkrzf.com/' + item.response.key
+        //   } else {
+        //     return item.url
+        //   }
+        // })
+        const orderContract = this.$refs.uploada1.uploadFiles.map((item) => { return 'http://zhihui.tlkrzf.com/' + item.response.key })
+        const packMeans = this.$refs.uploada2.uploadFiles.map((item) => { return 'http://zhihui.tlkrzf.com/' + item.response.key })
+        const storeMeans = this.$refs.uploada3.uploadFiles.map((item) => { return 'http://zhihui.tlkrzf.com/' + item.response.key })
+        const otherInfo = this.$refs.uploada4.uploadFiles.map((item) => { return 'http://zhihui.tlkrzf.com/' + item.response.key })
         let obj = {
           id: parseInt(this.$route.params.id),
           company_id: this.companyId,
@@ -817,7 +880,13 @@ export default {
           }),
           total_price: this.totalMoney,
           remark: this.otherInfo,
-          file_url: JSON.stringify(fileArr)
+          total_price_RMB: this.totalMoney * this.exchangeRate / 100,
+          // file_url: JSON.stringify(fileArr),
+          order_contract: JSON.stringify(orderContract),
+          pack_means: JSON.stringify(packMeans),
+          store_means: JSON.stringify(storeMeans),
+          other_info: JSON.stringify(otherInfo),
+          type: 1
         }
         this.lock = false
         this.loading = false
@@ -828,7 +897,7 @@ export default {
             this.$message.success({
               message: '修改订单成功'
             })
-            this.$router.push('/index/orderDetailNew/' + res.data.data)
+            this.$router.push('/index/orderDetailNew/' + res.data.data.id)
           } else {
             this.$message.error({
               message: res.data.message
