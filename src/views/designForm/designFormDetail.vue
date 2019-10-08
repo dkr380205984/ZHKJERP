@@ -30,7 +30,7 @@
               <div class="content">
                 <span v-for="(item,index) in productInfo.color"
                   :key="index">
-                  <span>{{item.name}}</span>
+                  <span>{{item.color_name}}</span>
                   <span v-if="index<productInfo.color.length - 1">/</span>
                 </span>
               </div>
