@@ -18,7 +18,7 @@
       </div>
       <div class="inputCtn">
         <span class="label must">客户类型:</span>
-        <!-- <el-select class="elInput"
+        <el-select class="elInput"
           multiple
           placeholder="请选择客户类型"
           v-model="type">
@@ -26,7 +26,7 @@
             :key="item.value"
             :value="item.value"
             :label="item.name"></el-option>
-        </el-select> -->
+        </el-select>
         <!-- <el-cascader v-model="type"
           class="elInput"
           placeholder="请选择客户类型"
@@ -118,7 +118,7 @@
 </template>
 
 <script>
-import { companyTypes } from '@/assets/js/dictionary.js'
+import { companyType } from '@/assets/js/dictionary.js'
 import { clientAdd } from '@/assets/js/api.js'
 export default {
   data () {
@@ -132,7 +132,7 @@ export default {
       contactsName: '',
       contactsStation: '',
       contactsPhone: '',
-      companyType: companyTypes,
+      companyType: companyType,
       type: []
     }
   },
@@ -208,7 +208,9 @@ export default {
 @import "~@/assets/css/foreignTradeCreate.less";
 </style>
 <style lang="less">
-.el-checkbox {
-  margin-right: 0 !important;
-}
+// #foreignTradeCreate {
+//   .el-checkbox {
+//     margin-right: 0 !important;
+//   }
+// }
 </style>

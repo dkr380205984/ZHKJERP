@@ -15,7 +15,7 @@
               :index="index.toString()"
               :key="item.name">
               <div slot="title">
-                <img :src="require('@/assets/image/icon/'+ (item.name === '样品管理' ? '产品管理': item.name) +'.png')"
+                <img :src="require('@/assets/image/icon/'+ (item.name === '样品管理' || item.name === '报价单管理' ? '产品管理': item.name) +'.png')"
                   alt=""
                   class="icon">
                 {{item.name}}</div>

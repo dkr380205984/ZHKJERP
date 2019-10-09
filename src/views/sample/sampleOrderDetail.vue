@@ -683,9 +683,6 @@
               <span class="title">财务概述</span>
               <i class="border"></i>
             </div>
-            <!-- <div class="oprationCtn">
-              <span class="opration">财务详情</span>
-            </div> -->
           </div>
           <span class="title">物料成本</span>
           <div class="tablesCtn"
@@ -1194,35 +1191,6 @@
               </template>
             </template>
           </template>
-          <!-- 取消样单弹窗 -->
-          <!-- <template v-else>
-            <div class="item"
-              style="margin-top:27px">
-              <span class="label">物料入库:</span>
-              <div class="content">
-                <el-radio-group v-model="submitInfo.isStockForMaterial"
-                  class="elInput">
-                  <el-radio :label="true">是</el-radio>
-                  <el-radio :label="false">否</el-radio>
-                </el-radio-group>
-              </div>
-            </div>
-            <div class="item" v-show='submitInfo.isStockForMaterial'
-              v-for="(item,key) in materialDetail"
-              :key="key">
-              <div class="content">
-                <el-input v-for="(item,index) in productDetail"
-                  :key="index"
-                  class="inputs"
-                  v-model="item.number"
-                  placeholder="请填写剩余数量">
-                  <template slot="prepend">{{item.productCode}} {{item.type}}({{item.size}})</template>
-                  <template slot="append">{{item.unit}}</template>
-                </el-input>
-              </div>
-            </div>
-            <div class="item" v-if="materialDetail.length === 0 && submitInfo.isStockForMaterial">暂无原料订购信息，如无结余原料，请忽略。</div>
-          </template> -->
         </div>
         <div class="footer">
           <span class="cancel"
@@ -1303,7 +1271,6 @@
       </div>
     </div>
     <!-- 点击去修改工艺单时候的弹窗 -->
-    <!-- /index/designFormUpdate/33 -->
     <div class="message"
       v-show="handleType === 'changeCraft'">
       <div class="messageBox">
@@ -1334,7 +1301,6 @@
       </div>
     </div>
     <!-- 点击去修改样品时候的弹窗 -->
-    <!-- /index/productPlanUpdate/19YCAA0241 -->
     <div class="message"
       v-show="handleType === 'changePlan'">
       <div class="messageBox">
@@ -2241,20 +2207,21 @@ export default {
       let inStockInfo = [].concat(this.order_log.material_pop_z, this.order_log.material_pop_f)
       let materialPageInfo = this.order_log.material_order
       // 物料计划值
-      materialInfo.material_info.forEach(item => {
-        for (let prop in item) {
-          let flag = this.materialList.find(key => key.material_name === prop)
-          if (!flag) {
-            this.materialList.push({
-              material_name: prop,
-              unit: item[prop].unit === '克' ? 'kg' : (item[prop].unit === 'g' ? 'kg' : item[prop].unit),
-              plan_number: (item[prop].unit === '克' || item[prop].unit === 'g') ? (item[prop].total_number / 1000) : item[prop].total_number
-            })
-          } else {
-            flag.plan_number = Number(flag.plan_number) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? (item[prop].total_number / 1000) : item[prop].total_number)
-          }
+      // materialInfo.material_info.forEach(item => {
+      for (let prop in materialInfo.material_info) {
+        let item = materialInfo.material_info
+        let flag = this.materialList.find(key => key.material_name === prop)
+        if (!flag) {
+          this.materialList.push({
+            material_name: prop,
+            unit: item[prop].unit === '克' ? 'kg' : (item[prop].unit === 'g' ? 'kg' : item[prop].unit),
+            plan_number: (item[prop].unit === '克' || item[prop].unit === 'g') ? (item[prop].total_number / 1000) : item[prop].total_number
+          })
+        } else {
+          flag.plan_number = Number(flag.plan_number) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? (item[prop].total_number / 1000) : item[prop].total_number)
         }
-      })
+      }
+      // })
       // 物料加工值，样购值
       this.materialList.map(res => {
         if (materialInfo.total_weight_order[res.material_name]) {
@@ -2391,6 +2358,18 @@ export default {
           let item = this.productDetailInfo.find(val => Number(val.product_id) === Number(res.data.data.id))
           if (item) {
             item.detail = res.data.data
+            if (!item.detail.craft_info) {
+              item.detail.craft_info = []
+            }
+            if (!item.detail.product_plan_info) {
+              item.detail.product_plan_info = []
+            }
+            if (Object.prototype.toString.call(item.detail.craft_info) === '[object Object]') {
+              item.detail.craft_info = [item.detail.craft_info]
+            }
+            if (Object.prototype.toString.call(item.detail.product_plan_info) === '[object Object]') {
+              item.detail.product_plan_info = [item.detail.product_plan_info]
+            }
             item.type.find(vals => vals.type === '工艺').status = (res.data.data.status_craft === 2)
             item.type.find(vals => vals.type === '制版').status = (res.data.data.status_print === 2)
             if (res.data.data.status_craft === 2) {

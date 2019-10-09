@@ -128,7 +128,7 @@
                           :key="index">
                           <span>{{value.measurement}}</span>
                           (
-                          <span>{{value.size_info}}</span>
+                          <span>规格：{{value.size_info}}，</span>
                           <span>克重：{{value.weight}}g</span>
                           <!-- <template v-for="(val,ind) in value">
                             <span :key="ind">{{val.size_name}}:</span>
@@ -145,6 +145,10 @@
                           )
                         </div>
                       </span>
+                    </li>
+                    <li>
+                      <span class="title">产品描述:</span>
+                      <span class="info">{{item.product_info.description ? item.product_info.description : '暂无描述信息'}}</span>
                     </li>
                   </ul>
                 </div>
@@ -184,7 +188,7 @@
                 :key="key">
                 <span>{{item.name ? item.name : '/'}}</span>
                 <span>{{item.number ? item.number : '/'}}{{(item.unit && item.number) ? item.unit : ''}}</span>
-                <span>{{item.price ? item.price : '/'}}{{item.price && item.unit ? '元/' + item.unit : '' }}</span>
+                <span>{{item.price ? item.price : '/'}}{{item.price && item.unit ? '元/' + (item.unit === 'g' ? 'kg' : item.unit) : '' }}</span>
                 <span>{{item.sunhao ? item.sunhao : '/'}}{{item.sunhao ? '%' : ''}}</span>
                 <span>{{item.other ? item.other : '/'}}</span>
                 <span>{{item.totalPrice ? item.totalPrice : 0}}元</span>
@@ -437,15 +441,12 @@ export default {
       return item.color.map(val => {
         return val.color_name
       }).join('/')
-      // return item.color.reduce((str, str1) => {
-      //   return ((str.name ? str.name : str) + str1.name)
-      // })
     },
     filterType (item) {
       return item.category_info.product_category + '/' + item.type_name + '/' + item.style_name
     },
     filterPrice (item) {
-      return (Number(item.yongjin.price ? item.yongjin.price : 0) + Number(item.lirun.price ? item.lirun.price : 0) + Number(item.shuifei.price ? item.shuifei.price : 0)).toFixed(1)
+      return (Number(item.yongjin.price ? item.yongjin.price : 0) + Number(item.lirun.price ? item.lirun.price : 0) + Number(item.shuifei.price ? item.shuifei.price : 0)).toFixed(2)
     }
   },
   created () {
@@ -466,11 +467,11 @@ export default {
         ...JSON.parse(data.material_info).map(item => {
           return {
             name: item.key ? item.key : '原料',
-            number: item.weight / 1000,
+            number: item.weight,
             price: item.price,
             sunhao: item.sunhao,
             totalPrice: item.total_price,
-            unit: 'kg'
+            unit: 'g'
           }
         }),
         ...JSON.parse(data.assist_info).map(item => {
@@ -519,7 +520,7 @@ export default {
       )
       this.priceTableDetail.product_total_price = (this.priceTableDetail.info.reduce((total, item) => {
         return Number(total.totalPrice ? total.totalPrice : total) + Number(item.totalPrice ? item.totalPrice : 0)
-      })).toFixed(1)
+      })).toFixed(2)
       this.priceTableDetail.yongjin = JSON.parse(data.commission)
       this.priceTableDetail.shuifei = JSON.parse(data.tax)
       this.priceTableDetail.lirun = JSON.parse(data.profit)

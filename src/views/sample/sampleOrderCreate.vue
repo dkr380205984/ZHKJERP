@@ -150,7 +150,7 @@
                 :key="item.id">
                 <div class="flex"
                   style="color:#10AEF5;cursor:help"
-                  @click="openUrl('/index/productDetail/'+item.product_code)">{{item.product_code}}</div>
+                  @click="openUrl('/index/productDetail/'+item.id)">{{item.product_code}}</div>
                 <div class="flex">{{item|filterType}}</div>
                 <div class="flex">{{item.flower_id}}</div>
                 <div class="flex">{{item.user_name}}</div>
@@ -372,6 +372,9 @@ export default {
     }
   },
   methods: {
+    openUrl (url) {
+      window.open(url)
+    },
     afterSave (data) {
       this.msgFlag = data.msgFlag
     },

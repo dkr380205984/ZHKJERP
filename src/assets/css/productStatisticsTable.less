@@ -145,16 +145,14 @@ h2 {
           // box-sizing: border-box;
           // border-left: 1px solid transparent;
           &>span {
-            border-right: 1px solid #999;
+            border-left: 1px solid #999;
             box-sizing: border-box;
             text-align: center;
             line-height: 59px;
             &:first-child {
               width: 178px;
               font-size: 22px;
-            }
-            &:last-child {
-              border: none;
+              border-left: none;
             }
           }
           &:first-child {
@@ -165,7 +163,7 @@ h2 {
                 flex: 1;
               }
               &:nth-child(3) {
-                width: 142px
+                width: 143px
               }
               &:nth-child(4){
                 width: 257px
@@ -173,10 +171,14 @@ h2 {
             }
           }
           &:nth-child(n+2){
-            &>span:nth-child(n+2) {
+            &>span:nth-child(2) {
               flex: 1;
               text-align: left;
               padding-left: 32px; 
+              &>span{
+                display: inline-block;
+                width: 188px;
+              }
             }
           }
           

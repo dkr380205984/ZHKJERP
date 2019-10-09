@@ -14,9 +14,9 @@ import 'echarts/lib/chart/bar'
 import 'echarts/lib/chart/pie'
 import 'echarts/lib/chart/sunburst'
 
-import EleMultiCascader from 'ele-multi-cascader'
-import 'ele-multi-cascader/dist/cascader.css'
-Vue.use(EleMultiCascader)
+// import EleMultiCascader from 'ele-multi-cascader'
+// import 'ele-multi-cascader/dist/cascader.css'
+// Vue.use(EleMultiCascader)
 Vue.component('echarts', ECharts)
 Vue.use(VueParticles)
 Vue.use(ElementUI)

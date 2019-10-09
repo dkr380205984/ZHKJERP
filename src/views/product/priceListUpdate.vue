@@ -26,7 +26,7 @@
             </el-select>
           </div>
           <div class="inputCtn">
-            <span class="label must">联系人：</span>
+            <span class="label">联系人：</span>
             <el-select class="elInput"
               v-model="contacts"
               placeholder="请选择联系人">
@@ -172,9 +172,64 @@
               :key="indexPro">
               <div class="leftCol">
                 <div class="box">{{itemPro.product_code}} ( {{itemPro.category_info.product_category}}/{{itemPro.type_name}}/{{itemPro.style_name}} )</div>
-                <span class="deleteBtn"
-                  @click="openUrl('/index/productDetail/'+itemPro.id)"
-                  style="color:blue">查看</span>
+                <span class="showBtn"
+                  @click="openUrl('/index/productDetail/'+itemPro.id)">
+                  预览
+                  <div class="proCtn active">
+                    <div class="left">
+                      <img :src="itemPro.img.length > 0 ? itemPro.img[0].image_url : require('@/assets/image/index/noPic.png')"
+                        :alt="itemPro.category_info.product_category + '图片'"
+                        :title="itemPro.category_info.product_category"
+                        class="imgItem">
+                      <span class="blue">{{itemPro.product_code}}</span>
+                      <span>{{itemPro|filterType}}</span>
+                    </div>
+                    <ul class="right">
+                      <li>
+                        <span class="title">产品编号:</span>
+                        <span class="info blue">{{itemPro.product_code}}</span>
+                      </li>
+                      <li>
+                        <span class="title">产品品类:</span>
+                        <span class="info">{{itemPro|filterType}}</span>
+                      </li>
+                      <li>
+                        <span class="title">颜色色组:</span>
+                        <span class="info">{{itemPro|filterColor}}</span>
+                      </li>
+                      <li>
+                        <span class="title">尺码规格:</span>
+                        <span class="info">
+                          <div class="sizeCtn"
+                            v-for="(value,index) in itemPro.size"
+                            :key="index">
+                            <span>{{value.measurement}}</span>
+                            (
+                            <span>{{value.size_info}}</span>
+                            <span>克重：{{value.weight}}g</span>
+                            <!-- <template v-for="(val,ind) in value">
+                            <span :key="ind">{{val.size_name}}:</span>
+                            <span :key="val.id">{{val.size_value}}cm</span>
+                            <span v-if="ind === value.length - 1"
+                              :key="ind+'x'">
+                              克重:
+                            </span>
+                            <span v-if="ind === value.length - 1"
+                              :key="ind+'y'">
+                              {{val.weight}}g
+                            </span>
+                          </template> -->
+                            )
+                          </div>
+                        </span>
+                      </li>
+                      <li>
+                        <span class="title">产品描述:</span>
+                        <span class="info">{{itemPro.description ? itemPro.description : '暂无描述信息'}}</span>
+                      </li>
+                    </ul>
+                  </div>
+                </span>
                 <div class="
                   deleteBtn"
                   @click="deleteProduct(itemPro.id)">删除</div>
@@ -273,21 +328,21 @@
                   <el-input placeholder="克重"
                     class="textInp marginLeft16"
                     v-model="item.weight"
-                    @input="computedPrice(item)">
+                    @input="computedPrice(item,true)">
                     <div slot="append"
                       class='unit'>克</div>
                   </el-input>
                   <el-input placeholder="单价"
                     class="textInp marginLeft16"
                     v-model="item.price"
-                    @input="computedPrice(item)">
+                    @input="computedPrice(item,true)">
                     <div slot="append"
                       class='unit'>元/kg</div>
                   </el-input>
                   <el-input placeholder="损耗"
                     class="textInp marginLeft16"
                     v-model="item.sunhao"
-                    @input="computedPrice(item)">
+                    @input="computedPrice(item,true)">
                     <div slot="append"
                       class='unit'>%</div>
                   </el-input>
@@ -873,9 +928,10 @@ export default {
       item.unit = this.otherMaterialList.find(key => key.name === value) ? this.otherMaterialList.find(key => key.name === value).unit : '个'
     },
     // 计算产品物料费用
-    computedPrice (item) {
+    computedPrice (item, flag) {
+      // flag是判断是否为原料
       if (item.sunhao && item.price && item.weight) {
-        item.total_price = ((item.weight / 1000) * (item.sunhao / 100 + 1) * item.price).toFixed(1)
+        item.total_price = ((item.weight / (flag ? 1000 : 1)) * (item.sunhao / 100 + 1) * item.price).toFixed(2)
       }
       this.computedTotalPrice()
     },
@@ -905,18 +961,18 @@ export default {
       })
       total += Number(this.user_info_price)
       total += Number(this.yunshu)
-      this.product_total_price = total.toFixed(1)
+      this.product_total_price = total.toFixed(2)
       this.computedOrderPrice()
     },
     // 计算总计及订单费用
     computedOrderPrice () {
       if (this.lirun.prop && this.shuifei.prop && this.yongjin.prop) {
         this.total_price = this.product_total_price / (1 - (Number(this.lirun.prop) + Number(this.shuifei.prop) + Number(this.yongjin.prop)) / 100)
-        this.lirun.price = (this.total_price * this.lirun.prop / 100).toFixed(1)
-        this.yongjin.price = (this.total_price * this.yongjin.prop / 100).toFixed(1)
-        this.shuifei.price = (this.total_price * this.shuifei.prop / 100).toFixed(1)
+        this.lirun.price = (this.total_price * this.lirun.prop / 100).toFixed(2)
+        this.yongjin.price = (this.total_price * this.yongjin.prop / 100).toFixed(2)
+        this.shuifei.price = (this.total_price * this.shuifei.prop / 100).toFixed(2)
         console.log(this.total_price)
-        this.total_price = this.total_price.toFixed(1)
+        this.total_price = this.total_price.toFixed(2)
       }
     },
     // 查询汇率
@@ -1013,9 +1069,9 @@ export default {
       this.$nextTick(() => {
         this.productArr.forEach((product) => {
           let arr = []
-          Object.keys(product.size).forEach((itemSize) => {
+          product.size.forEach((itemSize) => {
             product.color.forEach((itemColor) => {
-              arr.push(itemSize + '/' + itemColor.name)
+              arr.push(itemSize.measurement + '/' + itemColor.color_name)
             })
           })
           product.colorSizeArr = arr
@@ -1057,8 +1113,8 @@ export default {
         start_time: this.dateSearch || null,
         end_time: endTime,
         product_code: this.search || null,
-        has_plan: this.hasJHD,
-        type: 1
+        has_plan: this.hasJHD
+        // type: 1
       }).then((res) => {
         this.loading = false
         if (this.page === 1) {
@@ -1178,10 +1234,10 @@ export default {
         flag = false
         errorMsg = '请选择外贸公司'
       }
-      if (!this.contacts) {
-        flag = false
-        errorMsg = '请选择联系人'
-      }
+      // if (!this.contacts) {
+      //   flag = false
+      //   errorMsg = '请选择联系人'
+      // }
       if (!this.money) {
         flag = false
         errorMsg = '请选择结算单位'
@@ -1268,10 +1324,16 @@ export default {
       if (!item.type_name) {
         return item.category_info.product_category
       } else if (!item.style_name) {
-        return item.category_info.product_category + ' / ' + item.type_name
+        return item.category_info.product_category + '/' + item.type_name
       } else {
-        return item.category_info.product_category + ' / ' + item.type_name + ' / ' + item.style_name
+        return item.category_info.product_category + '/' + item.type_name + '/' + item.style_name
       }
+    },
+    filterColor (item) {
+      console.log(item)
+      return item.color.map(val => {
+        return val.color_name
+      }).join('/')
     }
   },
   watch: {
@@ -1297,8 +1359,8 @@ export default {
       plan_code: null,
       has_plan: null,
       limit: 5,
-      page: 1,
-      type: 1
+      page: 1
+      // type: 1
     }), productTppeList({
       company_id: this.companyId
     }), flowerList({

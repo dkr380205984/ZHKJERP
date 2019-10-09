@@ -92,8 +92,8 @@
                 v-model="itemColour.value">
                 <el-option v-for="(item,index) in productInfo.color"
                   :key="index"
-                  :label="item.name"
-                  :value="item.name"></el-option>
+                  :label="item.color_name"
+                  :value="item.color_name"></el-option>
               </el-select>
               <color-picker v-for="(itemColor,indexColor) in itemColour.colorWarp"
                 :key="indexColor + (itemColor.color?itemColor.color:0)"

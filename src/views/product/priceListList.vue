@@ -291,6 +291,10 @@ export default {
     }
   },
   methods: {
+    showImg (imgList) {
+      this.imgList = imgList
+      this.showShade = true
+    },
     getList () {
       this.loading = true
       priceListList({
@@ -323,6 +327,7 @@ export default {
             no_product_cost: item.no_product_cost,
             desc_info: JSON.parse(item.desc_info),
             transport_cost: item.transport_cost,
+            number: item.number,
             profit: item.profit,
             commission: item.commission,
             tax: item.tax,

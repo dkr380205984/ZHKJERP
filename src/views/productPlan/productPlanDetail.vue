@@ -37,7 +37,7 @@
           </div>
           <div class="inputCtn">
             <span class="label">配色色组:</span>
-            <span class="content">{{product_info.color.map(item=>{return item.name}).join('/')}}</span>
+            <span class="content">{{product_info.color.map(item=>{return item.color_name}).join('/')}}</span>
           </div>
         </div>
         <div class="lineCtn">
@@ -146,7 +146,7 @@
             <span class="goBack"
               @click="$router.go(-1)">返回</span>
             <span class="change"
-              @click="$router.push('../productPlanUpdate/' + product_info.product_code)">修改</span>
+              @click="$router.push('../productPlanUpdate/' + $route.params.id)">修改</span>
           </span>
         </div>
       </div>

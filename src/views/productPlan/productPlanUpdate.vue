@@ -259,8 +259,8 @@
                       placeholder='请选择配色方案'>
                       <el-option v-for="item in colourArr"
                         :key="item.name"
-                        :label="item.name"
-                        :value="item.name">
+                        :label="item.color_name"
+                        :value="item.color_name">
                       </el-option>
                     </el-select>
                     <span class="delete haveBg"

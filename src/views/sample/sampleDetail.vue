@@ -55,8 +55,8 @@
             :key="key">
             <span class="size">{{item.measurement}}</span>
             <span class="sizeDetail">
-              <span class="sizeOnce">{{item.size_info}}cm</span>
-              <span class="sizeOnce">{{ '克重' + '：'+item.weight + 'g'}}</span>
+              <span class="sizeOnce">{{item.size_info}}</span>
+              <span class="sizeOnce">{{ '克重' + '：' + item.weight ? item.weight + 'g' : '暂无'}}</span>
             </span>
           </span>
         </div>
@@ -78,6 +78,63 @@
         <div class="inputCtn">
           <span class="label">样品描述:</span>
           <span class="content">{{productDetail.description ? productDetail.description : '暂无样品描述'}}</span>
+        </div>
+      </div>
+      <div class="lineCtn">
+        <div class="inputCtn">
+          <span class="label">样品标签:</span>
+          <span class="content row">
+            <span class="printBtn"
+              @click="showMessageBox2 = true">打印</span>
+            <span class="printBtn hover">
+              预览
+              <div class="printInfo">
+                <div class="items">
+                  <span class="labels">编号:</span>
+                  <div class="contents">{{productDetail.product_code}}</div>
+                </div>
+                <div class="items">
+                  <span class="labels">品类:</span>
+                  <div class="contents">{{productDetail|filterType}}{{productDetail.flower_id ? '/' + productDetail.flower_id : ''}}</div>
+                </div>
+                <div class="items">
+                  <span class="labels">成分:</span>
+                  <div class="contents">{{productDetail.materials|filterMaterials}}</div>
+                </div>
+                <div class="items">
+                  <span class="labels">规格:</span>
+                  <div class="contents col"
+                    style="align-items:flex-start">
+                    <span style="white-space:nowrap;">{{selectSize.measurement}}</span>
+                    <span style="word-break: break-word;">({{selectSize.size_info}})</span>
+                  </div>
+                </div>
+                <div class="items">
+                  <span class="labels">克重:</span>
+                  <div class="contents">{{selectSize.weight}}g</div>
+                </div>
+                <div class="items">
+                  <span class="labels">颜色:</span>
+                  <div class="contents">{{selectColor}}</div>
+                </div>
+                <div class="items">
+                  <span class="labels">描述:</span>
+                  <div class="contents">
+                    <span>{{productDetail.description ? productDetail.description : '暂无'}}</span>
+                  </div>
+                </div>
+                <div class="items"
+                  style="margin-top:30px;">
+                  <div class="contents col">
+                    <img :src="qrCodeUrl"
+                      class="qrCode"
+                      alt="">
+                    <span class="littleBlack">扫码查看更多</span>
+                  </div>
+                </div>
+              </div>
+            </span>
+          </span>
         </div>
       </div>
       <div class="lineCtn">
@@ -279,12 +336,12 @@
     <div class="message"
       v-if="showMessageBox">
       <div class="messageBox">
-        <div class="title">新建产品</div>
+        <div class="title">新建样品</div>
         <div class="inputBox">
 
           <div class="item"
             style="margin-top:27px;">
-            <span class="label">产品编号:</span>
+            <span class="label">样品编号:</span>
             <div class="content blue">{{productDetail.product_code|filterCode}}</div>
           </div>
           <div class="item">
@@ -336,7 +393,7 @@
         </div>
         <div class="footer">
           <span class="cancel"
-            @click="showMessageBox">取消</span>
+            @click="showMessageBox = false">取消</span>
           <span class="ok"
             @click="pushProduct">确定</span>
         </div>
@@ -344,11 +401,52 @@
           @click="showMessageBox = false"></span>
       </div>
     </div>
+
+    <div class="message"
+      v-if="showMessageBox2">
+      <div class="messageBox">
+        <div class="title">打印标签</div>
+        <div class="item"
+          style="margin-top:27px;">
+          <span class="label">样品编号:</span>
+          <div class="content blue">{{productDetail.product_code}}</div>
+        </div>
+        <div class="item">
+          <span class="label">样品规格:</span>
+          <div class="content">
+            <el-radio-group v-model="selectSize.measurement">
+              <el-radio v-for="(item,key) in productDetail.size"
+                :label="item.measurement"
+                :key="key">{{item.measurement}}</el-radio>
+            </el-radio-group>
+          </div>
+        </div>
+        <div class="item">
+          <span class="label">样品配色:</span>
+          <div class="content">
+            <el-radio-group v-model="selectColor">
+              <el-radio v-for="(item,key) in productDetail.color"
+                :key="key"
+                :label="item.color_name">{{item.color_name}}</el-radio>
+            </el-radio-group>
+          </div>
+        </div>
+        <div class="footer">
+          <span class="cancel"
+            @click="showMessageBox2 = false">取消</span>
+          <span class="ok"
+            @click="print(selectSize,selectColor)">去打印</span>
+        </div>
+        <span class="close el-icon-close"
+          @click="showMessageBox2 = false"></span>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { porductOne, priceListDetail, isCheckedPlanAndCraft } from '@/assets/js/api.js'
+const QRCode = require('qrcode')
 export default {
   data () {
     return {
@@ -380,11 +478,15 @@ export default {
         order_list: []
       },
       showMessageBox: false,
+      showMessageBox2: false,
+      selectSize: '',
+      selectColor: '',
       loading: true,
       isCraft: '',
       isPlan: '',
       lock: true,
-      id: ''// 转成产品后的id
+      id: '', // 转成样品后的id
+      qrCodeUrl: ''
     }
   },
   filters: {
@@ -403,6 +505,7 @@ export default {
       }
     },
     filterMaterials (arr) {
+      console.log(arr)
       let str = ''
       arr.forEach((item) => {
         str += item.ingredient_name + item.ingredient_value + '%' + ' / '
@@ -411,43 +514,13 @@ export default {
     }
   },
   methods: {
+    // 打印产品标签
+    print (size, color) {
+      window.open('/tagPrint/' + this.$route.params.id + '/' + size.measurement + '/' + color)
+    },
     pushProduct () {
-      // let data = {
-
-      //   company_id: window.sessionStorage.getItem('company_id'),
-      //   category_id: this.productDetail.category_id,
-      //   type_id: this.productDetail.type_id,
-      //   style_id: this.productDetail.style_id,
-      //   type: 1,
-      //   flower_id: this.productDetail.flower_id_new,
-      //   description: this.productDetail.description,
-      //   user_id: window.sessionStorage.getItem('user_id'),
-      //   img: this.productDetail.img.map(item => {
-      //     return item.image_url
-      //   }),
-      //   color: this.productDetail.color.map(item => {
-      //     return item.color_name
-      //   }),
-      //   size: this.productDetail.size.map(key => {
-      //     return {
-      //       size_info: key.size_info,
-      //       weight: key.weight,
-      //       measurement: key.measurement
-      //     }
-      //   }),
-      //   sample_title: this.productDetail.sampleName,
-      //   materials: this.productDetail.materials.map(item => {
-      //     return {
-      //       ingredient_name: item.ingredient_name,
-      //       ingredient_value: item.ingredient_value
-      //     }
-      //   })
-      // }
       if (this.lock) {
         this.lock = false
-        // saveProduct(data).then(res => {
-        //   this.id = res.data.data.id
-        //   if (res.data.status) {
         isCheckedPlanAndCraft({
           data: [{
             product_id: this.$route.params.id,
@@ -458,7 +531,7 @@ export default {
         }).then(res => {
           this.lock = true
           if (res.data.status) {
-            this.$message.success('添加成功,即将跳转至产品详情页')
+            this.$message.success('添加成功,即将跳转至样品详情页')
             setTimeout(() => {
               this.$router.push('/index/productDetail/' + this.$route.params.id)
             }, 800)
@@ -466,8 +539,6 @@ export default {
             this.$message.error(res.data.message)
           }
         })
-        // }
-        // })
       } else {
         this.$message.warning('请勿频繁点击')
       }
@@ -488,7 +559,7 @@ export default {
       }
     }
   },
-  mounted () {
+  created () {
     this.loading = true
     porductOne({
       id: this.$route.params.id
@@ -496,6 +567,8 @@ export default {
       if (res.data.status) {
         console.log(res.data.data)
         this.productDetail = res.data.data
+        this.selectSize = res.data.data.size[0]
+        this.selectColor = res.data.data.color[0].color_name
         this.productDetail.size = this.productDetail.size
         // 计算配料单原料
         if (this.productDetail.has_plan === 1) {
@@ -524,6 +597,12 @@ export default {
         this.loading = false
       }
     })
+  },
+  mounted () {
+    QRCode.toDataURL(window.location.href, { errorCorrectionLevel: 'H' }, (err, url) => {
+      console.log(err)
+      this.qrCodeUrl = url
+    })
   }
 }
 </script>
@@ -536,6 +615,89 @@ export default {
   .el-input,
   .el-input__inner {
     width: 100%;
+  }
+  .messageBox {
+    .title {
+      line-height: 50px;
+      height: 50px;
+      width: inherit;
+      padding-left: 16px;
+      border-bottom: 1px solid rgb(233, 233, 233);
+    }
+  }
+  .row {
+    display: flex;
+    .printBtn {
+      width: 52px;
+      height: 26px;
+      border: 1px solid rgba(26, 148, 255, 1);
+      opacity: 1;
+      border-radius: 4px;
+      color: rgba(26, 148, 255, 1);
+      text-align: center;
+      line-height: 26px;
+      cursor: pointer;
+      margin-left: 10px;
+      margin: 7px;
+    }
+  }
+  .hover {
+    &:hover {
+      .printInfo {
+        display: flex;
+      }
+    }
+  }
+  .printInfo {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(100%, -30%);
+    width: 226px;
+    height: 340px;
+    background: #fff;
+    z-index: 99;
+    border-radius: 4px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 36px;
+    box-sizing: border-box;
+    color: #666;
+    display: none;
+    .items {
+      width: 100%;
+      margin-bottom: 16px;
+      line-height: 1em;
+      min-height: 0;
+      display: flex;
+      justify-content: flex-start;
+      .labels {
+        margin-right: 1em;
+        position: static;
+        width: auto;
+        white-space: nowrap;
+      }
+      .contents {
+        text-align: left;
+        &.col {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          .qrCode {
+            width: 58px;
+            height: 58px;
+          }
+          .littleBlack {
+            margin-top: 8px;
+            color: #c4c4c4;
+          }
+        }
+      }
+    }
   }
 }
 </style>

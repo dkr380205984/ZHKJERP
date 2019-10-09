@@ -27,7 +27,6 @@
       <li class="size-info">
         <div class="title"><span>产品详情</span></div>
         <div class="content">
-          <!-- 此处接口暂时未调 -->
           <div v-for="(item,key) in order.order_batch"
             :key="key">
             <div>
@@ -41,8 +40,7 @@
       <li class="size-tables">
         <template v-for="(item,key) in materialInfo">
           <ul class="size-table"
-            v-if='
-                 (item.type).toString()===type'
+            v-if='(item.type).toString()===type'
             :key="key">
             <li>
               <span>原料名称</span>
@@ -51,12 +49,17 @@
               <span v-if="item.type===0">{{(item.total_number/1000).toFixed(1) + 'kg'}}</span>
               <span v-if="item.type===1">{{parseInt(item.total_number) + item.unit}}</span>
             </li>
-            <template v-for="(value,index) in item">
-              <li :key="index"
-                v-if="index !== 'total_number' && index !== 'type'&&index !== 'unit'">
-                <span>{{item.type===1?'数量':'颜色重量'}}</span>
-                <span v-if="item.type===0">{{index + " " + (value/1000).toFixed(1) +  'kg'}}</span>
-                <span v-if="item.type===1">{{index + " " + parseInt(value) + item.unit}}</span>
+            <template v-for="(value,index,ind) in pushChildren(item).children">
+              <li :key="index">
+                <span>{{item.type===1 ? '数量':'颜色重量' + (ind + 1)}}</span>
+                <span v-if="item.type===0">
+                  <span>{{index}}</span>
+                  <span>{{(value/1000).toFixed(1) +  'kg'}}</span>
+                </span>
+                <span v-if="item.type===1">
+                  <span>{{index}}</span>
+                  <span>{{parseInt(value) + item.unit}}</span>
+                </span>
               </li>
             </template>
           </ul>
@@ -68,7 +71,7 @@
 </template>
 
 <script>
-import { productionStat, orderDetail } from '@/assets/js/api.js'
+import { productionStat, orderDetail, productionDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -82,7 +85,9 @@ export default {
       },
       year: '',
       type: '',
-      materialInfo: {}
+      materialInfo: {},
+      proId: '',
+      productInfo: []
     }
   },
   filters: {
@@ -100,60 +105,208 @@ export default {
   methods: {
     goTop () {
       document.body.scrollTop = 0
+    },
+    pushChildren (item) {
+      console.log(item)
+      for (let prop in item) {
+        if (prop !== 'total_number' && prop !== 'type' && prop !== 'unit' && prop !== 'children') {
+          if (!item.children) {
+            item.children = {}
+          }
+          item.children[prop] = item[prop]
+        }
+      }
+      return item
     }
   },
   created () {
-    Promise.all([productionStat({
-      order_id: this.$route.params.id
-    }), orderDetail({
-      id: this.$route.params.id
-    })]).then((res) => {
-      this.order.order_code = res[1].data.data.order_code
-      this.order.client_name = res[1].data.data.client_name
-      console.log(res[1].data.data.order_batch)
-      let arr = []
-      for (let prop in res[1].data.data.order_batch) {
-        let item = res[1].data.data.order_batch[prop]
-        item.forEach(valPro => {
-          let types = valPro.category_info.category_name + '/' + valPro.category_info.type_name + '/' + valPro.category_info.style_name + '/' + valPro.category_info.flower_name
-          arr.push({
-            type: types,
-            product_code: valPro.product_code,
-            number: valPro.numbers
+    this.type = window.location.href.split('?')[1].split('&')[0].split('=')[1]
+    this.proId = window.location.href.split('?')[1].split('&')[1] ? window.location.href.split('?')[1].split('&')[1].split('=')[1] : null
+    if (this.proId) {
+      Promise.all([
+        orderDetail({
+          id: this.$route.params.id
+        }), productionDetail({
+          order_id: this.$route.params.id
+        })
+      ]).then(res => {
+        this.order.order_code = res[0].data.data.order_code
+        this.order.client_name = res[0].data.data.client_name
+        let arr = []
+        for (let prop in res[0].data.data.order_batch) {
+          let item = res[0].data.data.order_batch[prop]
+          item.forEach(valPro => {
+            let types = valPro.category_info.category_name + '/' + valPro.category_info.type_name + '/' + valPro.category_info.style_name + '/' + valPro.category_info.flower_name
+            arr.push({
+              type: types,
+              product_code: valPro.product_code,
+              product_id: valPro.product_id,
+              number: valPro.numbers
+            })
+          })
+        }
+        arr.forEach(item => {
+          if (Number(item.product_id) === Number(this.proId)) {
+            let flag = this.order.order_batch.find(val => val.product_code === item.product_code)
+            if (!flag) {
+              this.order.order_batch.push({
+                type: item.type,
+                product_code: item.product_code,
+                number: item.number
+              })
+            } else {
+              flag.number = Number(flag.number) + Number(item.number)
+            }
+          }
+        })
+        this.order.order_time = res[0].data.data.order_time
+        this.order.group_name = res[0].data.data.group_name
+        this.productInfo = res[1].data.data.production_detail.product_info
+        let productPlan = res[1].data.data.product_plan
+        // 统计该订单所有产品所需物料
+        let productionNumber = []
+        this.productInfo.forEach(item => {
+          let flag = productionNumber.find(key => key.product_code === item.product_code)
+          if (!flag) {
+            productionNumber.push({
+              product_code: item.product_code,
+              type: item.category_name + '/' + item.type_name + '/' + item.style_name,
+              proId: item.product_id,
+              material: {
+                main: [],
+                other: []
+              },
+              sizeColor: [{
+                size: item.size,
+                color: item.color,
+                order_num: item.order_num,
+                stock_pick: item.stock_pick,
+                production_num: item.production_num,
+                productiong_sunhao: item.production_sunhao,
+                unit_name: item.unit_name,
+                sizeColor: {
+                  main: {},
+                  other: {}
+                }
+              }]
+            })
+          } else {
+            let flag1 = flag.sizeColor.find(key => (key.size === item.size && key.color === item.color))
+            if (!flag1) {
+              flag.sizeColor.push({
+                size: item.size,
+                color: item.color,
+                order_num: item.order_num,
+                stock_pick: item.stock_pick,
+                production_num: item.production_num,
+                productiong_sunhao: item.production_sunhao,
+                unit_name: item.unit_name,
+                sizeColor: {
+                  main: {},
+                  other: {}
+                }
+              })
+            } else {
+              flag1.production_num = Number(flag1.production_num) + Number(item.production_num)
+            }
+          }
+        })
+        productionNumber.forEach(value => {
+          value.sizeColor.forEach(val => {
+            if (productPlan[value.product_code]) {
+              let filtersArr = productPlan[value.product_code].filter(key => (key.size === val.size && key.color_match_name === val.color))
+              filtersArr.forEach(valNum => {
+                let material = null
+                let sizeColorInfo = null
+                if (valNum.type === 0) {
+                  material = value.material.main
+                  sizeColorInfo = val.sizeColor.main
+                } else if (valNum.type === 1) {
+                  material = value.material.other
+                  sizeColorInfo = val.sizeColor.other
+                }
+                if (material.indexOf(valNum.material_name) === -1) {
+                  material.push(valNum.material_name)
+                }
+                if (!sizeColorInfo[valNum.material_name]) {
+                  sizeColorInfo[valNum.material_name] = {}
+                }
+                if (sizeColorInfo[valNum.material_name][valNum.color_name]) {
+                  sizeColorInfo[valNum.material_name][valNum.color_name].number += Number(((val.order_num ? val.order_num : 0) - (val.stock_pick ? val.stock_pick : 0)) * ((val.productiong_sunhao ? val.productiong_sunhao : 0) / 100 + 1) * valNum.number)
+                } else {
+                  sizeColorInfo[valNum.material_name][valNum.color_name] = { number: ((val.order_num ? val.order_num : 0) - (val.stock_pick ? val.stock_pick : 0)) * ((val.productiong_sunhao ? val.productiong_sunhao : 0) / 100 + 1) * valNum.number, unit: valNum.unit }
+                }
+              })
+            }
           })
         })
-      }
-      // res[1].data.data.order_batch.forEach((item, key) => {
-      //   item.batch_info.forEach((value, index) => {
-      //     let types = value.productInfo.category_info.product_category + (value.productInfo.type_name ? '/' + value.productInfo.type_name : '') + (value.productInfo.style_name ? '/' + value.productInfo.type_name : '') + (value.productInfo.flower_id ? '/' + value.productInfo.flower_id : '')
-      //     value.size.forEach((val, ind) => {
-      //       arr.push({
-      //         type: types,
-      //         product_code: value.productCode,
-      //         number: val.numbers
-      //       })
-      //     })
-      //   })
-      // })
-      arr.forEach(item => {
-        let flag = this.order.order_batch.find(val => val.product_code === item.product_code)
-        if (!flag) {
-          this.order.order_batch.push({
-            type: item.type,
-            product_code: item.product_code,
-            number: item.number
-          })
-        } else {
-          flag.number = Number(flag.number) + Number(item.number)
-        }
+        console.log(productionNumber)
+        let type = (this.type === '0' ? 'main' : 'other')
+        productionNumber.find(item => Number(item.proId) === Number(this.proId)).sizeColor.forEach(valSizeColor => {
+          for (let prop in valSizeColor.sizeColor[type]) {
+            let valMat = valSizeColor.sizeColor[type][prop]
+            console.log(valMat)
+            for (let indColor in valMat) {
+              let valColor = valMat[indColor]
+              console.log(valColor)
+              if (!this.materialInfo[prop]) {
+                this.materialInfo[prop] = {}
+                this.materialInfo[prop].type = Number(this.type)
+                this.materialInfo[prop][indColor] = valColor.number
+                this.materialInfo[prop].unit = valColor.unit
+              } else if (!this.materialInfo[prop][indColor]) {
+                this.materialInfo[prop].type = Number(this.type)
+                this.materialInfo[prop][indColor] = valColor.number
+                this.materialInfo[prop].unit = valColor.unit
+              } else {
+                this.materialInfo[prop][indColor] = Number(this.materialInfo[prop][indColor]) + Number(valColor.number)
+              }
+              this.materialInfo[prop].total_number = Number(this.materialInfo[prop].total_number ? this.materialInfo[prop].total_number : 0) + Number(valColor.number)
+            }
+          }
+        })
+        console.log(productionNumber)
       })
-      console.log(this.order)
-      // this.order.order_batch = res[1].data.data.order_batch
-      this.order.order_time = res[1].data.data.order_time
-      this.materialInfo = res[0].data.data[0]
-      this.order.group_name = res[1].data.data.group_name
-      this.type = document.location.href.split('type=')[1]
-    })
+    } else {
+      Promise.all([productionStat({
+        order_id: this.$route.params.id
+      }), orderDetail({
+        id: this.$route.params.id
+      })]).then((res) => {
+        this.order.order_code = res[1].data.data.order_code
+        this.order.client_name = res[1].data.data.client_name
+        let arr = []
+        for (let prop in res[1].data.data.order_batch) {
+          let item = res[1].data.data.order_batch[prop]
+          item.forEach(valPro => {
+            let types = valPro.category_info.category_name + '/' + valPro.category_info.type_name + '/' + valPro.category_info.style_name + '/' + valPro.category_info.flower_name
+            arr.push({
+              type: types,
+              product_code: valPro.product_code,
+              number: valPro.numbers
+            })
+          })
+        }
+        arr.forEach(item => {
+          let flag = this.order.order_batch.find(val => val.product_code === item.product_code)
+          if (!flag) {
+            this.order.order_batch.push({
+              type: item.type,
+              product_code: item.product_code,
+              number: item.number
+            })
+          } else {
+            flag.number = Number(flag.number) + Number(item.number)
+          }
+        })
+        console.log(this.order)
+        // this.order.order_batch = res[1].data.data.order_batch
+        this.order.order_time = res[1].data.data.order_time
+        this.order.group_name = res[1].data.data.group_name
+        this.materialInfo = res[0].data.data[0]
+      })
+    }
+
     this.year = new Date().getFullYear().toString().split('20')[1]
   },
   updated () {

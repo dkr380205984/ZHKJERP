@@ -13,14 +13,14 @@
             placeholder="请输入辅料名称"></el-input>
         </div>
       </div>
-      <div class="lineCtn">
+      <!-- <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">辅料规格:</span>
           <el-input class="elInput"
             v-model="pack_size"
             placeholder="请输入辅料规格"></el-input>
         </div>
-      </div>
+      </div> -->
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">辅料重量:</span>
@@ -124,7 +124,7 @@ export default {
           id: this.id ? this.id : null,
           company_id: window.sessionStorage.getItem('company_id'),
           name: this.pack_name,
-          size: this.pack_size,
+          // size: this.pack_size,
           attribute: JSON.stringify(this.pack_attrs),
           weight: this.pack_weight,
           desc: this.remark

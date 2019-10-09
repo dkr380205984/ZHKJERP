@@ -243,8 +243,8 @@
                 </template>
               </span>
             </div>
-            <!-- <div class="print rightTop btn"
-              @click="openWin('/productDesignTable/' + $route.params.id + '/' + item.product_code + '?type=' + (item.nowType ==='main' ? 0 : 1))">打印</div> -->
+            <div class="print rightTop btn"
+              @click="openWin('/productStatisticsTable/' + $route.params.id + '?type=' + (totalPlanMaterial.nowType ==='main' ? 0 : 1) + '&proId=' + item.proId)">打印配色单</div>
             <div class="catBtn">
               <span :class="{'active': item.nowType === 'main'}"
                 @click="item.nowType = 'main'">纱线原料</span>
@@ -411,6 +411,7 @@ export default {
       items.forEach((item, key) => {
         total += Number((item.unit === '克' || item.unit === 'g') ? item.number / 1000 : item.number)
         if (key === items.length - 1) {
+          console.log(total)
           total = type === 'main' ? total.toFixed(1) : Math.ceil(total)
           total += ((item.unit === '克' || item.unit === 'g' || item.unit === '千克') ? 'kg' : item.unit)
         }
@@ -532,6 +533,7 @@ export default {
           productionNumber.push({
             product_code: item.product_code,
             type: item.category_name + '/' + item.type_name + '/' + item.style_name,
+            proId: item.product_id,
             material: {
               main: [],
               other: []

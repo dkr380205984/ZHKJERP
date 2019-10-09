@@ -21,7 +21,7 @@
             </el-select>
             <el-select v-model="type"
               style="margin-left:8px;"
-              placeholder="请选择">
+              placeholder="筛选客户类型">
               <el-option v-for="item in companyType"
                 :key="item.value"
                 :label="item.name"
@@ -159,7 +159,8 @@ export default {
         limit: 5,
         page: this.pages,
         start_time: this.start_time,
-        end_time: this.end_time
+        end_time: this.end_time,
+        type: this.type
       }).then((res) => {
         console.log(res)
         this.total = res.data.meta.total

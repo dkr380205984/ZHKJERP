@@ -463,7 +463,7 @@ export default {
         }),
         size: this.size.filter(item => item.size).map(key => {
           return {
-            size_info: key.desc,
+            size_info: key.desc + 'cm',
             weight: key.weight,
             measurement: key.size
           }

@@ -159,7 +159,7 @@
               </li>
               <li class="material_info"
                 v-if="productDetail.craft_info">
-                <span>{{productDetail.craft_info.user_name}}</span>
+                <span>{{productDetail.craft_info.craft_code}}</span>
                 <span>工艺图</span>
                 <span>{{productDetail.craft_info.create_time}}</span>
                 <span style="color:#1A95FF;cursor:pointer"
@@ -307,7 +307,7 @@
                 <span>{{item.size}}/{{item.color}}</span>
                 <span>{{item.total_stock}}</span>
                 <span style="color:#1A95FF;cursor:pointer"
-                  @click="open('/index/productStockDetail/' + item.id)">查看详情</span>
+                  @click="open('/index/productStockDetail/' + item.product_id)">查看详情</span>
               </li>
               <li v-if="productDetail.stock_info.length===0">暂无库存信息</li>
               <span class="addNewBtn"
@@ -430,9 +430,6 @@ export default {
       } else {
         return ''
       }
-      // return sizeArr[this.selectSize].map((item) => {
-      //   return item.size_value + 'cm'
-      // }).join('*')
     },
     // 类型合并
     filterType (item) {

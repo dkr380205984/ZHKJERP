@@ -2393,41 +2393,40 @@ export default {
       // 订单整理
       res[2].data.data.order_info.forEach(item => {
         let productInfo = []
-        item.order_batch.forEach(valBat => {
-          valBat.batch_info.forEach(valPro => {
-            valPro.size.forEach(valSize => {
-              let pro = productInfo.find(key => key.product_code === valPro.productCode)
-              if (!pro) {
-                productInfo.push({
-                  product_code: valPro.productCode,
-                  product_type: valPro.productInfo.category_info.product_category + '/' + valPro.productInfo.type_name + '/' + valPro.productInfo.style_name + (valPro.productInfo.flower_id ? '/' + valPro.productInfo.flower_id : ''),
-                  img: valPro.productInfo.img,
-                  unit: valPro.productInfo.category_info.name,
-                  size: [{
-                    size: valSize.name[0],
-                    color: valSize.name[1],
-                    number: valSize.numbers,
-                    price: valSize.unitPrice,
-                    batch_id: valBat.batch_id
-                  }]
+        for (let prop in item.order_batch) {
+          let valBat = item.order_batch[prop]
+          valBat.forEach(valPro => {
+            let pro = productInfo.find(key => key.product_code === valPro.product_code)
+            if (!pro) {
+              productInfo.push({
+                product_code: valPro.product_code,
+                product_type: valPro.category_info.category_name + '/' + valPro.category_info.type_name + '/' + valPro.category_info.style_name + (valPro.category_info.flower_name ? '/' + valPro.category_info.flower_name : ''),
+                img: valPro.category_info.image,
+                unit: valPro.category_info.unit,
+                size: [{
+                  size: valPro.size,
+                  color: valPro.color,
+                  number: valPro.numbers,
+                  price: valPro.unit_price,
+                  batch_id: valPro.batch_id
+                }]
+              })
+            } else {
+              let size = pro.size.find(key => (key.size === valPro.size && key.color === valPro.color && key.price === valPro.unit_price))
+              if (!size) {
+                pro.size.push({
+                  size: valPro.size,
+                  color: valPro.color,
+                  number: valPro.numbers,
+                  price: valPro.unit_price,
+                  batch_id: valPro.batch_id
                 })
               } else {
-                let size = pro.size.find(key => (key.size === valSize.name[0] && key.color === valSize.name[1] && key.price === valSize.unitPrice))
-                if (!size) {
-                  pro.size.push({
-                    size: valSize.name[0],
-                    color: valSize.name[1],
-                    number: valSize.numbers,
-                    price: valSize.unitPrice,
-                    batch_id: valBat.batch_id
-                  })
-                } else {
-                  size.number = Number(size.number ? size.number : 0) + Number(valSize.numbers)
-                }
+                size.number = Number(size.number ? size.number : 0) + Number(valPro.numbers)
               }
-            })
+            }
           })
-        })
+        }
         this.list.orderList.total_price = Number(this.list.orderList.total_price) + Number(item.total_real)
         this.list.orderList.list.push({
           id: item.id,
