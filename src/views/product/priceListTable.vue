@@ -108,12 +108,12 @@
 </template>
 
 <script>
-import { priceListDetail } from '@/assets/js/api.js'
+import { priceListDetail, companyInfoDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
       loading: true,
-      company_name: '桐庐凯瑞针纺有限公司',
+      company_name: '',
       price_code: '',
       create_time: '',
       create_user: '',
@@ -234,6 +234,11 @@ export default {
         { name: '运输', totalPrice: data.transport_cost }
       )
       console.log(this.info, this.product_info)
+    })
+    companyInfoDetail({
+      id: window.sessionStorage.getItem('company_id')
+    }).then(res => {
+      this.company_name = res.data.data.company_name
     })
   },
   updated () {

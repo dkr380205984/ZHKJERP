@@ -2,7 +2,7 @@
   <div id="productStockList"
     v-loading='loading'>
     <div class="head">
-      <h2>产品列表</h2>
+      <h2>产品库存列表</h2>
       <el-input placeholder="输入产品编号精确搜索"
         suffix-icon="el-icon-search"
         v-model="searchVal"></el-input>
@@ -217,7 +217,7 @@ export default {
         let list = []
         for (let prop in res.data.data) {
           let item = res.data.data[prop].data
-          if (list.length === 5) {
+          if (list.length === 15) {
             this.list.push(list)
             list = []
           }

@@ -4,7 +4,7 @@
     <div class="table">
       <div class="head">
         <div class="left">
-          <p class="company">桐庐凯瑞针纺有限公司工艺单</p>
+          <p class="company">{{company}}工艺单</p>
           <span><span class="label">工艺单编号:</span>{{design_code}}</span>
           <span><span class="label">创建人:</span>{{create_user}}</span>
           <span><span class="label">创建日期:</span>{{create_time}}</span>
@@ -808,7 +808,7 @@
 
 <script>
 import { letterArr } from '@/assets/js/dictionary.js'
-import { craftOne } from '@/assets/js/api.js'
+import { craftOne, companyInfoDetail } from '@/assets/js/api.js'
 const QRCode = require('qrcode')
 export default {
   data () {
@@ -1143,6 +1143,11 @@ export default {
           this.colorWeight.weft[itemChild] = (colorNumber.weft[itemChild] * this.warp_data.reed_width * data.yarn_coefficient.find((itemFind) => itemFind.name === item.material_name).value / 100).toFixed(1)
         })
       })
+    })
+    companyInfoDetail({
+      id: window.sessionStorage.getItem('company_id')
+    }).then(res => {
+      this.company = res.data.data.company_name
     })
   },
   mounted () {

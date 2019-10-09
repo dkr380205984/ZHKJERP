@@ -5,7 +5,7 @@
     <ul class="tableBox">
       <li class="title-info">
         <div class="title">
-          <h2>桐庐凯瑞针纺有限公司{{type === '0' ? '原' : '辅'}}料配色单</h2>
+          <h2>{{company_name}}{{type === '0' ? '原' : '辅'}}料配色单</h2>
         </div>
         <div class="info">
           <span>订单编号：<em class="bold12">KR{{year + (type === '0' ? 'YL' : 'FL' ) + order.order_code}}</em></span>
@@ -71,7 +71,7 @@
 </template>
 
 <script>
-import { productionStat, orderDetail, productionDetail } from '@/assets/js/api.js'
+import { productionStat, orderDetail, productionDetail, companyInfoDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -87,7 +87,8 @@ export default {
       type: '',
       materialInfo: {},
       proId: '',
-      productInfo: []
+      productInfo: [],
+      company_name: ''
     }
   },
   filters: {
@@ -306,7 +307,11 @@ export default {
         this.materialInfo = res[0].data.data[0]
       })
     }
-
+    companyInfoDetail({
+      company_id: window.sessionStorage.getItem('company_id')
+    }).then(res => {
+      this.company_name = res.data.data.company_name
+    })
     this.year = new Date().getFullYear().toString().split('20')[1]
   },
   updated () {

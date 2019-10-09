@@ -98,12 +98,63 @@
           </div>
         </div>
         <div class="lineCtn"
-          v-show="JSON.parse(order_info.order_contract).length>0">
+          v-if="order_info.order_contract && JSON.parse(order_info.order_contract).length>0">
           <div class="inputCtn"
             style="width:100%">
             <span class="label">文件信息:</span>
             <span class="fileCtn"
               v-for="item in JSON.parse(order_info.order_contract)"
+              :key="item">
+              <a target="view_window"
+                :href="item"
+                :download="item">
+                <i class="el-icon-document"
+                  style="margin-right:5px"></i>{{item.replace('http://zhihui.tlkrzf.com/', '')}}
+              </a>
+            </span>
+          </div>
+        </div>
+        <div class="lineCtn"
+          v-if="order_info.pack_means && JSON.parse(order_info.pack_means).length>0">
+          <div class="inputCtn"
+            style="width:100%">
+            <span class="label">包装文件:</span>
+            <span class="fileCtn"
+              v-for="item in JSON.parse(order_info.pack_means)"
+              :key="item">
+              <a target="view_window"
+                :href="item"
+                :download="item">
+                <i class="el-icon-document"
+                  style="margin-right:5px"></i>{{item.replace('http://zhihui.tlkrzf.com/', '')}}
+              </a>
+            </span>
+          </div>
+        </div>
+        <div class="lineCtn"
+          v-if="order_info.store_means && JSON.parse(order_info.store_means).length>0">
+          <div class="inputCtn"
+            style="width:100%">
+            <span class="label">装箱文件:</span>
+            <span class="fileCtn"
+              v-for="item in JSON.parse(order_info.store_means)"
+              :key="item">
+              <a target="view_window"
+                :href="item"
+                :download="item">
+                <i class="el-icon-document"
+                  style="margin-right:5px"></i>{{item.replace('http://zhihui.tlkrzf.com/', '')}}
+              </a>
+            </span>
+          </div>
+        </div>
+        <div class="lineCtn"
+          v-if="order_info.others_info && JSON.parse(order_info.others_info).length>0">
+          <div class="inputCtn"
+            style="width:100%">
+            <span class="label">其他文件:</span>
+            <span class="fileCtn"
+              v-for="item in JSON.parse(order_info.others_info)"
               :key="item">
               <a target="view_window"
                 :href="item"

@@ -68,7 +68,8 @@
           <div class="tableColumn">起订数量</div>
           <div class="tableColumn">创建日期</div>
           <div class="tableColumn">审核状态</div>
-          <div class="tableColumn">操作</div>
+          <div class="tableColumn"
+            style="flex:1.5">操作</div>
         </div>
         <div class="mergeBody"
           v-for="(item ,index) in list"
@@ -104,12 +105,14 @@
           <div class="tableColumn"
             :style="{'color':getColor(item.status)}">{{item.status|filterStatus}}</div>
           <div class="tableColumn"
-            style="flex-direction:row;">
+            style="flex-direction:row;flex:1.5;">
             <div style="margin:auto">
               <span class="btns warning"
                 @click="$router.push('/index/priceListUpdate/'+item.id)">修改</span>
               <span class="btns success"
                 @click="$router.push('/index/priceListDetail/'+item.id)">审核</span>
+              <span class="btns error"
+                @click="deletePriceList(item.id)">删除</span>
             </div>
           </div>
         </div>
@@ -121,7 +124,7 @@
       </div>
       <div class="pageCtn">
         <el-pagination background
-          :page-size="5"
+          :page-size="15"
           layout="prev, pager, next"
           :total="total"
           :current-page.sync="pages"
@@ -149,7 +152,7 @@
 </template>
 
 <script>
-import { priceListList, clientList } from '@/assets/js/api.js'
+import { priceListList, clientList, deletePriceList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -291,6 +294,36 @@ export default {
     }
   },
   methods: {
+    // 删除报价单
+    deletePriceList (id) {
+      this.$confirm('此操作将永久删除该报价单, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deletePriceList({
+          id: id
+        }).then(res => {
+          if (res.data.status) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            window.location.reload()
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.data.massage
+            })
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
     showImg (imgList) {
       this.imgList = imgList
       this.showShade = true
@@ -299,7 +332,7 @@ export default {
       this.loading = true
       priceListList({
         company_id: window.sessionStorage.getItem('company_id'),
-        limit: 5,
+        limit: 15,
         page: this.pages,
         start_time: this.start_time,
         end_time: this.end_time,
@@ -372,7 +405,7 @@ export default {
     Promise.all([
       priceListList({
         company_id: window.sessionStorage.getItem('company_id'),
-        limit: 5,
+        limit: 15,
         page: this.pages
       }), clientList({
         company_id: window.sessionStorage.getItem('company_id'),

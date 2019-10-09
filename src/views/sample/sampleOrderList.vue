@@ -95,7 +95,7 @@
         </div>
       </div>
       <div class="mergeTable"
-        v-scroll="{fun:getOrderList,pageSize:5}">
+        v-scroll="{fun:getOrderList,pageSize:15}">
         <div class="mergeHeader">
           <div class="tableColumn">样单标题</div>
           <div class="tableColumn">外贸公司</div>
@@ -190,7 +190,7 @@
       <!-- <div class="sum">订单统计:暂不统计</div> -->
       <div class="pageCtn">
         <el-pagination background
-          :page-size="5"
+          :page-size="15"
           layout="prev, pager, next"
           :total="total"
           :current-page.sync="pages"
@@ -331,7 +331,7 @@ export default {
       this.loading = true
       orderList({
         'company_id': window.sessionStorage.getItem('company_id'),
-        'limit': 5,
+        'limit': 15,
         'page': this.pages,
         'has_plan': '',
         'category_id': this.categoryVal,

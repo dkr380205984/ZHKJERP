@@ -45,6 +45,7 @@
           <span class="label">筛选条件:</span>
           <div>
             <el-select v-model="clientVal"
+              filterable
               placeholder="筛选订单公司">
               <el-option v-for="item in clientList"
                 :key="item.value"

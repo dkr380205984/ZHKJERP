@@ -56,6 +56,7 @@
               </el-option>
             </el-select>
             <el-select v-model="clientVal"
+              filterable
               placeholder="筛选公司">
               <el-option v-for="item in client"
                 :key="item.id"

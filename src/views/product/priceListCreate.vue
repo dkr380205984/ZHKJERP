@@ -16,6 +16,7 @@
             <span class="label must">外贸公司：</span>
             <el-select class="elInput"
               v-model="company"
+              filterable
               @change="getContacts"
               placeholder="请选择外贸公司">
               <el-option v-for="item in companyArr"
@@ -305,6 +306,7 @@
                     clearable
                     filterable
                     allow-create
+                    default-first-option
                     placeholder="请选择原料">
                     <el-option v-for="(item,index) in yarnList"
                       :key="index"
@@ -356,6 +358,7 @@
                     clearable
                     filterable
                     allow-create
+                    default-first-option
                     @change="resUnit(item,item.key)"
                     placeholder="请选择辅料">
                     <el-option v-for="item in otherMaterialList"
@@ -408,6 +411,7 @@
                     clearable
                     filterable
                     allow-create
+                    default-first-option
                     placeholder="请选择织造明细">
                     <el-option v-for="item in weaveList"
                       :key="item.id"
@@ -445,6 +449,7 @@
                     filterable
                     multiple
                     allow-create
+                    default-first-option
                     placeholder="请选择半成品加工工序">
                     <el-option v-for="item in machiningList"
                       :key="item.id"
@@ -475,6 +480,7 @@
                     filterable
                     multiple
                     allow-create
+                    default-first-option
                     placeholder="请选择成品加工工序">
                     <el-option v-for="item in productionArr"
                       :key="item.id"
@@ -505,6 +511,7 @@
                     clearable
                     filterable
                     allow-create
+                    default-first-option
                     placeholder="请选择包装辅料">
                     <el-option v-for="item in packagMaterialList"
                       :key="item.id"

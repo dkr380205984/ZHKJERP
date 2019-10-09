@@ -195,6 +195,10 @@ export default {
     searchVal () {
       this.pages = 1
       this.getList()
+    },
+    type (newVal) {
+      this.pages = 1
+      this.getList()
     }
   },
   filters: {

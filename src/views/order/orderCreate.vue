@@ -34,6 +34,7 @@
           <span class="label must">外贸公司：</span>
           <el-select class="elInput"
             v-model="company"
+            filterable
             placeholder="请选择外贸公司"
             @change="getContacts">
             <el-option v-for="item in companyArr"
@@ -918,7 +919,7 @@ export default {
           order_contract: JSON.stringify(orderContract),
           pack_means: JSON.stringify(packMeans),
           store_means: JSON.stringify(storeMeans),
-          other_info: JSON.stringify(otherInfo),
+          others_info: JSON.stringify(otherInfo),
           type: 1
         }
         this.lock = true

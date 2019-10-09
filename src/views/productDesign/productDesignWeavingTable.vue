@@ -118,12 +118,12 @@
 </template>
 
 <script>
-import { orderDetail, authList, productionDetail, weaveDetail, halfProductDetail, clientList } from '@/assets/js/api.js'
+import { orderDetail, authList, productionDetail, weaveDetail, halfProductDetail, clientList, companyInfoDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
       loading: true,
-      company_name: '桐庐凯瑞针纺有限公司',
+      company_name: '',
       process_code: '',
       create_time: '',
       order_code: '',
@@ -351,6 +351,11 @@ export default {
       let clientList = res.data.data
       console.log(clientList)
       this.order_company = clientList.find(val => val.name === this.order_company).abbreviation || this.order_company
+    })
+    companyInfoDetail({
+      company_id: window.sessionStorage.getItem('company_id')
+    }).then(res => {
+      this.company_name = res.data.data.company_name
     })
   },
   updated () {

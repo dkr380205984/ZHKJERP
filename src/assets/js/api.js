@@ -360,7 +360,10 @@ const notifyRead = (params) => http.post(`${baseUrl}/notify/check/status`, param
 const notifyNum = (params) => http.get(`${baseUrl}/notify/no/read`, params)
 // 确定制版工艺product/confirm/craft
 const confirmCraft = (params) => http.post(`${baseUrl}/product/confirm/craft`, params, 'application/json')
+// 删除报价单product/quotation/delete
+const deletePriceList = (params) => http.post(`${baseUrl}/product/quotation/delete`, params, 'application/json')
 export {
+  deletePriceList,
   confirmCraft,
   isCheckedPlanAndCraft,
   notifyNum,

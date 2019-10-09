@@ -76,12 +76,12 @@
 </template>
 
 <script>
-import { orderDetail, authList, clientList, packagMaterialDetail } from '@/assets/js/api.js'
+import { orderDetail, authList, clientList, packagMaterialDetail, companyInfoDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
       loading: true,
-      company_name: '桐庐凯瑞针纺有限公司',
+      company_name: '',
       orderMaterial_code: '',
       create_time: '',
       order_code: '',
@@ -119,8 +119,9 @@ export default {
         company_id: window.sessionStorage.getItem('company_id')
       }), packagMaterialDetail({
         order_id: this.$route.params.orderId
+      }), companyInfoDetail({
+        id: window.sessionStorage.getItem('company_id')
       })
-
     ]).then(res => {
       let orderInfo = res[0].data.data
       let linkman = res[1].data.data.find(val => val.id === window.sessionStorage.getItem('user_id'))
@@ -138,6 +139,8 @@ export default {
       // 将公司名称转为简称
       this.order_company = clientInfo.find(val => val.name === this.order_company).abbreviation ? clientList.find(val => val.id === this.order_company).abbreviation : this.order_company
       console.log(packagInfo)
+      // 初始化工厂名称
+      this.company_name = res[4].data.data.company_name
       packagInfo.forEach(item => {
         this.total_price = Number(this.total_price ? this.total_price : 0) + Number(item.price * item.number)
         this.client_name = item.client_name

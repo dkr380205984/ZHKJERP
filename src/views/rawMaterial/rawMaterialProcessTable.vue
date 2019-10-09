@@ -68,12 +68,12 @@
 </template>
 
 <script>
-import { rawMaterialProcessList, rawMaterialOrderList, orderDetail, authList } from '@/assets/js/api.js'
+import { rawMaterialProcessList, rawMaterialOrderList, orderDetail, authList, companyInfoDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
       loading: true,
-      company_name: '桐庐凯瑞针纺有限公司',
+      company_name: '',
       process_code: '',
       create_time: '',
       order_code: '',
@@ -182,6 +182,12 @@ export default {
         this.loading = false
       })
     }
+    // 初始化工厂名称
+    companyInfoDetail({
+      company_id: window.sessionStorage.getItem('company_id')
+    }).then(res => {
+      this.company_name = res.data.data.company_name
+    })
     // 初始化订单信息
     orderDetail({
       id: this.$route.params.id

@@ -374,7 +374,7 @@
                     :on-remove="handleRemove"
                     :on-success="handleSuccess"
                     :before-upload="beforeAvatarUpload"
-                    :file-list="fileArr"
+                    :file-list="orderFileArr"
                     :data="postData"
                     ref="uploada1">
                     <el-button size="small"
@@ -389,7 +389,7 @@
                     :on-remove="handleRemove"
                     :on-success="handleSuccess"
                     :before-upload="beforeAvatarUpload"
-                    :file-list="fileArr"
+                    :file-list="packagFileArr"
                     :data="postData"
                     ref="uploada2">
                     <el-button size="small"
@@ -404,7 +404,7 @@
                     :on-remove="handleRemove"
                     :on-success="handleSuccess"
                     :before-upload="beforeAvatarUpload"
-                    :file-list="fileArr"
+                    :file-list="storeFileArr"
                     :data="postData"
                     ref="uploada3">
                     <el-button size="small"
@@ -419,7 +419,7 @@
                     :on-remove="handleRemove"
                     :on-success="handleSuccess"
                     :before-upload="beforeAvatarUpload"
-                    :file-list="fileArr"
+                    :file-list="otherFileArr"
                     :data="postData"
                     ref="uploada4">
                     <el-button size="small"
@@ -494,26 +494,17 @@ export default {
       product: [],
       productArr: [],
       orderArr: [],
-      // {
-      //   date: '',
-      //   product: [{
-      //     product_info: {},
-      //     name: '',
-      //     colorSizeArr: [],
-      //     size: [{
-      //       name: [],
-      //       unitPrice: '',
-      //       numbers: ''
-      //     }]
-      //   }]
-      // }
       group: '',
       groupArr: [],
       has_plan: 0,
       has_log: 0,
       haveProNum: [], // 记录已有的产品信息，如果有日志信息了，产品只能加不能改，不能删
       colorSizeNum: [],
-      batchNum: 0
+      batchNum: 0,
+      orderFileArr: [],
+      packagFileArr: [],
+      storeFileArr: [],
+      otherFileArr: []
     }
   },
   methods: {
@@ -845,15 +836,15 @@ export default {
         }
         // const fileArr = this.$refs.uploada.uploadFiles.map((item) => {
         //   if (item.response) {
-        //     return 'http://zhihui.tlkrzf.com/' + item.response.key
+        //     return ('http://zhihui.tlkrzf.com/' + item.response.key))
         //   } else {
         //     return item.url
         //   }
         // })
-        const orderContract = this.$refs.uploada1.uploadFiles.map((item) => { return 'http://zhihui.tlkrzf.com/' + item.response.key })
-        const packMeans = this.$refs.uploada2.uploadFiles.map((item) => { return 'http://zhihui.tlkrzf.com/' + item.response.key })
-        const storeMeans = this.$refs.uploada3.uploadFiles.map((item) => { return 'http://zhihui.tlkrzf.com/' + item.response.key })
-        const otherInfo = this.$refs.uploada4.uploadFiles.map((item) => { return 'http://zhihui.tlkrzf.com/' + item.response.key })
+        const orderContract = this.$refs.uploada1.uploadFiles.map((item) => { return (item.url ? item.url : ('http://zhihui.tlkrzf.com/' + item.response.key)) })
+        const packMeans = this.$refs.uploada2.uploadFiles.map((item) => { return (item.url ? item.url : ('http://zhihui.tlkrzf.com/' + item.response.key)) })
+        const storeMeans = this.$refs.uploada3.uploadFiles.map((item) => { return (item.url ? item.url : ('http://zhihui.tlkrzf.com/' + item.response.key)) })
+        const otherInfo = this.$refs.uploada4.uploadFiles.map((item) => { return (item.url ? item.url : ('http://zhihui.tlkrzf.com/' + item.response.key)) })
         let obj = {
           id: parseInt(this.$route.params.id),
           company_id: this.companyId,
@@ -886,7 +877,7 @@ export default {
           order_contract: JSON.stringify(orderContract),
           pack_means: JSON.stringify(packMeans),
           store_means: JSON.stringify(storeMeans),
-          other_info: JSON.stringify(otherInfo),
+          others_info: JSON.stringify(otherInfo),
           type: 1
         }
         this.lock = false
@@ -1005,12 +996,37 @@ export default {
       this.money = orderInfo.account_unit
       this.group = this.groupArr.find((item) => item.name === orderInfo.group_name).id
       this.date = orderInfo.order_time
-      this.fileArr = orderInfo.file_url ? JSON.parse(orderInfo.file_url).map((item, index) => {
+      this.orderFileArr = orderInfo.order_contract ? JSON.parse(orderInfo.order_contract).map(items => {
         return {
-          name: item.replace('http://zhihui.tlkrzf.com/', ''),
-          url: item
+          name: items.replace('http://zhihui.tlkrzf.com/', ''),
+          url: items
         }
       }) : []
+      this.packagFileArr = orderInfo.pack_means ? JSON.parse(orderInfo.pack_means).map(items => {
+        return {
+          name: items.replace('http://zhihui.tlkrzf.com/', ''),
+          url: items
+        }
+      }) : []
+      this.storeFileArr = orderInfo.store_means ? JSON.parse(orderInfo.store_means).map(items => {
+        return {
+          name: items.replace('http://zhihui.tlkrzf.com/', ''),
+          url: items
+        }
+      }) : []
+      this.otherFileArr = orderInfo.others_info ? JSON.parse(orderInfo.others_info).map(items => {
+        return {
+          name: items.replace('http://zhihui.tlkrzf.com/', ''),
+          url: items
+        }
+      }) : []
+      console.log(this.$refs)
+      // this.fileArr = orderInfo.file_url ? JSON.parse(orderInfo.file_url).map((item, index) => {
+      //   return {
+      //     name: item.replace('http://zhihui.tlkrzf.com/', ''),
+      //     url: item
+      //   }
+      // }) : []
       // 过滤产品
       for (let prop in orderInfo.order_batch) {
         let orderBatch = orderInfo.order_batch[prop]

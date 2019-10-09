@@ -5,7 +5,7 @@
     <ul class="tableBox">
       <li class="title-info">
         <div class="title">
-          <h2>桐庐凯瑞针纺有限公司{{type === '0' ? '原' : '辅'}}料计划单</h2>
+          <h2>{{company}}{{type === '0' ? '原' : '辅'}}料计划单</h2>
         </div>
         <div class="info">
           <span>订单编号：<em class="bold12">KR{{year + (type === '0' ? 'YL' : 'FL' ) + order.order_code}}</em></span>
@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import { productPlanDetail, productionDetail } from '@/assets/js/api.js'
+import { productPlanDetail, productionDetail, companyInfoDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -103,7 +103,8 @@ export default {
       create_time: '',
       product: {},
       colorData: [],
-      colorInfo: {}
+      colorInfo: {},
+      company: ''
     }
   },
   methods: {
@@ -126,9 +127,12 @@ export default {
         product_key: this.$route.params.productId
       }), productionDetail({
         order_id: this.$route.params.orderId
+      }), companyInfoDetail({
+        company_id: window.sessionStorage.getItem('company_id')
       })
     ]).then((res) => {
       console.log(res)
+      this.company = res[2].data.data.company_name
       this.create_time = res[0].data.data.create_time
       this.sizeInfo = res[0].data.data.product_info.size
       this.weight_group = res[0].data.data.weight_group

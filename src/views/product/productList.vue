@@ -112,7 +112,7 @@
         </div>
       </div>
       <div class="tableCtn"
-        v-scroll="{fun:getProductList,pageSize:5}">
+        v-scroll="{fun:getProductList,pageSize:15}">
         <div class="tableRow titleTableRow">
           <div class="tableColumn">编号</div>
           <div class="tableColumn flex9">品类</div>
@@ -169,7 +169,7 @@
       </div>
       <div class="pageCtn">
         <el-pagination background
-          :page-size="5"
+          :page-size="15"
           layout="prev, pager, next"
           :total="total"
           :current-page.sync="pages"
@@ -269,7 +269,7 @@ export default {
       this.loading = true
       productList({
         'company_id': window.sessionStorage.getItem('company_id'),
-        'limit': 5,
+        'limit': 15,
         'category_id': this.categoryVal,
         'type_id': this.typesVal,
         'style_id': this.styleVal,
