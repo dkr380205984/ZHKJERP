@@ -37,6 +37,7 @@
           <span class="label must">外贸公司：</span>
           <el-select class="elInput"
             v-model="company"
+            filterable
             placeholder="请选择外贸公司"
             @change="getContacts">
             <el-option v-for="item in companyArr"

@@ -143,6 +143,7 @@
             :remote-method='remoteColor' -->
           <el-select clearable
             filterable
+            allow-create
             class="inputItem"
             v-model="item.color"
             :disabled="item.disabled && (has_craft !== 0 || has_plan !== 0 || in_order !== 0)"

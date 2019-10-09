@@ -336,12 +336,12 @@
     <div class="message"
       v-if="showMessageBox">
       <div class="messageBox">
-        <div class="title">新建样品</div>
+        <div class="title">新建产品</div>
         <div class="inputBox">
 
           <div class="item"
             style="margin-top:27px;">
-            <span class="label">样品编号:</span>
+            <span class="label">产品编号:</span>
             <div class="content blue">{{productDetail.product_code|filterCode}}</div>
           </div>
           <div class="item">
@@ -531,7 +531,7 @@ export default {
         }).then(res => {
           this.lock = true
           if (res.data.status) {
-            this.$message.success('添加成功,即将跳转至样品详情页')
+            this.$message.success('添加成功,即将跳转至产品详情页')
             setTimeout(() => {
               this.$router.push('/index/productDetail/' + this.$route.params.id)
             }, 800)

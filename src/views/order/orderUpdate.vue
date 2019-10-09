@@ -19,6 +19,7 @@
           <span class="label must">外贸公司：</span>
           <el-select class="elInput"
             v-model="company"
+            filterable
             placeholder="请选择外贸公司"
             @change="getContacts">
             <el-option v-for="item in companyArr"
@@ -204,7 +205,7 @@
                 :key="item.id">
                 <div class="flex"
                   style="color:#10AEF5;cursor:help"
-                  @click="openUrl('/index/productDetail/'+item.product_code)">{{item.product_code}}</div>
+                  @click="openUrl('/index/productDetail/'+item.id)">{{item.product_code}}</div>
                 <div class="flex">{{item|filterType}}</div>
                 <div class="flex">{{item.flower_id}}</div>
                 <div class="flex">{{item.user_name}}</div>
@@ -967,7 +968,7 @@ export default {
     }), orderDetail({
       id: this.$route.params.id }
     ), getToken()]).then((res) => {
-      console.log(res[5].data.data)
+      // console.log(res[5].data.data)
       this.companyArr = res[0].data.data.filter((item) => (item.type.indexOf(1) !== -1))
       this.seachProduct = res[1].data.data
       this.typeArr = res[2].data.data.map((item) => {
@@ -1051,12 +1052,21 @@ export default {
                 numbers: valPro.numbers
               }]
             })
+          } else {
+            let flag2 = flag.size.find(vals => vals.name[0] === valPro.size && vals.name[1] === valPro.color)
+            if (!flag2) {
+              flag.size.push({
+                name: [valPro.size, valPro.color],
+                unitPrice: valPro.unit_price,
+                numbers: valPro.numbers
+              })
+            }
           }
         })
         this.orderArr.push(JSON.parse(JSON.stringify(obj)))
       }
       // 由于产品信息不会更新，因此需要获取最新的产品数据（尺码/颜色），可以在修改订单的时候选到最新的产品尺码/颜色
-      console.log(this.orderArr)
+      // console.log(this.orderArr)
       // 第一步，根据productArr里的产品id数组，获取产品数组详情
       porductOne({
         id: this.productArr.map(vals => { return vals.id })
@@ -1065,7 +1075,6 @@ export default {
         // 第二步，把最新的产品信息更新到批次信息里
         this.orderArr.forEach((item) => {
           item.product.forEach((itemPro) => {
-            console.log(JSON.parse(JSON.stringify(itemPro)))
             const finded = this.productArr.find((itemFind) => Number(itemPro.product_info.category_info.product_id) === Number(itemFind.id))
             if (finded) {
               itemPro.colorSizeArr = []
@@ -1081,7 +1090,7 @@ export default {
                   })
                 })
               })
-              // console.log(itemPro)
+              itemPro.product_info = finded
             }
           })
         })
