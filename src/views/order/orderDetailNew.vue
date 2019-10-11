@@ -801,8 +801,8 @@
                 style="flex:1.7">{{item.material_name}}</span>
               <span class="tableRow">{{item|filterTotal}}元</span>
               <span class="tableRow">{{item.order_client?item.order_client[0]:'暂无'}}</span>
-              <span class="tableRow">{{item.order_number?item.order_number:0}}{{item.unit}}</span>
-              <span class="tableRow">{{item.total_price_order?item.total_price_order:0}}元</span>
+              <span class="tableRow">{{item.order_number?item.order_number.toFixed(2):0}}{{item.unit}}</span>
+              <span class="tableRow">{{item.total_price_order?item.total_price_order.toFixed(2):0}}元</span>
               <span class="tableRow col"
                 style="flex:4">
                 <span class="tableColumn"
@@ -810,8 +810,8 @@
                   :key="indType">
                   <span class="tableRow">{{valType.process_client[0]}}</span>
                   <span class="tableRow">{{valType.type}}</span>
-                  <span class="tableRow">{{valType.number}}{{item.unit}}</span>
-                  <span class="tableRow">{{valType.total_price_process}}元</span>
+                  <span class="tableRow">{{valType.number.toFixed(2)}}{{item.unit}}</span>
+                  <span class="tableRow">{{valType.total_price_process.toFixed(2)}}元</span>
                 </span>
               </span>
             </li>
@@ -1528,13 +1528,19 @@ export default {
         item.processType.forEach(val => {
           price += Number(val.total_price_process)
         })
-        price += Number(item.total_price_order)
       }
+      price += Number(item.total_price_order)
       return price
     },
     // 生产合计费用
     filterPrice (item) {
       let price = 0
+      if (item.processType) {
+        item.processType.forEach(val => {
+          price += Number(val.total_price_semiProcess)
+        })
+      }
+      price += Number(item.total_price_weave)
       return price
     }
   },
@@ -1773,7 +1779,7 @@ export default {
             flag.processType.push({
               type: item.process_type,
               number: num,
-              total_price_process: item.total_price,
+              total_price_process: item.price * num,
               process_client: [item.client_name]
             })
           } else {

@@ -568,7 +568,7 @@
             <li class="title">
               <span style="flex:2">物料名称</span>
               <span>计划数量</span>
-              <span>样购数量</span>
+              <span>订购数量</span>
               <span style="flex:2">
                 <span>加工类型</span>
                 <span>加工数量</span>
@@ -584,15 +584,15 @@
               v-for="(item,index) in materialList"
               :key="index">
               <span style="flex:2">{{item.material_name}}</span>
-              <span>{{parseInt(item.plan_number)}}{{item.unit}}</span>
-              <span>{{item.order_number?parseInt(item.order_number):0}}{{item.unit}}</span>
+              <span>{{item.plan_number ? item.plan_number.toFixed(2) : 0}}{{item.unit}}</span>
+              <span>{{item.order_number ? item.order_number.toFixed(2) : 0}}{{item.unit}}</span>
               <span class="col"
                 v-if="item.processType"
                 style="flex:2">
                 <span v-for="(itemType,indexType) in item.processType"
                   :key="indexType">
                   <span>{{itemType.type}}</span>
-                  <span>{{itemType.number}}{{item.unit}}</span>
+                  <span>{{itemType.number.toFixed(2)}}{{item.unit}}</span>
                 </span>
               </span>
               <span class="col"
@@ -600,9 +600,9 @@
                 style="flex:2;text-align:center">
                 暂无加工信息
               </span>
-              <span>{{item.out_stock_number ? item.out_stock_number : 0}}{{item.unit}}</span>
-              <span>{{item.in_stock_number ? item.in_stock_number : 0}}{{item.unit}}</span>
-              <span>{{item.replenish_number?item.replenish_number:0}}{{item.unit}}</span>
+              <span>{{item.out_stock_number ? item.out_stock_number.toFixed(2) : 0}}{{item.unit}}</span>
+              <span>{{item.in_stock_number ? item.in_stock_number.toFixed(2) : 0}}{{item.unit}}</span>
+              <span>{{item.replenish_number?item.replenish_number.toFixed(2):0}}{{item.unit}}</span>
               <span :style="{'color':parseInt(item.order_number)/parseInt(item.plan_number)>=1||order_info.status_material_order===1?'#67C23A':'#E6A23C'}">{{parseInt(item.order_number)/parseInt(item.plan_number)>=1||order_info.status_material_order===1?'完成':'未完成'}}</span>
             </li>
           </div>
@@ -690,9 +690,9 @@
             <li class="title">
               <span style="flex:1.7">物料名称</span>
               <span>合计费用</span>
-              <span>样购公司</span>
-              <span>样购数量</span>
-              <span>样购费用</span>
+              <span>订购公司</span>
+              <span>订购数量</span>
+              <span>订购费用</span>
               <span style="flex:4">
                 <span>加工公司</span>
                 <span>加工类型</span>
@@ -707,7 +707,7 @@
                 style="flex:1.7">{{item.material_name}}</span>
               <span class="tableRow">{{item|filterTotal}}元</span>
               <span class="tableRow">{{item.order_client?item.order_client[0]:'暂无'}}</span>
-              <span class="tableRow">{{item.order_number?item.order_number:0}}{{item.unit}}</span>
+              <span class="tableRow">{{item.order_number?item.order_number.toFixed(2):0}}{{item.unit}}</span>
               <span class="tableRow">{{item.total_price_order?item.total_price_order:0}}元</span>
               <span class="tableRow col"
                 style="flex:4">
@@ -716,8 +716,8 @@
                   :key="indType">
                   <span class="tableRow">{{valType.process_client[0]}}</span>
                   <span class="tableRow">{{valType.type}}</span>
-                  <span class="tableRow">{{valType.number}}{{item.unit}}</span>
-                  <span class="tableRow">{{valType.total_price_process}}元</span>
+                  <span class="tableRow">{{valType.number.toFixed(2)}}{{item.unit}}</span>
+                  <span class="tableRow">{{valType.total_price_process.toFixed(2)}}元</span>
                 </span>
               </span>
             </li>
@@ -753,7 +753,7 @@
                     v-if="item.img.length===0"><span>没有预览图</span></div>
                 </div>
               </span>
-              <span class="tableRow">{{item|filterPrice}}</span>
+              <span class="tableRow">{{item|filterPrice}}元</span>
               <span class="tableRow">{{item.weave_client ? item.weave_client[0] : '暂无'}}</span>
               <span class="tableRow">{{item.weave_number ? item.weave_number : 0}}{{item.unit}}</span>
               <span class="tableRow">{{item.total_price_weave ? item.total_price_weave : 0}}元</span>
@@ -953,7 +953,7 @@
         <div class="title">{{stepTitle[step]}}</div>
         <div class="content"><i class="el-icon-info"
             style="margin-right:5px;"></i>
-          <span>{{materialDetail.length===0&&step===0?'检测到该产品还未样购过任何原料，请直接跳过本步骤':stepContent[step]}}</span></div>
+          <span>{{materialDetail.length===0&&step===0?'检测到该产品还未订购过任何原料，请直接跳过本步骤':stepContent[step]}}</span></div>
         <div class="inputCtn"
           v-show="step===0">
           <el-input v-for="item in materialDetail"
@@ -1989,13 +1989,19 @@ export default {
         item.processType.forEach(val => {
           price += Number(val.total_price_process)
         })
-        price += Number(item.total_price_order)
       }
+      price += Number(item.total_price_order)
       return price
     },
     // 生产合计费用
     filterPrice (item) {
       let price = 0
+      if (item.processType) {
+        item.processType.forEach(val => {
+          price += Number(val.total_price_semiProcess)
+        })
+      }
+      price += Number(item.total_price_weave)
       return price
     }
   },
@@ -2207,22 +2213,23 @@ export default {
       let inStockInfo = [].concat(this.order_log.material_pop_z, this.order_log.material_pop_f)
       let materialPageInfo = this.order_log.material_order
       // 物料计划值
-      materialInfo.material_info.forEach(item => {
-        // for (let prop in materialInfo.material_info) {
-        for (let prop in item) {
-          // let item = materialInfo.material_info
-          let flag = this.materialList.find(key => key.material_name === prop)
-          if (!flag) {
-            this.materialList.push({
-              material_name: prop,
-              unit: item[prop].unit === '克' ? 'kg' : (item[prop].unit === 'g' ? 'kg' : item[prop].unit),
-              plan_number: (item[prop].unit === '克' || item[prop].unit === 'g') ? (item[prop].total_number / 1000) : item[prop].total_number
-            })
-          } else {
-            flag.plan_number = Number(flag.plan_number) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? (item[prop].total_number / 1000) : item[prop].total_number)
-          }
+      // materialInfo.material_info.forEach(item => {
+      console.log(materialInfo)
+      for (let prop in materialInfo.material_info) {
+        // for (let prop in item) {
+        let item = materialInfo.material_info[prop]
+        let flag = this.materialList.find(key => key.material_name === prop)
+        if (!flag) {
+          this.materialList.push({
+            material_name: prop,
+            unit: item.unit === '克' ? 'kg' : (item.unit === 'g' ? 'kg' : item.unit),
+            plan_number: (item.unit === '克' || item.unit === 'g') ? (item.total_number / 1000) : item.total_number
+          })
+        } else {
+          flag.plan_number = Number(flag.plan_number) + Number((item.unit === '克' || item.unit === 'g') ? (item.total_number / 1000) : item.total_number)
         }
-      })
+      }
+      // })
       // 物料加工值，样购值
       this.materialList.map(res => {
         if (materialInfo.total_weight_order[res.material_name]) {
@@ -2260,6 +2267,7 @@ export default {
         }
       })
       // 物料加工类型
+      console.log(processInfo)
       processInfo.forEach(item => {
         let flag = this.materialList.find(keys => keys.material_name === item.material_name)
         if (flag) {
@@ -2276,7 +2284,7 @@ export default {
             flag.processType.push({
               type: item.process_type,
               number: num,
-              total_price_process: item.total_price,
+              total_price_process: item.price * num,
               process_client: [item.client_name]
             })
           } else {

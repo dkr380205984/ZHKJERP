@@ -582,7 +582,7 @@ export default {
       //   }
       // })
       let clientList = res[1].data.data
-      // console.log(clientList)
+      console.log(clientList)
       clientList.forEach(item => {
         if (item.type.indexOf(9) !== -1) {
           this.companyList[0].children.push({
@@ -599,20 +599,19 @@ export default {
       // this.options.companyList.push(...res[1].data.data.filter((item) => (item.type.indexOf(2) !== -1)))
       // 产品信息初始化
       let arr = []
-      res[0].data.data.order_info.order_batch.forEach((item, key) => {
-        item.batch_info.forEach((value, index) => {
-          let types = value.productInfo.category_info.product_category + (value.productInfo.type_name ? '/' + value.productInfo.type_name : '') + (value.productInfo.style_name ? '/' + value.productInfo.type_name : '') + (value.productInfo.flower_id ? '/' + value.productInfo.flower_id : '')
-          value.size.forEach((val, ind) => {
-            arr.push({
-              type: types,
-              product_code: value.productCode,
-              product_size: val.name[0],
-              product_color: val.name[1],
-              number: val.numbers
-            })
+      for (let prop in res[0].data.data.order_info.order_batch) {
+        let item = res[0].data.data.order_info.order_batch[prop]
+        item.forEach(value => {
+          let types = value.category_info.category_name + (value.category_info.type_name ? '/' + value.category_info.type_name : '') + (value.category_info.style_name ? '/' + value.category_info.type_name : '') + (value.category_info.flower_name ? '/' + value.category_info.flower_name : '')
+          arr.push({
+            type: types,
+            product_code: value.product_code,
+            product_size: value.size,
+            product_color: value.color,
+            number: value.numbers
           })
         })
-      })
+      }
       arr.forEach(item => {
         let flag = this.productList.find(val => (val.product_code === item.product_code && val.product_size === item.product_size && val.product_color === item.product_color))
         if (!flag) {
@@ -634,7 +633,9 @@ export default {
             }
             let flag1 = flag.stock.find(key => key.stock_id === item.stock_id)
             if (!flag1) {
-              let stockName = clientList.find(key => Number(key.id) === item.stock_id)
+              let stockName = clientList.find(key => Number(key.id) === Number(item.stock_id))
+              console.log(stockName)
+              console.log(item.stock_id)
               flag.stock.push({
                 stock_name: (item.stock_id === 0 ? '本厂仓库' : stockName.name),
                 stock_id: item.stock_id,

@@ -137,6 +137,14 @@ export default {
           })
           if (this.id) {
             setTimeout(() => { this.$router.push('/index/packagMaterialList') }, 800)
+          } else {
+            this.pack_name = ''
+            this.pack_size = ''
+            this.pack_weight = ''
+            this.pack_attrs = [{ pack_attr: '' }]
+            this.remark = ''
+            this.id = ''
+            this.timer = true
           }
         })
         setTimeout(() => {

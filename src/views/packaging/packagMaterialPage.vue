@@ -576,7 +576,7 @@ export default {
               client_id: item.order_client,
               number: valPack.number,
               price: valPack.price,
-              size_info: valPack.size_info,
+              size: valPack.size_info,
               order_time: item.order_time,
               desc: item.remark,
               attribute: JSON.stringify(valPack.pack_attr.attribute),

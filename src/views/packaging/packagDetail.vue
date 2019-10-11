@@ -449,7 +449,7 @@
                 style="width:300px;">
                 <el-option v-for="packType in packagMaterialList"
                   :key="packType.id"
-                  :label="packType.name+'('+packType.size+')'"
+                  :label="packType.name + (JSON.parse(packType.attribute).map(vals=>vals.pack_attr).join('/') ? '(' + JSON.parse(packType.attribute).map(vals=>vals.pack_attr).join('/') + ')' : '')"
                   :value="packType.id">
                 </el-option>
               </el-select>

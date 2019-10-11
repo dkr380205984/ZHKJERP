@@ -613,7 +613,7 @@ export default {
                 companys: [{
                   company: item.client_name,
                   total_price: item.total_price,
-                  create_time: item.order_time.split(' ')[0],
+                  create_time: item.create_time.split(' ')[0],
                   remark: item.desc,
                   materials: [{
                     material: item.material_name,
