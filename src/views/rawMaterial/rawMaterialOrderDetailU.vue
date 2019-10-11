@@ -237,6 +237,7 @@
                     <span class="flexMid">总价</span>
                     <span class="flexBig">备注</span>
                     <span class="flexMid">操作人</span>
+                    <span style="flex:0.5">操作</span>
                   </li>
                 </div>
                 <div>
@@ -266,6 +267,8 @@
                       </i>
                     </span>
                     <span class="flexMid">{{item.user}}</span>
+                    <span style="flex:0.5"
+                      @click="deleteDGLog(item.id)"><span style="color:#F56C6C;cursor:pointer">删除</span></span>
                   </li>
                 </div>
               </ul>
@@ -395,6 +398,8 @@
                         <span>数量</span>
                       </span>
                     </span>
+                    <span>单价</span>
+                    <span>总价</span>
                     <span>完成日期</span>
                     <span>操作</span>
                   </span>
@@ -424,6 +429,8 @@
                           </span>
                         </span>
                       </span>
+                      <span class="tableRow">{{item.price}}元</span>
+                      <span class="tableRow">{{item.total_price|fixedFilter}}元</span>
                       <span class="tableRow">{{item.create_time}}</span>
                       <span class="blue tableRow"
                         @click="open('table',$route.params.id,'',item.company,value.process_type)">打印</span>
@@ -457,8 +464,10 @@
                     <span>{{type === '0' ? '原' : '辅'}}料名称</span>
                     <span class="flexMid">颜色</span>
                     <span class="flexMid">重量</span>
+                    <span class="flexMid">单价</span>
                     <span class="flexBig">备注</span>
                     <span>操作人</span>
+                    <span style="flex:0.5">操作</span>
                   </li>
                 </div>
                 <div>
@@ -471,6 +480,7 @@
                     <span>{{item.material}}</span>
                     <span class="flexMid">{{item.color}}</span>
                     <span class="flexMid">{{item.weight|fixedFilter}}{{item.unit}}</span>
+                    <span class="flexMid">{{item.price}}元</span>
                     <span class="flexBig remark">
                       <i>
                         {{item.remark ? item.remark : '暂无备注'}}
@@ -485,6 +495,8 @@
                       </i>
                     </span>
                     <span>{{item.user}}</span>
+                    <span style="flex:0.5"
+                      @click="deleteJGLog(item.id)"><span style="color:#F56C6C;cursor:pointer">删除</span></span>
                   </li>
                 </div>
               </ul>
@@ -842,7 +854,8 @@
 
 <script>
 import { machiningType } from '@/assets/js/dictionary.js'
-import { rawMaterialOrderList, orderDetail, rawMaterialOrderInit, rawMaterialProcessList, productionDetail, replenishYarnList, orderMaterialSotckDetail, clientList, rawMaterialOrder, rawMaterialProcessPage } from '@/assets/js/api.js'
+import { rawMaterialOrderList, orderDetail, rawMaterialOrderInit, rawMaterialProcessList, productionDetail, replenishYarnList, orderMaterialSotckDetail, clientList, rawMaterialOrder, rawMaterialProcessPage, deleteOrderProcess,
+  deleteOrderMaterial } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -1094,6 +1107,7 @@ export default {
                 this.$message.success({
                   message: '订购成功'
                 })
+                this.reload()
               } else {
                 this.$message.success({
                   message: res.data.message
@@ -1172,6 +1186,7 @@ export default {
                 this.$message.success({
                   message: '订购成功'
                 })
+                this.reload()
               } else {
                 this.$message.success({
                   message: res.data.message
@@ -1255,6 +1270,7 @@ export default {
               this.$message.success({
                 message: '加工成功'
               })
+              this.reload()
             } else {
               this.$message.success({
                 message: res.data.message
@@ -1321,7 +1337,7 @@ export default {
               client_id: '',
               materialArr: item.need.map((itemColor) => {
                 return {
-                  total_weight: itemColor.value,
+                  total_weight: itemColor.value.toFixed(1),
                   color_code: itemColor.name
                 }
               }),
@@ -1521,6 +1537,7 @@ export default {
               this.$message.success({
                 message: '调取成功'
               })
+              this.reload()
               this.WLDQFlag = false
             } else {
               let data = []
@@ -1568,6 +1585,7 @@ export default {
                     this.$message.success({
                       message: '调取加工成功'
                     })
+                    this.reload()
                     this.WLDQFlag = false
                   } else {
                     this.$message.error({
@@ -1581,6 +1599,7 @@ export default {
             this.$message.success({
               message: '调取成功'
             })
+            this.reload()
             this.WLDQFlag = false
           }
         } else {
@@ -1589,6 +1608,45 @@ export default {
           })
         }
       })
+    },
+    // 删除订购日志
+    deleteDGLog (id) {
+      deleteOrderMaterial({
+        id: id
+      }).then((res) => {
+        if (res.data.status) {
+          this.$message.success({
+            message: '删除成功'
+          })
+          this.reload()
+        } else {
+          this.$message.error({
+            message: res.data.message
+          })
+        }
+      })
+    },
+    // 删除加工日志
+    deleteJGLog (id) {
+      deleteOrderProcess({
+        id: id
+      }).then((res) => {
+        if (res.data.status) {
+          this.$message.success({
+            message: '删除成功'
+          })
+          this.reload()
+        } else {
+          this.$message.error({
+            message: res.data.message
+          })
+        }
+      })
+    },
+    reload () {
+      setTimeout(() => {
+        window.location.reload()
+      }, 500)
     }
   },
   created () {
@@ -1732,9 +1790,11 @@ export default {
             // 已订购数量累加
             finded.order_weight = finded.order_weight ? (finded.order_weight + item.weight) : item.weight
           }
+
           // 初始化日志
           this.orderLog.unshift({
             time: item.create_time,
+            id: item.id,
             client_name: (item.client_name ? item.client_name : '仓库'),
             where: (item.type_source === 1 ? '调取' : '订购'),
             material: item.material_name,
@@ -1764,7 +1824,7 @@ export default {
                 process_type: item.process_type,
                 companys: [{
                   company: item.client_name,
-                  total_price: item.total_price,
+                  price: item.price,
                   create_time: item.complete_time.split(' ')[0],
                   remark: item.desc,
                   materials: [{
@@ -1782,7 +1842,7 @@ export default {
               if (!flag1) {
                 flag.companys.push({
                   company: item.client_name,
-                  total_price: item.total_price,
+                  price: item.price,
                   create_time: item.complete_time.split(' ')[0],
                   remark: item.desc,
                   materials: [{
@@ -1826,6 +1886,8 @@ export default {
             }
             // 日志初始化
             this.processLog.unshift({
+              id: item.id,
+              price: item.price,
               time: item.create_time,
               client_name: item.client_name,
               process_type: item.process_type,
@@ -1838,6 +1900,17 @@ export default {
               unit: item.unit ? item.unit : 'kg'
             })
           }
+        })
+      })
+      this.processList.forEach(item => {
+        item.companys.forEach(itemCom => {
+          let weight = 0
+          itemCom.materials.forEach(itemMater => {
+            itemMater.colors.forEach(itemColor => {
+              weight += Number(itemColor.value)
+            })
+          })
+          itemCom.total_price = weight * itemCom.price
         })
       })
       // 补纱信息合并

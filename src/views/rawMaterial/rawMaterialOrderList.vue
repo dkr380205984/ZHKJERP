@@ -157,7 +157,6 @@
                 @click="$router.push('/index/rawMaterialOrderDetail/' + item.id + '/1')">辅料</span>
             </div> -->
             <el-dropdown @command="openWin($event,item.id)"
-              trigger="hover"
               class="btns normal">
               <span class="el-dropdown-link opration"
                 style="color:#FFF">
