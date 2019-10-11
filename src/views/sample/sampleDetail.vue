@@ -115,7 +115,7 @@
                 </div>
                 <div class="items">
                   <span class="labels">颜色:</span>
-                  <div class="contents">{{selectColor}}</div>
+                  <div class="contents">{{selectColor[0]}}</div>
                 </div>
                 <div class="items">
                   <span class="labels">描述:</span>
@@ -414,7 +414,7 @@
         <div class="item">
           <span class="label">样品规格:</span>
           <div class="content">
-            <el-radio-group v-model="selectSize.measurement">
+            <el-radio-group v-model="selectSize">
               <el-radio v-for="(item,key) in productDetail.size"
                 :label="item.measurement"
                 :key="key">{{item.measurement}}</el-radio>
@@ -423,12 +423,19 @@
         </div>
         <div class="item">
           <span class="label">样品配色:</span>
-          <div class="content">
-            <el-radio-group v-model="selectColor">
-              <el-radio v-for="(item,key) in productDetail.color"
+          <div class="content"
+            style="flex-direction:column;align-items: flex-start">
+            <el-checkbox :indeterminate="isIndeterminate"
+              v-model="checkAll"
+              style="margin-right:8px;"
+              @change="handleCheckAllChange">全选</el-checkbox>
+            <el-checkbox-group v-model="selectColor"
+              @change="handleCheckedCitiesChange">
+              <el-checkbox v-for="(item,key) in productDetail.color"
                 :key="key"
-                :label="item.color_name">{{item.color_name}}</el-radio>
-            </el-radio-group>
+                style="margin-right:8px;"
+                :label="item.color_name">{{item.color_name}}</el-checkbox>
+            </el-checkbox-group>
           </div>
         </div>
         <div class="footer">
@@ -480,13 +487,15 @@ export default {
       showMessageBox: false,
       showMessageBox2: false,
       selectSize: '',
-      selectColor: '',
+      selectColor: [],
       loading: true,
       isCraft: '',
       isPlan: '',
       lock: true,
       id: '', // 转成样品后的id
-      qrCodeUrl: ''
+      qrCodeUrl: '',
+      checkAll: false,
+      isIndeterminate: true
     }
   },
   filters: {
@@ -514,9 +523,18 @@ export default {
     }
   },
   methods: {
+    handleCheckAllChange (val) {
+      this.selectColor = val ? this.productDetail.color.map(items => { return items.color_name }) : []
+      this.isIndeterminate = false
+    },
+    handleCheckedCitiesChange (value) {
+      let checkedCount = value.length
+      this.checkAll = checkedCount === this.productDetail.color.length
+      this.isIndeterminate = checkedCount > 0 && checkedCount < this.cities.length
+    },
     // 打印产品标签
     print (size, color) {
-      window.open('/tagPrint/' + this.$route.params.id + '/' + size.measurement + '/' + color)
+      window.open('/tagPrint/' + this.$route.params.id + '/' + size + '/' + color)
     },
     pushProduct () {
       if (this.lock) {
@@ -567,8 +585,8 @@ export default {
       if (res.data.status) {
         console.log(res.data.data)
         this.productDetail = res.data.data
-        this.selectSize = res.data.data.size[0]
-        this.selectColor = res.data.data.color[0].color_name
+        this.selectSize = res.data.data.size[0].measurement
+        this.selectColor = [res.data.data.color[0].color_name]
         this.productDetail.size = this.productDetail.size
         // 计算配料单原料
         if (this.productDetail.has_plan === 1) {

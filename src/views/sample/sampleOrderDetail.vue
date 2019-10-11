@@ -2207,21 +2207,22 @@ export default {
       let inStockInfo = [].concat(this.order_log.material_pop_z, this.order_log.material_pop_f)
       let materialPageInfo = this.order_log.material_order
       // 物料计划值
-      // materialInfo.material_info.forEach(item => {
-      for (let prop in materialInfo.material_info) {
-        let item = materialInfo.material_info
-        let flag = this.materialList.find(key => key.material_name === prop)
-        if (!flag) {
-          this.materialList.push({
-            material_name: prop,
-            unit: item[prop].unit === '克' ? 'kg' : (item[prop].unit === 'g' ? 'kg' : item[prop].unit),
-            plan_number: (item[prop].unit === '克' || item[prop].unit === 'g') ? (item[prop].total_number / 1000) : item[prop].total_number
-          })
-        } else {
-          flag.plan_number = Number(flag.plan_number) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? (item[prop].total_number / 1000) : item[prop].total_number)
+      materialInfo.material_info.forEach(item => {
+        // for (let prop in materialInfo.material_info) {
+        for (let prop in item) {
+          // let item = materialInfo.material_info
+          let flag = this.materialList.find(key => key.material_name === prop)
+          if (!flag) {
+            this.materialList.push({
+              material_name: prop,
+              unit: item[prop].unit === '克' ? 'kg' : (item[prop].unit === 'g' ? 'kg' : item[prop].unit),
+              plan_number: (item[prop].unit === '克' || item[prop].unit === 'g') ? (item[prop].total_number / 1000) : item[prop].total_number
+            })
+          } else {
+            flag.plan_number = Number(flag.plan_number) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? (item[prop].total_number / 1000) : item[prop].total_number)
+          }
         }
-      }
-      // })
+      })
       // 物料加工值，样购值
       this.materialList.map(res => {
         if (materialInfo.total_weight_order[res.material_name]) {

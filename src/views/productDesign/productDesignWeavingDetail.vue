@@ -57,7 +57,7 @@
                   v-for="(item,index) in product"
                   :key="index">
                   <span style="color:#1A95FF"
-                    @click="$router.push('/index/productDetail/'+item.product_code)">{{item.product_code}}</span>
+                    @click="$router.push('/index/productDetail/'+item.id)">{{item.product_code}}</span>
                   <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
                   <span class="col"
                     style="flex:4">
@@ -121,24 +121,39 @@
                 </li>
                 <li v-for="(item,index) in StatisticsList"
                   :key="index"
-                  class="material_info">
-                  <span>{{item.product_code}}</span>
-                  <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
-                  <span class="col"
+                  class="content">
+                  <span class="tableRow">{{item.product_code}}</span>
+                  <span class="tableRow">{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
+                  <span class="tableRow"
                     style="flex:5;">
                     <span v-for="(itemColour,indexColour) in item.info"
-                      :key="indexColour">
-                      <span>{{itemColour.size}}/{{itemColour.color}}</span>
-                      <span>{{itemColour.order_num}}{{item.unit_name}}</span>
-                      <span>{{itemColour.stock_pick}}{{item.unit_name}}</span>
-                      <span>{{itemColour.production_num}}{{item.unit_name}}</span>
-                      <span>{{itemColour.fenpei}}{{item.unit_name}}</span>
+                      :key="indexColour"
+                      class="tablecolumn">
+                      <span class="tableRow">{{itemColour.size}}/{{itemColour.color}}</span>
+                      <span class="tableRow">{{itemColour.order_num}}{{item.unit_name}}</span>
+                      <span class="tableRow">{{itemColour.stock_pick}}{{item.unit_name}}</span>
+                      <span class="tableRow">{{itemColour.production_num}}{{item.unit_name}}</span>
+                      <span class="tableRow">{{itemColour.fenpei}}{{item.unit_name}}</span>
                     </span>
                   </span>
                 </li>
-                <div class="logList"
-                  @click="showZhizao=!showZhizao">{{showZhizao?'收起':'展开'}}日志</div>
               </ul>
+              <!-- @click="$router.push('/index/productDesignWeavingCreate/' + $route.params.id)" -->
+              <!-- <div :class="{addLine:true,'isNoStatus':!addStatus}">
+                <span v-if="!addStatus"
+                  @click="addStatus = true,addFromItem()">
+                  <i class="el-icon-plus"></i>添加织造
+                </span>
+                <template v-if="addStatus">
+                  <span class="submit"><i class="el-icon-folder-checked"></i>确认分配</span>
+                  <span class="setAll"
+                    @click="completion"><i class="el-icon-edit-outline"></i>一键分配</span>
+                  <span @click="addStatus = false"
+                    class="cancle"><i class="el-icon-close"></i>取消</span>
+                </template>
+              </div> -->
+              <div class="logList"
+                @click.stop="showZhizao=!showZhizao">{{showZhizao?'收起':'展开'}}日志</div>
               <ul class="log"
                 v-show="showZhizao">
                 <div>
@@ -162,10 +177,10 @@
                     <span>{{item.complete_time.slice(0,10)}}</span>
                     <span>{{item.client_name}}</span>
                     <span>{{item.product_info.product_code}}</span>
-                    <span>{{item.product_info.category_info.product_category}}/{{item.product_info.type_name}}/{{item.product_info.style_name}}</span>
+                    <span>{{item.product_info.category_name}}/{{item.product_info.type_name}}/{{item.product_info.style_name}}</span>
                     <span>{{item.size}}/{{item.color}}</span>
                     <span>{{item.price}}</span>
-                    <span>{{item.number}}{{item.product_info.category_info.name}}</span>
+                    <span>{{item.number}}{{item.product_info.unit}}</span>
                     <span>{{parseInt(item.price*item.number)}}</span>
                     <span>{{item.user_name}}</span>
                     <span>{{item.desc}}</span>
@@ -177,6 +192,98 @@
                   <span>暂无日志信息</span>
                 </li>
               </ul>
+              <!-- <div class="weaveInfo"
+                v-if="addStatus">
+                <ul class="weaveFrom"
+                  v-for="(item,key) in formList"
+                  :key="key">
+                  <span class="el-icon-close"
+                    @click="deleteFromItem(key)"></span>
+                  <li>
+                    <span>加工产品:</span>
+                    <el-select filterable
+                      v-model="item.product_id"
+                      placeholder="请选择加工产品"
+                      size="small">
+                      <el-option v-for="item in []"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id">
+                      </el-option>
+                    </el-select>
+                  </li>
+                  <li>
+                    <span>加工单位:</span>
+                    <el-select filterable
+                      v-model="item.company_id"
+                      placeholder="请选择加工单位"
+                      size="small">
+                      <el-option v-for="item in companyArr"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id">
+                      </el-option>
+                    </el-select>
+                  </li>
+                  <li class="col"
+                    v-for="(valSizeColor,indSizeColor) in item.size_info"
+                    :key="indSizeColor">
+                    <div>
+                      <span>价格数量:</span>
+                      <el-cascader placeholder="选择尺码/颜色"
+                        size="small"
+                        style="margin-left:15px;width:243px;"
+                        :options="item.sizeColorArr"
+                        v-model="valSizeColor.sizeColor">
+                      </el-cascader>
+                      <em v-if="indSizeColor === 0"
+                        class="el-icon-plus"
+                        @click="addSizeColor(key)"></em>
+                      <em v-else
+                        class="el-icon-delete"
+                        @click="deleteSizeColor(key,indSizeColor)"></em>
+                    </div>
+                    <div>
+                      <span></span>
+                      <el-input style="margin-left:15px"
+                        size="small"
+                        placeholder="价格"
+                        v-model="valSizeColor.price"></el-input>
+                      <strong>—</strong>
+                      <el-input size="small"
+                        placeholder="数量"
+                        v-model="valSizeColor.number"></el-input>
+                    </div>
+                  </li>
+                  <li>
+                    <span>产品总价:</span>
+                    <el-input style="width:243px"
+                      disabled
+                      size="small"
+                      placeholder="总价"
+                      v-model="item.total_price">
+                      <template slot="append"><span style="line-height:30px">元</span></template>
+                    </el-input>
+                  </li>
+                  <li>
+                    <span>完成时间:</span>
+                    <el-date-picker v-model="item.complete_time"
+                      type="date"
+                      placeholder="选择日期"
+                      value-format="yyyy-MM-dd"
+                      size="small"
+                      style="width:243px">
+                    </el-date-picker>
+                  </li>
+                  <li>
+                    <span>备注信息:</span>
+                    <el-input type="textarea"
+                      placeholder="请输入内容"
+                      style="width:243px;margin: 0 0 0 15px;height:45px;"
+                      v-model="item.remark"></el-input>
+                  </li>
+                </ul>
+              </div> -->
               <div class="handle">
                 <div class="order"
                   @click="$router.push('/index/productDesignWeavingCreate/' + $route.params.id)">
@@ -213,34 +320,39 @@
                   <span>总价</span>
                   <span>操作</span>
                 </li>
-                <li class="material_info"
+                <li class="content"
                   v-for="(item,index) in fenpeiList"
                   :key="index">
-                  <span>{{item.client_name}}</span>
-                  <span class="col"
+                  <span class="tableRow">{{item.client_name}}</span>
+                  <span class="tableRow"
                     style="flex:8">
                     <span v-for="(itemPro,indexPro) in item.info"
-                      :key="indexPro">
-                      <span style="flex:2">{{itemPro.product_code}}({{itemPro.info[0].product_info.category_info.product_category}}/{{itemPro.info[0].product_info.type_name}}/{{itemPro.info[0].product_info.style_name}})</span>
-                      <span class="col"
+                      :key="indexPro"
+                      class="tableColumn">
+                      <span class="tableRow"
+                        style="flex:2">{{itemPro.product_code}}({{itemPro.info[0].product_info.category_name}}/{{itemPro.info[0].product_info.type_name}}/{{itemPro.info[0].product_info.style_name}})</span>
+                      <span class="tableRow"
                         style="flex:6">
                         <span v-for="(itemPrice,indexPrice) in itemPro.info"
-                          :key="indexPrice">
-                          <span>{{itemPrice.color}}/{{itemPrice.size}}</span>
-                          <span>{{itemPrice.price}}</span>
-                          <span>{{itemPrice.number}}{{itemPrice.product_info.category_info.name}}</span>
-                          <span>{{itemPrice.created_at.slice(0,10)}}</span>
-                          <span>{{itemPrice.complete_time.slice(0,10)}}</span>
-                          <span>{{itemPrice.desc}}</span>
+                          :key="indexPrice"
+                          class="tableColumn">
+                          <span class="tableRow">{{itemPrice.color}}/{{itemPrice.size}}</span>
+                          <span class="tableRow">{{itemPrice.price}}</span>
+                          <span class="tableRow">{{itemPrice.number}}{{itemPrice.product_info.unit}}</span>
+                          <span class="tableRow">{{itemPrice.created_at.slice(0,10)}}</span>
+                          <span class="tableRow">{{itemPrice.complete_time.slice(0,10)}}</span>
+                          <span class="tableRow">{{itemPrice.desc}}</span>
                         </span>
                       </span>
                     </span>
                   </span>
-                  <span>{{item.sum}}元</span>
-                  <span class="col">
+                  <span class="tableRow">{{item.sum}}元</span>
+                  <span class="tableRow">
                     <span v-for="(itemPro,indexPro) in item.info"
-                      :key="indexPro">
+                      :key="indexPro"
+                      class="tableColumn">
                       <span style="color:#1A95FF;cursor:pointer"
+                        class="tableRow"
                         @click="open($route.params.id,item.client_name,itemPro.product_code,0)">打印</span>
                     </span>
                   </span>
@@ -284,13 +396,13 @@
                     style="flex:6.5">
                     <span v-for="(itemPro,indexPro) in item.info"
                       :key="indexPro">
-                      <span style="flex:1.5">{{itemPro.product_code}}({{itemPro.info[0].product_info.category_info.product_category}}/{{itemPro.info[0].product_info.type_name}}/{{itemPro.info[0].product_info.style_name}})</span>
+                      <span style="flex:1.5">{{itemPro.product_code}}({{itemPro.info[0].product_info.category_name}}/{{itemPro.info[0].product_info.type_name}}/{{itemPro.info[0].product_info.style_name}})</span>
                       <span class="col"
                         style="flex:5">
                         <span v-for="(itemColour,indexColour) in itemPro.info"
                           :key="indexColour">
                           <span>{{itemColour.color}}/{{itemColour.size}}</span>
-                          <span>{{itemColour.number}}{{itemColour.product_info.category_info.name}}</span>
+                          <span>{{itemColour.number}}{{itemColour.product_info.name}}</span>
                           <span class="col"
                             style="flex:3.5">
                             <span v-for="(itemColor,indexColor) in itemColour.colorArr"
@@ -401,7 +513,7 @@
         <div class="inputCtn">
           <span class="label">产品信息:</span>
           <div class="elCtn">
-            {{updateInfo.product_info.category_info.product_category}}/{{updateInfo.product_info.type_name}}/{{updateInfo.product_info.style_name}} &nbsp;&nbsp; {{updateInfo.color}}/{{updateInfo.size}}
+            {{updateInfo.product_info.category_name}}/{{updateInfo.product_info.type_name}}/{{updateInfo.product_info.style_name}} &nbsp;&nbsp; {{updateInfo.color}}/{{updateInfo.size}}
           </div>
         </div>
         <div class="inputCtn">
@@ -418,7 +530,7 @@
           <div class="elCtn">
             <el-input v-model="updateInfo.number"
               placeholder="请输入分配数量">
-              <template slot="append">{{updateInfo.product_info.category_info.name}}</template>
+              <template slot="append">{{updateInfo.product_info.unit}}</template>
             </el-input>
           </div>
         </div>
@@ -451,7 +563,7 @@
 </template>
 
 <script>
-import { productionDetail, weaveDetail, weaveUpadate, replenishYarnList } from '@/assets/js/api.js'
+import { productionDetail, weaveDetail, weaveUpadate, replenishYarnList, clientList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -500,6 +612,9 @@ export default {
       },
       fenpeiList: [],
       bushaList: []
+      // addStatus: false,
+      // formList: [],
+      // companyArr: []
     }
   },
   mounted () {
@@ -512,6 +627,8 @@ export default {
         order_id: this.$route.params.id,
         type: 1,
         company_id: window.sessionStorage.getItem('company_id')
+        // }), clientList({
+        //   company_id: window.sessionStorage.getItem('company_id')
       })
     ]).then(res => {
       this.order = res[0].data.data.production_detail.order_info
@@ -520,6 +637,7 @@ export default {
         json.fenpei = 0
         return json
       })
+      // this.companyArr = res[3].data.data.filter((item) => (item.type.indexOf(4) !== -1))
       let productPlan = res[0].data.data.product_plan
       this.logList = res[1].data.data
       // 将织造分配的数据整合到原来的数据中
@@ -530,6 +648,7 @@ export default {
           }
         })
       })
+      console.log(this.productInfo)
       // 合并相同编号的产品数据
       this.productInfo.forEach((item) => {
         let finded = this.product.find((itemFind, index) => itemFind.product_code === item.product_code)
@@ -548,12 +667,14 @@ export default {
           } else {
             state = 0
           }
+          console.log(item.product_id)
           this.product.push({
             product_code: item.product_code,
             category_name: item.category_name,
             type_name: item.type_name,
             style_name: item.style_name,
             num: 1,
+            id: item.product_id,
             state: state,
             unit_name: item.unit_name,
             craft_list_id: item.craft_list_id,
@@ -594,6 +715,7 @@ export default {
                 style_name: itemPro.style_name,
                 num: (itemPro.num + 1),
                 state: state,
+                id: itemPro.id,
                 unit_name: item.unit_name,
                 craft_list_id: itemPro.craft_list_id,
                 has_craft: itemPro.has_craft,
@@ -614,6 +736,7 @@ export default {
           })
         }
       })
+      console.log(this.product)
       // 将整理出来的数据统计一下是否全部有计划单
       this.product.forEach((item) => {
         if (item.state !== 2) {
@@ -634,6 +757,7 @@ export default {
             unit_name: item.unit_name,
             craft_list_id: item.craft_list_id,
             has_craft: item.has_craft,
+            id: item.id,
             info: item.info.map((itemInfo) => {
               let json = {
                 color: itemInfo.color,
@@ -740,6 +864,33 @@ export default {
     })
   },
   methods: {
+    // 一键分配 待优化报价单
+    // completion () {
+    //   // 数据初始化
+    //   console.log(this.productList)
+    //   this.formList.forEach((item) => {
+    //     item.company = []
+    //   })
+    //   this.productList.forEach((itemPro, indexPro) => {
+    //     this.formList[indexPro].company.push({
+    //       company_id: '',
+    //       complete_time: new Date(),
+    //       desc: '',
+    //       price_number: [],
+    //       total_price: 0
+    //     })
+    //     itemPro.info.forEach((itemColor, indexColor) => {
+    //       this.formList[indexPro].company[0].price_number.push({
+    //         colorSize: [itemColor.size, itemColor.color],
+    //         number: itemColor.production_num - itemColor.fenpei,
+    //         price: ''
+    //       })
+    //     })
+    //   })
+    //   this.$message.success({
+    //     message: '已为您导入产品信息，请输入加工单位和价格信息'
+    //   })
+    // },
     openWin (url) {
       window.open(url)
     },
@@ -823,6 +974,23 @@ export default {
         this.showShade = false
       })
     }
+    // addFromItem () {
+    //   this.formList.push({
+    //     product_id: '',
+    //     company_id: '',
+    //     size_info: [{
+    //       sizeColor: [],
+    //       price: '',
+    //       number: ''
+    //     }],
+    //     total_price: '',
+    //     complete_time: '',
+    //     remark: ''
+    //   })
+    // },
+    // deleteFromItem (index) {
+    //   this.formList.splice(index, 1)
+    // }
   }
 }
 </script>
@@ -918,6 +1086,154 @@ export default {
         justify-content: center;
         .okBtn {
           margin: 0 30px;
+        }
+      }
+    }
+  }
+  .addLine {
+    width: 100%;
+    height: 40px;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #1a95ff;
+    cursor: pointer;
+    & > span {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      &.cancle:hover {
+        background: #e9e9e9;
+        color: #666;
+      }
+      &.setAll:hover {
+        background: #1a95ff;
+        color: #fff;
+      }
+      &.submit:hover {
+        background: #67c23a;
+        color: #fff;
+      }
+      & > i {
+        margin-right: 8px;
+      }
+    }
+    &.isNoStatus:hover {
+      border: 1px dotted #1a95ff;
+    }
+  }
+  .weaveInfo {
+    width: 900px;
+    height: auto;
+    // margin-left: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    & > .weaveFrom {
+      position: relative;
+      margin-top: 30px;
+      background-color: #f6f6f6;
+      width: 417px;
+      height: 510px;
+      overflow-y: scroll;
+      padding: 35px 35px 35px 30px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      &:nth-child(2n) {
+        margin-left: 13px;
+      }
+      & > .el-icon-close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+        border-radius: 50%;
+        &:hover {
+          background-color: #1a95ff;
+          color: #fff;
+        }
+      }
+      & > li {
+        position: relative;
+        height: auto;
+        width: 100%;
+        margin-top: 20px;
+        display: flex;
+        align-items: center;
+        &.col {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        &:first-child {
+          margin: 0;
+        }
+        & > span {
+          display: inline-block;
+          width: 5em;
+          text-align: right;
+          font-size: 14px;
+        }
+        & > .el-select {
+          margin: 0 0 0 15px;
+          width: 243px;
+        }
+        & > .el-input {
+          width: 193px;
+          margin: 0 0 0 15px;
+        }
+        & > div {
+          margin-top: 20px;
+          display: flex;
+          align-items: center;
+          &:first-child {
+            margin: 0;
+          }
+          & > strong {
+            color: #ddd;
+            font-weight: 300;
+          }
+          & > span {
+            width: 5em;
+            text-align: right;
+            font-size: 14px;
+          }
+          & > .el-select {
+            width: 114px;
+            margin: 0 0 0 15px;
+          }
+          & > .el-input {
+            width: 114px;
+          }
+        }
+        & > i {
+          display: inline-block;
+          width: 50px;
+          text-align: center;
+          font-style: normal;
+          border-top: 1px solid rgb(230, 230, 230);
+          border-bottom: 1px solid rgb(230, 230, 230);
+          border-right: 1px solid rgb(230, 230, 230);
+          height: 32px;
+          box-sizing: border-box;
+          border-top-right-radius: 4px;
+          border-bottom-right-radius: 4px;
+          font-size: 14px;
+          line-height: 30px;
+          background-color: rgb(245, 247, 250);
+        }
+        & > em {
+          position: absolute;
+          right: -10px;
+          top: 5px;
+          cursor: pointer;
+          &:hover {
+            background-color: #1a95ff;
+            color: #fff;
+            border-radius: 50%;
+          }
         }
       }
     }

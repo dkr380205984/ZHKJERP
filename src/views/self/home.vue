@@ -551,7 +551,8 @@
       </div>
     </div>
     <div class="rightCtn">
-      <div class="box">
+      <div class="box"
+        style="height:800px">
         <div class="child">
           <div class="commonTitle">
             <span class="spanMiddle">系统消息</span>
@@ -559,7 +560,7 @@
           </div>
           <div class="chartCtn">
             <echarts ref="chart1"
-              :options="orgOptions"
+              :options="weavingData"
               :auto-resize="true"></echarts>
           </div>
         </div>
@@ -619,6 +620,8 @@
 </template>
 
 <script>
+import { weaveDetail } from '@/assets/js/api.js'
+// import { echarts } from 'echarts'
 export default {
   data () {
     return {
@@ -1630,8 +1633,217 @@ export default {
             ]
           }
         ]
-      }
+      },
+      weavingData: {}
     }
+  },
+  created () {
+    let echarts = require('echarts')
+    function renderItem (params, api) {
+      let categoryIndex = api.value(0)
+      let start = api.coord([new Date(api.value(1)).getTime(), categoryIndex])
+      let end = api.coord([new Date(api.value(2)).getTime(), categoryIndex])
+      let height = api.size([0, 1])[1] * 0.5
+      // console.log()
+      // console.log(params, api, start, end, height, prop)
+      let rectShape = echarts.graphic.clipRectByRect({
+        x: start[0],
+        y: start[1] - height / 2,
+        width: (end[0] - start[0]),
+        height: height
+      }, {
+        x: params.coordSys.x,
+        y: params.coordSys.y,
+        width: params.coordSys.width,
+        height: params.coordSys.height
+      })
+      let prop = api.value(4) / api.value(3)
+      let linearGradient = new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+        { offset: 0, color: 'rgb(26,188,156)' },
+        { offset: prop, color: 'rgb(26,188,156)' },
+        { offset: prop, color: '#ddb30b' },
+        { offset: 1, color: '#ddb30b' }
+      ])
+      // let rectComplete = echarts.graphic.clipRectByRect({
+      //   x: start[0] + (end[0] - start[0]) * prop,
+      //   y: start[1] - height / 2,
+      //   width: (end[0] - start[0]) * (1 - prop),
+      //   height: height
+      // }, {
+      //   x: params.coordSys.x,
+      //   y: params.coordSys.y,
+      //   width: params.coordSys.width,
+      //   height: params.coordSys.height
+      // })
+      // console.log('linear-gradient(to right,rgb(26,188,156) ' + prop * 100 + '%' + ',rgb(26,188,156) ' + prop * 100 + '%' + ',#ddb30b ' + prop * 100 + '%' + ',#ddb30b 100%)')
+      return rectShape && {
+        type: 'rect',
+        ignore: !rectShape && !api.value(4),
+        shape: rectShape,
+        style: api.style({ fill: linearGradient })
+      }
+      // return rectShape && {
+      //   type: 'group',
+      //   children: [{
+      //     type: 'rect',
+      //     ignore: !rectShape && !api.value(4),
+      //     shape: rectShape,
+      //     style: api.style()
+      //   }, {
+      //     type: 'rect',
+      //     ignore: !rectComplete && !api.value(3),
+      //     shape: rectComplete,
+      //     style: api.style({ fill: '#ddb30b' })
+      //   }]
+      //   // shape: rectShape,
+      //   // style: api.style()
+      // }
+    }
+    weaveDetail({
+      company_id: window.sessionStorage.getItem('company_id')
+    }).then(res => {
+      console.log(res)
+      let yAxisLabel = res.data.data.map(item => {
+        return {
+          value: item.id,
+          textStyle: {
+            color: '#FFF',
+            backgroundColor: 'rgb(52, 152, 219)',
+            fontWeight: 'bold',
+            // lineHeight: 30,
+            padding: [8, 24]
+          }
+        }
+      })
+      let startTime = res.data.data.map(item => {
+        return item.created_at
+      }).sort((a, b) => {
+        return +new Date(a) - +new Date(b)
+      })[0]
+      let data = res.data.data.map(item => {
+        let obj = {
+          weave_client: item.client_name,
+          product_code: item.product_info.product_code,
+          total_number: item.number,
+          unit: item.product_info.unit,
+          type: item.product_info.category_name + '/' + item.product_info.type_name + '/' + item.product_info.style_name + '/' + item.product_info.flower_name,
+          product_name: item.product_info.product_title,
+          order_code: item.order_code,
+          order_client: item.order_client_name,
+          complete_number: item.complete_number ? item.complete_number : 10
+        }
+        let prop = obj.complete_number / obj.total_number
+        let linearGradient = new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+          { offset: 0, color: 'rgb(26,188,156)' },
+          { offset: prop, color: 'rgb(26,188,156)' },
+          { offset: prop, color: '#ddb30b' },
+          { offset: 1, color: '#ddb30b' }
+        ])
+        return {
+          value: [item.id - 1, +new Date(item.created_at), +new Date(item.complete_time), item.number, item.complete_number ? item.complete_number : 10, obj],
+          itemStyle: {
+            color: linearGradient
+          }
+        }
+      })
+      this.weavingData = {
+        tooltip: {
+          padding: 10,
+          formatter: function (params) {
+            return '生产单位:' + params.value[5].weave_client + '<br>' + '产品编号:' + params.value[5].product_code + '<br>' + '产品品类:' + params.value[5].type + '<br>' + '订单号:' + params.value[5].order_code + '<br>' + '订单公司:' + params.value[5].order_client + '<br>' + '下单数量:' + params.value[5].total_number + params.value[5].unit + '<br>' + '当前完成数量:' + (params.value[5].complete_number ? params.value[5].complete_number : '0') + params.value[5].unit
+          }
+        },
+        title: {
+          text: 'Profile',
+          left: 'center'
+        },
+        dataZoom: [
+          {
+            type: 'slider',
+            filterMode: 'none',
+            showDataShadow: false,
+            // realtime: true,
+            top: 600,
+            height: 10,
+            borderColor: 'transparent',
+            backgroundColor: '#e2e2e2',
+            handleIcon: 'M10.7,11.9H9.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4h1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7v-1.2h6.6z M13.3,22H6.7v-1.2h6.6z M13.3,19.6H6.7v-1.2h6.6z', // jshint ignore:line
+            handleSize: 20,
+            startValue: +new Date(startTime),
+            endValue: +new Date(startTime) + 3600 * 24 * 1000 * 5,
+            minValueSpan: 3600 * 24 * 1000 * 5,
+            labelFormatter: ''
+          }, {
+            type: 'slider',
+            // realtime: true,
+            yAxisIndex: 0,
+            width: 10,
+            right: 10,
+            startValue: yAxisLabel.length - 7,
+            endValue: yAxisLabel.length - 1,
+            minValueSpan: 6,
+            maxValueSpan: 8,
+            borderColor: 'transparent',
+            backgroundColor: '#e2e2e2',
+            handleIcon: 'M10.7,11.9H9.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4h1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7v-1.2h6.6z M13.3,22H6.7v-1.2h6.6z M13.3,19.6H6.7v-1.2h6.6z', // jshint ignore:line
+            handleSize: 20,
+            labelFormatter: ''
+          }, {
+            type: 'inside',
+            filterMode: 'none',
+            xAxisIndex: 0,
+            zoomOnMouseWheel: false,
+            moveOnMouseMove: true
+          }, {
+            type: 'inside',
+            yAxisIndex: 0,
+            zoomOnMouseWheel: false,
+            moveOnMouseMove: true,
+            moveOnMouseWheel: true
+          }
+        ],
+        grid: {
+          height: 500
+        },
+        xAxis: {
+          position: 'top',
+          min: +new Date(startTime),
+          scale: true,
+          axisLabel: {
+            formatter: function (val) {
+              console.log(val)
+              let data = new Date(val)
+              return data.getHours() + ':' + (data.getMinutes() < 10 ? '0' + data.getMinutes() : data.getMinutes()) + '\n' + data.getFullYear() + '-' + (data.getMonth() + 1) + '-' + data.getDate()
+            }
+          }
+        },
+        yAxis: {
+          data: yAxisLabel
+        },
+        series: [{
+          type: 'custom',
+          renderItem: renderItem,
+          itemStyle: {
+            normal: {
+              opacity: 0.8
+            }
+          },
+          encode: {
+            x: [1, 2, 3, 4, 5],
+            y: 0
+          },
+          data: data,
+          label: {
+            show: true,
+            formatter: (params) => {
+              return params.value[5].weave_client + ' ' + params.value[5].product_code + ' ' + params.value[5].total_number + params.value[5].unit
+            },
+            color: '#666',
+            fontSize: '16'
+          }
+        }]
+      }
+    })
   }
 }
 </script>

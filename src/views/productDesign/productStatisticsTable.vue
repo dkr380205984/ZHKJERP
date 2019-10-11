@@ -304,7 +304,7 @@ export default {
         // this.order.order_batch = res[1].data.data.order_batch
         this.order.order_time = res[1].data.data.order_time
         this.order.group_name = res[1].data.data.group_name
-        this.materialInfo = res[0].data.data[0]
+        this.materialInfo = res[0].data.data
       })
     }
     companyInfoDetail({

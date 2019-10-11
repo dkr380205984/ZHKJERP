@@ -241,6 +241,10 @@
                     :key="item.id"
                     :label="item.name"
                     :value="item.id">
+                    <div style="width:100%;height:100%">
+                      <span style="float: left">{{ item.name }}</span>
+                      <span style="float: right; color: #8492a6; font-size: 13px">{{ item.phone }}</span>
+                    </div>
                   </el-option>
                 </el-select>
               </li>

@@ -2,7 +2,7 @@
   <div id="productDesignWeavingTable"
     @click.right="goTop"
     v-loading='loading'>
-    <h2>{{company_name + '生产单'}}</h2>
+    <h2>{{company_name + '生产任务通知单'}}</h2>
     <div class="processCodeTime">
       <span>生产单编号：{{process_code}}</span>
       <span>创建时间：{{create_time}}</span>

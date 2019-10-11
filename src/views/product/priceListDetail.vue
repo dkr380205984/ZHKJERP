@@ -23,7 +23,7 @@
           </div>
           <div class="inputCtn">
             <span class="label">共计报价:</span>
-            <div class="content blue">{{priceTableDetail.totalPrice}}元</div>
+            <div class="content blue">{{Number(priceTableDetail.totalPrice).toFixed(2)}}元</div>
           </div>
         </div>
         <div class="lineCtn">
@@ -235,7 +235,7 @@
         </div>
       </div>
       <div class="bottom">
-        <span class="total">费用合计:<span style="font-size:24px;color:#1A94FF;margin:0 8px;font-weight:500">{{priceTableDetail.totalPrice}}</span>元</span>
+        <span class="total">费用合计:<span style="font-size:24px;color:#1A94FF;margin:0 8px;font-weight:500">{{Number(priceTableDetail.totalPrice).toFixed(2)}}</span>元</span>
         <div class="btnCtn">
           <span class="change"
             @click="$router.push('/priceListTable/' + $route.params.id)">打印</span>

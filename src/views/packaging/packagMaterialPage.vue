@@ -86,7 +86,7 @@
             <ul class="addPackagFrom"
               v-for="(item,key) in list"
               :key="key"
-              style="height:470px">
+              style="height:510px">
               <li>
                 <span>订购单位:</span>
                 <el-select v-model="item.order_client"
@@ -132,9 +132,8 @@
                         <template v-if="val.pack_attr">
                           <li>编号:{{val.pack_attr.id}}</li>
                           <li>名称:{{val.pack_attr.name}}</li>
-                          <li>规格:{{val.pack_attr.size ? val.pack_attr.size : '暂无'}}</li>
+                          <!-- <li>规格:{{val.pack_attr.size ? val.pack_attr.size : '暂无'}}</li> -->
                           <li>属性:
-                            <!-- {{val.pack_attr}} -->
                             <template v-for="(valAttr,indAttr) in val.pack_attr.attribute">{{((indAttr !== 0) ? ',' : '') + valAttr.pack_attr }}</template>
                           </li>
                           <li>备注:{{val.pack_attr.desc ? val.pack_attr.desc : '暂无'}}</li>
@@ -144,6 +143,15 @@
                       <span slot="reference">点击查看</span>
                     </el-popover>
                   </div>
+                </li>
+                <li :key="ind + 'size'">
+                  <span>包装规格:</span>
+                  <el-input size="small"
+                    placeholder="请输入规格"
+                    style="width:243px;"
+                    v-model="val.size_info">
+                    <!-- <template slot="append">cm</template> -->
+                  </el-input>
                 </li>
                 <li :key="ind + 'price'">
                   <span>数量单价:</span>
@@ -447,7 +455,8 @@ export default {
         pack_info: [{
           number: '',
           pack_name: '',
-          price: ''
+          price: '',
+          size_info: ''
         }],
         total_price: '',
         order_time: this.now_time,
@@ -489,7 +498,8 @@ export default {
       this.list[key].pack_info.push({
         number: '',
         pack_name: '',
-        price: ''
+        price: '',
+        size_info: ''
       })
     },
     deletePackInfo (key, ind) {
@@ -501,7 +511,8 @@ export default {
         pack_info: [{
           number: '',
           pack_name: '',
-          price: ''
+          price: '',
+          size_info: ''
         }],
         total_price: '',
         order_time: this.now_time,
@@ -565,6 +576,7 @@ export default {
               client_id: item.order_client,
               number: valPack.number,
               price: valPack.price,
+              size_info: valPack.size_info,
               order_time: item.order_time,
               desc: item.remark,
               attribute: JSON.stringify(valPack.pack_attr.attribute),
@@ -642,36 +654,42 @@ export default {
       this.order_time = orderInfo.order_time
       this.group_name = orderInfo.group_name
       // 初始化产品信息
-      orderInfo.order_batch.forEach(item => {
-        item.batch_info.forEach(value => {
-          value.size.forEach(val => {
-            let flag = this.productList.find(key => key.product_code === value.productCode)
-            if (!flag) {
-              let type = value.productInfo.category_info.product_category + '/' + value.productInfo.type_name + '/' + value.productInfo.style_name + (value.productInfo.flower_id ? '/' + value.productInfo.flower_id : '')
-              this.productList.push({
-                product_code: value.productCode,
-                type: type,
-                size_info: [{
-                  size: val.name[0],
-                  color: val.name[1],
-                  plan_number: val.numbers
-                }]
+      for (let prop in orderInfo.order_batch) {
+        let item = orderInfo.order_batch[prop]
+        item.forEach(valPro => {
+          let flag = this.productList.find(key => key.product_code === valPro.product_code)
+          if (!flag) {
+            let type = valPro.category_info.category_name + '/' + valPro.category_info.type_name + '/' + valPro.category_info.style_name + (valPro.category_info.flower_name ? '/' + valPro.category_info.flower_name : '')
+            this.productList.push({
+              product_code: valPro.product_code,
+              type: type,
+              size_info: [{
+                size: valPro.size,
+                color: valPro.color,
+                plan_number: valPro.numbers
+              }]
+            })
+          } else {
+            let flag1 = flag.size_info.find(key => (key.size === valPro.size && key.color === valPro.color))
+            if (!flag1) {
+              flag.size_info.push({
+                size: valPro.size,
+                color: valPro.color,
+                plan_number: valPro.numbers
               })
             } else {
-              let flag1 = flag.size_info.find(key => (key.size === val.name[0] && key.color === val.name[1]))
-              if (!flag1) {
-                flag.size_info.push({
-                  size: val.name[0],
-                  color: val.name[1],
-                  plan_number: val.numbers
-                })
-              } else {
-                flag1.plan_number = Number(flag1.plan_number) + Number(val.numbers)
-              }
+              flag1.plan_number = Number(flag1.plan_number) + Number(valPro.numbers)
             }
-          })
+          }
         })
-      })
+      }
+      // orderInfo.order_batch.forEach(item => {
+      //   item.batch_info.forEach(value => {
+      //     value.size.forEach(val => {
+
+      //     })
+      //   })
+      // })
       // 初始化包装辅料订购单位
       console.log(clientInfo)
       let arr = clientInfo.filter(key => (key.type.indexOf(7) !== -1))

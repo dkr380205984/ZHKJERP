@@ -1,7 +1,9 @@
 <template>
   <div id="tagPrint"
     v-loading='loading'>
-    <div class="printInfo">
+    <div class="printInfo"
+      v-for="(item,key) in $route.params.color.split(',')"
+      :key="key">
       <div class="items">
         <span class="labels">编号:</span>
         <div class="contents">{{product_code}}</div>
@@ -28,7 +30,7 @@
       </div>
       <div class="items">
         <span class="labels">颜色:</span>
-        <div class="contents">{{$route.params.color}}</div>
+        <div class="contents">{{item}}</div>
       </div>
       <div class="items">
         <span class="labels">描述:</span>
@@ -37,7 +39,7 @@
         </div>
       </div>
       <div class="items"
-        style="margin-top:30px;">
+        style="margin-top:10px;">
         <div class="contents col">
           <img :src="qrCodeUrl"
             class="qrCode"
@@ -99,11 +101,17 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
+html,
+body {
+  overflow: visible !important;
+}
 #tagPrint {
   .printInfo {
+    overflow: hidden;
+    page-break-after: always;
     width: 226px;
-    height: 340px;
+    height: 330px;
     background: #fff;
     font-size: 12px;
     display: flex;
