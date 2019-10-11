@@ -12,21 +12,23 @@
       <div class="lineCtn">
         <div class="inputCtn oneLine">
           <span class="label must">订单号：</span>
-          <template v-for="(item,key) in orderId">
-            <el-input class="elInput"
-              :key="key"
-              v-model="item.code"
-              style="margin:5px 0;"
-              :placeholder="'请输入订单号' + (key+1)"></el-input>
-            <span :key="key+'C'"
-              style="margin:0 8px;font-size:14px;color:#1A95FF;cursor: pointer;"
-              v-if="key === 0"
-              @click="orderId.push({code:''})">添加</span>
-            <span :key="key+'D'"
-              v-else
-              style="margin:0 8px;font-size:14px;color:#F56C6C;cursor: pointer;"
-              @click="orderId.splice(key,1)">删除</span>
-          </template>
+          <div>
+            <template v-for="(item,key) in orderId">
+              <el-input class="elInput"
+                :key="key"
+                v-model="item.code"
+                style="margin: 0;"
+                :placeholder="'请输入订单号' + (key+1)"></el-input>
+              <span :key="key+'C'"
+                style="margin:0 8px;font-size:14px;color:#1A95FF;cursor: pointer;"
+                v-if="key === 0"
+                @click="orderId.push({code:''})">添加</span>
+              <span :key="key+'D'"
+                v-else
+                style="margin:0 8px;font-size:14px;color:#F56C6C;cursor: pointer;"
+                @click="orderId.splice(key,1)">删除</span>
+            </template>
+          </div>
         </div>
       </div>
       <div class="lineCtn">

@@ -563,41 +563,39 @@ export default {
         }
       })
       // 初始化物料订购信息
-      materialInfo.forEach((item, key) => {
-        for (let prop in item) {
-          for (let value in item[prop]) {
-            if (value !== 'total_number' && value !== 'type' && value !== 'unit') {
-              if (item[prop].type === Number(this.type)) {
-                let flag = this.materialList.find(val => val.material === prop)
-                if (!flag) {
-                  this.materialList.push({
-                    material: prop,
-                    total_weight: (item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value],
-                    unit: (item[prop].unit === '克' || item[prop].unit === 'g') ? 'kg' : item[prop].unit === '千克' ? 'kg' : item[prop].unit,
-                    need: [{
-                      name: value,
-                      value: (item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value]
-                    }]
+      for (let prop in materialInfo) {
+        for (let value in materialInfo[prop]) {
+          if (value !== 'total_number' && value !== 'type' && value !== 'unit') {
+            if (materialInfo[prop].type === Number(this.type)) {
+              let flag = this.materialList.find(val => val.material === prop)
+              if (!flag) {
+                this.materialList.push({
+                  material: prop,
+                  total_weight: (materialInfo[prop].unit === '克' || materialInfo[prop].unit === 'g') ? Math.ceil(materialInfo[prop][value]) / 1000 : materialInfo[prop][value],
+                  unit: (materialInfo[prop].unit === '克' || materialInfo[prop].unit === 'g') ? 'kg' : materialInfo[prop].unit === '千克' ? 'kg' : materialInfo[prop].unit,
+                  need: [{
+                    name: value,
+                    value: (materialInfo[prop].unit === '克' || materialInfo[prop].unit === 'g') ? Math.ceil(materialInfo[prop][value]) / 1000 : materialInfo[prop][value]
+                  }]
+                })
+                this.options.colorList[prop] = ['所有颜色', value]
+              } else {
+                flag.total_weight = Number(flag.total_weight) + Number((materialInfo[prop].unit === '克' || materialInfo[prop].unit === 'g') ? Math.ceil(materialInfo[prop][value]) / 1000 : materialInfo[prop][value])
+                let arr = flag.need.find(val => val.name === value)
+                if (!arr) {
+                  flag.need.push({
+                    name: value,
+                    value: (materialInfo[prop].unit === '克' || materialInfo[prop].unit === 'g') ? Math.ceil(materialInfo[prop][value]) / 1000 : materialInfo[prop][value]
                   })
-                  this.options.colorList[prop] = ['所有颜色', value]
+                  this.options.colorList[prop].push(value)
                 } else {
-                  flag.total_weight = Number(flag.total_weight) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value])
-                  let arr = flag.need.find(val => val.name === value)
-                  if (!arr) {
-                    flag.need.push({
-                      name: value,
-                      value: (item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value]
-                    })
-                    this.options.colorList[prop].push(value)
-                  } else {
-                    arr.value = Number(arr.value) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value])
-                  }
+                  arr.value = Number(arr.value) + Number((materialInfo[prop].unit === '克' || materialInfo[prop].unit === 'g') ? Math.ceil(materialInfo[prop][value]) / 1000 : materialInfo[prop][value])
                 }
               }
             }
           }
         }
-      })
+      }
       console.log(res[1].data)
       res[1].data.forEach(item => {
         let flag = this.materialList.find(val => val.material === item.material_name)

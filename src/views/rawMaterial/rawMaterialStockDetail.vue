@@ -592,38 +592,35 @@ export default {
       this.group_name = res[0].data.data.group_name
       // 物料信息初始化
       let materialInfo = res[1].data.data
-      console.log(materialInfo)
-      materialInfo.material_info.forEach((item, key) => {
-        for (let prop in item) {
-          for (let value in item[prop]) {
-            if (value !== 'total_number' && value !== 'type' && value !== 'unit') {
-              if (item[prop].type === Number(this.type)) {
-                let flag = this.materialList.find(val => val.material === prop)
-                if (!flag) {
-                  this.materialList.push({
-                    material: prop,
-                    unit: (item[prop].unit === '克' || item[prop].unit === 'g') ? 'kg' : item[prop].unit === '千克' ? 'kg' : item[prop].unit,
-                    need: [{
-                      name: value,
-                      value: (item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value]
-                    }]
+      for (let prop in materialInfo.material_info) {
+        for (let value in materialInfo.material_info[prop]) {
+          if (value !== 'total_number' && value !== 'type' && value !== 'unit') {
+            if (materialInfo.material_info[prop].type === Number(this.type)) {
+              let flag = this.materialList.find(val => val.material === prop)
+              if (!flag) {
+                this.materialList.push({
+                  material: prop,
+                  unit: (materialInfo.material_info[prop].unit === '克' || materialInfo.material_info[prop].unit === 'g') ? 'kg' : materialInfo.material_info[prop].unit === '千克' ? 'kg' : materialInfo.material_info[prop].unit,
+                  need: [{
+                    name: value,
+                    value: (materialInfo.material_info[prop].unit === '克' || materialInfo.material_info[prop].unit === 'g') ? Math.ceil(materialInfo.material_info[prop][value]) / 1000 : materialInfo.material_info[prop][value]
+                  }]
+                })
+              } else {
+                let arr = flag.need.find(val => val.name === value)
+                if (!arr) {
+                  flag.need.push({
+                    name: value,
+                    value: (materialInfo.material_info[prop].unit === '克' || materialInfo.material_info[prop].unit === 'g') ? Math.ceil(materialInfo.material_info[prop][value]) / 1000 : materialInfo.material_info[prop][value]
                   })
                 } else {
-                  let arr = flag.need.find(val => val.name === value)
-                  if (!arr) {
-                    flag.need.push({
-                      name: value,
-                      value: (item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value]
-                    })
-                  } else {
-                    arr.value = Number(arr.value) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value])
-                  }
+                  arr.value = Number(arr.value) + Number((materialInfo.material_info[prop].unit === '克' || materialInfo.material_info[prop].unit === 'g') ? Math.ceil(materialInfo.material_info[prop][value]) / 1000 : materialInfo.material_info[prop][value])
                 }
               }
             }
           }
         }
-      })
+      }
       console.log(this.materialList)
       // 入库信息初始化
       let goStockInfo = res[2].data.data

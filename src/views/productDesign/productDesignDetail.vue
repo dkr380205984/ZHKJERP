@@ -166,7 +166,7 @@
                     @click="go(item.product_code)">查看计划单</span>
                   <span class="btns normal"
                     v-if="item.state===1"
-                    @click="$router.push('/index/productPlanUpdate/'+item.product_code)">配料单(修改)</span>
+                    @click="$router.push('/index/productPlanUpdate/'+item.product_plan_id)">配料单(补充)</span>
                   <span class="btns normal"
                     v-if="item.state===0"
                     @click="$router.push('/index/productPlanCreate/'+item.product_id)">配料单(添加)</span>
@@ -457,7 +457,6 @@ export default {
       //   })
       // }
       // 合并相同编号的产品数据
-      console.log(JSON.parse(JSON.stringify(this.productInfo)))
       this.productInfo.forEach((item) => {
         let finded = this.product.find((itemFind, index) => itemFind.product_code === item.product_code)
         if (!finded) {
@@ -476,13 +475,13 @@ export default {
             state = 0
           }
           this.product.push({
+            product_plan_id: item.product_plan_id,
             product_code: item.product_code,
             product_id: item.product_id,
             category_name: item.category_name,
             type_name: item.type_name,
             style_name: item.style_name,
             num: 1,
-            id: item.product_id,
             state: state
           })
         } else {
@@ -504,11 +503,12 @@ export default {
                 state = 2
               }
               return {
+                product_plan_id: item.product_plan_id,
                 product_code: itemPro.product_code,
                 category_name: itemPro.category_name,
                 type_name: itemPro.type_name,
                 style_name: itemPro.style_name,
-                id: item.id,
+                product_id: item.product_id,
                 num: (itemPro.num + 1),
                 state: state
               }
@@ -646,7 +646,6 @@ export default {
       }).sort((a, b) => {
         return b - a
       })[0]
-      console.log(this.MaxTotalMaterialAttr)
       this.loading = false
     })
   },

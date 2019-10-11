@@ -126,9 +126,9 @@
                       class="elInput noMarginLeft"
                       placeholder='请选择配色方案'>
                       <el-option v-for="item in colourArr"
-                        :key="item.name"
-                        :label="item.name"
-                        :value="item.name">
+                        :key="item.color_name"
+                        :label="item.color_name"
+                        :value="item.color_name">
                       </el-option>
                     </el-select>
                     <span class="delete haveBg"
@@ -258,9 +258,9 @@
                       class="elInput noMarginLeft"
                       placeholder='请选择配色方案'>
                       <el-option v-for="item in colourArr"
-                        :key="item.name"
-                        :label="item.name"
-                        :value="item.name">
+                        :key="item.color_name"
+                        :label="item.color_name"
+                        :value="item.color_name">
                       </el-option>
                     </el-select>
                     <span class="delete haveBg"
@@ -824,7 +824,7 @@ export default {
     // 颜色合并
     filterColor (arr) {
       return arr.map(item => {
-        return item.name
+        return item.color_name
       }).join('/')
     }
   }
