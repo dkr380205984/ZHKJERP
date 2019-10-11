@@ -324,13 +324,16 @@ const menu = [{
     // }
   ]
 }, {
-  name: '计划单管理',
+  name: '计划生产管理',
   children: [{
     name: '新建生产计划单',
     url: '/index/productDesignCreateList'
   }, {
     name: '生产计划单列表',
     url: '/index/productDesignList'
+  }, {
+    name: '织造加工分配',
+    url: '/index/productDesignList2'
   }]
 }, {
   name: '物料管理',
@@ -346,12 +349,6 @@ const menu = [{
   }, {
     name: '物料出入库列表',
     url: '/index/rawMaterialStockList'
-  }]
-}, {
-  name: '生产管理',
-  children: [{
-    name: '织造加工列表',
-    url: '/index/productDesignList2'
   }]
 }, {
   name: '收发管理',

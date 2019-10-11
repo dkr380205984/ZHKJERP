@@ -356,7 +356,7 @@
                     style="flex:5">
                     <span v-for="(itemYarn,indexYarn) in item.yarn_info"
                       :key="indexYarn">
-                      <span>{{itemYarn.name}}</span>
+                      <span>{{itemYarn.material_name}}</span>
                       <span class="col"
                         style="flex:3">
                         <span v-for="(itemColor,indexColor) in itemYarn.info"
@@ -554,7 +554,6 @@ export default {
         company_id: window.sessionStorage.getItem('company_id')
       })
     ]).then(res => {
-      console.log(res[1].data)
       let info = res[0].data.data.material_info || []
       let materialInfo = res[1].data || []
       let orderInfo = res[2].data.data || []
@@ -567,7 +566,6 @@ export default {
       this.client_name = orderInfo.client_name
       this.group_name = orderInfo.group_name
       // 初始化产品信息
-      console.log(info)
       let arr = []
       for (let prop in orderInfo.order_batch) {
         let item = orderInfo.order_batch[prop]
@@ -606,41 +604,37 @@ export default {
         }
       })
       // 初始化物料信息
-      console.log(info)
-      info.forEach((item, key) => {
-        for (let prop in item) {
-          for (let value in item[prop]) {
-            if (value !== 'total_number' && value !== 'type' && value !== 'unit') {
-              if (item[prop].type === Number(this.type)) {
-                let flag = this.materialList.find(val => val.material === prop)
-                if (!flag) {
-                  this.materialList.push({
-                    material: prop,
-                    total_weight: (item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value],
-                    unit: (item[prop].unit === '克' || item[prop].unit === 'g') ? 'kg' : item[prop].unit === '千克' ? 'kg' : item[prop].unit,
-                    need: [{
-                      name: value,
-                      value: (item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value]
-                    }]
+      for (let prop in info) {
+        for (let value in info[prop]) {
+          if (value !== 'total_number' && value !== 'type' && value !== 'unit') {
+            if (info[prop].type === Number(this.type)) {
+              let flag = this.materialList.find(val => val.material === prop)
+              if (!flag) {
+                this.materialList.push({
+                  material: prop,
+                  total_weight: (info[prop].unit === '克' || info[prop].unit === 'g') ? Math.ceil(info[prop][value]) / 1000 : info[prop][value],
+                  unit: (info[prop].unit === '克' || info[prop].unit === 'g') ? 'kg' : info[prop].unit === '千克' ? 'kg' : info[prop].unit,
+                  need: [{
+                    name: value,
+                    value: (info[prop].unit === '克' || info[prop].unit === 'g') ? Math.ceil(info[prop][value]) / 1000 : info[prop][value]
+                  }]
+                })
+              } else {
+                flag.total_weight = Number(flag.total_weight) + Number((info[prop].unit === '克' || info[prop].unit === 'g') ? Math.ceil(info[prop][value]) / 1000 : info[prop][value])
+                let arr = flag.need.find(val => val.name === value)
+                if (!arr) {
+                  flag.need.push({
+                    name: value,
+                    value: (info[prop].unit === '克' || info[prop].unit === 'g') ? Math.ceil(info[prop][value]) / 1000 : info[prop][value]
                   })
                 } else {
-                  flag.total_weight = Number(flag.total_weight) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value])
-                  let arr = flag.need.find(val => val.name === value)
-                  if (!arr) {
-                    flag.need.push({
-                      name: value,
-                      value: (item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value]
-                    })
-                  } else {
-                    arr.value = Number(arr.value) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value])
-                  }
+                  arr.value = Number(arr.value) + Number((info[prop].unit === '克' || info[prop].unit === 'g') ? Math.ceil(info[prop][value]) / 1000 : info[prop][value])
                 }
               }
             }
           }
         }
-      })
-      console.log(materialInfo)
+      }
       // 初始化订购信息
       materialInfo.forEach(item => {
         if ((this.type === '0' && item.type === 1) || (this.type === '1' && item.type === 2)) {
@@ -709,7 +703,6 @@ export default {
         }
       })
       // 初始化加工信息
-      // console.log(processInfo)
       processInfo.forEach(item => {
         item.material_info = JSON.parse(item.material_info)
         item.material_info.forEach(value => {
@@ -798,7 +791,6 @@ export default {
         })
       })
       // 补纱信息合并
-      console.log(res[5].data.data)
       this.bushaList = res[5].data.data.filter(item => ((item.type - 1) === Number(this.type))).map((item) => {
         let json = item
         json.yarn_info = this.jsonMerge(json.yarn_info, ['name'])
@@ -810,9 +802,6 @@ export default {
         })
         return json
       })
-      // console.log(res[5].data.data)
-      // console.log(this.orderLog)
-      // console.log(this.bushaList)
       this.bushaList.forEach((item) => {
         item.yarn_info.forEach((itemYarn) => {
           itemYarn.total_price = itemYarn.info.reduce((total, itemColor) => {

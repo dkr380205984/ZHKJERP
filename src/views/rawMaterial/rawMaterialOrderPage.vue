@@ -530,40 +530,40 @@ export default {
     ]).then(res => {
       // console.log(res)
       // 计划物料信息初始化
-      res[0].data.data.material_info.forEach((item, key) => {
-        for (let prop in item) {
-          for (let val in item[prop]) {
-            if (val !== 'total_number' && val !== 'type' && val !== 'unit') {
-              if (item[prop].type === Number(this.type)) {
-                let flag = this.rawMaterialPlanList.find(items => items.material === prop)
-                if (!flag) {
-                  this.rawMaterialPlanList.push({
-                    material: prop,
-                    need: [
-                      {
-                        name: val,
-                        value: (item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][val]) / 1000 : item[prop][val],
-                        unit: (item[prop].unit === '克' || item[prop].unit === 'g') ? 'kg' : item[prop].unit === '千克' ? 'kg' : item[prop].unit
-                      }
-                    ]
+      let info = res[0].data.data.material_info
+      for (let prop in info) {
+        for (let val in info[prop]) {
+          if (val !== 'total_number' && val !== 'type' && val !== 'unit') {
+            if (info[prop].type === Number(this.type)) {
+              let flag = this.rawMaterialPlanList.find(items => items.material === prop)
+              if (!flag) {
+                this.rawMaterialPlanList.push({
+                  material: prop,
+                  need: [
+                    {
+                      name: val,
+                      value: (info[prop].unit === '克' || info[prop].unit === 'g') ? Math.ceil(info[prop][val]) / 1000 : info[prop][val],
+                      unit: (info[prop].unit === '克' || info[prop].unit === 'g') ? 'kg' : info[prop].unit === '千克' ? 'kg' : info[prop].unit
+                    }
+                  ]
+                })
+              } else {
+                let flag1 = flag.need.find(items => items.name === val)
+                if (!flag1) {
+                  flag.need.push({
+                    name: val,
+                    value: (info[prop].unit === '克' || info[prop].unit === 'g') ? Math.ceil(info[prop][val]) / 1000 : info[prop][val],
+                    unit: (info[prop].unit === '克' || info[prop].unit === 'g') ? 'kg' : info[prop].unit === '千克' ? 'kg' : info[prop].unit
                   })
                 } else {
-                  let flag1 = flag.need.find(items => items.name === val)
-                  if (!flag1) {
-                    flag.need.push({
-                      name: val,
-                      value: (item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][val]) / 1000 : item[prop][val],
-                      unit: (item[prop].unit === '克' || item[prop].unit === 'g') ? 'kg' : item[prop].unit === '千克' ? 'kg' : item[prop].unit
-                    })
-                  } else {
-                    flag1.value = Number(flag1.value) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][val]) / 1000 : item[prop][val])
-                  }
+                  flag1.value = Number(flag1.value) + Number((info[prop].unit === '克' || info[prop].unit === 'g') ? Math.ceil(info[prop][val]) / 1000 : info[prop][val])
                 }
               }
             }
           }
         }
-      })
+      }
+
       this.rawMaterialPlanList.forEach((item, key) => {
         item.need.forEach((value, index) => {
           let flag = this.list.find(val => val.material === item.material)

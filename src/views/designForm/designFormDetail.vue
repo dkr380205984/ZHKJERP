@@ -341,7 +341,7 @@
             </div>
             <div class="box box2">
               <div class="label">纬密:</div>
-              <div class="content">{{((weftInfo.total / (weftInfo.neichang + weftInfo.rangwei)) * 100).toFixed(2)}}梭/cm</div>
+              <div class="content">{{((weftInfo.total / (weftInfo.neichang + weftInfo.rangwei))).toFixed(2)}}梭/cm</div>
             </div>
           </div>
           <div class="row">
