@@ -563,7 +563,7 @@
 </template>
 
 <script>
-import { productionDetail, weaveDetail, weaveUpadate, replenishYarnList, clientList } from '@/assets/js/api.js'
+import { productionDetail, weaveDetail, weaveUpadate, replenishYarnList } from '@/assets/js/api.js'
 export default {
   data () {
     return {

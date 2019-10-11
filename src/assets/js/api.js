@@ -362,7 +362,13 @@ const notifyNum = (params) => http.get(`${baseUrl}/notify/no/read`, params)
 const confirmCraft = (params) => http.post(`${baseUrl}/product/confirm/craft`, params, 'application/json')
 // 删除报价单product/quotation/delete
 const deletePriceList = (params) => http.post(`${baseUrl}/product/quotation/delete`, params, 'application/json')
+// 原料调取撤销
+const deleteOrderMaterial = (params) => http.post(`${baseUrl}/material/order/delete`, params, 'application/json')
+// 原料加工撤销
+const deleteOrderProcess = (params) => http.post(`${baseUrl}/material/process/delete`, params, 'application/json')
 export {
+  deleteOrderProcess,
+  deleteOrderMaterial,
   deletePriceList,
   confirmCraft,
   isCheckedPlanAndCraft,
