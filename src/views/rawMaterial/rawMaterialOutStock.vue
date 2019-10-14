@@ -2,7 +2,11 @@
   <div id="rawMaterialOutStock"
     v-loading="loading">
     <div class="head">
-      <h2>{{type === '0' ? '原' : '辅'}}料出库</h2>
+      <h2>{{type === '0' ? '原' : '辅'}}料出库
+        <i class="el-icon-message-solid"
+          :class="{'active':msgFlag}"
+          @click="showMsg = true"></i>
+      </h2>
       <div class="goStock"
         @click="addAllOutStockInfo">一键添加出库</div>
     </div>
@@ -267,14 +271,22 @@
           @click="saveAll">保存</div>
       </div>
     </div>
+    <my-message :visible.sync="showMsg"
+      :url="localName"
+      :afterSave="afterSave"></my-message>
   </div>
 </template>
 
 <script>
-import { orderDetail, rawMaterialOrderInit, weaveDetail, productionDetail, rawMaterialOutStock, rawMaterialGoStockDetail, rawMaterialOutStockDetail } from '@/assets/js/api.js'
+import { orderDetail, rawMaterialOrderInit, weaveDetail, productionDetail, rawMaterialOutStock, rawMaterialGoStockDetail, rawMaterialOutStockDetail, notifySave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      localName: 'rawMaterialOutStock',
+      showMsg: false,
+      msgFlag: window.localStorage.getItem('rawMaterialOutStock') ? JSON.parse(window.localStorage.getItem('rawMaterialOutStock')).msgFlag : false,
+      msgUrl: '',
+      content: '',
       loading: true,
       order_code: '',
       client_name: '',
@@ -332,6 +344,26 @@ export default {
     }
   },
   methods: {
+    afterSave (data) {
+      this.msgFlag = data.msgFlag
+    },
+    sendMsg () {
+      let data = JSON.parse(window.localStorage.getItem(this.localName))
+      let formData = {
+        title: data.title,
+        type: data.type,
+        tag: '工序',
+        content: this.content,
+        router_url: this.msgUrl,
+        receive_user: data.receive_user
+      }
+      notifySave(formData).then((res) => {
+        if (res.data.status) {
+          this.$message.success('出库成功')
+          this.$router.push(this.msgUrl)
+        }
+      })
+    },
     addAllOutStockInfo () {
       let info = JSON.parse(JSON.stringify(this.productionList))
       this.outStockInfo.forEach(item => {
@@ -501,13 +533,14 @@ export default {
             data: arr
           }).then(res => {
             if (res.data.code === 200) {
-              this.$message({
-                message: '添加成功,即将跳转至详情页',
-                type: 'success'
-              })
-              setTimeout(() => {
+              if (this.msgFlag) {
+                this.msgUrl = '/index/rawMaterialStockDetail/' + this.$route.params.id + '/' + this.$route.params.type
+                this.content = '订单' + this.order_code + '<span style="color:#1A95FF">物料出库</span>'
+                this.sendMsg()
+              } else {
+                this.$message.success('出库成功')
                 this.$router.push('/index/rawMaterialStockDetail/' + this.$route.params.id + '/' + this.$route.params.type)
-              }, 800)
+              }
             } else if (res.data.code === 500) {
               this.$message({
                 message: res.data.message,

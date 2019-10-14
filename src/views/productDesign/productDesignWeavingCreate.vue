@@ -3,6 +3,9 @@
     v-loading="loading">
     <div class="head">
       <h2>产品织造分配
+        <i class="el-icon-message-solid"
+          :class="{'active':msgFlag}"
+          @click="showMsg = true"></i>
         <div class="headBtn"
           @click="completion">
           <span>一键分配</span>
@@ -214,14 +217,22 @@
           @click="saveAll">保存</div>
       </div>
     </div>
+    <my-message :visible.sync="showMsg"
+      :url="localName"
+      :afterSave="afterSave"></my-message>
   </div>
 </template>
 
 <script>
-import { productionDetail, clientList, weaveSave, weaveDetail } from '@/assets/js/api.js'
+import { productionDetail, clientList, weaveSave, weaveDetail, notifySave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      localName: 'productDesignWeavingCreate',
+      showMsg: false,
+      msgFlag: window.localStorage.getItem('productDesignWeavingCreate') ? JSON.parse(window.localStorage.getItem('productDesignWeavingCreate')).msgFlag : false,
+      msgUrl: '',
+      content: '',
       loading: true,
       lock: false,
       order: {
@@ -354,6 +365,26 @@ export default {
     })
   },
   methods: {
+    afterSave (data) {
+      this.msgFlag = data.msgFlag
+    },
+    sendMsg () {
+      let data = JSON.parse(window.localStorage.getItem(this.localName))
+      let formData = {
+        title: data.title,
+        type: data.type,
+        tag: '工序',
+        content: this.content,
+        router_url: this.msgUrl,
+        receive_user: data.receive_user
+      }
+      notifySave(formData).then((res) => {
+        if (res.data.status) {
+          this.$message.success('分配成功')
+          this.$router.push(this.msgUrl)
+        }
+      })
+    },
     // 打开产品详情
     open (code) {
       window.open('/index/productDetail/' + code)
@@ -451,12 +482,15 @@ export default {
           this.lock = true
           this.loading = true
           weaveSave({ data: formData }).then((res) => {
-            console.log(res)
             if (res.data.status) {
-              this.$message.success({
-                message: '分配成功'
-              })
-              this.$router.push('/index/productDesignWeavingDetail/' + this.$route.params.id)
+              if (this.msgFlag) {
+                this.msgUrl = '/index/productDesignWeavingDetail/' + this.$route.params.id
+                this.content = '订单' + this.order.order_code + '<span style="color:#1A95FF">分配</span>了织造信息'
+                this.sendMsg()
+              } else {
+                this.$message.success('分配成功')
+                this.$router.push('/index/productDesignWeavingDetail/' + this.$route.params.id)
+              }
             } else {
               this.$message.error({
                 message: res.data.message

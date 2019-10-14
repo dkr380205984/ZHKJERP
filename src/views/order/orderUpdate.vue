@@ -2,7 +2,11 @@
   <div id="orderCreate"
     v-loading="loading">
     <div class="head">
-      <h2>修改订单</h2>
+      <h2>修改订单
+        <i class="el-icon-message-solid"
+          :class="{'active':msgFlag}"
+          @click="showMsg = true"></i>
+      </h2>
     </div>
     <div class="body">
       <div class="lineCtn">
@@ -464,15 +468,22 @@
           @click="saveAll">修改</div>
       </div>
     </div>
+    <my-message :visible.sync="showMsg"
+      :url="localName"
+      :afterSave="afterSave"></my-message>
   </div>
 </template>
 
 <script>
 import { moneyArr } from '@/assets/js/dictionary.js'
-import { clientList, productList, productTppeList, flowerList, orderSave, getGroup, orderDetail, porductOne, getToken } from '@/assets/js/api.js'
+import { clientList, productList, productTppeList, flowerList, orderSave, getGroup, orderDetail, porductOne, getToken, notifySave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      localName: 'orderUpdate',
+      showMsg: false,
+      msgFlag: window.localStorage.getItem('orderUpdate') ? JSON.parse(window.localStorage.getItem('orderUpdate')).msgFlag : false,
+      msgUrl: '',
       fileArr: [],
       postData: { token: '' },
       lock: false,
@@ -523,6 +534,26 @@ export default {
     }
   },
   methods: {
+    afterSave (data) {
+      this.msgFlag = data.msgFlag
+    },
+    sendMsg () {
+      let data = JSON.parse(window.localStorage.getItem(this.localName))
+      let formData = {
+        title: data.title,
+        type: data.type,
+        tag: '工序',
+        content: this.content,
+        router_url: this.msgUrl,
+        receive_user: data.receive_user
+      }
+      notifySave(formData).then((res) => {
+        if (res.data.status) {
+          this.$message.success('修改成功')
+          this.$router.push(this.msgUrl)
+        }
+      })
+    },
     // 查询汇率
     goBaidu () {
       window.open('http://forex.hexun.com/rmbhl/#zkRate')
@@ -899,14 +930,16 @@ export default {
         }
         this.lock = false
         this.loading = false
-        console.log(obj)
         orderSave(obj).then((res) => {
-          console.log(res)
           if (res.data.status) {
-            this.$message.success({
-              message: '修改订单成功'
-            })
-            this.$router.push('/index/orderDetailNew/' + res.data.data.id)
+            if (this.msgFlag) {
+              this.msgUrl = '/index/orderDetailNew/' + res.data.data.id
+              this.content = '<span style="color:#E6A23C">修改</span>了一张新订单<span style="color:#1A95FF">' + res.data.data.order_code + '</span>'
+              this.sendMsg()
+            } else {
+              this.$message.success('修改成功')
+              this.$router.push('/index/orderDetailNew/' + res.data.data.id)
+            }
           } else {
             this.$message.error({
               message: res.data.message

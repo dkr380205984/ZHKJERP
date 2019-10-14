@@ -149,10 +149,7 @@ export default {
         'end_time': this.end_time
       }).then((res) => {
         this.total = res.data.meta.total
-        this.list = res.data.data.map((item) => {
-          item.material_info = JSON.parse(item.material_info)
-          return item
-        })
+        this.list = res.data.data
         this.loading = false
         this.first = false
       })

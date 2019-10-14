@@ -2,7 +2,11 @@
   <div id="finishedExamination"
     v-loading="loading">
     <div class="head">
-      <h2>成品检验</h2>
+      <h2>成品检验
+        <i class="el-icon-message-solid"
+          :class="{'active':msgFlag}"
+          @click="showMsg = true"></i>
+      </h2>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -273,15 +277,23 @@
           @click="saveAll">保存</div>
       </div>
     </div>
+    <my-message :visible.sync="showMsg"
+      :url="localName"
+      :afterSave="afterSave"></my-message>
   </div>
 </template>
 
 <script>
 import { defectiveType } from '@/assets/js/dictionary.js'
-import { orderDetail, halfProductDetail, finishedExamination, finishedExaminationDetail, authList } from '@/assets/js/api.js'
+import { orderDetail, halfProductDetail, finishedExamination, finishedExaminationDetail, authList, notifySave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      localName: 'finishedExamination',
+      showMsg: false,
+      msgFlag: window.localStorage.getItem('finishedExamination') ? JSON.parse(window.localStorage.getItem('finishedExamination')).msgFlag : false,
+      msgUrl: '',
+      content: '',
       loading: true,
       now_time: '',
       order_code: '',
@@ -331,6 +343,26 @@ export default {
     }
   },
   methods: {
+    afterSave (data) {
+      this.msgFlag = data.msgFlag
+    },
+    sendMsg () {
+      let data = JSON.parse(window.localStorage.getItem(this.localName))
+      let formData = {
+        title: data.title,
+        type: data.type,
+        tag: '工序',
+        content: this.content,
+        router_url: this.msgUrl,
+        receive_user: data.receive_user
+      }
+      notifySave(formData).then((res) => {
+        if (res.data.status) {
+          this.$message.success('检验成功')
+          this.$router.push(this.msgUrl)
+        }
+      })
+    },
     chinaNumber (key) {
       let obj = {
         1: '一',
@@ -402,7 +434,6 @@ export default {
         this.save = false
         let flag = true
         let data = []
-        console.log(this.list)
         this.list.testInfo.forEach(item => {
           item.testSizeInfo.forEach(value => {
             // value.defective_info.forEach(val => {
@@ -456,20 +487,19 @@ export default {
             finishedExamination({
               data: data
             }).then(res => {
-              console.log(res)
               if (res.data.status) {
-                this.$message({
-                  type: 'success',
-                  message: `添加成功，即将跳转至详情页。`
-                })
-                setTimeout(() => {
+                if (this.msgFlag) {
+                  this.msgUrl = '/index/finishedExaminationDetail/' + this.$route.params.id
+                  this.content = '订单' + this.order_code + '产品' + this.$route.params.product_code + '<span style="color:#1A95FF">成品检验</span>'
+                  this.sendMsg()
+                } else {
+                  this.$message.success('检验成功')
                   this.$router.push('/index/finishedExaminationDetail/' + this.$route.params.id)
-                }, 800)
+                }
               }
             })
           }
         }
-        console.log(data)
         setTimeout(() => { this.save = true }, 1000)
       } else {
         this.$alert('请求速度过于频繁', '提醒', {

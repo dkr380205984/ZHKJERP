@@ -376,7 +376,7 @@ export default {
           if (res.data.status) {
             if (this.msgFlag) {
               this.msgUrl = '/index/productDesignDetail/' + res.data.data.order_info.id
-              this.content = '订单<span style="color:#1A95FF">' + res.data.data.order_info.order_code + '</span><span style="color:#1A95FF;margin-left:"5px>修改</span>了生产计划单'
+              this.content = '订单<span style="color:#1A95FF">' + res.data.data.order_info.order_code + '</span><span style="color:#E6A23C;margin-left:"5px>修改</span>了生产计划单'
               this.sendMsg()
             } else {
               this.$message.success('修改成功')

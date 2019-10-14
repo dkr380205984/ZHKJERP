@@ -3,7 +3,11 @@
     style="overflow:auto"
     v-loading="loading">
     <div class="head">
-      <h2>原料补充</h2>
+      <h2>原料补充
+        <i class="el-icon-message-solid"
+          :class="{'active':msgFlag}"
+          @click="showMsg = true"></i>
+      </h2>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -100,14 +104,22 @@
           @click="saveAll">保存</div>
       </div>
     </div>
+    <my-message :visible.sync="showMsg"
+      :url="localName"
+      :afterSave="afterSave"></my-message>
   </div>
 </template>
 
 <script>
-import { productionDetail, weaveDetail, bearClient, replenishYarnSave } from '@/assets/js/api.js'
+import { productionDetail, weaveDetail, bearClient, replenishYarnSave, notifySave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      localName: 'rawMaterialSupply',
+      showMsg: false,
+      msgFlag: window.localStorage.getItem('rawMaterialSupply') ? JSON.parse(window.localStorage.getItem('rawMaterialSupply')).msgFlag : false,
+      msgUrl: '',
+      content: '',
       lock: false,
       loading: false,
       order: {
@@ -135,6 +147,7 @@ export default {
     }
   },
   mounted () {
+    console.log(this.$route.params)
     Promise.all([productionDetail({
       order_id: this.$route.params.id
     }), weaveDetail({
@@ -142,7 +155,6 @@ export default {
     }), bearClient({
       order_id: this.$route.params.id
     })]).then((res) => {
-      console.log(res)
       this.order = res[0].data.data.production_detail.order_info
       let companyArr = res[2].data.data
       for (let i in companyArr) {
@@ -199,6 +211,26 @@ export default {
     })
   },
   methods: {
+    afterSave (data) {
+      this.msgFlag = data.msgFlag
+    },
+    sendMsg () {
+      let data = JSON.parse(window.localStorage.getItem(this.localName))
+      let formData = {
+        title: data.title,
+        type: data.type,
+        tag: '工序',
+        content: this.content,
+        router_url: this.msgUrl,
+        receive_user: data.receive_user
+      }
+      notifySave(formData).then((res) => {
+        if (res.data.status) {
+          this.$message.success('补纱成功')
+          this.$router.push(this.msgUrl)
+        }
+      })
+    },
     jsonMerge (jsonArr, keyArr) {
       let newJson = [] // 合并好的数据都放在这个数组里
       jsonArr.forEach((itemJson, indexJson) => {
@@ -327,10 +359,14 @@ export default {
           this.loading = true
           replenishYarnSave(json).then((res) => {
             if (res.data.status) {
-              this.$message.success({
-                message: '保存成功'
-              })
-              this.$router.go(-1)
+              if (this.msgFlag) {
+                this.msgUrl = '/index/productDesignWeavingDetail/' + this.$route.params.id
+                this.content = '订单' + this.order.order_code + '为' + this.$route.params.companyName + '<span style="color:#1A95FF">补纱</span>'
+                this.sendMsg()
+              } else {
+                this.$message.success('补纱成功')
+                this.$router.push('/index/productDesignWeavingDetail/' + this.$route.params.id)
+              }
             } else {
               this.$message.error({
                 message: res.data.message
