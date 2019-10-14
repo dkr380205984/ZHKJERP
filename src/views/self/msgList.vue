@@ -179,6 +179,7 @@ export default {
       })
     },
     handleClick (tab, event) {
+      this.noMore = false
       this.msgList = []
       this.pages = 1
       this.getNotify()

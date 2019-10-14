@@ -620,7 +620,7 @@
 </template>
 
 <script>
-import { weaveDetail } from '@/assets/js/api.js'
+// import { weaveDetail } from '@/assets/js/api.js'
 // import { echarts } from 'echarts'
 export default {
   data () {

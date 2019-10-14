@@ -3,6 +3,9 @@
     v-loading="loading">
     <div class="head">
       <h2>产品入库
+        <i class="el-icon-message-solid"
+          :class="{'active':msgFlag}"
+          @click="showMsg = true"></i>
         <div class="headBtn"
           @click="completion">
           <span>一键入库</span>
@@ -199,15 +202,23 @@
           @click="saveAll">保存</div>
       </div>
     </div>
+    <my-message :visible.sync="showMsg"
+      :url="localName"
+      :afterSave="afterSave"></my-message>
   </div>
 </template>
 
 <script>
 import { machiningType } from '@/assets/js/dictionary.js'
-import { clientList, productionDetail, storeIn, storeInList, weaveDetail, halfProductDetail } from '@/assets/js/api.js'
+import { clientList, productionDetail, storeIn, storeInList, weaveDetail, halfProductDetail, notifySave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      localName: 'orderStockIn',
+      showMsg: false,
+      msgFlag: window.localStorage.getItem('orderStockIn') ? JSON.parse(window.localStorage.getItem('orderStockIn')).msgFlag : false,
+      msgUrl: '',
+      content: '',
       loading: true,
       order: {
         order_code: '',
@@ -361,6 +372,26 @@ export default {
     })
   },
   methods: {
+    afterSave (data) {
+      this.msgFlag = data.msgFlag
+    },
+    sendMsg () {
+      let data = JSON.parse(window.localStorage.getItem(this.localName))
+      let formData = {
+        title: data.title,
+        type: data.type,
+        tag: '工序',
+        content: this.content,
+        router_url: this.msgUrl,
+        receive_user: data.receive_user
+      }
+      notifySave(formData).then((res) => {
+        if (res.data.status) {
+          this.$message.success('入库成功')
+          this.$router.push(this.msgUrl)
+        }
+      })
+    },
     // 工序改变的时候，填写相应的单位
     getCompanyArr (index, indexCompany) {
       let companyArr = []
@@ -478,14 +509,16 @@ export default {
           })
         })
         this.loading = true
-        console.log(json)
         storeIn({ 'data': json }).then((res) => {
           if (res.data.status) {
-            this.$message.success({
-              message: '保存成功'
-            })
-            this.loading = false
-            window.location.reload()
+            if (this.msgFlag) {
+              this.msgUrl = '/index/orderStockDetail/' + this.$route.params.orderId
+              this.content = '订单' + this.order.order_code + '产品' + this.$route.params.productId + '<span style="color:#1A95FF">入库</span>'
+              this.sendMsg()
+            } else {
+              this.$message.success('入库成功')
+              this.$router.push('/index/orderStockDetail/' + this.$route.params.orderId)
+            }
           } else {
             this.$message.error({
               message: res.data.message

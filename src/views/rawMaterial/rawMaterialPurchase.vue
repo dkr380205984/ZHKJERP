@@ -2,7 +2,11 @@
   <div id="rawMaterialPurchase"
     v-loading="loading">
     <div class="head">
-      <h2>原料预订购</h2>
+      <h2>原料预订购
+        <i class="el-icon-message-solid"
+          :class="{'active':msgFlag}"
+          @click="showMsg = true"></i>
+      </h2>
     </div>
     <div class="body">
       <div class="lineCtn">
@@ -128,14 +132,22 @@
         </div>
       </div>
     </div>
+    <my-message :visible.sync="showMsg"
+      :url="localName"
+      :afterSave="afterSave"></my-message>
   </div>
 </template>
 
 <script>
-import { rawMaterialPurchase, YarnColorList, clientList, YarnList } from '@/assets/js/api.js'
+import { rawMaterialPurchase, YarnColorList, clientList, YarnList, notifySave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      localName: 'rawMaterialPurchase',
+      showMsg: false,
+      msgFlag: window.localStorage.getItem('rawMaterialPurchase') ? JSON.parse(window.localStorage.getItem('rawMaterialPurchase')).msgFlag : false,
+      msgUrl: '',
+      content: '',
       loading: true,
       colorList: [], // 颜色列表
       companyList: [], // 公司列表
@@ -160,6 +172,26 @@ export default {
     }
   },
   methods: {
+    afterSave (data) {
+      this.msgFlag = data.msgFlag
+    },
+    sendMsg () {
+      let data = JSON.parse(window.localStorage.getItem(this.localName))
+      let formData = {
+        title: data.title,
+        type: data.type,
+        tag: '工序',
+        content: this.content,
+        router_url: this.msgUrl,
+        receive_user: data.receive_user
+      }
+      notifySave(formData).then((res) => {
+        if (res.data.status) {
+          this.$message.success('预定购成功')
+          this.$router.push(this.msgUrl)
+        }
+      })
+    },
     addMaterial () {
       this.material_info.push({
         material_name: '',
@@ -234,7 +266,6 @@ export default {
         })
         return
       }
-      console.log(IFREPEAT)
       for (let prop in this.material_info) {
         let item = this.material_info[prop]
         item.price = Number(item.price)
@@ -341,15 +372,18 @@ export default {
         desc: this.remark
       }).then((res) => {
         if (res.data.code === 200) {
-          this.$message({
-            showClose: true,
-            message: '提交成功',
-            type: 'success'
-          })
+          if (this.msgFlag) {
+            this.msgUrl = '/index/rawMaterialPurchaseDetail/' + res.data.data.id
+            this.content = '向' + res.data.data.client_name + '<span style="color:#1A95FF">预定购</span>原料<span style="color:#1A95FF">' + res.data.data.total_weight + '</span>千克'
+            this.sendMsg()
+          } else {
+            this.$message.success('预定购成功')
+            this.$router.push('/index/rawMaterialPurchaseDetail/' + res.data.data.id)
+          }
         } else {
           this.$message({
             showClose: true,
-            message: res.data.code + '出问题了哦',
+            message: res.data.message,
             type: 'error'
           })
         }

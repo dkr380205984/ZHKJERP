@@ -2,7 +2,11 @@
   <div id="rawMaterialOrderDetail"
     v-loading="loading">
     <div class="head">
-      <h2>原料预定购详情</h2>
+      <h2>原料预定购详情
+        <i class="el-icon-message-solid"
+          :class="{'active':msgFlag}"
+          @click="showMsg = true"></i>
+      </h2>
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -303,14 +307,22 @@
         </div>
       </div>
     </div>
+    <my-message :visible.sync="showMsg"
+      :url="localName"
+      :afterSave="afterSave"></my-message>
   </div>
 </template>
 
 <script>
-import { rawMaterialPurchaseDetail, clientList, rawMaterialPurchaseIn } from '@/assets/js/api.js'
+import { rawMaterialPurchaseDetail, clientList, rawMaterialPurchaseIn, notifySave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      localName: 'rawMaterialPurchaseDetail',
+      showMsg: false,
+      msgFlag: window.localStorage.getItem('rawMaterialPurchaseDetail') ? JSON.parse(window.localStorage.getItem('rawMaterialPurchaseDetail')).msgFlag : false,
+      msgUrl: '',
+      content: '',
       updateInfo: {
         stock_id: '',
         material_order_id: '',
@@ -373,6 +385,28 @@ export default {
     }
   },
   methods: {
+    afterSave (data) {
+      this.msgFlag = data.msgFlag
+    },
+    sendMsg () {
+      let data = JSON.parse(window.localStorage.getItem(this.localName))
+      let formData = {
+        title: data.title,
+        type: data.type,
+        tag: '工序',
+        content: this.content,
+        router_url: this.msgUrl,
+        receive_user: data.receive_user
+      }
+      notifySave(formData).then((res) => {
+        if (res.data.status) {
+          this.$message.success('入库成功')
+          setTimeout(() => {
+            window.location.reload()
+          }, 500)
+        }
+      })
+    },
     jsonMerge (jsonArr, keyArr) {
       let newJson = [] // 合并好的数据都放在这个数组里
       jsonArr.forEach((itemJson, indexJson) => {
@@ -579,10 +613,16 @@ export default {
           data: formArray
         }).then((res) => {
           if (res.data.status) {
-            this.$message.success({
-              message: '添加成功'
-            })
-            window.location.reload()
+            if (this.msgFlag) {
+              this.msgUrl = '/index/rawMaterialPurchaseDetail/' + this.$route.params.id
+              this.content = '<span style="color:#1A95FF">预定购入库</span>了一批' + this.otherInfo.client_name + '的原料'
+              this.sendMsg()
+            } else {
+              this.$message.success('入库成功')
+              setTimeout(() => {
+                window.location.reload()
+              }, 500)
+            }
           } else {
             this.$message.error({
               message: res.data.message
@@ -590,7 +630,6 @@ export default {
           }
         })
       }
-      console.log(formArray)
     }
   },
   watch: {
@@ -605,8 +644,7 @@ export default {
       this.otherInfo = res.data.data.data_one
       this.logList = res.data.data.data_stock
       let stock = res.data.data.data_stock
-      let materialList = JSON.parse(res.data.data.data_one.material_info)
-      console.log(materialList)
+      let materialList = res.data.data.data_one.material_info
       // 对同种类型的纱线进行合并
       this.list = this.jsonMerge(materialList, ['material_name']).map((item) => {
         item.colors = item.info.map((itemColor) => {
@@ -631,7 +669,6 @@ export default {
         item.unit = 'kg'
         return item
       })
-      console.log(this.list)
       this.otherInfo.leaveWeight = this.list.reduce((total, current) => {
         return total + parseInt(current.allNumber)
       }, 0)
@@ -639,8 +676,7 @@ export default {
       this.cost = stock.reduce((total, current) => {
         return total + current.price * current.weight
       }, 0)
-      console.log(stock)
-      console.log(this.cost)
+      console.log(this.otherInfo)
     })
     clientList({
       company_id: window.sessionStorage.getItem('company_id')

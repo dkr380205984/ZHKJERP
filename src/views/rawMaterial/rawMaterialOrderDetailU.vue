@@ -101,7 +101,11 @@
       </div>
       <div class="stepCtn"
         v-if="stockList.length>0">
-        <div class="stepTitle">{{type === '0' ? '原': '辅'}}料库存信息</div>
+        <div class="stepTitle">{{type === '0' ? '原': '辅'}}料库存信息
+          <i class="el-icon-message-solid"
+            :class="{'active':msgFlag.KCDQ}"
+            @click="showMsg.KCDQ = true"></i>
+        </div>
         <div class="borderCtn">
           <div class="cicle"></div>
           <div class="border"></div>
@@ -144,7 +148,11 @@
         </div>
       </div>
       <div class="stepCtn">
-        <div class="stepTitle">{{type === '0' ? '原': '辅'}}料调拨信息</div>
+        <div class="stepTitle">{{type === '0' ? '原': '辅'}}料调拨信息
+          <i class="el-icon-message-solid"
+            :class="{'active':msgFlag.WLDG}"
+            @click="showMsg.WLDG = true"></i>
+        </div>
         <div class="borderCtn">
           <div class="cicle"></div>
           <div class="border"></div>
@@ -378,7 +386,11 @@
         </div>
       </div>
       <div class="stepCtn">
-        <div class="stepTitle">{{type === '0' ? '原': '辅'}}料加工信息</div>
+        <div class="stepTitle">{{type === '0' ? '原': '辅'}}料加工信息
+          <i class="el-icon-message-solid"
+            :class="{'active':msgFlag.WLJG}"
+            @click="showMsg.WLJG = true"></i>
+        </div>
         <div class="borderCtn">
           <div class="cicle"></div>
           <div class="border"></div>
@@ -849,16 +861,50 @@
         </div>
       </div>
     </div>
+    <my-message :visible.sync="showMsg.KCDQ"
+      :url="localName.KCDQ"
+      :afterSave="saveKCDQ"></my-message>
+    <my-message :visible.sync="showMsg.WLDG"
+      :url="localName.WLDG"
+      :afterSave="saveWLDG"></my-message>
+    <my-message :visible.sync="showMsg.WLJG"
+      :url="localName.WLJG"
+      :afterSave="saveWLJG"></my-message>
   </div>
 </template>
 
 <script>
 import { machiningType } from '@/assets/js/dictionary.js'
 import { rawMaterialOrderList, orderDetail, rawMaterialOrderInit, rawMaterialProcessList, productionDetail, replenishYarnList, orderMaterialSotckDetail, clientList, rawMaterialOrder, rawMaterialProcessPage, deleteOrderProcess,
-  deleteOrderMaterial } from '@/assets/js/api.js'
+  deleteOrderMaterial, notifySave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      localName: {
+        KCDQ: 'KCDQ',
+        WLDG: 'WLDG',
+        WLJG: 'WLJG'
+      },
+      showMsg: {
+        KCDQ: false,
+        WLDG: false,
+        WLJG: false
+      },
+      msgUrl: {
+        KCDQ: '',
+        WLDG: '',
+        WLJG: ''
+      },
+      msgFlag: {
+        KCDQ: window.localStorage.getItem('KCDQ') ? JSON.parse(window.localStorage.getItem('KCDQ')).msgFlag : false,
+        WLDG: window.localStorage.getItem('WLDG') ? JSON.parse(window.localStorage.getItem('WLDG')).msgFlag : false,
+        WLJG: window.localStorage.getItem('WLJG') ? JSON.parse(window.localStorage.getItem('WLJG')).msgFlag : false
+      },
+      content: {
+        KCDQ: '',
+        WLDG: '',
+        WLJG: ''
+      },
       valueArr: [],
       value: '',
       loading: true,
@@ -932,6 +978,40 @@ export default {
     }
   },
   methods: {
+    saveKCDQ (data) {
+      this.msgFlag.KCDQ = data.msgFlag
+    },
+    saveWLDG (data) {
+      this.msgFlag.WLDG = data.msgFlag
+    },
+    saveWLJG (data) {
+      this.msgFlag.WLJG = data.msgFlag
+    },
+    sendMsg (which) {
+      let data = JSON.parse(window.localStorage.getItem(this.localName[which]))
+      let formData = {
+        title: data.title,
+        type: data.type,
+        tag: '工序',
+        content: this.content[which],
+        router_url: this.msgUrl[which],
+        receive_user: data.receive_user
+      }
+      notifySave(formData).then((res) => {
+        if (res.data.status) {
+          if (which === 'KCDQ') {
+            this.$message.success('调取成功')
+            this.reload()
+          } else if (which === 'WLDG') {
+            this.$message.success('订购成功')
+            this.reload()
+          } else if (which === 'WLJG') {
+            this.$message.success('加工成功')
+            this.reload()
+          }
+        }
+      })
+    },
     jsonMerge (jsonArr, keyArr) {
       let newJson = [] // 合并好的数据都放在这个数组里
       jsonArr.forEach((itemJson, indexJson) => {
@@ -1104,10 +1184,14 @@ export default {
               }
             }).then((res) => {
               if (res.data.status) {
-                this.$message.success({
-                  message: '订购成功'
-                })
-                this.reload()
+                if (this.msgFlag.WLDG) {
+                  this.msgUrl.WLDG = '/index/rawMaterialOrderDetail/' + this.$route.params.id + '/' + this.type
+                  this.content.WLDG = '订单' + this.orderInfo.order_code + '<span style="color:#1A95FF">订购</span>了一批原料'
+                  this.sendMsg('WLDG')
+                } else {
+                  this.$message.success('订购成功')
+                  this.reload()
+                }
               } else {
                 this.$message.success({
                   message: res.data.message
@@ -1183,12 +1267,16 @@ export default {
               }
             }).then((res) => {
               if (res.data.status) {
-                this.$message.success({
-                  message: '订购成功'
-                })
-                this.reload()
+                if (this.msgFlag.WLDG) {
+                  this.msgUrl.WLDG = '/index/rawMaterialOrderDetail/' + this.$route.params.id + '/' + this.type
+                  this.content.WLDG = '订单' + this.orderInfo.order_code + '<span style="color:#1A95FF">订购</span>了一批辅料'
+                  this.sendMsg('WLDG')
+                } else {
+                  this.$message.success('订购成功')
+                  this.reload()
+                }
               } else {
-                this.$message.success({
+                this.$message.error({
                   message: res.data.message
                 })
               }
@@ -1267,12 +1355,17 @@ export default {
             data: data
           }).then((res) => {
             if (res.data.status) {
-              this.$message.success({
-                message: '加工成功'
-              })
+              if (this.msgFlag.WLJG) {
+                this.msgUrl.WLJG = '/index/rawMaterialOrderDetail/' + this.$route.params.id + '/' + this.type
+                this.content.WLJG = '订单' + this.orderInfo.order_code + '<span style="color:#1A95FF">加工</span>了一批物料'
+                this.sendMsg('WLJG')
+              } else {
+                this.$message.success('加工成功')
+                this.reload()
+              }
               this.reload()
             } else {
-              this.$message.success({
+              this.$message.error({
                 message: res.data.message
               })
             }
@@ -1467,7 +1560,6 @@ export default {
     },
     // 保存调取信息
     saveStock () {
-      console.log(this.WLDQ)
       if (this.WLDQ.JGFlag) {
         if (this.WLDQ.needColor.length > 0) {
           if (!this.WLDQ.JGDW1) {
@@ -1534,11 +1626,14 @@ export default {
         if (res.data.status) {
           if (this.WLDQ.JGFlag) {
             if (this.WLDQ.needColor.length === 0 && this.WLDQ.needColor2.length === 0) {
-              this.$message.success({
-                message: '调取成功'
-              })
-              this.reload()
-              this.WLDQFlag = false
+              if (this.msgFlag.KCDQ) {
+                this.msgUrl.KCDQ = '/index/rawMaterialOrderDetail/' + this.$route.params.id + '/' + this.type
+                this.content.KCDQ = '订单' + this.orderInfo.order_code + '<span style="color:#1A95FF">调取</span>' + this.stockList[this.stockActive].material_name + '共计<span style="color:#1A95FF">' + this.WLDQ.DQNumber + 'kg</span>'
+                this.sendMsg('KCDQ')
+              } else {
+                this.$message.success('调取成功')
+                this.reload()
+              }
             } else {
               let data = []
               if (this.WLDQ.needColor.length > 0) {
@@ -1578,29 +1673,35 @@ export default {
                   desc: '',
                   complete_time: today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + (today.getDate() < 10 ? '0' + today.getDate() : today.getDate())
                 })
-                rawMaterialProcessPage({
-                  data: data
-                }).then((res) => {
-                  if (res.data.status) {
-                    this.$message.success({
-                      message: '调取加工成功'
-                    })
-                    this.reload()
-                    this.WLDQFlag = false
-                  } else {
-                    this.$message.error({
-                      message: res.data.message
-                    })
-                  }
-                })
               }
+              rawMaterialProcessPage({
+                data: data
+              }).then((res) => {
+                if (res.data.status) {
+                  if (this.msgFlag.KCDQ) {
+                    this.msgUrl.KCDQ = '/index/rawMaterialOrderDetail/' + this.$route.params.id + '/' + this.type
+                    this.content.KCDQ = '订单' + this.orderInfo.order_code + '<span style="color:#1A95FF">调取</span>' + this.stockList[this.stockActive].material_name + '共计<span style="color:#1A95FF">' + this.WLDQ.DQNumber + 'kg</span><span style="color:#1A95FF">并加工</span>'
+                    this.sendMsg('KCDQ')
+                  } else {
+                    this.$message.success('调取成功')
+                    this.reload()
+                  }
+                } else {
+                  this.$message.error({
+                    message: res.data.message
+                  })
+                }
+              })
             }
           } else {
-            this.$message.success({
-              message: '调取成功'
-            })
-            this.reload()
-            this.WLDQFlag = false
+            if (this.msgFlag.KCDQ) {
+              this.msgUrl.KCDQ = '/index/rawMaterialOrderDetail/' + this.$route.params.id + '/' + this.type
+              this.content.KCDQ = '订单' + this.orderInfo.order_code + '<span style="color:#1A95FF">调取</span>' + this.stockList[this.stockActive].material_name + '共计<span style="color:#1A95FF">' + this.WLDQ.DQNumber + 'kg</span>'
+              this.sendMsg('KCDQ')
+            } else {
+              this.$message.success('调取成功')
+              this.reload()
+            }
           }
         } else {
           this.$message.error({

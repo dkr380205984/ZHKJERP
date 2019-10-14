@@ -447,8 +447,8 @@
             <div class="content">
               <ul class="tablesCtn">
                 <li class="title">
-                  <span>补纱次数</span>
-                  <span>纱线</span>
+                  <span style="flex:0.5">补纱次数</span>
+                  <span style="flex:1.5">纱线</span>
                   <span>颜色</span>
                   <span>补纱重量(kg)</span>
                   <span>总重量(kg)</span>
@@ -459,12 +459,12 @@
                 <li class="material_info"
                   v-for="(item,index) in bushaList"
                   :key="index">
-                  <span>第 {{index+1}} 次</span>
+                  <span style="flex:0.5">第 {{index+1}} 次</span>
                   <span class="col"
-                    style="flex:4">
+                    style="flex:4.5">
                     <span v-for="(itemYarn,indexYarn) in item.yarn_info"
                       :key="indexYarn">
-                      <span>{{itemYarn.name}}</span>
+                      <span style="flex:1.5">{{itemYarn.name}}</span>
                       <span class="col"
                         style="flex:2">
                         <span v-for="(itemColor,indexColor) in itemYarn.info"

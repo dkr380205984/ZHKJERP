@@ -3,6 +3,9 @@
     v-loading="loading">
     <div class="head">
       <h2>产品出库
+        <i class="el-icon-message-solid"
+          :class="{'active':msgFlag}"
+          @click="showMsg = true"></i>
         <div class="headBtn"
           @click="completion">
           <span>一键出库</span>
@@ -199,15 +202,23 @@
           @click="saveAll">保存</div>
       </div>
     </div>
+    <my-message :visible.sync="showMsg"
+      :url="localName"
+      :afterSave="afterSave"></my-message>
   </div>
 </template>
 
 <script>
 import { machiningType } from '@/assets/js/dictionary.js'
-import { clientList, productionDetail, storeOut, storeOutList, weaveDetail, halfProductDetail } from '@/assets/js/api.js'
+import { clientList, productionDetail, storeOut, storeOutList, weaveDetail, halfProductDetail, notifySave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      localName: 'orderStockOut',
+      showMsg: false,
+      msgFlag: window.localStorage.getItem('orderStockOut') ? JSON.parse(window.localStorage.getItem('orderStockOut')).msgFlag : false,
+      msgUrl: '',
+      content: '',
       loading: true,
       order: {
         order_code: '',
@@ -362,6 +373,26 @@ export default {
     })
   },
   methods: {
+    afterSave (data) {
+      this.msgFlag = data.msgFlag
+    },
+    sendMsg () {
+      let data = JSON.parse(window.localStorage.getItem(this.localName))
+      let formData = {
+        title: data.title,
+        type: data.type,
+        tag: '工序',
+        content: this.content,
+        router_url: this.msgUrl,
+        receive_user: data.receive_user
+      }
+      notifySave(formData).then((res) => {
+        if (res.data.status) {
+          this.$message.success('出库成功')
+          this.$router.push(this.msgUrl)
+        }
+      })
+    },
     // 工序改变的时候，填写相应的单位
     getCompanyArr (index, indexCompany) {
       let companyArr = []
@@ -478,49 +509,51 @@ export default {
             })
           })
         })
-        console.log(json)
         this.loading = true
         storeOut({ 'data': json }).then((res) => {
           if (res.data.status) {
-            this.$message.success({
-              message: '保存成功'
-            })
-            let message = ''
-            let clientArr = []
-            let ingredientsArr = []
-            const createEl = this.$createElement
+            if (this.msgFlag) {
+              this.msgUrl = '/index/orderStockDetail/' + this.$route.params.orderId
+              this.content = '订单' + this.order.order_code + '产品' + this.$route.params.productId + '<span style="color:#1A95FF">出库</span>'
+              this.sendMsg()
+            } else {
+              this.$message.success('出库成功')
+              this.$router.push('/index/orderStockDetail/' + this.$route.params.orderId)
+            }
+            // let message = ''
+            // let clientArr = []
+            // let ingredientsArr = []
+            // const createEl = this.$createElement
             // 判断是否需要辅料出库操作
-            json.forEach((item) => {
-              let finded = this.logListHalf.find((itemFind) => item.size === itemFind.size && item.color === itemFind.color && item.type === itemFind.type && Number(item.client_id) === Number(itemFind.client_id))
-              if (finded && finded.ingredients && finded.ingredients.length > 0) {
-                clientArr.push(finded.client_name)
-                ingredientsArr = ingredientsArr.concat(finded.ingredients)
-              }
-            })
-            if (clientArr.length > 0 && ingredientsArr.length > 0) {
-              message = createEl('p', null, [
-                createEl('span', null, '系统检测到'),
-                createEl('i', { style: 'color: #1A95FF' }, Array.from(new Set(clientArr)).join(',')),
-                createEl('span', null, '需要用到'),
-                createEl('i', { style: 'color: #1A95FF' }, Array.from(new Set(ingredientsArr)).join(',')),
-                createEl('span', null, ',是否前往辅料出库页面填写辅料出库相关信息')
-              ])
-            }
-            if (message) {
-              this.$msgbox({
-                title: '提醒',
-                message: message,
-                showCancelButton: true,
-                confirmButtonText: '前往填写',
-                cancelButtonText: '暂不操作'
-              }).then(action => {
-                this.$router.push('/index/rawMaterialOutStock/' + this.$route.params.orderId + '/1')
-              }).catch(() => {
-                this.$router.push('/index/orderStockDetail/' + this.$route.params.orderId)
-              })
-            }
-            this.loading = false
-            window.location.reload()
+            // json.forEach((item) => {
+            //   let finded = this.logListHalf.find((itemFind) => item.size === itemFind.size && item.color === itemFind.color && item.type === itemFind.type && Number(item.client_id) === Number(itemFind.client_id))
+            //   if (finded && finded.ingredients && finded.ingredients.length > 0) {
+            //     clientArr.push(finded.client_name)
+            //     ingredientsArr = ingredientsArr.concat(finded.ingredients)
+            //   }
+            // })
+            // if (clientArr.length > 0 && ingredientsArr.length > 0) {
+            //   message = createEl('p', null, [
+            //     createEl('span', null, '系统检测到'),
+            //     createEl('i', { style: 'color: #1A95FF' }, Array.from(new Set(clientArr)).join(',')),
+            //     createEl('span', null, '需要用到'),
+            //     createEl('i', { style: 'color: #1A95FF' }, Array.from(new Set(ingredientsArr)).join(',')),
+            //     createEl('span', null, ',是否前往辅料出库页面填写辅料出库相关信息')
+            //   ])
+            // }
+            // if (message) {
+            //   this.$msgbox({
+            //     title: '提醒',
+            //     message: message,
+            //     showCancelButton: true,
+            //     confirmButtonText: '前往填写',
+            //     cancelButtonText: '暂不操作'
+            //   }).then(action => {
+            //     this.$router.push('/index/rawMaterialOutStock/' + this.$route.params.orderId + '/1')
+            //   }).catch(() => {
+            //     this.$router.push('/index/orderStockDetail/' + this.$route.params.orderId)
+            //   })
+            // }
           } else {
             this.$message.error({
               message: res.data.message
