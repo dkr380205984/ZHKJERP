@@ -984,7 +984,7 @@ export default {
     },
     open (where, id, flag, companyId, type) {
       if (where === 'table') {
-        let str = '/rawMaterialProcessTable/' + id + '/' + companyId + '/' + type
+        let str = '/rawMaterialProcessTable/' + id + '/' + companyId + '/' + (type ? type.split('/').join('-') : type)
         window.open(str)
       } else if (where === 'order') {
         this.$router.push('/index/rawMaterialOrderPage/' + id + '/' + this.type)

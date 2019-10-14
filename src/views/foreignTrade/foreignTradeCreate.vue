@@ -27,27 +27,6 @@
             :value="item.value"
             :label="item.name"></el-option>
         </el-select>
-        <!-- <el-cascader v-model="type"
-          class="elInput"
-          placeholder="请选择客户类型"
-          :options="companyType"
-          expand-trigger="hover"
-          :multiple='true'></el-cascader> -->
-        <!-- <el-cascader :options="companyType"
-          :props="props"
-          collapse-tags
-          clearable></el-cascader> -->
-        <ele-multi-cascader :options="companyType"
-          class="elInput"
-          v-model="type"
-          placeholder="选择运营商"
-          @change="con(type)">
-        </ele-multi-cascader>
-        <!-- <el-cascader :options="companyType"
-          props.multiple=true
-          expandTrigger='hover'
-          multiple
-          clearable></el-cascader> -->
       </div>
       <div class="inputCtn">
         <span class="label must">人员管理:</span>

@@ -61,6 +61,7 @@
           <el-select v-model="item.ingredient_name"
             clearable
             class="smallInputItem"
+            @change="noRepeat(item.ingredient_name,key,ingredient,'ingredient_name')"
             placeholder="选择成分">
             <el-option v-for="item in ingredientArr"
               :key="item.id"
@@ -98,6 +99,7 @@
             <el-select clearable
               v-model="item.size"
               class="smallInputItem"
+              @change="noRepeat(item.size,key,size,'size')"
               placeholder="选择规格">
               <el-option v-for="item in sizeArr"
                 :key="item.id"
@@ -141,7 +143,8 @@
             allow-create
             class="inputItem"
             v-model="item.color"
-            placeholder="请选择配色">
+            placeholder="请选择配色"
+            @change="noRepeat(item.color,key,color,'color')">
             <el-option v-for="item in colorArr"
               :key="item.id"
               :label="item.name"
@@ -353,6 +356,18 @@ export default {
     afterSave (data) {
       this.msgFlag = data.msgFlag
     },
+    noRepeat (value, index, item, key) {
+      if (value.indexOf(';') !== -1) {
+        this.$message.warning('选项中不可含有 " ; " ,请重新选择')
+        item[index].color = ''
+        return
+      }
+      let flag = item.filter(val => val[key] === value)
+      if (flag.length > 1) {
+        item[index][key] = ''
+        this.$message.warning('检测到已选择过该项(' + value + ')，请勿重复选择')
+      }
+    },
     sendMsg () {
       let data = JSON.parse(window.localStorage.getItem(this.localName))
       let formData = {
@@ -411,9 +426,6 @@ export default {
     },
     deleteColor (index) {
       this.color.splice(index, 1)
-    },
-    clearAll () {
-
     },
     saveAll () {
       let flag = true

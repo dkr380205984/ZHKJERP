@@ -374,6 +374,11 @@ export default {
       })
     },
     noRepeat (value, index, item, key) {
+      if (value.indexOf(';') !== -1) {
+        this.$message.warning('选项中不可含有 " ; " ,请重新选择')
+        item[index].color = ''
+        return
+      }
       let flag = item.filter(val => val[key] === value)
       if (flag.length > 1) {
         item[index][key] = ''

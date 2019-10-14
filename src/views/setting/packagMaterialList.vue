@@ -11,7 +11,7 @@
       <div class="addBtn"
         @click="$router.push('/index/packagMaterialSetting')">添加包装辅料</div>
       <div class="tableCtn"
-        v-scroll="{fun:getPackList,pageSize:5}">
+        v-scroll="{fun:getPackList,pageSize:15}">
         <div class="tableRow titleTableRow">
           <div class="tableColumn flex9">包装辅料编号</div>
           <div class="tableColumn flex9">名称</div>
@@ -38,7 +38,7 @@
       </div>
       <div class="pageCtn">
         <el-pagination background
-          :page-size="5"
+          :page-size="15"
           layout="prev, pager, next"
           :total="total"
           :current-page.sync="pages"
@@ -66,7 +66,7 @@ export default {
       this.loading = true
       packagMaterialList({
         company_id: window.sessionStorage.getItem('company_id'),
-        limit: 5,
+        limit: 15,
         page: this.pages
       }).then(res => {
         console.log(res)

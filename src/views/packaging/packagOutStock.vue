@@ -32,6 +32,40 @@
             <span class="content">{{group_name}}</span>
           </div>
         </div>
+        <div class="lineCtn">
+          <div class="inputCtn">
+            <span class="label">包装资料:</span>
+            <span class="content">
+              <template v-if="pack_means.length === 0">暂无文件</template>
+              <a target="view_window"
+                v-for="(item,key) in pack_means"
+                :key="key"
+                :href="item"
+                style="color:#1A95FF"
+                :download="item">
+                <i class="el-icon-document"
+                  style="margin-right:5px"></i>{{item.replace('http://zhihui.tlkrzf.com/', '')}}
+              </a>
+            </span>
+          </div>
+        </div>
+        <div class="lineCtn">
+          <div class="inputCtn">
+            <span class="label">装箱资料:</span>
+            <span class="content">
+              <template v-if="store_means.length === 0">暂无文件</template>
+              <a target="view_window"
+                v-for="(item,key) in store_means"
+                :key="key"
+                :href="item"
+                style="color:#1A95FF"
+                :download="item">
+                <i class="el-icon-document"
+                  style="margin-right:5px"></i>{{item.replace('http://zhihui.tlkrzf.com/', '')}}
+              </a>
+            </span>
+          </div>
+        </div>
       </div>
       <div class="stepCtn">
         <div class="stepTitle">发货批次信息</div>
@@ -205,6 +239,8 @@ export default {
       client_name: '',
       order_time: '',
       group_name: '',
+      pack_means: [],
+      store_means: [],
       batchList: {
         product_info: []
       },
@@ -353,6 +389,8 @@ export default {
       this.client_name = orderInfo.client_name
       this.order_time = orderInfo.order_time
       this.group_name = orderInfo.group_name
+      this.pack_means = orderInfo.pack_means ? JSON.parse(orderInfo.pack_means) : []
+      this.store_means = orderInfo.store_means ? JSON.parse(orderInfo.store_means) : []
       // 初始化发货批次信息
       for (let prop in orderInfo.order_batch) {
         let valBatch = orderInfo.order_batch[prop]

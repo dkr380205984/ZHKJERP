@@ -2058,7 +2058,7 @@ export default {
           } else {
             let size = client.size_info.find(key => (key.size === item.size && key.price === item.price))
             if (!size) {
-              size.size_info.push({
+              client.size_info.push({
                 size: item.size,
                 attr: JSON.parse(item.attribute),
                 number: item.number,

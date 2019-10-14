@@ -284,10 +284,10 @@
         </div>
       </div> -->
       <div class="stepCtn">
-        <div class="stepTitle">订购包装辅料</div>
+        <div class="stepTitle">主要包装辅料</div>
         <div class="borderCtn">
           <div class="cicle"></div>
-          <!-- <div class="border"></div> -->
+          <div class="border"></div>
         </div>
         <div class="lineCtn">
           <div class="inputCtn noPadding">
@@ -298,6 +298,7 @@
                   <span class="flex75">
                     <span class="flex45">
                       <span class="flex15">包装辅料名称</span>
+                      <span>平方单价</span>
                       <span>订购价格</span>
                       <span>订购数量</span>
                       <span>合计价格</span>
@@ -309,9 +310,9 @@
                     <span>操作</span>
                   </span>
                 </li>
-                <li v-if="packagMaterialPageList.length === 0">暂无信息</li>
+                <li v-if="packagMaterialPageList.main.length === 0">暂无信息</li>
                 <li class="content"
-                  v-for="(item,key) in packagMaterialPageList"
+                  v-for="(item,key) in packagMaterialPageList.main"
                   :key="key">
                   <span class="tableRow">{{item.client_name}}</span>
                   <span class="tableRow flex75 col">
@@ -322,7 +323,8 @@
                         <span class="tableColumn"
                           v-for="(valMat,indMat) in value.material_info"
                           :key="indMat">
-                          <span class="tableRow flex15">{{valMat.name}}{{valMat.attr ? '/' + valMat.attr : ''}}</span>
+                          <span class="tableRow flex15">{{valMat.name}}{{valMat.attr ? '/' + valMat.attr : ''}}{{valMat.size ? '(' + valMat.size +')' : ''}}</span>
+                          <span class="tableRow">{{valMat.price_square ? valMat.price_square + '元/㎡' : '-'}}</span>
                           <span class="tableRow">{{valMat.price}}元/个</span>
                           <span class="tableRow">{{valMat.number}}个</span>
                           <span class="tableRow">{{Math.ceil(valMat.price*valMat.number)}}{{'元'}}</span>
@@ -331,7 +333,7 @@
                       <span class="tableRow">{{item.time}}</span>
                     </span>
                   </span>
-                  <span class="tableRow">{{item.total_price}}元</span>
+                  <span class="tableRow">{{item.total_price.toFixed(2)}}元</span>
                   <span class="tableRow col">
                     <span class="tableColumn"
                       v-for="(value,index) in item.create_time"
@@ -343,10 +345,10 @@
                   </span>
                 </li>
                 <div class="logList"
-                  @click="packagMaterialPageLogFlag = !packagMaterialPageLogFlag">{{ packagMaterialPageLogFlag ? '收起' : '展开'}}详情</div>
+                  @click="packagMaterialPageLogFlag.main = !packagMaterialPageLogFlag.main">{{ packagMaterialPageLogFlag.main ? '收起' : '展开'}}详情</div>
               </ul>
               <ul class="log"
-                v-if="packagMaterialPageLogFlag">
+                v-if="packagMaterialPageLogFlag.main">
                 <div>
                   <li>
                     <span>创建时间</span>
@@ -362,8 +364,136 @@
                   </li>
                 </div>
                 <div>
-                  <li v-if="packagMaterialPageLog.length === 0">暂无信息</li>
-                  <li v-for="(item,key) in packagMaterialPageLog"
+                  <li v-if="packagMaterialPageLog.main.length === 0">暂无信息</li>
+                  <li v-for="(item,key) in packagMaterialPageLog.main"
+                    :key="key">
+                    <span>{{item.created_at}}</span>
+                    <span class="flexBig">{{item.client_name}}</span>
+                    <span>{{item.material_name}}</span>
+                    <span>
+                      <template v-for="(valAttr,indAttr) in item.attr">{{(indAttr !== 0 ? ',' : '') + valAttr.pack_attr}}</template>
+                    </span>
+                    <span class="flexMid">{{item.price|fixedFilter}}{{'元/个'}}</span>
+                    <span class="flexMid">{{Math.ceil(item.number)}}个</span>
+                    <span class="flexMid">{{Math.ceil(item.price * item.number)}}{{'元'}}</span>
+                    <span class="flexBig remark">
+                      <i>
+                        {{item.remark ? item.remark : '暂无备注'}}
+                        <el-popover placement="top-end"
+                          title="备注信息"
+                          width="200"
+                          trigger="click"
+                          v-if="charCodeLength(item.remark) > 15"
+                          :content="item.remark">
+                          <span slot="reference">展开</span>
+                        </el-popover>
+                      </i>
+                    </span>
+                    <span class="flexMid">{{item.user_name}}</span>
+                    <span class="flexMid blue"
+                      @click="changeOrderInfo(item)">修改</span>
+                  </li>
+                </div>
+              </ul>
+              <div class="handle">
+                <div :class="{'disabled':!flag}"
+                  @click="$router.push('/index/packagMaterialPage/' + $route.params.id )">
+                  <img class="icon"
+                    v-if="flag"
+                    src="@/assets/image/icon/orderIcon.png">
+                  <img class="icon"
+                    v-else
+                    src="@/assets/image/icon/order_disabled.png">
+                  <span>去订购</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="stepCtn">
+        <div class="stepTitle">次要包装辅料</div>
+        <div class="borderCtn">
+          <div class="cicle"></div>
+          <div class="border"></div>
+        </div>
+        <div class="lineCtn">
+          <div class="inputCtn noPadding">
+            <div class="content">
+              <ul class="tablesCtn">
+                <li class="title">
+                  <span>订购单位</span>
+                  <span class="flex75">
+                    <span class="flex45">
+                      <span class="flex15">包装辅料名称</span>
+                      <span>平方单价</span>
+                      <span>订购价格</span>
+                      <span>订购数量</span>
+                      <span>合计价格</span>
+                    </span>
+                    <span>完成日期</span>
+                  </span>
+                  <span>总价</span>
+                  <span>
+                    <span>操作</span>
+                  </span>
+                </li>
+                <li v-if="packagMaterialPageList.other.length === 0">暂无信息</li>
+                <li class="content"
+                  v-for="(item,key) in packagMaterialPageList.other"
+                  :key="key">
+                  <span class="tableRow">{{item.client_name}}</span>
+                  <span class="tableRow flex75 col">
+                    <span class="tableColumn"
+                      v-for="(value,index) in item.create_time"
+                      :key="index">
+                      <span class="tableRow col flex45">
+                        <span class="tableColumn"
+                          v-for="(valMat,indMat) in value.material_info"
+                          :key="indMat">
+                          <span class="tableRow flex15">{{valMat.name}}{{valMat.attr ? '/' + valMat.attr : ''}}{{valMat.size ? '(' + valMat.size +')' : ''}}</span>
+                          <span class="tableRow">{{valMat.price_square ? valMat.price_square + '元/㎡' : '-'}}</span>
+                          <span class="tableRow">{{valMat.price}}元/个</span>
+                          <span class="tableRow">{{valMat.number}}个</span>
+                          <span class="tableRow">{{Math.ceil(valMat.price*valMat.number)}}{{'元'}}</span>
+                        </span>
+                      </span>
+                      <span class="tableRow">{{item.time}}</span>
+                    </span>
+                  </span>
+                  <span class="tableRow">{{item.total_price.toFixed(2)}}元</span>
+                  <span class="tableRow col">
+                    <span class="tableColumn"
+                      v-for="(value,index) in item.create_time"
+                      :key="index"
+                      :style="'flex:' + value.material_info.length">
+                      <span class="tableRow blue"
+                        @click="open($route.params.id,item.client_id,value.create_at)">打印</span>
+                    </span>
+                  </span>
+                </li>
+                <div class="logList"
+                  @click="packagMaterialPageLogFlag.other = !packagMaterialPageLogFlag.other">{{ packagMaterialPageLogFlag.other ? '收起' : '展开'}}详情</div>
+              </ul>
+              <ul class="log"
+                v-if="packagMaterialPageLogFlag.other">
+                <div>
+                  <li>
+                    <span>创建时间</span>
+                    <span class="flexBig">订购公司</span>
+                    <span>包装辅料名称</span>
+                    <span>属性</span>
+                    <span class="flexMid">单价</span>
+                    <span class="flexMid">数量</span>
+                    <span class="flexMid">合计</span>
+                    <span class="flexBig">备注</span>
+                    <span class="flexMid">操作人</span>
+                    <span class="flexMid">操作</span>
+                  </li>
+                </div>
+                <div>
+                  <li v-if="packagMaterialPageLog.other.length === 0">暂无信息</li>
+                  <li v-for="(item,key) in packagMaterialPageLog.other"
                     :key="key">
                     <span>{{item.created_at}}</span>
                     <span class="flexBig">{{item.client_name}}</span>
@@ -541,9 +671,15 @@ export default {
       order_time: '',
       group_name: '',
       productList: [],
-      packagMaterialPageList: [],
-      packagMaterialPageLog: [],
-      packagMaterialPageLogFlag: false,
+      packagMaterialPageList: {
+        main: [],
+        other: []
+      },
+      packagMaterialPageLog: {
+        main: [],
+        other: []
+      },
+      packagMaterialPageLogFlag: { main: false, other: false },
       flag: true,
       changeInfo: {
         id: '',
@@ -664,20 +800,23 @@ export default {
       this.changeInfo.order_time = item.order_time
     },
     getOrderDetail () {
-      this.packagMaterialPageLog = []
-      this.packagMaterialPageList = []
+      this.packagMaterialPageLog = { main: [], other: [] }
+      this.packagMaterialPageList = { main: [], other: [] }
       packagMaterialDetail({
         order_id: this.$route.params.id
       }).then(res => {
         // 初始化订购包装详情
         console.log(res.data.data)
         res.data.data.forEach(item => {
-          this.packagMaterialPageLog.unshift({
+          let type = (item.type === 1 ? 'main' : 'other')
+          this.packagMaterialPageLog[type].unshift({
             time: item.order_time.split(' ')[0],
             client_name: item.client_name,
             material_name: item.material_name,
             attr: JSON.parse(item.attribute),
+            size_info: item.size,
             price: item.price,
+            price_square: item.price_square,
             number: item.number,
             remark: item.desc,
             user_name: item.user_name,
@@ -689,55 +828,59 @@ export default {
           })
         })
         // 初始化订购包装表格数据
-        this.packagMaterialPageLog.forEach(item => {
-          let flag = this.packagMaterialPageList.find(key => key.client_name === item.client_name)
-          if (!flag) {
-            this.packagMaterialPageList.push({
-              client_name: item.client_name,
-              client_id: item.client_id,
-              total_price: item.price * item.number,
-              time: item.time,
-              create_time: [
-                {
+        for (let type in this.packagMaterialPageLog) {
+          this.packagMaterialPageLog[type].forEach(item => {
+            let flag = this.packagMaterialPageList[type].find(key => key.client_name === item.client_name)
+            if (!flag) {
+              this.packagMaterialPageList[type].push({
+                client_name: item.client_name,
+                client_id: item.client_id,
+                total_price: item.price * item.number,
+                time: item.time,
+                create_time: [
+                  {
+                    create_at: item.created_at,
+                    material_info: [{
+                      name: item.material_name,
+                      price: item.price,
+                      size: item.size_info,
+                      price_square: item.price_square,
+                      number: item.number
+                    }]
+                  }
+                ]
+              })
+            } else {
+              flag.total_price += item.price * item.number
+              let flag1 = flag.create_time.find(key => key.create_at === item.created_at)
+              if (!flag1) {
+                flag.create_time.push({
                   create_at: item.created_at,
                   material_info: [{
                     name: item.material_name,
                     price: item.price,
+                    size: item.size_info,
+                    price_square: item.price_square,
                     number: item.number
                   }]
-                }
-              ]
-            })
-          } else {
-            flag.total_price += item.price * item.number
-            let flag1 = flag.create_time.find(key => key.create_at === item.created_at)
-            if (!flag1) {
-              flag.create_time.push({
-                create_at: item.created_at,
-                material_info: [{
-                  name: item.material_name,
-                  price: item.price,
-                  number: item.number
-                }]
-              })
-            } else {
-              let flag2 = flag1.material_info.find(key => (key.name === item.material_name && key.price === item.price))
-              if (!flag2) {
-                flag1.material_info.push({
-                  name: item.material_name,
-                  price: item.price,
-                  number: item.number
                 })
               } else {
-                flag2.number = Number(flag2.number) + Number(item.number)
+                let flag2 = flag1.material_info.find(key => (key.name === item.material_name && key.price === item.price))
+                if (!flag2) {
+                  flag1.material_info.push({
+                    name: item.material_name,
+                    price: item.price,
+                    size: item.size_info,
+                    price_square: item.price_square,
+                    number: item.number
+                  })
+                } else {
+                  flag2.number = Number(flag2.number) + Number(item.number)
+                }
               }
             }
-            // if (!(new Date(flag.time).getTime() > new Date(item.time).getTime())) {
-            //   flag.time = item.time
-            //   flag.user_name = item.user_name
-            // }
-          }
-        })
+          })
+        }
       })
     }
   },

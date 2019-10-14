@@ -6,6 +6,16 @@
     <div class="body">
       <div class="lineCtn">
         <div class="inputCtn">
+          <span class="label must">辅料类型:</span>
+          <el-radio-group v-model="type"
+            style="margin-left: 15px;">
+            <el-radio :label="1">主要辅料</el-radio>
+            <el-radio :label="2">次要辅料</el-radio>
+          </el-radio-group>
+        </div>
+      </div>
+      <div class="lineCtn">
+        <div class="inputCtn">
           <span class="label must">辅料名称:</span>
           <el-input class="elInput"
             v-model="pack_name"
@@ -13,14 +23,6 @@
             placeholder="请输入辅料名称"></el-input>
         </div>
       </div>
-      <!-- <div class="lineCtn">
-        <div class="inputCtn">
-          <span class="label">辅料规格:</span>
-          <el-input class="elInput"
-            v-model="pack_size"
-            placeholder="请输入辅料规格"></el-input>
-        </div>
-      </div> -->
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label">辅料重量:</span>
@@ -79,6 +81,7 @@ export default {
       pack_attrs: [{ pack_attr: '' }],
       remark: '',
       id: '',
+      type: 1, // 1为主要辅料 2为次要辅料
       timer: true
     }
   },
@@ -118,6 +121,13 @@ export default {
         })
         return
       }
+      if (!this.type) {
+        this.$message({
+          type: 'error',
+          message: `请选择辅料类型`
+        })
+        return
+      }
       if (this.timer) {
         this.timer = false
         packagMaterialAdd({
@@ -127,7 +137,8 @@ export default {
           // size: this.pack_size,
           attribute: JSON.stringify(this.pack_attrs),
           weight: this.pack_weight,
-          desc: this.remark
+          desc: this.remark,
+          type: this.type
         }).then(res => {
           console.log(res)
           let str = this.id ? '修改' : '添加'

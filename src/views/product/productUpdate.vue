@@ -332,6 +332,7 @@ export default {
       this.types[0] = this.treeData.find(item =>
         item.label === productInfo.category_info.product_category
       ).value
+      this.sizeArr = this.treeData.find(item => item.value === this.types[0]).child_size
       this.types[1] = this.treeData.find(item =>
         item.label === productInfo.category_info.product_category
       ).children.find(item => item.label === productInfo.type_name).value

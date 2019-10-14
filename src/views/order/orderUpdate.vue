@@ -8,10 +8,21 @@
       <div class="lineCtn">
         <div class="inputCtn oneLine">
           <span class="label must">订单号：</span>
-          <el-input class="elInput"
-            v-model="orderId"
-            disabled
-            placeholder="请输入订单号"></el-input>
+          <template v-for="(item,key) in orderId">
+            <el-input class="elInput"
+              :key="key"
+              v-model="item.code"
+              style="margin: 0;"
+              :placeholder="'请输入订单号' + (key+1)"></el-input>
+            <span :key="key+'C'"
+              style="margin:0 8px;font-size:14px;color:#1A95FF;cursor: pointer;"
+              v-if="key === 0"
+              @click="orderId.push({code:''})">添加</span>
+            <span :key="key+'D'"
+              v-else
+              style="margin:0 8px;font-size:14px;color:#F56C6C;cursor: pointer;"
+              @click="orderId.splice(key,1)">删除</span>
+          </template>
         </div>
       </div>
       <div class="lineCtn">
@@ -366,7 +377,8 @@
               </li>
               <li class="content"
                 style="min-height:60px;">
-                <span class="tableRow noCenter">
+                <span class="tableRow noCenter"
+                  style="max-width:168px;">
                   <el-upload class="upload-demo"
                     action="http://upload.qiniup.com/"
                     accept=""
@@ -381,7 +393,8 @@
                       type="primary">点击上传</el-button>
                   </el-upload>
                 </span>
-                <span class="tableRow noCenter">
+                <span class="tableRow noCenter"
+                  style="max-width:168px;">
                   <el-upload class="upload-demo"
                     action="http://upload.qiniup.com/"
                     accept=""
@@ -396,7 +409,8 @@
                       type="primary">点击上传</el-button>
                   </el-upload>
                 </span>
-                <span class="tableRow noCenter">
+                <span class="tableRow noCenter"
+                  style="max-width:168px;">
                   <el-upload class="upload-demo"
                     action="http://upload.qiniup.com/"
                     accept=""
@@ -411,7 +425,8 @@
                       type="primary">点击上传</el-button>
                   </el-upload>
                 </span>
-                <span class="tableRow noCenter">
+                <span class="tableRow noCenter"
+                  style="max-width:168px;">
                   <el-upload class="upload-demo"
                     action="http://upload.qiniup.com/"
                     accept=""
@@ -468,7 +483,7 @@ export default {
       loading: true,
       showTips: false,
       hasJHD: null,
-      orderId: '',
+      orderId: [{ code: '' }],
       companyId: window.sessionStorage.getItem('company_id'),
       companyArr: [],
       company: '',
@@ -849,7 +864,9 @@ export default {
           id: parseInt(this.$route.params.id),
           company_id: this.companyId,
           user_id: window.sessionStorage.getItem('user_id'),
-          order_code: this.orderId,
+          order_code: this.orderId.map(key => {
+            return key.code
+          }).join(';'),
           client_id: this.company,
           contacts: this.contacts,
           account_unit: this.money,
@@ -988,7 +1005,7 @@ export default {
       // 订单信息赋值
       const orderInfo = res[5].data.data
       this.company = this.companyArr.find((item) => item.name === orderInfo.client_name).id
-      this.orderId = orderInfo.order_code
+      this.orderId = orderInfo.order_code.split(';').map(items => { return { code: items } })
       this.contactsArr = this.companyArr.find((item) => item.id === this.company).contacts
       this.contacts = this.contactsArr.find((item) => item.name === orderInfo.contacts).id
       this.tax_rate = orderInfo.tax_rate

@@ -32,6 +32,40 @@
             <span class="content">{{group_name}}</span>
           </div>
         </div>
+        <div class="lineCtn">
+          <div class="inputCtn">
+            <span class="label">包装资料:</span>
+            <span class="content">
+              <template v-if="pack_means.length === 0">暂无文件</template>
+              <a target="view_window"
+                v-for="(item,key) in pack_means"
+                :key="key"
+                :href="item"
+                style="color:#1A95FF"
+                :download="item">
+                <i class="el-icon-document"
+                  style="margin-right:5px"></i>{{item.replace('http://zhihui.tlkrzf.com/', '')}}
+              </a>
+            </span>
+          </div>
+        </div>
+        <div class="lineCtn">
+          <div class="inputCtn">
+            <span class="label">装箱资料:</span>
+            <span class="content">
+              <template v-if="store_means.length === 0">暂无文件</template>
+              <a target="view_window"
+                v-for="(item,key) in store_means"
+                :key="key"
+                :href="item"
+                style="color:#1A95FF"
+                :download="item">
+                <i class="el-icon-document"
+                  style="margin-right:5px"></i>{{item.replace('http://zhihui.tlkrzf.com/', '')}}
+              </a>
+            </span>
+          </div>
+        </div>
       </div>
       <div class="stepCtn">
         <div class="stepTitle">产品信息</div>
@@ -86,7 +120,7 @@
             <ul class="addPackagFrom"
               v-for="(item,key) in list"
               :key="key"
-              style="height:510px">
+              style="height:560px">
               <li>
                 <span>订购单位:</span>
                 <el-select v-model="item.order_client"
@@ -120,9 +154,23 @@
                     style="top:15px"
                     @click="deletePackInfo(key,ind)"></em>
                 </li>
-                <li :key="ind + 'attr'">
+                <li :key="ind+ 'payType'">
+                  <span>计价方式:</span>
+                  <el-radio-group v-model="val.pay_type"
+                    style="margin-left:15px;">
+                    <el-radio :label="1"
+                      style="color:#666;font-weight:400;">数量</el-radio>
+                    <el-radio :label="2"
+                      style="color:#666;font-weight:400;">面积</el-radio>
+                  </el-radio-group>
+                </li>
+                <li :key="
+                      ind
+                      + 'attr'">
                   <span>辅料属性:</span>
-                  <div style="margin-left:15px;padding-left:15px;width:228px;position: relative;height:32px;line-height:32px;">
+                  <div style="
+                      margin-left:15px;padding-left:15px;width:228px;position:
+                      relative;height:32px;line-height:32px;">
                     <span>{{val.pack_attr ? val.pack_attr.name : ''}}</span>
                     <el-popover placement="top"
                       width="200"
@@ -144,29 +192,75 @@
                     </el-popover>
                   </div>
                 </li>
-                <li :key="ind + 'size'">
+                <li :key="ind + 'size'"
+                  v-if="val.pay_type === 1">
                   <span>包装规格:</span>
                   <el-input size="small"
                     placeholder="请输入规格"
                     style="width:243px;"
                     v-model="val.size_info">
-                    <!-- <template slot="append">cm</template> -->
                   </el-input>
                 </li>
-                <li :key="ind + 'price'">
-                  <span>数量单价:</span>
+                <li :key="ind + 'size'"
+                  v-if="val.pay_type === 2">
+                  <span>包装规格:</span>
                   <el-input size="small"
-                    placeholder="数量"
-                    v-model="val.number"
-                    style="width:108px;">
+                    placeholder="长(cm)"
+                    style="width:73px;"
+                    v-model="val.long">
                   </el-input>
-                  <strong style="color:#BBB;font-weight:400;">——</strong>
                   <el-input size="small"
-                    placeholder="单价"
-                    v-model="val.price"
-                    style="width:108px;margin-left:0;">
+                    placeholder="宽(cm)"
+                    style="width:73px;margin-left:12px;"
+                    v-model="val.width">
+                  </el-input>
+                  <el-input size="small"
+                    placeholder="高(cm)"
+                    style="width:73px;margin-left:12px;"
+                    v-model="val.height">
                   </el-input>
                 </li>
+                <template v-if="val.pay_type === 1">
+                  <li :key="ind + 'price'">
+                    <span>数量单价:</span>
+                    <el-input size="small"
+                      placeholder="单价"
+                      v-model="val.price"
+                      style="width:108px;">
+                    </el-input>
+                    <strong style="color:#BBB;font-weight:400;">——</strong>
+                    <el-input size="small"
+                      placeholder="数量"
+                      v-model="val.number"
+                      style="width:108px;margin-left:0;">
+                    </el-input>
+                  </li>
+                </template>
+                <template v-else>
+                  <li :key="ind + 'price'">
+                    <span>单价信息:</span>
+                    <el-input size="small"
+                      placeholder="单价(元/㎡)"
+                      v-model="val.priceArea"
+                      style="width:108px;">
+                    </el-input>
+                    <strong style="color:#BBB;font-weight:400;">——</strong>
+                    <el-input size="small"
+                      placeholder="单价"
+                      disabled
+                      v-model="val.price"
+                      style="width:108px;margin-left:0;">
+                    </el-input>
+                  </li>
+                  <li :key="ind + 'number'">
+                    <span>订购数量</span>
+                    <el-input size="small"
+                      placeholder="数量"
+                      v-model="val.number"
+                      style="width:243px;">
+                    </el-input>
+                  </li>
+                </template>
               </template>
               <li>
                 <span>总价:</span>
@@ -448,6 +542,8 @@ export default {
       order_time: '',
       client_name: '',
       group_name: '',
+      pack_means: [],
+      store_means: [],
       productList: [],
       total_price: 0,
       list: [{
@@ -456,7 +552,11 @@ export default {
           number: '',
           pack_name: '',
           price: '',
-          size_info: ''
+          size_info: '',
+          pay_type: 1,
+          long: '',
+          width: '',
+          height: ''
         }],
         total_price: '',
         order_time: this.now_time,
@@ -485,11 +585,21 @@ export default {
             if (value.pack_name) {
               value.pack_attr = this.options.packList.find(key => key.id === value.pack_name)
             }
-            this.total_price += (value.number ? value.number : 0) * (value.price ? value.price : 0)
-            price += (value.number ? value.number : 0) * (value.price ? value.price : 0)
+            if (value.pay_type === 1) {
+              this.total_price += (value.number ? value.number : 0) * (value.price ? value.price : 0)
+              price += (value.number ? value.number : 0) * (value.price ? value.price : 0)
+            } else {
+              let long = value.long ? value.long / 100 : 0
+              let width = value.width ? value.width / 100 : 0
+              let height = value.height ? value.height / 100 : 0
+              value.price = (((long * width + long * height + width * height) * 2) * (value.priceArea ? value.priceArea : 0)).toFixed(2)
+              this.total_price += ((long * width + long * height + width * height) * 2 * (value.number ? value.number : 0)) * (value.priceArea ? value.priceArea : 0)
+              price += ((long * width + long * height + width * height) * 2 * (value.number ? value.number : 0)) * (value.priceArea ? value.priceArea : 0)
+            }
           })
-          item.total_price = price
+          item.total_price = price.toFixed(2)
         })
+        this.total_price = this.total_price.toFixed(2)
       }
     }
   },
@@ -499,7 +609,11 @@ export default {
         number: '',
         pack_name: '',
         price: '',
-        size_info: ''
+        size_info: '',
+        pay_type: 1,
+        long: '',
+        width: '',
+        height: ''
       })
     },
     deletePackInfo (key, ind) {
@@ -512,7 +626,11 @@ export default {
           number: '',
           pack_name: '',
           price: '',
-          size_info: ''
+          size_info: '',
+          pay_type: 1,
+          long: '',
+          width: '',
+          height: ''
         }],
         total_price: '',
         order_time: this.now_time,
@@ -569,6 +687,32 @@ export default {
               flag = false
               return
             }
+            if (valPack.pay_type === 2) {
+              if (!valPack.long) {
+                this.$message({
+                  type: 'error',
+                  message: `请输入包装规格长度`
+                })
+                flag = false
+                return
+              }
+              if (!valPack.width) {
+                this.$message({
+                  type: 'error',
+                  message: `请输入包装规格宽度`
+                })
+                flag = false
+                return
+              }
+              if (!valPack.height) {
+                this.$message({
+                  type: 'error',
+                  message: `请输入包装规格高度`
+                })
+                flag = false
+                return
+              }
+            }
             data.push({
               user_id: window.sessionStorage.getItem('user_id'),
               order_id: this.$route.params.id,
@@ -576,11 +720,13 @@ export default {
               client_id: item.order_client,
               number: valPack.number,
               price: valPack.price,
-              size: valPack.size_info,
+              size: (valPack.pay_type === 1 ? valPack.size_info : (valPack.long + '*' + valPack.width + '*' + valPack.height + 'cm')),
               order_time: item.order_time,
               desc: item.remark,
               attribute: JSON.stringify(valPack.pack_attr.attribute),
-              company_id: window.sessionStorage.getItem('company_id')
+              company_id: window.sessionStorage.getItem('company_id'),
+              price_calculate: valPack.pay_type,
+              price_square: valPack.priceArea ? valPack.priceArea : null
             })
           })
         })
@@ -653,6 +799,8 @@ export default {
       this.client_name = orderInfo.client_name
       this.order_time = orderInfo.order_time
       this.group_name = orderInfo.group_name
+      this.pack_means = orderInfo.pack_means ? JSON.parse(orderInfo.pack_means) : []
+      this.store_means = orderInfo.store_means ? JSON.parse(orderInfo.store_means) : []
       // 初始化产品信息
       for (let prop in orderInfo.order_batch) {
         let item = orderInfo.order_batch[prop]

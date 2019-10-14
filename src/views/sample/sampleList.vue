@@ -294,7 +294,6 @@ export default {
         productDelete({
           id: id
         }).then((res) => {
-          console.log(res)
           if (res.data.status) {
             this.$message({
               type: 'success',
@@ -411,7 +410,6 @@ export default {
     },
     // 类型展示
     filterSize (item) {
-      console.log(item)
       return item.map(key => {
         return key.measurement
       }).join('/')

@@ -101,7 +101,7 @@ export default {
     let date = new Date()
     this.create_time = date.getFullYear() + '-' + ((date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1)) + '-' + (date.getDate() < 10 ? ('0' + date.getDate()) : date.getDate())
     // 获取类型
-    this.type = this.$route.params.type === 'undefined' ? '订购' : this.$route.params.type
+    this.type = this.$route.params.type === 'undefined' ? '订购' : this.$route.params.type.split('-').join('/')
     // 获取公司
     this.client_name = this.$route.params.companyName
     // 获取数据
@@ -114,14 +114,15 @@ export default {
         res.data.data.forEach(item => {
           this.order_code = item.order_code
           if (item.process_type === this.type && String(item.client_name) === this.client_name) {
-            this.total_price += Number(item.total_price)
             item.material_info = JSON.parse(item.material_info)
             item.material_info.forEach(value => {
+              this.total_price += Number(value.value) * Number(item.price)
               let flag = this.process_info.find(val => val.material === item.material_name)
               if (!flag) {
                 this.process_info.push({
                   material: item.material_name,
                   total_weight: value.value,
+                  price: item.price,
                   unit: item.unit ? item.unit : 'kg',
                   color_info: [{
                     name: value.color,
@@ -151,7 +152,7 @@ export default {
         order_id: this.$route.params.id
       }).then(res => {
         console.log(res)
-        res.data.data.forEach(item => {
+        res.data.forEach(item => {
           if (String(item.client_name) === this.client_name) {
             this.total_price += Number(item.price * item.weight)
             let flag = this.process_info.find(val => val.material === item.material_name)
