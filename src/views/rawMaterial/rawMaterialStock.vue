@@ -304,7 +304,7 @@ export default {
   },
   methods: {
     addAllGoStockInfo () {
-      let flag = this.processList.find(key => key.process_type === '染色')
+      let flag = this.processList.find(key => key.process_type === '成品染色')
       if (!flag) {
         this.$message.error('没有相关染色信息，无法一键添加')
       } else {
@@ -545,6 +545,7 @@ export default {
       this.group_name = res[0].data.data.group_name
       // 初始化订购信息
       let materialInfo = res[1].data
+      console.log(materialInfo)
       materialInfo.forEach(item => {
         if ((this.type === '0' && item.type === 1) || (this.type === '1' && item.type === 2)) {
           let flag = this.materialList.find(val => val.company === item.client_name)
@@ -631,7 +632,7 @@ export default {
                 flag.companys.push({
                   company: item.client_name,
                   total_price: item.total_price,
-                  create_time: item.order_time.split(' ')[0],
+                  create_time: item.create_time.split(' ')[0],
                   remark: item.desc,
                   materials: [{
                     material: item.material_name,
@@ -690,6 +691,7 @@ export default {
         id: null,
         name: '本厂仓库'
       })
+      console.log(this.materialList)
       this.loading = false
     })
   }

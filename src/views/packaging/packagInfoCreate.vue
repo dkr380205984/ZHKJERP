@@ -183,7 +183,7 @@
                   size="small">
                   <el-option v-for="value in packList"
                     :key="value.id"
-                    :label="value.name + '(' + value.size + ')'"
+                    :label="value.name"
                     :value="value.id">
                   </el-option>
                 </el-select>

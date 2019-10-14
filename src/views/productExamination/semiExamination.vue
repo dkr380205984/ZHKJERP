@@ -490,7 +490,7 @@ export default {
       weaveInfo.forEach(item => {
         if (this.$route.params.product_code === item.product_info.product_code) {
           this.productList.product_code = item.product_info.product_code
-          this.productList.product_class = item.product_info.category_info.product_category + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_id ? '/' + item.product_info.flower_id : '')
+          this.productList.product_class = item.product_info.category_name + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_name ? '/' + item.product_info.flower_name : '')
           if (!this.productList.size_info) {
             this.productList.size_info = []
           }

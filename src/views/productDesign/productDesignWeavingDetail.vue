@@ -124,11 +124,11 @@
                   class="content">
                   <span class="tableRow">{{item.product_code}}</span>
                   <span class="tableRow">{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
-                  <span class="tableRow"
+                  <span class="tableRow col"
                     style="flex:5;">
                     <span v-for="(itemColour,indexColour) in item.info"
                       :key="indexColour"
-                      class="tablecolumn">
+                      class="tableColumn">
                       <span class="tableRow">{{itemColour.size}}/{{itemColour.color}}</span>
                       <span class="tableRow">{{itemColour.order_num}}{{item.unit_name}}</span>
                       <span class="tableRow">{{itemColour.stock_pick}}{{item.unit_name}}</span>
@@ -324,14 +324,14 @@
                   v-for="(item,index) in fenpeiList"
                   :key="index">
                   <span class="tableRow">{{item.client_name}}</span>
-                  <span class="tableRow"
+                  <span class="tableRow col"
                     style="flex:8">
                     <span v-for="(itemPro,indexPro) in item.info"
                       :key="indexPro"
                       class="tableColumn">
                       <span class="tableRow"
                         style="flex:2">{{itemPro.product_code}}({{itemPro.info[0].product_info.category_name}}/{{itemPro.info[0].product_info.type_name}}/{{itemPro.info[0].product_info.style_name}})</span>
-                      <span class="tableRow"
+                      <span class="tableRow col"
                         style="flex:6">
                         <span v-for="(itemPrice,indexPrice) in itemPro.info"
                           :key="indexPrice"
@@ -347,7 +347,7 @@
                     </span>
                   </span>
                   <span class="tableRow">{{item.sum}}元</span>
-                  <span class="tableRow">
+                  <span class="tableRow col">
                     <span v-for="(itemPro,indexPro) in item.info"
                       :key="indexPro"
                       class="tableColumn">

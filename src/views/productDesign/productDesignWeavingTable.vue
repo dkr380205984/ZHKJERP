@@ -217,7 +217,7 @@ export default {
             let flag = this.product_info.find(val => val.product_code === item.product_info.product_code)
             if (!flag) {
               this.total_price += item.price * item.number
-              let type = item.product_info.category_info.product_category + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_id ? '/' + item.product_info.flower_id : '')
+              let type = item.product_info.category_name + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_name ? '/' + item.product_info.flower_name : '')
               this.product_info.push({
                 product_code: item.product_info.product_code,
                 product_type: type,
@@ -276,7 +276,7 @@ export default {
             let flag = this.product_info.find(val => val.product_code === item.product_info.product_code)
             if (!flag) {
               this.total_price += item.price * item.number
-              let type = item.product_info.category_info.product_category + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_id ? '/' + item.product_info.flower_id : '')
+              let type = item.product_info.category_name + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_name ? '/' + item.product_info.flower_name : '')
               this.product_info.push({
                 product_code: item.product_info.product_code,
                 product_type: type,

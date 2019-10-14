@@ -799,7 +799,7 @@ export default {
       let productsInfo = res[5].data.data
       // 分配信息初始化
       productionInfo.forEach(item => {
-        let types = item.product_info.category_info.product_category + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_id ? ('/' + item.product_info.flower_id) : '')
+        let types = item.product_info.category_name + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_name ? ('/' + item.product_info.flower_name) : '')
         let flag = this.productionList.find(val => val.name === item.client_name)
         if (!flag) {
           this.productionList.push({

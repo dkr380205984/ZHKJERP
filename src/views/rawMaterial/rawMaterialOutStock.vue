@@ -549,45 +549,45 @@ export default {
       this.group_name = res[0].data.data.group_name
       this.loading = false
       let materialInfo = res[1].data.data
-      materialInfo.material_info.forEach((item, key) => {
-        for (let prop in item) {
-          for (let value in item[prop]) {
-            if (value !== 'total_number' && value !== 'type' && value !== 'unit') {
-              if (item[prop].type === Number(this.type)) {
-                let flag = this.materialList.find(val => val.material === prop)
-                if (!flag) {
-                  this.materialList.push({
-                    material: prop,
-                    plan_number: (item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value],
-                    unit: (item[prop].unit === '克' || item[prop].unit === 'g') ? 'kg' : item[prop].unit === '千克' ? 'kg' : item[prop].unit,
-                    need: [{
-                      name: value,
-                      value: (item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value]
-                    }]
+      console.log(materialInfo)
+      for (let prop in materialInfo.material_info) {
+        let item = materialInfo.material_info
+        for (let value in item[prop]) {
+          if (value !== 'total_number' && value !== 'type' && value !== 'unit') {
+            if (item[prop].type === Number(this.type)) {
+              let flag = this.materialList.find(val => val.material === prop)
+              if (!flag) {
+                this.materialList.push({
+                  material: prop,
+                  plan_number: (item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value],
+                  unit: (item[prop].unit === '克' || item[prop].unit === 'g') ? 'kg' : item[prop].unit === '千克' ? 'kg' : item[prop].unit,
+                  need: [{
+                    name: value,
+                    value: (item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value]
+                  }]
+                })
+              } else {
+                flag.plan_number = Number(flag.plan_number) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value])
+                let arr = flag.need.find(val => val.name === value)
+                if (!arr) {
+                  flag.need.push({
+                    name: value,
+                    value: (item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value]
                   })
                 } else {
-                  flag.plan_number = Number(flag.plan_number) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value])
-                  let arr = flag.need.find(val => val.name === value)
-                  if (!arr) {
-                    flag.need.push({
-                      name: value,
-                      value: (item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value]
-                    })
-                  } else {
-                    arr.value = Number(arr.value) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value])
-                  }
+                  arr.value = Number(arr.value) + Number((item[prop].unit === '克' || item[prop].unit === 'g') ? Math.ceil(item[prop][value]) / 1000 : item[prop][value])
                 }
               }
             }
           }
         }
-      })
+      }
       // 生产信息初始化
       let productionInfo = res[2].data.data
       let productsInfo = res[3].data.data
       // 分配信息初始化
       productionInfo.forEach(item => {
-        let types = item.product_info.category_info.product_category + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_id ? ('/' + item.product_info.flower_id) : '')
+        let types = item.product_info.category_name + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_name ? ('/' + item.product_info.flower_name) : '')
         let flag = this.productionList.find(val => val.name === item.client_name)
         if (!flag) {
           this.productionList.push({
