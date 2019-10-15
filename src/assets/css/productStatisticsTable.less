@@ -4,15 +4,8 @@ ul {
   padding: 0;
   list-style: none;
 }
-h2 {
+p{
   margin: 0;
-  font-size: 30px;
-  color: @fontNormal;
-  font-weight: 400;
-}
-.bold12 {
-  font-size: 22px;
-  font-weight: 500;
 }
 #productDesignTable {
   width: 982px;
@@ -30,28 +23,75 @@ h2 {
       box-sizing: border-box;
       overflow: hidden;
       width: 100%;
-      &:first-child {
-        border: none;
-        border-bottom: 1px solid #999;
+      &:first-of-type {
+        border-top: 1px solid #999;
+        // border-bottom: 1px solid #999;
       }
     }
-    .title-info {
-      height: auto;
-      padding: 0 19px 0 19px;
-      box-sizing: border-box;
-      .title {
-        margin-top: 45px;
-        text-align: center;
-      }
-      .info {
-        margin-top: 35px;
+    // .title-info {
+    //   height: auto;
+    //   padding: 0 19px 0 19px;
+    //   box-sizing: border-box;
+      // .title {
+      //   margin-top: 45px;
+      //   text-align: center;
+      // }
+      // .info {
+      //   margin-top: 35px;
+      //   display: flex;
+      //   justify-content: space-between;
+      //   em {
+      //     font-style: normal;
+      //   }
+      // }
+    .head{
+      page-break-before: always;
+      height: 160px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-bottom: 8px;
+      .left{
         display: flex;
-        justify-content: space-between;
-        em {
-          font-style: normal;
+        flex-direction: column;
+        p.company {
+          font-size: 24px;
+          // margin-bottom: 16px;
+        }
+        &>span{
+          margin-top: 16px;
+          &>.label{
+            display: inline-block;
+            width:7em;
+          }
+        }
+      }
+      .right{
+        position: relative;
+        width: 120px;
+        height: 120px;
+        border: 1px solid #999;
+        &>img{
+          max-width: 100%;
+          max-height: 100%;
+        }
+        .messages{
+          position: absolute;
+          bottom: 0;
+          left: -10px;
+          transform: translateX(-100%);
+          width: auto;
+          height: auto;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          &>span{
+            white-space: nowrap;
+          }
         }
       }
     }
+    // }
     .information {
       height: 49px;
       &>span {

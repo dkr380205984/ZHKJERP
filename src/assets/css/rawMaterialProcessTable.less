@@ -4,6 +4,9 @@ ul {
   padding: 0;
   list-style: none;
 }
+p {
+  margin: 0;
+}
 #rawMaterialProcessTable {
   width: 982px;
   height: auto;
@@ -11,19 +14,51 @@ ul {
   font-family: 'systemfont';
   font-size: @fontBig;
   color: @fontNormal;
-  h2{
-    margin: 0 auto;
-    font-weight: 500;
-    text-align: center;
-    font-size: 30px;
-  }
-  .processCodeTime {
+  .head{
+    page-break-before: always;
+    height: 160px;
     display: flex;
     justify-content: space-between;
-    margin-top: 30px;
-    margin-bottom: 10px;
-    &>span {
-      margin: 0 10px;
+    align-items: flex-end;
+    padding-bottom: 8px;
+    .left{
+      display: flex;
+      flex-direction: column;
+      p.company {
+        font-size: 24px;
+        // margin-bottom: 16px;
+      }
+      &>span{
+        margin-top: 16px;
+        &>.label{
+          display: inline-block;
+          width:7em;
+        }
+      }
+    }
+    .right{
+      position: relative;
+      width: 120px;
+      height: 120px;
+      border: 1px solid #999;
+      &>img{
+        max-width: 100%;
+        max-height: 100%;
+      }
+      .messages{
+        position: absolute;
+        bottom: 0;
+        left: -10px;
+        transform: translateX(-100%);
+        width: auto;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        &>span{
+          white-space: nowrap;
+        }
+      }
     }
   }
   .tableBox {

@@ -2400,7 +2400,7 @@ export default {
               productInfo.push({
                 product_code: valPro.product_code,
                 product_type: valPro.category_info.category_name + '/' + valPro.category_info.type_name + '/' + valPro.category_info.style_name + (valPro.category_info.flower_name ? '/' + valPro.category_info.flower_name : ''),
-                img: valPro.category_info.image,
+                img: valPro.category_info.images,
                 unit: valPro.category_info.unit,
                 size: [{
                   size: valPro.size,
@@ -2607,7 +2607,7 @@ export default {
             info: [{
               product_code: item.product_info.product_code,
               product_type: item.product_info.category_info.product_category + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_id ? '/' + item.product_info.flower_id : ''),
-              img: item.product_info.img,
+              img: item.product_info.images,
               unit: item.product_info.category_info.name,
               size: [{
                 size: item.size,
@@ -2629,7 +2629,7 @@ export default {
             flag.info.push({
               product_code: item.product_info.product_code,
               product_type: item.product_info.category_info.product_category + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_id ? '/' + item.product_info.flower_id : ''),
-              img: item.product_info.img,
+              img: item.product_info.images,
               unit: item.product_info.category_info.name,
               size: [{
                 size: item.size,
@@ -2668,7 +2668,7 @@ export default {
             info: [{
               product_code: item.product_info.product_code,
               product_type: item.product_info.category_info.product_category + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_id ? '/' + item.product_info.flower_id : ''),
-              img: item.product_info.img,
+              img: item.product_info.images,
               unit: item.product_info.category_info.name,
               size: [{
                 type: item.type,
@@ -2691,7 +2691,7 @@ export default {
             flag.info.push({
               product_code: item.product_info.product_code,
               product_type: item.product_info.category_info.product_category + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_id ? '/' + item.product_info.flower_id : ''),
-              img: item.product_info.img,
+              img: item.product_info.image,
               unit: item.product_info.category_info.name,
               size: [{
                 type: item.type,

@@ -18,7 +18,7 @@ let router = new Router({
     name: 'priceListTable',
     component: () => import('./views/product/priceListTable.vue')
   }, {
-    path: '/rawMaterialProcessTable/:id/:companyName/:type',
+    path: '/rawMaterialProcessTable/:id/:companyName/:type/:materialType',
     name: 'rawMaterialProcessTable',
     component: () => import('./views/rawMaterial/rawMaterialProcessTable.vue')
   }, {

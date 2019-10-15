@@ -2,10 +2,23 @@
   <div id="rawMaterialProcessTable"
     @click.right="goTop"
     v-loading='loading'>
-    <h2>{{company_name + type + '单'}}</h2>
-    <div class="processCodeTime">
-      <span>{{type}}单编号：{{process_code}}</span>
-      <span>创建时间：{{create_time}}</span>
+    <div class="head">
+      <div class="left">
+        <p class="company">{{company_name + ($route.params.materialType === '0' ? '原料' : '辅料') + type + '单'}}</p>
+        <span><span class="label">联系人:</span>{{linkman}}</span>
+        <span><span class="label">联系人电话:</span>{{linkman_tel}}</span>
+        <span><span class="label">创建日期:</span>{{create_time}}</span>
+      </div>
+      <div class="right">
+        <img :src="qrCodeUrl"
+          alt=""
+          ref="qrcodeCanvas"
+          class="qrcode">
+        <div class="messages">
+          <span>扫一扫</span>
+          <span>{{$route.params.materialType === '0' ? '纱线原料' : '装饰辅料'}}入库</span>
+        </div>
+      </div>
     </div>
     <div class="tableBox">
       <div>
@@ -20,14 +33,6 @@
           <span>{{order_company}}</span>
           <span>负责小组</span>
           <span>{{group_name}}</span>
-        </span>
-      </div>
-      <div>
-        <span>
-          <span>联系人</span>
-          <span>{{linkman}}</span>
-          <span>联系人电话</span>
-          <span>{{linkman_tel}}</span>
         </span>
       </div>
       <div>
@@ -84,6 +89,7 @@ export default {
       linkman_tel: '',
       linkman: '',
       total_price: 0,
+      qrCodeUrl: '',
       process_info: []
     }
   },
@@ -205,7 +211,14 @@ export default {
       this.linkman_tel = linkman.mobile
     })
   },
-  updated () {
+  mounted () {
+    const QRCode = require('qrcode')
+    this.urlVal = window.location.origin + '/index/rawMaterialStockDetail/' + this.$route.params.id + '/' + this.$route.params.materialType
+    // 画二维码里的logo[注意添加logo图片的时候需要使用服务器]
+    QRCode.toDataURL(this.urlVal, { errorCorrectionLevel: 'H' }, (err, url) => {
+      console.log(err)
+      this.qrCodeUrl = url
+    })
   }
 }
 </script>

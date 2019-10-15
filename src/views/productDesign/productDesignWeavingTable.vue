@@ -2,10 +2,23 @@
   <div id="productDesignWeavingTable"
     @click.right="goTop"
     v-loading='loading'>
-    <h2>{{company_name + '生产任务通知单'}}</h2>
-    <div class="processCodeTime">
-      <span>生产单编号：{{process_code}}</span>
-      <span>创建时间：{{create_time}}</span>
+    <div class="head">
+      <div class="left">
+        <p class="company">{{company_name + '生产任务通知单'}}</p>
+        <span><span class="label">联系人:</span>{{linkman}}</span>
+        <span><span class="label">联系人电话:</span>{{linkman_tel}}</span>
+        <span><span class="label">创建日期:</span>{{create_time}}</span>
+      </div>
+      <div class="right">
+        <img :src="qrCodeUrl"
+          alt=""
+          ref="qrcodeCanvas"
+          class="qrcode">
+        <div class="messages">
+          <span>扫一扫</span>
+          <span>更新生产进度</span>
+        </div>
+      </div>
     </div>
     <div class="tableBox">
       <div>
@@ -24,10 +37,120 @@
       </div>
       <div>
         <span>
-          <span>联系人</span>
-          <span>{{linkman}}</span>
-          <span>联系人电话</span>
-          <span>{{linkman_tel}}</span>
+          <span>生产单位</span>
+          <span>{{client_name === 'null' ? '仓库' : client_name}}</span>
+          <span>总价</span>
+          <span>{{total_price|fixedFilter}}{{'元'}}</span>
+        </span>
+      </div>
+      <div>
+        <ul class="tables"
+          style="width:inherit">
+          <li class="title">
+            <span>产品信息</span>
+            <span class="flex5">
+              <span>尺码颜色</span>
+              <span class="flex4">
+
+                <span>加工类型</span>
+                <span>单价</span>
+                <span>数量</span>
+                <span>完成日期</span>
+              </span>
+            </span>
+          </li>
+          <li v-for="(item,key) in product_info"
+            :key="key"
+            class="content">
+            <span class="tableRow">
+              <div>
+                {{item.product_code}}<br />{{item.product_type}}
+              </div>
+            </span>
+            <span class="tableRow col flex5">
+              <span class="tableColumn"
+                v-for="(val,ind) in item.size_info"
+                :key="ind">
+                <span class="tableRow">{{val.size}}{{'/'}}{{val.color}}</span>
+                <span class="tableRow col flex4">
+                  <span class="tableColumn"
+                    v-for="(value,index) in val.process_info"
+                    :key="index">
+                    <span class="tableRow">{{value.type}}</span>
+                    <span class="tableRow">{{value.price}}{{'元/条'}}</span>
+                    <span class="tableRow">{{value.number}}{{'条'}}</span>
+                    <span class="tableRow">{{value.compiled_time}}</span>
+                  </span>
+                </span>
+              </span>
+            </span>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <ul class="tables">
+          <li class="title">
+            <span>{{type === '0' ? '原' : '辅'}}料信息</span>
+            <span class="flex5">
+              <span>{{type === '0' ? '原' : '辅'}}料颜色</span>
+              <span class="flex4">{{type === '0' ? '原' : '辅'}}料数量</span>
+            </span>
+          </li>
+          <li v-if="material_info.length === 0">无{{type === '0' ? '原' : '辅'}}料信息</li>
+          <li class="content"
+            v-for="(item,key) in material_info"
+            :key="key">
+            <span class="tableRow">{{item.material}}</span>
+            <span class="tableRow flex5 col">
+              <span class="tableColumn"
+                v-for="(val,ind) in item.color_info"
+                :key="ind">
+                <span class="tableRow">{{val.color}}</span>
+                <span class="flex4 tableRow">{{type === '0' ? val.number.toFixed(2) : Math.ceil(val.number)}}{{val.unit}}</span>
+              </span>
+            </span>
+          </li>
+        </ul>
+      </div>
+      <div class="remark">
+        <span>
+          <span>备注</span>
+          <span></span>
+        </span>
+      </div>
+    </div>
+    <div class="head"
+      style="margin-top:80px;">
+      <div class="left">
+        <p class="company">{{company_name + (type === '0' ? '原料' : '辅料') +'调拨单'}}</p>
+        <span><span class="label">联系人:</span>{{linkman}}</span>
+        <span><span class="label">联系人电话:</span>{{linkman_tel}}</span>
+        <span><span class="label">创建日期:</span>{{create_time}}</span>
+      </div>
+      <div class="right">
+        <img :src="qrCodeUrl"
+          alt=""
+          ref="qrcodeCanvas"
+          class="qrcode">
+        <div class="messages">
+          <span>扫一扫</span>
+          <span>调取{{type === '1' ? '辅料' : '原料'}}库存</span>
+        </div>
+      </div>
+    </div>
+    <div class="tableBox">
+      <div>
+        <span>
+          <span>订单号</span>
+          <span>{{order_code}}</span>
+          <span>下单日期</span>
+          <span>{{order_time}}</span>
+        </span>
+        <span>
+          <span>订单公司</span>
+          <span>{{order_company}}</span>
+          <span>负责小组</span>
+          <span>{{group_name}}</span>
         </span>
       </div>
       <div>
@@ -135,7 +258,8 @@ export default {
       linkman: '',
       total_price: 0,
       product_info: [],
-      material_info: []
+      material_info: [],
+      qrCodeUrl: ''
     }
   },
   filters: {
@@ -192,6 +316,7 @@ export default {
             })
           })
         })
+        this.loading = false
       })
     }
   },
@@ -260,7 +385,6 @@ export default {
         })
         this.getMaterial()
       })
-      this.loading = false
     } else if (this.type === '1') {
       halfProductDetail({
         order_id: this.$route.params.id
@@ -271,7 +395,7 @@ export default {
             let flag = this.product_info.find(val => val.product_code === item.product_info.product_code)
             if (!flag) {
               this.total_price += item.price * item.number
-              let type = item.product_info.category_name + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_name ? '/' + item.product_info.flower_name : '')
+              let type = item.product_info.category_info.product_category + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_name ? '/' + item.product_info.flower_name : '')
               this.product_info.push({
                 product_code: item.product_info.product_code,
                 product_type: type,
@@ -318,39 +442,41 @@ export default {
         })
         this.getMaterial()
       })
-      this.loading = false
     }
-    // 初始化订单信息
-    orderDetail({
-      id: this.$route.params.id
-    }).then(res => {
-      this.order_code = res.data.data.order_code
-      this.group_name = res.data.data.group_name
-      this.order_company = res.data.data.client_name
-      this.order_time = res.data.data.order_time
-    })
-    // 初始化联系人信息
-    authList({
-      company_id: window.sessionStorage.getItem('company_id')
-    }).then(res => {
-      let linkman = res.data.data.find(val => val.id === window.sessionStorage.getItem('user_id'))
+    Promise.all([
+      orderDetail({
+        id: this.$route.params.id
+      }), authList({
+        company_id: window.sessionStorage.getItem('company_id')
+      }), clientList({
+        company_id: window.sessionStorage.getItem('company_id')
+      }), companyInfoDetail({
+        company_id: window.sessionStorage.getItem('company_id')
+      })
+    ]).then(res => {
+      // 初始化订单信息
+      this.order_code = res[0].data.data.order_code
+      this.group_name = res[0].data.data.group_name
+      this.order_company = res[0].data.data.client_name
+      this.order_time = res[0].data.data.order_time
+      // 初始化联系人信息
+      let linkman = res[1].data.data.find(val => val.id === window.sessionStorage.getItem('user_id'))
       this.linkman = linkman.name
       this.linkman_tel = linkman.mobile
-    })
-    // 将公司名称转为简称
-    clientList({
-      company_id: window.sessionStorage.getItem('company_id')
-    }).then(res => {
-      let clientList = res.data.data
+      // 将公司名称转为简称
+      let clientList = res[2].data.data
       this.order_company = clientList.find(val => val.name === this.order_company).abbreviation || this.order_company
-    })
-    companyInfoDetail({
-      company_id: window.sessionStorage.getItem('company_id')
-    }).then(res => {
-      this.company_name = res.data.data.company_name
+      this.company_name = res[3].data.data.company_name
     })
   },
-  updated () {
+  mounted () {
+    const QRCode = require('qrcode')
+    this.urlVal = window.location.origin + '/index/rawMaterialStockDetail/' + this.$route.params.id + '/' + this.$route.params.type
+    // 画二维码里的logo[注意添加logo图片的时候需要使用服务器]
+    QRCode.toDataURL(this.urlVal, { errorCorrectionLevel: 'H' }, (err, url) => {
+      console.log(err)
+      this.qrCodeUrl = url
+    })
   }
 }
 </script>

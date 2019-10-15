@@ -3,15 +3,24 @@
     v-loading='loading'
     @click.right="goTop">
     <ul class="tableBox">
-      <li class="title-info">
-        <div class="title">
-          <h2>{{company_name}}{{type === '0' ? '原' : '辅'}}料配色单</h2>
+      <div class="head">
+        <div class="left">
+          <p class="company">{{company_name}}{{type === '0' ? '原' : '辅'}}料配色单</p>
+          <span><span class="label">联系人:</span>{{linkman}}</span>
+          <span><span class="label">联系人电话:</span>{{linkman_tel}}</span>
+          <span><span class="label">创建日期:</span>{{create_time}}</span>
         </div>
-        <div class="info">
-          <span>订单编号：<em class="bold12">KR{{year + (type === '0' ? 'YL' : 'FL' ) + order.order_code}}</em></span>
-          <span>创建日期：{{order.order_time}}</span>
+        <div class="right">
+          <img :src="qrCodeUrl"
+            alt=""
+            ref="qrcodeCanvas"
+            class="qrcode">
+          <div class="messages">
+            <span>扫一扫</span>
+            <span>更新生产进度</span>
+          </div>
         </div>
-      </li>
+      </div>
       <li class="information">
         <span>订单号</span>
         <span>{{order.order_code}}</span>
@@ -71,7 +80,7 @@
 </template>
 
 <script>
-import { productionStat, orderDetail, productionDetail, companyInfoDetail } from '@/assets/js/api.js'
+import { productionStat, orderDetail, productionDetail, companyInfoDetail, authList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -83,12 +92,14 @@ export default {
         order_batch: [],
         group_name: ''
       },
-      year: '',
       type: '',
       materialInfo: {},
       proId: '',
       productInfo: [],
-      company_name: ''
+      company_name: '',
+      linkman: '',
+      linkman_tel: '',
+      qrCodeUrl: ''
     }
   },
   filters: {
@@ -121,6 +132,8 @@ export default {
   },
   created () {
     this.type = window.location.href.split('?')[1].split('&')[0].split('=')[1]
+    let date = new Date()
+    this.create_time = date.getFullYear() + '-' + ((date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1)) + '-' + (date.getDate() < 10 ? ('0' + date.getDate()) : date.getDate())
     this.proId = window.location.href.split('?')[1].split('&')[1] ? window.location.href.split('?')[1].split('&')[1].split('=')[1] : null
     if (this.proId) {
       Promise.all([
@@ -262,6 +275,7 @@ export default {
             }
           }
         })
+        this.loading = false
       })
     } else {
       Promise.all([productionStat({
@@ -298,17 +312,32 @@ export default {
         this.order.order_time = res[1].data.data.order_time
         this.order.group_name = res[1].data.data.group_name
         this.materialInfo = res[0].data.data
+        this.loading = false
       })
     }
-    companyInfoDetail({
-      company_id: window.sessionStorage.getItem('company_id')
-    }).then(res => {
-      this.company_name = res.data.data.company_name
+    Promise.all([
+      authList({
+        company_id: window.sessionStorage.getItem('company_id')
+      }), companyInfoDetail({
+        company_id: window.sessionStorage.getItem('company_id')
+      })
+    ]).then(res => {
+      // 初始化联系人信息
+      let linkman = res[0].data.data.find(val => val.id === window.sessionStorage.getItem('user_id'))
+      this.linkman = linkman.name
+      this.linkman_tel = linkman.mobile
+      this.company_name = res[1].data.data.company_name
     })
-    this.year = new Date().getFullYear().toString().split('20')[1]
+    // this.year = new Date().getFullYear().toString().split('20')[1]
   },
-  updated () {
-    this.loading = false
+  mounted () {
+    const QRCode = require('qrcode')
+    this.urlVal = window.location.origin + '/index/rawMaterialOrderDetail/' + this.$route.params.id + '/' + this.type
+    // 画二维码里的logo[注意添加logo图片的时候需要使用服务器]
+    QRCode.toDataURL(this.urlVal, { errorCorrectionLevel: 'H' }, (err, url) => {
+      console.log(err)
+      this.qrCodeUrl = url
+    })
   }
 }
 </script>
