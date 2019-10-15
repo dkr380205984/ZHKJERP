@@ -252,9 +252,6 @@ export default {
     getBg (item) {
       return 'url("' + item + '")'
     },
-    showImage (e) {
-      console.log(e)
-    },
     share () {
       this.shareBoxStatu = !this.shareBoxStatu
     },

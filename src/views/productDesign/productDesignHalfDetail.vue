@@ -594,7 +594,6 @@ export default {
       })
       // 第三步，对配料单完整的数据进行辅料计算
       this.product = this.product.map((item) => {
-        console.log(item)
         if (item.state === 2) {
           return {
             product_code: item.product_code,
@@ -648,7 +647,6 @@ export default {
           return item
         }
       })
-      console.log(this.product)
       // 所需辅料信息统计至此完成，开始统计半成品分配信息
       // 日志表格可以直接使用
       this.logList = logList

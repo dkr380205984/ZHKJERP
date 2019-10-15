@@ -430,7 +430,6 @@ export default {
             })
           })
           this.product_plan[code] = arr
-          console.log(this.product_plan)
         }
       })
     },
@@ -500,7 +499,6 @@ export default {
           }
         }
       })
-      console.log(this.material_plan)
     }
   },
   filters: {
@@ -515,7 +513,6 @@ export default {
       }
     },
     filterFixed (item) {
-      console.log(item)
       if (item) {
         return item.unit === 'g' || item.unit === '克' ? ((item.number / 1000).toFixed(1) + 'kg') : (item.unit === '千克' ? (Number(item.number).toFixed(1) + 'kg') : (Number(item.number).toFixed(1) + item.unit))
       } else {
@@ -528,7 +525,6 @@ export default {
       order_id: this.$route.params.id,
       company_id: window.sessionStorage.getItem('company_id')
     }).then((res) => {
-      console.log(res)
       this.order = res.data.data.order
       let productCodeArr = []
       for (let prop in this.order.order_batch) {

@@ -257,7 +257,6 @@ export default {
       }),
       getToken()
     ]).then(res => {
-      console.log(res[0].data.data)
       this.treeData = res[0].data.data.map((item) => {
         return {
           value: item.id,
@@ -503,7 +502,6 @@ export default {
           this.$message.warning('请勿频繁点击')
         }
       }
-      console.log(data)
     }
   }
 }

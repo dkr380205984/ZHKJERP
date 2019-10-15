@@ -514,7 +514,6 @@ export default {
       }
     },
     filterMaterials (arr) {
-      console.log(arr)
       let str = ''
       arr.forEach((item) => {
         str += item.ingredient_name + item.ingredient_value + '%' + ' / '
@@ -583,7 +582,6 @@ export default {
       id: this.$route.params.id
     }).then((res) => {
       if (res.data.status) {
-        console.log(res.data.data)
         this.productDetail = res.data.data
         this.selectSize = res.data.data.size[0].measurement
         this.selectColor = [res.data.data.color[0].color_name]

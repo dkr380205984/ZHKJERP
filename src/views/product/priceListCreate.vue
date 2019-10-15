@@ -1164,7 +1164,6 @@ export default {
           client_id: '',
           code: query
         }).then((res) => {
-          console.log(res)
           this.priceListArr = res.data.data
           this.loadingS = false
         })
@@ -1174,7 +1173,6 @@ export default {
     },
     // 导入报价单操作
     getPriceList (id) {
-      console.log(id)
       if (id) {
         this.loading = true
         priceListDetail({
@@ -1316,7 +1314,6 @@ export default {
       }
     },
     filterColor (item) {
-      console.log(item)
       return item.color.map(val => {
         return val.color_name
       }).join('/')

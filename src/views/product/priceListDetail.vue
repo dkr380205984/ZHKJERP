@@ -437,7 +437,6 @@ export default {
     //   return arr[val]
     // },
     filterColor (item) {
-      console.log(item)
       return item.color.map(val => {
         return val.color_name
       }).join('/')
@@ -533,7 +532,6 @@ export default {
           ...item
         }
       })
-      console.log(this.product_info)
       this.loading = false
     })
   }

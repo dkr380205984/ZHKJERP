@@ -411,7 +411,6 @@ export default {
       items.forEach((item, key) => {
         total += Number((item.unit === '克' || item.unit === 'g') ? item.number / 1000 : item.number)
         if (key === items.length - 1) {
-          console.log(total)
           total = type === 'main' ? total.toFixed(1) : Math.ceil(total)
           total += ((item.unit === '克' || item.unit === 'g' || item.unit === '千克') ? 'kg' : item.unit)
         }

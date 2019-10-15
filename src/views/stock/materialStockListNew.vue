@@ -196,7 +196,6 @@ export default {
         end_time: this.end_time
       }).then(res => {
         let data = res.data.data
-        console.log(res)
         this.total = res.data.meta.total
         data.forEach(item => {
           this.list.push({

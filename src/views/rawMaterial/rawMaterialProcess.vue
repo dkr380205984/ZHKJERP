@@ -282,7 +282,6 @@ export default {
     list: {
       deep: true,
       handler: function () {
-        console.log('1', this.selectList)
         this.selectList.forEach(res => {
           // if (!res.selectArr) {
           //   res.selectArr = []
@@ -291,7 +290,6 @@ export default {
             item.select_number = 0
           })
         })
-        console.log('list', this.list)
         this.list.forEach(item => {
           item.processInfo.forEach(value => {
             value.processMaterialInfo.forEach(val => {
@@ -318,11 +316,9 @@ export default {
             })
           })
         })
-        console.log('2', this.selectList)
         this.selectList.forEach((res, ind) => {
           res.selectArr.forEach((item, key) => {
             if (!item.select_number && !item.number) {
-              console.log(item)
               res.selectArr.splice(key, 1)
             }
           })
@@ -330,7 +326,6 @@ export default {
             this.selectList.splice(ind, 1)
           }
         })
-        console.log('3', this.selectList)
       }
     }
   },
@@ -511,7 +506,6 @@ export default {
     this.type = this.$route.params.type
     let nowDate = new Date()
     this.now_time = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1 < 10 ? '0' + (nowDate.getMonth() + 1) : (nowDate.getMonth() + 1)) + '-' + (nowDate.getDate() < 10 ? '0' + nowDate.getDate() : nowDate.getDate())
-    // console.log(this.now_time)
     Promise.all([
       rawMaterialOrderInit({
         order_id: this.$route.params.id
@@ -531,7 +525,6 @@ export default {
         order_id: this.$route.params.id
       })
     ]).then(res => {
-      // console.log(res)
       let materialInfo = res[0].data.data.material_info
       let orderInfo = res[2].data.data
       // 初始化订单信息
@@ -596,7 +589,6 @@ export default {
           }
         }
       }
-      console.log(res[1].data)
       res[1].data.forEach(item => {
         let flag = this.materialList.find(val => val.material === item.material_name)
         if (flag) {
@@ -632,7 +624,6 @@ export default {
       //   }
       // }
       let processDate = res[4].data.data
-      console.log(processDate)
       processDate.forEach(item => {
         item.material_info = JSON.parse(item.material_info)
         item.material_info.forEach(val => {
@@ -661,7 +652,6 @@ export default {
           }
         })
       })
-      // console.log(this.selectList)
       this.loading = false
     })
   }

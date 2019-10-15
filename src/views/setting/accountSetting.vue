@@ -177,7 +177,6 @@ export default {
     }), getGroup({
       company_id: window.sessionStorage.getItem('company_id')
     })]).then((res) => {
-      console.log(res)
       this.stationArr = res[0].data.data
       this.groupArr = res[1].data.data
       this.loading = false

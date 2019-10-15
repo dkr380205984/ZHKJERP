@@ -525,7 +525,6 @@ export default {
       // Id存一下，提交的时候要用
       this.bushaId = res[2].data.data[this.$route.params.times].id
       res[2].data.data[this.$route.params.times].yarn_info.forEach((item) => {
-        console.log(item)
         let finded = this.rawMaterialPlanList.find(itemFind => itemFind.material === item.name)
         if (!finded) {
           this.rawMaterialPlanList.push({
@@ -582,7 +581,6 @@ export default {
       //   }
       // })
       let clientList = res[1].data.data
-      console.log(clientList)
       clientList.forEach(item => {
         if (item.type.indexOf(9) !== -1) {
           this.companyList[0].children.push({
@@ -622,7 +620,6 @@ export default {
       })
       // 库存信息初始化
       let stockInfo = res[0].data.data.stock_info
-      console.log(stockInfo)
       stockInfo.forEach(item => {
         let flag = this.rawMaterialPlanList.find(key => key.material === item.material_name)
         if (flag) {
@@ -634,8 +631,6 @@ export default {
             let flag1 = flag.stock.find(key => key.stock_id === item.stock_id)
             if (!flag1) {
               let stockName = clientList.find(key => Number(key.id) === Number(item.stock_id))
-              console.log(stockName)
-              console.log(item.stock_id)
               flag.stock.push({
                 stock_name: (item.stock_id === 0 ? '本厂仓库' : stockName.name),
                 stock_id: item.stock_id,
@@ -662,7 +657,6 @@ export default {
       })
       // 已选重量初始化
       let selectWeight = res[0].data.data.total_weight_order
-      console.log(selectWeight)
       for (let prop in selectWeight) {
         let flag = this.list.find(item => item.material === prop)
         if (flag) {

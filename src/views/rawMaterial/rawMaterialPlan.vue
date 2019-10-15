@@ -136,7 +136,6 @@ export default {
         order_id: this.$route.params.orderId
       })
     ]).then((res) => {
-      console.log(res)
       this.order = res[1].data.data.production_detail.order_info
       // 第一步，把符合product_code的产品筛选出来
       let productByCode = []
@@ -189,7 +188,6 @@ export default {
           })
         }
       })
-      // console.log(productByMaterial)
       // 第四步，把根据size分类得到数据 合入 原料数据
       let product = {
         main_ingredients: [], // 主要辅料
@@ -205,7 +203,6 @@ export default {
             return {
               material: itemMaterial.material,
               colorInfo: itemSize.product.map((itemColour) => {
-                console.log(itemColour)
                 let obj = itemMaterial.colour.find((item) => item.name === itemColour.color)
                 // 查询该配色方案是否被填写，如果未填写，记录一下
                 if (!obj) {
@@ -291,7 +288,6 @@ export default {
       this.product = product
       this.colorData = NOTHISCOLOUR
       this.loading = false
-      console.log(product)
     })
   }
 }

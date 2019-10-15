@@ -190,7 +190,6 @@ export default {
       // }
     },
     handleAvatarSuccess (res, file) {
-      console.log(file)
       this.logoUrl = URL.createObjectURL(file.raw)
     },
     clearAll () {
@@ -203,7 +202,6 @@ export default {
       this.client_address = ''
     },
     saveAll () {
-      console.log(this.$refs)
       const logoUrl = this.$refs.uploada_logo.uploadFiles.map((items) => { return (items.response ? ('http://zhihui.tlkrzf.com/' + items.response.key) : items.url) })
       const imageUrl = this.$refs.uploada_image.uploadFiles.map((items) => { return (items.response ? ('http://zhihui.tlkrzf.com/' + items.response.key) : items.url) })
       if (logoUrl.length === 0 || !logoUrl) {
@@ -266,13 +264,11 @@ export default {
         })
       })
       this.logoUrl = companyInfo.logo
-      console.log(this.file_logo, this.file_image)
       this.client_name = companyInfo.company_name
       this.client_about = companyInfo.introduce
       this.client_tel = companyInfo.phone
       this.client_email = companyInfo.email
       this.client_address = companyInfo.address
-      console.log(this.$refs)
     })
   }
 }

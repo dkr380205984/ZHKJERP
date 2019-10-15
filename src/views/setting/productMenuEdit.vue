@@ -221,12 +221,10 @@ export default {
       })
     },
     showClearImg (item, e) {
-      console.log(e)
       if (item) {
         let clearImg = new Image()
         clearImg.src = item
         clearImg.onload = () => {
-          console.log('load', item, clearImg)
           document.getElementsByClassName('box-top')[e].innerHTML = ''
           document.getElementsByClassName('box-top')[e].appendChild(clearImg)
         }
@@ -311,7 +309,6 @@ export default {
       this.flowerList = res[0].data.data
       this.typeList = res[1].data.data
       this.checkedProFilterList = res[2].data.data
-      console.log(this.checkedProFilterList)
       this.checkedProList = this.checkedProFilterList.map(item => {
         return {
           checked: true,
@@ -325,7 +322,6 @@ export default {
     'filterList': {
       deep: true,
       handler (newVal) {
-        console.log(newVal)
         this.filProductList = newVal.typeVal ? this.productList.filter(key => key.category_info.product_category === newVal.typeVal) : this.productList
         this.filProductList = newVal.flowerVal ? this.filProductList.filter(key => key.flower_id === newVal.flowerVal) : this.filProductList
         this.filProductList = (newVal.date !== null && newVal.date.length !== 0) ? this.filProductList.filter(key => (new Date(key.create_time).getTime() >= new Date(newVal.date[0]).getTime()) && (new Date(newVal.date[1]).getTime() >= new Date(key.create_time).getTime())) : this.filProductList

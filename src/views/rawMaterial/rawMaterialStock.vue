@@ -578,7 +578,6 @@ export default {
       this.group_name = res[0].data.data.group_name
       // 初始化订购信息
       let materialInfo = res[1].data
-      console.log(materialInfo)
       materialInfo.forEach(item => {
         if ((this.type === '0' && item.type === 1) || (this.type === '1' && item.type === 2)) {
           let flag = this.materialList.find(val => val.company === item.client_name)
@@ -724,7 +723,6 @@ export default {
         id: null,
         name: '本厂仓库'
       })
-      console.log(this.materialList)
       this.loading = false
     })
   }

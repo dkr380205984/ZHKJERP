@@ -92,7 +92,6 @@ export default {
         id: null,
         name: this.yarn
       }).then((res) => {
-        console.log(res)
         if (res.data.status) {
           this.$message.success({
             message: '添加成功'

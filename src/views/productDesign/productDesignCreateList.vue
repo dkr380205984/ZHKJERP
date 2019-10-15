@@ -322,7 +322,6 @@ export default {
             lineNum: productList.length // 这个参数用于计算每行的高度
           }
         })
-        console.log(this.list)
       })
       this.first = false
     },

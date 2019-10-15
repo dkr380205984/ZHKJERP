@@ -240,7 +240,6 @@ export default {
         user_id: window.sessionStorage.getItem('user_id'),
         name: this.station
       }).then((res) => {
-        console.log(res)
       })
     },
     // 新增分组
@@ -250,7 +249,6 @@ export default {
         user_id: window.sessionStorage.getItem('user_id'),
         name: this.group
       }).then((res) => {
-        console.log(res)
       })
     },
     // 添加/修改员工
@@ -329,7 +327,6 @@ export default {
         if (res.status) {
           _this.authArr = res.data.data
           _this.total = res.data.meta.total
-          console.log(_this.authArr)
         }
       })
     },

@@ -438,7 +438,6 @@ export default {
   methods: {
     showShadeInfo (item) {
       this.surplusGoStockInfo = item
-      console.log(this.surplusGoStockInfo)
       this.showShade = true
     },
     charCodeLength (item) {
@@ -492,7 +491,6 @@ export default {
           message: '该物料无结余，无法操作'
         })
       } else {
-        console.log(this.surplusGoStockInfo)
         let obj = {}
         obj.type = this.type === '0' ? 1 : 2
         obj.company_id = Number(window.sessionStorage.getItem('company_id'))
@@ -507,7 +505,6 @@ export default {
         obj.desc = this.surplusGoStockInfo.remark
         obj.attribute = null
         obj.stock_id = this.surplusGoStockInfo.stock_id
-        console.log(obj)
         materialSurplusPush({
           data: [obj]
         }).then(res => {
@@ -621,7 +618,6 @@ export default {
           }
         }
       }
-      console.log(this.materialList)
       // 入库信息初始化
       let goStockInfo = res[2].data.data
       goStockInfo.forEach(item => {
@@ -684,7 +680,6 @@ export default {
             user: item.user_name
           })
           // 初始化结余信息
-          // console.log(item)
           // let surplu = this.surplus.find(val => ((val.material === item.material_name) && (val.color === item.color_code) && (val.dyelot_number === item.vat_code)))
           // if (!surplu) {
           //   this.surplus.push({
@@ -703,7 +698,6 @@ export default {
       this.materialList.forEach(item => {
         // 插入对应物料的订购值
         let flag = this.goStockList.find(val => val.material === item.material)
-        console.log(flag)
         // 给原料信息添加订购值和加工值
         if (materialInfo.total_weight_order[item.material]) {
           item.order_number = materialInfo.total_weight_order[item.material]
@@ -858,7 +852,6 @@ export default {
       for (let prop in productsInfo.product_plan) {
         materials.push(...productsInfo.product_plan[prop])
       }
-      console.log(this.productionList)
       this.productionList.forEach(item => {
         item.production.forEach(value => {
           value.product_detail.forEach(val => {
@@ -899,13 +892,11 @@ export default {
         })
       })
       // 将该单位所需物料插入出库信息
-      console.log(this.productionList)
       this.outStockInfo.forEach(item => {
         item.client_list.forEach(value => {
           value.color_list.forEach(color => {
             let flag = this.productionList.find(val => val.name === value.client_name)
             if (flag) {
-              // console.log(flag)
               let flag1 = flag.materials.find(val => val.material === item.material)
               if (flag1) {
                 let flag2 = flag1.colors.find(val => val.color === color.color)
@@ -918,7 +909,6 @@ export default {
         })
       })
       this.surplus = res[6].data.data.filter(res => (res.type === (this.type === '0' ? 1 : 2) || res.type === null))
-      // console.log(this.surplus)
       this.loading = false
     })
   }

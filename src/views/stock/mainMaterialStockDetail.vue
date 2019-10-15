@@ -130,7 +130,6 @@ export default {
         company_id: window.sessionStorage.getItem('company_id')
       })
     ]).then((res) => {
-      console.log(res)
       this.materialInfo = res[0].data.data.material_info
       this.list = res[0].data.data.detail.map((item) => {
         return {

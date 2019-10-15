@@ -378,7 +378,6 @@ export default {
           }
         }
       })
-      console.log(info)
       let keys = true
       info.forEach(item => {
         item.materials.forEach(valMater => {
@@ -582,7 +581,6 @@ export default {
       this.group_name = res[0].data.data.group_name
       this.loading = false
       let materialInfo = res[1].data.data
-      console.log(materialInfo)
       for (let prop in materialInfo.material_info) {
         let item = materialInfo.material_info
         for (let value in item[prop]) {

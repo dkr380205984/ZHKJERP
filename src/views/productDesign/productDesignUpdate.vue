@@ -424,7 +424,6 @@ export default {
             })
           })
           this.product_plan[code] = arr
-          console.log(this.product_plan)
         }
       })
     },
@@ -448,7 +447,6 @@ export default {
           if (!sizeColorInfo[value.material_name]) {
             sizeColorInfo[value.material_name] = {}
           }
-          console.log(item)
           if (sizeColorInfo[value.material_name][value.material_color]) {
             sizeColorInfo[value.material_name][value.material_color].number += Number(((item.order_num ? item.order_num : 0) - (item.stock_pick ? item.stock_pick : 0)) * ((item.production_sunhao ? item.production_sunhao : 0) / 100 + 1) * value.number)
           } else {
@@ -495,7 +493,6 @@ export default {
           }
         }
       })
-      console.log(this.material_plan)
     }
   },
   filters: {
@@ -604,7 +601,6 @@ export default {
           })
         }
       })
-      console.log(res[1])
       this.loading = false
     })
   }

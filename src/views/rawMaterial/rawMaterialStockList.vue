@@ -261,7 +261,6 @@ export default {
         'start_time': this.start_time,
         'end_time': this.end_time
       }).then((res) => {
-        console.log(res.data.data)
         this.total = res.data.meta.total
         this.list = res.data.data.map((item) => {
           let productList = []

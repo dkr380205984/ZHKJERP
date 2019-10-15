@@ -110,7 +110,6 @@ export default {
         company_id: sessionStorage.company_id,
         order_id: this.$route.params.id
       }).then(res => {
-        console.log(res)
         res.data.data.forEach(item => {
           this.order_code = item.order_code
           if (item.process_type === this.type && String(item.client_name) === this.client_name) {
@@ -151,7 +150,6 @@ export default {
         company_id: sessionStorage.company_id,
         order_id: this.$route.params.id
       }).then(res => {
-        console.log(res)
         res.data.forEach(item => {
           if (String(item.client_name) === this.client_name) {
             this.total_price += Number(item.price * item.weight)

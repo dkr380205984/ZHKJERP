@@ -114,7 +114,6 @@ export default {
       } else {
         this.$set(this.colorInfo, size, { [item.name]: item.sum })
       }
-      console.log(this.colorInfo)
       return item.colorList
     },
     goTop () {
@@ -131,7 +130,6 @@ export default {
         company_id: window.sessionStorage.getItem('company_id')
       })
     ]).then((res) => {
-      console.log(res)
       this.company = res[2].data.data.company_name
       this.create_time = res[0].data.data.create_time
       this.sizeInfo = res[0].data.data.product_info.size
@@ -271,7 +269,6 @@ export default {
           })
         })
       })
-      console.log(product)
       if (NOTHISCOLOUR.length > 0) {
         let str = `系统监测到你有如下产品计划单配色方案还未完善：`
         NOTHISCOLOUR.forEach((item, index) => {

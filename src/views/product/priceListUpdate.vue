@@ -978,7 +978,6 @@ export default {
         this.lirun.price = (this.total_price * this.lirun.prop / 100).toFixed(2)
         this.yongjin.price = (this.total_price * this.yongjin.prop / 100).toFixed(2)
         this.shuifei.price = (this.total_price * this.shuifei.prop / 100).toFixed(2)
-        console.log(this.total_price)
         this.total_price = this.total_price.toFixed(2)
       }
     },
@@ -1184,7 +1183,6 @@ export default {
           client_id: '',
           code: query
         }).then((res) => {
-          console.log(res)
           this.priceListArr = res.data.data
           this.loadingS = false
         })
@@ -1194,7 +1192,6 @@ export default {
     },
     // 导入报价单操作
     getPriceList (id) {
-      console.log(id)
       if (id) {
         this.loading = true
         priceListDetail({
@@ -1337,7 +1334,6 @@ export default {
       }
     },
     filterColor (item) {
-      console.log(item)
       return item.color.map(val => {
         return val.color_name
       }).join('/')
@@ -1409,7 +1405,6 @@ export default {
       this.otherMaterialList = res[6].data.data
       // 报价单详情数据
       this.$nextTick(() => {
-        console.log(res[8])
         const detail = res[7].data.data
         this.company = detail.client_id.toString()
         this.contactsArr = this.companyArr.find((item) => parseInt(item.id) === detail.client_id).contacts

@@ -488,7 +488,6 @@ export default {
         this[key] = hash[key]
       }
       this.getOrderList()
-      console.log(this.group)
     })
   }
 }

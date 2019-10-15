@@ -515,7 +515,6 @@ export default {
           })
         }
       })
-      console.log(this.productList)
       // 初始化表单数据
       this.productList.forEach((item) => {
         // 给每个产品添加独立尺寸/颜色级联选择数据
@@ -678,7 +677,6 @@ export default {
     },
     // 查看辅料详情
     getDetail (name, arr) {
-      console.log(name, arr)
       this.ingredientInfo.name = name
       this.ingredientInfo.info = arr
     },
@@ -722,7 +720,6 @@ export default {
         } else {
           let formData = []
           // 将数据处理成要提交的数据
-          console.log(this.formList)
           this.formList.forEach((item, index) => {
             item.company.forEach((itemCompany, indexCompany) => {
               itemCompany.price_number.forEach((itemPrice, indexPrice) => {
@@ -779,8 +776,6 @@ export default {
     },
     // 一键分配
     completion () {
-      console.log(this.productList)
-      console.log(this.formList)
       this.formList.forEach((item) => {
         item.company = []
       })

@@ -373,7 +373,6 @@ export default {
       })
     },
     getContacts (id) {
-      console.log(this.companyArr.find((item) => item.id === id))
       this.contactsArr = this.companyArr.find((item) => item.id === id).contacts
     },
     pickTime (date) {
@@ -412,7 +411,6 @@ export default {
         keyword: '',
         status: 1
       })]).then((res) => {
-      console.log(res)
       this.total = res[0].data.meta.total
       this.list = res[0].data.data.map((item) => {
         return {
@@ -445,7 +443,6 @@ export default {
       this.companyArr = res[1].data.data.filter((item) => (item.type.indexOf(1) !== -1))
       this.first = false
       this.loading = false
-      console.log(this.list)
     })
   }
 }

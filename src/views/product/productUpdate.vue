@@ -547,7 +547,6 @@ export default {
           this.$message.warning('请勿频繁点击')
         }
       }
-      console.log(data)
     }
   }
 }
