@@ -727,8 +727,8 @@
 </template>
 
 <script>
-import { machiningType, moneyArr } from '@/assets/js/dictionary.js'
-import { clientList, productList, productTppeList, flowerList, getGroup, YarnList, materialList, priceListCreate, productPlanDetail, priceListList, priceListDetail, notifySave } from '@/assets/js/api.js'
+import { moneyArr } from '@/assets/js/dictionary.js'
+import { clientList, productList, productTppeList, flowerList, getGroup, YarnList, materialList, priceListCreate, productPlanDetail, priceListList, priceListDetail, notifySave, courseList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -822,7 +822,7 @@ export default {
           price: ''
         }
       ],
-      machiningList: machiningType,
+      machiningList: [],
       machiningArr: [
         {
           key: '',
@@ -1376,7 +1376,11 @@ export default {
       company_id: this.companyId
     }), priceListDetail({
       id: this.$route.params.id
+    }), courseList({
+      company_id: this.companyId,
+      type: 2
     })]).then((res) => {
+      this.machiningList = res[8].data.data
       this.companyArr = res[0].data.data.filter((item) => (item.type.indexOf(1) !== -1))
       this.seachProduct = res[1].data.data
       this.typeArr = res[2].data.data.map((item) => {

@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { } from '@/assets/js/api.js'
+import { settingCourse, courseList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -73,20 +73,54 @@ export default {
     }
   },
   created () {
-    Promise.all([
-    ]).then((res) => {
+    // Promise.all([
+    courseList({
+      company_id: window.sessionStorage.getItem('company_id')
+    }).then(res => {
+      this.materialProcessArr = res.data.data.filter(item => item.type === 1)
+      this.semiProcessArr = res.data.data.filter(item => item.type === 2)
     })
+    // ]).then((res) => {
+    // })
   },
   methods: {
     // 添加原料工序
     saveMaterialProcess () {
-
+      if (this.materialProcess) {
+        settingCourse({
+          name: this.materialProcess,
+          type: 1
+        }).then(res => {
+          if (!res.data.status) {
+            this.$message.error(res.data.message)
+          } else {
+            this.materialProcessArr.push(res.data.data)
+            this.$message.success('添加成功')
+          }
+        })
+      } else {
+        this.$message.warning('检测到未填写工序名称')
+      }
     },
     deleteMaterialProcess () {
 
     },
     saveSemiProcess () {
-
+      if (this.semiProcess) {
+        settingCourse({
+          name: this.semiProcess,
+          type: 2
+        }).then(res => {
+          if (!res.data.status) {
+            this.$message.error(res.data.message)
+          } else {
+            this.semiProcessArr.push(res.data.data)
+            this.$message.success('添加成功')
+          }
+        })
+      } else {
+        this.$message.warning('检测到未填写工序名称')
+      }
     },
     deleteSemiProcess () {
 

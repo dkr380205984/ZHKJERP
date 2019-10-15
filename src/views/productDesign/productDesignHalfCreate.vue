@@ -356,8 +356,7 @@
 </template>
 
 <script>
-import { machiningType } from '@/assets/js/dictionary.js'
-import { productionDetail, clientList, halfProductSave, halfProductDetail, notifySave } from '@/assets/js/api.js'
+import { productionDetail, clientList, halfProductSave, halfProductDetail, notifySave, courseList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -387,7 +386,7 @@ export default {
       productListFlat: [],
       formList: [],
       companyArr: [],
-      machiningType: machiningType,
+      machiningType: [],
       ingredientInfo: {
         name: '',
         info: []
@@ -402,8 +401,12 @@ export default {
         company_id: window.sessionStorage.getItem('company_id')
       }), halfProductDetail({
         order_id: this.$route.params.id
+      }), courseList({
+        company_id: this.companyId,
+        type: 2
       })
     ]).then(res => {
+      this.machiningType = res[3].data.data
       this.order = res[0].data.data.production_detail.order_info
       let productInfo = res[0].data.data.production_detail.product_info.map((item) => {
         let json = item

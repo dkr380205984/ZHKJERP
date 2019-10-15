@@ -366,7 +366,13 @@ const deletePriceList = (params) => http.post(`${baseUrl}/product/quotation/dele
 const deleteOrderMaterial = (params) => http.post(`${baseUrl}/material/order/delete`, params, 'application/json')
 // 原料加工撤销
 const deleteOrderProcess = (params) => http.post(`${baseUrl}/material/process/delete`, params, 'application/json')
+// 添加原料加工工序、半成品加工工序
+const settingCourse = (params) => http.post(`${baseUrl}/production/flow/save`, params, 'application/json')
+// 获取加工工序production/flow/list
+const courseList = (params) => http.get(`${baseUrl}/production/flow/list`, params)
 export {
+  courseList,
+  settingCourse,
   deleteOrderProcess,
   deleteOrderMaterial,
   deletePriceList,

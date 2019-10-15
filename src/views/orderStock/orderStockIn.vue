@@ -209,7 +209,7 @@
 </template>
 
 <script>
-import { machiningType } from '@/assets/js/dictionary.js'
+// import { machiningType } from '@/assets/js/dictionary.js'
 import { clientList, productionDetail, storeIn, storeInList, weaveDetail, halfProductDetail, notifySave } from '@/assets/js/api.js'
 export default {
   data () {
@@ -237,7 +237,8 @@ export default {
       },
       productList: [],
       companyArr: [],
-      machiningType: JSON.parse(JSON.stringify(machiningType)), // 洗白对象
+      // machiningType: JSON.parse(JSON.stringify(machiningType)), // 洗白对象
+      // machiningType: [],
       colorSizeArr: [],
       formList: []
     }
