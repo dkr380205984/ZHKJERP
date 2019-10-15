@@ -1904,7 +1904,7 @@ export default {
         })
         this.$message({
           type: 'success',
-          message: '调接口'
+          message: '上传成功'
         })
       }).catch(() => {
         this.$message({

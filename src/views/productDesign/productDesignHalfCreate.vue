@@ -254,6 +254,7 @@
               <li>
                 <span>加工类型:</span>
                 <el-select v-model="itemCompany.machining"
+                  filterable
                   multiple
                   placeholder="请选择加工类型"
                   size="small">
