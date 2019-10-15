@@ -599,7 +599,6 @@ export default {
           this.productArr.splice(mark, 1)
         }
       }
-      console.log(this.productArr)
     },
     // 使用删除操作删除产品列表里的信息
     deleteProduct (id) {
@@ -780,7 +779,6 @@ export default {
       // }
     },
     handleSuccess (res, file) {
-      console.log(this.$refs)
       console.log(res)
     },
     // 清空
@@ -1005,7 +1003,6 @@ export default {
     }), getGroup({
       company_id: this.companyId
     }), getToken()]).then((res) => {
-      console.log(res[1])
       this.companyArr = res[0].data.data.filter((item) => (item.type.indexOf(1) !== -1))
       this.seachProduct = res[1].data.data
       if (this.$route.fullPath.split('?')[1]) {
@@ -1041,7 +1038,6 @@ export default {
       clearTimeout(this.timer)
       this.timer = setTimeout(() => {
         if (ev.target.scrollTop - this.scrollTop > 60) {
-          console.log('刷新数据')
           this.scrollTop = ev.target.scrollTop
           this.page++
           this.getSearchList()
@@ -1111,6 +1107,9 @@ export default {
     flex-direction: column;
     align-items: center;
     margin: 14px auto;
+    .el-upload-list__item-name {
+      max-width: 110px;
+    }
   }
 }
 

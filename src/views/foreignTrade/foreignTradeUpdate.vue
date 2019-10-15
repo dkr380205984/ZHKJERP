@@ -168,7 +168,6 @@ export default {
         })
         return
       }
-      console.log(this.contacts)
       if (this.contacts.length < 1) {
         this.$message.error({
           message: '合作公司至少有一个联系人'
@@ -186,7 +185,6 @@ export default {
         status: parseInt(this.status),
         type: this.type
       }).then((res) => {
-        console.log(res)
         this.$message.success({
           message: '修改成功'
         })
@@ -200,7 +198,6 @@ export default {
     }).then((res) => {
       if (res.data.status) {
         let data = res.data.data
-        console.log(data)
         this.name = data.name
         this.address = data.address
         this.abbreviation = data.abbreviation
@@ -217,7 +214,6 @@ export default {
         this.status = data.status.toString()
       }
     })
-    console.log(this.type)
   }
 }
 </script>

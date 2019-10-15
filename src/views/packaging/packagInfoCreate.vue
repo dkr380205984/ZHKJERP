@@ -314,7 +314,6 @@ export default {
               product_color: valPro.product[2] ? valPro.product[2] : '',
               number: valPro.all_number ? valPro.all_number : 0
             })
-            console.log(valPro)
             if (item.pack_end || valPro.one_number) {
               valPro.all_number = valPro.one_number * ((item.pack_end > item.pack_start ? item.pack_end : item.pack_start) - item.pack_start + 1)
             }
@@ -326,7 +325,6 @@ export default {
   },
   methods: {
     changeCounts (key, value) {
-      console.log(this.counts)
       if (key === 0 && value !== this.counts + 1) {
         this.counts = value - 1
       }
@@ -362,7 +360,6 @@ export default {
       this.list.packagInfo.packagPageInfo[key].product_info.splice(indPro, 1)
     },
     addPackagInfo () {
-      console.log(this.count)
       this.list.packagInfo.packagPageInfo.push({
         pack_start: this.count + 1,
         pack_end: '',
@@ -453,7 +450,6 @@ export default {
             packagCreate({
               data: data
             }).then(res => {
-              console.log(res)
               this.$message({
                 type: 'success',
                 message: `添加成功,即将跳转至详情页！`
@@ -468,7 +464,6 @@ export default {
           }
         }
         setTimeout(() => { this.save = true }, 1000)
-        console.log(data)
       } else {
         this.$alert('请求速度过于频繁', '提醒', {
           confirmButtonText: '确定',

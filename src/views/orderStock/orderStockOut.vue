@@ -263,7 +263,6 @@ export default {
       const logListHalf = res[4].data.data
       // 保存一下半成品加工日志信息，在提交的时候判断本次提交是否用到了辅料
       this.logListHalf = logListHalf
-      console.log(logListHalf)
       // 产品尺码和颜色筛选框数据整合
       productList.forEach((itemInfo) => {
         let mark = -1

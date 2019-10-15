@@ -544,7 +544,6 @@ export default {
           }
         })
         // 插入订单物料加工费用
-        console.log(data.order_log.material_production)
         data.order_log.material_production.forEach(val => {
           if (Number(val.type) === 1) {
             item.main_material_process_price = Number(item.main_material_process_price ? item.main_material_process_price : 0) + Number(val.total_price)
@@ -567,7 +566,6 @@ export default {
         data.order_log.stock_out_info.forEach(val => {
           item.transport_price = Number(item.transport_price ? item.transport_price : 0) + Number(val.cost)
         })
-        console.log(item)
         item.loading = false
       })
     },

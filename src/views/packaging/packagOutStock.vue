@@ -344,7 +344,6 @@ export default {
             outStockAdd({
               data: data
             }).then(res => {
-              console.log(res)
               this.$message({
                 type: 'success',
                 message: `添加成功,即将跳转至详情页！`
@@ -359,7 +358,6 @@ export default {
           }
         }
         setTimeout(() => { this.save = true }, 1000)
-        console.log(data)
       } else {
         this.$alert('请求速度过于频繁', '提醒', {
           confirmButtonText: '确定',
@@ -428,7 +426,6 @@ export default {
         })
       }
       this.ship_client = shipClientInfo.filter(res => (res.type.indexOf(8) !== -1))
-      console.log(this.ship_client)
       this.loading = false
     })
   }

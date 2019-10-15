@@ -1981,10 +1981,7 @@ export default {
       }
     },
     saveAll () {
-      // saveCraft
-      // console.log(this.allMaterial)
       // 获取合并单元格信息
-      // console.log(this.$refs)
       let errorInput = false
       errorInput = this.colour.some((itemColour) => {
         if (!itemColour.value) {
@@ -2638,14 +2635,12 @@ export default {
     }), PMList({
 
     })]).then((res) => {
-      // console.log(res)
       this.productInfo = res[0].data.data
       this.yarn.yarnArr = res[1].data.data
       this.sideArr = res[2].data.data.side
       this.modeleArr = res[2].data.data.type
       this.methodArr = res[2].data.data.method
       this.colorArr = this.colorArr.concat(res[3].data.data)
-      // this.material.materialArr = res[4].data.data
       this.commonPMArr = res[5].data.data
       this.loading = false
     })

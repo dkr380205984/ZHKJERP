@@ -165,7 +165,6 @@ export default {
       this.showShade = 'change'
       this.changeNewRoleList.name = item.group_id
       // this.changeTreeData = item
-      // console.log(this.changeTreeData)
       this.$refs.setTree.setCheckedKeys(item.keys)
     },
     addRolePermiss () {
@@ -238,7 +237,6 @@ export default {
         //     })
         //   })
         // })
-        console.log('list:', this.rolePermissionData)
       })
     }
   },
@@ -272,7 +270,6 @@ export default {
           }
         })
       })
-      console.log(this.date)
       this.getRoleList()
     })
   }

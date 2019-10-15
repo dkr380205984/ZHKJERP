@@ -2473,7 +2473,6 @@ export default {
     craftOne({
       id: this.$route.params.id
     })]).then((res) => {
-      // console.log(res)
       this.productInfo.size = Object.keys(this.productInfo.size).map((key) => {
         return {
           name: key,
@@ -2526,7 +2525,6 @@ export default {
           type_material: item.type_material
         }
       })
-      console.log(this.yarn)
       this.material.materialWarp = this.warpInfo.assist_material.map((item) => {
         return {
           value: item.material_name,

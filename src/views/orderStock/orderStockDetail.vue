@@ -697,7 +697,6 @@ export default {
     },
     // 修改日志
     updateLogFn () {
-      console.log(this.updateInfo)
       if (this.updateInfo.flag === 'out') {
         storeOutUpdate({
           id: this.updateInfo.id,

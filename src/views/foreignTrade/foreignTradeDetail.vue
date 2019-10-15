@@ -116,7 +116,6 @@ export default {
     clientDetail({
       id: this.$route.params.id
     }).then((res) => {
-      console.log(res)
       if (res.data.status) {
         this.companyInfo = res.data.data
         let arr = []

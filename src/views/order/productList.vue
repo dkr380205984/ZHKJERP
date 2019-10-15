@@ -177,7 +177,6 @@ export default {
         // 'start_time': '',
         // 'end_time': ''
       }).then((res) => {
-        console.log(res)
         // this.total = res.data.meta.total
         this.total = 10
         this.list = res.data.data

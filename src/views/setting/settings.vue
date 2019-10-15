@@ -46,6 +46,10 @@ export default {
         name: '包装设置',
         img: require('../../assets/image/setting/包装设置-蓝.png'),
         url: '/index/packagMaterialList'
+      }, {
+        name: '加工工序设置',
+        img: require('../../assets/image/setting/产品设置-蓝.png'),
+        url: '/index/processSetting'
       }]
     }
   }

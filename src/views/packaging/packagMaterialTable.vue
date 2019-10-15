@@ -126,7 +126,6 @@ export default {
       let orderInfo = res[0].data.data
       let linkman = res[1].data.data.find(val => val.id === window.sessionStorage.getItem('user_id'))
       let clientInfo = res[2].data.data
-      console.log(this.$route.params.time)
       let packagInfo = res[3].data.data.filter(val => (val.created_at === this.$route.params.time && val.client_id === Number(this.$route.params.clientId)))
       // 初始化订单信息
       this.order_code = orderInfo.order_code
@@ -138,7 +137,6 @@ export default {
       this.linkman_tel = linkman.mobile
       // 将公司名称转为简称
       this.order_company = clientInfo.find(val => val.name === this.order_company).abbreviation ? clientList.find(val => val.id === this.order_company).abbreviation : this.order_company
-      console.log(packagInfo)
       // 初始化工厂名称
       this.company_name = res[4].data.data.company_name
       packagInfo.forEach(item => {

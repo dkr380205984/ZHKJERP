@@ -112,13 +112,11 @@ export default {
       contactsStation: '',
       contactsPhone: '',
       companyType: companyType,
-      type: []
+      type: [],
+      lock: true
     }
   },
   methods: {
-    con (item) {
-      console.log(item)
-    },
     addContacts () {
       if (this.contactsName && this.contactsStation && this.contactsPhone) {
         this.contacts.push({
@@ -139,42 +137,52 @@ export default {
       this.contacts.splice(index, 1)
     },
     saveAll () {
-      if (!this.name) {
-        this.$message.error({
-          message: '请填写公司名称'
+      if (this.lock) {
+        this.lock = false
+        if (!this.name) {
+          this.$message.error({
+            message: '请填写公司名称'
+          })
+          return
+        }
+        if (!this.type) {
+          this.$message.error({
+            message: '请选择公司公司类型'
+          })
+          return
+        }
+        if (this.contacts.length < 1) {
+          this.$message.error({
+            message: '合作公司至少有一个联系人'
+          })
+          return
+        }
+        clientAdd({
+          id: '',
+          company_id: window.sessionStorage.getItem('company_id'),
+          name: this.name,
+          abbreviation: this.abbreviation,
+          contacts: this.contacts,
+          phone: this.phone,
+          address: this.address,
+          status: parseInt(this.status),
+          type: this.type
+        }).then((res) => {
+          this.lock = true
+          if (res.status) {
+            this.$message.success({
+              message: '添加成功'
+            })
+            this.$router.push('/index/foreignTradeList')
+          } else {
+            this.$message.error({
+              message: res.data.message
+            })
+          }
         })
-        return
+      } else {
+        this.$message.warning('请勿频繁操作')
       }
-      if (!this.type) {
-        this.$message.error({
-          message: '请选择公司公司类型'
-        })
-        return
-      }
-      if (this.contacts.length < 1) {
-        this.$message.error({
-          message: '合作公司至少有一个联系人'
-        })
-        return
-      }
-      console.log(this.type)
-      clientAdd({
-        id: '',
-        company_id: window.sessionStorage.getItem('company_id'),
-        name: this.name,
-        abbreviation: this.abbreviation,
-        contacts: this.contacts,
-        phone: this.phone,
-        address: this.address,
-        status: parseInt(this.status),
-        type: this.type
-      }).then((res) => {
-        console.log(res)
-        this.$message.success({
-          message: '添加成功'
-        })
-        this.$router.push('/index/foreignTradeList')
-      })
     },
     clearAll () {
 

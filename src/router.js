@@ -531,6 +531,10 @@ let router = new Router({
       name: 'companyInfoSetting',
       component: () => import('./views/setting/companyInfoSetting.vue')
     }, {
+      path: 'processSetting',
+      name: 'processSetting',
+      component: () => import('./views/setting/processSetting.vue')
+    }, {
       path: 'sendMsg',
       name: 'sendMsg',
       component: () => import('./views/self/sendMsg.vue')

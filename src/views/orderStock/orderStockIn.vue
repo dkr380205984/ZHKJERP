@@ -260,7 +260,6 @@ export default {
       const logListIn = res[2].data.data
       const logListWeave = res[3].data.data
       const logListHalf = res[4].data.data
-      console.log(logListIn)
       // 产品尺码和颜色筛选框数据整合
       productList.forEach((itemInfo) => {
         let mark = -1
@@ -347,7 +346,6 @@ export default {
             itemCmp.inNum = 0
             logListIn.forEach((itemFind) => {
               if (itemFind.product_info.product_code === itemPro.product_code && itemFind.color === itemPro.color && itemFind.size === itemPro.size && itemFind.type === item.name && itemFind.client_name === itemCmp.name) {
-                console.log(itemFind)
                 itemCmp.inNum += itemFind.number
               }
             })
@@ -356,7 +354,6 @@ export default {
       })
       // 过滤出加工单位
       productList.forEach((itemPro) => {
-        console.log(itemPro)
         itemPro.machiningType.forEach((itemType) => {
           itemType.companyArr.forEach((itemCompany) => {
             const finded = this.companyArr.find((itemFind) => itemFind.name === itemCompany.name)

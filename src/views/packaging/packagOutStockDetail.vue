@@ -541,7 +541,6 @@ export default {
         newVal.product_info.forEach(item => {
           item.all_number = item.one_number * ((newVal.pack_end > newVal.pack_start ? newVal.pack_end : newVal.pack_start) - newVal.pack_start + 1)
         })
-        console.log(newVal.start, newVal.end)
       }
     }
   },
@@ -557,7 +556,6 @@ export default {
       this.changePackInfo.product_info.splice(key, 1)
     },
     changeLog (item, type) {
-      console.log(item)
       if (type) {
         this.changePackInfo = JSON.parse(JSON.stringify(item))
         // this.changePackInfo.pack_start = item.pack_code.split('-')[0]
@@ -636,7 +634,6 @@ export default {
             }
           })
         }
-        console.log(this.changeOutStockInfo)
       } else if (type === 'pack') {
         let flag = true
         if (!this.changePackInfo.pack_start) {
@@ -729,7 +726,6 @@ export default {
             }
           })
         }
-        console.log(this.changePackInfo)
       }
     },
     closeConfirm (key, item, batchId) {
@@ -737,7 +733,6 @@ export default {
         this.show = false
       } else {
         this.confirmLoading = true
-        console.log(item)
         let flag = true
         item.forEach((valPro, indPro) => {
           valPro.size_info.forEach((valSize, indSize) => {
@@ -822,7 +817,6 @@ export default {
       return lengths
     },
     go (idName) {
-      console.log(idName)
       document.getElementById(idName).scrollIntoView(true)
     },
     chinaNumber (key) {
@@ -867,7 +861,6 @@ export default {
         let packagInfo = res[1].data.data
         let outStockInfo = res[2].data.data
         let packagNumberInfo = res[3].data.data
-        console.log(res)
         // 初始化订单信息
         this.order_code = orderInfo.order_code
         this.client_name = orderInfo.client_name
@@ -962,13 +955,11 @@ export default {
           })
         }
         this.addPackNumberList = JSON.parse(JSON.stringify(this.batchList))
-        console.log(this.addPackNumberList)
         // 初始化包装信息
         packagInfo.forEach(item => {
           let flag = this.batchList.find(key => key.id === item.bacth_id)
           if (flag) {
             item.product_info = JSON.parse(item.product_info)
-            // console.log(item)
             flag.packagInfoList.push(item)
           }
         })
