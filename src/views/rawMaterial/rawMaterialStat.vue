@@ -157,7 +157,6 @@ export default {
     }), orderDetail({
       id: this.$route.params.id
     })]).then((res) => {
-      console.log(res[0].data.data)
       this.order.order_code = res[1].data.data.order_code
       this.order.client_name = res[1].data.data.client_name
       this.order.account_unit = res[1].data.data.account_unit
@@ -169,7 +168,6 @@ export default {
       this.order.tax_rate = res[1].data.data.tax_rate
       this.order.exchange_rate = res[1].data.data.exchange_rate
       this.materialInfo = res[0].data.data[0]
-      console.log(this.materialInfo)
       for (let prop in this.materialInfo) {
         if (this.materialInfo[prop].type === 0 && this.sizeName.material === '') {
           this.sizeName.material = prop

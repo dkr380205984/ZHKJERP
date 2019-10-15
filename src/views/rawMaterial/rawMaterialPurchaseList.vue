@@ -35,7 +35,7 @@
         </div>
       </div>
       <div class="mergeTable"
-        v-scroll="{fun:getList,pageSize:5}">
+        v-scroll="{fun:getList,pageSize:15}">
         <div class="mergeHeader">
           <div class="tableColumn">订购日期</div>
           <div class="tableColumn">订单公司</div>
@@ -83,7 +83,7 @@
       </div>
       <div class="pageCtn">
         <el-pagination background
-          :page-size="5"
+          :page-size="15"
           layout="prev, pager, next"
           :total="total"
           :current-page.sync="pages"
@@ -142,7 +142,7 @@ export default {
     getList () {
       rawMaterialPurchaseList({
         'company_id': window.sessionStorage.getItem('company_id'),
-        'limit': 5,
+        'limit': 15,
         'page': this.pages,
         'client_id': this.clientVal,
         'start_time': this.start_time,

@@ -125,7 +125,6 @@ export default {
       }
     ).then(res => {
       let data = res.data.data
-      // console.log(data)
       this.account_unit = data.account_unit
       this.client_name = data.client_name
       this.contacts = data.contacts

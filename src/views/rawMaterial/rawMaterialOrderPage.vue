@@ -288,7 +288,6 @@ export default {
     list: {
       deep: true,
       handler: function (newVal) {
-        // console.log(newVal)
         this.list.forEach((item, key) => {
           let num = 0
           item.buyInfo.forEach(value => {
@@ -318,7 +317,6 @@ export default {
       this.list[key].buyInfo[kay].buyMaterialInfo.splice(index, 1)
     },
     addBuyInfo (key) {
-      // console.log(this.list)
       if (!this.list[key].material) {
         this.$message({
           message: '无' + (this.type === '0' ? '原' : '辅') + '料信息，不可添加订购',
@@ -481,7 +479,6 @@ export default {
           })
         })
       })
-      // console.log(arr)
       this.loading = false
       if (flag) {
         if (nums === 0) {
@@ -528,7 +525,6 @@ export default {
         company_id: sessionStorage.company_id
       })
     ]).then(res => {
-      // console.log(res)
       // 计划物料信息初始化
       let info = res[0].data.data.material_info
       for (let prop in info) {
@@ -589,8 +585,6 @@ export default {
       this.order_time = res[0].data.data.order_info.order_time
       this.group_name = res[0].data.data.order_info.group_name
       this.company_name = res[0].data.data.order_info.client_name
-      // console.log(this.rawMaterialPlanList)
-      // this.options.companyList.push(...res[1].data.data.filter((item) => (item.type.indexOf(2) !== -1 || item.type.indexOf(3) !== -1)))
       // 产品信息初始化
       let arr = []
       for (let prop in res[0].data.data.order_info.order_batch) {
@@ -616,7 +610,6 @@ export default {
       })
       // 订购公司列表初始化
       let clientList = res[1].data.data
-      // console.log(clientList)
       clientList.forEach(item => {
         if (item.type.indexOf(9) !== -1) {
           this.companyList[0].children.push({
@@ -631,7 +624,6 @@ export default {
           })
         }
       })
-      // console.log(this.companyList)
       // 库存信息初始化
       let stockInfo = res[0].data.data.stock_info
       stockInfo.forEach(item => {

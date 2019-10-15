@@ -2389,7 +2389,6 @@ export default {
       res[1].data.data.type.forEach((item, index) => {
         this.client_typeStr += ((index !== 0 ? ',' : '') + companyType.find(key => key.value === item).name)
       })
-      console.log(res[2].data.data)
       // 订单整理
       res[2].data.data.order_info.forEach(item => {
         let productInfo = []
@@ -2812,7 +2811,6 @@ export default {
         }
       })
       // 补纱扣款整理
-      console.log(res[5].data.data)
       res[5].data.data.forEach(item => {
         let flag = item.client_info.find(key => key.client_id === this.$route.params.id)
         if (flag) {
@@ -2857,10 +2855,8 @@ export default {
               }
             }
           })
-          console.log(price)
         }
       })
-      console.log(this.list)
       // 统计共计金额及可筛选数据数组
       for (const prop in this.list) {
         if (prop === 'weaveDeductList') {
@@ -2900,7 +2896,6 @@ export default {
     'record.searchVal': {
       deep: true,
       handler (newVal) {
-        console.log(newVal)
         if (newVal) {
           this.record.infos = this.record.info.filter(item => (item.order_code_list.indexOf(newVal) !== -1))
         } else {

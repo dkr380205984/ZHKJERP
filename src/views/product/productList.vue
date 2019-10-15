@@ -502,7 +502,6 @@ export default {
     },
     // 类型展示
     filterSize (item) {
-      console.log(item)
       let arr = item.map(value => {
         return value.measurement
       })

@@ -676,7 +676,6 @@ export default {
       this.cost = stock.reduce((total, current) => {
         return total + current.price * current.weight
       }, 0)
-      console.log(this.otherInfo)
     })
     clientList({
       company_id: window.sessionStorage.getItem('company_id')

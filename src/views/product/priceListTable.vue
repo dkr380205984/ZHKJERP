@@ -233,7 +233,6 @@ export default {
         { name: '非生产费用', totalPrice: data.no_product_cost },
         { name: '运输', totalPrice: data.transport_cost }
       )
-      console.log(this.info, this.product_info)
     })
     companyInfoDetail({
       id: window.sessionStorage.getItem('company_id')

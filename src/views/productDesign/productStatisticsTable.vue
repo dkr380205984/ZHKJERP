@@ -108,7 +108,6 @@ export default {
       document.body.scrollTop = 0
     },
     pushChildren (item) {
-      console.log(item)
       for (let prop in item) {
         if (prop !== 'total_number' && prop !== 'type' && prop !== 'unit' && prop !== 'children') {
           if (!item.children) {
@@ -241,15 +240,12 @@ export default {
             }
           })
         })
-        console.log(productionNumber)
         let type = (this.type === '0' ? 'main' : 'other')
         productionNumber.find(item => Number(item.proId) === Number(this.proId)).sizeColor.forEach(valSizeColor => {
           for (let prop in valSizeColor.sizeColor[type]) {
             let valMat = valSizeColor.sizeColor[type][prop]
-            console.log(valMat)
             for (let indColor in valMat) {
               let valColor = valMat[indColor]
-              console.log(valColor)
               if (!this.materialInfo[prop]) {
                 this.materialInfo[prop] = {}
                 this.materialInfo[prop].type = Number(this.type)
@@ -266,7 +262,6 @@ export default {
             }
           }
         })
-        console.log(productionNumber)
       })
     } else {
       Promise.all([productionStat({
@@ -300,8 +295,6 @@ export default {
             flag.number = Number(flag.number) + Number(item.number)
           }
         })
-        console.log(this.order)
-        // this.order.order_batch = res[1].data.data.order_batch
         this.order.order_time = res[1].data.data.order_time
         this.order.group_name = res[1].data.data.group_name
         this.materialInfo = res[0].data.data

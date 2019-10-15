@@ -321,7 +321,6 @@ export default {
           order_code: (type === 'go' ? this.stockObj.order_code : '')
         }]
       }).then(res => {
-        console.log(res.data.data)
         if (res.data.status) {
           this.showShade = false
           this.$message.success('添加成功')

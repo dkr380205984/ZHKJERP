@@ -505,7 +505,6 @@ export default {
     // 一键分配 待优化报价单
     completion () {
       // 数据初始化
-      console.log(this.productList)
       this.formList.forEach((item) => {
         item.company = []
       })

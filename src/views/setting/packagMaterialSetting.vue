@@ -94,7 +94,6 @@ export default {
       packagMaterialdetail({
         id: this.id
       }).then(res => {
-        console.log(res.data.data)
         let info = res.data.data
         this.pack_name = info.name
         this.pack_size = info.size
@@ -140,7 +139,6 @@ export default {
           desc: this.remark,
           type: this.type
         }).then(res => {
-          console.log(res)
           let str = this.id ? '修改' : '添加'
           this.$message({
             type: 'success',

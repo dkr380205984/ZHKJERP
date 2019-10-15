@@ -69,7 +69,6 @@ export default {
         limit: 15,
         page: this.pages
       }).then(res => {
-        console.log(res)
         this.list = res.data.data
         this.list.forEach(res => {
           res.attribute = JSON.parse(res.attribute)

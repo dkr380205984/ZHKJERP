@@ -1566,7 +1566,6 @@ export default {
       // this.order_info.fileArr = this.order_info.file_url ? JSON.parse(this.order_info.file_url) : []
       this.order_log = data.order_log
       this.process = data.order_schedule
-      console.log(res[4])
       this.logList = res[4].data.data.map((item) => {
         item.material_info = this.jsonMerge(item.material_info, ['material_name'])
         item.product_info = this.jsonMerge(item.product_info, ['product_id'])
@@ -1704,7 +1703,6 @@ export default {
           }
         })
       })
-      console.log(this.productRate)
       // 物料概述
       let materialInfo = res[1].data.data
       let processInfo = this.order_log.material_production
@@ -1761,7 +1759,6 @@ export default {
           flag.total_price_order = Number(flag.total_price_order ? flag.total_price_order : 0) + Number(item.price * item.weight)
         }
       })
-      console.log(processInfo)
       // 物料加工类型
       processInfo.forEach(item => {
         let flag = this.materialList.find(keys => keys.material_name === item.material_name)
@@ -1964,7 +1961,6 @@ export default {
       })
       // 出库概述
       let orderInfo = this.order_info
-      console.log(orderInfo)
       for (let prop in orderInfo.order_batch) {
         let item = orderInfo.order_batch[prop]
         item.forEach(val => {
@@ -2025,7 +2021,6 @@ export default {
       })
       // 包装订购成本统计
       let packOrderInfo = this.order_log.pack_order
-      console.log(packOrderInfo)
       packOrderInfo.forEach(item => {
         let pack = this.packOrderList.find(key => key.pack_name === item.material_name)
         if (!pack) {
@@ -2070,7 +2065,6 @@ export default {
           }
         }
       })
-      console.log(this.packOrderList)
       // 出库概述添加装箱实际数量
       let outStockNumberInfo = res[3].data.data
       outStockNumberInfo.forEach(item => {
@@ -2107,7 +2101,6 @@ export default {
         let itemBacth = this.order_info.order_batch[prop]
         itemBacth.forEach(itemPro => {
           const finded = this.productDetail.find((itemFind) => itemFind.productCode === itemPro.product_code && itemFind.size === (itemPro.size + '/' + itemPro.color))
-          console.log(finded)
           if (!finded) {
             this.productDetail.push({
               product_info: itemPro,

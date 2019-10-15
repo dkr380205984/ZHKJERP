@@ -874,9 +874,8 @@
 </template>
 
 <script>
-import { machiningType } from '@/assets/js/dictionary.js'
 import { rawMaterialOrderList, orderDetail, rawMaterialOrderInit, rawMaterialProcessList, productionDetail, replenishYarnList, orderMaterialSotckDetail, clientList, rawMaterialOrder, rawMaterialProcessPage, deleteOrderProcess,
-  deleteOrderMaterial, notifySave } from '@/assets/js/api.js'
+  deleteOrderMaterial, notifySave, courseList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -944,7 +943,7 @@ export default {
         YLJGList: [],
         FLJGList: []
       },
-      machiningType: machiningType,
+      machiningType: [],
       orderLogFlag: false,
       orderLog: [],
       processLogFlag: false,
@@ -1776,8 +1775,12 @@ export default {
         company_id: window.sessionStorage.getItem('company_id')
       }), orderMaterialSotckDetail({
         order_id: this.$route.params.id
-      }), clientList()
+      }), clientList(), courseList({
+        company_id: this.companyId,
+        type: 1
+      })
     ]).then(res => {
+      this.machiningType = res[8].data.data
       let info = res[0].data.data.material_info || {}
       let stock = res[0].data.data.stock_info || []
       let materialInfo = res[1].data || []

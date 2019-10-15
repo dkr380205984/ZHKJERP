@@ -392,7 +392,6 @@ export default {
       document.getElementById(idName).scrollIntoView(true)
     },
     testStatus (key, index, number) {
-      // console.log((this.productList[key].size_info[index].number ? this.productList[key].size_info[index].number : 0) - number)
       return (this.productList[key].size_info[index].number ? this.productList[key].size_info[index].number : 0) - number
     },
     chinaNumber (key) {
@@ -426,15 +425,12 @@ export default {
       this.changeDataInfo.rejects_info.splice(index, 1)
     },
     changeData (item, index) {
-      console.log(item, index)
       this.showShade = true
       this.changeDataInfo = JSON.parse(JSON.stringify(item.log[index]))
       this.changeDataInfo.product_code = item.product_code
       this.changeDataInfo.product_type = item.type
-      console.log(this.changeDataInfo)
     },
     submit () {
-      console.log(this.changeDataInfo)
       let data = []
       let flag = true
       if (!this.changeDataInfo.number) {
@@ -462,13 +458,11 @@ export default {
         rejects_info: JSON.stringify(this.changeDataInfo.rejects_info.filter(item => item.number !== null)),
         desc: this.changeDataInfo.remark
       })
-      console.log(data)
       if (flag) {
         finishedExamination({
           data: data,
           id: this.changeDataInfo.id
         }).then(res => {
-          console.log(res)
           if (res.data.status) {
             this.$message({
               type: 'success',
@@ -505,10 +499,6 @@ export default {
         let goStockInfo = res[2].data.data
         let outStockInfo = res[3].data.data
         let clientInfo = res[4].data.data
-        // console.log('orderInfo', orderInfo)
-        console.log('finishedInfo', finishedInfo)
-        // console.log('goStockInfo', goStockInfo)
-        // console.log('outStockInfo', outStockInfo)
         // 初始化订单信息
         this.order_code = orderInfo.order_code
         this.client_name = orderInfo.client_name
@@ -617,7 +607,6 @@ export default {
           }
         })
         // 初始化次品承担单位数组
-        console.log(clientInfo)
         clientInfo.forEach(item => {
           //   if (item.product_info.product_code === this.list.product_code) {
           let flag = this.clientList.find(key => key === item.client_name)
@@ -627,7 +616,6 @@ export default {
           //   }
         })
         this.loading = false
-        console.log('productList', this.productList)
       })
     }
   },

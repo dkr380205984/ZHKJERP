@@ -648,7 +648,6 @@ export default {
           }
         })
       })
-      console.log(this.productInfo)
       // 合并相同编号的产品数据
       this.productInfo.forEach((item) => {
         let finded = this.product.find((itemFind, index) => itemFind.product_code === item.product_code)
@@ -667,7 +666,6 @@ export default {
           } else {
             state = 0
           }
-          console.log(item.product_id)
           this.product.push({
             product_code: item.product_code,
             category_name: item.category_name,
@@ -736,7 +734,6 @@ export default {
           })
         }
       })
-      console.log(this.product)
       // 将整理出来的数据统计一下是否全部有计划单
       this.product.forEach((item) => {
         if (item.state !== 2) {
@@ -803,7 +800,6 @@ export default {
         }
       })
       // 所需原料信息和织造信息全部都放在product中，整理完毕之后，开始整理原料分配信息
-      console.log(this.product)
       // 第一步，把纱线和颜色信息取出来
       let materialList = this.logList.map((itemLog, indexLog) => {
         let newItem = itemLog
@@ -826,10 +822,8 @@ export default {
         newItem.product_code = itemLog.product_info.product_code
         return newItem
       })
-      console.log(materialList)
       // 第二步，合并加工单位
       this.materialList = this.jsonMerge(materialList, ['client_name', 'product_code'])
-      console.log(this.materialList)
       // 统计生产分配信息
       // 先按生产单位合并，再按产品编号合并
       let fenpeiList = this.jsonMerge(this.logList.map((item) => {

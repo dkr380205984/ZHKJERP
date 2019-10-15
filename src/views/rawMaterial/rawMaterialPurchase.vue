@@ -200,7 +200,6 @@ export default {
         price: '',
         vat_code: 'vat-null'
       })
-      console.log(this.material_info)
     },
     change (number) {
       if (number === 1) {
@@ -407,7 +406,6 @@ export default {
       })
     ]).then(res => {
       this.loading = false
-      console.log(res)
       this.colorList = [{
         color_code: '',
         name: '白胚'

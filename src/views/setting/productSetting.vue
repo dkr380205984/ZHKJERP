@@ -631,7 +631,6 @@ export default {
     },
     // 完成编辑
     edit_sure (ev, data, node) {
-      console.log('完成编辑', data)
       this.loading = true
       let realId = null
       // <0说明是添加操作,>0则是编辑操作
@@ -919,7 +918,6 @@ export default {
       footageOne({
         category_id: newVal
       }).then((res) => {
-        console.log(res)
         this.sizeTnameArr = res.data.data
       })
     }
@@ -989,7 +987,6 @@ export default {
     }), unitList({
       company_id: companyId
     })]).then((res) => {
-      console.log(res)
       // 初始化花型和树形数据
       this.flowerArr = res[0].data.data
       this.treeData = res[1].data.data.map((item) => {
@@ -1026,7 +1023,6 @@ export default {
       this.sizeArr = res[4].data.data
       this.otherIngredientArr = res[6].data.data
       this.unitArr = res[7].data
-      console.log(this.unitArr)
       this.loading = false
     })
   }

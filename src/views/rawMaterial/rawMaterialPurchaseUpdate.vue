@@ -199,7 +199,6 @@ export default {
         price: '',
         vat_code: 'vat-null'
       })
-      console.log(this.material_info)
     },
     change (number) {
       if (number === 1) {
@@ -254,7 +253,6 @@ export default {
       const keyArr = this.material_info
       for (let i = 0; i < keyArr.length - 1; i++) {
         for (let j = i + 1; j < keyArr.length; j++) {
-          console.log(keyArr[i].material_name, keyArr[j].material_name)
           if (keyArr[i].material_name === keyArr[j].material_name && keyArr[i].color_code === keyArr[j].color_code && keyArr[i].vat_code === keyArr[j].vat_code) {
             IFREPEAT = true
           }
@@ -407,7 +405,6 @@ export default {
       })
     ]).then(res => {
       this.loading = false
-      console.log(res)
       this.colorList = [{
         color_code: '',
         name: '白胚'

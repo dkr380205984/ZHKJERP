@@ -1439,7 +1439,6 @@ export default {
       let start = new Date(startTime).getTime()
       let end = endTime ? new Date(endTime).getTime : new Date().getTime()
       let useTime = (start - end) / 1000 / 60
-      console.log(useTime)
       return parseInt(useTime / 60) + '小时' + parseInt(useTime % 60) + '分钟'
     },
     // 刷新页面
@@ -1479,12 +1478,10 @@ export default {
       })
     },
     getCraftInfo (item, key) {
-      console.log(item)
       if (!item) {
         return []
       } else {
         let flag = this.productDetailInfo.find(vals => vals.product_id === item)
-        console.log(flag)
         if (flag) {
           return flag.detail[key]
         } else {
@@ -1600,7 +1597,6 @@ export default {
           }
           orderSave(data).then((res) => {
             this.lock = true
-            console.log(res)
             if (res.data.status) {
               this.$message.success({
                 message: '修改成功'
@@ -1615,7 +1611,6 @@ export default {
               })
             }
           })
-          console.log(data)
         }
       }
     },
@@ -2031,7 +2026,6 @@ export default {
         return item
       })
       this.surplus = res[5].data.data // 该订单结余物料
-      // console.log(this.surplus)
       for (let key in this.process) {
         this.process[key] = this.process[key] > 100 ? 100 : this.process[key].toFixed(1)
       }
@@ -2064,8 +2058,6 @@ export default {
       this.hasPlan = res[2].data.status
       // 合并下产品编号相同的产品
       const productPlanMerge = this.jsonMerge(productPlan, ['product_code'])
-      console.log(productPlanMerge)
-      console.log(this.order_log.product_weave)
       productPlanMerge.forEach((itemProduct, indexPorduct) => {
         // 统计织造
         let weaveNum = 0 // 织造分配数量
@@ -2152,7 +2144,6 @@ export default {
           }
         })
       })
-      // console.log(this.productRate)
       // 制版工艺初始化及初始化产品信息
       for (let prop in this.order_info.order_batch) {
         let valBat = this.order_info.order_batch[prop]
@@ -2214,7 +2205,6 @@ export default {
       let materialPageInfo = this.order_log.material_order
       // 物料计划值
       // materialInfo.material_info.forEach(item => {
-      console.log(materialInfo)
       for (let prop in materialInfo.material_info) {
         // for (let prop in item) {
         let item = materialInfo.material_info[prop]
@@ -2267,7 +2257,6 @@ export default {
         }
       })
       // 物料加工类型
-      console.log(processInfo)
       processInfo.forEach(item => {
         let flag = this.materialList.find(keys => keys.material_name === item.material_name)
         if (flag) {
@@ -2303,7 +2292,6 @@ export default {
         }
       }
       let weaveInfo = this.order_log.product_weave
-      console.log(weaveInfo)
       let halfProductInfo = this.order_log.semi_finished_production
       designInfo.production_detail.product_info.forEach(item => {
         let flag = this.designList.find(key => key.product_code === item.product_code)
@@ -2410,7 +2398,6 @@ export default {
         let itemBacth = this.order_info.order_batch[prop]
         itemBacth.forEach(itemPro => {
           const finded = this.productDetail.find((itemFind) => itemFind.productCode === itemPro.product_code && itemFind.size === (itemPro.size + '/' + itemPro.color))
-          // console.log(finded)
           if (!finded) {
             this.productDetail.push({
               product_info: itemPro,

@@ -45,7 +45,7 @@
         </div>
       </div>
       <div class="tableCtn"
-        v-scroll="{fun:getList,pageSize:5}">
+        v-scroll="{fun:getList,pageSize:15}">
         <div class="tableRow titleTableRow">
           <div class="tableColumn">客户名称</div>
           <div class="tableColumn">客户简称</div>
@@ -82,7 +82,7 @@
         <el-pagination background
           layout="prev, pager, next,total"
           @current-change="getList"
-          :page-size="5"
+          :page-size="15"
           :current-page.sync="pages"
           :total="total">
         </el-pagination>
@@ -156,13 +156,12 @@ export default {
         company_id: window.sessionStorage.getItem('company_id'),
         keyword: this.searchVal,
         status: this.status,
-        limit: 5,
+        limit: 15,
         page: this.pages,
         start_time: this.start_time,
         end_time: this.end_time,
         type: this.type
       }).then((res) => {
-        console.log(res)
         this.total = res.data.meta.total
         this.list = res.data.data
         this.list.map(item => {

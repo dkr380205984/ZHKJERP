@@ -140,13 +140,11 @@ export default {
     }), bearClient({
       order_id: this.$route.params.id
     })]).then((res) => {
-      console.log(res)
       this.order = res[0].data.data.production_detail.order_info
       let companyArr = res[2].data.data
       for (let i in companyArr) {
         this.companyArr.push({ name: companyArr[i], id: i })
       }
-      console.log(this.companyArr)
       // let productPlan = res[0].data.data.product_plan
       // 筛选出跟当前公司相关的日志信息
       let clientInfo = res[1].data.data.filter((item) => item.client_id === parseInt(this.$route.params.companyId))

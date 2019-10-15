@@ -532,9 +532,6 @@ export default {
       let orderInfo = res[0].data.data
       let clientInfo = res[1].data.data
       let finishedInfo = res[2].data.data
-      // console.log('orderInfo', orderInfo)
-      console.log('clientInfo', clientInfo)
-      console.log('finishedInfo', finishedInfo)
       // 初始化订单信息
       this.order_code = orderInfo.order_code
       this.client_name = orderInfo.client_name
@@ -609,7 +606,6 @@ export default {
         })
       })
       // 初始化次品承担单位数组
-      console.log(clientInfo)
       clientInfo.forEach(item => {
         if (item.product_info.product_code === this.list.product_code) {
           let flag = this.options.clientList.find(key => key === item.client_name)
@@ -618,7 +614,6 @@ export default {
           }
         }
       })
-      // console.log(this.list)
       // 初始化检验数量与次品数量
       finishedInfo.forEach(item => {
         if (item.product_info.product_code === this.list.product_code) {

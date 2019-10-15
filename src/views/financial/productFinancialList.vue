@@ -142,7 +142,6 @@ export default {
         style_id: this.styleVal,
         type_id: this.typesVal
       }).then(res => {
-        console.log(res)
         this.total = res.data.meta.total
         res.data.data.forEach(item => {
           this.total_order_number += Number(item.order_number)
@@ -259,7 +258,6 @@ export default {
       this.category = res.data.data
     })
     this.getList()
-    console.log(__dirname)
   },
   filters: {
     filterNumber (val) {

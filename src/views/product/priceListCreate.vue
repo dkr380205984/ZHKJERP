@@ -714,8 +714,8 @@
 </template>
 
 <script>
-import { machiningType, moneyArr } from '@/assets/js/dictionary.js'
-import { clientList, productList, productTppeList, flowerList, getGroup, YarnList, materialList, priceListCreate, productPlanDetail, priceListList, priceListDetail, notifySave } from '@/assets/js/api.js'
+import { moneyArr } from '@/assets/js/dictionary.js'
+import { clientList, productList, productTppeList, flowerList, getGroup, YarnList, materialList, priceListCreate, productPlanDetail, priceListList, priceListDetail, notifySave, courseList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -809,7 +809,7 @@ export default {
           price: ''
         }
       ],
-      machiningList: machiningType,
+      machiningList: [],
       machiningArr: [
         {
           key: '',
@@ -1164,7 +1164,6 @@ export default {
           client_id: '',
           code: query
         }).then((res) => {
-          console.log(res)
           this.priceListArr = res.data.data
           this.loadingS = false
         })
@@ -1174,7 +1173,6 @@ export default {
     },
     // 导入报价单操作
     getPriceList (id) {
-      console.log(id)
       if (id) {
         this.loading = true
         priceListDetail({
@@ -1316,7 +1314,6 @@ export default {
       }
     },
     filterColor (item) {
-      console.log(item)
       return item.color.map(val => {
         return val.color_name
       }).join('/')
@@ -1405,7 +1402,11 @@ export default {
       keyword: ''
     }), materialList({
       company_id: this.companyId
+    }), courseList({
+      company_id: this.companyId,
+      type: 2
     })]).then((res) => {
+      this.machiningList = res[7].data.data
       this.companyArr = res[0].data.data.filter((item) => (item.type.indexOf(1) !== -1))
       this.seachProduct = res[1].data.data
       this.typeArr = res[2].data.data.map((item) => {

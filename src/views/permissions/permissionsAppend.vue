@@ -76,7 +76,6 @@ export default {
   },
   watch: {
     searchFlag () {
-      console.log(this.allUrl.length)
       if (!this.searchFlag) {
         this.getUrlData()
       }

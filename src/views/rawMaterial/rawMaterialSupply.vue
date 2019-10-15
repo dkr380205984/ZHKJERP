@@ -147,7 +147,6 @@ export default {
     }
   },
   mounted () {
-    console.log(this.$route.params)
     Promise.all([productionDetail({
       order_id: this.$route.params.id
     }), weaveDetail({

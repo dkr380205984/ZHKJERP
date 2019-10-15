@@ -394,14 +394,12 @@ export default {
       }
     },
     changeData (item, index) {
-      console.log(item, index)
       this.showShade = true
       this.changeDataInfo = JSON.parse(JSON.stringify(item.log[index]))
       this.changeDataInfo.product_code = item.product_code
       this.changeDataInfo.product_type = item.product_class
     },
     submit () {
-      console.log(this.changeDataInfo)
       let data = []
       let flag = true
       if (!this.changeDataInfo.count) {
@@ -429,13 +427,11 @@ export default {
         rejects_info: JSON.stringify(this.changeDataInfo.rejects_info.filter(item => item.number !== null)),
         desc: this.changeDataInfo.remark
       })
-      console.log(data)
       if (flag) {
         semiExamination({
           data: data,
           id: this.changeDataInfo.id
         }).then(res => {
-          console.log(res)
           if (res.data.status) {
             this.$message({
               type: 'success',
@@ -472,11 +468,6 @@ export default {
         let semiInfo = res[2].data.data
         let goStockInfo = res[3].data.data
         let outStockInfo = res[4].data.data
-        // console.log('orderInfo', orderInfo)
-        // console.log('weaveInfo', weaveInfo)
-        console.log('semiInfo', semiInfo)
-        // console.log('goStockInfo', goStockInfo)
-        // console.log('outStockInfo', outStockInfo)
         // 初始化订单信息
         this.order_code = orderInfo.order_code
         this.client_name = orderInfo.client_name
@@ -531,7 +522,6 @@ export default {
             }
           }
         })
-        // console.log('productList', this.productList)
         // 初始化已检验数量与次品数量
         semiInfo.forEach(item => {
           let flag = this.productList.find(key => key.product_code === item.product_info.product_code)

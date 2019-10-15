@@ -885,10 +885,7 @@ export default {
       }
     },
     // 拆分数据
-    splitData (item, key, flag) {
-      if (flag) {
-        // console.log('测试是否作为callBack进行拆分,没作用', item)
-      }
+    splitData (item, key) {
       item = JSON.parse(JSON.stringify(item))
       return item.splice(key * 16, 16)
     },
@@ -898,11 +895,9 @@ export default {
       let mergeMethod = mergeALLMathod.filter(val => Number(val.row) === Number(index)) // 合并规则
       let isMergeData = callBack ? callBack(item[key][index], keys, true) : item[key][index] // 需要合并的数据
       let mergeData = [] // 合并后的数据
-      // console.log(isMergeData, mergeMethod, item[mergeIndex])
       for (let ind = 0; ind < isMergeData.length; ind++) {
         let val = isMergeData[ind]
         let mergeItem = mergeMethod.find(mergeItem => ind >= (mergeItem.col - (keys || 0) * 16) && ((mergeItem.col - (keys || 0) * 16) + mergeItem.colspan - 1) >= ind)
-        // console.log(mergeItem)
         if (mergeItem) {
           mergeData.push({ value: mergeItem.value, colspan: mergeItem.colspan, isSplit: mergeItem.split })
           ind += (mergeItem.colspan - 1)
@@ -910,7 +905,6 @@ export default {
           mergeData.push({ value: val, colspan: 1 })
         }
       }
-      console.log(mergeData)
       return mergeData
     },
     forArr (num) {
@@ -996,7 +990,6 @@ export default {
     craftOne({
       id: this.$route.params.id
     }).then((res) => {
-      console.log(res.data.data)
       const data = res.data.data
       data.warp_data.merge_data = JSON.parse(data.warp_data.merge_data)
       data.warp_data.merge_data_back = JSON.parse(data.warp_data.merge_data_back)
@@ -1156,7 +1149,6 @@ export default {
     QRCode.toDataURL(this.urlVal, { errorCorrectionLevel: 'H' }, (err, url) => {
       console.log(err)
       this.qrCodeUrl = url
-      console.log(url)
     })
   },
   updated () {

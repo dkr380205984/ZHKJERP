@@ -102,7 +102,6 @@ export default {
       materialFinancialTotal({
         company_id: window.sessionStorage.getItem('company_id')
       }).then(res => {
-        console.log(res)
         res.data.data.forEach(item => {
           let flag = this.list.find(key => key.material_name === item.material_name)
           if (!flag) {

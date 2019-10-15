@@ -579,7 +579,6 @@ export default {
           this.productArr.splice(mark, 1)
         }
       }
-      console.log(this.productArr)
     },
     // 使用删除操作删除产品列表里的信息
     deleteProduct (id) {
@@ -1007,9 +1006,8 @@ export default {
     }), getGroup({
       company_id: this.companyId
     }), orderDetail({
-      id: this.$route.params.id }
-    ), getToken()]).then((res) => {
-      // console.log(res[5].data.data)
+      id: this.$route.params.id
+    }), getToken()]).then((res) => {
       this.companyArr = res[0].data.data.filter((item) => (item.type.indexOf(1) !== -1))
       this.seachProduct = res[1].data.data
       this.typeArr = res[2].data.data.map((item) => {
@@ -1070,7 +1068,6 @@ export default {
           url: items
         }
       }) : []
-      console.log(this.$refs)
       // this.fileArr = orderInfo.file_url ? JSON.parse(orderInfo.file_url).map((item, index) => {
       //   return {
       //     name: item.replace('http://zhihui.tlkrzf.com/', ''),
@@ -1132,7 +1129,6 @@ export default {
         this.orderArr.push(JSON.parse(JSON.stringify(obj)))
       }
       // 由于产品信息不会更新，因此需要获取最新的产品数据（尺码/颜色），可以在修改订单的时候选到最新的产品尺码/颜色
-      // console.log(this.orderArr)
       // 第一步，根据productArr里的产品id数组，获取产品数组详情
       porductOne({
         id: this.productArr.map(vals => { return vals.id })
@@ -1179,7 +1175,6 @@ export default {
       clearTimeout(this.timer)
       this.timer = setTimeout(() => {
         if (ev.target.scrollTop - this.scrollTop > 60) {
-          console.log('刷新数据')
           this.scrollTop = ev.target.scrollTop
           this.page++
           this.getSearchList()
@@ -1192,4 +1187,17 @@ export default {
 
 <style lang="less" scoped>
 @import "~@/assets/css/orderCreate.less";
+</style>
+<style lang="less">
+#orderCreate {
+  .upload-demo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .el-upload-list__item-name {
+    max-width: 110px;
+  }
+}
 </style>

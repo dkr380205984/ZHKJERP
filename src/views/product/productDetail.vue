@@ -438,7 +438,6 @@ export default {
       return arr.join(',')
     },
     filterSize (sizeArr) {
-      console.log(sizeArr)
       if (sizeArr) {
         return sizeArr.find(key => key.measurement === this.selectSize).size_info
       } else {
@@ -498,7 +497,6 @@ export default {
     porductOne({
       id: this.$route.params.id
     }).then((res) => {
-      console.log(res.data.data)
       if (res.data.status) {
         if (res.data.data.type === 2) {
           this.$router.push('/index/sampleDetail/' + res.data.data.id)

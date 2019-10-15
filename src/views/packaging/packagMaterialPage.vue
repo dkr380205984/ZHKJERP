@@ -589,7 +589,6 @@ export default {
     list: {
       deep: true,
       handler: function (newVal) {
-        console.log(newVal)
         this.total_price = 0
         newVal.forEach(item => {
           let price = 0
@@ -784,7 +783,6 @@ export default {
           }
         }
         setTimeout(() => { this.save = true }, 1000)
-        console.log(data)
       } else {
         this.$alert('请求速度过于频繁', '提醒', {
           confirmButtonText: '确定',
@@ -801,7 +799,6 @@ export default {
   beforeCreate () {
     let nowDate = new Date()
     this.now_time = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1 < 10 ? '0' + (nowDate.getMonth() + 1) : (nowDate.getMonth() + 1)) + '-' + (nowDate.getDate() < 10 ? '0' + nowDate.getDate() : nowDate.getDate())
-    // console.log(this.now_time)
   },
   created () {
     Promise.all([
@@ -818,14 +815,11 @@ export default {
       let orderInfo = res[0].data.data
       let clientInfo = res[1].data.data
       let packagMaterialInfo = res[2].data.data
-      // console.log('orderInfo', orderInfo)
-      // console.log('clientInfo', clientInfo)
       // 初始化包装辅料数组
       this.options.packList = packagMaterialInfo
       this.options.packList.map(res => {
         res.attribute = JSON.parse(res.attribute)
       })
-      // console.log(this.options.packList)
       // 初始化订单信息
       this.order_code = orderInfo.order_code
       this.client_name = orderInfo.client_name
@@ -871,7 +865,6 @@ export default {
       //   })
       // })
       // 初始化包装辅料订购单位
-      console.log(clientInfo)
       let arr = clientInfo.filter(key => (key.type.indexOf(7) !== -1))
       this.options.companyList = arr
       this.loading = false

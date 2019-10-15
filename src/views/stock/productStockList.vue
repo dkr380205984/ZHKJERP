@@ -245,7 +245,6 @@ export default {
         this.list.push(list)
         this.total = this.list.length
         this.loading = false
-        console.log(this.list)
       })
     },
     // 删除条件

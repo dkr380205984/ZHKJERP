@@ -379,7 +379,6 @@ export default {
         this.save = false
         let flag = true
         let data = []
-        console.log(this.list.testInfo)
         this.list.testInfo.forEach(item => {
           item.testSizeInfo.forEach(value => {
             let arr = {}
@@ -502,11 +501,6 @@ export default {
       let semiInfo = res[2].data.data
       let goStockInfo = res[4].data.data
       let outStockInfo = res[5].data.data
-      // console.log('orderInfo', orderInfo)
-      console.log('weaveInfo', weaveInfo)
-      // console.log('semiInfo', semiInfo)
-      console.log('goStockInfo', goStockInfo)
-      console.log('outStockInfo', outStockInfo)
       // 初始化检验人员数据
       res[3].data.data.forEach(item => {
         if (item.station_id === 4) {

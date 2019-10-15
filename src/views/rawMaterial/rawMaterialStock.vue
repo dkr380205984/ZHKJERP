@@ -7,8 +7,8 @@
           :class="{'active':msgFlag}"
           @click="showMsg = true"></i>
       </h2>
-      <div class="goStock"
-        @click="addAllGoStockInfo">一键添加入库</div>
+      <!-- <div class="goStock"
+        @click="addAllGoStockInfo">一键添加入库</div> -->
     </div>
     <div class="body">
       <div class="stepCtn">
@@ -335,77 +335,77 @@ export default {
         }
       })
     },
-    addAllGoStockInfo () {
-      let flag = this.processList.find(key => key.process_type === '成品染色')
-      if (!flag) {
-        this.$message.error('没有相关染色信息，无法一键添加')
-      } else {
-        console.log(flag, this.list, this.stockNumber)
-        let info = []
-        flag.companys.forEach(item => {
-          item.materials.forEach(valMater => {
-            valMater.colors.forEach(valColor => {
-              let material = info.find(index => index.material_name === valMater.material)
-              if (!material) {
-                info.push({
-                  material_name: valMater.material,
-                  color_info: [{
-                    color: valColor.color,
-                    value: valColor.value
-                  }]
-                })
-              } else {
-                let color = material.color_info.find(index => index.color === valColor.color)
-                if (!color) {
-                  material.color_info.push({
-                    color: valColor.color,
-                    value: valColor.value
-                  })
-                } else {
-                  color.value = Number(color.value ? color.value : 0) + Number(valColor.value)
-                }
-              }
-            })
-          })
-        })
-        this.stockNumber.forEach(item => {
-          let material = info.find(key => key.material_name === item.material_name)
-          if (material) {
-            let color = material.color_info.find(key => key.color === item.color_code)
-            if (color) {
-              color.value -= item.total_weight
-            }
-          }
-        })
-        console.log(info)
-        let keys = true
-        info.forEach(item => {
-          item.color_info.forEach(valColor => {
-            if (valColor.value > 0) {
-              keys = false
-              let list = this.list.find(index => index.material === item.material_name)
-              if (list) {
-                list.stockInfo.push({
-                  materialColor: valColor.color,
-                  remark: '',
-                  stock_time: this.now_time,
-                  stockWeightInfo: [
-                    {
-                      dyelot_number: '',
-                      number: 1,
-                      weight: valColor.value
-                    }
-                  ]
-                })
-              }
-            }
-          })
-        })
-        if (keys) {
-          this.$message.warning('染色原料已全部入库')
-        }
-      }
-    },
+    // addAllGoStockInfo () {
+    //   let flag = this.processList.find(key => key.process_type === '成品染色')
+    //   if (!flag) {
+    //     this.$message.error('没有相关染色信息，无法一键添加')
+    //   } else {
+    //     console.log(flag, this.list, this.stockNumber)
+    //     let info = []
+    //     flag.companys.forEach(item => {
+    //       item.materials.forEach(valMater => {
+    //         valMater.colors.forEach(valColor => {
+    //           let material = info.find(index => index.material_name === valMater.material)
+    //           if (!material) {
+    //             info.push({
+    //               material_name: valMater.material,
+    //               color_info: [{
+    //                 color: valColor.color,
+    //                 value: valColor.value
+    //               }]
+    //             })
+    //           } else {
+    //             let color = material.color_info.find(index => index.color === valColor.color)
+    //             if (!color) {
+    //               material.color_info.push({
+    //                 color: valColor.color,
+    //                 value: valColor.value
+    //               })
+    //             } else {
+    //               color.value = Number(color.value ? color.value : 0) + Number(valColor.value)
+    //             }
+    //           }
+    //         })
+    //       })
+    //     })
+    //     this.stockNumber.forEach(item => {
+    //       let material = info.find(key => key.material_name === item.material_name)
+    //       if (material) {
+    //         let color = material.color_info.find(key => key.color === item.color_code)
+    //         if (color) {
+    //           color.value -= item.total_weight
+    //         }
+    //       }
+    //     })
+    //     console.log(info)
+    //     let keys = true
+    //     info.forEach(item => {
+    //       item.color_info.forEach(valColor => {
+    //         if (valColor.value > 0) {
+    //           keys = false
+    //           let list = this.list.find(index => index.material === item.material_name)
+    //           if (list) {
+    //             list.stockInfo.push({
+    //               materialColor: valColor.color,
+    //               remark: '',
+    //               stock_time: this.now_time,
+    //               stockWeightInfo: [
+    //                 {
+    //                   dyelot_number: '',
+    //                   number: 1,
+    //                   weight: valColor.value
+    //                 }
+    //               ]
+    //             })
+    //           }
+    //         }
+    //       })
+    //     })
+    //     if (keys) {
+    //       this.$message.warning('染色原料已全部入库')
+    //     }
+    //   }
+    // },
     appendStockWeightInfo (key, kay) {
       this.list[key].stockInfo[kay].stockWeightInfo.push({
         dyelot_number: '',
@@ -578,7 +578,6 @@ export default {
       this.group_name = res[0].data.data.group_name
       // 初始化订购信息
       let materialInfo = res[1].data
-      console.log(materialInfo)
       materialInfo.forEach(item => {
         if ((this.type === '0' && item.type === 1) || (this.type === '1' && item.type === 2)) {
           let flag = this.materialList.find(val => val.company === item.client_name)
@@ -724,7 +723,6 @@ export default {
         id: null,
         name: '本厂仓库'
       })
-      console.log(this.materialList)
       this.loading = false
     })
   }

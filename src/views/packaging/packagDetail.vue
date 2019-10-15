@@ -701,7 +701,6 @@ export default {
       deep: true,
       handler (newVal) {
         this.changeInfo.pack_attr = this.packagMaterialList.find(key => key.id === newVal).attribute
-        console.log(this.changeInfo.pack_attr)
       }
     }
   },
@@ -806,7 +805,6 @@ export default {
         order_id: this.$route.params.id
       }).then(res => {
         // 初始化订购包装详情
-        console.log(res.data.data)
         res.data.data.forEach(item => {
           let type = (item.type === 1 ? 'main' : 'other')
           this.packagMaterialPageLog[type].unshift({

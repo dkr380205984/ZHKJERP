@@ -408,9 +408,9 @@ export default {
       item.info.splice(ind, 1)
     },
     // 计算方式改变
-    changeSettleFun () {
-      console.log(this.settleFun)
-    },
+    // changeSettleFun () {
+    //   console.log(this.settleFun)
+    // },
     // 根据选取的外贸公司获取联系人
     getContacts (id) {
       this.contactsArr = this.companyArr.find((item) => item.id === id).contacts
@@ -652,7 +652,6 @@ export default {
     }), getGroup({
       company_id: this.companyId
     }), getToken()]).then((res) => {
-      console.log(res[1])
       this.companyArr = res[0].data.data.filter((item) => (item.type.indexOf(1) !== -1))
       this.seachProduct = res[1].data.data.map(item => {
         let data = {
@@ -699,7 +698,6 @@ export default {
           })
         }
       })
-      console.log(this.typeArr)
       this.flowerArr = res[3].data.data
       this.groupArr = res[4].data.data
       this.postData.token = res[5].data.data
@@ -712,7 +710,6 @@ export default {
       clearTimeout(this.timer)
       this.timer = setTimeout(() => {
         if (ev.target.scrollTop - this.scrollTop > 60) {
-          console.log('刷新数据')
           this.scrollTop = ev.target.scrollTop
           this.page++
           this.getSearchList()

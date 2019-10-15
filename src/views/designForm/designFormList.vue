@@ -212,7 +212,6 @@ export default {
         'craft_code': this.searchVal,
         'is_draft': 1
       }).then((res) => {
-        console.log(res)
         this.loading = false
         this.total = res.data.meta.total
         this.list = res.data.data

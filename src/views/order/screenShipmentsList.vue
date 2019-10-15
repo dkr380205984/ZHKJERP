@@ -245,7 +245,6 @@ export default {
       }).then(res => {
         if (res.status) {
           let orderInfo = res.data.data
-          console.log(orderInfo)
           for (let prop in orderInfo.data) {
             let valTime = orderInfo.data[prop]
             valTime.forEach((valOrder, indOrder) => {
@@ -293,8 +292,6 @@ export default {
               })
             })
           }
-          // console.log(this.list)
-          // console.log(this.lists)
           this.paging(this.list, pageNumber)
           if (this.loading) {
             this.loading = false
@@ -313,13 +310,11 @@ export default {
     // 切割list数组进行分页
     paging (data, number) {
       this.total = this.pagingList.length
-      console.log(this.total, this.pagingList)
       // 切割数据
       let list = data.splice(0, number)
       let arr = []
       let num = 1
       let flag = list.length === Number(number)
-      // console.log(flag)
       // 合并切割的数据
       list.forEach(val => {
         let time = arr.find(item => item.delivery_time === val.delivery_time)
@@ -439,7 +434,6 @@ export default {
         flag: flag,
         data: arr
       })
-      console.log(this.pagingList)
     },
     // 当停止获取数据时，继续切割分页
     goOnPaging (data, number) {
@@ -455,7 +449,6 @@ export default {
       searchList.forEach(item => {
         this.searchList[item.split('=')[0]] = item.split('=')[1]
       })
-      console.log(this.searchList)
     }
     let html = document.getElementsByTagName('html')[0]
     html.addEventListener('keydown', (e) => {
