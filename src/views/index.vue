@@ -31,8 +31,8 @@
         <!-- 面包屑容器需要顶到左侧导航栏,由于左侧五像素预留给marign了,因此需要用伪类补齐五像素的留白,具体查看CSS -->
         <div class="breadCtn">
           <span class="father">主页</span>
-          <!-- <span class="break">/</span>
-          <span class="now">添加产品</span> -->
+          <span class="break">/</span>
+          <span class="now">添加产品</span>
         </div>
         <div class="mainCtn2">
           <div class="mainCtnForScroll">
@@ -49,12 +49,30 @@ import { menu } from '@/assets/js/dictionary.js'
 export default {
   data () {
     return {
-      menu: menu
+      menu: menu,
+      nowRouter: '',
+      breadRouter: {
+        sampleCreate: {
+          children1: '样品添加',
+          children2: ''
+        },
+        sampleList: {
+          children1: '样品列表',
+          children2: ''
+        },
+        sampleDetail: {
+          children1: '样品列表',
+          children2: '样品详情'
+        }
+      }// 面包屑路由表
     }
   },
-
   methods: {
-
+  },
+  watch: {
+    '$route.name': function (val) {
+      console.log(val)
+    }
   },
   created () {
 
