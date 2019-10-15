@@ -130,4 +130,22 @@
       }
     }
   }
+  .circle{
+    width: 40px;
+    margin: 10px 8px;
+    height: 40px;
+    border-radius: 50%;
+    background: #DDD;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &.has{
+      background: @success;
+    }
+    &>img{
+      width: 60%;
+      height: 60%;
+    }
+  }
 }

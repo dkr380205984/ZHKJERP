@@ -82,11 +82,9 @@ async function get (url, params) {
     }
     if (response.data.code === 501 || response.data.code === 502) {
       Message.Message.error({
-        message: '登录信息过期',
-        duration: 0,
-        showClose: true
+        message: '登录信息过期'
       })
-      router.push('/login' + '?nextUrl=' + window.location.href)
+      router.push('/login' + '?nextUrl=' + (window.location.href.indexOf('?nextUrl=') !== -1 ? window.location.href.split('?nextUrl=')[1] : window.location.href.replace(window.location.origin, '')))
       return Promise.reject(response)
     }
     return Promise.resolve(response)
@@ -134,7 +132,7 @@ async function post (url, params, contentType, responseType) {
       Message.Message.error({
         message: '登录信息过期'
       })
-      router.push('/login' + '?nextUrl=' + window.location.href)
+      router.push('/login' + '?nextUrl=' + (window.location.href.indexOf('?nextUrl=') !== -1 ? window.location.href.split('?nextUrl=')[1] : window.location.href.replace(window.location.origin, '')))
       return Promise.reject(response)
     }
     return Promise.resolve(response)

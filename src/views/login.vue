@@ -92,7 +92,12 @@ export default {
           } else {
             window.localStorage.setItem('zhPassword', '')
           }
-          _this.$router.push('/index/home')
+          console.log(_this.$route)
+          if (_this.$route.query.nextUrl) {
+            _this.$router.push(_this.$route.query.nextUrl)
+          } else {
+            _this.$router.push('/index/home')
+          }
         } else {
           Message.error({
             message: res.data.message

@@ -117,12 +117,13 @@
           <div class="tableColumn">编号</div>
           <div class="tableColumn flex9">品类</div>
           <div class="tableColumn">产品名称</div>
-          <div class="tableColumn ">花型</div>
+          <!-- <div class="tableColumn ">花型</div> -->
           <div class="tableColumn">尺码</div>
           <div class="tableColumn flexSamll">配色(种)</div>
           <div class="tableColumn">图片</div>
           <div class="tableColumn">创建人</div>
           <div class="tableColumn">创建时间</div>
+          <div class="tableColumn flex9">产品状态</div>
           <div class="tableColumn flex9">操作</div>
         </div>
         <div class="tableRow bodyTableRow"
@@ -132,7 +133,7 @@
             style="color:#1A95FF">{{item.product_code}}</div>
           <div class="tableColumn flex9">{{item|filterType}}</div>
           <div class="tableColumn">{{item.sample_title}}</div>
-          <div class="tableColumn">{{item.flower_id}}</div>
+          <!-- <div class="tableColumn">{{item.flower_id}}</div> -->
           <div class="tableColumn">{{item.size|filterSize}}</div>
           <div class="tableColumn flexSamll">{{item.color.length}}</div>
           <div class="tableColumn">
@@ -148,6 +149,45 @@
           </div>
           <div class="tableColumn">{{item.user_name}}</div>
           <div class="tableColumn">{{item.create_time}}</div>
+          <div class="tableColumn flex9"
+            style="display:flex;justify-content:center">
+            <el-tooltip class="item"
+              effect="dark"
+              content="工艺单"
+              placement="top-start">
+              <span :class="{'circle':true,'has':(item.craft_info && item.craft_info.id)}">
+                <img :src="require('@/assets/image/icon/craft_icon.png')"
+                  alt="">
+              </span>
+            </el-tooltip>
+            <el-tooltip class="item"
+              effect="dark"
+              content="配料单"
+              placement="top-start">
+              <span :class="{'circle':true,'has':(item.product_plan_info && item.product_plan_info.id)}">
+                <img :src="require('@/assets/image/icon/plan_icon.png')"
+                  alt="">
+              </span>
+            </el-tooltip>
+            <el-tooltip class="item"
+              effect="dark"
+              content="报价单"
+              placement="top-start">
+              <span :class="{'circle':true,'has':(item.quotation_id && item.quotation_id.length>0)}">
+                <img :src="require('@/assets/image/icon/price_icon.png')"
+                  alt="">
+              </span>
+            </el-tooltip>
+            <el-tooltip class="item"
+              effect="dark"
+              content="订单"
+              placement="top-start">
+              <span :class="{'circle':true,'has':(item.order_list && item.order_list.length>0)}">
+                <img :src="require('@/assets/image/icon/order_icon.png')"
+                  alt="">
+              </span>
+            </el-tooltip>
+          </div>
           <div class="tableColumn flex9">
             <el-tooltip class="item"
               effect="dark"
@@ -496,8 +536,10 @@ export default {
         return item.category_info.product_category
       } else if (!item.style_name) {
         return item.category_info.product_category + ' / ' + item.type_name
-      } else {
+      } else if (!item.flower_id) {
         return item.category_info.product_category + ' / ' + item.type_name + ' / ' + item.style_name
+      } else {
+        return item.category_info.product_category + ' / ' + item.type_name + ' / ' + item.style_name + ' / ' + item.flower_id
       }
     },
     // 类型展示
