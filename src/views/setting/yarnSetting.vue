@@ -5,7 +5,7 @@
     </div>
     <div class="body">
       <div class="lineCtn"
-        :style="{'max-height':flagObj.yarn?'300px':'64px'}">
+        :style="{'max-height':flagObj.yarn?'9999px':'64px'}">
         <div class="inputCtn">
           <span class="label">纱线名称:</span>
           <el-input class="elInput"
@@ -30,7 +30,7 @@
         </div>
       </div>
       <div class="lineCtn"
-        :style="{'max-height':flagObj.color?'1000px':'64px'}">
+        :style="{'max-height':flagObj.color?'9999px':'64px'}">
         <div class="inputCtn">
           <span class="label">纱线颜色:</span>
           <el-input class="elInput"
@@ -57,24 +57,57 @@
           </div>
         </div>
       </div>
+      <div class="lineCtn"
+        :style="{'max-height':flagObj.otherIngredient?'9999px':'64px'}">
+        <div class="inputCtn">
+          <span class="label">添加辅料:</span>
+          <el-input class="elInput"
+            v-model="otherIngredient"
+            placeholder="请输入辅料名称"></el-input>
+          <el-input class="elInput"
+            v-model="otherIngredientUnit"
+            placeholder="请输入辅料单位"></el-input>
+          <div class="okBtn"
+            @click="saveOtherIngredient">添加</div>
+          <div class="showAll"
+            @click="flagObj.otherIngredient=!flagObj.otherIngredient">{{!flagObj.otherIngredient?'展开':'收起'}}<i class="el-icon-d-arrow-right"
+              :class="!flagObj.otherIngredient?'showIcon':'hideIcon'"></i></div>
+        </div>
+        <div class="allInfo">
+          <div class="bgWhite"></div>
+          <div class="list">
+            <div class="btnCtn"
+              v-for="item in otherIngredientArr"
+              :key="item.id">
+              <span>{{item.name}}</span>
+              <i class="iconCancle"
+                @click="deleteOtherIngredient(item.id)">x</i>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { saveYarn, YarnList, saveYarnColor, YarnColorList } from '@/assets/js/api.js'
+import { saveYarn, YarnList, saveYarnColor, YarnColorList, saveMaterial, materialList, deleteMaterial } from '@/assets/js/api.js'
 export default {
   data () {
     return {
       flagObj: {
         yarn: false,
-        color: false
+        color: false,
+        otherIngredient: false
       },
       yarn: '',
       yarnArr: [],
       colorVal: '',
       color: '',
-      colorArr: []
+      colorArr: [],
+      otherIngredient: '',
+      otherIngredientUnit: '',
+      otherIngredientArr: []
     }
   },
   methods: {
@@ -135,6 +168,63 @@ export default {
           message: '请填写颜色名称并选择对应色块'
         })
       }
+    },
+    // 添加辅料
+    saveOtherIngredient () {
+      if (this.otherIngredient && this.otherIngredientUnit) {
+        this.loading = true
+        saveMaterial({
+          company_id: window.sessionStorage.getItem('company_id'),
+          name: this.otherIngredient,
+          otherIngredientUnit: this.unit,
+          max_price: 0,
+          min_price: 0
+        }).then((res) => {
+          if (res.data.status) {
+            this.$message.success({
+              message: '添加辅料成功'
+            })
+            this.flower = ''
+            materialList({
+              company_id: window.sessionStorage.getItem('company_id')
+            }).then((res) => {
+              if (res.data.status) {
+                this.otherIngredientArr = res.data.data
+              }
+              this.loading = false
+            })
+          }
+        })
+      } else {
+        this.$message.error({
+          message: '请输入辅料名称和辅料单位'
+        })
+      }
+    },
+    // 删除辅料
+    deleteOtherIngredient (id) {
+      deleteMaterial({
+        id: id
+      }).then((res) => {
+        if (res.data.status) {
+          this.$message.success({
+            message: '删除成功'
+          })
+          materialList({
+            company_id: window.sessionStorage.getItem('company_id')
+          }).then((res) => {
+            if (res.data.status) {
+              this.otherIngredientArr = res.data.data
+            }
+            this.loading = false
+          })
+        } else {
+          this.$message.error({
+            message: res.data.message
+          })
+          this.loading = false
+        }
+      })
     }
   },
   mounted () {
@@ -142,9 +232,12 @@ export default {
       keyword: ''
     }), YarnColorList({
       company_id: window.sessionStorage.getItem('company_id')
+    }), materialList({
+      company_id: window.sessionStorage.getItem('company_id')
     })]).then((res) => {
       this.yarnArr = res[0].data.data
       this.colorArr = res[1].data.data
+      this.otherIngredientArr = res[2].data.data
     })
   }
 }

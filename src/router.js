@@ -29,8 +29,11 @@ let router = new Router({
     path: '/productDesignWeavingTable/:id/:clientName/:product_code/:type',
     name: 'productDesignWeavingTable',
     component: () => import('./views/productDesign/productDesignWeavingTable.vue')
-  },
-  {
+  }, {
+    path: '/designFormImage/:id',
+    name: 'designFormImage',
+    component: () => import('./views/designForm/designFormImage.vue')
+  }, {
     path: '/designFormTable/:id',
     name: 'designFormTable',
     component: () => import('./views/designForm/designFormTable.vue')

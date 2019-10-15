@@ -57,7 +57,7 @@
           </div>
         </div>
       </div>
-      <div class="lineCtn"
+      <!-- <div class="lineCtn"
         :style="{'max-height':flagObj.otherIngredient?'300px':'64px'}">
         <div class="inputCtn">
           <span class="label">添加辅料:</span>
@@ -82,7 +82,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
       <div class="lineCtn"
         :style="{'max-height':flagObj.colorFlag?'300px':'64px'}">
         <div class="inputCtn">
@@ -113,7 +113,7 @@
           </div>
         </div>
       </div>
-      <div class="lineCtn"
+      <!-- <div class="lineCtn"
         :style="{'max-height':flagObj.sizeTFlag?'300px':'64px'}">
         <div class="inputCtn">
           <span class="label">添加尺寸:</span>
@@ -157,7 +157,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
       <div class="lineCtn"
         :style="{'max-height':flagObj.sizeFlag?'300px':'64px'}">
         <div class="inputCtn">

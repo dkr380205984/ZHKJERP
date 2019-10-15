@@ -7,7 +7,7 @@
     </div>
     <div class="menuCtn">
       <div class="menuLeft">
-        <i class="el-icon-arrow-left"
+        <i class="el-icon-d-arrow-left"
           @click="$router.go(-1)"></i>
         <div class="home"
           @click="goHome"></div>
