@@ -263,9 +263,6 @@ const menu = [{
   }, {
     name: '产品列表',
     url: '/index/productList'
-  }, {
-    name: '产品库存列表',
-    url: '/index/productStockList'
   }]
 }, {
   name: '工艺单管理',
@@ -338,13 +335,13 @@ const menu = [{
     name: '原料预订购',
     url: '/index/rawMaterialPurchase'
   }, {
-    name: '预订购列表',
+    name: '预订购入库',
     url: '/index/rawMaterialPurchaseList'
   }, {
-    name: '物料详情列表',
+    name: '物料订购加工',
     url: '/index/rawMaterialOrderList'
   }, {
-    name: '物料出入库列表',
+    name: '物料出入库',
     url: '/index/rawMaterialStockList'
   }]
 }, {
@@ -377,6 +374,9 @@ const menu = [{
 }, {
   name: '库存管理',
   children: [{
+    name: '产品库存列表',
+    url: '/index/productStockList'
+  }, {
     //   name: '添加产品库存',
     //   url: '/index/stockProductList'
     // }, {

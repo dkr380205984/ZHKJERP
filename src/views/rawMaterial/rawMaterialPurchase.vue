@@ -125,7 +125,7 @@
         <div class="inputCtn">
           <span class="content btn">
             <span class="clean"
-              @click="clean">清空</span>
+              @click="$router.go(-1)">返回</span>
             <span class="save"
               @click="save">保存</span>
           </span>
@@ -224,22 +224,6 @@ export default {
     },
     delet (key) {
       this.material_info.splice(key, 1)
-    },
-    clean () {
-      this.company = ''
-      this.remark = ''
-      this.total_weight = ''
-      this.total_price = ''
-      this.order_time = ''
-      this.material_info = [
-        {
-          material_name: '',
-          color_code: '',
-          attribute: '',
-          price: '',
-          vat_code: 'vat-null'
-        }
-      ]
     },
     save () {
       if (!this.company) {
