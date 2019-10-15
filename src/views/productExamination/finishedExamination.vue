@@ -285,7 +285,7 @@
 
 <script>
 import { defectiveType } from '@/assets/js/dictionary.js'
-import { orderDetail, halfProductDetail, finishedExamination, finishedExaminationDetail, authList, notifySave } from '@/assets/js/api.js'
+import { orderDetail, halfProductDetail, finishedExamination, finishedExaminationDetail, authList, notifySave, weaveDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -527,11 +527,15 @@ export default {
       }),
       authList({
         company_id: window.sessionStorage.getItem('company_id')
+      }),
+      weaveDetail({
+        order_id: this.$route.params.id
       })
     ]).then(res => {
       let orderInfo = res[0].data.data
       let clientInfo = res[1].data.data
       let finishedInfo = res[2].data.data
+      let clientInfoweave = res[4].data.data
       // 初始化订单信息
       this.order_code = orderInfo.order_code
       this.client_name = orderInfo.client_name
@@ -606,6 +610,14 @@ export default {
         })
       })
       // 初始化次品承担单位数组
+      clientInfoweave.forEach(item => {
+        if (item.product_info.product_code === this.list.product_code) {
+          let flag = this.options.clientList.find(key => key === item.client_name)
+          if (!flag) {
+            this.options.clientList.push(item.client_name)
+          }
+        }
+      })
       clientInfo.forEach(item => {
         if (item.product_info.product_code === this.list.product_code) {
           let flag = this.options.clientList.find(key => key === item.client_name)

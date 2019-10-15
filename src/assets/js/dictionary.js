@@ -263,6 +263,9 @@ const menu = [{
   }, {
     name: '产品列表',
     url: '/index/productList'
+  }, {
+    name: '产品库存列表',
+    url: '/index/productStockList'
   }]
 }, {
   name: '工艺单管理',
@@ -374,9 +377,6 @@ const menu = [{
 }, {
   name: '库存管理',
   children: [{
-    name: '产品库存列表',
-    url: '/index/productStockList'
-  }, {
     //   name: '添加产品库存',
     //   url: '/index/stockProductList'
     // }, {
