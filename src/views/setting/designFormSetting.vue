@@ -79,7 +79,7 @@
           </div>
         </div>
       </div>
-      <div class="lineCtn"
+      <!-- <div class="lineCtn"
         :style="{'max-height':flagObj.process?'300px':'64px'}">
         <div class="inputCtn">
           <span class="label">产品生产流程</span>
@@ -99,11 +99,11 @@
               v-for="item in processArr"
               :key="item.id">
               <span>{{item.name}}</span>
-              <!-- <i class="iconCancle" @click="deleteProcess(item.id)">x</i> -->
+              <i class="iconCancle" @click="deleteProcess(item.id)">x</i>
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>

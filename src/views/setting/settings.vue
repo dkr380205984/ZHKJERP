@@ -31,19 +31,15 @@ export default {
         img: require('../../assets/image/setting/工艺单设置-蓝.png'),
         url: '/index/designFormSetting'
       }, {
-        name: '原料设置',
+        name: '物料设置',
         img: require('../../assets/image/setting/原料设置-蓝.png'),
         url: '/index/yarnSetting'
       }, {
-        name: '辅料设置',
-        img: require('../../assets/image/setting/辅料设置-蓝.png'),
-        url: '/index/error/404'
-      }, {
-        name: '账号设置',
+        name: '岗位小组管理',
         img: require('../../assets/image/setting/账号设置-蓝.png'),
         url: '/index/accountSetting'
       }, {
-        name: '包装设置',
+        name: '包装辅料设置',
         img: require('../../assets/image/setting/包装设置-蓝.png'),
         url: '/index/packagMaterialList'
       }, {
