@@ -370,7 +370,10 @@ const deleteOrderProcess = (params) => http.post(`${baseUrl}/material/process/de
 const settingCourse = (params) => http.post(`${baseUrl}/production/flow/save`, params, 'application/json')
 // 获取加工工序production/flow/list
 const courseList = (params) => http.get(`${baseUrl}/production/flow/list`, params)
+// 仓库——添加原料库存
+const stockMaterialAdd = (params) => http.post(`${baseUrl}/material/push`, params, 'application/json')
 export {
+  stockMaterialAdd,
   courseList,
   settingCourse,
   deleteOrderProcess,

@@ -273,10 +273,10 @@ let router = new Router({
       path: 'mainMaterialStockDetail/:stockId/:id',
       name: 'mainMaterialStockDetail',
       component: () => import('./views/stock/mainMaterialStockDetail.vue')
-      // }, {
-      //   path: 'otherMaterialStockCreate',
-      //   name: 'otherMaterialStockCreate',
-      //   component: () => import('./views/stock/otherMaterialStockCreate.vue')
+    }, {
+      path: 'otherMaterialStockCreate',
+      name: 'otherMaterialStockCreate',
+      component: () => import('./views/stock/otherMaterialStockCreate.vue')
       // }, {
       //   path: 'otherMaterialStockList',
       //   name: 'otherMaterialStockList',
