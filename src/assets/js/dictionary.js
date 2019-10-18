@@ -341,10 +341,10 @@ const menu = [{
     name: '预订购列表',
     url: '/index/rawMaterialPurchaseList'
   }, {
-    name: '物料详情列表',
+    name: '物料订购加工',
     url: '/index/rawMaterialOrderList'
   }, {
-    name: '物料出入库列表',
+    name: '物料出库入库',
     url: '/index/rawMaterialStockList'
   }]
 }, {

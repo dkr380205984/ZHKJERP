@@ -388,7 +388,7 @@ let router = new Router({
     }, {
       path: 'rawMaterialStockDetail/:id/:type',
       name: 'rawMaterialStockDetail',
-      component: () => import('./views/rawMaterial/rawMaterialStockDetail.vue')
+      component: () => import('./views/rawMaterial/rawMaterialStockDetailU.vue')
     }, {
       path: 'rawMaterialStockList',
       name: 'rawMaterialStockList',

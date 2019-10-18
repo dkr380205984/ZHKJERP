@@ -98,12 +98,12 @@
             style="flex:0.5">产品图片</div>
           <div class="tableColumn"
             style="flex:0.5">订单数量</div>
-          <div class="tableColumn"
+          <!-- <div class="tableColumn"
             style="flex:0.5">库存调取</div>
           <div class="tableColumn"
             style="flex:0.5">计划生产</div>
           <div class="tableColumn"
-            style="flex:0.5">合计生产</div>
+            style="flex:0.5">合计生产</div> -->
           <div class="tableColumn"
             style="flex:0.5">负责小组</div>
           <div class="tableColumn">操作</div>
@@ -150,7 +150,7 @@
               <span style="margin:0 5px">{{itemProduct.sum}}{{itemProduct.productInfo.category_info.unit}}</span>
             </div>
           </div>
-          <div class="tableColumn"
+          <!-- <div class="tableColumn"
             style="flex:0.5">
             <div class="small"
               style="height:60px;justify-content: center;"
@@ -176,7 +176,7 @@
               :key="indexProduct">
               <span style="margin:0 5px">{{itemProduct.total + itemProduct.stockSum}}{{itemProduct.productInfo.category_info.unit}}</span>
             </div>
-          </div>
+          </div> -->
           <div class="tableColumn"
             style="flex:0.5">{{item.group_name}}</div>
           <div class="tableColumn"
@@ -361,6 +361,7 @@ export default {
             lineNum: productList.length
           }
         })
+        console.log(this.list)
         this.first = false
       })
     },

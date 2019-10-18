@@ -151,7 +151,7 @@
                   style="font-size:14px;">生产损耗(%)</div>
               </div>
               <div class="tableRow bodyTableRow"
-                v-for="(item) in productInfo"
+                v-for="(item,index) in productInfo"
                 :key="item.id">
                 <div class="tableColumn">{{item.size}}/{{item.color}}</div>
                 <div class="tableColumn">{{item.order_num}}{{item.unit_name}}</div>
@@ -160,7 +160,8 @@
                 <div class="tableColumn">
                   <input class="inputs"
                     placeholder="输入数字"
-                    v-model="item.stock_pick_now" />
+                    v-model="item.stock_pick_now"
+                    @change="getProduction_num (item.production_sunhao, index)" />
                 </div>
                 <div class="tableColumn">{{item|stockFilter}}</div>
                 <div class="tableColumn">
@@ -171,6 +172,7 @@
                 <div class="tableColumn">{{(parseInt(item.stock_pick_now) + parseInt(item.production_num))?(parseInt(item.stock_pick_now) + parseInt(item.production_num)):'待计算'}}</div>
                 <div class="tableColumn"><input class="inputs"
                     placeholder="损耗比"
+                    @change="getProduction_num (item.production_sunhao, index)"
                     v-model="item.production_sunhao" /></div>
               </div>
             </div>
@@ -296,6 +298,9 @@ export default {
     }
   },
   methods: {
+    getProduction_num (sunhao, index) {
+      this.productInfo[index].production_num = parseInt((this.productInfo[index].order_num - Number(this.productInfo[index].stock_pick_now)) * (1 + sunhao / 100))
+    },
     afterSave (data) {
       this.msgFlag = data.msgFlag
     },

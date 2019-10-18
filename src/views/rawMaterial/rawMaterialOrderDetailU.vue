@@ -904,8 +904,6 @@ export default {
         WLDG: '',
         WLJG: ''
       },
-      valueArr: [],
-      value: '',
       loading: true,
       pickerOptions: {
         shortcuts: [{
@@ -1756,14 +1754,12 @@ export default {
         order_id: this.$route.params.id
       }),
       rawMaterialOrderList({
-        company_id: sessionStorage.company_id,
         order_id: this.$route.params.id
       }),
       orderDetail({
         id: this.$route.params.id
       }),
       rawMaterialProcessList({
-        company_id: sessionStorage.company_id,
         order_id: this.$route.params.id
       }),
       productionDetail({
@@ -1771,12 +1767,10 @@ export default {
       }),
       replenishYarnList({
         order_id: this.$route.params.id,
-        type: parseInt(this.type) + 1,
-        company_id: window.sessionStorage.getItem('company_id')
+        type: parseInt(this.type) + 1
       }), orderMaterialSotckDetail({
         order_id: this.$route.params.id
       }), clientList(), courseList({
-        company_id: this.companyId,
         type: 1
       })
     ]).then(res => {
