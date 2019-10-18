@@ -137,13 +137,14 @@
                 <div class="tableColumn ">下单数</div>
                 <div class="tableColumn">库存数量</div>
                 <div class="tableColumn">库存调取</div>
-                <div class="tableColumn">工厂生产</div>
+                <div class="tableColumn"
+                  style="flex:1.3">工厂生产</div>
                 <div class="tableColumn">总计</div>
                 <div class="tableColumn"
-                  style="flex:1.3">物料损耗(%)</div>
+                  style="flex:1.0">物料损耗(%)</div>
               </div>
               <div class="tableRow bodyTableRow"
-                v-for="(item) in productInfo"
+                v-for="(item,index) in productInfo"
                 :key="item.id">
                 <div class="tableColumn">{{item.size}}/{{item.color}}</div>
                 <div class="tableColumn">{{item.numbers}}{{item.unit_name}}</div>
@@ -155,16 +156,19 @@
                     v-if="item.stock_num" />
                   <template v-else>暂无库存</template>
                 </div>
-                <div class="tableColumn">
+                <div style="flex:1.3"
+                  class="tableColumn">
                   <input class="inputs"
-                    placeholder="输入数字"
+                    placeholder="计入损耗参考值"
+                    disabled
                     v-model="item.production_num" />
                 </div>
                 <div class="tableColumn">{{(parseInt(item.stock_pick) + parseInt(item.production_num))?(parseInt(item.stock_pick) + parseInt(item.production_num)):'待计算'}}</div>
                 <div class="tableColumn"
-                  style="flex:1.3">
+                  style="flex:1.0">
                   <input class="inputs"
                     placeholder="百分比"
+                    @change="getProduction_num(item.production_sunhao,index)"
                     v-model="item.production_sunhao" />
                 </div>
               </div>
@@ -291,6 +295,9 @@ export default {
     }
   },
   methods: {
+    getProduction_num (sunhao, index) {
+      this.productInfo[index].production_num = parseInt((this.productInfo[index].numbers - this.productInfo[index].stock_pick) * (1 + sunhao / 100))
+    },
     afterSave (data) {
       this.msgFlag = data.msgFlag
     },
@@ -592,6 +599,9 @@ export default {
 
 <style lang="less" scoped>
 #productDesignCreate {
+  input:disabled {
+    cursor: not-allowed;
+  }
   .imgCtn {
     position: relative;
     width: 100%;

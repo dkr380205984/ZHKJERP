@@ -344,7 +344,7 @@ const menu = [{
     name: '物料订购加工',
     url: '/index/rawMaterialOrderList'
   }, {
-    name: '物料出入库',
+    name: '物料出库入库',
     url: '/index/rawMaterialStockList'
   }]
 }, {
@@ -380,25 +380,19 @@ const menu = [{
     name: '添加产品库存',
     url: '/index/stockProductList'
   }, {
-    name: '添加物料库存',
+    name: '产品库存列表',
+    url: '/index/productStockList'
+  }, {
+    name: '添加原料库存',
     url: '/index/mainMaterialStockCreate'
+  },
+  {
+    name: '添加辅料库存',
+    url: '/index/otherMaterialStockCreate'
   },
   {
     name: '物料库存列表',
     url: '/index/materialStockListNew'
-    // },
-    // {
-    //   name: '物料仓库(仓库=>物料)',
-    //   url: '/index/materialStockList'
-    //   // }, {
-    //   //   name: '添加原料库存',
-    //   //   url: '/index/mainMaterialStockCreate'
-    // }, {
-    //   name: '物料仓库(物料=>仓库)',
-    //   url: '/index/otherMaterialStockList'
-    // }, {
-    //   name: '辅料库存列表',
-    //   url: '/index/otherMaterialStockList'
   }]
 }, {
   name: '财务管理',

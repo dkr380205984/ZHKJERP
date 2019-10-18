@@ -214,6 +214,7 @@ export default {
         'end_time': this.end_time,
         'product_code': this.searchVal
       }).then((res) => {
+        console.log(res)
         let list = []
         for (let prop in res.data.data) {
           let item = res.data.data[prop].data

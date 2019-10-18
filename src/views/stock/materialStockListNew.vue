@@ -112,15 +112,15 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="pageCtn">
-      <el-pagination background
-        :page-size="5"
-        layout="prev, pager, next"
-        :total="total"
-        :current-page.sync="pages"
-        @current-change="getProductList">
-      </el-pagination>
+      <div class="pageCtn">
+        <el-pagination background
+          :page-size="5"
+          layout="prev, pager, next"
+          :total="total"
+          :current-page.sync="pages"
+          @current-change="getProductList">
+        </el-pagination>
+      </div>
     </div>
   </div>
 </template>

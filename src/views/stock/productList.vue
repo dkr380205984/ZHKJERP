@@ -1,5 +1,7 @@
 <template>
-  <div id="stockProductList">
+  <div id="productList"
+    v-loading="loading"
+    v-getHash="{'categoryVal':categoryVal,'typesVal':typesVal,'styleVal':styleVal,'flowerVal':flowerVal,'searchVal':searchVal,'pages':pages}">
     <div class="head">
       <h2>产品列表</h2>
       <el-input placeholder="输入产品编号精确搜索"
@@ -73,19 +75,55 @@
             </el-date-picker>
           </div>
         </div>
+        <div class="productMenu">
+          <div class="label"><span class="icon el-icon-collection"></span>电子产品手册</div>
+          <div class="handle">
+            <span @click="$router.push('/productMenu')">查看</span>
+            <span @click="share = !share">分享</span>
+            <span @click="$router.push('/index/productMenuEdit')">编辑</span>
+            <div class="share-box"
+              v-show="share">
+              <div class="qrCode-box">
+                <!-- <img src="../../../../productMenu.png"
+                alt=""> -->
+                <img class="qrcode_canvas"
+                  id="qrcode_canvas"
+                  ref="qrcodeCanvas"
+                  alt="二维码图片">
+                <img class="qrcode_logo"
+                  ref="qrcodeLogo"
+                  :src="logoUrl"
+                  alt="二维码logo">
+                <canvas :width="qrSize"
+                  :height="qrSize"
+                  class="canvas"
+                  ref="canvas"></canvas>
+              </div>
+              <div class="url-box">
+                <el-input v-model="urlVal"
+                  style="width:280px;"
+                  id="copyDom"></el-input>
+                <el-button type="primary"
+                  style="margin-left:10px"
+                  @click="copyUrl">点击复制</el-button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="tableCtn"
-        v-scroll="{fun:getProductList,pageSize:5}">
+        v-scroll="{fun:getProductList,pageSize:15}">
         <div class="tableRow titleTableRow">
           <div class="tableColumn">编号</div>
           <div class="tableColumn flex9">品类</div>
-          <div class="tableColumn ">花型</div>
-          <div class="tableColumn flexSamll">成分(种)</div>
+          <div class="tableColumn">产品名称</div>
+          <!-- <div class="tableColumn ">花型</div> -->
           <div class="tableColumn">尺码</div>
-          <div class="tableColumn flexSamll">颜色(种)</div>
+          <div class="tableColumn flexSamll">配色(种)</div>
           <div class="tableColumn">图片</div>
           <div class="tableColumn">创建人</div>
-          <div class="tableColumn flex9">操作</div>
+          <div class="tableColumn">创建时间</div>
+          <div class="tableColumn">操作</div>
         </div>
         <div class="tableRow bodyTableRow"
           v-for="(item) in list"
@@ -93,8 +131,8 @@
           <div class="tableColumn"
             style="color:#1A95FF">{{item.product_code}}</div>
           <div class="tableColumn flex9">{{item|filterType}}</div>
-          <div class="tableColumn">{{item.flower_id}}</div>
-          <div class="tableColumn flexSamll">{{item.materials.length}}</div>
+          <div class="tableColumn">{{item.sample_title}}</div>
+          <!-- <div class="tableColumn">{{item.flower_id}}</div> -->
           <div class="tableColumn">{{item.size|filterSize}}</div>
           <div class="tableColumn flexSamll">{{item.color.length}}</div>
           <div class="tableColumn">
@@ -109,15 +147,16 @@
             </div>
           </div>
           <div class="tableColumn">{{item.user_name}}</div>
-          <div class="tableColumn flex9">
+          <div class="tableColumn">{{item.create_time}}</div>
+          <div class="tableColumn">
             <span class="btns normal"
-              @click="$router.push('/index/productStockCreate/'+item.id)">添加库存</span>
+              @click="$router.push('/index/productStockCreate/'+item.id)">添加</span>
           </div>
         </div>
       </div>
       <div class="pageCtn">
         <el-pagination background
-          :page-size="5"
+          :page-size="15"
           layout="prev, pager, next"
           :total="total"
           :current-page.sync="pages"
@@ -145,10 +184,12 @@
 </template>
 
 <script>
-import { productList, productTppeList, flowerList } from '@/assets/js/api.js'
+import { productList, productTppeList, flowerList, productDelete, companyInfoDetail } from '@/assets/js/api.js'
+const QRCode = require('qrcode')
 export default {
   data () {
     return {
+      loading: true,
       defaultImg: 'this.src="' + require('@/assets/image/index/noPic.jpg') + '"',
       searchVal: '',
       value: '',
@@ -194,14 +235,28 @@ export default {
       flower: [],
       flowerVal: '',
       start_time: '',
-      end_time: ''
+      end_time: '',
+      first: true, // 判断是不是第一次进入页面
+      share: false,
+      logoUrl: '',
+      urlVal: '',
+      qrLogo: '',
+      qrSize: 100,
+      qrLogoSize: 20
     }
   },
   methods: {
+    copyUrl () {
+      let copy = document.getElementById('copyDom')
+      copy.select()
+      document.execCommand('Copy')
+      this.$message.success('复制成功')
+    },
     getProductList () {
+      this.loading = true
       productList({
         'company_id': window.sessionStorage.getItem('company_id'),
-        'limit': 5,
+        'limit': 15,
         'category_id': this.categoryVal,
         'type_id': this.typesVal,
         'style_id': this.styleVal,
@@ -209,10 +264,13 @@ export default {
         'page': this.pages,
         'start_time': this.start_time,
         'end_time': this.end_time,
-        'product_code': this.searchVal
+        'product_code': this.searchVal,
+        'type': 1
       }).then((res) => {
         this.total = res.data.meta.total
         this.list = res.data.data
+        this.loading = false
+        this.first = false
       })
     },
     showImg (imgList) {
@@ -247,38 +305,145 @@ export default {
       }
       this.pages = 1
       this.getProductList()
+    },
+    // 判断提示信息
+    toolTips (product) {
+      if (product.has_craft === 1) {
+        return '该产品已有工艺单信息，只能修改图片'
+      }
+      if (product.has_plan === 1) {
+        return '该产品已有配料单信息，只能修改图片'
+      }
+      if (product.in_order === 1) {
+        return '该产品已有订单信息，只能修改图片'
+      }
+    },
+    // 删除产品
+    deleteProduct (id) {
+      this.$confirm('此操作将永久删除该产品, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.loading = true
+        productDelete({
+          id: id
+        }).then((res) => {
+          if (res.data.status) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.getProductList()
+          } else {
+            this.$message.error(res.data.message)
+            this.loading = false
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
+  },
+  mounted () {
+    this.urlVal = window.location.href
+    let qrcodeCanvas = this.$refs.qrcodeCanvas
+    let qrcodeLogo = this.$refs.qrcodeLogo
+    let canvas = this.$refs.canvas
+    // 画二维码里的logo[注意添加logo图片的时候需要使用服务器]
+    QRCode.toDataURL(this.urlVal, { errorCorrectionLevel: 'H' }, (err, url) => {
+      console.log(err)
+      qrcodeCanvas.src = url
+      // 画二维码里的logo// 在canvas里进行拼接
+      let ctx = canvas.getContext('2d')
+      setTimeout(() => {
+        // 获取图片
+        ctx.drawImage(qrcodeCanvas, 0, 0, this.qrSize, this.qrSize)
+        // 设置logo大小
+        // 设置获取的logo将其变为圆角以及添加白色背景
+        ctx.fillStyle = '#fff'
+        ctx.beginPath()
+        let logoPosition = (this.qrSize - this.qrLogoSize) / 2 // logo相对于canvas居中定位
+        let h = this.qrLogoSize + 10 // 圆角高 10为基数(logo四周白色背景为10/2)
+        let w = this.qrLogoSize + 10 // 圆角宽
+        let x = logoPosition - 5
+        let y = logoPosition - 5
+        let r = 5 // 圆角半径
+        ctx.moveTo(x + r, y)
+        ctx.arcTo(x + w, y, x + w, y + h, r)
+        ctx.arcTo(x + w, y + h, x, y + h, r)
+        ctx.arcTo(x, y + h, x, y, r)
+        ctx.arcTo(x, y, x + w, y, r)
+        ctx.closePath()
+        ctx.fill()
+        ctx.drawImage(
+          qrcodeLogo,
+          logoPosition,
+          logoPosition,
+          this.qrLogoSize,
+          this.qrLogoSize
+        )
+        // canvas.style.display = 'none'
+        // qrcodeCanvas.src = canvas.toDataURL()
+        // qrcodeCanvas.style.display = 'inline-block'
+      }, 700)
+    })
   },
   watch: {
     categoryVal (newVal) {
-      if (newVal) {
-        this.types = this.category.find((item) => item.id === newVal).child
-        this.typesVal = ''
-        this.styleVal = ''
-        this.style = []
-        this.pages = 1
+      if (this.first) {
+        const finded = this.category.find((item) => item.id === newVal)
+        this.types = finded ? finded.child : []
+      } else {
+        if (newVal) {
+          this.types = this.category.find((item) => item.id === newVal).child
+          this.typesVal = ''
+          this.styleVal = ''
+          this.style = []
+          this.pages = 1
+        }
+        this.getProductList()
       }
-      this.getProductList()
     },
     typesVal (newVal) {
-      if (newVal) {
-        this.style = this.types.find((item) => item.id === newVal).child
-        this.styleVal = ''
-        this.pages = 1
+      if (this.first) {
+        const finded = this.types.find((item) => item.id === newVal)
+        this.style = finded ? finded.child : []
+      } else {
+        if (newVal) {
+          this.style = this.types.find((item) => item.id === newVal).child
+          this.styleVal = ''
+          this.pages = 1
+        }
+        this.getProductList()
       }
-      this.getProductList()
     },
     styleVal (newVal) {
-      this.pages = 1
-      this.getProductList()
+      if (!this.first) {
+        if (newVal) {
+          this.pages = 1
+        }
+        this.getProductList()
+      }
     },
     flowerVal (newVal) {
-      this.pages = 1
-      this.getProductList()
+      if (!this.first) {
+        if (newVal) {
+          this.pages = 1
+        }
+        this.getProductList()
+      }
     },
     searchVal (newVal) {
-      this.pages = 1
-      this.getProductList()
+      if (!this.first) {
+        if (newVal) {
+          this.pages = 1
+        }
+        this.getProductList()
+      }
     }
   },
   computed: {
@@ -318,50 +483,81 @@ export default {
         return item.category_info.product_category
       } else if (!item.style_name) {
         return item.category_info.product_category + ' / ' + item.type_name
-      } else {
+      } else if (!item.flower_id) {
         return item.category_info.product_category + ' / ' + item.type_name + ' / ' + item.style_name
+      } else {
+        return item.category_info.product_category + ' / ' + item.type_name + ' / ' + item.style_name + ' / ' + item.flower_id
       }
     },
     // 类型展示
     filterSize (item) {
-      let str = ''
-      for (let key in item) {
-        str += key + '/'
-      }
-      return str.substring(0, str.length - 1)
+      let arr = item.map(value => {
+        return value.measurement
+      })
+      return arr.join('/')
     }
-
   },
   created () {
-    this.getProductList()
-    productTppeList({
+    const hash = window.location.hash ? JSON.parse(decodeURIComponent(window.location.hash).slice(1)) : {}
+    // 分页的特殊性单独处理
+    this.pages = hash.pages
+    // 初始化
+    Promise.all([productTppeList({
       company_id: window.sessionStorage.getItem('company_id')
-    }).then((res) => {
-      if (res.data.status) {
-        this.category = res.data.data
-      }
-    })
-    flowerList({
+    }), flowerList({
       company_id: window.sessionStorage.getItem('company_id')
-    }).then((res) => {
-      if (res.data.status) {
-        this.flower = res.data.data
+    }), companyInfoDetail({
+      id: window.sessionStorage.getItem('company_id')
+    })]).then((res) => {
+      this.category = res[0].data.data
+      this.flower = res[1].data.data
+      this.logoUrl = res[2].data.data.logo
+      for (let key in hash) {
+        this[key] = hash[key]
       }
+      this.getProductList()
     })
   }
 }
 </script>
 
 <style lang="less" scoped>
-@import "~@/assets/css/stockProductList.less";
+@import "~@/assets/css/productList.less";
 </style>
 <style lang="less">
-#stockProductList {
+#productList {
   .el-carousel__arrow {
     color: #fff;
     background: #1a95ff;
     &:hover {
       background: #48aaff;
+    }
+  }
+  .share-box {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    transform: translateY(100%);
+    width: 420px;
+    height: 210px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #fff;
+    z-index: 999;
+    border-radius: 5px;
+    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.16);
+    .qrCode-box {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 150px;
+      img {
+        width: 100px;
+        height: 100px;
+        margin: 10px 0;
+        display: none;
+      }
     }
   }
 }
