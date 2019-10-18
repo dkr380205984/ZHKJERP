@@ -10,7 +10,7 @@
         <span><span class="label">创建日期:</span>{{create_time}}</span>
       </div>
       <div class="right">
-        <img :src="qrCodeUrl"
+        <img :src="qrCodeUrl1"
           alt=""
           ref="qrcodeCanvas"
           class="qrcode">
@@ -128,7 +128,7 @@
         <span><span class="label">创建日期:</span>{{create_time}}</span>
       </div>
       <div class="right">
-        <img :src="qrCodeUrl"
+        <img :src="qrCodeUrl2"
           alt=""
           ref="qrcodeCanvas"
           class="qrcode">
@@ -259,7 +259,8 @@ export default {
       total_price: 0,
       product_info: [],
       material_info: [],
-      qrCodeUrl: ''
+      qrCodeUrl1: '',
+      qrCodeUrl2: ''
     }
   },
   filters: {
@@ -471,11 +472,18 @@ export default {
   },
   mounted () {
     const QRCode = require('qrcode')
+    // window.location.origin +
+    this.urlVal = 'https://www.zwyknit.com/minApp?orderId=' + this.$route.params.id + '&type=' + this.$route.params.type + '&linkMam=' + window.sessionStorage.getItem('user_id') + '&time=' + new Date().getTime()
+    // 画二维码里的logo[注意添加logo图片的时候需要使用服务器]
+    QRCode.toDataURL(this.urlVal, { errorCorrectionLevel: 'H' }, (err, url) => {
+      console.log(err)
+      this.qrCodeUrl1 = url
+    })
     this.urlVal = window.location.origin + '/index/rawMaterialStockDetail/' + this.$route.params.id + '/' + this.$route.params.type
     // 画二维码里的logo[注意添加logo图片的时候需要使用服务器]
     QRCode.toDataURL(this.urlVal, { errorCorrectionLevel: 'H' }, (err, url) => {
       console.log(err)
-      this.qrCodeUrl = url
+      this.qrCodeUrl2 = url
     })
   }
 }
