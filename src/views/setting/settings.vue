@@ -46,6 +46,10 @@ export default {
         name: '加工工序设置',
         img: require('../../assets/image/setting/产品设置-蓝.png'),
         url: '/index/processSetting'
+      }, {
+        name: '库存设置',
+        img: require('../../assets/image/setting/产品设置-蓝.png'),
+        url: '/index/stockList'
       }]
     }
   }

@@ -2,10 +2,29 @@
   <div id="productDesignWeavingTable"
     @click.right="goTop"
     v-loading='loading'>
-    <h2>{{company_name + '产品报价单'}}</h2>
+    <!-- <h2>{{company_name + '产品报价单'}}</h2>
     <div class="processCodeTime">
       <span>报价单编号：{{price_code}}</span>
       <span>创建时间：{{create_time}}</span>
+    </div> -->
+    <div class="head">
+      <div class="left">
+        <p class="company">{{company_name + '产品报价单'}}</p>
+        <span>报价单编号：{{price_code}}</span>
+        <!-- <span><span class="label">创建人:</span>{{create_user}}</span> -->
+        <!-- <span><span class="label">联系人电话:</span>{{linkman_tel}}</span> -->
+        <span><span class="label">创建日期:</span>{{create_time}}</span>
+      </div>
+      <div class="right">
+        <img :src="qrCodeUrl"
+          alt=""
+          ref="qrcodeCanvas"
+          class="qrcode">
+        <div class="messages">
+          <span>扫一扫</span>
+          <span>查看电子文稿</span>
+        </div>
+      </div>
     </div>
     <div class="tableBox">
       <div>
@@ -120,6 +139,7 @@ export default {
       total_price: '',
       client_name: '',
       linkMan: '',
+      qrCodeUrl: '',
       unit: '',
       product_need: '',
       exchange_rate: '',
@@ -163,7 +183,7 @@ export default {
       this.price_code = data.quotation_code
       this.create_user = data.user_name
       this.client_name = data.client_name
-      this.total_price = data.total_price
+      this.total_price = data.total_price.toFixed(2)
       this.linkMan = data.contact_name
       this.unit = data.account_unit
       this.exchange_rate = data.exchange_rate
@@ -240,7 +260,14 @@ export default {
       this.company_name = res.data.data.company_name
     })
   },
-  updated () {
+  mounted () {
+    const QRCode = require('qrcode')
+    this.urlVal = window.location.origin + '/index/priceListDetail/' + this.$route.params.id
+    // 画二维码里的logo[注意添加logo图片的时候需要使用服务器]
+    QRCode.toDataURL(this.urlVal, { errorCorrectionLevel: 'H' }, (err, url) => {
+      console.log(err)
+      this.qrCodeUrl = url
+    })
   }
 }
 </script>
@@ -249,10 +276,8 @@ export default {
 @import "~@/assets/css/productDesignWeavingTable.less";
 </style>
 <style lang="less">
-html {
-  overflow: visible;
-}
+html,
 body {
-  overflow: visible;
+  overflow: visible !important;
 }
 </style>

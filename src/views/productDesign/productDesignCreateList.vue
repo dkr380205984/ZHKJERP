@@ -118,7 +118,7 @@
               style="height:60px;text-align:center;justify-content:space-around">
               <span style="display:inline-block">
                 <span style="margin:0 5px">{{itemProduct.productCode}}</span>
-                <span style="margin:0 5px">{{itemProduct.productInfo.category_info.category_name}}/{{itemProduct.productInfo.category_info.type_name}}/{{itemProduct.productInfo.category_info.style_name}}/{{itemProduct.productInfo.category_info.flower_id}}</span>
+                <span style="margin:0 5px">{{itemProduct.productInfo.category_info.category_name}}/{{itemProduct.productInfo.category_info.type_name}}/{{itemProduct.productInfo.category_info.style_name}}/{{itemProduct.productInfo.category_info.flower_name}}</span>
               </span>
             </div>
           </div>

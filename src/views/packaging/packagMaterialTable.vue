@@ -2,10 +2,29 @@
   <div id="productDesignWeavingTable"
     @click.right="goTop"
     v-loading='loading'>
-    <h2>{{company_name + '包装订购单'}}</h2>
+    <!-- <h2>{{company_name + '包装订购单'}}</h2>
     <div class="processCodeTime">
       <span>订购单编号：{{orderMaterial_code}}</span>
       <span>创建时间：{{create_time}}</span>
+    </div> -->
+    <div class="head">
+      <div class="left">
+        <p class="company">{{company_name + '包装订购单'}}</p>
+        <!-- <span>订购单编号：{{orderMaterial_code}}</span> -->
+        <span><span class="label">创建人:</span>{{linkman}}</span>
+        <span><span class="label">联系人电话:</span>{{linkman_tel}}</span>
+        <span><span class="label">创建日期:</span>{{create_time}}</span>
+      </div>
+      <div class="right">
+        <img :src="qrCodeUrl"
+          alt=""
+          ref="qrcodeCanvas"
+          class="qrcode">
+        <div class="messages">
+          <span>扫一扫</span>
+          <span>查看电子文稿</span>
+        </div>
+      </div>
     </div>
     <div class="tableBox">
       <div>
@@ -22,14 +41,14 @@
           <span>{{group_name}}</span>
         </span>
       </div>
-      <div>
+      <!-- <div>
         <span>
           <span>联系人</span>
           <span>{{linkman}}</span>
           <span>联系人电话</span>
           <span>{{linkman_tel}}</span>
         </span>
-      </div>
+      </div> -->
       <div>
         <span>
           <span>订购单位</span>
@@ -92,6 +111,7 @@ export default {
       linkman_tel: '',
       linkman: '',
       total_price: 0,
+      qrCodeUrl: '',
       packagInfo: []
     }
   },
@@ -156,6 +176,15 @@ export default {
         }
       })
       this.loading = false
+    })
+  },
+  mounted () {
+    const QRCode = require('qrcode')
+    this.urlVal = window.location.origin + '/index/packagMaterialDetail/' + this.$route.params.id
+    // 画二维码里的logo[注意添加logo图片的时候需要使用服务器]
+    QRCode.toDataURL(this.urlVal, { errorCorrectionLevel: 'H' }, (err, url) => {
+      console.log(err)
+      this.qrCodeUrl = url
     })
   }
 }

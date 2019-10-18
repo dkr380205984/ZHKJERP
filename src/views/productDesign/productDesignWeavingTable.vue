@@ -106,7 +106,7 @@
                 v-for="(val,ind) in item.color_info"
                 :key="ind">
                 <span class="tableRow">{{val.color}}</span>
-                <span class="flex4 tableRow">{{type === '0' ? val.number.toFixed(2) : Math.ceil(val.number)}}{{val.unit}}</span>
+                <span class="flex4 tableRow">{{type === '0' ? val.number.toFixed(1) : Math.ceil(val.number)}}{{' ' + val.unit}}</span>
               </span>
             </span>
           </li>
@@ -224,7 +224,7 @@
                 v-for="(val,ind) in item.color_info"
                 :key="ind">
                 <span class="tableRow">{{val.color}}</span>
-                <span class="flex4 tableRow">{{type === '0' ? val.number.toFixed(2) : Math.ceil(val.number)}}{{val.unit}}</span>
+                <span class="flex4 tableRow">{{type === '0' ? val.number.toFixed(1) : Math.ceil(val.number)}}{{' ' + val.unit}}</span>
               </span>
             </span>
           </li>
@@ -294,7 +294,7 @@ export default {
                         material: index.material_name,
                         color_info: [{
                           color: index.color_name,
-                          unit: (index.unit === '克' || index.unit === 'g') ? 'kg' : index.unit,
+                          unit: (index.unit === '克' || index.unit === 'g') ? '公斤' : index.unit,
                           number: (index.unit === '克' || index.unit === 'g') ? (index.number * value.order_number * (val.number / value.plan_number) * (1 + item.sunhao / 100)) / 1000 : (this.type === '0' ? index.number * value.order_number * (val.number / value.plan_number) * (1 + item.sunhao / 100) : index.number * value.order_number * (val.number / value.plan_number) * (1 + item.sunhao / 100))
                         }]
                       })
@@ -303,7 +303,7 @@ export default {
                       if (!flag1) {
                         flag.color_info.push({
                           color: index.color_name,
-                          unit: (index.unit === '克' || index.unit === 'g') ? 'kg' : index.unit,
+                          unit: (index.unit === '克' || index.unit === 'g') ? '公斤' : index.unit,
                           number: (index.unit === '克' || index.unit === 'g') ? (index.number * value.order_number * (val.number / value.plan_number) * (1 + item.sunhao / 100)) / 1000 : (this.type === '0' ? index.number * value.order_number * (val.number / value.plan_number) * (1 + item.sunhao / 100) : index.number * value.order_number * (val.number / value.plan_number) * (1 + item.sunhao / 100))
                         })
                       } else {

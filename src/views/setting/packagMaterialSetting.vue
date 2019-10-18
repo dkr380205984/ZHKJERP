@@ -12,6 +12,13 @@
             <el-radio :label="1">主要辅料</el-radio>
             <el-radio :label="2">次要辅料</el-radio>
           </el-radio-group>
+          <el-tooltip class="item"
+            effect="dark"
+            content="包装辅料订购详情页面区分开主要包装统计与次要包装统计"
+            placement="top-start">
+            <span class="el-icon-question"
+              style="margin-left:80px;"></span>
+          </el-tooltip>
         </div>
       </div>
       <div class="lineCtn">

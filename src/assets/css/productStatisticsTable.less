@@ -8,12 +8,59 @@ p{
   margin: 0;
 }
 #productDesignTable {
-  width: 982px;
+  width: 860px;
   height: auto;
-  margin: 80px 0 30px 115px;
+  margin: 80px 0 30px 50px;
   font-family: 'systemfont';
   font-size: 18px;
   color: #666;
+  .head{
+    page-break-before: always;
+    height: 160px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-bottom: 8px;
+    .left{
+      display: flex;
+      flex-direction: column;
+      p.company {
+        font-size: 24px;
+        // margin-bottom: 16px;
+      }
+      &>span{
+        margin-top: 16px;
+        &>.label{
+          display: inline-block;
+          width:7em;
+        }
+      }
+    }
+    .right{
+      position: relative;
+      width: 120px;
+      height: 120px;
+      border: 1px solid #999;
+      &>img{
+        max-width: 100%;
+        max-height: 100%;
+      }
+      .messages{
+        position: absolute;
+        bottom: 0;
+        left: -10px;
+        transform: translateX(-100%);
+        width: auto;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        &>span{
+          white-space: nowrap;
+        }
+      }
+    }
+  }
   .tableBox {
     width: 100%;
     &>li {
@@ -44,53 +91,6 @@ p{
       //     font-style: normal;
       //   }
       // }
-    .head{
-      page-break-before: always;
-      height: 160px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      padding-bottom: 8px;
-      .left{
-        display: flex;
-        flex-direction: column;
-        p.company {
-          font-size: 24px;
-          // margin-bottom: 16px;
-        }
-        &>span{
-          margin-top: 16px;
-          &>.label{
-            display: inline-block;
-            width:7em;
-          }
-        }
-      }
-      .right{
-        position: relative;
-        width: 120px;
-        height: 120px;
-        border: 1px solid #999;
-        &>img{
-          max-width: 100%;
-          max-height: 100%;
-        }
-        .messages{
-          position: absolute;
-          bottom: 0;
-          left: -10px;
-          transform: translateX(-100%);
-          width: auto;
-          height: auto;
-          display: flex;
-          flex-direction: column;
-          align-items: flex-start;
-          &>span{
-            white-space: nowrap;
-          }
-        }
-      }
-    }
     // }
     .information {
       height: 49px;
@@ -111,7 +111,7 @@ p{
           width: 178px;
         }
         &:nth-child(2) {
-          width: 370px;
+          width: 280px;
           text-align: justify;
           padding-left: 33px;
         }
@@ -119,7 +119,7 @@ p{
           width: 143px;
         }
         &:nth-child(4) {
-          width: 287px;
+          width: 257px;
         }
       }
     }
@@ -164,7 +164,7 @@ p{
       }
     }
     .size-tables {
-      min-height: 1100px;
+      min-height: 850px;
       overflow: hidden;
       // border-left: none;
       .size-table {

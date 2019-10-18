@@ -2,25 +2,25 @@
   <div id="productDesignTable"
     v-loading='loading'
     @click.right="goTop">
-    <ul class="tableBox">
-      <div class="head">
-        <div class="left">
-          <p class="company">{{company_name}}{{type === '0' ? '原' : '辅'}}料配色单</p>
-          <span><span class="label">联系人:</span>{{linkman}}</span>
-          <span><span class="label">联系人电话:</span>{{linkman_tel}}</span>
-          <span><span class="label">创建日期:</span>{{create_time}}</span>
-        </div>
-        <div class="right">
-          <img :src="qrCodeUrl"
-            alt=""
-            ref="qrcodeCanvas"
-            class="qrcode">
-          <div class="messages">
-            <span>扫一扫</span>
-            <span>更新生产进度</span>
-          </div>
+    <div class="head">
+      <div class="left">
+        <p class="company">{{company_name}}{{type === '0' ? '原' : '辅'}}料配色单</p>
+        <span><span class="label">联系人:</span>{{linkman}}</span>
+        <span><span class="label">联系人电话:</span>{{linkman_tel}}</span>
+        <span><span class="label">创建日期:</span>{{create_time}}</span>
+      </div>
+      <div class="right">
+        <img :src="qrCodeUrl"
+          alt=""
+          ref="qrcodeCanvas"
+          class="qrcode">
+        <div class="messages">
+          <span>扫一扫</span>
+          <span>更新生产进度</span>
         </div>
       </div>
+    </div>
+    <ul class="tableBox">
       <li class="information">
         <span>订单号</span>
         <span>{{order.order_code}}</span>
@@ -139,7 +139,8 @@ export default {
       Promise.all([
         orderDetail({
           id: this.$route.params.id
-        }), productionDetail({
+        }),
+        productionDetail({
           order_id: this.$route.params.id
         })
       ]).then(res => {

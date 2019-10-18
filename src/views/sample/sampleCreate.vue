@@ -357,7 +357,12 @@ export default {
     },
     noRepeat (value, index, item, key) {
       if (value.indexOf(';') !== -1) {
-        this.$message.warning('选项中不可含有 " ; " ,请重新选择')
+        this.$message.warning('选项中不可含有 " ; "或者" / " ,请重新选择')
+        item[index].color = ''
+        return
+      }
+      if (value.indexOf('/') !== -1) {
+        this.$message.warning('选项中不可含有 " ; "或者" / " ,请重新选择')
         item[index].color = ''
         return
       }

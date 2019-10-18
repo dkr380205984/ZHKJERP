@@ -286,14 +286,14 @@ let router = new Router({
       //   name: 'otherMaterialStockDetail',
       //   component: () => import('./views/stock/otherMaterialStockDetail.vue')
     }, {
-      //   path: 'stockProductList',
-      //   name: 'stockProductList',
-      //   component: () => import('./views/stock/productList.vue')
-      // }, {
-      //   path: 'productStockCreate/:id',
-      //   name: 'productStockCreate',
-      //   component: () => import('./views/stock/productStockCreate.vue')
-      // }, {
+      path: 'stockProductList',
+      name: 'stockProductList',
+      component: () => import('./views/stock/productList.vue')
+    }, {
+      path: 'productStockCreate/:id',
+      name: 'productStockCreate',
+      component: () => import('./views/stock/productStockCreate.vue')
+    }, {
       path: 'productStockList',
       name: 'productStockList',
       component: () => import('./views/stock/productStockList.vue')
@@ -489,6 +489,14 @@ let router = new Router({
       path: 'packagMaterialSetting',
       name: 'packagMaterialSetting',
       component: () => import('./views/setting/packagMaterialSetting.vue')
+    }, {
+      path: 'stockList',
+      name: 'stockList',
+      component: () => import('./views/setting/stockList.vue')
+    }, {
+      path: 'stockSetting',
+      name: 'stockSetting',
+      component: () => import('./views/setting/stockSetting.vue')
     }, {
       //   path: 'sampleAdd',
       //   name: 'sampleAdd',

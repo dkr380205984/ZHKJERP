@@ -75,9 +75,9 @@ const companyType = [
   }, {
     value: 8,
     name: '运输单位'
-  }, {
-    value: 9,
-    name: '存储单位'
+    // }, {
+    //   value: 9,
+    //   name: '存储单位'
   }, {
     value: 10,
     name: '装饰辅料单位'
@@ -377,9 +377,9 @@ const menu = [{
 }, {
   name: '库存管理',
   children: [{
-    //   name: '添加产品库存',
-    //   url: '/index/stockProductList'
-    // }, {
+    name: '添加产品库存',
+    url: '/index/stockProductList'
+  }, {
     name: '添加物料库存',
     url: '/index/mainMaterialStockCreate'
   },
