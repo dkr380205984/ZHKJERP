@@ -212,8 +212,12 @@ const rawMaterialProcessList = (params) => http.get(`${baseUrl}/material/process
 const rawMaterialProcessPage = (params) => http.post(`${baseUrl}/material/process/save`, params, 'application/json')
 // 物料入库
 const rawMaterialGoStock = (params) => http.post(`${baseUrl}/order/material/push`, params, 'application/json')
+// 物料入库日志删除
+const rawMaterialGoStockDelete = (params) => http.post(`${baseUrl}/order/material/push/delete`, params, 'application/json')
 // 物料出库
 const rawMaterialOutStock = (params) => http.post(`${baseUrl}/order/material/pop`, params, 'application/json')
+// 物料出库日志删除
+const rawMaterialOutStockDelete = (params) => http.post(`${baseUrl}/order/material/pop/delete`, params, 'application/json')
 // 物料出库详情
 const rawMaterialOutStockDetail = (params) => http.get(`${baseUrl}/order/material/pop/detail`, params)
 // 物料入库详情
@@ -374,9 +378,13 @@ const courseList = (params) => http.get(`${baseUrl}/production/flow/list`, param
 const addStock = (params) => http.post(`${baseUrl}/factory/store/save`, params, 'application/json')
 // 仓库列表factory/store/list
 const stockList = (params) => http.get(`${baseUrl}/factory/store/list`, params)
+const stockMaterialAdd = (params) => http.post(`${baseUrl}/material/push`, params, 'application/json')
 export {
   stockList,
   addStock,
+  rawMaterialOutStockDelete,
+  rawMaterialGoStockDelete,
+  stockMaterialAdd,
   courseList,
   settingCourse,
   deleteOrderProcess,

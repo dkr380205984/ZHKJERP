@@ -456,6 +456,27 @@ export default {
             message: msg
           })
         } else {
+          let flag = false
+          this.formList.forEach((item) => {
+            item.info.forEach((itemFenpei) => {
+              let total = item.company.reduce((totalCmp, itemCmp) => {
+                return totalCmp + itemCmp.price_number.reduce((totalColor, itemColor) => {
+                  if (itemColor.colorSize[0] === itemFenpei.size && itemColor.colorSize[1] === itemFenpei.color) {
+                    return Number(itemColor.number) + totalColor
+                  } else {
+                    return totalColor
+                  }
+                }, 0)
+              }, 0)
+              if (total > (itemFenpei.order_num - itemFenpei.stock_pick - itemFenpei.fenpei)) {
+                flag = true
+              }
+            })
+          })
+          if (flag) {
+            this.$message.error('织造分配总数不能超过下单值，请重新填写分配数量')
+            return
+          }
           let formData = []
           // 将数据处理成要提交的数据
           this.formList.forEach((item, index) => {
@@ -523,7 +544,7 @@ export default {
         itemPro.info.forEach((itemColor, indexColor) => {
           this.formList[indexPro].company[0].price_number.push({
             colorSize: [itemColor.size, itemColor.color],
-            number: itemColor.production_num - itemColor.fenpei,
+            number: itemColor.order_num - itemColor.fenpei,
             price: ''
           })
         })

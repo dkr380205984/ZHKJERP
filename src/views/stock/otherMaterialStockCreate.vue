@@ -1,16 +1,17 @@
 <template>
   <div id="mainMaterialStockCreate">
     <div class="head">
-      <h2>添加原料库存</h2>
+      <h2>添加辅料库存</h2>
     </div>
     <div class="body">
       <div class="lineCtn">
         <div class="inputCtn oneLine">
-          <span class="label must">原料名称:</span>
+          <span class="label must">辅料名称:</span>
           <el-select class="elInput"
             v-model="material_name"
             filterable
-            placeholder="请选择原料名称">
+            @change="getUnit"
+            placeholder="请选择辅料名称">
             <el-option v-for="item in yarnList"
               :key="item.id"
               :value="item.name"
@@ -20,42 +21,37 @@
       </div>
       <div class="lineCtn">
         <div class="inputCtn oneLine">
-          <span class="label must">原料颜色:</span>
-          <el-select class="elInput"
-            v-model="color_code"
-            filterable
-            placeholder="请选择原料颜色">
-            <el-option v-for="item in colorList"
-              :key="item.id"
-              :value="item.name"
-              :label="item.name"></el-option>
-          </el-select>
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn oneLine">
-          <span class="label">原料属性:</span>
+          <span class="label must">辅料属性:</span>
           <el-input class="elInput"
-            v-model="attribute"
-            placeholder="请输入原料属性">
+            v-model="color_code"
+            placeholder="请输入辅料属性">
           </el-input>
         </div>
       </div>
-      <div class="lineCtn">
+      <!-- <div class="lineCtn">
+        <div class="inputCtn oneLine">
+          <span class="label">辅料属性:</span>
+          <el-input class="elInput"
+            v-model="attribute"
+            placeholder="请输入辅料属性">
+          </el-input>
+        </div>
+      </div> -->
+      <!-- <div class="lineCtn">
         <div class="inputCtn oneLine">
           <span class="label">缸号/批号:</span>
           <el-input class="elInput"
             v-model="vat_code"
-            placeholder="请输入原料缸号" />
+            placeholder="请输入辅料缸号" />
         </div>
-      </div>
+      </div> -->
       <div class="lineCtn">
         <div class="inputCtn oneLine">
-          <span class="label must">入库重量:</span>
+          <span class="label must">入库数量:</span>
           <el-input class="elInput"
-            placeholder="请输入原料重量"
+            placeholder="请输入辅料数量"
             v-model="weight">
-            <template slot="append">kg</template>
+            <template slot="append">{{unit}}</template>
           </el-input>
         </div>
       </div>
@@ -93,7 +89,7 @@
 </template>
 
 <script>
-import { stockMaterialAdd, YarnList, YarnColorList, clientList } from '@/assets/js/api.js'
+import { stockMaterialAdd, materialList, clientList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -106,21 +102,25 @@ export default {
       stock_id: 0,
       company_id: '',
       attribute: '',
-      weight: ''
+      weight: '',
+      unit: ''
     }
   },
   methods: {
+    getUnit () {
+      this.unit = this.yarnList.find((item) => item.name === this.material_name).unit
+    },
     saveAll () {
       if (!this.material_name) {
-        this.$message.error('请选择原料')
+        this.$message.error('请选择辅料')
         return
       }
       if (!this.color_code) {
-        this.$message.error('请选择原料颜色')
+        this.$message.error('请输入辅料属性')
         return
       }
       if (!this.weight) {
-        this.$message.error('请输入原料重量')
+        this.$message.error('请输入辅料重量')
         return
       }
       stockMaterialAdd({
@@ -130,7 +130,7 @@ export default {
         stock_id: this.stock_id,
         attribute: this.attribute,
         weight: this.weight,
-        type: 1
+        type: 2
       }).then((res) => {
         if (res.data.status) {
           this.$message.success('入库成功')
@@ -142,14 +142,12 @@ export default {
   },
   mounted () {
     Promise.all([
-      YarnList(),
-      YarnColorList(),
+      materialList(),
       clientList()
     ]).then((res) => {
       console.log(res)
       this.yarnList = res[0].data.data
-      this.colorList = [{ id: 0, name: '白胚' }, ...res[1].data.data]
-      this.companyList = [{ id: 0, name: '本厂' }, ...res[2].data.data]
+      this.companyList = [{ id: 0, name: '本厂' }, ...res[1].data.data]
     })
   }
 }

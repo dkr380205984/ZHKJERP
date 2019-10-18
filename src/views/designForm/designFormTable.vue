@@ -1144,7 +1144,7 @@ export default {
   },
   mounted () {
     const QRCode = require('qrcode')
-    this.urlVal = window.location.origin + '/designFormImage#' + this.$route.params.id
+    this.urlVal = 'https://api.tlkrzf.com/craft/images#' + this.$route.params.id
     // 画二维码里的logo[注意添加logo图片的时候需要使用服务器]
     QRCode.toDataURL(this.urlVal, { errorCorrectionLevel: 'H' }, (err, url) => {
       console.log(err)

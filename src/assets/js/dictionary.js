@@ -344,7 +344,7 @@ const menu = [{
     name: '物料订购加工',
     url: '/index/rawMaterialOrderList'
   }, {
-    name: '物料出入库',
+    name: '物料出库入库',
     url: '/index/rawMaterialStockList'
   }]
 }, {
@@ -380,8 +380,12 @@ const menu = [{
     name: '添加产品库存',
     url: '/index/stockProductList'
   }, {
-    name: '添加物料库存',
+    name: '添加原料库存',
     url: '/index/mainMaterialStockCreate'
+  },
+  {
+    name: '添加辅料库存',
+    url: '/index/otherMaterialStockCreate'
   },
   {
     name: '物料库存列表',

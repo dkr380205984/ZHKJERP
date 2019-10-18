@@ -1,3 +1,12 @@
+let TARGET
+if (process.env.NODE_ENV === 'development') {
+  TARGET = 'http://auth.tlkrzf.com'
+} else {
+  // 正式环境
+  TARGET = 'https://api.tlkrzf.com'
+  // 测试环境
+  // TARGET = 'https://beta.zwyknit.com'
+}
 module.exports = {
   devServer: {
     host: '0.0.0.0',
@@ -5,7 +14,7 @@ module.exports = {
     https: false,
     proxy: {
       '/api': {
-        target: 'http://auth.tlkrzf.com', // 对应自己的接口
+        target: TARGET, // 对应自己的接口
         changeOrigin: true,
         ws: true
       }
