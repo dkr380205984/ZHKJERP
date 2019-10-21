@@ -414,7 +414,7 @@
         <div class="item">
           <span class="label">样品规格:</span>
           <div class="content">
-            <el-radio-group v-model="selectSize">
+            <el-radio-group v-model="selectSize.measurement">
               <el-radio v-for="(item,key) in productDetail.size"
                 :label="item.measurement"
                 :key="key">{{item.measurement}}</el-radio>
@@ -442,7 +442,7 @@
           <span class="cancel"
             @click="showMessageBox2 = false">取消</span>
           <span class="ok"
-            @click="print(selectSize,selectColor)">去打印</span>
+            @click="print(selectSize.measurement,selectColor)">去打印</span>
         </div>
         <span class="close el-icon-close"
           @click="showMessageBox2 = false"></span>
@@ -583,7 +583,7 @@ export default {
     }).then((res) => {
       if (res.data.status) {
         this.productDetail = res.data.data
-        this.selectSize = res.data.data.size[0].measurement
+        this.selectSize = res.data.data.size[0]
         this.selectColor = [res.data.data.color[0].color_name]
         this.productDetail.size = this.productDetail.size
         // 计算配料单原料

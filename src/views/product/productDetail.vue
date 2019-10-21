@@ -345,7 +345,7 @@
         <div class="item">
           <span class="label">产品规格:</span>
           <div class="content">
-            <el-radio-group v-model="selectSize">
+            <el-radio-group v-model="selectSize.measurement">
               <el-radio v-for="(item,key) in productDetail.size"
                 :label="item.measurement"
                 :key="key">{{item.measurement}}</el-radio>
@@ -378,7 +378,7 @@
           <span class="cancel"
             @click="showMessageBox = false">取消</span>
           <span class="ok"
-            @click="print(selectSize,selectColor)">去打印</span>
+            @click="print(selectSize.measurement,selectColor)">去打印</span>
         </div>
         <span class="close el-icon-close"
           @click="showMessageBox = false"></span>
@@ -502,7 +502,7 @@ export default {
           this.$router.push('/index/sampleDetail/' + res.data.data.id)
         }
         this.productDetail = res.data.data
-        this.selectSize = res.data.data.size[0].measurement
+        this.selectSize = res.data.data.size[0]
         this.selectColor = [res.data.data.color[0].color_name]
         // 计算配料单原料
         if (this.productDetail.has_plan === 1) {

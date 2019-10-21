@@ -132,7 +132,7 @@
         </div>
       </div>
       <div class="inputCtn">
-        <span class="label must">样品配色:</span>
+        <span class="label must">样品配色组:</span>
         <div class="content"
           v-for="(item,key) in color"
           :key="key">

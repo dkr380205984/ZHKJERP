@@ -4,7 +4,7 @@
     v-loading='loading'>
     <div class="head">
       <div class="left">
-        <p class="company">{{company_name + '生产任务通知单'}}</p>
+        <p class="company">{{company_name + '生产加工通知单'}}</p>
         <span><span class="label">联系人:</span>{{linkman}}</span>
         <span><span class="label">联系人电话:</span>{{linkman_tel}}</span>
         <span><span class="label">创建日期:</span>{{create_time}}</span>
@@ -77,8 +77,8 @@
                     v-for="(value,index) in val.process_info"
                     :key="index">
                     <span class="tableRow">{{value.type}}</span>
-                    <span class="tableRow">{{value.price}}{{'元/条'}}</span>
-                    <span class="tableRow">{{value.number}}{{'条'}}</span>
+                    <span class="tableRow">{{value.price}}{{'元/' + item.unit}}</span>
+                    <span class="tableRow">{{value.number}}{{item.unit}}</span>
                     <span class="tableRow">{{value.compiled_time}}</span>
                   </span>
                 </span>
@@ -195,8 +195,8 @@
                     v-for="(value,index) in val.process_info"
                     :key="index">
                     <span class="tableRow">{{value.type}}</span>
-                    <span class="tableRow">{{value.price}}{{'元/条'}}</span>
-                    <span class="tableRow">{{value.number}}{{'条'}}</span>
+                    <span class="tableRow">{{value.price}}{{'元/' + item.unit}}</span>
+                    <span class="tableRow">{{value.number}}{{item.unit}}</span>
                     <span class="tableRow">{{value.compiled_time}}</span>
                   </span>
                 </span>
@@ -343,6 +343,7 @@ export default {
               this.product_info.push({
                 product_code: item.product_info.product_code,
                 product_type: type,
+                unit: item.product_info.unit,
                 size_info: [{
                   size: item.size,
                   color: item.color,
@@ -400,6 +401,7 @@ export default {
               this.product_info.push({
                 product_code: item.product_info.product_code,
                 product_type: type,
+                unit: item.product_info.category_info.name,
                 size_info: [{
                   size: item.size,
                   color: item.color,
