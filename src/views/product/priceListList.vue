@@ -58,11 +58,11 @@
       </div>
       <div class="mergeTable">
         <div class="mergeHeader">
+          <div class="tableColumn">报价单号</div>
           <div class="tableColumn"
-            style="flex:1.5">报价单号</div>
-          <div class="tableColumn">外贸公司</div>
+            style="flex:1.5">外贸公司</div>
           <div class="tableColumn"
-            style="flex:1.5">产品信息</div>
+            style="flex:2">产品信息</div>
           <div class="tableColumn">产品图片</div>
           <div class="tableColumn">产品报价</div>
           <div class="tableColumn">起订数量</div>
@@ -74,11 +74,11 @@
         <div class="mergeBody"
           v-for="(item ,index) in list"
           :key="index">
+          <div class="tableColumn">{{item.quotation_code}}</div>
           <div class="tableColumn"
-            style="flex:1.5">{{item.quotation_code}}</div>
-          <div class="tableColumn">{{item.client_name}}</div>
+            style="flex:1.5">{{item.client_name}}</div>
           <div class="tableColumn"
-            style="flex:1.5">
+            style="flex:2">
             <div class="small"
               v-for="(itemPro,indexPro) in item.product_info"
               style="height:60px;text-align:center;justify-content:space-around"
@@ -101,7 +101,7 @@
           </div>
           <div class="tableColumn">{{item|cmpPrice}}元</div>
           <div class="tableColumn">{{item.number}}件</div>
-          <div class="tableColumn">{{item.created_at}}</div>
+          <div class="tableColumn">{{item.created_at.slice(0,10)}}</div>
           <div class="tableColumn"
             :style="{'color':getColor(item.status)}">{{item.status|filterStatus}}</div>
           <div class="tableColumn"

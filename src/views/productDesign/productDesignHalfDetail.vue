@@ -47,7 +47,7 @@
                   <span>产品品类</span>
                   <span style="flex:4">
                     <span>尺码/配色</span>
-                    <span>生产计划数</span>
+                    <span>下单数</span>
                     <span>辅料</span>
                     <span>属性</span>
                     <span>数量</span>
@@ -64,7 +64,7 @@
                     <span v-for="(itemColour,indexColour) in item.info"
                       :key="indexColour">
                       <span>{{itemColour.size}}/{{itemColour.color}}</span>
-                      <span>{{itemColour.production_num}}{{item.unit_name}}</span>
+                      <span>{{itemColour.order_num}}{{item.unit_name}}</span>
                       <span class="col"
                         v-if="itemColour.colorArr&&itemColour.colorArr.length>0"
                         style="flex:3;">

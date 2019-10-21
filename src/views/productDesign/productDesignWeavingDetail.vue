@@ -46,7 +46,7 @@
                   <span>产品品类</span>
                   <span style="flex:4">
                     <span>尺码/配色</span>
-                    <span>生产计划数</span>
+                    <span>下单数</span>
                     <span style="flex:1.5">纱线</span>
                     <span>颜色</span>
                     <span>重量</span>
@@ -64,7 +64,7 @@
                     <span v-for="(itemColour,indexColour) in item.info"
                       :key="indexColour">
                       <span>{{itemColour.size}}/{{itemColour.color}}</span>
-                      <span>{{itemColour.production_num}}{{item.unit_name}}</span>
+                      <span>{{itemColour.order_num}}{{item.unit_name}}</span>
                       <span class="col"
                         v-if="itemColour.colorArr"
                         style="flex:3.5">
@@ -115,7 +115,6 @@
                     <span>尺码/配色</span>
                     <span>下单数</span>
                     <span>库存调取数</span>
-                    <span>生产计划数</span>
                     <span>已分配数量</span>
                   </span>
                 </li>
@@ -132,7 +131,6 @@
                       <span class="tableRow">{{itemColour.size}}/{{itemColour.color}}</span>
                       <span class="tableRow">{{itemColour.order_num}}{{item.unit_name}}</span>
                       <span class="tableRow">{{itemColour.stock_pick}}{{item.unit_name}}</span>
-                      <span class="tableRow">{{itemColour.production_num}}{{item.unit_name}}</span>
                       <span class="tableRow">{{itemColour.fenpei}}{{item.unit_name}}</span>
                     </span>
                   </span>
@@ -529,7 +527,8 @@
           <span class="label"><em>*</em>分配数量:</span>
           <div class="elCtn">
             <el-input v-model="updateInfo.number"
-              placeholder="请输入分配数量">
+              placeholder="请输入分配数量"
+              @change="isFlag(updateInfo)">
               <template slot="append">{{updateInfo.product_info.unit}}</template>
             </el-input>
           </div>
@@ -806,10 +805,11 @@ export default {
         let find = this.product.find((itemPro, indexPro) => itemPro.product_code === itemLog.product_info.product_code)
         let finded = JSON.parse(JSON.stringify(find))
         let colorArr = finded.state === 2 ? finded.info.find((itemInfo, indexInfo) => itemInfo.color === itemLog.color && itemInfo.size === itemLog.size).colorArr : []
+        console.log(finded)
         if (finded.state === 2) {
           newItem.colorArr = colorArr.map((itemMat) => {
             itemMat.colorWeight = itemMat.colorWeight.map((itemColor) => {
-              itemColor.weight = (itemColor.weight * itemLog.number / finded.info.find((itemInfo, indexInfo) => itemInfo.color === itemLog.color && itemInfo.size === itemLog.size).production_num).toFixed(1)
+              itemColor.weight = (itemColor.weight * itemLog.number / finded.info.find((itemInfo, indexInfo) => itemInfo.color === itemLog.color && itemInfo.size === itemLog.size).order_num).toFixed(1)
               return itemColor
             })
             return itemMat
@@ -858,6 +858,9 @@ export default {
     })
   },
   methods: {
+    // 修改时总分配数量不可以超过下单数量的判断
+    isFlag (item) {
+    },
     // 一键分配 待优化报价单
     // completion () {
     //   // 数据初始化
@@ -948,6 +951,20 @@ export default {
     },
     // 修改日志
     updateLogFn () {
+      let flag = this.StatisticsList.find(vals => vals.product_code === this.updateInfo.product_code)
+      if (flag) {
+        let sizeColor = flag.info.find(vals => (vals.color === this.updateInfo.color && vals.size === this.updateInfo.size))
+        if (sizeColor) {
+          let arr = this.logList.filter(vals => (vals.product_code === this.updateInfo.product_code && vals.color === this.updateInfo.color && vals.size === this.updateInfo.size))
+          let totalNum = arr.map(vals => vals.number).reduce((total, item) => {
+            return Number(total.number ? total.number : total) + Number(item.number)
+          })
+          if (totalNum > sizeColor.order_num) {
+            this.$message.error('总分配数量不可大于下单数,请修改分配数量')
+            return
+          }
+        }
+      }
       weaveUpadate({
         id: this.updateInfo.id,
         price: this.updateInfo.price,

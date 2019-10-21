@@ -2174,6 +2174,19 @@ export default {
         })
         return
       }
+      this.GL.forEach((item1) => {
+        item1.forEach((item2) => {
+          if (!item2[0] || !item2[1]) {
+            errorInput = true
+          }
+        })
+      })
+      if (errorInput) {
+        this.$message.error({
+          message: '请填写纹版图'
+        })
+        return
+      }
       let formData = {
         id: null,
         is_draft: 1,

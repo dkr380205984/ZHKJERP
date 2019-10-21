@@ -116,10 +116,8 @@
         <div class="tableRow titleTableRow">
           <div class="tableColumn">编号</div>
           <div class="tableColumn flex9">品类</div>
+          <div class="tableColumn ">花型</div>
           <div class="tableColumn">产品名称</div>
-          <!-- <div class="tableColumn ">花型</div> -->
-          <div class="tableColumn">尺码</div>
-          <div class="tableColumn flexSamll">配色(种)</div>
           <div class="tableColumn">图片</div>
           <div class="tableColumn">创建人</div>
           <div class="tableColumn">创建时间</div>
@@ -132,10 +130,8 @@
           <div class="tableColumn"
             style="color:#1A95FF">{{item.product_code}}</div>
           <div class="tableColumn flex9">{{item|filterType}}</div>
+          <div class="tableColumn">{{item.flower_id}}</div>
           <div class="tableColumn">{{item.sample_title}}</div>
-          <!-- <div class="tableColumn">{{item.flower_id}}</div> -->
-          <div class="tableColumn">{{item.size|filterSize}}</div>
-          <div class="tableColumn flexSamll">{{item.color.length}}</div>
           <div class="tableColumn">
             <div class="imgCtn">
               <img class="img"
@@ -543,7 +539,7 @@ export default {
       } else if (!item.flower_id) {
         return item.category_info.product_category + ' / ' + item.type_name + ' / ' + item.style_name
       } else {
-        return item.category_info.product_category + ' / ' + item.type_name + ' / ' + item.style_name + ' / ' + item.flower_id
+        return item.category_info.product_category + ' / ' + item.type_name + ' / ' + item.style_name
       }
     },
     // 类型展示

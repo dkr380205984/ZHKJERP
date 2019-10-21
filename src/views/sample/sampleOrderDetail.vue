@@ -90,7 +90,7 @@
                 :href="item"
                 :download="item">
                 <i class="el-icon-document"
-                  style="margin-right:5px"></i>{{item.replace('http://zhihui.tlkrzf.com/', '')}}
+                  style="margin-right:5px"></i>{{item.replace('https://zhihui.tlkrzf.com/', '')}}
               </a>
             </span>
           </div>

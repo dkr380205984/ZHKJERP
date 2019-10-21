@@ -98,7 +98,7 @@
             <span class='flex2'
               style="border-right:1px solid #DDD;">产品信息</span>
             <span class="flex06"
-              style="border-right:1px solid #DDD;">数量</span>
+              style="border-right:1px solid #DDD;">下单数</span>
             <span class="flex06">图片</span>
           </div>
           <div class="tableColumn flex08">负责小组</div>

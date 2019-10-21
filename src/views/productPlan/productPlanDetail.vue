@@ -106,7 +106,8 @@
         <div class="lineCtn">
           <div class="inputCtn">
             <span class="label">纱线原料:</span>
-            <div class="content tableBox">
+            <div class="content tableBox"
+              style="margin-top:-15px">
               <template v-for="(item,index) in material_data.main_material">
                 <yl-table color="#1A95FF"
                   :date='item'

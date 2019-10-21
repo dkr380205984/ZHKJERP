@@ -296,7 +296,7 @@ export default {
                         color_info: [{
                           color: index.color_name,
                           unit: (index.unit === '克' || index.unit === 'g') ? '公斤' : index.unit,
-                          number: (index.unit === '克' || index.unit === 'g') ? (index.number * value.order_number * (val.number / value.plan_number) * (1 + item.sunhao / 100)) / 1000 : (this.type === '0' ? index.number * value.order_number * (val.number / value.plan_number) * (1 + item.sunhao / 100) : index.number * value.order_number * (val.number / value.plan_number) * (1 + item.sunhao / 100))
+                          number: (index.unit === '克' || index.unit === 'g') ? (index.number * val.number * (1 + item.sunhao / 100)) / 1000 : (this.type === '0' ? index.number * val.number * (1 + item.sunhao / 100) : index.number * val.number * (1 + item.sunhao / 100))
                         }]
                       })
                     } else {
@@ -305,10 +305,10 @@ export default {
                         flag.color_info.push({
                           color: index.color_name,
                           unit: (index.unit === '克' || index.unit === 'g') ? '公斤' : index.unit,
-                          number: (index.unit === '克' || index.unit === 'g') ? (index.number * value.order_number * (val.number / value.plan_number) * (1 + item.sunhao / 100)) / 1000 : (this.type === '0' ? index.number * value.order_number * (val.number / value.plan_number) * (1 + item.sunhao / 100) : index.number * value.order_number * (val.number / value.plan_number) * (1 + item.sunhao / 100))
+                          number: (index.unit === '克' || index.unit === 'g') ? (index.number * val.number * (1 + item.sunhao / 100)) / 1000 : (this.type === '0' ? index.number * val.number * (1 + item.sunhao / 100) : index.number * val.number * (1 + item.sunhao / 100))
                         })
                       } else {
-                        flag1.number = Number(flag1.number) + Number((index.unit === '克' || index.unit === 'g') ? (index.number * value.order_number * (val.number / value.plan_number) * (1 + item.sunhao / 100)) / 1000 : (this.type === '0' ? index.number * value.order_number * (val.number / value.plan_number) * (1 + item.sunhao / 100) : index.number * value.order_number * (val.number / value.plan_number) * (1 + item.sunhao / 100)))
+                        flag1.number = Number(flag1.number) + Number((index.unit === '克' || index.unit === 'g') ? (index.number * val.number * (1 + item.sunhao / 100)) / 1000 : (this.type === '0' ? index.number * val.number * (1 + item.sunhao / 100) : index.number * val.number * (1 + item.sunhao / 100)))
                       }
                     }
                   }

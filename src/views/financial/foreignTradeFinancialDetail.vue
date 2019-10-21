@@ -1452,7 +1452,7 @@
           <div class="lineCtn">
             <span class="label">上传图片:</span>
             <el-upload class="upload-demo"
-              action="http://upload.qiniup.com/"
+              action="https://upload.qiniup.com/"
               accept="image/jpeg,image/gif,image/png,image/bmp"
               :before-upload="beforeUpload"
               :data="postData"
@@ -2117,7 +2117,7 @@ export default {
           this.$message.error('请输入转账金额')
           return
         }
-        const imgArr = this.$refs.uploada.uploadFiles.map((items) => { return 'http://zhihui.tlkrzf.com/' + items.response.key })
+        const imgArr = this.$refs.uploada.uploadFiles.map((items) => { return 'https://zhihui.tlkrzf.com/' + items.response.key })
         transferAdd({
           company_id: window.sessionStorage.getItem('company_id'),
           user_id: window.sessionStorage.getItem('user_id'),

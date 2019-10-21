@@ -48,7 +48,7 @@
                 style="color:#1A95FF"
                 :download="item">
                 <i class="el-icon-document"
-                  style="margin-right:5px"></i>{{item.replace('http://zhihui.tlkrzf.com/', '')}}
+                  style="margin-right:5px"></i>{{item.replace('https://zhihui.tlkrzf.com/', '')}}
               </a>
             </span>
           </div>
@@ -65,7 +65,7 @@
                 style="color:#1A95FF"
                 :download="item">
                 <i class="el-icon-document"
-                  style="margin-right:5px"></i>{{item.replace('http://zhihui.tlkrzf.com/', '')}}
+                  style="margin-right:5px"></i>{{item.replace('https://zhihui.tlkrzf.com/', '')}}
               </a>
             </span>
           </div>
@@ -162,10 +162,12 @@
                   <span>计价方式:</span>
                   <el-radio-group v-model="val.pay_type"
                     style="margin-left:15px;">
-                    <el-radio :label="1"
-                      style="color:#666;font-weight:400;">数量</el-radio>
                     <el-radio :label="2"
-                      style="color:#666;font-weight:400;">面积</el-radio>
+                      style="color:#666;font-weight:400;">箱子</el-radio>
+                    <el-radio :label="3"
+                      style="color:#666;font-weight:400;">袋子</el-radio>
+                    <el-radio :label="1"
+                      style="color:#666;font-weight:400;">其他</el-radio>
                   </el-radio-group>
                 </li>
                 <li :key="
@@ -222,6 +224,21 @@
                     placeholder="高(cm)"
                     style="width:73px;margin-left:12px;"
                     v-model="val.height">
+                  </el-input>
+                </li>
+                <li :key="ind + 'size'"
+                  v-if="val.pay_type === 3">
+                  <span>包装规格:</span>
+                  <el-input size="small"
+                    placeholder="长(cm)"
+                    v-model="val.long"
+                    style="width:108px;">
+                  </el-input>
+                  <strong style="color:#BBB;font-weight:400;">——</strong>
+                  <el-input size="small"
+                    placeholder="宽(cm)"
+                    v-model="val.width"
+                    style="width:108px;margin-left:0;">
                   </el-input>
                 </li>
                 <template v-if="val.pay_type === 1">
@@ -599,13 +616,19 @@ export default {
             if (value.pay_type === 1) {
               this.total_price += (value.number ? value.number : 0) * (value.price ? value.price : 0)
               price += (value.number ? value.number : 0) * (value.price ? value.price : 0)
-            } else {
+            } else if (value.pay_type === 2) {
               let long = value.long ? value.long / 100 : 0
               let width = value.width ? value.width / 100 : 0
               let height = value.height ? value.height / 100 : 0
-              value.price = (((long * width + long * height + width * height) * 2) * (value.priceArea ? value.priceArea : 0)).toFixed(2)
-              this.total_price += ((long * width + long * height + width * height) * 2 * (value.number ? value.number : 0)) * (value.priceArea ? value.priceArea : 0)
-              price += ((long * width + long * height + width * height) * 2 * (value.number ? value.number : 0)) * (value.priceArea ? value.priceArea : 0)
+              value.price = (((long + width + 8) * (width + height + 4)) * (value.priceArea ? value.priceArea : 0)).toFixed(2)
+              this.total_price += ((long + width + 8) * (width + height + 4) * (value.number ? value.number : 0)) * (value.priceArea ? value.priceArea : 0)
+              price += ((long + width + 8) * (width + height + 4) * (value.number ? value.number : 0)) * (value.priceArea ? value.priceArea : 0)
+            } else if (value.pay_type === 3) {
+              let long = value.long ? value.long / 100 : 0
+              let width = value.width ? value.width / 100 : 0
+              value.price = (long * width * 1.08 * (value.priceArea ? value.priceArea : 0)).toFixed(2)
+              this.total_price += (long * width * 1.08 * (value.number ? value.number : 0)) * (value.priceArea ? value.priceArea : 0)
+              price += (long * width * 1.08 * (value.number ? value.number : 0)) * (value.priceArea ? value.priceArea : 0)
             }
           })
           item.total_price = price.toFixed(2)

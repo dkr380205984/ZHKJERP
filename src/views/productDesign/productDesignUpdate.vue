@@ -144,7 +144,7 @@
                 <div class="tableColumn"
                   style="font-size:14px;">库存变动</div>
                 <div class="tableColumn"
-                  style="font-size:14px;">工厂生产</div>
+                  style="font-size:14px;">生产参考值</div>
                 <div class="tableColumn"
                   style="font-size:14px;">总计</div>
                 <div class="tableColumn"
@@ -167,6 +167,7 @@
                 <div class="tableColumn">
                   <input class="inputs"
                     placeholder="输入数字"
+                    disabled
                     v-model="item.production_num" />
                 </div>
                 <div class="tableColumn">{{(parseInt(item.stock_pick_now) + parseInt(item.production_num))?(parseInt(item.stock_pick_now) + parseInt(item.production_num)):'待计算'}}</div>
@@ -614,6 +615,9 @@ export default {
 
 <style lang="less" scoped>
 #productDesignCreate {
+  input:disabled {
+    cursor: not-allowed;
+  }
   .imgCtn {
     position: relative;
     width: 100%;

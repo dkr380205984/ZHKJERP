@@ -138,7 +138,7 @@
                 <div class="tableColumn">库存数量</div>
                 <div class="tableColumn">库存调取</div>
                 <div class="tableColumn"
-                  style="flex:1.3">工厂生产</div>
+                  style="flex:1.3">生产参考值</div>
                 <div class="tableColumn">总计</div>
                 <div class="tableColumn"
                   style="flex:1.0">物料损耗(%)</div>

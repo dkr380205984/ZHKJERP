@@ -73,8 +73,6 @@
           <div class="tableColumn">产品类别</div>
           <div class="tableColumn">产品规格</div>
           <div class="tableColumn">产品图片</div>
-          <div class="tableColumn">主要原料</div>
-          <div class="tableColumn">主要辅料</div>
           <div class="tableColumn">创建人</div>
           <div class="tableColumn">创建日期</div>
           <div class="tableColumn flex9">操作</div>
@@ -98,10 +96,8 @@
                 v-if="item.product_info.img.length===0"><span>没有预览图</span></div>
             </div>
           </div>
-          <div class="tableColumn">{{item.material_data|filterMaterial}}</div>
-          <div class="tableColumn">{{item.material_data|filterOtherMaterial}}</div>
           <div class="tableColumn">{{item.user_name}}</div>
-          <div class="tableColumn">{{item.create_time}}</div>
+          <div class="tableColumn">{{item.create_time.slice(0,10)}}</div>
           <div class="tableColumn flex9">
             <span class="btns warning"
               @click="$router.push('/index/productPlanUpdate/'+item.id)">修改</span>

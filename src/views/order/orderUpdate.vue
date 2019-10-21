@@ -384,7 +384,7 @@
                 <span class="tableRow noCenter"
                   style="max-width:168px;">
                   <el-upload class="upload-demo"
-                    action="http://upload.qiniup.com/"
+                    action="https://upload.qiniup.com/"
                     accept=""
                     :on-preview="handlePreview"
                     :on-remove="handleRemove"
@@ -400,7 +400,7 @@
                 <span class="tableRow noCenter"
                   style="max-width:168px;">
                   <el-upload class="upload-demo"
-                    action="http://upload.qiniup.com/"
+                    action="https://upload.qiniup.com/"
                     accept=""
                     :on-preview="handlePreview"
                     :on-remove="handleRemove"
@@ -416,7 +416,7 @@
                 <span class="tableRow noCenter"
                   style="max-width:168px;">
                   <el-upload class="upload-demo"
-                    action="http://upload.qiniup.com/"
+                    action="https://upload.qiniup.com/"
                     accept=""
                     :on-preview="handlePreview"
                     :on-remove="handleRemove"
@@ -432,7 +432,7 @@
                 <span class="tableRow noCenter"
                   style="max-width:168px;">
                   <el-upload class="upload-demo"
-                    action="http://upload.qiniup.com/"
+                    action="https://upload.qiniup.com/"
                     accept=""
                     :on-preview="handlePreview"
                     :on-remove="handleRemove"
@@ -881,15 +881,15 @@ export default {
         }
         // const fileArr = this.$refs.uploada.uploadFiles.map((item) => {
         //   if (item.response) {
-        //     return ('http://zhihui.tlkrzf.com/' + item.response.key))
+        //     return ('https://zhihui.tlkrzf.com/' + item.response.key))
         //   } else {
         //     return item.url
         //   }
         // })
-        const orderContract = this.$refs.uploada1.uploadFiles.map((item) => { return (item.url ? item.url : ('http://zhihui.tlkrzf.com/' + item.response.key)) })
-        const packMeans = this.$refs.uploada2.uploadFiles.map((item) => { return (item.url ? item.url : ('http://zhihui.tlkrzf.com/' + item.response.key)) })
-        const storeMeans = this.$refs.uploada3.uploadFiles.map((item) => { return (item.url ? item.url : ('http://zhihui.tlkrzf.com/' + item.response.key)) })
-        const otherInfo = this.$refs.uploada4.uploadFiles.map((item) => { return (item.url ? item.url : ('http://zhihui.tlkrzf.com/' + item.response.key)) })
+        const orderContract = this.$refs.uploada1.uploadFiles.map((item) => { return (item.url ? item.url : ('https://zhihui.tlkrzf.com/' + item.response.key)) })
+        const packMeans = this.$refs.uploada2.uploadFiles.map((item) => { return (item.url ? item.url : ('https://zhihui.tlkrzf.com/' + item.response.key)) })
+        const storeMeans = this.$refs.uploada3.uploadFiles.map((item) => { return (item.url ? item.url : ('https://zhihui.tlkrzf.com/' + item.response.key)) })
+        const otherInfo = this.$refs.uploada4.uploadFiles.map((item) => { return (item.url ? item.url : ('https://zhihui.tlkrzf.com/' + item.response.key)) })
         let obj = {
           id: parseInt(this.$route.params.id),
           company_id: this.companyId,
@@ -1046,31 +1046,31 @@ export default {
       this.date = orderInfo.order_time
       this.orderFileArr = orderInfo.order_contract ? JSON.parse(orderInfo.order_contract).map(items => {
         return {
-          name: items.replace('http://zhihui.tlkrzf.com/', ''),
+          name: items.replace('https://zhihui.tlkrzf.com/', ''),
           url: items
         }
       }) : []
       this.packagFileArr = orderInfo.pack_means ? JSON.parse(orderInfo.pack_means).map(items => {
         return {
-          name: items.replace('http://zhihui.tlkrzf.com/', ''),
+          name: items.replace('https://zhihui.tlkrzf.com/', ''),
           url: items
         }
       }) : []
       this.storeFileArr = orderInfo.store_means ? JSON.parse(orderInfo.store_means).map(items => {
         return {
-          name: items.replace('http://zhihui.tlkrzf.com/', ''),
+          name: items.replace('https://zhihui.tlkrzf.com/', ''),
           url: items
         }
       }) : []
       this.otherFileArr = orderInfo.others_info ? JSON.parse(orderInfo.others_info).map(items => {
         return {
-          name: items.replace('http://zhihui.tlkrzf.com/', ''),
+          name: items.replace('https://zhihui.tlkrzf.com/', ''),
           url: items
         }
       }) : []
       // this.fileArr = orderInfo.file_url ? JSON.parse(orderInfo.file_url).map((item, index) => {
       //   return {
-      //     name: item.replace('http://zhihui.tlkrzf.com/', ''),
+      //     name: item.replace('https://zhihui.tlkrzf.com/', ''),
       //     url: item
       //   }
       // }) : []

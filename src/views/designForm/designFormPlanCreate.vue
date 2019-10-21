@@ -994,7 +994,7 @@
               <span class="label">上传图片：</span>
               <div class="content">
                 <el-upload class="upload-demo"
-                  action="http://upload.qiniup.com/"
+                  action="https://upload.qiniup.com/"
                   accept="image/jpeg,image/gif,image/png,image/bmp"
                   :before-upload="beforeAvatarUpload"
                   :file-list="fileArr"
@@ -2226,11 +2226,24 @@ export default {
         })
         return
       }
+      this.GL.forEach((item1) => {
+        item1.forEach((item2) => {
+          if (!item2[0] || !item2[1]) {
+            errorInput = true
+          }
+        })
+      })
+      if (errorInput) {
+        this.$message.error({
+          message: '请填写纹版图'
+        })
+        return
+      }
       let formData = {
         id: null,
         is_draft: 2,
         title: this.name,
-        design_url: this.$refs.uploada.uploadFiles.map((item) => { return 'http://zhihui.tlkrzf.com/' + item.response.key }),
+        design_url: this.$refs.uploada.uploadFiles.map((item) => { return 'https://zhihui.tlkrzf.com/' + item.response.key }),
         company_id: window.sessionStorage.getItem('company_id'),
         product_id: this.$route.params.id,
         weight: this.weight,

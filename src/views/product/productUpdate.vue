@@ -170,7 +170,7 @@
         <span class="label">{{type === '1' ? '产' : '样'}}品图片:</span>
         <div class="content">
           <el-upload class="upload-demo"
-            action="http://upload.qiniup.com/"
+            action="https://upload.qiniup.com/"
             accept="image/jpeg,image/gif,image/png,image/bmp"
             :before-upload="beforeAvatarUpload"
             :file-list="fileArr"
@@ -493,7 +493,7 @@ export default {
         flag = false
         return
       }
-      const imgArr = this.$refs.uploada.uploadFiles.map((item) => { return (item.response ? 'http://zhihui.tlkrzf.com/' + item.response.key : item.url) })
+      const imgArr = this.$refs.uploada.uploadFiles.map((item) => { return (item.response ? 'https://zhihui.tlkrzf.com/' + item.response.key : item.url) })
       let data = {
         id: this.$route.params.id,
         product_code: this.product_code,

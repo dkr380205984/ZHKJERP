@@ -82,8 +82,6 @@
           <div class="tableColumn">编号</div>
           <div class="tableColumn flex9">品类</div>
           <div class="tableColumn ">花型</div>
-          <div class="tableColumn">尺码</div>
-          <div class="tableColumn flexSamll">配色(种)</div>
           <div class="tableColumn">图片</div>
           <div class="tableColumn">创建人</div>
           <div class="tableColumn">创建时间</div>
@@ -96,8 +94,6 @@
             style="color: rgb(26, 149, 255);">{{item.product_code}}</div>
           <div class="tableColumn flex9">{{item|filterType}}</div>
           <div class="tableColumn">{{item.flower_id}}</div>
-          <div class="tableColumn">{{item.size.length}}</div>
-          <div class="tableColumn flexSamll">{{item.color.length}}</div>
           <div class="tableColumn">
             <div class="imgCtn">
               <img class="img"

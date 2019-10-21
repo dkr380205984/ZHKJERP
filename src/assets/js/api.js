@@ -88,6 +88,8 @@ const porductOne = (params) => http.get(`${baseUrl}/product/one`, params)
 const productDelete = (params) => http.post(`${baseUrl}/product/delete`, params, 'application/json')
 // 添加纱线名称
 const saveYarn = (params) => http.post(`${baseUrl}/yarn/save`, params, 'application/json')
+// 添加私有纱线
+const saveSelfYarn = (params) => http.post(`${baseUrl}/yarn/private/save`, params, 'application/json')
 // 纱线名称列表
 const YarnList = (params) => http.get(`${baseUrl}/yarn/list`, params)
 // 添加纱线支数
@@ -380,6 +382,7 @@ const addStock = (params) => http.post(`${baseUrl}/factory/store/save`, params, 
 const stockList = (params) => http.get(`${baseUrl}/factory/store/list`, params)
 const stockMaterialAdd = (params) => http.post(`${baseUrl}/material/push`, params, 'application/json')
 export {
+  saveSelfYarn,
   stockList,
   addStock,
   rawMaterialOutStockDelete,

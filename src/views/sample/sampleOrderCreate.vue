@@ -260,7 +260,7 @@
         <div class="inputCtn oneLine">
           <span class="label">上传文件：</span>
           <el-upload class="upload-demo"
-            action="http://upload.qiniup.com/"
+            action="https://upload.qiniup.com/"
             accept=""
             :on-preview="handlePreview"
             :on-remove="handleRemove"

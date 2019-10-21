@@ -140,7 +140,7 @@
                 :key="item.id">
                 <div class="tableColumn">{{item.size}}/{{item.color}}</div>
                 <div class="tableColumn">{{item.order_num}}{{item.unit_name}}</div>
-                <div class="tableColumn">{{item.stock_number}}{{item.unit_name}}</div>
+                <div class="tableColumn">{{item.stock_number?item.stock_number:0}}{{item.unit_name}}</div>
                 <div class="tableColumn">
                   {{item.stock_pick}}{{item.unit_name}}
                 </div>
@@ -212,7 +212,8 @@
               </span>
               <span v-for="(value,index) in item.sizeColor"
                 :key="index"
-                :style="{'flex':retFlex(value,item)}">{{value.size + '/' + value.color}}</span>
+                :style="{'flex':retFlex(value,item)}"
+                style="display:flex;align-items:center"><span style="text-align:center;width: 100%;">{{value.size + '/' + value.color}}</span></span>
             </div>
             <div class="planRight"
               :style="{'flex':4}">
@@ -526,6 +527,7 @@ export default {
       })
       // 统计产品计划物料
       let productionNumber = []
+      console.log(this.productInfo)
       this.productInfo.forEach(item => {
         let flag = productionNumber.find(key => key.product_code === item.product_code)
         if (!flag) {
@@ -573,11 +575,12 @@ export default {
           }
         }
       })
+      console.log(productionNumber)
       productionNumber.forEach(value => {
         value.sizeColor.forEach(val => {
           if (productPlan[value.product_code]) {
             let filtersArr = productPlan[value.product_code].filter(key => (key.size === val.size && key.color_match_name === val.color))
-            filtersArr.forEach(valNum => {
+            filtersArr.forEach((valNum, indexNum) => {
               let material = null
               let sizeColorInfo = null
               if (valNum.type === 0) {
@@ -587,16 +590,17 @@ export default {
                 material = value.material.other
                 sizeColorInfo = val.sizeColor.other
               }
-              if (material.indexOf(valNum.material_name) === -1) {
-                material.push(valNum.material_name)
+              let name = valNum.material_name + (valNum.remark ? '(' + valNum.remark + ')' : '')
+              if (material.indexOf(name) === -1) {
+                material.push(name)
               }
-              if (!sizeColorInfo[valNum.material_name]) {
-                sizeColorInfo[valNum.material_name] = {}
+              if (!sizeColorInfo[name]) {
+                sizeColorInfo[name] = {}
               }
-              if (sizeColorInfo[valNum.material_name][valNum.color_name]) {
-                sizeColorInfo[valNum.material_name][valNum.color_name].number += Number(((val.order_num ? val.order_num : 0) - (val.stock_pick ? val.stock_pick : 0)) * ((val.productiong_sunhao ? val.productiong_sunhao : 0) / 100 + 1) * valNum.number)
+              if (sizeColorInfo[name][valNum.color_name]) {
+                sizeColorInfo[name][valNum.color_name].number += Number(((val.order_num ? val.order_num : 0) - (val.stock_pick ? val.stock_pick : 0)) * ((val.productiong_sunhao ? val.productiong_sunhao : 0) / 100 + 1) * valNum.number)
               } else {
-                sizeColorInfo[valNum.material_name][valNum.color_name] = { number: ((val.order_num ? val.order_num : 0) - (val.stock_pick ? val.stock_pick : 0)) * ((val.productiong_sunhao ? val.productiong_sunhao : 0) / 100 + 1) * valNum.number, unit: valNum.unit }
+                sizeColorInfo[name][valNum.color_name] = { number: ((val.order_num ? val.order_num : 0) - (val.stock_pick ? val.stock_pick : 0)) * ((val.productiong_sunhao ? val.productiong_sunhao : 0) / 100 + 1) * valNum.number, unit: valNum.unit }
               }
             })
           }
