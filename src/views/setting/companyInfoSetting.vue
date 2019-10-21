@@ -10,7 +10,7 @@
           <div class="content">
             <el-upload class="avatar-uploader"
               drag
-              action="http://upload.qiniup.com/"
+              action="https://upload.qiniup.com/"
               :show-file-list="false"
               :on-success="handleAvatarSuccess"
               :before-upload="beforeUpload"
@@ -58,7 +58,7 @@
         <div class="inputCtn">
           <span class="label">公司图片:</span>
           <div class="content">
-            <el-upload action="http://upload.qiniup.com/"
+            <el-upload action="https://upload.qiniup.com/"
               class="img-upload"
               drag
               :before-upload="beforeUpload"
@@ -202,8 +202,8 @@ export default {
       this.client_address = ''
     },
     saveAll () {
-      const logoUrl = this.$refs.uploada_logo.uploadFiles.map((items) => { return (items.response ? ('http://zhihui.tlkrzf.com/' + items.response.key) : items.url) })
-      const imageUrl = this.$refs.uploada_image.uploadFiles.map((items) => { return (items.response ? ('http://zhihui.tlkrzf.com/' + items.response.key) : items.url) })
+      const logoUrl = this.$refs.uploada_logo.uploadFiles.map((items) => { return (items.response ? ('https://zhihui.tlkrzf.com/' + items.response.key) : items.url) })
+      const imageUrl = this.$refs.uploada_image.uploadFiles.map((items) => { return (items.response ? ('https://zhihui.tlkrzf.com/' + items.response.key) : items.url) })
       if (logoUrl.length === 0 || !logoUrl) {
         this.$message.error('请上传公司LOGO')
         return

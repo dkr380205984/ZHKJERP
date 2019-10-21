@@ -392,7 +392,7 @@
                 style="min-height:60px;">
                 <span class="tableRow noCenter">
                   <el-upload class="upload-demo"
-                    action="http://upload.qiniup.com/"
+                    action="https://upload.qiniup.com/"
                     accept=""
                     :on-preview="handlePreview"
                     :on-remove="handleRemove"
@@ -407,7 +407,7 @@
                 </span>
                 <span class="tableRow noCenter">
                   <el-upload class="upload-demo"
-                    action="http://upload.qiniup.com/"
+                    action="https://upload.qiniup.com/"
                     accept=""
                     :on-preview="handlePreview"
                     :on-remove="handleRemove"
@@ -422,7 +422,7 @@
                 </span>
                 <span class="tableRow noCenter">
                   <el-upload class="upload-demo"
-                    action="http://upload.qiniup.com/"
+                    action="https://upload.qiniup.com/"
                     accept=""
                     :on-preview="handlePreview"
                     :on-remove="handleRemove"
@@ -437,7 +437,7 @@
                 </span>
                 <span class="tableRow noCenter">
                   <el-upload class="upload-demo"
-                    action="http://upload.qiniup.com/"
+                    action="https://upload.qiniup.com/"
                     accept=""
                     :on-preview="handlePreview"
                     :on-remove="handleRemove"
@@ -884,10 +884,10 @@ export default {
           })
           return
         }
-        const orderContract = this.$refs.uploada1.uploadFiles.map((item) => { return 'http://zhihui.tlkrzf.com/' + item.response.key })
-        const packMeans = this.$refs.uploada2.uploadFiles.map((item) => { return 'http://zhihui.tlkrzf.com/' + item.response.key })
-        const storeMeans = this.$refs.uploada3.uploadFiles.map((item) => { return 'http://zhihui.tlkrzf.com/' + item.response.key })
-        const otherInfo = this.$refs.uploada4.uploadFiles.map((item) => { return 'http://zhihui.tlkrzf.com/' + item.response.key })
+        const orderContract = this.$refs.uploada1.uploadFiles.map((item) => { return 'https://zhihui.tlkrzf.com/' + item.response.key })
+        const packMeans = this.$refs.uploada2.uploadFiles.map((item) => { return 'https://zhihui.tlkrzf.com/' + item.response.key })
+        const storeMeans = this.$refs.uploada3.uploadFiles.map((item) => { return 'https://zhihui.tlkrzf.com/' + item.response.key })
+        const otherInfo = this.$refs.uploada4.uploadFiles.map((item) => { return 'https://zhihui.tlkrzf.com/' + item.response.key })
         let obj = {
           company_id: this.companyId,
           user_id: window.sessionStorage.getItem('user_id'),

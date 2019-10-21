@@ -35,7 +35,8 @@
               <div class="inputBox">
                 <el-select v-model="item.material_name"
                   filterable
-                  placeholder="请选择原料">
+                  placeholder="请选择原料"
+                  :disabled="item.disabled">
                   <el-option v-for="value in materialList.material"
                     :key="value.value"
                     :value="value.name">
@@ -43,6 +44,7 @@
                 </el-select>
                 <el-select v-model="item.color_code"
                   filterable
+                  :disabled="item.disabled"
                   placeholder="请选择颜色">
                   <el-option v-for="value in colorList"
                     :key="value.name + value.id"
@@ -50,14 +52,16 @@
                   </el-option>
                 </el-select>
                 <el-select v-model="item.attribute"
-                  placeholder="请选择包装">
+                  placeholder="请选择包装"
+                  :disabled="item.disabled">
                   <el-option v-for="value in materialList.attr"
                     :key="value.value"
                     :value="value.name">
                   </el-option>
                 </el-select>
                 <el-input placeholder="请输入预定价格"
-                  v-model="item.price">
+                  v-model="item.price"
+                  :disabled="item.disabled">
                   <span class="small"
                     slot="append">元/千克</span>
                 </el-input>
@@ -124,7 +128,7 @@
         <div class="inputCtn">
           <span class="content btn">
             <span class="clean"
-              @click="clean">清空</span>
+              @click="$router.go(-1)">返回</span>
             <span class="save"
               @click="save">修改</span>
           </span>
@@ -419,6 +423,15 @@ export default {
       this.total_price = detail.total_price
       this.order_time = detail.order_time
       this.material_info = detail.material_info
+      this.material_info.forEach((item) => {
+        let finded = res[3].data.data.data_stock.find((itemFind) => itemFind.material_name === item.material_name && itemFind.color_code === item.color_code)
+        console.log(finded)
+        if (finded) {
+          item.disabled = true
+        } else {
+          item.disabled = false
+        }
+      })
     })
   }
 }

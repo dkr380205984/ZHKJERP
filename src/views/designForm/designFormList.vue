@@ -67,9 +67,6 @@
         <div class="tableRow titleTableRow">
           <div class="tableColumn">编号</div>
           <div class="tableColumn flex5">品类</div>
-          <div class="tableColumn">总根数(经/纬)</div>
-          <div class="tableColumn flex9">主料(经/纬)</div>
-          <div class="tableColumn flexSamll">产品净重(克)</div>
           <div class="tableColumn">产品图片</div>
           <div class="tableColumn flexSamll">创建人</div>
           <div class="tableColumn flexSamll">创建时间</div>
@@ -82,9 +79,6 @@
           <div class="tableColumn"
             style="color: rgb(26, 149, 255);">{{item.craft_code}}</div>
           <div class="tableColumn flex5">{{item.product_info|filterType}}</div>
-          <div class="tableColumn">{{item|filterWeft}}</div>
-          <div class="tableColumn flex9">{{item.warp_data.material_data|filterMaterial}}/{{item.weft_data.material_data|filterMaterial}}</div>
-          <div class="tableColumn flexSamll">{{item.weight}}</div>
           <div class="tableColumn">
             <div class="imgCtn">
               <img class="img"
@@ -97,7 +91,7 @@
             </div>
           </div>
           <div class="tableColumn flexSamll">{{item.user_name}}</div>
-          <div class="tableColumn flexSamll">{{item.create_time}}</div>
+          <div class="tableColumn flexSamll">{{item.create_time.slice(0,10)}}</div>
           <div class="tableColumn"
             style="flex:2.4">
             <span class="btns warning"

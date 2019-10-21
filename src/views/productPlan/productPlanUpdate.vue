@@ -112,7 +112,7 @@
                 </el-select>
                 <el-input v-model="itemMaterial.remark"
                   class="elInput"
-                  placeholder="原料备注">
+                  placeholder="原料属性">
                 </el-input>
               </div>
               <div class="proColorInfo"
@@ -140,7 +140,7 @@
                   :key="indexColor">
                   <div class="selectBox tranY">
                     <span class="line"></span>
-                    <el-select v-model="itemColor.name"
+                    <!-- <el-select v-model="itemColor.name"
                       class="elInput noMarginLeft"
                       placeholder="请选择原料颜色"
                       filterable>
@@ -152,7 +152,12 @@
                           :style="{'background':item.color_code}"></div>
                         <div class="desc">{{item.name}}</div>
                       </el-option>
-                    </el-select>
+                    </el-select> -->
+                    <el-autocomplete class="inline-input"
+                      v-model="itemColor.name"
+                      :fetch-suggestions="searchColor"
+                      placeholder="请输入原料颜色"
+                      @select="selectColor"></el-autocomplete>
                     <span class="delete"
                       @click="deleteColor(indexMaterial,indexColour,indexColor)">删除</span>
                   </div>
@@ -414,6 +419,23 @@ export default {
     })
   },
   methods: {
+    selectColor () {
+    },
+    searchColor (str, cb) {
+      if (!str) {
+        cb(this.colorArr.map((item) => {
+          return {
+            value: item.name
+          }
+        }))
+      } else {
+        cb(this.colorArr.filter((item) => item.name.indexOf(str) !== -1).map((item) => {
+          return {
+            value: item.name
+          }
+        }))
+      }
+    },
     afterSave (data) {
       this.msgFlag = data.msgFlag
     },

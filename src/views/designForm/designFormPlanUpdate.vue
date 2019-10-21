@@ -995,7 +995,7 @@
               <span class="label">上传图片：</span>
               <div class="content">
                 <el-upload class="upload-demo"
-                  action="http://upload.qiniup.com/"
+                  action="https://upload.qiniup.com/"
                   accept="image/jpeg,image/gif,image/png,image/bmp"
                   :before-upload="beforeAvatarUpload"
                   :file-list="fileArr"
@@ -2231,7 +2231,7 @@ export default {
         id: this.$route.params.id,
         is_draft: 2,
         title: this.name,
-        design_url: this.$refs.uploada.uploadFiles.map((item) => { return (item.response ? 'http://zhihui.tlkrzf.com/' + item.response.key : item.url) }),
+        design_url: this.$refs.uploada.uploadFiles.map((item) => { return (item.response ? 'https://zhihui.tlkrzf.com/' + item.response.key : item.url) }),
         company_id: window.sessionStorage.getItem('company_id'),
         product_id: this.$route.params.id,
         weight: this.weight,

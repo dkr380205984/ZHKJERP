@@ -11,6 +11,9 @@
           <el-input class="elInput"
             v-model="yarn"
             placeholder="请输入纱线名称"></el-input>
+          <!-- <el-input class="elInput"
+            v-model="yarnType"
+            placeholder="请输入纱线属性"></el-input> -->
           <div class="okBtn"
             @click="saveYarn">添加</div>
           <div class="showAll"
@@ -36,6 +39,7 @@
           <el-input class="elInput"
             v-model="color"
             placeholder="请输入颜色"></el-input>
+          <span style="color:#666;margin:0 2px 0 15px;">请点击小方块选择纱线颜色：</span>
           <el-color-picker style="margin-left:15px;"
             v-model="colorVal"></el-color-picker>
           <div class="okBtn"
@@ -91,7 +95,7 @@
 </template>
 
 <script>
-import { saveYarn, YarnList, saveYarnColor, YarnColorList, saveMaterial, materialList, deleteMaterial } from '@/assets/js/api.js'
+import { saveSelfYarn, YarnList, saveYarnColor, YarnColorList, saveMaterial, materialList, deleteMaterial } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -101,6 +105,7 @@ export default {
         otherIngredient: false
       },
       yarn: '',
+      yarnType: '',
       yarnArr: [],
       colorVal: '',
       color: '',
@@ -121,8 +126,7 @@ export default {
     },
     // 添加纱线名称
     saveYarn () {
-      saveYarn({
-        id: null,
+      saveSelfYarn({
         name: this.yarn
       }).then((res) => {
         if (res.data.status) {
@@ -131,6 +135,8 @@ export default {
           })
           this.yarn = ''
           this.getYarnList()
+        } else {
+          this.$message.error(res.data.message)
         }
       })
     },
