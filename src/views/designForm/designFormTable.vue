@@ -188,7 +188,7 @@
                   </template>
                   <template v-else>见附件</template>
                 </div>
-                <div class="through-desc"></div>
+                <div class="through-desc">{{drafting_method.desc}}</div>
               </div>
             </div>
           </div>
@@ -1145,6 +1145,7 @@ export default {
   mounted () {
     const QRCode = require('qrcode')
     this.urlVal = 'https://api.tlkrzf.com/craft/images#' + this.$route.params.id
+    // this.urlVal = 'https://www.zwyknit.com/minApp?scene=1002&proId=' + this.$route.params.id
     // 画二维码里的logo[注意添加logo图片的时候需要使用服务器]
     QRCode.toDataURL(this.urlVal, { errorCorrectionLevel: 'H' }, (err, url) => {
       console.log(err)

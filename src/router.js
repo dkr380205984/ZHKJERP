@@ -553,6 +553,10 @@ let router = new Router({
       path: 'msgList',
       name: 'msgList',
       component: () => import('./views/self/msgList.vue')
+    }, {
+      path: 'materialPriceList',
+      name: 'materialPriceList',
+      component: () => import('./views/rawMaterial/materialPriceList.vue')
     }]
   }
   ]

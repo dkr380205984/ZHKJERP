@@ -381,7 +381,16 @@ const addStock = (params) => http.post(`${baseUrl}/factory/store/save`, params, 
 // 仓库列表factory/store/list
 const stockList = (params) => http.get(`${baseUrl}/factory/store/list`, params)
 const stockMaterialAdd = (params) => http.post(`${baseUrl}/material/push`, params, 'application/json')
+// 设置纱线价格yarn/price/save
+const yarnPriceSetting = (params) => http.post(`${baseUrl}/yarn/price/save`, params, 'application/json')
+// 获取纱线价格yarn/price/list
+const yarnPriceList = (params) => http.get(`${baseUrl}/yarn/price/list`, params)
+// 获取纱线的历史价格yarn/price/history
+const yarnPriceHistory = (params) => http.get(`${baseUrl}/yarn/price/history`, params)
 export {
+  yarnPriceHistory,
+  yarnPriceList,
+  yarnPriceSetting,
   saveSelfYarn,
   stockList,
   addStock,

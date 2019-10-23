@@ -169,14 +169,6 @@
         </div>
       </div>
       <div class="lineCtn col">
-        <!-- <div class="inputCtn oneLine">
-          <el-radio-group v-model="settleFun"
-            class="elInput"
-            @change="changeSettleFun">
-            <el-radio :label="true">按单件计算费用</el-radio>
-            <el-radio :label="false">按订单计算费用</el-radio>
-          </el-radio-group>
-        </div> -->
         <div class="inputCtn"
           v-if="productArr.length === 0">
           <span class="label">已选产品：</span>
@@ -192,7 +184,7 @@
             class="elInput"
             disabled
             placeholder="请选择样品">
-            <el-option v-for="item in seachProduct"
+            <el-option v-for="item in productArr"
               :key="item.id"
               :label="item.product_code + '(' + item.category_info.product_category + '/' + item.type_name + '/'  + item.style_name + ')'"
               :value="item.id">
@@ -209,7 +201,6 @@
                 style="width:228px"
                 :options="item.sizeColor"
                 expandTrigger='hover'></el-cascader>
-              <!-- style="width:140px;margin-left:8px" -->
               <el-input v-model="val.numbers"
                 class="elInput"
                 style="width:228px;margin-left:8px"
@@ -227,24 +218,6 @@
           </div>
         </div>
       </div>
-      <!-- <div class="lineCtn">
-        <div class="inputCtn oneLine product">
-          <span class="label must">样费承担：</span>
-          <el-input class="elInput"
-            v-model="exchangeRate"
-            placeholder="请输入客户承担比例(默认0%)">
-            <template slot="append">%</template>
-          </el-input>
-        </div>
-      </div>
-      <div class="lineCtn">
-        <div class="inputCtn oneLine product">
-          <span class="label must">打样费用：</span>
-          <el-input class="elInput"
-            v-model="totalMoney"
-            placeholder="总价"></el-input>
-        </div>
-      </div> -->
       <div class="lineCtn">
         <div class="inputCtn oneLine product">
           <span class="label must">样单交期：</span>
@@ -256,26 +229,6 @@
           </el-date-picker>
         </div>
       </div>
-      <!-- <div class="lineCtn">
-        <div class="inputCtn oneLine">
-          <span class="label">上传文件：</span>
-          <el-upload class="upload-demo"
-            action="https://upload.qiniup.com/"
-            accept=""
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :on-success="handleSuccess"
-            :before-upload="beforeAvatarUpload"
-            :data="postData"
-            ref="uploada"
-            list-type="picture">
-            <el-button size="small"
-              type="primary">点击上传</el-button>
-            <div slot="tip"
-              class="el-upload__tip">请不要上传超过20M的文件</div>
-          </el-upload>
-        </div>
-      </div> -->
       <div class="lineCtn">
         <div class="inputCtn oneLine product">
           <span class="label">备注：</span>
@@ -356,12 +309,8 @@ export default {
       dateSearch: '',
       search: '',
       seachProduct: [],
-      // settleFun: true,
       productArr: [],
-      // exchangeRate: '',
-      // totalMoney: 0,
       presentDate: '',
-      // total: '',
       otherInfo: '',
       postData: { token: '' },
       page: 1,
@@ -460,7 +409,31 @@ export default {
         this.loading = false
         if (this.page === 1) {
           this.nomore = false
-          this.seachProduct = res.data.data
+          this.seachProduct = res.data.data.map(item => {
+            let data = {
+              ...item,
+              productInfo: JSON.parse(JSON.stringify(item)),
+              sizeColor: item.size.map(value => {
+                return {
+                  value: value.measurement,
+                  label: value.measurement,
+                  children: item.color.map(val => {
+                    return {
+                      value: val.color_name,
+                      label: val.color_name
+                    }
+                  })
+                }
+              }),
+              info: [{ name: [], numbers: '', unitPrice: null }]
+            }
+            // 判断进入页面是否需要默认选中产品
+            if (this.$route.fullPath.split('?')[1] === item.id) {
+              data.checked = true
+              this.productArr.push(data)
+            }
+            return data
+          })
           this.seachProduct.forEach(item => {
             let flag = this.productArr.find(key => key.id === item.id)
             if (flag) {
@@ -468,7 +441,31 @@ export default {
             }
           })
         } else {
-          this.seachProduct = this.seachProduct.concat(res.data.data)
+          this.seachProduct = this.seachProduct.concat(res.data.data.map(item => {
+            let data = {
+              ...item,
+              productInfo: JSON.parse(JSON.stringify(item)),
+              sizeColor: item.size.map(value => {
+                return {
+                  value: value.measurement,
+                  label: value.measurement,
+                  children: item.color.map(val => {
+                    return {
+                      value: val.color_name,
+                      label: val.color_name
+                    }
+                  })
+                }
+              }),
+              info: [{ name: [], numbers: '', unitPrice: null }]
+            }
+            // 判断进入页面是否需要默认选中产品
+            if (this.$route.fullPath.split('?')[1] === item.id) {
+              data.checked = true
+              this.productArr.push(data)
+            }
+            return data
+          }))
           if (res.data.data.length < 5) {
             this.nomore = true
           }

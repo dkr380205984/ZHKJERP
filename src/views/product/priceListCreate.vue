@@ -307,6 +307,8 @@
                     filterable
                     allow-create
                     default-first-option
+                    :disabled="item.disabled"
+                    @change="selectMaterial(item)"
                     placeholder="请选择原料">
                     <el-option v-for="(item,index) in yarnList"
                       :key="index"
@@ -715,7 +717,7 @@
 
 <script>
 import { moneyArr } from '@/assets/js/dictionary.js'
-import { clientList, productList, productTppeList, flowerList, getGroup, YarnList, materialList, priceListCreate, productPlanDetail, priceListList, priceListDetail, notifySave, courseList } from '@/assets/js/api.js'
+import { clientList, productList, productTppeList, flowerList, getGroup, YarnList, materialList, priceListCreate, productPlanDetail, priceListList, priceListDetail, notifySave, courseList, yarnPriceList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -773,8 +775,6 @@ export default {
         {
           key: '',
           price: '',
-          maxPrice: 0,
-          minPrice: 0,
           weight: '',
           sunhao: '',
           total_price: ''
@@ -785,9 +785,9 @@ export default {
         {
           key: '',
           price: '',
-          maxPrice: 0,
-          minPrice: 0,
-          weight: ''
+          weight: '',
+          sunhao: '',
+          total_price: ''
         }
       ],
       weaveList: [
@@ -887,10 +887,26 @@ export default {
         price: 0
       },
       total_price: 0,
-      startNum: ''
+      startNum: '',
+      materialPriceList: []
     }
   },
   methods: {
+    selectMaterial (newVal) {
+      if (this.materialPriceList.length === 0) {
+        yarnPriceList({
+
+        }).then(res => {
+          this.materialPriceList = res.data.data
+          this.selectMaterial(newVal)
+        })
+      }
+      let materialPriceInfo = this.materialPriceList.find(items => items.name === newVal.key)
+      console.log(materialPriceInfo)
+      if (materialPriceInfo) {
+        newVal.price = materialPriceInfo.price
+      }
+    },
     afterSave (data) {
       this.msgFlag = data.msgFlag
     },
@@ -996,20 +1012,21 @@ export default {
                     }, 0)
                   }, 0)
                   if (this.yarnArr[0].key) {
-                    this.yarnArr.push({
+                    let obj = {
                       key: item.material,
                       price: '',
-                      number: number,
                       weight: number,
-                      maxPrice: 0,
-                      minPrice: 0,
+                      sunhao: '',
+                      total_price: '',
                       disable: true
-                    })
+                    }
+                    this.selectMaterial(obj)
+                    this.yarnArr.push(obj)
                   } else {
                     this.yarnArr[0].key = item.material
-                    this.yarnArr[0].number = number
                     this.yarnArr[0].weight = number
                     this.yarnArr[0].disable = true
+                    this.selectMaterial(this.yarnArr[0])
                   }
                 }
                 if (!finded2 && item.type === 1) {
@@ -1026,8 +1043,7 @@ export default {
                       price: '',
                       number: number,
                       weight: number,
-                      maxPrice: 0,
-                      minPrice: 0,
+                      total_price: '',
                       disable: true
                     })
                   } else {
@@ -1127,8 +1143,6 @@ export default {
         this[key].push({
           key: '',
           price: '',
-          minPrice: 0,
-          maxPrice: 0,
           weight: '',
           sunhao: '',
           total_price: ''
@@ -1325,52 +1339,6 @@ export default {
         this.exchangeRate = 100
       }
     }
-    // yarnArr: {
-    //   immediate: true,
-    //   handler: function (val) {
-    //     yarnDetail({
-    //       id: val.map((item) => item.key)
-    //     }).then((res) => {
-    //       if (res.data.status && res.data.data.length > 0) {
-    //         let index = 0 // 返回的数据会跳过空数据,因此需要计数
-    //         val.forEach((item) => {
-    //           if (item.key && this.yarnList.find((itemFind) => itemFind.name === item.key)) {
-    //             item.maxPrice = res.data.data[index].max_price
-    //             item.minPrice = res.data.data[index].min_price
-    //             index++
-    //           } else {
-    //             item.maxPrice = 0
-    //             item.minPrice = 0
-    //           }
-    //         })
-    //       }
-    //     })
-    //   },
-    //   deep: true
-    // },
-    // otherMaterialArr: {
-    //   immediate: true,
-    //   handler: function (val) {
-    //     materialDetail({
-    //       id: val.map((item) => item.key)
-    //     }).then((res) => {
-    //       if (res.data.status && res.data.data.length > 0) {
-    //         let index = 0 // 返回的数据会跳过空数据,因此需要计数
-    //         val.forEach((item) => {
-    //           if (item.key && this.otherMaterialList.find((itemFind) => itemFind.name === item.key)) {
-    //             item.maxPrice = res.data.data[index].max_price
-    //             item.minPrice = res.data.data[index].min_price
-    //             index++
-    //           } else {
-    //             item.maxPrice = 0
-    //             item.minPrice = 0
-    //           }
-    //         })
-    //       }
-    //     })
-    //   },
-    //   deep: true
-    // }
   },
   mounted () {
     let firstInput = document.getElementsByTagName('input')[0]

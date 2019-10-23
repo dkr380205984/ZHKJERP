@@ -75,9 +75,9 @@ const companyType = [
   }, {
     value: 8,
     name: '运输单位'
-    // }, {
-    //   value: 9,
-    //   name: '存储单位'
+  }, {
+    value: 9,
+    name: '存储单位'
   }, {
     value: 10,
     name: '装饰辅料单位'
@@ -346,6 +346,9 @@ const menu = [{
   }, {
     name: '物料出库入库',
     url: '/index/rawMaterialStockList'
+  }, {
+    name: '物料价格设置',
+    url: '/index/materialPriceList'
   }]
 }, {
   name: '织造加工管理',

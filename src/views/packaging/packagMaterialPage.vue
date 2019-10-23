@@ -620,9 +620,9 @@ export default {
               let long = value.long ? value.long / 100 : 0
               let width = value.width ? value.width / 100 : 0
               let height = value.height ? value.height / 100 : 0
-              value.price = (((long + width + 8) * (width + height + 4)) * (value.priceArea ? value.priceArea : 0)).toFixed(2)
-              this.total_price += ((long + width + 8) * (width + height + 4) * (value.number ? value.number : 0)) * (value.priceArea ? value.priceArea : 0)
-              price += ((long + width + 8) * (width + height + 4) * (value.number ? value.number : 0)) * (value.priceArea ? value.priceArea : 0)
+              value.price = (((long + width + 0.08) * (width + height + 0.04)) * (value.priceArea ? value.priceArea : 0)).toFixed(2)
+              this.total_price += ((long + width + 0.08) * (width + height + 0.04) * (value.number ? value.number : 0)) * (value.priceArea ? value.priceArea : 0)
+              price += ((long + width + 0.08) * (width + height + 0.04) * (value.number ? value.number : 0)) * (value.priceArea ? value.priceArea : 0)
             } else if (value.pay_type === 3) {
               let long = value.long ? value.long / 100 : 0
               let width = value.width ? value.width / 100 : 0

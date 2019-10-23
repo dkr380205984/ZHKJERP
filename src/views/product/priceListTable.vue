@@ -89,7 +89,7 @@
             <span class="tableRow">{{item.number ? item.number : '-'}}{{(item.unit && item.number ? item.unit : '')}}</span>
             <span class="tableRow">{{item.price ? item.price : '-'}}{{(item.unit&&item.price) ? unit + '/' + item.unit : ''}}</span>
             <span class="tableRow">{{item.sunhao ? item.sunhao + '%' : '-'}}</span>
-            <span class="tableRow">{{item.other ? item.other + item.name === '针织织造' ? '针' : '梭' : '-'}}</span>
+            <span class="tableRow">{{item.other ? item.other + (item.name === '针织织造' ? '针' : '梭') : '-'}}</span>
             <span class="tableRow">{{item.totalPrice ? item.totalPrice : 0}}{{unit}}</span>
           </li>
         </ul>
@@ -183,7 +183,7 @@ export default {
       this.price_code = data.quotation_code
       this.create_user = data.user_name
       this.client_name = data.client_name
-      this.total_price = data.total_price.toFixed(2)
+      this.total_price = Number(data.total_price).toFixed(2)
       this.linkMan = data.contact_name
       this.unit = data.account_unit
       this.exchange_rate = data.exchange_rate
