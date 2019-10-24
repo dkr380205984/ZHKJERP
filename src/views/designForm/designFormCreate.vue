@@ -2388,7 +2388,8 @@ export default {
               })
             })
           }),
-          GLFlag: this.GLFlag
+          GLFlag: this.GLFlag,
+          desc: this.remarkPM
         }
       }
       saveCraft(formData).then((res) => {

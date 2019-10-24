@@ -374,14 +374,36 @@ const deleteOrderMaterial = (params) => http.post(`${baseUrl}/material/order/del
 const deleteOrderProcess = (params) => http.post(`${baseUrl}/material/process/delete`, params, 'application/json')
 // 添加原料加工工序、半成品加工工序
 const settingCourse = (params) => http.post(`${baseUrl}/production/flow/save`, params, 'application/json')
-// 获取加工工序production/flow/list
+// 获取加工工序
 const courseList = (params) => http.get(`${baseUrl}/production/flow/list`, params)
-// 添加仓库factory/store/save
+// 添加仓库
 const addStock = (params) => http.post(`${baseUrl}/factory/store/save`, params, 'application/json')
-// 仓库列表factory/store/list
+// 仓库列表
 const stockList = (params) => http.get(`${baseUrl}/factory/store/list`, params)
+// 仓库详情
+const stockDetail = (params) => http.get(`${baseUrl}/factory/store/one`, params)
+// 仓库修改
+const stockUpdate = (params) => http.post(`${baseUrl}/factory/store/edit`, params, 'application/json')
+// 原料入库
 const stockMaterialAdd = (params) => http.post(`${baseUrl}/material/push`, params, 'application/json')
+// 物料库存日志
+const materialStockLog = (params) => http.get(`${baseUrl}/stock/material/detail`, params)
+// 物料库存列表
+const materialStock = (params) => http.get(`${baseUrl}/stock/material/list`, params)
+// 包装辅料入库
+const stockPack = (params) => http.post(`${baseUrl}/pack/material/stock/save`, params, 'application/json')
+// 包装辅料库存列表
+const packStockList = (params) => http.get(`${baseUrl}/pack/material/stock/list`, params)
+// 包装辅料库存日志
+const packStockLog = (params) => http.get(`${baseUrl}/pack/material/stock/log/list`, params)
 export {
+  stockDetail,
+  stockUpdate,
+  stockPack,
+  packStockList,
+  packStockLog,
+  materialStockLog,
+  materialStock,
   saveSelfYarn,
   stockList,
   addStock,

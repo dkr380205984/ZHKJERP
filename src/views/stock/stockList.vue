@@ -2,37 +2,56 @@
   <div id="packagMaterialList"
     v-loading="loading">
     <div class="head">
-      <h2>库存列表</h2>
+      <h2>仓库列表</h2>
       <el-input placeholder="输入库存名称精确搜索"
         suffix-icon="el-icon-search"
         v-model="searchVal"></el-input>
     </div>
     <div class="body">
-      <div class="addBtn"
-        @click="$router.push('/index/stockSetting')">添加仓库</div>
+      <div class="selectLine">
+        <span class="label">筛选条件:</span>
+        <div class="leftFilter">
+          <el-select v-model="typeVal"
+            multiple
+            placeholder="筛选仓库类型">
+            <el-option v-for="item in typeList"
+              :key="item.id"
+              :value="item.name">
+            </el-option>
+          </el-select>
+        </div>
+      </div>
       <div class="tableCtn"
         v-scroll="{fun:getStockList,pageSize:15}">
         <div class="tableRow titleTableRow">
           <div class="tableColumn">仓库名称</div>
           <div class="tableColumn">仓库类型</div>
-          <div class="tableColumn flex9">仓库地址</div>
-          <div class="tableColumn">仓库区域</div>
-          <!-- <div class="tableColumn flex9">属性</div> -->
+          <div class="tableColumn">仓库地址</div>
           <div class="tableColumn">备注</div>
-          <div class="tableColumn">更新时间</div>
           <div class="tableColumn">操作</div>
         </div>
         <div class="tableRow bodyTableRow"
           v-for="(item,key) in list"
           :key="key">
           <div class="tableColumn">{{item.name}}</div>
-          <div class="tableColumn">{{item.type ? stockTypeArr.find(items=>items.id === item.type).name : ''}}</div>
-          <div class="tableColumn flex9">{{item.address ? item.address : '无'}}</div>
-          <div class="tableColumn">{{item.area ? item.area : '无'}}</div>
-          <!-- <div class="tableColumn flex9"><template v-for="(val,ind) in item.attribute">{{((ind !== 0) ? '，' : '') + val.pack_attr}}</template></div> -->
-          <div class="tableColumn">{{item.desc ? item.desc : '暂无备注'}}</div>
-          <div class="tableColumn">{{item.updated_at}}</div>
-          <div class="tableColumn blue">打印</div>
+          <div class="tableColumn">
+            <span class="icons"
+              :style="{'background':JSON.parse(item.type).indexOf(1)!==-1?'#1a95ff':'#DDD'}">原</span>
+            <span class="icons"
+              :style="{'background':JSON.parse(item.type).indexOf(2)!==-1?'#1a95ff':'#DDD'}">辅</span>
+            <span class="icons"
+              :style="{'background':JSON.parse(item.type).indexOf(3)!==-1?'#1a95ff':'#DDD'}">包</span>
+            <span class="icons"
+              :style="{'background':JSON.parse(item.type).indexOf(4)!==-1?'#1a95ff':'#DDD'}">产</span>
+          </div>
+          <div class="tableColumn">{{item.address ? item.address : '暂无'}}</div>
+          <div class="tableColumn">{{item.desc ? item.desc : '暂无'}}</div>
+          <div class="tableColumn">
+            <span class="btns success"
+              @click="$router.push('/index/stockDetail/' + item.id)">详情</span>
+            <span class="btns warning"
+              @click="$router.push('/index/stockUpdate/' + item.id)">修改</span>
+          </div>
         </div>
       </div>
       <div class="pageCtn">
@@ -49,33 +68,18 @@
 </template>
 
 <script>
+import { stockType } from '@/assets/js/dictionary.js'
 import { stockList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      typeVal: [],
       loading: true,
       searchVal: '',
       pages: 1,
       total: 0,
-      list: [],
-      stockTypeArr: [
-        {
-          name: '本厂仓库',
-          id: 1
-        }, {
-          name: '染色仓库',
-          id: 2
-        }, {
-          name: '租赁仓库',
-          id: 3
-        }, {
-          name: '临时仓库',
-          id: 4
-        }, {
-          name: '外厂仓库',
-          id: 5
-        }
-      ]
+      typeList: stockType,
+      list: []
     }
   },
   methods: {
@@ -84,15 +88,19 @@ export default {
       stockList({
         company_id: window.sessionStorage.getItem('company_id'),
         limit: 15,
-        page: this.pages
+        page: this.pages,
+        type: this.typeVal
       }).then(res => {
-        this.list = res.data.data
-        // this.list.forEach(res => {
-        //   res.attribute = JSON.parse(res.attribute)
-        // })
-        this.total = res.data.data.length
+        this.list = res.data.data.data
+        this.total = res.data.data.total
         this.loading = false
       })
+    }
+  },
+  watch: {
+    typeVal () {
+      this.pages = 1
+      this.getStockList()
     }
   },
   created () {
@@ -150,6 +158,19 @@ export default {
       font-size: 12px;
       color: #ccc;
     }
+  }
+}
+.tableColumn {
+  .icons {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    margin: 0 4px;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 14px;
   }
 }
 </style>

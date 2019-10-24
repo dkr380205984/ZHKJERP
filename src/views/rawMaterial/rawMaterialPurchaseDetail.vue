@@ -314,7 +314,7 @@
 </template>
 
 <script>
-import { rawMaterialPurchaseDetail, clientList, rawMaterialPurchaseIn, notifySave } from '@/assets/js/api.js'
+import { rawMaterialPurchaseDetail, rawMaterialPurchaseIn, notifySave, stockList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -677,14 +677,10 @@ export default {
         return total + current.price * current.weight
       }, 0)
     })
-    clientList({
-      company_id: window.sessionStorage.getItem('company_id')
+    stockList({
+      type: [1]
     }).then((res) => {
-      this.companyArr = res.data.data.filter((item) => { return (item.type.find((finded) => finded === 3)) })
-      this.companyArr.unshift({
-        id: 0,
-        name: '本厂仓库'
-      })
+      this.companyArr = res.data.data
     })
   }
 }

@@ -83,6 +83,21 @@ const companyType = [
     name: '装饰辅料单位'
   }
 ]
+
+// 仓库类型
+const stockType = [{
+  name: '原料仓库',
+  id: 1
+}, {
+  name: '辅料仓库',
+  id: 2
+}, {
+  name: '包装辅料仓库',
+  id: 3
+}, {
+  name: '产品仓库',
+  id: 4
+}]
 // 字母映射
 const letterArr = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'Y', 'Z']
 // 货币
@@ -376,24 +391,34 @@ const menu = [{
   }]
 }, {
   name: '库存管理',
-  children: [{
-    name: '添加产品库存',
-    url: '/index/stockProductList'
-  }, {
-    name: '产品库存列表',
-    url: '/index/productStockList'
-  }, {
-    name: '添加原料库存',
-    url: '/index/mainMaterialStockCreate'
-  },
-  {
-    name: '添加辅料库存',
-    url: '/index/otherMaterialStockCreate'
-  },
-  {
-    name: '物料库存列表',
-    url: '/index/materialStockListNew'
-  }]
+  children: [
+    {
+      name: '添加仓库',
+      url: '/index/stockCreate'
+    }, {
+      name: '仓库列表',
+      url: '/index/stockList'
+    },
+    // {
+    //   name: '添加产品库存',
+    //   url: '/index/stockProductList'
+    // },
+    {
+      name: '产品库存列表',
+      url: '/index/productStockList'
+    },
+    //  {
+    //   name: '添加原料库存',
+    //   url: '/index/mainMaterialStockCreate'
+    // },
+    // {
+    //   name: '添加辅料库存',
+    //   url: '/index/otherMaterialStockCreate'
+    // },
+    {
+      name: '物料库存列表',
+      url: '/index/materialStockListNew'
+    }]
 }, {
   name: '财务管理',
   children: [{
@@ -627,4 +652,4 @@ const permissionsData = [
   }
 ]
 const allUrl = ['auth/login', 'auth/send_code', 'auth/register', 'auth/verify_phone', 'upload/token', 'product/flower/save', 'product/flower/one', 'product/flower/list', 'product/category/one', 'product/category/list', 'product/one', 'auth/password/forget', 'product/category/delete', 'product/flower/delete', 'product/color/save', 'product/color/one', 'product/ingredient/save', 'product/ingredient/one', 'product/ingredient/delete', 'product/ingredient/list', 'product/color/list', 'product/size/save', 'product/size/company/all', 'product/size/category/all', 'product/size/delete', 'product/footage/list', 'product/footage/delete', 'product/footage/one', 'product/size/one', 'product/footage/save', 'product/footage/category/all', 'production/process/save', 'production/type/save', 'production/method/save', 'production/side/save', 'product/save', 'production/edit/list', 'permission/one', 'permission/company/all', 'yarn/color/save', 'product/unit/save', 'product/unit/all', 'product/unit/one', 'product/unit/category/one', 'user/save', 'user/check_status', 'user/group/save', 'user/station/save', 'user/list', 'user/station/list', 'user/group/list', 'product/craft/one', 'craft/product/one', 'product/material/save', 'product/material/list', 'product/material/one', 'client/delete', 'client/one', 'client/contacts/delete', 'client/contacts/check', 'client/list', 'order/sample/list', 'order/sample/save', 'product/craft/save', 'product/stock/one', 'product/stock/list', 'product/stock/order', 'production/save', 'production/list', 'production/one', 'client/save', 'order/list', 'order/batch/list', 'product/list', 'product/delete', 'product/craft/list', 'product/plan/list', 'product/plan/order', 'product/plan/product/one', 'product/plan/one', 'upload/put', 'product/plan/save', 'product/stock/detail', 'product/unit/delete', 'product/material/delete', 'order/delete', 'production/side/delete', 'production/method/delete', 'auth/logout', 'auth/check/login', 'user/station/delete', 'user/group/delete', 'yarn/list', 'pan/color/list', 'yarn/color/list', 'yarn/category/save', 'yarn/category/list', 'material/order/init', 'material/process/list', 'material/order/list', 'product/craft/draft/delete', 'material/stock/list', 'material/reserve/save', 'order/material/push/detail', 'order/material/pop/detail', 'production/weave/save', 'production/semi_product/save', 'product/plan/order/detail', 'material/process/save', 'production/semi_product/list', 'production/weave/list', 'product/order/push', 'product/order/pop', 'product/order/push/list', 'product/order/pop/list', 'production/weave/edit', 'production/semi_product/edit', 'product/inspection/list', 'product/semi/inspection/list', 'product/order/push/edit', 'product/order/pop/edit', 'product/inspection', 'yarn/save', 'yarn/edit', 'product/category/save', 'product/semi/inspection', 'pack/order/list', 'production/order/cilent/list', 'production/yarn/replenish/save', 'production/yarn/replenish/list', 'material/order/save', 'pack/material/one', 'pack/material/save', 'pack/material/list', 'pack/order/save', 'pack/info/list', 'stock/out/save', 'stock/out/list', 'pack/info/save', 'pack/real/save', 'pack/real/list', 'material/reserve/list', 'material/reserve/one', 'material/reserve/push', 'order/material/pop', 'order/one', 'order/detail', 'order/material/push', 'order/material/surplus/push', 'order/material/list', 'order/material/surplus/delete', 'material/stock/detail', 'stock/material/detail', 'order/save', 'permission/save', 'permission/group/save', 'permission/group/one', 'permission/group/all', 'product/stock/save', 'order/status/check']
-export { menu, letterArr, companyType, companyTypes, moneyArr, machiningType, defectiveType, countries, permissionsData, allUrl }
+export { menu, letterArr, companyType, companyTypes, moneyArr, machiningType, defectiveType, countries, permissionsData, allUrl, stockType }

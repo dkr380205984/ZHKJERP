@@ -488,6 +488,16 @@
             </div>
           </div>
         </div>
+        <div class="appendInfo">
+          <div class="row">
+            <div class="box box1">
+              <div class="label">穿综说明：</div>
+              <div class="content">
+                {{remarkPM}}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="stepCtn">
         <div class="stepTitle">图像</div>
@@ -508,6 +518,12 @@
             <div class="box box1">
               <div class="label">产品净重：</div>
               <div class="content">{{weight.toFixed(1)}}g</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="box box1">
+              <div class="label">备注信息：</div>
+              <div class="content">{{desc?desc:'暂无'}}</div>
             </div>
           </div>
         </div>
@@ -898,7 +914,8 @@ export default {
         weft: []
       },
       weight: 0,
-      coefficient: []
+      coefficient: [],
+      desc: ''
     }
   },
   methods: {
@@ -1138,6 +1155,7 @@ export default {
       this.material.materialWarp = this.warpInfo.assist_material
       this.material.materialWeft = this.weftInfo.assist_material
       this.coefficient = data.yarn_coefficient
+      this.desc = data.desc
       this.$refs.warp.hotInstance.loadData(JSON.parse(this.warpInfo.warp_rank).map((item, index) => {
         return index !== 1 ? item : item.map((itemJia) => { return this.filterMethods(itemJia) })
       }))
@@ -1158,6 +1176,7 @@ export default {
       this.GLFlag = data.draft_method.GLFlag
       this.PM = data.draft_method.PM
       this.PMFlag = data.draft_method.PMFlag
+      this.remarkPM = data.draft_method.desc
       // 计算克重信息
       let arrWarp = JSON.parse(this.warpInfo.warp_rank).slice(1, 5)
       this.tableData.warp.mergeCells.forEach((item) => {
