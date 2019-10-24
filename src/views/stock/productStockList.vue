@@ -89,25 +89,25 @@
           <div class="tableColumn">操作</div>
         </div>
         <div class="tableRow bodyTableRow"
-          v-for="(item,key) in list[pages-1]"
+          v-for="(item,key) in list"
           :key="key">
           <div class="tableColumn"
             style="color:#1A95FF">{{item.product_code}}</div>
           <div class="tableColumn flex9">{{item|filterType}}</div>
-          <div class="tableColumn">{{item.flower_name ? item.flower_name : '暂无花型'}}</div>
+          <div class="tableColumn">{{item.category_info.flower_name ? item.category_info.flower_name : '暂无花型'}}</div>
           <div class="tableColumn">{{item.size }}</div>
           <div class="tableColumn">{{item.color}}</div>
-          <div class="tableColumn">{{item.stock_number}}</div>
+          <div class="tableColumn">{{item.total_number}}</div>
           <div class="tableColumn">
             <div class="tableColumn">
               <div class="imgCtn">
                 <img class="img"
-                  :src="item.images.length>0?item.images[0].thumb:require('@/assets/image/index/noPic.jpg')"
+                  :src="item.category_info.images.length>0?item.category_info.images[0].thumb:require('@/assets/image/index/noPic.jpg')"
                   :onerror="defaultImg" />
                 <div class="toolTips"
-                  v-if="item.images.length>0"><span @click="showImg(item.images)">点击查看大图</span></div>
+                  v-if="item.category_info.images.length>0"><span @click="showImg(item.category_info.images)">点击查看大图</span></div>
                 <div class="toolTips"
-                  v-if="item.images.length===0"><span>没有预览图</span></div>
+                  v-if="item.category_info.images.length===0"><span>没有预览图</span></div>
               </div>
             </div>
           </div>
@@ -120,10 +120,11 @@
       </div>
       <div class="pageCtn">
         <el-pagination background
-          :page-size="1"
+          :page-size="15"
           layout="prev, pager, next"
           :total="total"
-          :current-page.sync="pages">
+          :current-page.sync="pages"
+          @current-change="getProductList">
         </el-pagination>
       </div>
       <div class="shade"
@@ -212,39 +213,20 @@ export default {
         'flower_id': this.flowerVal,
         'start_time': this.start_time,
         'end_time': this.end_time,
-        'product_code': this.searchVal
+        'product_code': this.searchVal,
+        'limit': 15,
+        'page': this.pages
       }).then((res) => {
         console.log(res)
-        let list = []
-        for (let prop in res.data.data) {
-          let item = res.data.data[prop].data
-          if (list.length === 15) {
-            this.list.push(list)
-            list = []
-          }
-          list.push({
-            product_code: prop,
-            color: this.arrNoRepeat(item.map(value => {
-              return value.color
-            })).join('/'),
-            size: this.arrNoRepeat(item.map(value => {
-              return value.size
-            })).join('/'),
-            stock_number: item.map(value => {
-              return Number(value.total_stock)
-            }).reduce((total, item) => {
-              return total + item
-            }),
-            update_time: item.map(value => {
-              return value.updated_at
-            }).sort((val1, val2) => {
-              return (new Date(val1).getTime() > new Date(val2).getTime())
-            })[0],
-            ...res.data.data[prop].product_info
+        if (res.data.status !== false) {
+          this.list = res.data.data
+          this.total = res.data.meta.total
+        } else {
+          this.$message({
+            message: res.data.message,
+            type: 'error'
           })
         }
-        this.list.push(list)
-        this.total = this.list.length
         this.loading = false
       })
     },
@@ -357,13 +339,7 @@ export default {
   filters: {
     // 类型合并
     filterType (item) {
-      if (!item.type_name) {
-        return item.category_name
-      } else if (!item.style_name) {
-        return item.category_name + '/' + item.type_name
-      } else {
-        return item.category_name + '/' + item.type_name + '/' + item.style_name
-      }
+      return item.category_info.category_name + '/' + item.category_info.type_name + '/' + item.category_info.style_name
     },
     // 类型展示
     filterSize (item) {
