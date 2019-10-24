@@ -1,0 +1,196 @@
+@import './common.less';
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+p {
+  margin: 0;
+}
+#productPlanTable {
+  width: 982px;
+  height: auto;
+  margin: 80px 0 30px 50px;
+  font-family: 'systemfont';
+  font-size: @fontBig;
+  color: @fontNormal;
+  .head{
+    page-break-before: always;
+    height: 160px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-bottom: 8px;
+    .left{
+      display: flex;
+      flex-direction: column;
+      p.company {
+        font-size: 24px;
+        // margin-bottom: 16px;
+      }
+      &>span{
+        margin-top: 16px;
+        &>.label{
+          display: inline-block;
+          width:7em;
+        }
+      }
+    }
+    .right{
+      position: relative;
+      width: 120px;
+      height: 120px;
+      border: 1px solid #999;
+      &>img{
+        max-width: 100%;
+        max-height: 100%;
+      }
+      .messages{
+        position: absolute;
+        bottom: 0;
+        left: -10px;
+        transform: translateX(-100%);
+        width: auto;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        &>span{
+          white-space: nowrap;
+        }
+      }
+    }
+  }
+  .tableBox {
+    position: relative;
+    border: 1px solid #999;
+    box-sizing: border-box;
+    height: auto;
+    min-height: 1300px;
+    padding-bottom: 60px;
+    .pro-info {
+      border-right: 1px solid transparent;
+      border-left: 1px solid transparent;
+      border-top: 1px solid #999;
+      border-bottom: 1px solid #999;
+      box-sizing: border-box;
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      &>span {
+        height: 60px;
+        width: 100%;
+        display: flex;
+        border-bottom: 1px solid #999;
+        box-sizing: border-box;
+        &>span {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-right: 1px solid #999;
+          box-sizing: border-box;
+          font-size: @fontBig;
+          &:nth-child(2n+1) {
+            font-size: 18px
+          }
+          &:first-child {
+            width:170px;
+          }
+          &:nth-child(2n) {
+            justify-content: flex-start;
+            padding-left: 20px;
+            flex: 1.2;
+          }
+          &:nth-child(3) {
+            width: 140px;
+          }
+          &:last-child {
+            flex: 1;
+            border-right: none;
+          }
+        }
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+      &:first-child {
+        border-top: none;
+        margin-top: 0;
+      }
+    }
+    .size-info {
+      display: flex;
+      flex-direction: column;
+      page-break-before: auto;
+      .head{
+        display: flex;
+        height: 40px;
+        font-size: 18px;
+        background: #F5F5F5;
+        border-bottom: 1px solid #999;
+        justify-content: space-between;
+        .color{
+          width: 170px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        .weightBox{
+          margin-right: 24px;
+          .weight{
+            margin-left: 40px;
+          }
+        }
+      }
+      .content{
+        height: auto;
+        .content-item{
+          height: auto;
+          display: flex;
+          align-items: center;
+          border-bottom: 1px solid #999;
+          .material{
+            height: 100%;
+            width: 170px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+          .material-info{
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            &>.onLine{
+              width: 100%;
+              display: flex;
+              border-bottom: 1px solid #999;
+              &:last-of-type{                
+                border-bottom: none;
+              }
+              &>span{
+                flex: 1;
+                border-left: 1px solid #999;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                min-height: 60px;
+              }
+            }
+          }
+        }
+      }
+    }
+    &>.remark {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      line-height: 60px;
+      padding-left: 20px;
+      height: 60px;
+      width: 100%;
+      border-top: 1px solid #999;
+      box-sizing: border-box;
+    }
+  }
+}

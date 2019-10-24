@@ -406,7 +406,6 @@ export default {
       return str.substring(0, str.length - 2)
     },
     filterReject (item) {
-      console.log(item)
       if (!item) {
         return 0
       }

@@ -3,14 +3,14 @@
 const companyTypes = [
   {
     label: '订单客户',
-    disabled: true,
+    value: 11,
     children: [{
       value: 1,
       label: '订单公司'
     }]
   }, {
     label: '供应商',
-    disabled: true,
+    value: 12,
     children: [{
       value: 2,
       label: '原料纱线单位'
@@ -23,29 +23,29 @@ const companyTypes = [
     }]
   }, {
     label: '生产商',
-    disabled: true,
+    value: 13,
     children: [{
-      value: 4,
-      label: '生产织造单位'
-    }, {
       value: 5,
       label: '半成品加工单位'
     }, {
       value: 3,
       label: '物料加工单位'
+    }, {
+      value: 4,
+      label: '生产织造单位-针织'
+    }, {
+      value: 9,
+      label: '生产织造单位-梭织'
     }]
   }, {
     label: '其他',
-    disabled: true,
+    value: 14,
     children: [{
       value: 8,
       label: '运输单位'
     }, {
       value: 6,
       label: '检验单位'
-    }, {
-      value: 9,
-      label: '存储单位'
     }]
   }
 ]
@@ -346,9 +346,9 @@ const menu = [{
   }, {
     name: '物料出库入库',
     url: '/index/rawMaterialStockList'
-  }, {
-    name: '物料价格设置',
-    url: '/index/materialPriceList'
+    // }, {
+    //   name: '物料价格设置',
+    //   url: '/index/materialPriceList'
   }]
 }, {
   name: '织造加工管理',

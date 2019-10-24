@@ -5,12 +5,22 @@
     </div>
     <div class="body">
       <div class="inputCtn">
+        <span class="label must">客户类型:</span>
+        <div style="display:flex;align-items:center;margin-left:15px;">
+          <el-radio v-model="statusType"
+            label="1">个体户</el-radio>
+          <el-radio v-model="statusType"
+            label="2">公司</el-radio>
+        </div>
+      </div>
+      <div class="inputCtn">
         <span class="label must">客户名称:</span>
         <el-input class="elInput"
           placeholder="请输入客户名称"
           v-model="name"></el-input>
       </div>
-      <div class="inputCtn">
+      <div class="inputCtn"
+        v-if="statusType !== '1'">
         <span class="label">客户简称:</span>
         <el-input class="elInput"
           placeholder="请输入客户简称"
@@ -27,8 +37,15 @@
             :value="item.value"
             :label="item.name"></el-option>
         </el-select>
+        <!-- <el-cascader :options="companyType"
+          v-model="type"
+          class="elInput"
+          :show-all-levels='false'
+          :props="{ multiple: true, expandTrigger: 'hover'  }"
+          clearable></el-cascader> -->
       </div>
-      <div class="inputCtn">
+      <div class="inputCtn"
+        v-if="statusType !== '1'">
         <span class="label must">人员管理:</span>
         <div class="specialTable">
           <div class="tableHead">
@@ -65,7 +82,8 @@
           </div>
         </div>
       </div>
-      <div class="inputCtn">
+      <div class="inputCtn"
+        v-if="statusType !== '1'">
         <span class="label must">合作状态:</span>
         <div style="display:flex;align-items:center;margin-left:15px;">
           <el-radio v-model="status"
@@ -75,12 +93,13 @@
         </div>
       </div>
       <div class="inputCtn">
-        <span class="label">联系电话:</span>
+        <span :class="{label:true,must:statusType === '1'}">联系电话:</span>
         <el-input class="elInput"
           placeholder="请输入联系电话"
           v-model="phone"></el-input>
       </div>
-      <div class="inputCtn">
+      <div class="inputCtn"
+        v-if="statusType !== '1'">
         <span class="label">公司地址:</span>
         <el-input class="elInput"
           placeholder="请输入公司地址"
@@ -113,6 +132,7 @@ export default {
       contactsPhone: '',
       companyType: companyType,
       type: [],
+      statusType: '2',
       lock: true
     }
   },
@@ -138,25 +158,31 @@ export default {
     },
     saveAll () {
       if (this.lock) {
-        this.lock = false
         if (!this.name) {
           this.$message.error({
             message: '请填写公司名称'
           })
           return
         }
-        if (!this.type) {
+        if (this.type.length === 0) {
           this.$message.error({
             message: '请选择公司公司类型'
           })
           return
         }
-        if (this.contacts.length < 1) {
+        if (this.statusType === '2' && this.contacts.length < 1) {
           this.$message.error({
             message: '合作公司至少有一个联系人'
           })
           return
         }
+        if (this.statusType === '1' && !this.phone) {
+          this.$message.error({
+            message: '请输入联系电话'
+          })
+          return
+        }
+        this.lock = false
         clientAdd({
           id: '',
           company_id: window.sessionStorage.getItem('company_id'),

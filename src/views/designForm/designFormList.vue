@@ -212,7 +212,6 @@ export default {
         this.first = false
       }).catch((error) => {
         // do nothing
-        console.log(error)
       })
     },
     showImg (imgList) {

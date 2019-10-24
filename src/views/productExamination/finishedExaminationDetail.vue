@@ -62,7 +62,7 @@
                     v-for="(item,key) in productList"
                     :key="key">
                     <span class="tableRow blue"
-                      @click="$router.push('/index/productDetail/' + item.product_code)">{{item.product_code}}</span>
+                      @click="$router.push('/index/productDetail/' + item.product_id)">{{item.product_code}}</span>
                     <span class="tableRow flex17">{{item.type}}</span>
                     <span class="tableRow col flex45">
                       <span v-for="(val,ind) in item.size_info"
@@ -131,7 +131,7 @@
                     style="line-height:1.5em;">
                     <div>
                       <span class="blue"
-                        @click="$router.push('/index/productDetail/' + item.product_code)">{{item.product_code}}</span>
+                        @click="$router.push('/index/productDetail/' + item.product_id)">{{item.product_code}}</span>
                       <span>{{item.type}}</span>
                     </div>
                   </span>
@@ -512,6 +512,7 @@ export default {
             if (!flag) {
               let type = valPro.category_info.category_name + '/' + valPro.category_info.type_name + '/' + valPro.category_info.style_name + (valPro.category_info.flower_name ? '/' + valPro.category_info.flower_name : '')
               this.productList.push({
+                product_id: valPro.product_id,
                 product_code: valPro.product_code,
                 type: type,
                 flag: false,

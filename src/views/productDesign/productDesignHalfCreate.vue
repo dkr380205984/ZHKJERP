@@ -68,7 +68,7 @@
                   :key="index"
                   class="material_info">
                   <span style="color:#1A95FF"
-                    @click="open(item.product_code)">{{item.product_code}}</span>
+                    @click="open(item.product_id)">{{item.product_code}}</span>
                   <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
                   <span style="flex:8;"
                     class="col">
@@ -192,8 +192,7 @@
                   </span>
                 </li>
                 <li class="material_info">
-                  <span style="color:#1A95FF"
-                    @click="open(item.product_code)">{{item.product_code}}</span>
+                  <span style="color:#1A95FF">{{item.product_code}}</span>
                   <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
                   <span class="col"
                     style="flex:7;">
@@ -490,6 +489,7 @@ export default {
         })
         if (!finded) {
           this.productList.push({
+            product_id: item.product_id,
             product_code: item.product_code,
             category_name: item.category_name,
             type_name: item.type_name,

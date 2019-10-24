@@ -47,6 +47,9 @@
                 <div class="once">{{item.phone}}</div>
                 <div class="once">{{item.status===1?'在职':'离职'}}</div>
               </div>
+              <div class="line"
+                v-if="companyInfo.contacts.length === 0"
+                style="justify-content:center;color:#CCC">暂无人员信息</div>
             </div>
           </div>
         </div>

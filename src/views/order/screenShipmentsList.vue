@@ -141,15 +141,11 @@ export default {
   methods: {
     // 判断是否为今日
     isToday (time) {
-      console.log(time)
       if ((new Date().getTime() - new Date(time).getTime()) / 1000 / 60 / 60 / 24 > 0 && (new Date().getTime() - new Date(time).getTime()) / 1000 / 60 / 60 / 24 < 1) {
-        console.log('今天')
         return '#1A94FF'
       } else if (new Date().getTime() > new Date(time).getTime()) {
-        console.log('逾期')
         return '#E6A23C'
       } else if (new Date().getTime() < new Date(time).getTime()) {
-        console.log('未来')
         return false
       }
     },

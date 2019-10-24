@@ -1105,7 +1105,6 @@ export default {
     }
   },
   mounted () {
-    console.log(this.$route)
     this.type = this.$route.params.type
     Promise.all([
       rawMaterialOrderInit({
@@ -1460,7 +1459,6 @@ export default {
         item.stockFlag = false
       })
       this.surplus = surplus
-      console.log(this.bushaList)
       this.loading = false
     })
   }

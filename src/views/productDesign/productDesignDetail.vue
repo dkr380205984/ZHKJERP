@@ -119,9 +119,9 @@
                 v-for="(item,index) in product"
                 :style="{height:(index!==product.length-1)?(61*item.num)+'px':(61*item.num)-1+'px'}"
                 :key="item.product_code">
-                <span @click="$router.push('/index/productDetail/'+item.id)"
+                <span @click="$router.push('/index/productDetail/'+item.product_id)"
                   style="color:#1A95FF;cursor:pointer">{{item.product_code}}</span>
-                <span @click="$router.push('/index/productDetail/'+item.id)"
+                <span @click="$router.push('/index/productDetail/'+item.product_id)"
                   style="color:#1A95FF;cursor:pointer">{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
               </div>
             </div>
@@ -527,7 +527,6 @@ export default {
       })
       // 统计产品计划物料
       let productionNumber = []
-      console.log(this.productInfo)
       this.productInfo.forEach(item => {
         let flag = productionNumber.find(key => key.product_code === item.product_code)
         if (!flag) {
@@ -575,7 +574,6 @@ export default {
           }
         }
       })
-      console.log(productionNumber)
       productionNumber.forEach(value => {
         value.sizeColor.forEach(val => {
           if (productPlan[value.product_code]) {

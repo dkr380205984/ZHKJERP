@@ -103,6 +103,8 @@
               @click="$router.push('/index/productPlanUpdate/'+item.id)">修改</span>
             <span class="btns success"
               @click="$router.push('/index/productPlanDetail/'+item.id)">查看</span>
+            <span class="btns copy"
+              @click="$router.push('/productPlanTable/'+item.id)">打印</span>
           </div>
         </div>
       </div>

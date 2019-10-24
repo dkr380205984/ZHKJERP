@@ -42,9 +42,9 @@ let router = new Router({
     name: 'productStatisticsTable',
     component: () => import('./views/productDesign/productStatisticsTable.vue')
   }, {
-    path: '/productDesignTable/:orderId/:productId',
-    name: 'productDesignTable',
-    component: () => import('./views/productDesign/productDesignTable.vue')
+    path: '/productPlanTable/:productId',
+    name: 'productPlanTable',
+    component: () => import('./views/productPlan/productPlanTable.vue')
   }, {
     path: '/login',
     name: 'login',

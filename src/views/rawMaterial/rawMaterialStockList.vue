@@ -13,6 +13,9 @@
         <div class="filterLine">
           <span class="label">筛选列表:</span>
           <el-tag closable
+            v-show="orderTypeCmp"
+            @close="clear('orderTypeVal')">{{orderTypeCmp}}</el-tag>
+          <el-tag closable
             v-show="categoryCmp"
             @close="clear('category')">{{categoryCmp}}</el-tag>
           <el-tag closable
@@ -31,6 +34,14 @@
         <div class="selectLine">
           <span class="label">筛选条件:</span>
           <div class="leftFilter">
+            <el-select v-model="orderTypeVal"
+              placeholder="筛选订单类型">
+              <el-option v-for="item in orderType"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
             <el-select v-model="categoryVal"
               placeholder="筛选品类">
               <el-option v-for="item in category"
@@ -239,6 +250,12 @@ export default {
       styleVal: '',
       group: [], // 小组
       groupVal: '',
+      orderType: [
+        // { name: '所有订单', id: null },
+        { name: '产品订单', id: 1 },
+        { name: '样品订单', id: 2 }
+      ],
+      orderTypeVal: '',
       timer: '',
       start_time: '',
       end_time: '',
@@ -259,7 +276,8 @@ export default {
         'group_id': this.groupVal,
         'order_code': this.searchVal,
         'start_time': this.start_time,
-        'end_time': this.end_time
+        'end_time': this.end_time,
+        'type': this.orderTypeVal
       }).then((res) => {
         this.total = res.data.meta.total
         this.list = res.data.data.map((item) => {
@@ -341,6 +359,8 @@ export default {
         this.styleVal = ''
       } else if (item === 'groupVal') {
         this.groupVal = ''
+      } else if (item === 'orderTypeVal') {
+        this.orderTypeVal = ''
       }
     },
     showImg (imgList) {
@@ -349,6 +369,10 @@ export default {
     }
   },
   watch: {
+    orderTypeVal (newVal) {
+      this.pages = 1
+      this.getOrderList()
+    },
     categoryVal (newVal) {
       if (this.first) {
         const finded = this.category.find((item) => item.id === newVal)
@@ -411,6 +435,13 @@ export default {
     }
   },
   computed: {
+    orderTypeCmp () {
+      if (this.orderTypeVal) {
+        return this.orderType.find((item) => item.id === this.orderTypeVal).name
+      } else {
+        return '所有分类'
+      }
+    },
     clientValCmp () {
       if (this.clientVal) {
         return this.client.find((item) => item.id === this.clientVal).name
@@ -422,7 +453,7 @@ export default {
       if (this.categoryVal) {
         return this.category.find((item) => item.id === this.categoryVal).name
       } else {
-        return '所有分类'
+        return ''
       }
     },
     typesValCmp () {

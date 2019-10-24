@@ -425,7 +425,6 @@ export default {
       this.material_info = detail.material_info
       this.material_info.forEach((item) => {
         let finded = res[3].data.data.data_stock.find((itemFind) => itemFind.material_name === item.material_name && itemFind.color_code === item.color_code)
-        console.log(finded)
         if (finded) {
           item.disabled = true
         } else {

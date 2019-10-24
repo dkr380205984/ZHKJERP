@@ -62,7 +62,7 @@
                 <li v-if="productList.length === 0">暂无信息</li>
                 <li class="content">
                   <span class="tableRow blue"
-                    @click="$router.push('/index/productDetail/' + productList.product_code)">{{productList.product_code}}</span>
+                    @click="$router.push('/index/productDetail/' + productList.product_id)">{{productList.product_code}}</span>
                   <span class="flex2 tableRow">{{productList.product_class}}</span>
                   <span class="tableRow flex4 col">
                     <span v-for="(value,index) in productList.size_info"
@@ -107,7 +107,7 @@
                 </li>
                 <li class="content">
                   <span class="tableRow blue"
-                    @click="$router.push('/index/productDetail/' + list.product_code)">{{list.product_code}}</span>
+                    @click="$router.push('/index/productDetail/' + list.product_id)">{{list.product_code}}</span>
                   <span class="tableRow flex12">{{list.product_class}}</span>
                   <span class="tableRow col flex3">
                     <span v-for="(item,key) in list.size_info"
@@ -515,6 +515,7 @@ export default {
       // 匹配产品织造信息
       weaveInfo.forEach(item => {
         if (this.$route.params.product_code === item.product_info.product_code) {
+          this.productList.product_id = item.product_info.product_id
           this.productList.product_code = item.product_info.product_code
           this.productList.product_class = item.product_info.category_name + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_name ? '/' + item.product_info.flower_name : '')
           if (!this.productList.size_info) {
@@ -562,6 +563,7 @@ export default {
           }
         }
       })
+      this.list.product_id = this.productList.product_id
       this.list.product_code = this.productList.product_code
       this.list.product_class = this.productList.product_class
       this.productList.size_info.forEach(value => {

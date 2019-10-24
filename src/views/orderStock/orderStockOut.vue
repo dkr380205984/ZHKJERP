@@ -63,7 +63,8 @@
                   </span>
                 </li>
                 <li class="material_info">
-                  <span style="color:#1A95FF">{{productList[0]?productList[0].product_code:''}}</span>
+                  <span style="color:#1A95FF"
+                    @click="$router.push('/index/productDetail/' + productList[0].product_id)">{{productList[0]?productList[0].product_code:''}}</span>
                   <span>{{productList[0]?productList[0].category_name:''}}/{{productList[0]?productList[0].type_name:''}}/{{productList[0]?productList[0].style_name:''}}</span>
                   <span style="flex:6;"
                     class="col">

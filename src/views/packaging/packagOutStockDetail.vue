@@ -78,7 +78,7 @@
                           <div>
                             <span>{{val.product_type}}</span>
                             <span class="blue"
-                              @click="$router.push('/index/productDetail/' + val.product_code)">{{val.product_code}}</span>
+                              @click="$router.push('/index/productDetail/' + val.product_id)">{{val.product_code}}</span>
                           </div>
                         </span>
                         <span class="tableRow col">
@@ -914,6 +914,7 @@ export default {
                 packagInfoList: [],
                 outStockInfoList: [],
                 product_info: [{
+                  product_id: valPro.product_id,
                   product_code: valPro.product_code,
                   product_type: valPro.category_info.category_name + '/' + valPro.category_info.type_name + '/' + valPro.category_info.style_name + (valPro.category_info.flower_name ? '/' + valPro.category_info.flower_name : ''),
                   size_info: [{

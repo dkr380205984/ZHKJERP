@@ -39,7 +39,7 @@
               <ul class="productInfo">
                 <li v-for="(item,key) in productList"
                   :key="key">
-                  <span @click="$router.push('/index/productDetail/' + item.product_code)">{{item.product_code}}({{item.type}})</span>
+                  <span @click="$router.push('/index/productDetail/' + item.product_id)">{{item.product_code}}({{item.type}})</span>
                   <span>{{item.product_size+'/'+item.product_color}}</span>
                   <span>{{item.number+'条'}}</span>
                   <span v-if="item.state===0"

@@ -57,7 +57,7 @@
                   v-for="(item,index) in product"
                   :key="index">
                   <span style="color:#1A95FF"
-                    @click="$router.push('/index/productDetail/'+item.product_code)">{{item.product_code}}</span>
+                    @click="$router.push('/index/productDetail/'+item.product_id)">{{item.product_code}}</span>
                   <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
                   <span class="col"
                     style="flex:4">
@@ -527,6 +527,7 @@ export default {
             state = 0
           }
           this.product.push({
+            product_id: item.product_id,
             product_code: item.product_code,
             category_name: item.category_name,
             type_name: item.type_name,
@@ -563,6 +564,7 @@ export default {
                 state = 2
               }
               return {
+                product_id: itemPro.product_id,
                 product_code: itemPro.product_code,
                 category_name: itemPro.category_name,
                 type_name: itemPro.type_name,

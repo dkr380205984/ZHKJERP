@@ -326,9 +326,13 @@
                   <el-input placeholder="单价"
                     class="textInp marginLeft16"
                     v-model="item.price"
-                    @input="computedPrice(item,true)">
+                    @input="computedPrice(item,true)"
+                    @focus="item.isReferencePrice = false">
                     <div slot="append"
                       class='unit'>元/kg</div>
+                    <div class="isReferencePrice"
+                      slot="append"
+                      v-if="item.isReferencePrice">该单价仅作参考</div>
                   </el-input>
                   <el-input placeholder="损耗"
                     class="textInp marginLeft16"
@@ -902,9 +906,9 @@ export default {
         })
       }
       let materialPriceInfo = this.materialPriceList.find(items => items.name === newVal.key)
-      console.log(materialPriceInfo)
       if (materialPriceInfo) {
         newVal.price = materialPriceInfo.price
+        newVal.isReferencePrice = true
       }
     },
     afterSave (data) {

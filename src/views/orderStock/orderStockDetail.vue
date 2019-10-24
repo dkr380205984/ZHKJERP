@@ -57,7 +57,8 @@
                 <li class="material_info"
                   v-for="(item,index) in productInfo"
                   :key="index">
-                  <span style="color:#1A94FF">{{item.product_code}}</span>
+                  <span style="color:#1A94FF"
+                    @click="$router.push('/index/productDetail/' + item.product_id)">{{item.product_code}}</span>
                   <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
                   <span class="col"
                     style="flex:4">
@@ -480,6 +481,7 @@ export default {
         })
         if (!finded) {
           this.productInfo.push({
+            product_id: item.product_id,
             product_code: item.product_code,
             category_name: item.category_name,
             type_name: item.type_name,

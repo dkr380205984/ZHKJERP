@@ -17,7 +17,7 @@
           v-model="abbreviation"></el-input>
       </div>
       <div class="inputCtn">
-        <span class="label">公司类型:</span>
+        <span class="label must">公司类型:</span>
         <el-select class="elInput"
           placeholder="请选择公司类型"
           v-model="type"
@@ -29,7 +29,7 @@
         </el-select>
       </div>
       <div class="inputCtn">
-        <span class="label must">人员管理:</span>
+        <span class="label">人员管理:</span>
         <div class="specialTable">
           <div class="tableHead">
             <div class="once">姓名</div>
@@ -81,7 +81,7 @@
           v-model="phone"></el-input>
       </div>
       <div class="inputCtn">
-        <span class="label must">公司地址:</span>
+        <span class="label">公司地址:</span>
         <el-input class="elInput"
           placeholder="请输入公司地址"
           v-model="address"></el-input>
@@ -168,9 +168,9 @@ export default {
         })
         return
       }
-      if (this.contacts.length < 1) {
+      if (!this.phone) {
         this.$message.error({
-          message: '合作公司至少有一个联系人'
+          message: '请输入联系电话'
         })
         return
       }

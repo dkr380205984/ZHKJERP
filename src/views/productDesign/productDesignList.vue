@@ -361,7 +361,6 @@ export default {
             lineNum: productList.length
           }
         })
-        console.log(this.list)
         this.first = false
       })
     },
