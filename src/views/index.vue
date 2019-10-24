@@ -556,6 +556,26 @@ export default {
           children1: '系统设置',
           children2: '加工工序设置',
           children3: ''
+        },
+        stockCreate: {
+          children1: '添加仓库',
+          children2: '',
+          children3: ''
+        },
+        stockList: {
+          children1: '仓库列表',
+          children2: '',
+          children3: ''
+        },
+        stockDetail: {
+          children1: '仓库列表',
+          children2: '仓库管理',
+          children3: ''
+        },
+        stockUpdate: {
+          children1: '仓库列表',
+          children2: '修改仓库',
+          children3: ''
         }
       }// 面包屑路由表
 

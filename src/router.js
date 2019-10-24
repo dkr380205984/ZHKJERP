@@ -492,11 +492,7 @@ let router = new Router({
     }, {
       path: 'stockList',
       name: 'stockList',
-      component: () => import('./views/setting/stockList.vue')
-    }, {
-      path: 'stockSetting',
-      name: 'stockSetting',
-      component: () => import('./views/setting/stockSetting.vue')
+      component: () => import('./views/stock/stockList.vue')
     }, {
       //   path: 'sampleAdd',
       //   name: 'sampleAdd',
@@ -557,6 +553,18 @@ let router = new Router({
       path: 'materialPriceList',
       name: 'materialPriceList',
       component: () => import('./views/rawMaterial/materialPriceList.vue')
+    }, {
+      path: 'stockCreate',
+      name: 'stockCreate',
+      component: () => import('./views/stock/stockCreate.vue')
+    }, {
+      path: 'stockDetail/:id',
+      name: 'stockDetail',
+      component: () => import('./views/stock/stockDetail.vue')
+    }, {
+      path: 'stockUpdate/:id',
+      name: 'stockUpdate',
+      component: () => import('./views/stock/stockUpdate.vue')
     }]
   }
   ]

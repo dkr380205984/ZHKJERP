@@ -1418,7 +1418,7 @@ export default {
             }
             if (row === 5) {
               cellProperties.type = 'dropdown'
-              cellProperties.source = this.PMArr
+              cellProperties.source = this.GLArr
             }
             cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties) {
               // 清空节点并重新渲染
@@ -1533,7 +1533,7 @@ export default {
             }
             if (row === 5) {
               cellProperties.type = 'dropdown'
-              cellProperties.source = this.PMArr
+              cellProperties.source = this.GLArr
             }
             cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties) {
               // 清空节点并重新渲染
@@ -2350,7 +2350,8 @@ export default {
               })
             })
           }),
-          GLFlag: this.GLFlag
+          GLFlag: this.GLFlag,
+          desc: this.remarkPM
         }
       }
       saveCraft(formData).then((res) => {
@@ -2585,6 +2586,7 @@ export default {
       this.GLFlag = data.draft_method.GLFlag
       this.repeatPM = data.draft_method.PM
       this.PMFlag = data.draft_method.PMFlag
+      this.remarkPM = data.draft_method.desc
       this.desc = data.desc
       this.weight = data.weight
       this.coefficient = data.yarn_coefficient.map((item) => item.value)

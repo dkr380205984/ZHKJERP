@@ -25,10 +25,28 @@
     }
   }
   .body{
-    padding: 80px 40px;
+    padding: 20px 40px;
     flex: 1;
     color:@fontNormal;
     position: relative;
+    .selectLine{
+      height: 60px;
+      display: flex;
+      align-items: center;
+      padding-left: 5em;
+      position: relative;
+      justify-content: space-between;
+      .el-select{
+        margin-right:25px;
+        width: 130px;
+      }
+      .label{
+        position: absolute;
+        line-height: 60px;
+        left: 0;
+        font-size: 16px;
+      }
+    }
     .addBtn{
       width: 10em;
       height: 2em;

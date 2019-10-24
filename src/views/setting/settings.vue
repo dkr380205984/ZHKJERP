@@ -47,14 +47,17 @@ export default {
         img: require('../../assets/image/setting/产品设置-蓝.png'),
         url: '/index/processSetting'
       }, {
-        name: '库存设置',
-        img: require('../../assets/image/setting/产品设置-蓝.png'),
-        url: '/index/stockList'
-      }, {
         name: '物料价格设置',
         img: require('../../assets/image/setting/原料设置-蓝.png'),
         url: '/index/materialPriceList'
       }]
+
+      //   , {
+      //   name: '库存设置',
+      //   img: require('../../assets/image/setting/产品设置-蓝.png'),
+      //   url: '/index/stockList'
+      // }
+
     }
   }
 }
