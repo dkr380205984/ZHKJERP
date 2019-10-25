@@ -100,19 +100,25 @@
     </div>
     <!-- 时间区域 -->
     <div class="timeInfo">
+
       <span>{{year}}/{{month}}/{{date}}</span><span style="margin-left:32px">{{hours}}:{{minutes}}:{{seconds}}</span>
     </div>
     <!--icon区域-->
-    <div class="logo">
-      <img src="../../assets/image/icon/logo.png"
-        alt="logo">
-      <span>织慧科技</span>
+    <div class="client-info">
+      <div class="logo">
+        <img src="../../assets/image/login/logo.png"
+          alt="logo">
+        <span>织为云-协同制造云平台</span>
+      </div>
+      <!-- <div class="app-name"></div> -->
     </div>
+    <!-- 工厂名称 -->
+    <div class="company-name">{{company_name}}</div>
   </div>
 </template>
 
 <script>
-import { orderBatchList } from '@/assets/js/api.js'
+import { orderBatchList, companyInfoDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -135,7 +141,8 @@ export default {
       popColor: [
         { color: '#06B4FF', percentage: 0 },
         { color: '#04BA88', percentage: 100 }
-      ]
+      ],
+      company_name: ''
     }
   },
   methods: {
@@ -277,6 +284,18 @@ export default {
     }
   },
   created () {
+    companyInfoDetail({
+      company_id: window.sessionStorage.getItem('company_id')
+    }).then(res => {
+      if (res.data.status) {
+        this.company_name = res.data.data.company_name
+      } else {
+        this.$message({
+          type: 'error',
+          message: res.data.message
+        })
+      }
+    })
     if (window.location.search) {
       let searchList = window.location.search.split('?')[1].split('&')
       searchList.forEach(item => {

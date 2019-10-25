@@ -29,7 +29,7 @@
         </el-carousel>
       </div>
       <div class="atRight">
-        <div class="title">织慧科技订单管理系统</div>
+        <div class="title">织为云（测试版）</div>
         <div class="welcome">欢迎登录</div>
         <div class="inputCtn">
           <input type="text"

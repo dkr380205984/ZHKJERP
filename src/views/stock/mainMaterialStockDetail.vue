@@ -123,8 +123,9 @@ export default {
     Promise.all([
       stockMaterialDetail({
         stock_id: this.$route.params.stockId,
-        material_id: this.$route.params.id,
-        action: null
+        material_name: this.$route.params.id,
+        action: null,
+        color: this.$route.params.color
       }),
       clientList({
         company_id: window.sessionStorage.getItem('company_id')
@@ -134,18 +135,19 @@ export default {
       this.list = res[0].data.data.detail.map((item) => {
         return {
           time: item.create_time,
+          color: item.color_code,
           unit: '千克',
           action: this.actionArr[item.action],
           style: item.action === 1 || item.action === 3 || item.action === 5 || item.action === 8 ? '#67c23a' : '#F56C6C',
-          weight: item.action_weight,
+          weight: item.weight,
           user_name: item.user_name
         }
       })
-      if (this.$route.params.stockId === '0') {
-        this.stock_name = '本厂'
-      } else {
-        this.stock_name = res[1].data.data.find(item => item.id === this.$route.params.stockId).name
-      }
+      // if (this.$route.params.stockId === '0') {
+      //   this.stock_name = '本厂'
+      // } else {
+      //   this.stock_name = res[1].data.data.find(item => item.id === this.$route.params.stockId).name
+      // }
       this.loading = false
     })
   }

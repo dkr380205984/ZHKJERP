@@ -1,8 +1,11 @@
 @import './common.less';
-@logoTop : 65/1080*100%;
-@logoLeft: 24/1920*100%;
-@timeTop:75/1080*100%;
+@companyTop : 65/1080*100%;
+@companyLeft: 24/1920*100%;
+@timeTop:65/1080*100%;
 @timeRight:26/1920*100%;
+@clientInfoTop:93.5%;
+@clientInfoRight:(1920 - 1875)/1920/2 * 100%;
+// calc(100% * (1875/1920))
 ul {
   margin: 0;
   padding: 0;
@@ -167,13 +170,14 @@ ul {
     align-items: center;
     position: relative;
   }
-  .logo{
+  .company-name{
     position: absolute;
-    top: @logoTop;
-    left: @logoLeft;
+    top: @companyTop;
+    left: @companyLeft;
     height: 30px;
     display: flex;
     align-items: center;
+    font-size: 24px;
     img{
       width: 30px;
     }
@@ -183,11 +187,29 @@ ul {
       margin-left: 1rem;
     }
   }
+  .client-info{
+    position: absolute;
+    top: @clientInfoTop;
+    right: @clientInfoRight;
+    height: auto;
+    font-size: 16px;
+    .logo{
+      display: flex;
+      align-items: center;
+      img{
+        width: 20px;
+      }
+      span{
+        margin-left: 0.5rem;
+      }
+    }
+  }
   .timeInfo{
     position: absolute;
     top: @timeTop;
     right: @timeRight;
     display: flex;
+    font-size: 24px;
     align-items: center;
   }
   .flex18{

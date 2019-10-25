@@ -87,10 +87,10 @@
             class="content">
             <span class="tableRow">{{item.name}}</span>
             <span class="tableRow">{{item.number ? item.number : '-'}}{{(item.unit && item.number ? item.unit : '')}}</span>
-            <span class="tableRow">{{item.price ? item.price : '-'}}{{(item.unit&&item.price) ? unit + '/' + item.unit : ''}}</span>
+            <span class="tableRow">{{item.price ? item.price : '-'}}{{(item.unit&&item.price) ? '元/' + item.unit : ''}}</span>
             <span class="tableRow">{{item.sunhao ? item.sunhao + '%' : '-'}}</span>
             <span class="tableRow">{{item.other ? item.other + (item.name === '针织织造' ? '针' : '梭') : '-'}}</span>
-            <span class="tableRow">{{item.totalPrice ? item.totalPrice : 0}}{{unit}}</span>
+            <span class="tableRow">{{item.totalPrice ? item.totalPrice : 0}}元</span>
           </li>
         </ul>
       </div>
@@ -102,7 +102,7 @@
             <span class="tableRow">-</span>
             <span class="tableRow">-</span>
             <span class="tableRow">{{yongjin.prop ? yongjin.prop : 0}}%</span>
-            <span class="tableRow">{{yongjin.price ? yongjin.price : 0}}{{unit}}</span>
+            <span class="tableRow">{{yongjin.price ? yongjin.price : 0}}元</span>
           </li>
           <li class="content">
             <span class="tableRow">基本税费</span>
@@ -110,7 +110,7 @@
             <span class="tableRow">-</span>
             <span class="tableRow">-</span>
             <span class="tableRow">{{shuifei.prop ? shuifei.prop : 0}}%</span>
-            <span class="tableRow">{{shuifei.price ? shuifei.price : 0}}{{unit}}</span>
+            <span class="tableRow">{{shuifei.price ? shuifei.price : 0}}元</span>
           </li>
           <li class="content">
             <span class="tableRow">基本利润</span>
@@ -118,7 +118,7 @@
             <span class="tableRow">-</span>
             <span class="tableRow">-</span>
             <span class="tableRow">{{lirun.prop ? lirun.prop : 0}}%</span>
-            <span class="tableRow">{{lirun.price ? lirun.price : 0}}{{unit}}</span>
+            <span class="tableRow">{{lirun.price ? lirun.price : 0}}元</span>
           </li>
         </ul>
       </div>

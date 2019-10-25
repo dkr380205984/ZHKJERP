@@ -3,7 +3,7 @@
     <div class="cmpCtn">
       <img class="cmpLogo"
         src="@/assets/image/index/copDefault.png" />
-      <span class="cmpName">企业名称</span>
+      <span class="cmpName">{{company_name}}</span>
     </div>
     <div class="menuCtn">
       <div class="menuLeft">
@@ -103,7 +103,7 @@
 
 <script>
 import './header.less'
-import { notifyList, notifyRead } from '@/assets/js/api.js'
+import { notifyList, notifyRead, companyInfoDetail } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -135,7 +135,8 @@ export default {
         url: '/index/packagMaterialList'
       }],
       msgList: [],
-      total: 0
+      total: 0,
+      company_name: ''
     }
   },
   methods: {
@@ -218,6 +219,12 @@ export default {
     }
   },
   mounted () {
+    companyInfoDetail({
+      company_id: window.sessionStorage.getItem('company_id')
+    }).then(res => {
+      this.company_name = res.data.data.alias || res.data.data.company_name
+      this.$store.commit('setClientName', this.company_name)
+    })
     this.getNotify()
   }
 }

@@ -563,18 +563,6 @@
               <span class="label">非生产费用:</span>
               <div class="content">
                 <div class="inpCtn">
-                  <!-- <el-select v-model="item.key"
-                    class="selectInp"
-                    clearable
-                    filterable
-                    allow-create
-                    placeholder="请选择非生产工序">
-                    <el-option v-for="item in manList"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item.name">
-                    </el-option>
-                  </el-select> -->
                   <el-input placeholder="请输入金额"
                     class="selectInp"
                     v-model="user_info_price"
@@ -582,8 +570,6 @@
                     <div slot="append"
                       class='unit'>元</div>
                   </el-input>
-                  <!-- <span :class="index>0?'delete':'add'"
-                    @click="index>0?deletes('manArr',index):adds('manArr')">{{index>0?'删除':'添加'}}</span> -->
                 </div>
               </div>
             </div>
@@ -691,7 +677,7 @@
         </div>
       </div>
       <div class="bottom">
-        <span class="total">总价:<strong>{{total_price}}</strong>元</span>
+        <span class="total">总价:<strong>{{total_price}}</strong>元<strong style="margin-left:24px">{{(total_price/exchangeRate/100) ? (total_price/exchangeRate*100).toFixed(2) : 0}}</strong>{{money}}</span>
         <div class="btnCtn">
           <span class="clear"
             @click="$router.go(-1)">返回</span>
@@ -869,6 +855,9 @@ export default {
       }, {
         id: 3,
         name: '人工'
+      }, {
+        id: 5,
+        name: '检验'
       }, {
         id: 4,
         name: '水洗'
@@ -1211,6 +1200,7 @@ export default {
           this.user_info_price = detail.no_product_cost
           this.otherArr = JSON.parse(detail.desc_info)
           this.desc = detail.desc
+          this.startNum = detail.number
           this.product_need = detail.product_need
           this.productArr = JSON.parse(detail.product_info)
           this.productArr.forEach((item) => {

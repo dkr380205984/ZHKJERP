@@ -202,6 +202,20 @@
           <span class="icon">x</span>
         </div>
         <div class="title">{{type === "go" ? '产品入库' : '产品出库'}}</div>
+        <!-- <div class="inputCtn"
+          v-if="type === 'go'">
+          <span class="label"><em>*</em>{{type === "go" ? '入库仓库' : '出库仓库'}}:</span>
+          <div class="elCtn">
+            <el-select v-model="stockObj.stock_id"
+              placeholder="请选择仓库">
+              <el-option v-for="item in stockArr"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </div>
+        </div> -->
         <div class="inputCtn"
           v-if="type === 'go'">
           <span class="label">结余订单号:</span>
@@ -211,6 +225,7 @@
             </el-input>
           </div>
         </div>
+
         <div class="inputCtn">
           <span class="label"><em>*</em>颜色尺码:</span>
           <div class="elCtn">
@@ -284,6 +299,7 @@ export default {
           name: '出库'
         }
       ],
+      stockArr: [],
       stockObj: {
         order_code: '',
         colorSize: '',
@@ -318,7 +334,8 @@ export default {
           color: this.stockObj.colorSize.split('/')[1],
           size: this.stockObj.colorSize.split('/')[0],
           product_id: this.$route.params.productId,
-          order_code: (type === 'go' ? this.stockObj.order_code : '')
+          order_code: (type === 'go' ? this.stockObj.order_code : ''),
+          stock_id: 1
         }]
       }).then(res => {
         if (res.data.status) {
@@ -417,6 +434,18 @@ export default {
   },
   mounted () {
     this.getStockInfo()
+    // stockList({
+
+    // }).then(res => {
+    //   if (res.data.status) {
+    //     this.stockArr = res.data.data.data
+    //   } else {
+    //     this.$message({
+    //       type: 'error',
+    //       message: res.data.message
+    //     })
+    //   }
+    // })
   },
   watch: {
     filterList: {

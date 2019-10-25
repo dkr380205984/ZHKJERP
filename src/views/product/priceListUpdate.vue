@@ -168,6 +168,8 @@
         <div class="lineCtn">
           <div class="inputCtn product oneLine">
             <span class="label must">尺码颜色：</span>
+            <div class="noInfo"
+              v-show="productArr.length===0">产品待添加</div>
             <div class="twoCol"
               v-for="(itemPro,indexPro) in productArr"
               :key="indexPro">
@@ -208,18 +210,6 @@
                             (
                             <span>{{value.size_info}}</span>
                             <span>克重：{{value.weight}}g</span>
-                            <!-- <template v-for="(val,ind) in value">
-                            <span :key="ind">{{val.size_name}}:</span>
-                            <span :key="val.id">{{val.size_value}}cm</span>
-                            <span v-if="ind === value.length - 1"
-                              :key="ind+'x'">
-                              克重:
-                            </span>
-                            <span v-if="ind === value.length - 1"
-                              :key="ind+'y'">
-                              {{val.weight}}g
-                            </span>
-                          </template> -->
                             )
                           </div>
                         </span>
@@ -231,8 +221,7 @@
                     </ul>
                   </div>
                 </span>
-                <div class="
-                  deleteBtn"
+                <div class="deleteBtn"
                   @click="deleteProduct(itemPro.id)">删除</div>
               </div>
               <div class="rightCol">
@@ -248,8 +237,6 @@
                 </el-select>
               </div>
             </div>
-            <div class="noInfo"
-              v-show="productArr.length===0">产品待添加</div>
           </div>
         </div>
         <div class="lineCtn">
@@ -320,6 +307,8 @@
                     filterable
                     allow-create
                     default-first-option
+                    :disabled="item.disabled"
+                    @change="selectMaterial(item)"
                     placeholder="请选择原料">
                     <el-option v-for="(item,index) in yarnList"
                       :key="index"
@@ -337,9 +326,13 @@
                   <el-input placeholder="单价"
                     class="textInp marginLeft16"
                     v-model="item.price"
-                    @input="computedPrice(item,true)">
+                    @input="computedPrice(item,true)"
+                    @focus="item.isReferencePrice = false">
                     <div slot="append"
                       class='unit'>元/kg</div>
+                    <div class="isReferencePrice"
+                      slot="append"
+                      v-if="item.isReferencePrice">该单价仅作参考</div>
                   </el-input>
                   <el-input placeholder="损耗"
                     class="textInp marginLeft16"
@@ -570,18 +563,6 @@
               <span class="label">非生产费用:</span>
               <div class="content">
                 <div class="inpCtn">
-                  <!-- <el-select v-model="item.key"
-                    class="selectInp"
-                    clearable
-                    filterable
-                    allow-create
-                    placeholder="请选择非生产工序">
-                    <el-option v-for="item in manList"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item.name">
-                    </el-option>
-                  </el-select> -->
                   <el-input placeholder="请输入金额"
                     class="selectInp"
                     v-model="user_info_price"
@@ -589,8 +570,6 @@
                     <div slot="append"
                       class='unit'>元</div>
                   </el-input>
-                  <!-- <span :class="index>0?'delete':'add'"
-                    @click="index>0?deletes('manArr',index):adds('manArr')">{{index>0?'删除':'添加'}}</span> -->
                 </div>
               </div>
             </div>
@@ -698,7 +677,7 @@
         </div>
       </div>
       <div class="bottom">
-        <span class="total">总价:<strong>{{total_price}}</strong>元</span>
+        <span class="total">总价:<strong>{{total_price}}</strong>元<strong style="margin-left:24px">{{(total_price/exchangeRate/100) ? (total_price/exchangeRate*100).toFixed(2) : 0}}</strong>{{money}}</span>
         <div class="btnCtn">
           <span class="clear"
             @click="$router.go(-1)">返回</span>
@@ -728,7 +707,7 @@
 
 <script>
 import { moneyArr } from '@/assets/js/dictionary.js'
-import { clientList, productList, productTppeList, flowerList, getGroup, YarnList, materialList, priceListCreate, productPlanDetail, priceListList, priceListDetail, notifySave, courseList } from '@/assets/js/api.js'
+import { clientList, productList, productTppeList, flowerList, getGroup, YarnList, materialList, priceListCreate, productPlanDetail, priceListList, priceListDetail, notifySave, courseList, yarnPriceList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -786,8 +765,6 @@ export default {
         {
           key: '',
           price: '',
-          maxPrice: 0,
-          minPrice: 0,
           weight: '',
           sunhao: '',
           total_price: ''
@@ -798,9 +775,9 @@ export default {
         {
           key: '',
           price: '',
-          maxPrice: 0,
-          minPrice: 0,
-          weight: ''
+          weight: '',
+          sunhao: '',
+          total_price: ''
         }
       ],
       weaveList: [
@@ -859,13 +836,10 @@ export default {
           price: ''
         }
       ],
-      manList: [
+      otherArr: [
         {
-          id: 1,
-          name: '管理费'
-        }, {
-          id: 2,
-          name: '人工费'
+          key: '',
+          price: ''
         }
       ],
       production_info: [{
@@ -881,14 +855,14 @@ export default {
       }, {
         id: 3,
         name: '人工'
+      }, {
+        id: 5,
+        name: '检验'
+      }, {
+        id: 4,
+        name: '水洗'
       }],
       user_info_price: '',
-      otherArr: [
-        {
-          key: '',
-          price: ''
-        }
-      ],
       yunshu: '',
       desc: '',
       product_need: '',
@@ -906,10 +880,26 @@ export default {
         price: 0
       },
       total_price: 0,
-      startNum: ''
+      startNum: '',
+      materialPriceList: []
     }
   },
   methods: {
+    selectMaterial (newVal) {
+      if (this.materialPriceList.length === 0) {
+        yarnPriceList({
+
+        }).then(res => {
+          this.materialPriceList = res.data.data
+          this.selectMaterial(newVal)
+        })
+      }
+      let materialPriceInfo = this.materialPriceList.find(items => items.name === newVal.key)
+      if (materialPriceInfo) {
+        newVal.price = materialPriceInfo.price
+        newVal.isReferencePrice = true
+      }
+    },
     afterSave (data) {
       this.msgFlag = data.msgFlag
     },
@@ -1015,20 +1005,21 @@ export default {
                     }, 0)
                   }, 0)
                   if (this.yarnArr[0].key) {
-                    this.yarnArr.push({
+                    let obj = {
                       key: item.material,
                       price: '',
-                      number: number,
                       weight: number,
-                      maxPrice: 0,
-                      minPrice: 0,
+                      sunhao: '',
+                      total_price: '',
                       disable: true
-                    })
+                    }
+                    this.selectMaterial(obj)
+                    this.yarnArr.push(obj)
                   } else {
                     this.yarnArr[0].key = item.material
-                    this.yarnArr[0].number = number
                     this.yarnArr[0].weight = number
                     this.yarnArr[0].disable = true
+                    this.selectMaterial(this.yarnArr[0])
                   }
                 }
                 if (!finded2 && item.type === 1) {
@@ -1045,8 +1036,7 @@ export default {
                       price: '',
                       number: number,
                       weight: number,
-                      maxPrice: 0,
-                      minPrice: 0,
+                      total_price: '',
                       disable: true
                     })
                   } else {
@@ -1146,8 +1136,6 @@ export default {
         this[key].push({
           key: '',
           price: '',
-          minPrice: 0,
-          maxPrice: 0,
           weight: '',
           sunhao: '',
           total_price: ''

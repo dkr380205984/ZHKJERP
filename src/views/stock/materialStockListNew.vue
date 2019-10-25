@@ -101,14 +101,14 @@
           :key="item.id">
           <div class="tableColumn">{{item.stock_name}}</div>
           <div class="tableColumn">{{item.material_name}}</div>
-          <div class="tableColumn">{{item.color}}</div>
-          <div class="tableColumn">{{item.material_attr}}</div>
+          <div class="tableColumn">{{item.material_color}}</div>
+          <div class="tableColumn">{{item.material_attribute}}</div>
           <div class="tableColumn">{{item.total_weight}}</div>
           <div class="tableColumn">{{item.vat_code}}</div>
           <div class="tableColumn">{{item.updated_at}}</div>
           <div class="tableColumn">
             <span class="btns success"
-              @click="$router.push('/index/mainMaterialStockDetail/'+item.stock_id + '/' + item.id)">详情</span>
+              @click="$router.push('/index/mainMaterialStockDetail/'+item.stock_id + '/' + item.material_name + '/' + item.material_color)">详情</span>
           </div>
         </div>
       </div>
@@ -195,21 +195,29 @@ export default {
         start_time: this.start_time,
         end_time: this.end_time
       }).then(res => {
-        let data = res.data.data
-        this.total = res.data.meta.total
-        data.forEach(item => {
-          this.list.push({
-            stock_name: this.stockList.find(key => Number(key.id) === Number(item.stock_id)).name,
-            stock_id: item.stock_id,
-            material_name: item.material_name,
-            id: item.id,
-            color: item.material_color,
-            material_attr: item.material_attribute,
-            total_weight: item.total_weight,
-            vat_code: item.vat_code,
-            updated_at: item.updated_at
+        if (res.data.stauts !== false) {
+          this.list = res.data.data
+          this.total = res.data.meta.total
+        } else {
+          this.$message({
+            type: 'error',
+            message: res.data.data
           })
-        })
+        }
+        // let data = res.data.data
+        // data.forEach(item => {
+        //   this.list.push({
+        //     stock_name: this.stockList.find(key => Number(key.id) === Number(item.stock_id)).name,
+        //     stock_id: item.stock_id,
+        //     material_name: item.material_name,
+        //     id: item.id,
+        //     color: item.material_color,
+        //     material_attr: item.material_attribute,
+        //     total_weight: item.total_weight,
+        //     vat_code: item.vat_code,
+        //     updated_at: item.updated_at
+        //   })
+        // })
         this.loading = false
       })
     },

@@ -401,26 +401,26 @@ const menu = [{
     }, {
       name: '仓库列表',
       url: '/index/stockList'
-    },
-    // {
-    //   name: '添加产品库存',
-    //   url: '/index/stockProductList'
-    // },
-    {
-      name: '产品库存列表',
-      url: '/index/productStockList'
-    },
-    //  {
-    //   name: '添加原料库存',
-    //   url: '/index/mainMaterialStockCreate'
-    // },
-    // {
-    //   name: '添加辅料库存',
-    //   url: '/index/otherMaterialStockCreate'
-    // },
-    {
-      name: '物料库存列表',
-      url: '/index/materialStockListNew'
+      // },
+      // {
+      //   name: '添加产品库存',
+      //   url: '/index/stockProductList'
+      // },
+      // {
+      //   name: '产品库存列表',
+      //   url: '/index/productStockList'
+      // },
+      //  {
+      //   name: '添加原料库存',
+      //   url: '/index/mainMaterialStockCreate'
+      // },
+      // {
+      //   name: '添加辅料库存',
+      //   url: '/index/otherMaterialStockCreate'
+      // },
+      // {
+      //   name: '物料库存列表',
+      //   url: '/index/materialStockListNew'
     }]
 }, {
   name: '财务管理',
