@@ -16,7 +16,8 @@
             placeholder="筛选仓库类型">
             <el-option v-for="item in typeList"
               :key="item.id"
-              :value="item.name">
+              :value="item.id"
+              :label="item.name">
             </el-option>
           </el-select>
         </div>

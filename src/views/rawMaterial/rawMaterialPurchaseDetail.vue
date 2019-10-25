@@ -680,8 +680,7 @@ export default {
     stockList({
       type: [1]
     }).then((res) => {
-      console.log(res)
-      this.companyArr = res.data.data
+      this.companyArr = res.data.data.data
     })
   }
 }
