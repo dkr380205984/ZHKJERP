@@ -480,9 +480,9 @@
                     <span v-show="!item.stockFlag"
                       @click="item.stockFlag = true"
                       style="color:#1A95FF;cursor:pointer">结余入库</span>
-                    <span v-show="!item.stockFlag"
+                    <!-- <span v-show="!item.stockFlag"
                       style="color:#E6A23C;cursor:pointer"
-                      @click="surplusDelete(item)">数量清空</span>
+                      @click="surplusDelete(item)">数量清空</span> -->
                     <el-input style="width:220px"
                       v-show="item.stockFlag"
                       placeholder="入库值"
@@ -894,7 +894,7 @@ export default {
           complete_time: today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + (today.getDate() < 10 ? '0' + today.getDate() : today.getDate()),
           desc: '',
           attribute: null,
-          stock_id: 0
+          stock_id: 1
         }]
       }).then((res) => {
         if (res.data.status) {
@@ -1453,12 +1453,12 @@ export default {
         return json
       })
       // 原料结余
-      let surplus = res[6].data.data.filter(res => (res.type === (this.type === '0' ? 1 : 2) || res.type === null))
-      surplus.forEach((item) => {
-        item.stock = ''
-        item.stockFlag = false
-      })
-      this.surplus = surplus
+      // let surplus = res[6].data.data.filter(res => (res.type === (this.type === '0' ? 1 : 2) || res.type === null))
+      // surplus.forEach((item) => {
+      //   item.stock = ''
+      //   item.stockFlag = false
+      // })
+      // this.surplus = surplus
       this.loading = false
     })
   }
