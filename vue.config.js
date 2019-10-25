@@ -1,6 +1,8 @@
 let TARGET
 if (process.env.NODE_ENV === 'development') {
-  TARGET = 'https://beta.zwyknit.com'
+  // https://api.tlkrzf.com
+  // https://beta.zwyknit.com
+  TARGET = 'https://api.tlkrzf.com'
 } else {
   // 正式环境
   TARGET = 'https://api.zwyknit.com'

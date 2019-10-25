@@ -252,7 +252,7 @@
           <div class="pageCtn"
             style="width:1200px;margin:15px 0">
             <el-pagination background
-              :page-size="15"
+              :page-size="5"
               layout="prev, pager, next"
               :total="total.material"
               :current-page.sync="pages.material"
@@ -299,7 +299,7 @@
           <div class="pageCtn"
             style="width:1200px;margin:15px 0">
             <el-pagination background
-              :page-size="15"
+              :page-size="5"
               layout="prev, pager, next"
               :total="total.materialLog"
               :current-page.sync="pages.materialLog"
@@ -402,7 +402,7 @@
           <div class="pageCtn"
             style="width:1200px;margin:15px 0">
             <el-pagination background
-              :page-size="15"
+              :page-size="5"
               layout="prev, pager, next"
               :total="total.pack"
               :current-page.sync="pages.pack"
@@ -451,7 +451,7 @@
           <div class="pageCtn"
             style="width:1200px;margin:15px 0">
             <el-pagination background
-              :page-size="15"
+              :page-size="5"
               layout="prev, pager, next"
               :total="total.packLog"
               :current-page.sync="pages.packLog"
@@ -554,11 +554,11 @@
           <div class="pageCtn"
             style="width:1200px;margin:15px 0">
             <el-pagination background
-              :page-size="15"
+              :page-size="5"
               layout="prev, pager, next"
               :total="total.product"
               :current-page.sync="pages.product"
-              @current-change="getMaterialStockList">
+              @current-change="getProductStockList">
             </el-pagination>
           </div>
         </div>
@@ -611,7 +611,7 @@
           <div class="pageCtn"
             style="width:1200px;margin:15px 0">
             <el-pagination background
-              :page-size="15"
+              :page-size="5"
               layout="prev, pager, next"
               :total="total.productLog"
               :current-page.sync="pages.productLog"
@@ -1020,7 +1020,7 @@ export default {
       productStockList({
         stock_id: this.$route.params.id,
         limit: 5,
-        page: 1,
+        page: page,
         product_code: this.productSearch
       }).then((res) => {
         let productStockList = res.data.data
@@ -1034,7 +1034,7 @@ export default {
       productStockDetail({
         stock_id: this.$route.params.id,
         limit: 5,
-        page: 1,
+        page: page,
         product_code: this.searchProductCode
       }).then((res) => {
         this.productStockLog = res.data.data
@@ -1043,7 +1043,6 @@ export default {
       })
     },
     stockIn (item, which) {
-      this.loading = true
       if (item && (which === 'yarn' || which === 'material')) {
         this.stockObj.name = item.material_name
         this.stockObj.color = item.material_color
@@ -1065,18 +1064,19 @@ export default {
         this.stockObj.product_id = item.product_id
         this.stockObj.type = item.size
       }
-      if (!this.stockObj.name) {
-        this.$message.error('未填写' + this.stockName[this.stockWhich] + '名称')
+      if (!this.stockObj.name && !this.stockObj.product_id) {
+        this.$message.error('入库信息不完整')
         return
       }
       if (!this.stockObj.color) {
-        this.$message.error('未填写' + this.stockColor[this.stockWhich])
+        this.$message.error('入库信息不完整')
         return
       }
       if (!this.stockObj.number) {
-        this.$message.error('未填写数量')
+        this.$message.error('入库信息不完整')
         return
       }
+      this.loading = true
       if (this.stockWhich === 'yarn' || which === 'yarn') {
         stockMaterialAdd({
           material_name: this.stockObj.name,
