@@ -210,8 +210,6 @@ export default {
         this.total = res.data.meta.total
         this.list = res.data.data
         this.first = false
-      }).catch((error) => {
-        // do nothing
       })
     },
     showImg (imgList) {

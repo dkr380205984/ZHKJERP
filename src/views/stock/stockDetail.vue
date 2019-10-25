@@ -1065,6 +1065,18 @@ export default {
         this.stockObj.product_id = item.product_id
         this.stockObj.type = item.size
       }
+      if (!this.stockObj.name) {
+        this.$message.error('未填写' + this.stockName[this.stockWhich] + '名称')
+        return
+      }
+      if (!this.stockObj.color) {
+        this.$message.error('未填写' + this.stockColor[this.stockWhich])
+        return
+      }
+      if (!this.stockObj.number) {
+        this.$message.error('未填写数量')
+        return
+      }
       if (this.stockWhich === 'yarn' || which === 'yarn') {
         stockMaterialAdd({
           material_name: this.stockObj.name,

@@ -292,6 +292,8 @@ const rawMaterialPurchaseList = (params) => http.get(`${baseUrl}/material/reserv
 const rawMaterialPurchaseDetail = (params) => http.get(`${baseUrl}/material/reserve/one`, params)
 // 原料预定购入库
 const rawMaterialPurchaseIn = (params) => http.post(`${baseUrl}/material/reserve/push`, params, 'application/json')
+// 原料预定购入库删除
+const rawMaterialPurchaseDelete = (params) => http.post(`${baseUrl}/material/reserve/delete`, params, 'application/json')
 // 物料结余入库
 const materialSurplusPush = (params) => http.post(`${baseUrl}/order/material/surplus/push`, params, 'application/json')
 // 产品结余入库
@@ -403,6 +405,7 @@ const packStockList = (params) => http.get(`${baseUrl}/pack/material/stock/list`
 // 包装辅料库存日志
 const packStockLog = (params) => http.get(`${baseUrl}/pack/material/stock/log/list`, params)
 export {
+  rawMaterialPurchaseDelete,
   yarnPriceHistory,
   yarnPriceList,
   yarnPriceSetting,

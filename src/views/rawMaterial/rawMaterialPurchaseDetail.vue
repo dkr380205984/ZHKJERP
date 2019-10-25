@@ -314,7 +314,7 @@
 </template>
 
 <script>
-import { rawMaterialPurchaseDetail, rawMaterialPurchaseIn, notifySave, stockList } from '@/assets/js/api.js'
+import { rawMaterialPurchaseDetail, rawMaterialPurchaseIn, notifySave, stockList, rawMaterialPurchaseDelete } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -506,8 +506,8 @@ export default {
       //   })
       // }
       // this.updateInfo.material_order_id = this.updateInfo.id
-      rawMaterialPurchaseIn({
-        data: [this.updateInfo]
+      rawMaterialPurchaseDelete({
+        id: this.updateInfo.id
       }).then((res) => {
         if (res.data.status) {
           this.$message.success({
@@ -680,6 +680,7 @@ export default {
     stockList({
       type: [1]
     }).then((res) => {
+      console.log(res)
       this.companyArr = res.data.data
     })
   }

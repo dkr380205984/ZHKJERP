@@ -134,8 +134,8 @@
                   :key="index">
                   <span class="tableRow">{{item.stock_name}}</span>
                   <span class="tableRow">{{item.material_color}}</span>
-                  <span class="tableRow">{{item.type}}</span>
-                  <span class="tableRow">{{item.vat_code}}</span>
+                  <span class="tableRow">{{item.material_attribute?item.material_attribute:'无'}}</span>
+                  <span class="tableRow">{{item.vat_code?item.vat_code:'无'}}</span>
                   <span class="tableRow">{{item.total_weight}}</span>
                   <span class="tableRow">
                     <span style="cursor:pointer;color:#1A95FF"
@@ -693,7 +693,8 @@
     </div>
     <div class="shadeSelf"
       v-show="WLDQFlag">
-      <div class="main">
+      <div class="main"
+        style="max-height:800px;overflow:auto">
         <div class="close"
           @click="WLDQFlag=false">
           <span class="icon">x</span>
@@ -1612,7 +1613,9 @@ export default {
         weight: this.WLDQ.DQNumber,
         stock_id: this.WLDQ.stock.stock_id,
         vat_code: this.WLDQ.stock.vat_code,
-        order_id: this.$route.params.id
+        order_id: this.$route.params.id,
+        attribute: this.WLDQ.stock.material_attribute,
+        desc: ''
       }]
       rawMaterialOrder({
         data: {
@@ -2048,6 +2051,7 @@ export default {
         YLJGList: client.filter((item) => item.type.indexOf(3) !== -1),
         FLJGList: client.filter((item) => item.type.indexOf(3) !== -1)
       }
+      console.log(this.stockList)
       this.loading = false
     })
   }
