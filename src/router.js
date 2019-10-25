@@ -569,16 +569,6 @@ let router = new Router({
   }
   ]
 })
-router.beforeEach((to, from, next) => {
-  // console.log(to)
-  if (to.name === 'login') {
-    document.title = '织为云-协同制造云平台'
-  } else {
-    // console.log(Vue)
-    // document.title = this.$store.state.client_name
-  }
-  next()
-})
 // router.beforeEach((to, from, next) => { // 全局前置守卫按照创建顺序调用
 //   if (to.name !== 'login') {
 //     try {

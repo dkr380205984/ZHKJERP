@@ -8,9 +8,7 @@ export default new Vuex.Store({
     // 消息通知需要用的岗位和分组集合
     stationAndGroup: [],
     // 消息通知人员列表
-    userList: [],
-    // 工厂名称
-    client_name: ''
+    userList: []
   },
   mutations: {
     getStationAndGroup (state, data) {
@@ -18,9 +16,6 @@ export default new Vuex.Store({
     },
     getUserList (state, data) {
       state.userList = data
-    },
-    setClientName (state, data) {
-      state.client_name = data
     }
   },
   actions: {

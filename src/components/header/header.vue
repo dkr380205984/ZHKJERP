@@ -223,7 +223,7 @@ export default {
       company_id: window.sessionStorage.getItem('company_id')
     }).then(res => {
       this.company_name = res.data.data.alias || res.data.data.company_name
-      this.$store.commit('setClientName', this.company_name)
+      document.title = this.company_name + '-织为云'
     })
     this.getNotify()
   }
