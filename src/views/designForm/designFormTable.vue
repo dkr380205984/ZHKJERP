@@ -164,9 +164,10 @@
               <span class="span_title">穿筘法</span>
               <span class="unit">{{warp_data.reed_method?warp_data.reed_method:''}}</span>
               <span class="span_title">筘幅</span>
-              <span class="unit">{{warp_data.reed_width?warp_data.reed_width:''}}</span>
-              <span class="span_title">综页</span>
-              <span class="unit">{{warp_data.sum_up?warp_data.sum_up:''}}</span>
+              <span class="unit"
+                style="flex:3">{{warp_data.reed_width_data ? warp_data.reed_width_data : warp_data.reed_width ? warp_data.reed_width:''}}</span>
+              <!-- <span class="span_title">综页</span> -->
+              <!-- <span class="unit">{{warp_data.sum_up?warp_data.sum_up:''}}</span> -->
             </div>
             <div class="through-methods">
               <div class="through-title span_title">穿综法</div>

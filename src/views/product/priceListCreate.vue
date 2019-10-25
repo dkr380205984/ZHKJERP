@@ -900,6 +900,7 @@ export default {
       let materialPriceInfo = this.materialPriceList.find(items => items.name === newVal.key)
       if (materialPriceInfo) {
         newVal.price = materialPriceInfo.price
+        this.computedPrice(newVal, true)
         newVal.isReferencePrice = true
       }
     },
