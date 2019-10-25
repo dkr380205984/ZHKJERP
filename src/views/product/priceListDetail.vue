@@ -235,7 +235,10 @@
         </div>
       </div>
       <div class="bottom">
-        <span class="total">费用合计:<span style="font-size:24px;color:#1A94FF;margin:0 8px;font-weight:500">{{Number(priceTableDetail.totalPrice).toFixed(2)}}</span>元<span style="font-size:24px;color:#1A94FF;margin:0 8px 0 24px;font-weight:500">{{Number(priceTableDetail.totalPrice/priceTableDetail.exchangeRate*100).toFixed(2)}}</span>{{priceTableDetail.unit}}</span>
+        <span class="total">
+          费用合计:<span style="font-size:24px;color:#1A94FF;margin:0 8px;font-weight:500">{{Number(priceTableDetail.totalPrice).toFixed(2)}}</span>元
+          <template v-if="priceTableDetail.unit !== '元'"><span style="font-size:24px;color:#1A94FF;margin:0 8px 0 24px;font-weight:500">{{Number(priceTableDetail.totalPrice/priceTableDetail.exchangeRate*100).toFixed(2)}}</span>{{priceTableDetail.unit}}</template>
+        </span>
         <div class="btnCtn">
           <span class="change"
             @click="$router.push('/priceListTable/' + $route.params.id)">打印</span>

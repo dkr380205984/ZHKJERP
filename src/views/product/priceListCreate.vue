@@ -677,7 +677,10 @@
         </div>
       </div>
       <div class="bottom">
-        <span class="total">总价:<strong>{{total_price}}</strong>元<strong style="margin-left:24px">{{(total_price/exchangeRate/100) ? (total_price/exchangeRate*100).toFixed(2) : 0}}</strong>{{money}}</span>
+        <span class="total">
+          总价:<strong>{{total_price}}</strong>元
+          <template v-if="money !== '元'"><strong style="margin-left:24px">{{(total_price/exchangeRate/100) ? (total_price/exchangeRate*100).toFixed(2) : 0}}</strong>{{money}}</template>
+        </span>
         <div class="btnCtn">
           <span class="clear"
             @click="$router.go(-1)">返回</span>
