@@ -21,10 +21,9 @@
         <span>类型</span>
         <span>订单号</span>
         <span class="flex18">订单公司</span>
-        <span class="warp">
-          <span>订单数量</span>
-          <span>下单日期</span>
-        </span>
+        <span>下单日期</span>
+        <span>订单数量</span>
+        <span>完成数量</span>
         <span class="flex3">进度</span>
         <span>负责小组</span>
         <span>交货日期</span>
@@ -55,12 +54,9 @@
                 </span>
                 <span class="tableRow">{{item.order_code}}</span>
                 <span class="tableRow flex18">{{item.client_name}}</span>
-                <span class="tableRow">
-                  <div style="line-height:1.4rem;">
-                    <span>{{item.order_number ? item.order_number : 0}}件</span>
-                    <span>{{item.order_time}}</span>
-                  </div>
-                </span>
+                <span class="tableRow">{{item.order_time}}</span>
+                <span class="tableRow">{{item.order_number ? item.order_number : 0}}件</span>
+                <span class="tableRow">{{item.complete_number ? item.complete_number : 0}}件</span>
                 <span class="tableRow flex3">
                   <el-progress :stroke-width="16"
                     style="width:80%"

@@ -67,16 +67,16 @@
                   <div>{{itemMat.color_info[(item-1)*4].color}}</div>
                 </span>
                 <span>
-                  <div>{{itemMat.color_info[(item-1)*4 + 1].number + itemMat.color_info[(item-1)*4 + 1].unit}}</div>
-                  <div>{{itemMat.color_info[(item-1)*4 + 1].color}}</div>
+                  <div>{{itemMat.color_info[(item-1)*4 + 1] ? itemMat.color_info[(item-1)*4 + 1].number + itemMat.color_info[(item-1)*4 + 1].unit : ''}}</div>
+                  <div>{{itemMat.color_info[(item-1)*4 + 1] ? itemMat.color_info[(item-1)*4 + 1].color : ''}}</div>
                 </span>
                 <span>
-                  <div>{{itemMat.color_info[(item-1)*4 + 2].number + itemMat.color_info[(item-1)*4 + 2].unit}}</div>
-                  <div>{{itemMat.color_info[(item-1)*4 + 2].color}}</div>
+                  <div>{{itemMat.color_info[(item-1)*4 + 2] ? itemMat.color_info[(item-1)*4 + 2].number + itemMat.color_info[(item-1)*4 + 2].unit : ''}}</div>
+                  <div>{{itemMat.color_info[(item-1)*4 + 2] ? itemMat.color_info[(item-1)*4 + 2].color : ''}}</div>
                 </span>
                 <span>
-                  <div>{{itemMat.color_info[(item-1)*4 + 3].number + itemMat.color_info[(item-1)*4 + 3].unit}}</div>
-                  <div>{{itemMat.color_info[(item-1)*4 + 3].color}}</div>
+                  <div>{{itemMat.color_info[(item-1)*4 + 3] ? itemMat.color_info[(item-1)*4 + 3].number + itemMat.color_info[(item-1)*4 + 3].unit : ''}}</div>
+                  <div>{{itemMat.color_info[(item-1)*4 + 3] ? itemMat.color_info[(item-1)*4 + 3].color : ''}}</div>
                 </span>
               </span>
             </span>
