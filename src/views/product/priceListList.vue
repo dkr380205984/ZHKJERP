@@ -1,6 +1,7 @@
 <template>
   <div id="orderList"
-    v-loading="loading">
+    v-loading="loading"
+    v-getHash="{'searchVal':searchVal,'pages':pages,'company':company,'status':status}">
     <div class="head">
       <h2>产品报价单列表</h2>
       <el-input placeholder="输入报价单编号精确搜索"
@@ -369,6 +370,7 @@ export default {
             status: item.status
           }
         })
+        this.first = false
         this.loading = false
       })
     },
@@ -401,47 +403,19 @@ export default {
     }
   },
   created () {
-    Promise.all([
-      priceListList({
-        company_id: window.sessionStorage.getItem('company_id'),
-        limit: 15,
-        page: this.pages
-      }), clientList({
-        company_id: window.sessionStorage.getItem('company_id'),
-        keyword: '',
-        status: 1
-      })]).then((res) => {
-      this.total = res[0].data.meta.total
-      this.list = res[0].data.data.map((item) => {
-        return {
-          id: item.id,
-          client_name: item.client_name,
-          quotation_code: item.quotation_code,
-          contact_name: item.contact_name,
-          exchange_rate: item.exchange_rate,
-          account_unit: item.account_unit,
-          product_info: JSON.parse(item.product_info),
-          product_need: item.product_need,
-          material_info: JSON.parse(item.material_info),
-          assist_info: JSON.parse(item.assist_info),
-          weave_info: JSON.parse(item.weave_info),
-          semi_product_info: JSON.parse(item.semi_product_info),
-          pack_material_info: JSON.parse(item.pack_material_info),
-          production_info: JSON.parse(item.production_info),
-          no_product_cost: item.no_product_cost,
-          desc_info: JSON.parse(item.desc_info),
-          transport_cost: item.transport_cost,
-          profit: item.profit,
-          commission: item.commission,
-          tax: item.tax,
-          number: item.number,
-          desc: item.desc,
-          created_at: item.created_at,
-          status: item.status
-        }
-      })
-      this.companyArr = res[1].data.data.filter((item) => (item.type.indexOf(1) !== -1))
-      this.first = false
+    const hash = window.location.hash ? JSON.parse(decodeURIComponent(window.location.hash).slice(1)) : {}
+    // 分页的特殊性单独处理
+    this.pages = hash.pages
+    Promise.all([clientList({
+      company_id: window.sessionStorage.getItem('company_id'),
+      keyword: '',
+      status: 1
+    })]).then((res) => {
+      this.companyArr = res[0].data.data.filter((item) => (item.type.indexOf(1) !== -1))
+      for (let key in hash) {
+        this[key] = hash[key]
+      }
+      this.getList()
       this.loading = false
     })
   }
