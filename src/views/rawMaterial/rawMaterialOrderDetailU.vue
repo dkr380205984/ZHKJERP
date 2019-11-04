@@ -880,6 +880,7 @@ import { rawMaterialOrderList, orderDetail, rawMaterialOrderInit, rawMaterialPro
 export default {
   data () {
     return {
+      errorFlag: false, //
       localName: {
         KCDQ: 'KCDQ',
         WLDG: 'WLDG',
@@ -1349,6 +1350,58 @@ export default {
               complete_time: item.complete_time
             })
           })
+          // 验证加工的纱线有没有调取/订购
+          let materialAll = []
+          let JGAll = []
+          this.orderList.forEach((item) => {
+            item.materials.forEach((itemMat) => {
+              itemMat.colors.forEach((itemColor) => {
+                let finded = materialAll.find((itemFind) => {
+                  return itemFind.material === itemMat.material && itemFind.color === itemColor.color
+                })
+                if (!finded) {
+                  materialAll.push({
+                    material: itemMat.material,
+                    color: itemColor.color,
+                    weight: itemColor.value
+                  })
+                } else {
+                  finded.weight += Number(itemColor.value)
+                }
+              })
+            })
+          })
+          this.WLJG.forEach((item) => {
+            item.materialArr.forEach((itemColor) => {
+              let finded = JGAll.find((itemFind) => {
+                return itemFind.material === item.material_name && itemFind.color === itemColor.color_code
+              })
+              if (!finded) {
+                JGAll.push({
+                  material: item.material_name,
+                  color: itemColor.color_code,
+                  weight: itemColor.total_weight
+                })
+              } else {
+                finded.weight += Number(itemColor.total_weight)
+              }
+            })
+          })
+          JGAll.forEach((item) => {
+            let finded = materialAll.find((itemFind) => {
+              return itemFind.material === item.material && itemFind.color === item.color && itemFind.weight >= item.weight
+            })
+            console.log(finded)
+            if (!finded) {
+              flag = true
+            }
+          })
+          if (flag) {
+            this.$message.error({
+              message: '加工的物料超出了调取/订购的值,请重新填写加工数量'
+            })
+            return
+          }
           rawMaterialProcessPage({
             data: data
           }).then((res) => {
@@ -1884,14 +1937,19 @@ export default {
           }
           // 已订购/调取数量累加
           let finded = this.materialList.find(val => val.material === item.material_name)
-          if (item.type_source === 1) {
-            // 已调取数量累加
-            finded.stock_weight = finded.stock_weight ? (finded.stock_weight + item.weight) : item.weight
+          if (finded) {
+            if (item.type_source === 1) {
+              // 已调取数量累加
+              finded.stock_weight = finded.stock_weight ? (finded.stock_weight + item.weight) : item.weight
+            } else {
+              // 已订购数量累加
+              finded.order_weight = finded.order_weight ? (finded.order_weight + item.weight) : item.weight
+            }
           } else {
-            // 已订购数量累加
-            finded.order_weight = finded.order_weight ? (finded.order_weight + item.weight) : item.weight
+            this.$alert('检测到该订单的配料单删除了已订购/调取的原料,请及时处理!', '系统警告', {
+              confirmButtonText: '确定'
+            })
           }
-
           // 初始化日志
           this.orderLog.unshift({
             time: item.create_time,
