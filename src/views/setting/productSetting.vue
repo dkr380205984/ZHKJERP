@@ -204,6 +204,7 @@
         </div>
       </div>
       <div class="lineCtn"
+        v-show="false"
         :style="{'max-height':flagObj.unitFlag?'300px':'64px'}">
         <div class="inputCtn">
           <span class="label">添加单位:</span>
@@ -241,10 +242,12 @@
       </div>
       <div class="treeCtn">
         <span class="label">添加产品:</span>
-        <el-input class="elInput"
+        <el-input v-show="false"
+          class="elInput"
           v-model="newType"
           placeholder="请输入一级大类"></el-input>
-        <div class="okBtn"
+        <div v-show="false"
+          class="okBtn"
           @click="addType">添加</div>
         <div class="treeMain">
           <el-tree ref="tree"
