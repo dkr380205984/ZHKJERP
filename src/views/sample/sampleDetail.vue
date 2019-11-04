@@ -287,7 +287,7 @@
                 :key="index">
                 <span>{{item.quotation_code}}</span>
                 <span>{{item.client_name}}</span>
-                <span>总价:{{item.total_price}}{{item.account_unit}}</span>
+                <span>总价:{{item.total_price}}元</span>
                 <span style="color:#1A95FF;cursor:pointer"
                   @click="open('/index/priceListDetail/' + item.id)">查看详情</span>
               </li>
