@@ -177,7 +177,7 @@
             </div>
             <ul class="conCtn">
               <li class="title">
-                <span>名称</span>
+                <span class="flex15">名称</span>
                 <span>克重/数量</span>
                 <span>单价</span>
                 <span>损耗</span>
@@ -186,7 +186,7 @@
               </li>
               <li v-for="(item,key) in priceTableDetail.info"
                 :key="key">
-                <span>{{item.name ? item.name : '/'}}</span>
+                <span class="flex15">{{item.name ? item.name : '/'}}</span>
                 <span>{{item.number ? item.number : '/'}}{{(item.unit && item.number) ? item.unit : ''}}</span>
                 <span>{{item.price ? item.price : '/'}}{{item.price && item.unit ? '元/' + (item.unit === 'g' ? 'kg' : item.unit) : '' }}</span>
                 <span>{{item.sunhao ? item.sunhao : '/'}}{{item.sunhao ? '%' : ''}}</span>
@@ -207,22 +207,22 @@
             </div>
             <ul class="conCtn">
               <li class="title">
-                <span>名称</span>
+                <span class="flex15">名称</span>
                 <span>费用比例</span>
                 <span>总价</span>
               </li>
               <li>
-                <span>基本佣金</span>
+                <span class="flex15">基本佣金</span>
                 <span>{{priceTableDetail.yongjin.prop}}%</span>
                 <span>{{priceTableDetail.yongjin.price}}元</span>
               </li>
               <li>
-                <span>基本税费</span>
+                <span class="flex15">基本税费</span>
                 <span>{{priceTableDetail.shuifei.prop}}%</span>
                 <span>{{priceTableDetail.shuifei.price}}元</span>
               </li>
               <li>
-                <span>基本利润</span>
+                <span class="flex15">基本利润</span>
                 <span>{{priceTableDetail.lirun.prop}}%</span>
                 <span>{{priceTableDetail.lirun.price}}元</span>
               </li>
@@ -526,7 +526,7 @@ export default {
       this.priceTableDetail.yongjin = JSON.parse(data.commission)
       this.priceTableDetail.shuifei = JSON.parse(data.tax)
       this.priceTableDetail.lirun = JSON.parse(data.profit)
-      this.priceTableDetail.reasonText = data.reason ? JSON.parse(data.reason).join(',') : ''
+      this.priceTableDetail.reasonText = (data.reason ? JSON.parse(data.reason).join(',') : '') + '(' + data.reason_text + ')'
       this.priceTableDetail.need = data.product_need
       this.priceTableDetail.status = data.status
       this.product_info = JSON.parse(data.product_info).map(item => {

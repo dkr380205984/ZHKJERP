@@ -36,7 +36,7 @@
           <div class="leftFilter">
             <el-select v-model="orderTypeVal"
               placeholder="筛选订单类型">
-              <el-option v-for="item in orderType"
+              <el-option v-for="item in orderTypeArr"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id">
@@ -119,7 +119,7 @@
         <div class="mergeBody"
           v-for="(item,key) in list"
           :key="key">
-          <div class="tableColumn">{{item.type === 1 ? '订单-' : '样单-'}}{{item.order_code}}</div>
+          <div class="tableColumn">{{item.order_code}}</div>
           <div class="tableColumn">{{item.client_name}}</div>
           <div class="tableColumn"
             style="flex:3.5">
@@ -263,12 +263,12 @@ export default {
       styleVal: '',
       group: [], // 小组
       groupVal: '',
-      orderType: [
-        // { name: '所有订单', id: null },
+      orderTypeArr: [
+        { name: '全部订单', id: null },
         { name: '产品订单', id: 1 },
         { name: '样品订单', id: 2 }
       ],
-      orderTypeVal: '',
+      orderTypeVal: null,
       timer: '',
       start_time: '',
       end_time: '',
@@ -298,7 +298,7 @@ export default {
         'order_code': this.searchVal,
         'start_time': this.start_time,
         'end_time': this.end_time,
-        'type': this.orderTypeVal
+        'order_type': this.orderTypeVal
       }).then((res) => {
         this.total = res.data.meta.total
         this.list = res.data.data.map((item) => {
@@ -382,7 +382,7 @@ export default {
       } else if (item === 'groupVal') {
         this.groupVal = ''
       } else if (item === 'orderTypeVal') {
-        this.orderTypeVal = ''
+        this.orderTypeVal = null
       }
     },
     showImg (imgList) {
@@ -458,11 +458,11 @@ export default {
   },
   computed: {
     orderTypeCmp () {
-      if (this.orderTypeVal) {
-        return this.orderType.find((item) => item.id === this.orderTypeVal).name
-      } else {
-        return '所有分类'
-      }
+      // if (this.orderTypeVal) {
+      return this.orderTypeArr.find((item) => item.id === this.orderTypeVal).name
+      // } else {
+      //   return '所有分类'
+      // }
     },
     clientValCmp () {
       if (this.clientVal) {

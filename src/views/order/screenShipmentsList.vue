@@ -31,58 +31,62 @@
         <span>当前状态</span>
       </div>
       <!-- 轮播dom -->
-      <el-carousel trigger="click"
-        height="100%"
-        :interval='30000'
-        indicator-position='none'
-        arrow='never'
-        class="content"
-        ref='carousel'
-        @change="getPages">
-        <el-carousel-item v-for="(items,keys) in filterList"
-          :key="keys">
-          <div class="table">
-            <ul class="tablesCtn">
-              <li class="content"
-                v-for="(item,key) in items.info"
-                :key="key">
-                <span class="tableRow">
-                  <div class="iconType sample"
-                    v-if="item.type === 2">{{'样'}}</div>
-                  <div class="iconType"
-                    v-else>{{'订'}}</div>
-                </span>
-                <span class="tableRow">{{item.order_code}}</span>
-                <span class="tableRow flex18">{{item.client_name}}</span>
-                <span class="tableRow">{{item.order_time}}</span>
-                <span class="tableRow">{{item.order_number ? item.order_number : 0}}件</span>
-                <span class="tableRow">{{item.complete_number ? item.complete_number : 0}}件</span>
-                <span class="tableRow flex3">
-                  <el-progress :stroke-width="16"
-                    style="width:80%"
-                    :percentage="Math.ceil((item.complete_number/item.order_number)*100) > 100 ?  100 : Math.ceil((item.complete_number/item.order_number)*100)">{{item.complete_number}}</el-progress>
-                </span>
-                <span class="tableRow">{{item.group_name}}</span>
-                <span class="tableRow"
-                  :style="{'color':isToday(item.complete_time)}">{{item.complete_time}}</span>
-                <span class="tableRow">
-                  <div style="line-height:1.4rem;">
-                    <span>{{computedTime(item.complete_time,item.order_time)[0]+'天'}}</span>
-                    <span v-if="computedTime(item.complete_time,item.order_time)[1]"
-                      style="color:#FF4D4D">{{computedTime(item.complete_time,item.order_time)[1]}}</span>
-                  </div>
-                </span>
-                <span class="tableRow">
-                  <div :class="['nowType',setType(item.order_number,item.complete_number,item.complete_time)]"></div>
-                </span>
-              </li>
-              <li v-if="items.flag"
-                class="content"
-                :style="{color:'#CCC',flex: 10 - items.info.length}">已是最后一页</li>
-            </ul>
-          </div>
-        </el-carousel-item>
-      </el-carousel>
+      <div class="content"
+        @mouseenter="handleMouseenter(30000)"
+        @mouseleave="handleMouseleave">
+        <el-carousel trigger="click"
+          height="100%"
+          style="height:100%"
+          :interval='30000'
+          indicator-position='none'
+          arrow='never'
+          ref='carousel'
+          @change="getPages">
+          <el-carousel-item v-for="(items,keys) in filterList"
+            :key="keys">
+            <div class="table">
+              <ul class="tablesCtn">
+                <li class="content"
+                  v-for="(item,key) in items.info"
+                  :key="key">
+                  <span class="tableRow">
+                    <div class="iconType sample"
+                      v-if="item.type === 2">{{'样'}}</div>
+                    <div class="iconType"
+                      v-else>{{'订'}}</div>
+                  </span>
+                  <span class="tableRow">{{item.order_code}}</span>
+                  <span class="tableRow flex18">{{item.client_name}}</span>
+                  <span class="tableRow">{{item.order_time}}</span>
+                  <span class="tableRow">{{item.order_number ? item.order_number : 0}}件</span>
+                  <span class="tableRow">{{item.complete_number ? item.complete_number : 0}}件</span>
+                  <span class="tableRow flex3">
+                    <el-progress :stroke-width="16"
+                      style="width:80%"
+                      :percentage="(Math.ceil((item.complete_number/item.order_number)*100) > 100 || item.status === 1) ?  100 : Math.ceil((item.complete_number/item.order_number)*100)">{{item.complete_number}}</el-progress>
+                  </span>
+                  <span class="tableRow">{{item.group_name}}</span>
+                  <span class="tableRow"
+                    :style="{'color':isToday(item.complete_time)}">{{item.complete_time}}</span>
+                  <span class="tableRow">
+                    <div style="line-height:1.4rem;">
+                      <span>{{computedTime(item.complete_time,item.order_time)[0]+'天'}}</span>
+                      <span v-if="computedTime(item.complete_time,item.order_time)[1] && setType(item.order_number,item.complete_number,item.complete_time,item.status) === 'voerdue'"
+                        style="color:#FF4D4D">{{computedTime(item.complete_time,item.order_time)[1]}}</span>
+                    </div>
+                  </span>
+                  <span class="tableRow">
+                    <div :class="['nowType',setType(item.order_number,item.complete_number,item.complete_time,item.status)]"></div>
+                  </span>
+                </li>
+                <li v-if="items.flag"
+                  class="content"
+                  :style="{color:'#CCC',flex: 10 - items.info.length}">已是最后一页</li>
+              </ul>
+            </div>
+          </el-carousel-item>
+        </el-carousel>
+      </div>
     </div>
     <!-- 页脚控件及logo -->
     <div class="footed">
@@ -138,10 +142,24 @@ export default {
         { color: '#06B4FF', percentage: 0 },
         { color: '#04BA88', percentage: 100 }
       ],
-      company_name: ''
+      company_name: '',
+      timer: null // 定时器标识
     }
   },
   methods: {
+    // 处理鼠标指针指着走马灯时不滚动的bug
+    handleMouseenter (time) {
+      this.timer = setInterval(() => {
+        this.pages++
+        if (this.pages > Math.ceil(this.count / 10)) {
+          this.pages = 1
+        }
+        this.$refs.carousel.setActiveItem(this.pages - 1)
+      }, time)
+    },
+    handleMouseleave () {
+      clearInterval(this.timer)
+    },
     // 判断是否为今日
     isToday (time) {
       if ((new Date().getTime() - new Date(time).getTime()) / 1000 / 60 / 60 / 24 > 0 && (new Date().getTime() - new Date(time).getTime()) / 1000 / 60 / 60 / 24 < 1) {
@@ -160,10 +178,10 @@ export default {
       return [useDay, str]
     },
     // 判断是否逾期
-    setType (orderNum, comNum, time) {
-      if (comNum >= orderNum) {
+    setType (orderNum, comNum, time, status) {
+      if (comNum >= orderNum || status === 1) {
         return 'complete'
-      } else if (new Date().getTime() > new Date(time).getTime()) {
+      } else if (new Date().getTime() > (new Date(time).getTime() + (1000 * 60 * 60 * 24))) {
         return 'overdue'
       } else {
         return 'running'
@@ -254,7 +272,8 @@ export default {
                   }).reduce((total, val) => {
                     return Number(total) + Number(val)
                   }) : 0,
-                  group_name: items.group_name
+                  group_name: items.group_name,
+                  status: items.status
                 }
               })
             )

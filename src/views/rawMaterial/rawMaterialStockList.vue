@@ -251,11 +251,11 @@ export default {
       group: [], // 小组
       groupVal: '',
       orderType: [
-        // { name: '所有订单', id: null },
+        { name: '全部订单', id: null },
         { name: '产品订单', id: 1 },
         { name: '样品订单', id: 2 }
       ],
-      orderTypeVal: '',
+      orderTypeVal: null,
       timer: '',
       start_time: '',
       end_time: '',
@@ -277,7 +277,7 @@ export default {
         'order_code': this.searchVal,
         'start_time': this.start_time,
         'end_time': this.end_time,
-        'type': this.orderTypeVal
+        'order_type': this.orderTypeVal
       }).then((res) => {
         this.total = res.data.meta.total
         this.list = res.data.data.map((item) => {
@@ -360,7 +360,7 @@ export default {
       } else if (item === 'groupVal') {
         this.groupVal = ''
       } else if (item === 'orderTypeVal') {
-        this.orderTypeVal = ''
+        this.orderTypeVal = null
       }
     },
     showImg (imgList) {
@@ -436,11 +436,11 @@ export default {
   },
   computed: {
     orderTypeCmp () {
-      if (this.orderTypeVal) {
-        return this.orderType.find((item) => item.id === this.orderTypeVal).name
-      } else {
-        return '所有分类'
-      }
+      // if (this.orderTypeVal) {
+      return this.orderType.find((item) => item.id === this.orderTypeVal).name
+      // } else {
+      //   return '所有分类'
+      // }
     },
     clientValCmp () {
       if (this.clientVal) {

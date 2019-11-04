@@ -13,6 +13,9 @@
         <div class="filterLine">
           <span class="label">筛选列表:</span>
           <el-tag closable
+            v-show="orderTypeCmp"
+            @close="clear('orderTypeVal')">{{orderTypeCmp}}</el-tag>
+          <el-tag closable
             v-show="categoryValCmp"
             @close="clear('categoryVal')">{{categoryValCmp}}</el-tag>
           <el-tag closable
@@ -31,6 +34,14 @@
         <div class="selectLine">
           <span class="label">筛选条件:</span>
           <div class="leftFilter">
+            <el-select v-model="orderTypeVal"
+              placeholder="筛选订单类型">
+              <el-option v-for="item in orderTypeArr"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
             <el-select v-model="categoryVal"
               placeholder="筛选品类">
               <el-option v-for="item in category"
@@ -276,6 +287,19 @@ export default {
       company: '',
       group: '',
       groupArr: [],
+      orderTypeArr: [
+        {
+          id: null,
+          name: '全部订单'
+        }, {
+          id: 1,
+          name: '产品订单'
+        }, {
+          id: 2,
+          name: '样品订单'
+        }
+      ],
+      orderTypeVal: null,
       timer: '',
       start_time: '',
       end_time: ''
@@ -295,7 +319,8 @@ export default {
         'group_id': this.group,
         'order_code': this.searchVal,
         'start_time': this.start_time,
-        'end_time': this.end_time
+        'end_time': this.end_time,
+        'order_type': this.orderTypeVal
       }).then((res) => {
         this.loading = false
         this.total = res.data.meta.total
@@ -394,6 +419,8 @@ export default {
         this.company = ''
       } else if (item === 'group') {
         this.group = ''
+      } else if (item === 'orderTypeVal') {
+        this.orderTypeVal = null
       }
     },
     showImg (imgList) {
@@ -461,14 +488,21 @@ export default {
         }
         this.getProductionList()
       }
+    },
+    orderTypeVal (newVal) {
+      this.pages = 1
+      this.getProductionList()
     }
   },
   computed: {
+    orderTypeCmp () {
+      return this.orderTypeArr.find(item => item.id === this.orderTypeVal).name
+    },
     categoryValCmp () {
       if (this.categoryVal) {
         return this.category.find((item) => item.id === this.categoryVal).name
       } else {
-        return '所有分类'
+        return ''
       }
     },
     typesValCmp () {

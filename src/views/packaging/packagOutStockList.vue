@@ -256,7 +256,8 @@ export default {
         'group_id': this.groupVal,
         'order_code': this.searchVal,
         'start_time': this.start_time,
-        'end_time': this.end_time
+        'end_time': this.end_time,
+        'order_type': 1
       }).then((res) => {
         this.total = res.data.meta.total
         this.list = res.data.data.map((item) => {

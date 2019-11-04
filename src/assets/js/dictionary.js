@@ -422,21 +422,21 @@ const menu = [{
       //   name: '物料库存列表',
       //   url: '/index/materialStockListNew'
     }]
-}, {
-  name: '财务管理',
-  children: [{
-    name: '订单财务统计',
-    url: '/index/orderFinancialList'
-  }, {
-    name: '合作公司财务统计',
-    url: '/index/foreignTradeFinancialList'
-  }, {
-    name: '产品产量统计',
-    url: '/index/productFinancialList'
-  }, {
-    name: '物料使用统计',
-    url: '/index/materialFinancialList'
-  }]
+  // }, {
+  //   name: '财务管理',
+  //   children: [{
+  //     name: '订单财务统计',
+  //     url: '/index/orderFinancialList'
+  //   }, {
+  //     name: '合作公司财务统计',
+  //     url: '/index/foreignTradeFinancialList'
+  //   }, {
+  //     name: '产品产量统计',
+  //     url: '/index/productFinancialList'
+  //   }, {
+  //     name: '物料使用统计',
+  //     url: '/index/materialFinancialList'
+  //   }]
 }, {
   name: '客户管理',
   children: [{

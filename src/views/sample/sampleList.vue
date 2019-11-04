@@ -136,7 +136,7 @@
               effect="dark"
               content="报价单"
               placement="top-start"> -->
-            <span :class="{'circle':true,'has':(item.quotation_id && item.quotation_id.length>0)}">
+            <span :class="{'circle':true,'has':(item.quotation_id === 1)}">
               <!-- <img :src="require('@/assets/image/icon/price_icon.png')"
                   alt=""> -->
               报
@@ -146,11 +146,11 @@
               effect="dark"
               content="样品订单"
               placement="top-start"> -->
-            <span :class="{'circle':true,'has':(item.order_list && item.order_list.length>0)}">
-              <!-- <img :src="require('@/assets/image/icon/sample_icon.png')"
+            <!-- <span :class="{'circle':true,'has':(item.order_list && item.order_list.length>0)}"> -->
+            <!-- <img :src="require('@/assets/image/icon/sample_icon.png')"
                   alt=""> -->
-              样
-            </span>
+            <!-- 样 -->
+            <!-- </span> -->
             <!-- </el-tooltip> -->
           </div>
           <div class="tableColumn flex9">
