@@ -526,7 +526,7 @@ export default {
       this.priceTableDetail.yongjin = JSON.parse(data.commission)
       this.priceTableDetail.shuifei = JSON.parse(data.tax)
       this.priceTableDetail.lirun = JSON.parse(data.profit)
-      this.priceTableDetail.reasonText = (data.reason ? JSON.parse(data.reason).join(',') : '') + '(' + data.reason_text + ')'
+      this.priceTableDetail.reasonText = (data.reason ? JSON.parse(data.reason).join(',') + (data.reason_text ? '(' + data.reason_text + ')' : '') : '')
       this.priceTableDetail.need = data.product_need
       this.priceTableDetail.status = data.status
       this.product_info = JSON.parse(data.product_info).map(item => {

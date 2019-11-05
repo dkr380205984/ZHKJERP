@@ -376,13 +376,15 @@ export default {
             outStockAdd({
               data: data
             }).then(res => {
-              if (this.msgFlag) {
-                this.msgUrl = '/index/packagOutStockDetail/' + this.$route.params.id
-                this.content = '订单' + this.order_code + '<span style="color:#1A95FF">装箱出库</span>'
-                this.sendMsg()
-              } else {
-                this.$message.success('添加成功')
-                this.$router.push('/index/packagOutStockDetail/' + this.$route.params.id)
+              if (res.data.status) {
+                if (this.msgFlag) {
+                  this.msgUrl = '/index/packagOutStockDetail/' + this.$route.params.id
+                  this.content = '订单' + this.order_code + '<span style="color:#1A95FF">装箱出库</span>'
+                  this.sendMsg()
+                } else {
+                  this.$message.success('添加成功')
+                  this.$router.push('/index/packagOutStockDetail/' + this.$route.params.id)
+                }
               }
             })
           } else {

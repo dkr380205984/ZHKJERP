@@ -33,7 +33,7 @@
           <div class="span_title">规格</div>
           <div>{{size}}</div>
           <div class="span_title">克重</div>
-          <div>{{weight}}g</div>
+          <div>{{colorWeight|filterWeight}}g</div>
           <div class="span_title">成分</div>
           <div>{{ingredient}}</div>
         </li>
@@ -953,6 +953,12 @@ export default {
     }
   },
   filters: {
+    filterWeight (items) {
+      let arr = [...items.warp, ...items.weft]
+      return Number(arr.reduce((total, item) => {
+        return Number(total) + Number(item)
+      })).toFixed(1)
+    },
     filterThroughMethod (items) {
       let str = ''
       let romanNum = ['Ⅰ', 'Ⅱ', 'Ⅲ', 'Ⅳ', 'Ⅴ', 'Ⅵ', 'Ⅶ', 'Ⅷ', 'Ⅸ', 'Ⅹ', 'Ⅺ', 'Ⅻ']

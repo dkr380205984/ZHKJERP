@@ -790,7 +790,8 @@
               :key="index"
               class="formCtn">
               <el-select placeholder="请选择次要原料"
-                v-model="yarn.yarnOtherWeft[index].value">
+                v-model="yarn.yarnOtherWeft[index].value"
+                filterable>
                 <el-option v-for="item in yarn.yarnArr"
                   :key="item.name"
                   :label="item.name"

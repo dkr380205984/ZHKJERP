@@ -32,12 +32,12 @@
       </div>
       <!-- 轮播dom -->
       <div class="content"
-        @mouseenter="handleMouseenter(30000)"
+        @mouseenter="handleMouseenter(loopTime)"
         @mouseleave="handleMouseleave">
         <el-carousel trigger="click"
           height="100%"
           style="height:100%"
-          :interval='30000'
+          :interval='loopTime'
           indicator-position='none'
           arrow='never'
           ref='carousel'
@@ -59,7 +59,7 @@
                   <span class="tableRow flex18">{{item.client_name}}</span>
                   <span class="tableRow">{{item.order_time}}</span>
                   <span class="tableRow">{{item.order_number ? item.order_number : 0}}件</span>
-                  <span class="tableRow">{{item.complete_number ? item.complete_number : 0}}件</span>
+                  <span class="tableRow">{{item.status === 1 ? (item.order_number ? item.order_number : 0) : (item.complete_number ? item.complete_number : 0)}}件</span>
                   <span class="tableRow flex3">
                     <el-progress :stroke-width="16"
                       style="width:80%"
@@ -143,6 +143,7 @@ export default {
         { color: '#04BA88', percentage: 100 }
       ],
       company_name: '',
+      loopTime: 30000,
       timer: null // 定时器标识
     }
   },
@@ -293,8 +294,6 @@ export default {
           throw res.data.message
         }
         this.loading = false
-      }).catch(res => {
-        throw res
       })
     }
   },
@@ -330,6 +329,20 @@ export default {
     this.end_time = new Date(new Date().getTime() + (7 * 24 * 60 * 60 * 1000)).toISOString()
     this.getTime()
     this.getData(10)
+  },
+  watch: {
+    pages (newVal) {
+      console.log(newVal)
+      if (newVal === Math.ceil(this.count / 10)) {
+        setTimeout(() => {
+          this.list = []
+          this.filterList = []
+          this.pages = 1
+          this.total = 1
+          this.getData(10)
+        }, this.loopTime - 1000)
+      }
+    }
   }
 }
 </script>
