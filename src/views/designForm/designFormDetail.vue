@@ -1121,7 +1121,7 @@ export default {
         let dom = this.$refs.myCanvas
         let ctx = dom.getContext('2d')
         ctx.beginPath()
-        ctx.clearRect(0, 0, 600, this.canvasHeight)
+        ctx.clearRect(0, 0, 2400, this.canvasHeight)
         canvasMatrix.forEach((item) => {
           ctx.fillStyle = item.color
           ctx.fillRect(item.x, item.y, item.width, item.height)
@@ -1129,7 +1129,7 @@ export default {
         let domBack = this.$refs.myCanvasBack
         let ctxBack = domBack.getContext('2d')
         ctxBack.beginPath()
-        ctxBack.clearRect(0, 0, 600, this.canvasHeight)
+        ctxBack.clearRect(0, 0, 2400, this.canvasHeight)
         canvasMatrixBack.forEach((item) => {
           ctxBack.fillStyle = item.color
           ctxBack.fillRect(item.x, item.y, item.width, item.height)
