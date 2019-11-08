@@ -338,7 +338,7 @@
           <div class="addBtn"
             @click="addCompany(index)">
             <span>+</span>
-            <span>添加公司</span>
+            <span>添加单位</span>
           </div>
         </div>
       </div>

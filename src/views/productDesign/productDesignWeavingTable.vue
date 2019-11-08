@@ -38,7 +38,7 @@
       <div>
         <span>
           <span>生产单位</span>
-          <span>{{client_name === 'null' ? '仓库' : client_name}}</span>
+          <span>{{client_name === 'null' ? '仓库' : client_name + '(' + client_phone + ')'}}</span>
           <span>总价</span>
           <span>{{total_price|fixedFilter}}{{'元'}}</span>
         </span>
@@ -156,7 +156,7 @@
       <div>
         <span>
           <span>生产单位</span>
-          <span>{{client_name === 'null' ? '仓库' : client_name}}</span>
+          <span>{{client_name === 'null' ? '仓库' : client_name + (client_phone ? '(' + client_phone + ')' : '')}}</span>
           <span>总价</span>
           <span>{{total_price|fixedFilter}}{{'元'}}</span>
         </span>
@@ -468,6 +468,8 @@ export default {
       this.linkman_tel = linkman.mobile
       // 将公司名称转为简称
       let clientList = res[2].data.data
+      let clientPhone = clientList.find(val => val.name === this.client_name)
+      this.client_phone = clientPhone ? clientPhone.phone : ''
       this.order_company = clientList.find(val => val.name === this.order_company).abbreviation || this.order_company
       this.company_name = res[3].data.data.company_name
     })

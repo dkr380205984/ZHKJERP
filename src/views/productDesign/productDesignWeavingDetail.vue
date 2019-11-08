@@ -43,7 +43,7 @@
               <ul class="tablesCtn">
                 <li class="title">
                   <span>产品编号</span>
-                  <span>产品品类</span>
+                  <!-- <span>产品品类</span> -->
                   <span style="flex:4">
                     <span>尺码/配色</span>
                     <span>下单数</span>
@@ -52,13 +52,17 @@
                     <span>重量</span>
                   </span>
                   <span>工艺单信息</span>
+                  <span>配料单信息</span>
                 </li>
                 <li class="material_info"
                   v-for="(item,index) in product"
                   :key="index">
-                  <span style="color:#1A95FF"
-                    @click="$router.push('/index/productDetail/'+item.id)">{{item.product_code}}</span>
-                  <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
+                  <span @click="$router.push('/index/productDetail/'+item.id)">
+                    <div style="display:flex;flex-direction:column;line-height:1.5em;">
+                      <span style="color:#1A95FF">{{item.product_code}}</span>
+                      <span>{{item.category_name}}/{{item.type_name}}/{{item.style_name}}</span>
+                    </div>
+                  </span>
                   <span class="col"
                     style="flex:4">
                     <span v-for="(itemColour,indexColour) in item.info"
@@ -92,6 +96,15 @@
                     @click="openWin('/index/designFormDetail/'+item.craft_list_id)"><span style="cursor:pointer">点击查看</span></span>
                   <span v-if="item.has_craft===0"
                     style="color:#ccc;">暂无工艺单</span>
+                  <span v-if="item.has_plan === 1"
+                    style="color:#1A95FF;">
+                    <span style="cursor:pointer;border:none;"
+                      @click="openWin('/index/productPlanDetail/'+item.product_plan_id)">点击查看</span>
+                    <span style="cursor:pointer;border:none;"
+                      @click="openWin('/productPlanTable/' + item.product_plan_id)">打印</span>
+                  </span>
+                  <span v-if="item.has_plan===0"
+                    style="color:#ccc;">暂无配料单</span>
                 </li>
               </ul>
             </div>
@@ -630,6 +643,7 @@ export default {
         //   company_id: window.sessionStorage.getItem('company_id')
       })
     ]).then(res => {
+      console.log(res)
       this.order = res[0].data.data.production_detail.order_info
       this.productInfo = res[0].data.data.production_detail.product_info.map((item) => {
         let json = item
@@ -649,6 +663,7 @@ export default {
       })
       // 合并相同编号的产品数据
       this.productInfo.forEach((item) => {
+        console.log(JSON.parse(JSON.stringify(this.product)))
         let finded = this.product.find((itemFind, index) => itemFind.product_code === item.product_code)
         if (!finded) {
           let state = 0 // 0代表没有计划单,1代表不完整,2代表完整
@@ -676,6 +691,8 @@ export default {
             unit_name: item.unit_name,
             craft_list_id: item.craft_list_id,
             has_craft: item.has_craft,
+            product_plan_id: item.product_plan_id,
+            has_plan: item.has_plan,
             info: [{
               color: item.color,
               order_num: item.order_num,
@@ -716,6 +733,8 @@ export default {
                 unit_name: item.unit_name,
                 craft_list_id: itemPro.craft_list_id,
                 has_craft: itemPro.has_craft,
+                product_plan_id: item.product_plan_id,
+                has_plan: itemPro.has_plan,
                 info: itemPro.info.concat([{
                   color: item.color,
                   order_num: item.order_num,
@@ -753,6 +772,8 @@ export default {
             unit_name: item.unit_name,
             craft_list_id: item.craft_list_id,
             has_craft: item.has_craft,
+            product_plan_id: item.product_plan_id,
+            has_plan: item.has_plan,
             id: item.id,
             info: item.info.map((itemInfo) => {
               let json = {
@@ -805,7 +826,6 @@ export default {
         let find = this.product.find((itemPro, indexPro) => itemPro.product_code === itemLog.product_info.product_code)
         let finded = JSON.parse(JSON.stringify(find))
         let colorArr = finded.state === 2 ? finded.info.find((itemInfo, indexInfo) => itemInfo.color === itemLog.color && itemInfo.size === itemLog.size).colorArr : []
-        console.log(finded)
         if (finded.state === 2) {
           newItem.colorArr = colorArr.map((itemMat) => {
             itemMat.colorWeight = itemMat.colorWeight.map((itemColor) => {
