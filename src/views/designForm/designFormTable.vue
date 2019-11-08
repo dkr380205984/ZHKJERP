@@ -969,9 +969,10 @@ export default {
       if (arr.length === 0) {
         return ''
       }
-      return Number(arr.reduce((total, item) => {
-        return Number(total) + Number(item)
-      })).toFixed(1)
+      let total = arr.reduce((total, item) => {
+        return Number(total || 0) + Number(item || 0)
+      })
+      return Number(total || 0).toFixed(1)
     },
     filterThroughMethod (items) {
       let str = ''
