@@ -710,7 +710,7 @@
 
 <script>
 import { moneyArr } from '@/assets/js/dictionary.js'
-import { clientList, productList, productTppeList, flowerList, getGroup, YarnList, materialList, priceListCreate, productPlanDetail, priceListList, priceListDetail, notifySave, courseList, yarnPriceList } from '@/assets/js/api.js'
+import { clientList, productList, productTppeList, flowerList, getGroup, YarnList, materialList, priceListCreate, productPlanDetail, priceListList, priceListDetail, notifySave, courseList, yarnPriceList, porductOne } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -1312,6 +1312,19 @@ export default {
           message: errorMsg
         })
       }
+    },
+    // 根据产品id获取产品信息
+    getProductFId (id) {
+      porductOne({
+        id: id
+      }).then(res => {
+        if (res.data.status) {
+          let detail = res.data.data
+          detail.checked = true
+          this.seachProduct.unshift(detail)
+          this.getProduct(true, id)
+        }
+      })
     }
   },
   filters: {
@@ -1372,6 +1385,7 @@ export default {
       company_id: this.companyId,
       type: 2
     })]).then((res) => {
+      console.log(res[1].data.data)
       this.machiningList = res[7].data.data
       this.companyArr = res[0].data.data.filter((item) => (item.type.indexOf(1) !== -1))
       this.seachProduct = res[1].data.data
@@ -1401,8 +1415,13 @@ export default {
       this.otherMaterialList = res[6].data.data
       this.loading = false
       if (this.$route.fullPath.split('?')[1]) {
-        this.seachProduct.find(key => key.id === this.$route.fullPath.split('?')[1]).checked = true
-        this.getProduct(true, this.$route.fullPath.split('?')[1])
+        let hasProFlag = this.seachProduct.find(key => key.id === this.$route.fullPath.split('?')[1])
+        if (hasProFlag) {
+          hasProFlag.checked = true
+          this.getProduct(true, this.$route.fullPath.split('?')[1])
+        } else {
+          this.getProductFId(this.$route.fullPath.split('?')[1])
+        }
       }
     })
     // 给产品列表做优化
