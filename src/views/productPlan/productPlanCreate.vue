@@ -456,7 +456,7 @@ export default {
                     size: this.sizeArr.map((itemSize) => {
                       return {
                         size: itemSize.size,
-                        number: parseInt(itemColor.number),
+                        number: itemColor.number.toFixed(1),
                         unit: 'g'
                       }
                     })
