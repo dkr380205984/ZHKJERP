@@ -189,7 +189,8 @@
                   </template>
                   <template v-else>见附件</template>
                 </div>
-                <div class="through-desc">{{drafting_method.desc}}</div>
+                <div class="through-desc"
+                  @click="changeColor">{{drafting_method.desc}}</div>
               </div>
             </div>
           </div>
@@ -376,7 +377,9 @@
           </div>
         </li>
         <li class="remake">
-          <div class="content">备注:{{desc}}</div>
+          备注:
+          <div class="content"
+            @click.stop="changeColor">{{desc}}</div>
         </li>
       </ul>
     </div>
@@ -853,6 +856,14 @@ export default {
     }
   },
   methods: {
+    // 点击改变dom元素颜色
+    changeColor () {
+      if (event.target.style.color !== 'red') {
+        event.target.style.color = 'red'
+      } else {
+        event.target.style.color = '#666'
+      }
+    },
     // 给合并规则里添加value
     pushValue (item, key, index) {
       let valueArr = item[key] // value来源数组
@@ -955,9 +966,13 @@ export default {
   filters: {
     filterWeight (items) {
       let arr = [...items.warp, ...items.weft]
-      return Number(arr.reduce((total, item) => {
-        return Number(total) + Number(item)
-      })).toFixed(1)
+      if (arr.length === 0) {
+        return ''
+      }
+      let total = arr.reduce((total, item) => {
+        return Number(total || 0) + Number(item || 0)
+      })
+      return Number(total || 0).toFixed(1)
     },
     filterThroughMethod (items) {
       let str = ''
