@@ -71,7 +71,7 @@
                   <span class="tableRow">
                     <div style="line-height:1.4rem;">
                       <span>{{computedTime(item.complete_time,item.order_time)[0]+'天'}}</span>
-                      <span v-if="computedTime(item.complete_time,item.order_time)[1] && setType(item.order_number,item.complete_number,item.complete_time,item.status) === 'voerdue'"
+                      <span v-if="computedTime(item.complete_time,item.order_time)[1] && setType(item.order_number,item.complete_number,item.complete_time,item.status) === 'overdue'"
                         style="color:#FF4D4D">{{computedTime(item.complete_time,item.order_time)[1]}}</span>
                     </div>
                   </span>
@@ -284,7 +284,9 @@ export default {
           }
           if (Math.ceil(orderInfo.count / number) > this.total) {
             this.total++
-            this.getData(number)
+            setTimeout(() => {
+              this.getData(number)
+            }, 2000)
           } else if (this.list.length > 0) {
             this.filterList.push({ info: this.list.splice(0, 10), flag: true })
             this.list = []
