@@ -416,7 +416,7 @@
               style="width:294px;">
               <el-option v-for="item in commonPMArr"
                 :key="item.id"
-                :value="item"
+                :value="item.id"
                 :label="item.name">
                 <div style="display: flex;justify-content: space-between;width: 100%;">
                   <span>{{ item.name }}</span>
@@ -1956,7 +1956,8 @@ export default {
         })
       })
     },
-    getPM (value) {
+    getPM (id) {
+      let value = this.commonPMArr.find((item) => item.id === id)
       const flag = JSON.parse(value.data)
       const data = JSON.parse(value.pattern_loop)
       this.GL = data.GL
