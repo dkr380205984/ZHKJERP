@@ -909,11 +909,13 @@ export default {
             mergeIndex++
           }
         } else {
-          saveMerge.push({
-            col: col,
-            colspan: length - col,
-            row: row
-          })
+          for (let i = col; i < length; i++) {
+            saveMerge.push({
+              col: i,
+              colspan: 1,
+              row: row
+            })
+          }
           col = length
         }
       }
