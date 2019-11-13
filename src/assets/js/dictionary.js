@@ -470,6 +470,49 @@ const defectiveType = ['跳线', '污迹', '经纬断线', '严重破损', '边�
 // 国家
 const countries = '中国、蒙古、朝鲜、韩国、日本、菲律宾、越南、老挝、柬埔寨、缅甸、泰国、马来西亚、文莱、新加坡、印度尼西亚、东帝汶、尼泊尔、不丹、孟加拉国、印度、巴基斯坦、斯里兰卡、马尔代夫、哈萨克斯坦、吉尔吉斯斯坦、塔吉克斯坦、乌兹别克斯坦、土库曼斯坦、阿富汗、伊拉克、伊朗、叙利亚、约旦、黎巴嫩、以色列、巴勒斯坦、沙特阿拉伯、巴林、卡塔尔、科威特、阿拉伯联合酋长国（阿联酋）、阿曼、也门、格鲁吉亚、亚美尼亚、阿塞拜疆、土耳其、塞浦路斯、芬兰、瑞典、挪威、冰岛、丹麦 法罗群岛（丹）、爱沙尼亚、拉脱维亚、立陶宛、白俄罗斯、俄罗斯、乌克兰、摩尔多瓦、波兰、捷克、斯洛伐克、匈牙利、德国、奥地利、瑞士、列支敦士登、英国、爱尔兰、荷兰、比利时、卢森堡、法国、摩纳哥、罗马尼亚、保加利亚、塞尔维亚、马其顿、阿尔巴尼亚、希腊、斯洛文尼亚、克罗地亚、波斯尼亚和墨塞哥维那、梵蒂冈、圣马力诺、马耳他、西班牙、葡萄牙、安道尔、埃及、利比亚、苏丹、突尼斯、阿尔及利亚、摩洛哥、亚速尔群岛（葡）、马德拉群岛（葡）、埃塞俄比亚、厄立特里亚、索马里、吉布提、肯尼亚、坦桑尼亚、乌干达、卢旺达、布隆迪、塞舌尔、乍得、中非、喀麦隆、赤道几内亚、加蓬、刚果共和国（即：刚果（布））、刚果民主共和国（即：刚果（金））、圣多美及普林西比、毛里塔尼亚、西撒哈拉、塞内加尔、冈比亚、马里、布基纳法索、几内亚、几内亚比绍、佛得角、塞拉利昂、利比里亚、科特迪瓦、加纳、多哥、贝宁、尼日尔、加那利群岛（西）、赞比亚、安哥拉、津巴布韦、马拉维、莫桑比克、博茨瓦纳、纳米比亚、南非、斯威士兰、莱索托、马达加斯加、科摩罗、毛里求斯、留尼旺（法）、圣赫勒拿（英）、澳大利亚、新西兰、巴布亚新几内亚、所罗门群岛、瓦努阿图、密克罗尼西亚、马绍尔群岛、帕劳、瑙鲁、基里巴斯、图瓦卢、萨摩亚、斐济群岛、汤加、库克群岛（新）、关岛（美）、新喀里多尼亚（法）、法属波利尼西亚、皮特凯恩岛（英）、瓦利斯与富图纳（法）、纽埃（新）、托克劳（新）、美属萨摩亚、北马里亚纳（美）、加拿大、美国、墨西哥、格陵兰（丹）、危地马拉、伯利兹、萨尔瓦多、洪都拉斯、尼加拉瓜、哥斯达黎加、巴拿马、巴哈马、古巴、牙买加、海地、多米尼加共和国、安提瓜和巴布达、圣基茨和尼维斯、多米尼克、圣卢西亚、圣文森特和格林纳丁斯、格林纳达、巴巴多斯、特立尼达和多巴哥、波多黎各（美）、英属维尔京群岛、美属维尔京群岛、安圭拉（英）、蒙特塞拉特（英）、瓜德罗普（法）、马提尼克（法）、荷属安的列斯、阿鲁巴（荷）、特克斯和凯科斯群岛（英）、开曼群岛（英）、百慕大（英）、哥伦比亚、委内瑞拉、圭亚那、法属圭亚那、苏里南、厄瓜多尔、秘鲁、玻利维亚、巴西、智利、阿根廷、乌拉圭、巴拉圭'
 // 权限数据
+const permissions = [{
+  module: '样品管理',
+  id: 1
+}, {
+  module: '报价单管理',
+  id: 2
+}, {
+  module: '产品管理',
+  id: 3
+}, {
+  module: '设计单管理',
+  id: 4
+}, {
+  module: '订单管理',
+  id: 5
+}, {
+  module: '物料管理',
+  id: 6
+}, {
+  module: '织造加工管理',
+  id: 7
+}, {
+  module: '产品收发管理',
+  id: 8
+}, {
+  module: '检验管理',
+  id: 9
+}, {
+  module: '装箱出库管理',
+  id: 10
+}, {
+  module: '库存管理',
+  id: 11
+}, {
+  module: '客户管理',
+  id: 12
+}, {
+  module: '用户管理',
+  id: 13
+}, {
+  module: '系统设置',
+  id: 14
+}]
 const permissionsData = [
   {
     url: ['product/save', 'product/list', 'product/one', 'product/delete'],
@@ -655,4 +698,4 @@ const permissionsData = [
   }
 ]
 const allUrl = ['auth/login', 'auth/send_code', 'auth/register', 'auth/verify_phone', 'upload/token', 'product/flower/save', 'product/flower/one', 'product/flower/list', 'product/category/one', 'product/category/list', 'product/one', 'auth/password/forget', 'product/category/delete', 'product/flower/delete', 'product/color/save', 'product/color/one', 'product/ingredient/save', 'product/ingredient/one', 'product/ingredient/delete', 'product/ingredient/list', 'product/color/list', 'product/size/save', 'product/size/company/all', 'product/size/category/all', 'product/size/delete', 'product/footage/list', 'product/footage/delete', 'product/footage/one', 'product/size/one', 'product/footage/save', 'product/footage/category/all', 'production/process/save', 'production/type/save', 'production/method/save', 'production/side/save', 'product/save', 'production/edit/list', 'permission/one', 'permission/company/all', 'yarn/color/save', 'product/unit/save', 'product/unit/all', 'product/unit/one', 'product/unit/category/one', 'user/save', 'user/check_status', 'user/group/save', 'user/station/save', 'user/list', 'user/station/list', 'user/group/list', 'product/craft/one', 'craft/product/one', 'product/material/save', 'product/material/list', 'product/material/one', 'client/delete', 'client/one', 'client/contacts/delete', 'client/contacts/check', 'client/list', 'order/sample/list', 'order/sample/save', 'product/craft/save', 'product/stock/one', 'product/stock/list', 'product/stock/order', 'production/save', 'production/list', 'production/one', 'client/save', 'order/list', 'order/batch/list', 'product/list', 'product/delete', 'product/craft/list', 'product/plan/list', 'product/plan/order', 'product/plan/product/one', 'product/plan/one', 'upload/put', 'product/plan/save', 'product/stock/detail', 'product/unit/delete', 'product/material/delete', 'order/delete', 'production/side/delete', 'production/method/delete', 'auth/logout', 'auth/check/login', 'user/station/delete', 'user/group/delete', 'yarn/list', 'pan/color/list', 'yarn/color/list', 'yarn/category/save', 'yarn/category/list', 'material/order/init', 'material/process/list', 'material/order/list', 'product/craft/draft/delete', 'material/stock/list', 'material/reserve/save', 'order/material/push/detail', 'order/material/pop/detail', 'production/weave/save', 'production/semi_product/save', 'product/plan/order/detail', 'material/process/save', 'production/semi_product/list', 'production/weave/list', 'product/order/push', 'product/order/pop', 'product/order/push/list', 'product/order/pop/list', 'production/weave/edit', 'production/semi_product/edit', 'product/inspection/list', 'product/semi/inspection/list', 'product/order/push/edit', 'product/order/pop/edit', 'product/inspection', 'yarn/save', 'yarn/edit', 'product/category/save', 'product/semi/inspection', 'pack/order/list', 'production/order/cilent/list', 'production/yarn/replenish/save', 'production/yarn/replenish/list', 'material/order/save', 'pack/material/one', 'pack/material/save', 'pack/material/list', 'pack/order/save', 'pack/info/list', 'stock/out/save', 'stock/out/list', 'pack/info/save', 'pack/real/save', 'pack/real/list', 'material/reserve/list', 'material/reserve/one', 'material/reserve/push', 'order/material/pop', 'order/one', 'order/detail', 'order/material/push', 'order/material/surplus/push', 'order/material/list', 'order/material/surplus/delete', 'material/stock/detail', 'stock/material/detail', 'order/save', 'permission/save', 'permission/group/save', 'permission/group/one', 'permission/group/all', 'product/stock/save', 'order/status/check']
-export { menu, letterArr, companyType, companyTypes, moneyArr, machiningType, defectiveType, countries, permissionsData, allUrl, stockType }
+export { menu, letterArr, companyType, companyTypes, moneyArr, machiningType, defectiveType, countries, permissions, permissionsData, allUrl, stockType }

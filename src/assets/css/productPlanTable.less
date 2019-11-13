@@ -12,7 +12,7 @@ p {
   height: auto;
   margin: 80px 0 30px 50px;
   font-family: 'systemfont';
-  font-size: @fontBig;
+  font-size: 18px;
   color: @fontNormal;
   .head{
     page-break-before: always;
@@ -89,9 +89,9 @@ p {
           justify-content: center;
           border-right: 1px solid #999;
           box-sizing: border-box;
-          font-size: @fontBig;
+          // font-size: @fontBig;
           &:nth-child(2n+1) {
-            font-size: 18px
+            font-size: 20px
           }
           &:first-child {
             width:170px;
@@ -125,15 +125,16 @@ p {
       .head{
         display: flex;
         height: 40px;
-        font-size: 18px;
+        font-size: 20px;
         background: #F5F5F5;
         border-bottom: 1px solid #999;
         justify-content: space-between;
         .color{
-          width: 170px;
+          width: auto!important;
           display: flex;
           justify-content: center;
           align-items: center;
+          margin-left: 16px;
         }
         .weightBox{
           margin-right: 24px;

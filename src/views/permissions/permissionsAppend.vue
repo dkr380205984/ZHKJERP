@@ -17,36 +17,31 @@
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label must">权限类型：</span>
-          <!-- <el-select v-model="type"
+          <el-select v-model="type"
             placeholder="请选择权限类型"
             class="inputContent">
             <el-option v-for="item in permissData"
               :key="item.id"
-              :label="item.label"
+              :label="item.module"
               :value="item.id">
             </el-option>
-          </el-select> -->
-          <el-cascader v-model="type"
+          </el-select>
+          <!-- <el-cascader v-model="type"
             :options="permissData"
             placeholder="请选择权限类型"
             class="inputContent"
-            @change="getUrlData"></el-cascader>
+            @change="getUrlData"></el-cascader> -->
         </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">
           <span class="label must">权限接口：</span>
-          <el-select v-model="url"
-            placeholder="请选择权限接口"
-            :filterable="searchFlag"
+          <el-input v-model="url"
+            placeholder="请输入权限接口"
             class="inputContent">
-            <el-option v-for="(item,key) in (!searchFlag ? urlData : allUrl)"
-              :key="key"
-              :value="item">
-            </el-option>
-          </el-select>
-          <span @click="searchFlag = !searchFlag"
-            class="search el-icon-search">{{searchFlag ? '关闭' : '打开'}}高级搜索</span>
+          </el-input>
+          <!-- <span @click="searchFlag = !searchFlag"
+            class="search el-icon-search">{{searchFlag ? '关闭' : '打开'}}高级搜索</span> -->
         </div>
       </div>
       <div class="btnCtn">
@@ -59,47 +54,44 @@
 </template>
 
 <script>
-import { permissionsData, allUrl } from '@/assets/js/dictionary.js'
+import { permissions } from '@/assets/js/dictionary.js'
 import { permissionAdd } from '@/assets/js/api.js'
 export default {
   data () {
     return {
       loading: false,
       name: '',
-      type: [],
+      type: '',
       url: '',
-      permissData: permissionsData,
-      urlData: [],
-      allUrl: allUrl,
-      searchFlag: false
+      permissData: permissions
     }
   },
-  watch: {
-    searchFlag () {
-      if (!this.searchFlag) {
-        this.getUrlData()
-      }
-    }
-  },
+  // watch: {
+  //   searchFlag () {
+  //     if (!this.searchFlag) {
+  //       this.getUrlData()
+  //     }
+  //   }
+  // },
   methods: {
-    getUrlData () {
-      function digui (data, type, index) {
-        if (type.length === 0) {
-          return []
-        }
-        let date = data.find(key => key.value === type[index])
-        if (index < type.length - 1) {
-          return digui(date.children, type, index + 1)
-        } else {
-          return date.url
-        }
-      }
-      this.urlData = digui(this.permissData, this.type, 0)
-    },
+    // getUrlData () {
+    //   function digui (data, type, index) {
+    //     if (type.length === 0) {
+    //       return []
+    //     }
+    //     let date = data.find(key => key.value === type[index])
+    //     if (index < type.length - 1) {
+    //       return digui(date.children, type, index + 1)
+    //     } else {
+    //       return date.url
+    //     }
+    //   }
+    //   this.urlData = digui(this.permissData, this.type, 0)
+    // },
     saveAll () {
       permissionAdd({
         name: this.name,
-        type: this.type,
+        module: this.type,
         url: this.url
       }).then(res => {
         this.$message({
@@ -111,8 +103,7 @@ export default {
         this.url = ''
       })
     }
-  },
-  mounted () { }
+  }
 }
 </script>
 

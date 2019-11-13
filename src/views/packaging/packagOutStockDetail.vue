@@ -203,14 +203,24 @@
                     <span class="tableColumn"
                       v-for="(valPro,indPro) in value.product_info"
                       :key="indPro">
-                      <span class="tableRow flex17">{{valPro.product[0]}}</span>
+                      <span class="tableRow flex17"
+                        style="line-height:1.5em">
+                        <div>
+                          <span>{{valPro.product[0].split(' ')[0]}}</span>
+                          <span>{{valPro.product[0].split(' ')[1]}}</span>
+                        </div>
+                      </span>
                       <span class="tableRow">{{valPro.product[1] + '/' + valPro.product[2]}}</span>
                       <span class="tableRow">{{valPro.all_number}}</span>
                     </span>
                   </span>
                   <span :class="{tableRow:true,noDate:!value.desc}">{{value.desc ? value.desc : '暂无备注'}}</span>
-                  <span class="tableRow blue"
-                    @click="changeLog(value,true)">修改</span>
+                  <span class="tableRow">
+                    <span class="blue"
+                      @click="changeLog(value,true)"> 修改</span>
+                    <span style="color:#F56C6C;cursor:pointer;"
+                      @click="deletePackLog(value)">删除</span>
+                  </span>
                 </li>
               </ul>
               <ul class="tablesCtn"
@@ -227,7 +237,7 @@
                   <span>到达港口</span>
                   <span>费用</span>
                   <span>备注</span>
-                  <span class="flex17">操作</span>
+                  <span style="flex:2.5">操作</span>
                 </li>
                 <li class="handle"
                   @click="$router.push('/index/packagOutStock/' + $route.params.id + '/' +item.id)">添加出库</li>
@@ -244,9 +254,12 @@
                   <span :class="{tableRow:true,noDate:!val.port}">{{val.port ? val.port : '暂无数据'}}</span>
                   <span :class="{tableRow:true,noDate:!val.cost}">{{val.cost ? val.cost : '暂未添加'}}</span>
                   <span :class="{tableRow:true,noDate:!val.desc}">{{val.desc ? val.desc : '暂无备注'}}</span>
-                  <span class="tableRow flex17">
+                  <span class="tableRow"
+                    style="flex:2.5">
                     <span class="blue"
                       @click="changeLog(val)">修改</span>
+                    <span style="color:#F56C6C;cursor:pointer;margin-left:8px"
+                      @click="deleteLog(val)">删除</span>
                     <span class="blue flex17"
                       v-show="val.cost === null"
                       @click="changeLog(val),addPackCost = true">添加运输费用</span>
@@ -515,7 +528,7 @@
 
 <script>
 import { countries } from '@/assets/js/dictionary.js'
-import { orderDetail, packagDetail, outStockDetail, packagNumberAdd, packagNumberDetail, clientList, packagMaterialList, packagCreate, outStockAdd, notifySave } from '@/assets/js/api.js'
+import { orderDetail, packagDetail, outStockDetail, packagNumberAdd, packagNumberDetail, clientList, packagMaterialList, packagCreate, outStockAdd, notifySave, deleteStockOutLog, deletePackagLog } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -599,6 +612,56 @@ export default {
         this.changeOutStockInfo.client_id = this.changeOutStockInfo.client_id.toString()
         this.changeOutStockShow = true
       }
+    },
+    // 删除装箱日志
+    deleteLog (item) {
+      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteStockOutLog({
+          id: item.id
+        }).then(res => {
+          if (res.data.status) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            window.location.reload()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    // 删除包装日志
+    deletePackLog (item) {
+      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deletePackagLog({
+          id: item.id
+        }).then(res => {
+          if (res.data.status) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            window.location.reload()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     },
     submit (type) {
       let data = []
