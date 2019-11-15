@@ -11,7 +11,7 @@ const sendCode = (params) => http.post(`${baseUrl}/auth/send_code`, params, 'app
 // 获取图片上传验证
 const getToken = (params) => http.get(`${baseUrl}/upload/token`, params)
 // 修改密码
-const updatePsd = (params) => http.post(`${baseUrl}/auth/reset_pass`, params, 'application/json')
+const updatePsd = (params) => http.post(`${baseUrl}/user/edit/pass`, params, 'application/json')
 // 添加岗位
 const addStation = (params) => http.post(`${baseUrl}/user/station/save`, params, 'application/json')
 // 添加分组

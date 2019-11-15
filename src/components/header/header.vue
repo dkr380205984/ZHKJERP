@@ -64,6 +64,8 @@
               <el-dropdown-item command="sendMsg">发布通知</el-dropdown-item>
               <el-dropdown-item command="personManage"
                 divided>人员管理</el-dropdown-item>
+              <el-dropdown-item command="changePsd"
+                divided>修改密码</el-dropdown-item>
               <el-dropdown-item command="login"
                 divided>退出登录</el-dropdown-item>
             </el-dropdown-menu>
@@ -98,17 +100,47 @@
         </div>
       </div>
     </div>
+    <!-- 修改密码模块 -->
+    <div class="settingsCtn"
+      v-show="showPsd">
+      <div class="main">
+        <div class="close"
+          @click="showPsd=false">
+          <span class="icon">x</span>
+        </div>
+        <div class="title">修改密码</div>
+        <div class="inputCtn">
+          <div class="label">请输入旧密码：</div>
+          <el-input v-model="oldPsd"
+            placeholder="请输入旧密码"></el-input>
+        </div>
+        <div class="inputCtn">
+          <div class="label">请输入新密码：</div>
+          <el-input v-model="newPsd"
+            placeholder="请输入新密码"></el-input>
+        </div>
+        <div class="btnCtn">
+          <div class="cancleBtn"
+            @click="showPsd=false">取消</div>
+          <div class="okBtn"
+            @click="submit">确认修改</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import './header.less'
-import { notifyList, notifyRead, companyInfoDetail } from '@/assets/js/api.js'
+import { notifyList, notifyRead, companyInfoDetail, updatePsd } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      oldPsd: '',
+      newPsd: '',
       goSetting: false,
       showSetting: false,
+      showPsd: false,
       list: [{
         name: '产品设置',
         img: require('../../assets/image/setting/产品设置-蓝.png'),
@@ -159,6 +191,8 @@ export default {
         window.location.replace('/login')
       } else if (cmd === 'sendMsg') {
         window.location.replace('/index/sendMsg')
+      } else if (cmd === 'changePsd') {
+        this.showPsd = true
       }
     },
     goHome () {
@@ -216,6 +250,17 @@ export default {
       } else {
         this.showSetting = false
       }
+    },
+    submit () {
+      updatePsd({
+        old_pass: this.oldPsd,
+        new_pass: this.newPsd
+      }).then((res) => {
+        if (res.data.status) {
+          this.$message.success('修改密码成功，请重新登陆')
+          this.$router.push('/login')
+        }
+      })
     }
   },
   mounted () {
