@@ -98,19 +98,18 @@
                 <div class="proCtn active"
                   v-for="(item,key) in product_info"
                   :key="key">
-                  <div class="
-                  left">
-                    <img :src="item.product_info.img.length > 0 ? item.product_info.img[0].image_url : require('@/assets/image/index/noPic.png')"
-                      :alt="item.product_info.category_info.product_category + '图片'"
-                      :title="item.product_info.category_info.product_category"
+                  <div class="left">
+                    <img :src="item.product_info.images.length > 0 ? item.product_info.images[0].image_url : require('@/assets/image/index/noPic.png')"
+                      :alt="item.product_info.category_name + '图片'"
+                      :title="item.product_info.category_name"
                       class="imgItem">
-                    <span class="blue">{{item.product_code}}</span>
+                    <span class="blue">{{item.product_info.product_code}}</span>
                     <span>{{item.product_info|filterType}}</span>
                   </div>
                   <ul class="right">
                     <li>
                       <span class="title">产品编号:</span>
-                      <span class="info blue">{{item.product_code}}</span>
+                      <span class="info blue">{{item.product_info.product_code}}</span>
                     </li>
                     <li>
                       <span class="title">产品品类:</span>
@@ -118,7 +117,7 @@
                     </li>
                     <li>
                       <span class="title">颜色色组:</span>
-                      <span class="info">{{item.product_info|filterColor}}</span>
+                      <span class="info">{{item|filterColor}}</span>
                     </li>
                     <li>
                       <span class="title">尺码规格:</span>
@@ -440,12 +439,11 @@ export default {
     //   return arr[val]
     // },
     filterColor (item) {
-      return item.color.map(val => {
-        return val.color_name
-      }).join('/')
+      let color = item.color_size.map(item => item.split('/')[1])
+      return color.join('/')
     },
     filterType (item) {
-      return item.category_info.product_category + '/' + item.type_name + '/' + item.style_name
+      return item.category_name + '/' + item.type_name + '/' + item.style_name
     },
     filterPrice (item) {
       return (Number(item.yongjin.price ? item.yongjin.price : 0) + Number(item.lirun.price ? item.lirun.price : 0) + Number(item.shuifei.price ? item.shuifei.price : 0)).toFixed(2)
@@ -529,7 +527,7 @@ export default {
       this.priceTableDetail.reasonText = (data.reason ? JSON.parse(data.reason).join(',') + (data.reason_text ? '(' + data.reason_text + ')' : '') : '')
       this.priceTableDetail.need = data.product_need
       this.priceTableDetail.status = data.status
-      this.product_info = JSON.parse(data.product_info).map(item => {
+      this.product_info = data.product_info.map(item => {
         return {
           show: false,
           ...item

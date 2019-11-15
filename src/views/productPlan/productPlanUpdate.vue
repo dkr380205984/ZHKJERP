@@ -102,6 +102,7 @@
             <div class="specialCtn">
               <div class="materialInfo">
                 <el-select v-model="itemMaterial.material"
+                  filterable
                   class="elInput noMarginLeft"
                   placeholder="请选择纱线原料">
                   <el-option v-for="item in ingredientArr"
@@ -238,6 +239,7 @@
             <div class="specialCtn">
               <div class="materialInfo">
                 <el-select v-model="itemMaterial.material"
+                  filterable
                   class="elInput noMarginLeft"
                   placeholder="请选择辅助原料"
                   @change="getUnit(indexMaterial)">
@@ -260,6 +262,7 @@
                   <span class="line"></span>
                   <div class="tranY">
                     <el-select v-model="itemColour.name"
+                      filterable
                       class="elInput noMarginLeft"
                       placeholder='请选择配色方案'>
                       <el-option v-for="item in colourArr"

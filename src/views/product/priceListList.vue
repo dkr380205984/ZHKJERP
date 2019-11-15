@@ -84,7 +84,7 @@
               v-for="(itemPro,indexPro) in item.product_info"
               style="height:60px;text-align:center;justify-content:space-around"
               :key="indexPro">
-              {{itemPro.product_code}}({{itemPro.product_info.category_info.product_category}}/{{itemPro.product_info.type_name}}/{{itemPro.product_info.style_name}})
+              {{itemPro.product_info.product_code}}({{itemPro.product_info.category_name}}/{{itemPro.product_info.type_name}}/{{itemPro.product_info.style_name}})
             </div>
           </div>
           <div class="tableColumn">
@@ -92,12 +92,12 @@
               v-for="(itemProduct,indexProduct) in item.product_info"
               :key="indexProduct">
               <img class="img"
-                :src="itemProduct.product_info.img.length>0?itemProduct.product_info.img[0].thumb:require('@/assets/image/index/noPic.jpg')"
+                :src="itemProduct.product_info.images.length>0?itemProduct.product_info.images[0].thumb:require('@/assets/image/index/noPic.jpg')"
                 :onerror="defaultImg" />
               <div class="toolTips"
-                v-if="itemProduct.product_info.img.length>0"><span @click="showImg(itemProduct.product_info.img)">点击查看大图</span></div>
+                v-if="itemProduct.product_info.images.length>0"><span @click="showImg(itemProduct.product_info.images)">点击查看大图</span></div>
               <div class="toolTips"
-                v-if="itemProduct.product_info.img.length===0"><span>没有预览图</span></div>
+                v-if="itemProduct.product_info.images.length===0"><span>没有预览图</span></div>
             </div>
           </div>
           <div class="tableColumn">{{item|cmpPrice}}元</div>
@@ -342,6 +342,7 @@ export default {
         code: this.searchVal
       }).then((res) => {
         this.total = res.data.meta.total
+        res.data.data.splice(0, 1)
         this.list = res.data.data.map((item) => {
           return {
             id: item.id,
@@ -350,7 +351,7 @@ export default {
             contact_name: item.contact_name,
             exchange_rate: item.exchange_rate,
             account_unit: item.account_unit,
-            product_info: JSON.parse(item.product_info),
+            product_info: item.product_info,
             product_need: item.product_need,
             material_info: JSON.parse(item.material_info),
             assist_info: JSON.parse(item.assist_info),

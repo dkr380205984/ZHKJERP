@@ -283,8 +283,8 @@
               :value="item.id">
               <span>{{item.quotation_code}}</span>
               <span style="margin:0 5px;color:#8492a6;font-size:13px"
-                v-for="itemPro in JSON.parse(item.product_info)"
-                :key="itemPro.product_code">({{itemPro.product_info.category_info.product_category +'/'+itemPro.product_info.type_name+'/'+itemPro.product_info.style_name}})</span>
+                v-for="itemPro in item.product_info"
+                :key="itemPro.product_info.product_code">({{itemPro.product_info.category_name +'/'+itemPro.product_info.type_name+'/'+itemPro.product_info.style_name}})</span>
             </el-option>
           </el-select>
         </div>
@@ -1206,10 +1206,27 @@ export default {
           this.desc = detail.desc
           this.startNum = detail.number
           this.product_need = detail.product_need
-          this.productArr = JSON.parse(detail.product_info)
+          this.productArr = detail.product_info
           this.productArr.forEach((item) => {
+            if (item.product_info.size && item.product_info.color) {
+              item.product_info.size.forEach(valSize => {
+                item.product_info.color.forEach(valColor => {
+                  if (!item.colorSizeArr) {
+                    item.colorSizeArr = []
+                  }
+                  item.colorSizeArr.push(valSize.measurement + '/' + valColor.color_name)
+                })
+              })
+            }
+            item.colorSize = item.color_size
             for (let key in item.product_info) {
-              if (!item.hasOwnProperty[key]) {
+              if (key === 'category_name') {
+                item.category_info = {
+                  product_category: item.product_info[key]
+                }
+              } else if (key === 'images') {
+                item.img = item.product_info[key]
+              } else if (!item.hasOwnProperty[key]) {
                 item[key] = item.product_info[key]
               }
             }
@@ -1268,10 +1285,8 @@ export default {
           account_unit: this.money,
           product_info: JSON.stringify(this.productArr.map((item) => {
             return {
-              product_code: item.product_code,
               id: item.id,
-              colorSize: item.colorSize,
-              product_info: item
+              colorSize: item.colorSize
             }
           })),
           product_need: this.product_need,
