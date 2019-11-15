@@ -404,7 +404,32 @@ const stockPack = (params) => http.post(`${baseUrl}/pack/material/stock/save`, p
 const packStockList = (params) => http.get(`${baseUrl}/pack/material/stock/list`, params)
 // 包装辅料库存日志
 const packStockLog = (params) => http.get(`${baseUrl}/pack/material/stock/log/list`, params)
+// 订单产品入库日志删除
+const deleteOrderStockInLog = (params) => http.post(`${baseUrl}/product/order/push/delete`, params, 'application/json')
+// 订单产品出库日志删除
+const deleteOrderStockOutLog = (params) => http.post(`${baseUrl}/product/order/pop/delete`, params, 'application/json')
+// 半成品检验日志删除
+const deleteSemiExaminationLog = (params) => http.post(`${baseUrl}/product/semi/inspection/delete`, params, 'application/json')
+// 成品检验日志删除
+const deleteFinishedExaminationLog = (params) => http.post(`${baseUrl}/product/inspection/delete`, params, 'application/json')
+// 织造日志删除
+const deleteWeaveLog = (params) => http.post(`${baseUrl}/production/weave/delete`, params, 'application/json')
+// 半成品加工日志删除
+const deleteProcessLog = (params) => http.post(`${baseUrl}/production/semi_product/delete`, params, 'application/json')
+// 装箱出库日志删除
+const deleteStockOutLog = (params) => http.post(`${baseUrl}/stock/out/delete`, params, 'application/json')
+// 包装资料日志删除
+const deletePackagLog = (params) => http.post(`${baseUrl}/pack/info/delete`, params, 'application/json')
+
 export {
+  deletePackagLog,
+  deleteStockOutLog,
+  deleteProcessLog,
+  deleteWeaveLog,
+  deleteFinishedExaminationLog,
+  deleteSemiExaminationLog,
+  deleteOrderStockInLog,
+  deleteOrderStockOutLog,
   rawMaterialPurchaseDelete,
   yarnPriceHistory,
   yarnPriceList,

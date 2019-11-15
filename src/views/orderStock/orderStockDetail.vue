@@ -202,8 +202,12 @@
                     <span>{{itemLog.number}}{{itemLog.product_info.category_info.name}}</span>
                     <span>{{itemLog.user_name}}</span>
                     <span>{{itemLog.desc}}</span>
-                    <span style="color:#1A95FF;cursor:pointer"
-                      @click="updateLog(itemLog,'in')">修改</span>
+                    <span>
+                      <span style="color:#1A95FF;cursor:pointer"
+                        @click="updateLog(itemLog,'in')">修改</span>
+                      <span style="color:#F56C6C;cursor:pointer;margin-left:8px"
+                        @click="deleteInLogFn(itemLog)">删除</span>
+                    </span>
                   </li>
                 </div>
                 <li v-if="item.inLog.length===0">
@@ -315,8 +319,12 @@
                     <span>{{itemLog.number}}{{itemLog.product_info.category_info.name}}</span>
                     <span>{{itemLog.user_name}}</span>
                     <span>{{itemLog.desc}}</span>
-                    <span style="color:#1A95FF;cursor:pointer"
-                      @click="updateLog(itemLog,'out')">修改</span>
+                    <span>
+                      <span style="color:#1A95FF;cursor:pointer"
+                        @click="updateLog(itemLog,'out')">修改</span>
+                      <span style="color:#F56C6C;cursor:pointer;margin-left:8px"
+                        @click="deleteOutLogFn(itemLog)">删除</span>
+                    </span>
                   </li>
                 </div>
                 <li v-if="item.outLog.length===0">
@@ -412,7 +420,7 @@
 </template>
 
 <script>
-import { productionDetail, storeInList, storeOutList, storeInUpdate, storeOutUpdate, weaveDetail, halfProductDetail } from '@/assets/js/api.js'
+import { productionDetail, storeInList, storeOutList, storeInUpdate, storeOutUpdate, weaveDetail, halfProductDetail, deleteOrderStockInLog, deleteOrderStockOutLog } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -748,6 +756,56 @@ export default {
           this.showShade = false
         })
       }
+    },
+    // 删除入库日志
+    deleteInLogFn (item) {
+      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteOrderStockInLog({
+          id: item.id
+        }).then(res => {
+          if (res.data.status) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            window.location.reload()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    // 删除出库日志
+    deleteOutLogFn (item) {
+      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteOrderStockOutLog({
+          id: item.id
+        }).then(res => {
+          if (res.data.status) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            window.location.reload()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
   }
 

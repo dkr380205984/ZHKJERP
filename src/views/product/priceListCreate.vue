@@ -283,8 +283,8 @@
               :value="item.id">
               <span>{{item.quotation_code}}</span>
               <span style="margin:0 5px;color:#8492a6;font-size:13px"
-                v-for="itemPro in JSON.parse(item.product_info)"
-                :key="itemPro.product_code">({{itemPro.product_info.category_info.product_category +'/'+itemPro.product_info.type_name+'/'+itemPro.product_info.style_name}})</span>
+                v-for="itemPro in item.product_info"
+                :key="itemPro.product_info.product_code">({{itemPro.product_info.category_name +'/'+itemPro.product_info.type_name+'/'+itemPro.product_info.style_name}})</span>
             </el-option>
           </el-select>
         </div>
@@ -710,7 +710,7 @@
 
 <script>
 import { moneyArr } from '@/assets/js/dictionary.js'
-import { clientList, productList, productTppeList, flowerList, getGroup, YarnList, materialList, priceListCreate, productPlanDetail, priceListList, priceListDetail, notifySave, courseList, yarnPriceList } from '@/assets/js/api.js'
+import { clientList, productList, productTppeList, flowerList, getGroup, YarnList, materialList, priceListCreate, productPlanDetail, priceListList, priceListDetail, notifySave, courseList, yarnPriceList, porductOne } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -1206,10 +1206,27 @@ export default {
           this.desc = detail.desc
           this.startNum = detail.number
           this.product_need = detail.product_need
-          this.productArr = JSON.parse(detail.product_info)
+          this.productArr = detail.product_info
           this.productArr.forEach((item) => {
+            if (item.product_info.size && item.product_info.color) {
+              item.product_info.size.forEach(valSize => {
+                item.product_info.color.forEach(valColor => {
+                  if (!item.colorSizeArr) {
+                    item.colorSizeArr = []
+                  }
+                  item.colorSizeArr.push(valSize.measurement + '/' + valColor.color_name)
+                })
+              })
+            }
+            item.colorSize = item.color_size
             for (let key in item.product_info) {
-              if (!item.hasOwnProperty[key]) {
+              if (key === 'category_name') {
+                item.category_info = {
+                  product_category: item.product_info[key]
+                }
+              } else if (key === 'images') {
+                item.img = item.product_info[key]
+              } else if (!item.hasOwnProperty[key]) {
                 item[key] = item.product_info[key]
               }
             }
@@ -1268,10 +1285,8 @@ export default {
           account_unit: this.money,
           product_info: JSON.stringify(this.productArr.map((item) => {
             return {
-              product_code: item.product_code,
               id: item.id,
-              colorSize: item.colorSize,
-              product_info: item
+              colorSize: item.colorSize
             }
           })),
           product_need: this.product_need,
@@ -1312,6 +1327,19 @@ export default {
           message: errorMsg
         })
       }
+    },
+    // 根据产品id获取产品信息
+    getProductFId (id) {
+      porductOne({
+        id: id
+      }).then(res => {
+        if (res.data.status) {
+          let detail = res.data.data
+          detail.checked = true
+          this.seachProduct.unshift(detail)
+          this.getProduct(true, id)
+        }
+      })
     }
   },
   filters: {
@@ -1372,6 +1400,7 @@ export default {
       company_id: this.companyId,
       type: 2
     })]).then((res) => {
+      console.log(res[1].data.data)
       this.machiningList = res[7].data.data
       this.companyArr = res[0].data.data.filter((item) => (item.type.indexOf(1) !== -1))
       this.seachProduct = res[1].data.data
@@ -1401,8 +1430,13 @@ export default {
       this.otherMaterialList = res[6].data.data
       this.loading = false
       if (this.$route.fullPath.split('?')[1]) {
-        this.seachProduct.find(key => key.id === this.$route.fullPath.split('?')[1]).checked = true
-        this.getProduct(true, this.$route.fullPath.split('?')[1])
+        let hasProFlag = this.seachProduct.find(key => key.id === this.$route.fullPath.split('?')[1])
+        if (hasProFlag) {
+          hasProFlag.checked = true
+          this.getProduct(true, this.$route.fullPath.split('?')[1])
+        } else {
+          this.getProductFId(this.$route.fullPath.split('?')[1])
+        }
       }
     })
     // 给产品列表做优化

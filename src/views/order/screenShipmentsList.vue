@@ -339,7 +339,6 @@ export default {
         setTimeout(() => {
           this.list = []
           this.filterList = []
-          this.pages = 1
           this.total = 1
           this.getData(10)
         }, this.loopTime - 1000)

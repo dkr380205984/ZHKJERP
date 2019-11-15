@@ -15,9 +15,13 @@
       </div>
       <div class="inputCtn">
         <span class="label must">客户名称:</span>
-        <el-input class="elInput"
+        <!-- <el-input class="elInput"
           placeholder="请输入客户名称"
-          v-model="name"></el-input>
+          v-model="name"></el-input> -->
+        <el-autocomplete v-model="name"
+          class="elInput"
+          :fetch-suggestions="querySearchAsync"
+          placeholder="请输入客户名称"></el-autocomplete>
       </div>
       <div class="inputCtn"
         v-if="statusType !== '1'">
@@ -117,7 +121,7 @@
 
 <script>
 import { companyType } from '@/assets/js/dictionary.js'
-import { clientAdd } from '@/assets/js/api.js'
+import { clientAdd, clientList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -133,7 +137,8 @@ export default {
       companyType: companyType,
       type: [],
       statusType: '2',
-      lock: true
+      lock: true,
+      allClientDate: []
     }
   },
   methods: {
@@ -210,9 +215,33 @@ export default {
         this.$message.warning('请勿频繁操作')
       }
     },
-    clearAll () {
-
+    querySearchAsync (queryString, cb) {
+      let restaurants = this.allClientDate
+      let results = queryString ? restaurants.filter(item => {
+        let strArr = queryString.split('')
+        let flag = false
+        strArr.forEach(itemStr => {
+          if (item.value.toLowerCase().indexOf(itemStr.toLowerCase()) !== -1) {
+            flag = true
+          }
+        })
+        return flag
+      }) : restaurants
+      cb(results)
     }
+  },
+  created () {
+    clientList({
+
+    }).then(res => {
+      if (res.data.status) {
+        this.allClientDate = res.data.data.map(item => {
+          return {
+            value: item.name
+          }
+        })
+      }
+    })
   }
 }
 </script>

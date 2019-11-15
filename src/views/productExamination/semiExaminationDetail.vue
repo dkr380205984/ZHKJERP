@@ -211,8 +211,12 @@
                       </i>
                     </span>
                     <span class="flexMid">{{value.tester}}</span>
-                    <span class="flexMid blue"
-                      @click="changeData(item,index)">修改</span>
+                    <span class="flexMid">
+                      <span class="blue"
+                        @click="changeData(item,index)">修改</span>
+                      <span style="color:#F56C6C;cursor:pointer;margin-left:8px"
+                        @click="deleteData(value)">删除</span>
+                    </span>
                   </li>
                 </div>
               </ul>
@@ -329,7 +333,7 @@
 
 <script>
 import { defectiveType } from '@/assets/js/dictionary.js'
-import { orderDetail, weaveDetail, semiExaminationDetail, storeInList, storeOutList, semiExamination } from '@/assets/js/api.js'
+import { orderDetail, weaveDetail, semiExaminationDetail, storeInList, storeOutList, semiExamination, deleteSemiExaminationLog } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -398,6 +402,31 @@ export default {
       this.changeDataInfo = JSON.parse(JSON.stringify(item.log[index]))
       this.changeDataInfo.product_code = item.product_code
       this.changeDataInfo.product_type = item.product_class
+    },
+    // 删除日志
+    deleteData (item) {
+      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteSemiExaminationLog({
+          id: item.id
+        }).then(res => {
+          if (res.data.status) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            window.location.reload()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     },
     submit () {
       let data = []

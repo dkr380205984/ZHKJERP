@@ -969,8 +969,9 @@ export default {
       if (arr.length === 0) {
         return ''
       }
-      let total = arr.reduce((total, item) => {
-        return Number(total || 0) + Number(item || 0)
+      let newarr = arr.map(item => (Number(item) || 0))
+      let total = newarr.reduce((total, item) => {
+        return total + item
       })
       return Number(total || 0).toFixed(1)
     },

@@ -215,8 +215,12 @@
                     <span>{{parseInt(item.price*item.number)}}元</span>
                     <span>{{item.user_name}}</span>
                     <span>{{item.desc?item.desc:'暂无信息'}}</span>
-                    <span style="color:#1A95FF;cursor:pointer"
-                      @click="updateLog(item)">修改</span>
+                    <span>
+                      <span style="color:#1A95FF;cursor:pointer"
+                        @click="updateLog(item)">修改</span>
+                      <span style="color:#F56C6C;cursor:pointer;margin-left:8px"
+                        @click="deleteLog(item)">删除</span>
+                    </span>
                   </li>
                 </div>
                 <div>
@@ -443,7 +447,7 @@
 </template>
 
 <script>
-import { productionDetail, halfProductDetail, halfProductUpadate, replenishYarnList } from '@/assets/js/api.js'
+import { productionDetail, halfProductDetail, halfProductUpadate, replenishYarnList, deleteProcessLog } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -828,6 +832,31 @@ export default {
           })
         }
         this.showShade = false
+      })
+    },
+    // 删除日志
+    deleteLog (item) {
+      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteProcessLog({
+          id: item.id
+        }).then(res => {
+          if (res.data.status) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            window.location.reload()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
     }
   }

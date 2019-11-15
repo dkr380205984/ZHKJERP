@@ -7,6 +7,8 @@
           :class="{'active':msgFlag}"
           @click="showMsg = true"></i>
       </h2>
+      <span class="btn"
+        @click="dafaultAdd">一键添加</span>
     </div>
     <div class="body">
       <div class="lineCtn">
@@ -253,7 +255,7 @@
 </template>
 
 <script>
-import { clientList, productList, productTppeList, flowerList, getGroup, getToken, orderSave, notifySave } from '@/assets/js/api.js'
+import { clientList, productList, productTppeList, flowerList, getGroup, getToken, orderSave, notifySave, authList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -322,6 +324,16 @@ export default {
     }
   },
   methods: {
+    dafaultAdd () {
+      this.orderTitle = '测试添加'
+      this.orderType = 0
+      this.date = [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join('-')
+      authList({
+
+      }).then(res => {
+        this.group = res.data.data.find(items => items.id === window.sessionStorage.getItem('user_id')).group_id
+      })
+    },
     openUrl (url) {
       window.open(url)
     },
