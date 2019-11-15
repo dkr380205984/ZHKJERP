@@ -228,6 +228,7 @@
                 <el-select class="elInput"
                   v-model="itemPro.colorSize"
                   multiple
+                  @change="selectChange"
                   placeholder="请选择尺码颜色">
                   <el-option v-for="item in itemPro.colorSizeArr"
                     :key="item"
@@ -923,6 +924,9 @@ export default {
           this.$router.push(this.msgUrl)
         }
       })
+    },
+    selectChange () {
+      this.$forceUpdate()
     },
     // 切换辅料单位
     resUnit (item, value) {
