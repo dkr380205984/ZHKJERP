@@ -204,7 +204,7 @@
               <span class="span_title">机上坯幅</span>
               <span class="unit">{{weft_data.peifu}}</span>
               <span class="span_title">纬密</span>
-              <span class="unit">{{weft_data.weimi}}</span>
+              <span class="unit">{{(weft_data.total / (weft_data.neichang + weft_data.rangwei)).toFixed(2)}}</span>
               <span class="span_title">齿牙</span>
               <span class="unit">
                 <span>上:{{weft_data.shangchiya?weft_data.shangchiya:''}}</span>
@@ -676,7 +676,10 @@
         <div class="title">工艺单编号:</div>
         <div class="content">{{design_code}}</div>
       </div>
-      <div class="content">
+      <div class="content"
+        v-for="items in Math.ceil(zhujia_info.length / 6)"
+        style="margin-top:30px"
+        :key="items">
         <div class="table-head-row">
           <div class="table-head">
             <span>颜色组</span>
@@ -684,7 +687,7 @@
           </div>
           <div v-for="(item,index) in forArr(6)"
             :key="index">
-            <div>{{index === 0 ? "主" : "夹" + index}}</div>
+            <div>{{index === 0 ? "主" : "夹" + (index + (items-1)*6)}}</div>
             <div>
               <span>经</span>
               <span>纬</span>
@@ -696,8 +699,8 @@
             <div class="table-head-col">克重</div>
             <div v-for="(val,ind) in forArr(6)"
               :key="ind + 'a'">
-              <span :style="{fontSize:smallFont(colorWeight.warp[ind]) ? '10px' : false}">{{colorWeight.warp[ind] ? colorWeight.warp[ind] === 'NaN' ? '0g' : colorWeight.warp[ind] + 'g' : ''}}</span>
-              <span :style="{fontSize:smallFont(colorWeight.weft[ind]) ? '10px' : false}">{{colorWeight.weft[ind] ? colorWeight.weft[ind] === 'NaN' ? '0g' : colorWeight.weft[ind] + 'g' : ''}}</span>
+              <span :style="{fontSize:smallFont(colorWeight.warp[ind + (items-1)*6]) ? '10px' : false}">{{colorWeight.warp[ind + (items-1)*6] ? colorWeight.warp[ind + (items-1)*6] === 'NaN' ? '0g' : colorWeight.warp[ind + (items-1)*6] + 'g' : ''}}</span>
+              <span :style="{fontSize:smallFont(colorWeight.weft[ind + (items-1)*6]) ? '10px' : false}">{{colorWeight.weft[ind + (items-1)*6] ? colorWeight.weft[ind + (items-1)*6] === 'NaN' ? '0g' : colorWeight.weft[ind + (items-1)*6] + 'g' : ''}}</span>
             </div>
           </li>
           <template v-for="(value,index) in color_data">
@@ -705,10 +708,10 @@
               <div class="table-head-col">{{value.product_color}}</div>
               <div v-for="(item,key) in 6"
                 :key="key">
-                <span v-if="value.color_scheme.warp[key] && value.color_scheme.weft[key] && (value.color_scheme.warp[key].name === value.color_scheme.weft[key].name) ? value.color_scheme.warp[key].name : ''">{{value.color_scheme.warp[key].name}}</span>
+                <span v-if="value.color_scheme.warp[key + (items-1)*6] && value.color_scheme.weft[key + (items-1)*6] && (value.color_scheme.warp[key + (items-1)*6].name === value.color_scheme.weft[key + (items-1)*6].name) ? value.color_scheme.warp[key + (items-1)*6].name : ''">{{value.color_scheme.warp[key + (items-1)*6].name}}</span>
                 <template v-else>
-                  <span :style="{fontSize:smallFont(value.color_scheme.warp[key] ? value.color_scheme.warp[key].name : '') ? '10px' : false}">{{value.color_scheme.warp[key] ? value.color_scheme.warp[key].name : ''}}</span>
-                  <span :style="{fontSize:smallFont(value.color_scheme.weft[key] ? value.color_scheme.weft[key].name : '') ? '10px' : false}">{{value.color_scheme.weft[key] ? value.color_scheme.weft[key].name : ''}}</span>
+                  <span :style="{fontSize:smallFont(value.color_scheme.warp[key + (items-1)*6] ? value.color_scheme.warp[key + (items-1)*6].name : '') ? '10px' : false}">{{value.color_scheme.warp[key + (items-1)*6] ? value.color_scheme.warp[key + (items-1)*6].name : ''}}</span>
+                  <span :style="{fontSize:smallFont(value.color_scheme.weft[key + (items-1)*6] ? value.color_scheme.weft[key + (items-1)*6].name : '') ? '10px' : false}">{{value.color_scheme.weft[key + (items-1)*6] ? value.color_scheme.weft[key + (items-1)*6].name : ''}}</span>
                 </template>
               </div>
             </li>
@@ -726,7 +729,7 @@
           </template>
         </ul>
       </div>
-      <div class="content"
+      <!-- <div class="content"
         v-if="zhujia_info.length > 6"
         style="margin-top:30px;">
         <div class="table-head-row">
@@ -777,7 +780,7 @@
             </li>
           </template>
         </ul>
-      </div>
+      </div> -->
     </div>
     <div class="outTable-through"
       v-if="drafting_method.GLFlag !== 'normal' || drafting_method.GL[0].length >= 6">
