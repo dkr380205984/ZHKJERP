@@ -242,6 +242,24 @@
         </div>
         <div class="lineCtn">
           <div class="inputCtn">
+            <span class="label">上传图片：</span>
+            <el-upload class="upload-demo"
+              action="https://upload.qiniup.com/"
+              accept="image/jpeg,image/gif,image/png,image/bmp"
+              :before-upload="beforeAvatarUpload"
+              :file-list="fileArr"
+              :data="postData"
+              ref="uploada"
+              list-type="picture">
+              <el-button size="small"
+                type="primary">点击上传</el-button>
+              <div slot="tip"
+                class="el-upload__tip">只能上传jpg/png图片文件，且不超过6M</div>
+            </el-upload>
+          </div>
+        </div>
+        <div class="lineCtn">
+          <div class="inputCtn">
             <span class="label">起订数量：</span>
             <el-input v-model="startNum"
               style="width:312px;"
@@ -250,6 +268,16 @@
                 style="padding: 0 1em"
                 class='unit'>件</div>
             </el-input>
+          </div>
+        </div>
+        <div class="lineCtn">
+          <div class="inputCtn oneLine">
+            <span class="label">起订备注：</span>
+            <el-input placeholder="请输入起订备注"
+              v-model="product_need_desc"
+              style="width:668px"
+              type="textarea"
+              :rows="3"></el-input>
           </div>
         </div>
         <div class="lineCtn">
@@ -710,7 +738,7 @@
 
 <script>
 import { moneyArr } from '@/assets/js/dictionary.js'
-import { clientList, productList, productTppeList, flowerList, getGroup, YarnList, materialList, priceListCreate, productPlanDetail, priceListList, priceListDetail, notifySave, courseList, yarnPriceList } from '@/assets/js/api.js'
+import { getToken, clientList, productList, productTppeList, flowerList, getGroup, YarnList, materialList, priceListCreate, productPlanDetail, priceListList, priceListDetail, notifySave, courseList, yarnPriceList } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -884,10 +912,37 @@ export default {
       },
       total_price: 0,
       startNum: '',
-      materialPriceList: []
+      materialPriceList: [],
+      postData: { token: '' },
+      product_need_desc: '',
+      fileArr: []
     }
   },
   methods: {
+    beforeAvatarUpload: function (file) {
+      let fileName = file.name.lastIndexOf('.')// 取到文件名开始到最后一个点的长度
+      let fileNameLength = file.name.length// 取到文件名长度
+      let fileFormat = file.name.substring(fileName + 1, fileNameLength)// 截
+      this.postData.key = Date.parse(new Date()) + '.' + fileFormat
+      const isJPG = file.type === 'image/jpeg'
+      const isPNG = file.type === 'image/png'
+      const isLt2M = file.size / 1024 / 1024 < 6
+      // const isReapeat = this.fileArr.find((item) => {
+      //   return item.key === file.name
+      // })
+      if (!isJPG && !isPNG) {
+        this.$message.error('图片只能是 JPG/PNG 格式!')
+        return false
+      }
+      if (!isLt2M) {
+        this.$message.error('图片大小不能超过 6MB!')
+        return false
+      }
+      // if (isReapeat) {
+      //   this.$message.error('不能重复上传图片')
+      //   return false
+      // }
+    },
     selectMaterial (newVal) {
       if (this.materialPriceList.length === 0) {
         yarnPriceList({
@@ -1205,6 +1260,12 @@ export default {
           this.production_info = JSON.parse(detail.production_info)
           this.user_info_price = detail.no_product_cost
           this.otherArr = JSON.parse(detail.desc_info)
+          this.fileArr = JSON.parse(detail.file_url).map(items => {
+            return {
+              url: items
+            }
+          })
+          this.product_need_desc = detail.product_need_desc
           this.desc = detail.desc
           this.startNum = detail.number
           this.product_need = detail.product_need
@@ -1228,6 +1289,8 @@ export default {
                 }
               } else if (key === 'images') {
                 item.img = item.product_info[key]
+              } else if (key === 'product_id') {
+                item.id = item.product_info[key]
               } else if (!item.hasOwnProperty[key]) {
                 item[key] = item.product_info[key]
               }
@@ -1275,8 +1338,9 @@ export default {
         // 生成产品报价单编号
         let quotationCode = ''
         this.productArr.forEach((item) => {
-          quotationCode = quotationCode + item.product_code.slice(2, 5) + '-' + this.$route.params.id
+          quotationCode = quotationCode + item.product_code.slice(2, 5) + '-'
         })
+        quotationCode += this.$route.params.id
         let json = {
           id: Number(this.$route.params.id),
           client_id: this.company,
@@ -1306,7 +1370,9 @@ export default {
           tax: JSON.stringify(this.shuifei),
           desc: this.desc,
           number: this.startNum,
-          total_price: this.total_price
+          total_price: this.total_price,
+          file_url: JSON.stringify(this.$refs.uploada.uploadFiles.map((item) => { return (item.response ? 'https://zhihui.tlkrzf.com/' + item.response.key : item.url) })),
+          product_need_desc: this.product_need_desc
         }
         priceListCreate(json).then((res) => {
           if (res.data.status) {
@@ -1388,7 +1454,8 @@ export default {
     }), courseList({
       company_id: this.companyId,
       type: 2
-    })]).then((res) => {
+    }), getToken()]).then((res) => {
+      this.postData.token = res[9].data.data
       this.machiningList = res[8].data.data
       this.companyArr = res[0].data.data.filter((item) => (item.type.indexOf(1) !== -1))
       this.seachProduct = res[1].data.data
@@ -1437,6 +1504,12 @@ export default {
       this.product_need = detail.product_need
       this.productArr.length = 0
       this.productArr = detail.product_info
+      this.fileArr = JSON.parse(detail.file_url).map(items => {
+        return {
+          url: items
+        }
+      })
+      this.product_need_desc = detail.product_need_desc
       this.productArr.forEach((item) => {
         if (item.product_info.size && item.product_info.color) {
           item.product_info.size.forEach(valSize => {
@@ -1454,6 +1527,8 @@ export default {
             item.category_info = {
               product_category: item.product_info[key]
             }
+          } else if (key === 'product_id') {
+            item.id = item.product_info[key]
           } else if (key === 'images') {
             item.img = item.product_info[key]
           } else if (!item.hasOwnProperty[key]) {

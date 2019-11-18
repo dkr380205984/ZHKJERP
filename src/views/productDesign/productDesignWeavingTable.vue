@@ -71,7 +71,11 @@
               <span class="tableColumn"
                 v-for="(val,ind) in item.size_info"
                 :key="ind">
-                <span class="tableRow">{{val.size}}{{'/'}}{{val.color}}</span>
+                <span class="tableRow">
+                  <div style="line-height:1em">
+                    {{val.size}}{{'/'}}{{val.color}}<br />尺寸：{{val.size_info}}<br />克重：{{val.weight ? val.weight : 0}}g
+                  </div>
+                </span>
                 <span class="tableRow col flex4">
                   <span class="tableColumn"
                     v-for="(value,index) in val.process_info"
@@ -120,7 +124,7 @@
       </div>
     </div>
     <div class="head"
-      style="margin-top:80px;">
+      style="margin-top:50px;">
       <div class="left">
         <p class="company">{{company_name + (type === '0' ? '原料' : '辅料') +'调拨单'}}</p>
         <span><span class="label">联系人:</span>{{linkman}}</span>
@@ -189,7 +193,11 @@
               <span class="tableColumn"
                 v-for="(val,ind) in item.size_info"
                 :key="ind">
-                <span class="tableRow">{{val.size}}{{'/'}}{{val.color}}</span>
+                <span class="tableRow">
+                  <div style="line-height:1em">
+                    {{val.size}}{{'/'}}{{val.color}}<br />尺寸：{{val.size_info}}<br />克重：{{val.weight ? val.weight : 0}}g
+                  </div>
+                </span>
                 <span class="tableRow col flex4">
                   <span class="tableColumn"
                     v-for="(value,index) in val.process_info"
@@ -254,6 +262,7 @@ export default {
       order_company: '',
       group_name: '',
       client_name: '',
+      client_phone: '',
       linkman_tel: '',
       linkman: '',
       total_price: 0,
@@ -340,6 +349,7 @@ export default {
             if (!flag) {
               this.total_price += item.price * item.number
               let type = item.product_info.category_name + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_name ? '/' + item.product_info.flower_name : '')
+              let sizeInfo = item.product_info.size.find(ite => ite.measurement === item.size)
               this.product_info.push({
                 product_code: item.product_info.product_code,
                 product_type: type,
@@ -347,6 +357,8 @@ export default {
                 size_info: [{
                   size: item.size,
                   color: item.color,
+                  size_info: sizeInfo ? sizeInfo.size_info : '',
+                  weight: sizeInfo ? sizeInfo.weight : '',
                   process_info: [{
                     type: item.type ? item.type : '织造',
                     price: item.price,
@@ -358,10 +370,13 @@ export default {
             } else {
               this.total_price += item.price * item.number
               let flag1 = flag.size_info.find(val => (val.size === item.size && val.color === item.color))
+              let sizeInfo = item.product_info.size.find(ite => ite.measurement === item.size)
               if (!flag1) {
                 flag.size_info.push({
                   size: item.size,
                   color: item.color,
+                  size_info: sizeInfo ? sizeInfo.size_info : '',
+                  weight: sizeInfo ? sizeInfo.weight : '',
                   process_info: [{
                     type: item.type ? item.type : '织造',
                     price: item.price,
@@ -398,6 +413,7 @@ export default {
             if (!flag) {
               this.total_price += item.price * item.number
               let type = item.product_info.category_info.product_category + '/' + item.product_info.type_name + '/' + item.product_info.style_name + (item.product_info.flower_name ? '/' + item.product_info.flower_name : '')
+              let sizeInfo = item.product_info.size.find(ite => ite.measurement === item.size)
               this.product_info.push({
                 product_code: item.product_info.product_code,
                 product_type: type,
@@ -405,6 +421,8 @@ export default {
                 size_info: [{
                   size: item.size,
                   color: item.color,
+                  size_info: sizeInfo ? sizeInfo.size_info : '',
+                  weight: sizeInfo ? sizeInfo.weight : '',
                   process_info: [{
                     type: item.type ? item.type : '织造',
                     price: item.price,
@@ -416,10 +434,13 @@ export default {
             } else {
               this.total_price += item.price * item.number
               let flag1 = flag.size_info.find(val => (val.size === item.size && val.color === item.color))
+              let sizeInfo = item.product_info.size.find(ite => ite.measurement === item.size)
               if (!flag1) {
                 flag.size_info.push({
                   size: item.size,
                   color: item.color,
+                  size_info: sizeInfo ? sizeInfo.size_info : '',
+                  weight: sizeInfo ? sizeInfo.weight : '',
                   process_info: [{
                     type: item.type ? item.type : '织造',
                     price: item.price,
