@@ -1387,19 +1387,32 @@ export default {
           }
           warpGetPM = warpGetPM.concat(PMFlatArr.filter((item, index) => index < remainder))
         } else {
-          let PM = this.PM[this.romanNum.indexOf(item.PM)]
-          let PMArr = PM.value.split(',')
-          let times = parseInt(PM.number / PMArr.length)
-          let remainder = PM.number % PMArr.length
+          // 穿综法普通逻辑
+          // let PM = this.PM[this.romanNum.indexOf(item.PM)]
+          // let PMArr = PM.value.split(',')
+          // let times = parseInt(item.number / PMArr.length)
+          // let remainder = PM.number % PMArr.length
+          // for (let i = 0; i < times; i++) {
+          //   warpGetPM = warpGetPM.concat(PMArr)
+          // }
+          // warpGetPM = warpGetPM.concat(PMArr.filter((item, index) => index < remainder))
+        }
+      })
+      // 穿综法普通逻辑独立
+      if (this.PMFlag === 'normal') {
+        this.PM.forEach((item) => {
+          let PMArr = item.value.split(',')
+          let times = parseInt(item.number / PMArr.length)
+          let remainder = item.number % PMArr.length
           for (let i = 0; i < times; i++) {
             warpGetPM = warpGetPM.concat(PMArr)
           }
           warpGetPM = warpGetPM.concat(PMArr.filter((item, index) => index < remainder))
-        }
-      })
+        })
+      }
       weftGetGLNum.forEach((item) => {
         let GL = this.mergeArray(this.GL[this.alphabet.indexOf(item.GL)]).filter((item) => item) // 剔除null
-        let times = item.number / GL.length
+        let times = parseInt(item.number / GL.length)
         let remainder = item.number % GL.length
         for (let i = 0; i < times; i++) {
           weftGetGL = weftGetGL.concat(GL)
@@ -1432,19 +1445,31 @@ export default {
           }
           warpGetPMBack = warpGetPMBack.concat(PMFlatArr.filter((item, index) => index < remainder))
         } else {
-          let PM = this.PM[this.romanNum.indexOf(item.PM)]
-          let PMArr = PM.value.split(',')
-          let times = parseInt(PM.number / PMArr.length)
-          let remainder = PM.number % PMArr.length
+          // let PM = this.PM[this.romanNum.indexOf(item.PM)]
+          // let PMArr = PM.value.split(',')
+          // let times = parseInt(PM.number / PMArr.length)
+          // let remainder = item.number % PMArr.length
+          // for (let i = 0; i < times; i++) {
+          //   warpGetPMBack = warpGetPMBack.concat(PMArr)
+          // }
+          // warpGetPMBack = warpGetPMBack.concat(PMArr.filter((item, index) => index < remainder))
+        }
+      })
+      // 穿综法普通逻辑独立 -背面
+      if (this.PMFlag === 'normal') {
+        this.PM.forEach((item) => {
+          let PMArr = item.value.split(',')
+          let times = parseInt(item.number / PMArr.length)
+          let remainder = item.number % PMArr.length
           for (let i = 0; i < times; i++) {
             warpGetPMBack = warpGetPMBack.concat(PMArr)
           }
           warpGetPMBack = warpGetPMBack.concat(PMArr.filter((item, index) => index < remainder))
-        }
-      })
+        })
+      }
       weftGetGLNumBack.forEach((item) => {
         let GL = this.mergeArray(this.GL[this.alphabet.indexOf(item.GL)]).filter((item) => item) // 剔除null
-        let times = item.number / GL.length
+        let times = parseInt(item.number / GL.length)
         let remainder = item.number % GL.length
         for (let i = 0; i < times; i++) {
           weftGetGLBack = weftGetGLBack.concat(GL)

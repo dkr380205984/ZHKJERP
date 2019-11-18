@@ -54,6 +54,12 @@
         </el-select>
       </div>
       <div class="inputCtn">
+        <span class="label">样品针型:</span>
+        <el-input class="inputItem content"
+          placeholder="请填写针型"
+          v-model="needleType"></el-input>
+      </div>
+      <div class="inputCtn">
         <span class="label">样品成分:</span>
         <div v-for="(item,key) in ingredient"
           :key="key"
@@ -210,6 +216,7 @@ import { productTppeList, flowerList, ingredientList, colorList, getToken, saveP
 export default {
   data () {
     return {
+      needleType: '',
       localName: 'sampleCreate',
       showMsg: false,
       msgFlag: window.localStorage.getItem('sampleCreate') ? JSON.parse(window.localStorage.getItem('sampleCreate')).msgFlag : false,
@@ -464,6 +471,7 @@ export default {
       }
       const imgArr = this.$refs.uploada.uploadFiles.map((item) => { return 'https://zhihui.tlkrzf.com/' + item.response.key })
       let data = {
+        needle_type: this.needleType,
         product_code: this.product_code.join(''),
         company_id: window.sessionStorage.getItem('company_id'),
         category_id: this.types[0],
