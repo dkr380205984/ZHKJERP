@@ -228,9 +228,10 @@
                 <el-select class="elInput"
                   v-model="itemPro.colorSize"
                   multiple
+                  @change="selectChange($event,indexPro)"
                   placeholder="请选择尺码颜色">
                   <el-option v-for="item in itemPro.colorSizeArr"
-                    :key="item"
+                    :key="item+'size'"
                     :label="item"
                     :value="item">
                   </el-option>
@@ -922,6 +923,9 @@ export default {
         }
       })
     },
+    selectChange () {
+      this.$forceUpdate()
+    },
     // 切换辅料单位
     resUnit (item, value) {
       item.unit = this.otherMaterialList.find(key => key.name === value) ? this.otherMaterialList.find(key => key.name === value).unit : '个'
@@ -1413,58 +1417,60 @@ export default {
       this.yarnList = res[5].data.data
       this.otherMaterialList = res[6].data.data
       // 报价单详情数据
-      this.$nextTick(() => {
-        const detail = res[7].data.data
-        this.company = detail.client_id.toString()
-        this.contactsArr = this.companyArr.find((item) => parseInt(item.id) === detail.client_id).contacts
-        this.contacts = detail.client_contact
-        this.money = detail.account_unit
-        this.exchangeRate = detail.exchange_rate
-        this.yarnArr = JSON.parse(detail.material_info)
-        this.otherMaterialArr = JSON.parse(detail.assist_info)
-        this.weaveArr = JSON.parse(detail.weave_info)
-        this.machiningArr = JSON.parse(detail.semi_product_info)
-        this.packagMaterialArr = JSON.parse(detail.pack_material_info)
-        this.production_info = JSON.parse(detail.production_info)
-        this.user_info_price = detail.no_product_cost
-        this.otherArr = JSON.parse(detail.desc_info)
-        this.desc = detail.desc
-        this.startNum = detail.number
-        this.product_need = detail.product_need
-        this.productArr = detail.product_info
-        this.productArr.forEach((item) => {
-          if (item.product_info.size && item.product_info.color) {
-            item.product_info.size.forEach(valSize => {
-              item.product_info.color.forEach(valColor => {
-                if (!item.colorSizeArr) {
-                  item.colorSizeArr = []
-                }
-                item.colorSizeArr.push(valSize.measurement + '/' + valColor.color_name)
-              })
-            })
-          }
-          item.colorSize = JSON.parse(JSON.stringify(item.color_size))
-          for (let key in item.product_info) {
-            if (key === 'category_name') {
-              item.category_info = {
-                product_category: item.product_info[key]
+      // this.$nextTick(() => {
+      const detail = res[7].data.data
+      this.company = detail.client_id.toString()
+      this.contactsArr = this.companyArr.find((item) => parseInt(item.id) === detail.client_id).contacts
+      this.contacts = detail.client_contact
+      this.money = detail.account_unit
+      this.exchangeRate = detail.exchange_rate
+      this.yarnArr = JSON.parse(detail.material_info)
+      this.otherMaterialArr = JSON.parse(detail.assist_info)
+      this.weaveArr = JSON.parse(detail.weave_info)
+      this.machiningArr = JSON.parse(detail.semi_product_info)
+      this.packagMaterialArr = JSON.parse(detail.pack_material_info)
+      this.production_info = JSON.parse(detail.production_info)
+      this.user_info_price = detail.no_product_cost
+      this.otherArr = JSON.parse(detail.desc_info)
+      this.desc = detail.desc
+      this.startNum = detail.number
+      this.product_need = detail.product_need
+      this.productArr.length = 0
+      this.productArr = detail.product_info
+      this.productArr.forEach((item) => {
+        if (item.product_info.size && item.product_info.color) {
+          item.product_info.size.forEach(valSize => {
+            item.product_info.color.forEach(valColor => {
+              if (!item.colorSizeArr) {
+                item.colorSizeArr = []
               }
-            } else if (key === 'images') {
-              item.img = item.product_info[key]
-            } else if (!item.hasOwnProperty[key]) {
-              item[key] = item.product_info[key]
+              item.colorSizeArr.push(valSize.measurement + '/' + valColor.color_name)
+            })
+          })
+        }
+        item.colorSize = JSON.parse(JSON.stringify(item.color_size))
+        for (let key in item.product_info) {
+          if (key === 'category_name') {
+            item.category_info = {
+              product_category: item.product_info[key]
             }
+          } else if (key === 'images') {
+            item.img = item.product_info[key]
+          } else if (!item.hasOwnProperty[key]) {
+            item[key] = item.product_info[key]
           }
-        })
-        this.yunshu = detail.transport_cost
-        this.lirun = JSON.parse(detail.profit)
-        this.yongjin = JSON.parse(detail.commission)
-        this.shuifei = JSON.parse(detail.tax)
-        this.total_price = detail.total_price ? detail.total_price : 0
-        this.computedTotalPrice()
+        }
       })
-      this.loading = false
+      this.yunshu = detail.transport_cost
+      this.lirun = JSON.parse(detail.profit)
+      this.yongjin = JSON.parse(detail.commission)
+      this.shuifei = JSON.parse(detail.tax)
+      this.total_price = detail.total_price ? detail.total_price : 0
+      this.computedTotalPrice()
+      console.log(this.productArr)
     })
+    this.loading = false
+    // })
     // 给产品列表做优化
     this.$refs.scrollBox.addEventListener('scroll', (ev) => {
       clearTimeout(this.timer)
