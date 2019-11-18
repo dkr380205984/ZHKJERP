@@ -4,9 +4,15 @@
     v-getHash="{'searchVal':searchVal,'pages':pages,'company':company,'status':status}">
     <div class="head">
       <h2>产品报价单列表</h2>
-      <el-input placeholder="输入报价单编号精确搜索"
-        suffix-icon="el-icon-search"
-        v-model="searchVal"></el-input>
+      <div>
+        <el-input placeholder="输入产品编号精确搜索"
+          suffix-icon="el-icon-search"
+          v-model="searchProVal"></el-input>
+        <el-input placeholder="输入报价单编号精确搜索"
+          style="margin-left:8px"
+          suffix-icon="el-icon-search"
+          v-model="searchVal"></el-input>
+      </div>
     </div>
     <div class="body">
       <div class="filterCtn">
@@ -163,6 +169,7 @@ export default {
       imgList: [],
       loading: true,
       searchVal: '',
+      searchProVal: '',
       date: '',
       pickerOptions: {
         shortcuts: [{
@@ -240,6 +247,14 @@ export default {
       }
     },
     searchVal (newVal) {
+      if (!this.first) {
+        if (newVal) {
+          this.pages = 1
+        }
+        this.getList()
+      }
+    },
+    searchProVal (newVal) {
       if (!this.first) {
         if (newVal) {
           this.pages = 1
@@ -339,10 +354,10 @@ export default {
         end_time: this.end_time,
         status: this.status,
         client_id: this.company,
-        code: this.searchVal
+        code: this.searchVal,
+        product_code: this.searchProVal
       }).then((res) => {
         this.total = res.data.meta.total
-        res.data.data.splice(0, 1)
         this.list = res.data.data.map((item) => {
           return {
             id: item.id,

@@ -38,13 +38,13 @@
         </div>
       </div>
       <div class="lineCtn">
-        <!-- <div class="inputCtn">
-          <span class="label">样品克重:</span>
-          <span class="content">{{productDetail.weight}}克</span>
-        </div> -->
         <div class="inputCtn">
           <span class="label">样品成分:</span>
           <span class="content">{{productDetail.materials|filterMaterials}}</span>
+        </div>
+        <div class="inputCtn">
+          <span class="label">样品针型:</span>
+          <span class="content">{{productDetail.needle_type?productDetail.needle_type:'暂无'}}</span>
         </div>
       </div>
       <div class="lineCtn">
@@ -319,10 +319,7 @@
       <div class="btnCtn">
         <div class="cancleBtn"
           @click="$router.go(-1)">返回</div>
-        <div class="okBtn"
-          v-if="productDetail.has_craft===0&&productDetail.in_order===0&&productDetail.has_plan===0"
-          @click="$router.push('/index/productUpdate/'+productDetail.id + '?type=2')">修改</div>
-        <el-tooltip v-if="productDetail.has_craft===1||productDetail.in_order===1||productDetail.has_plan===1"
+        <el-tooltip v-if="productDetail.has_craft===1||productDetail.order_list.length>0||productDetail.has_plan===1"
           class="item"
           effect="dark"
           :content="toolTips(productDetail)"
@@ -331,6 +328,9 @@
             style="background:#E6A23C"
             @click="$router.push('/index/productUpdate/'+productDetail.id + '?type=2')">修改</div>
         </el-tooltip>
+        <div class="okBtn"
+          v-else
+          @click="$router.push('/index/productUpdate/'+productDetail.id + '?type=2')">修改</div>
       </div>
     </div>
     <div class="message"

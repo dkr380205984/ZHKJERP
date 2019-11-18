@@ -88,6 +88,14 @@
           </div>
         </div>
         <div class="lineCtn">
+          <div class="inputCtn">
+            <span class="label">起订备注:</span>
+            <div class="content">
+              {{priceTableDetail.desc ? priceTableDetail.desc : '暂无备注'}}
+            </div>
+          </div>
+        </div>
+        <div class="lineCtn">
           <div class="inputCtn auto">
             <span class="label">产品信息:</span>
             <div class="content"
@@ -526,6 +534,8 @@ export default {
       this.priceTableDetail.lirun = JSON.parse(data.profit)
       this.priceTableDetail.reasonText = (data.reason ? JSON.parse(data.reason).join(',') + (data.reason_text ? '(' + data.reason_text + ')' : '') : '')
       this.priceTableDetail.need = data.product_need
+      this.priceTableDetail.desc = data.product_need_desc
+      this.priceTableDetail.img = data.file_url
       this.priceTableDetail.status = data.status
       this.product_info = data.product_info.map(item => {
         return {

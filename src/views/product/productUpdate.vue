@@ -56,6 +56,12 @@
         </el-select>
       </div>
       <div class="inputCtn">
+        <span class="label">{{type === '1' ? '产' : '样'}}品针型:</span>
+        <el-input class="inputItem content"
+          v-model="needleType"
+          placeholder="请输入针型"></el-input>
+      </div>
+      <div class="inputCtn">
         <span :class="{'label':true,'must':type === '1'}">{{type === '1' ? '产' : '样'}}品成分:</span>
         <div v-for="(item,key) in ingredient"
           :key="key"
@@ -213,6 +219,7 @@ import { productTppeList, flowerList, ingredientList, colorList, getToken, saveP
 export default {
   data () {
     return {
+      needleType: '',
       showMsg: false,
       localName: 'productUpdate',
       msgFlag: window.localStorage.getItem('productUpdate') ? JSON.parse(window.localStorage.getItem('productUpdate')).msgFlag : false,
@@ -297,6 +304,7 @@ export default {
       // 加载数据
       this.sampleName = productInfo.sample_title
       this.product_code = productInfo.product_code
+      this.needleType = productInfo.needle_type
       this.fileArr = productInfo.img.map(item => {
         return {
           url: item.image_url
@@ -496,6 +504,7 @@ export default {
       const imgArr = this.$refs.uploada.uploadFiles.map((item) => { return (item.response ? 'https://zhihui.tlkrzf.com/' + item.response.key : item.url) })
       let data = {
         id: this.$route.params.id,
+        needle_type: this.needleType,
         product_code: this.product_code,
         company_id: window.sessionStorage.getItem('company_id'),
         category_id: this.types[0],

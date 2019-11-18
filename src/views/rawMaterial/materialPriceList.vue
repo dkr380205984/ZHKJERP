@@ -9,13 +9,17 @@
     </div>
     <div class="body"
       style="padding:80px 40px">
-      <div class="addBtn"
-        @click="showShadeFun(false)">设置原料价格</div>
+      <div class="addCtn">
+        <div class="addBtn"
+          @click="showAddMaterialFun">添加原料</div>
+        <!-- <div class="addBtn"
+          @click="showShadeFun(false)">设置原料价格</div> -->
+      </div>
       <div class="tableCtn">
         <div class="tableRow titleTableRow">
           <div class="tableColumn">原料名称</div>
           <div class="tableColumn">价格(元/kg)</div>
-          <div class="tableColumn">更新时间</div>
+          <!-- <div class="tableColumn">更新时间</div> -->
           <div class="tableColumn">历史记录</div>
           <div class="tableColumn">操作</div>
         </div>
@@ -25,7 +29,7 @@
           <div class="tableColumn"
             style="color:#1A95FF">{{item.name}}</div>
           <div class="tableColumn">{{item.price ? item.price : '-'}}</div>
-          <div class="tableColumn">{{item.update_time}}</div>
+          <!-- <div class="tableColumn">{{item.update_time}}</div> -->
           <div class="tableColumn">
             <el-popover placement="left"
               width="406"
@@ -104,11 +108,61 @@
           @click="closeWindow"></span>
       </div>
     </div>
+    <div class="message"
+      v-if="showAddMaterial">
+      <div class="messageBox">
+        <div class="title">添加原料</div>
+        <div class="item"
+          style="margin-top:27px;">
+          <span class="label">原料名称:</span>
+          <div class="content">
+            <!-- <el-select v-model="material_id"
+              class="elInput"
+              filterable
+              :disabled="isUpdata"
+              placeholder="请选择需要设置的原料">
+              <el-option v-for="item in materialList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select> -->
+            <el-autocomplete class="elInput"
+              v-model="material_name"
+              :fetch-suggestions="querySearch"
+              placeholder="请输入原料名称"
+              :trigger-on-focus="false"></el-autocomplete>
+          </div>
+        </div>
+        <!-- <div class="item">
+          <span class="label">原价格:</span>
+          <div class="content">{{oldPrice ? oldPrice + '元/kg' : '-'}}</div>
+        </div>
+        <div class="item">
+          <span class="label">更新价格:</span>
+          <div class="content">
+            <el-input class="elInput"
+              placeholder="请输入价格"
+              v-model="price">
+              <template slot="append">元/kg</template>
+            </el-input>
+          </div>
+        </div> -->
+        <div class="footer">
+          <span class="cancel"
+            @click="showAddMaterial = false">取消</span>
+          <span class="ok"
+            @click="addMaterial">确定</span>
+        </div>
+        <span class="close el-icon-close"
+          @click="showAddMaterial = false"></span>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { yarnPriceSetting, YarnList, yarnPriceList, yarnPriceHistory } from '@/assets/js/api.js'
+import { yarnPriceSetting, YarnList, yarnPriceHistory, saveSelfYarn } from '@/assets/js/api.js'
 export default {
   data () {
     return {
@@ -119,17 +173,20 @@ export default {
       list: [],
       filterList: [],
       material_id: '',
-      material_list: [],
+      materialList: [],
       isUpdata: false,
       price: '',
       oldPrice: '',
       showShade: false,
-      history: []
+      history: [],
+      showAddMaterial: false,
+      // material_list: [],
+      material_name: ''
     }
   },
   methods: {
     getList (pages) {
-      return JSON.parse(JSON.stringify(this.filterList)).splice((pages - 1) * 10, 10)
+      return JSON.parse(JSON.stringify(this.filterList)).reverse().splice((pages - 1) * 10, 10)
     },
     getHistory (item) {
       yarnPriceHistory({
@@ -150,6 +207,33 @@ export default {
         this.oldPrice = item.price
         this.material_id = String(item.id)
       }
+    },
+    showAddMaterialFun () {
+      this.showAddMaterial = true
+    },
+    querySearch (queryString, cb) {
+      var restaurants = this.materialList.map(item => {
+        return {
+          value: item.name
+        }
+      })
+      var results = queryString ? restaurants.filter(item => item.value.indexOf(queryString) !== -1) : restaurants
+      // 调用 callback 返回建议列表的数据
+      cb(results)
+    },
+    addMaterial () {
+      saveSelfYarn({
+        name: this.material_name
+      }).then((res) => {
+        if (res.data.status) {
+          this.$message.success({
+            message: '添加成功'
+          })
+          this.yarn = ''
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
     },
     closeWindow () {
       this.showShade = false
@@ -174,7 +258,7 @@ export default {
         if (res.data.status) {
           this.$message.success('保存成功')
           if (this.isUpdata) {
-            this.list.find(items => Number(items.id) === Number(this.material_id)).price = this.price
+            this.materialList.find(items => Number(items.id) === Number(this.material_id)).price = this.price
             this.closeWindow()
           } else {
             window.location.reload()
@@ -183,30 +267,30 @@ export default {
           this.$message.error(res.data.message)
         }
       })
-    },
-    getMaterialList () {
-      this.loading = true
-      yarnPriceList({
-
-      }).then(res => {
-        if (res.data.status) {
-          this.list = res.data.data
-          this.filterList = res.data.data
-          this.total = res.data.data.length
-        } else {
-          this.$message.error(res.data.message)
-        }
-        this.loading = false
-      })
     }
+    // getMaterialList () {
+    //   this.loading = true
+    //   yarnPriceList({
+
+    //   }).then(res => {
+    //     if (res.data.status) {
+    //       this.list = res.data.data
+    //       this.filterList = res.data.data
+    //       this.total = res.data.data.length
+    //     } else {
+    //       this.$message.error(res.data.message)
+    //     }
+    //     this.loading = false
+    //   })
+    // }
   },
   watch: {
     searchVal (newVal) {
       this.loading = true
       if (newVal) {
-        this.filterList = this.list.filter(items => items.name.indexOf(newVal) !== -1)
+        this.filterList = this.materialList.filter(items => items.name.indexOf(newVal) !== -1)
       } else {
-        this.filterList = this.list
+        this.filterList = this.materialList
       }
       this.pages = 1
       this.total = this.filterList.length
@@ -220,9 +304,11 @@ export default {
       })
     ]).then((res) => {
       this.materialList = res[0].data.data
+      this.filterList = this.materialList
+      this.total = this.filterList.length
       this.loading = false
     })
-    this.getMaterialList()
+    // this.getMaterialList()
   }
 }
 </script>
@@ -242,20 +328,24 @@ export default {
 }
 .body {
   position: relative;
-  .addBtn {
-    width: 10em;
-    height: 2em;
-    font-size: 16px;
-    background-color: @normalBlue;
-    color: #fff;
-    text-align: center;
-    line-height: 2em;
-    border-radius: 5px;
-    margin-bottom: 30px;
+  div.addCtn {
+    display: flex;
     position: absolute;
     right: 40px;
     top: 20px;
-    cursor: pointer;
+    .addBtn {
+      width: 10em;
+      height: 2em;
+      font-size: 16px;
+      background-color: @normalBlue;
+      color: #fff;
+      text-align: center;
+      line-height: 2em;
+      border-radius: 5px;
+      margin-bottom: 30px;
+      cursor: pointer;
+      margin-left: 8px;
+    }
   }
 }
 @import "~@/assets/css/productList.less";

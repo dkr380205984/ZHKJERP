@@ -55,7 +55,7 @@
           <span class="col">
             <span v-for="(item,key) in product_info"
               :key="key">
-              <span class="blue">{{item.product_code}}</span>
+              <span class="blue">{{item.product_info.product_code}}</span>
               <span>{{item.product_info|filterType}}</span>
             </span>
           </span>
@@ -94,7 +94,7 @@
           </li>
         </ul>
       </div>
-      <div>
+      <div style="margin-top:60px">
         <ul class="tables">
           <li class="content">
             <span class="tableRow">基本佣金</span>
@@ -164,7 +164,7 @@ export default {
       return Number(item).toFixed(2)
     },
     filterType (item) {
-      return item.category_info.product_category + '/' + item.type_name + '/' + item.style_name
+      return item.category_name + '/' + item.type_name + '/' + item.style_name
     }
   },
   methods: {
@@ -188,7 +188,7 @@ export default {
       this.unit = data.account_unit
       this.exchange_rate = data.exchange_rate
       this.product_need = data.product_need
-      this.product_info = JSON.parse(data.product_info)
+      this.product_info = data.product_info
       this.yongjin = JSON.parse(data.commission)
       this.shuifei = JSON.parse(data.tax)
       this.lirun = JSON.parse(data.profit)
