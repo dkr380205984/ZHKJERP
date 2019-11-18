@@ -40,6 +40,10 @@
           <span class="label">产品成分:</span>
           <span class="content">{{productDetail.materials|filterMaterials}}</span>
         </div>
+        <div class="inputCtn">
+          <span class="label">产品针型:</span>
+          <span class="content">{{productDetail.needle_type?productDetail.needle_type:'暂无'}}</span>
+        </div>
       </div>
       <div class="lineCtn">
         <div class="inputCtn">

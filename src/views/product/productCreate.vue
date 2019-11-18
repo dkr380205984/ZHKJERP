@@ -19,7 +19,8 @@
           <el-input v-model="sampleName"
             clearable
             placeholder="请输入产品名称"
-            class="inputItem"></el-input>
+            class="inputItem">
+          </el-input>
         </div>
       </div>
       <div class="inputCtn">
@@ -52,6 +53,12 @@
             :value="item.id">
           </el-option>
         </el-select>
+      </div>
+      <div class="inputCtn">
+        <span class="label">产品针型:</span>
+        <el-input class="inputItem content"
+          placeholder="请填写针型"
+          v-model="needleType"></el-input>
       </div>
       <div class="inputCtn">
         <span class="label must">产品成分:</span>
@@ -238,7 +245,8 @@ export default {
       textarea: '',
       postData: { token: '' },
       fileArr: [],
-      lock: true
+      lock: true,
+      needleType: '' // 新增字段，针形
     }
   },
   created () {
@@ -491,6 +499,7 @@ export default {
         style_id: this.types[2],
         type: 1,
         flower_id: this.flower,
+        needle_type: this.needleType,
         description: this.textarea,
         user_id: window.sessionStorage.getItem('user_id'),
         img: imgArr,

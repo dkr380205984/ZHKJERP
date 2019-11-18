@@ -38,13 +38,13 @@
         </div>
       </div>
       <div class="lineCtn">
-        <!-- <div class="inputCtn">
-          <span class="label">样品克重:</span>
-          <span class="content">{{productDetail.weight}}克</span>
-        </div> -->
         <div class="inputCtn">
           <span class="label">样品成分:</span>
           <span class="content">{{productDetail.materials|filterMaterials}}</span>
+        </div>
+        <div class="inputCtn">
+          <span class="label">样品针型:</span>
+          <span class="content">{{productDetail.needle_type?productDetail.needle_type:'暂无'}}</span>
         </div>
       </div>
       <div class="lineCtn">
