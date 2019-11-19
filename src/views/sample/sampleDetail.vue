@@ -98,6 +98,10 @@
                   <div class="contents">{{productDetail|filterType}}{{productDetail.flower_id ? '/' + productDetail.flower_id : ''}}</div>
                 </div>
                 <div class="items">
+                  <span class="labels">花型:</span>
+                  <div class="contents">{{productDetail.flower_id  + (productDetail.needle_type ? '(' + productDetail.needle_type + ')' : '')}}</div>
+                </div>
+                <div class="items">
                   <span class="labels">成分:</span>
                   <div class="contents">{{productDetail.materials|filterMaterials}}</div>
                 </div>
@@ -124,7 +128,7 @@
                   </div>
                 </div>
                 <div class="items"
-                  style="margin-top:30px;">
+                  style="margin-top:20px;">
                   <div class="contents col">
                     <img :src="qrCodeUrl"
                       class="qrCode"

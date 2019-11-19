@@ -204,6 +204,90 @@
           @click="saveAll">保存</div>
       </div>
     </div>
+    <div class="message"
+      v-show="addSampleOrderFlag">
+      <div class="messageBox">
+        <div class="title">快速建立样单</div>
+        <div class="inputBox">
+          <div class="item"
+            style="margin-top:27px">
+            <span class="label">下单公司:</span>
+            <div class="content">
+              <el-select v-model="client_name"
+                class="elInput"
+                filterable
+                placeholder="请选择下单公司">
+                <el-option v-for="item in clientArr"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </div>
+          </div>
+          <div class="item"
+            style="margin-top:27px">
+            <span class="label">样单类型:</span>
+            <div class="content">
+              <el-select v-model="orderType"
+                class="elInput"
+                placeholder="请选择样单类型">
+                <el-option v-for="item in orderTypeArr"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </div>
+          </div>
+          <template v-for="(item,key) in sizeColor">
+            <div class="item"
+              :key="key + 'Y'">
+              <span class="label"></span>
+              <div class="content">
+                <el-select v-model="item.sizeColor"
+                  disabled
+                  placeholder="请选择尺码"
+                  class="samllInput marginRight">
+                  <el-option v-for="(items,keys) in sizeColor"
+                    :key="keys"
+                    :label="items.sizeColor"
+                    :value="items.sizeColor">
+                  </el-option>
+                </el-select>
+                <el-input v-model="item.number"
+                  class="samllInput"
+                  placeholder="打样数量">
+                  <template slot="append">
+                    <span class="unit">件</span>
+                  </template>
+                </el-input>
+              </div>
+            </div>
+          </template>
+          <div class="item">
+            <span class="label">完成时间:</span>
+            <div class="content">
+              <el-date-picker v-model="order_time"
+                type="date"
+                value-format="yyyy-MM-dd"
+                class="elInput"
+                placeholder="选择日期">
+              </el-date-picker>
+            </div>
+          </div>
+        </div>
+        <div class="footer">
+          <span class="cancel"
+            @click="$router.push('/index/sampleDetail/' + id)">取消</span>
+          <span class="ok"
+            @click="submit">添加</span>
+        </div>
+        <span class="close el-icon-close"
+          style="z-index:3;"
+          @click="$router.push('/index/sampleDetail/' + id)"></span>
+      </div>
+    </div>
     <my-message :visible.sync="showMsg"
       :url="localName"
       :afterSave="afterSave"></my-message>
@@ -212,10 +296,12 @@
 
 <script>
 import { letterArr } from '@/assets/js/dictionary.js'
-import { productTppeList, flowerList, ingredientList, colorList, getToken, saveProduct, notifySave } from '@/assets/js/api.js'
+import { productTppeList, flowerList, ingredientList, colorList, getToken, saveProduct, notifySave, clientList, authList, orderSave } from '@/assets/js/api.js'
 export default {
   data () {
     return {
+      id: '',
+      code: '',
       needleType: '',
       localName: 'sampleCreate',
       showMsg: false,
@@ -244,7 +330,37 @@ export default {
       textarea: '',
       postData: { token: '' },
       fileArr: [],
-      lock: true
+      lock: true,
+      addSampleOrderFlag: false,
+      orderType: 0,
+      orderTypeArr: [
+        {
+          id: 0,
+          name: '开发样'
+        }, {
+          id: 1,
+          name: '修改样'
+        }, {
+          id: 2,
+          name: '销售样'
+        }, {
+          id: 3,
+          name: '确认样'
+        }, {
+          id: 4,
+          name: '产前样'
+        }, {
+          id: 5,
+          name: '大货样'
+        }
+      ],
+      client_name: '',
+      clientArr: [],
+      sizeColor: [],
+      order_time: '',
+      order_title: '',
+      create_time: '',
+      group_name: ''
     }
   },
   created () {
@@ -351,6 +467,16 @@ export default {
           this.showError = true
         }
       }
+    },
+    client_name (newVal) {
+      let client = this.clientArr.find(items => items.id === this.client_name)
+      let type = this.orderTypeArr.find(items => items.id === this.orderType)
+      this.order_title = [(client ? client.name : ''), (type ? type.name : '')].join('-')
+    },
+    orderType (newVal) {
+      let client = this.clientArr.find(items => items.id === this.client_name)
+      let type = this.orderTypeArr.find(items => items.id === this.orderType)
+      this.order_title = [(client ? client.name : ''), (type ? type.name : '')].join('-')
     }
   },
   computed: {
@@ -391,8 +517,16 @@ export default {
       }
       notifySave(formData).then((res) => {
         if (res.data.status) {
-          this.$message.success('添加成功')
-          this.$router.push(this.msgUrl)
+          this.$confirm('是否快速建立新样单', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.beforeAddOrder()
+          }).catch(() => {
+            this.$message.success('添加成功')
+            this.$router.push(this.msgUrl)
+          })
         }
       })
     },
@@ -500,14 +634,24 @@ export default {
           this.lock = false
           saveProduct(data).then(res => {
             if (res.data.status) {
+              this.id = res.data.data.id
+              this.code = res.data.data.product_code
               this.lock = true
               if (this.msgFlag) {
                 this.msgUrl = '/index/sampleDetail/' + res.data.data.id
                 this.content = '<span style="color:#1A95FF">添加</span>了一个新样品<span style="color:#1A95FF">' + res.data.data.product_code + '</span>(' + res.data.data.category_info.product_category + '/' + res.data.data.type_name + '/' + res.data.data.style_name + '/' + res.data.data.flower_id + ')'
                 this.sendMsg()
               } else {
-                this.$message.success('添加成功')
-                this.$router.push('/index/sampleDetail/' + res.data.data.id)
+                this.$confirm('是否快速建立新样单', '提示', {
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消',
+                  type: 'warning'
+                }).then(() => {
+                  this.beforeAddOrder()
+                }).catch(() => {
+                  this.$message.success('添加成功')
+                  this.$router.push('/index/sampleDetail/' + res.data.data.id)
+                })
               }
             }
           })
@@ -515,6 +659,79 @@ export default {
           this.$message.warning('请勿频繁点击')
         }
       }
+    },
+    beforeAddOrder () {
+      Promise.all([
+        clientList({}),
+        authList({})
+      ]).then(res => {
+        this.clientArr = res[0].data.data.filter(items => items.type.indexOf(1) !== -1)
+        let userGroup = res[1].data.data.find(items => items.id === window.sessionStorage.getItem('user_id'))
+        this.group_name = userGroup ? userGroup.group_id : ''
+      })
+      let nowTime = new Date()
+      let year = nowTime.getFullYear()
+      let month = nowTime.getMonth() + 1
+      let date = nowTime.getDate()
+      this.create_time = [year, month[1] ? month : '0' + month, date[1] ? date : '0' + date].join('-')
+      this.sizeColor = []
+      this.size.forEach(valSize => {
+        this.color.forEach(valColor => {
+          this.sizeColor.push({
+            sizeColor: [valSize.size, valColor.color].join('/'),
+            number: ''
+          })
+        })
+      })
+      this.addSampleOrderFlag = true
+    },
+    submit () {
+      let obj = {
+        order_code: this.order_title,
+        sample_order_type: this.orderType,
+        client_id: this.client_name,
+        contacts: null,
+        account_unit: null,
+        exchange_rate: null,
+        tax_rate: null,
+        order_time: this.create_time,
+        group_id: this.group_name,
+        order_info: [{
+          batch_info:
+            [{
+              productCode: this.code,
+              size: this.sizeColor.map(vals => {
+                return {
+                  name: vals.sizeColor.split('/'),
+                  numbers: vals.number,
+                  unitPrice: null
+                }
+              })
+            }],
+          delivery_time: this.order_time,
+          batch_id: 1
+        }],
+        total_price: null,
+        remark: null,
+        total_price_RMB: null,
+        order_contract: null,
+        pack_means: null,
+        store_means: null,
+        other_info: null,
+        type: 2
+      }
+      orderSave(obj).then((res) => {
+        if (res.data.status) {
+          if (this.msgFlag) {
+            this.msgUrl = '/index/sampleOrderDetail/' + res.data.data.id
+            this.content = '<span style="color:#1A95FF">添加</span>了一张新样单<span style="color:#1A95FF">' + res.data.data.order_code + '</span>'
+            this.sendMsg()
+          } else {
+            this.$message.success('添加成功')
+            this.$router.push('/index/sampleOrderDetail/' + res.data.data.id)
+          }
+        }
+      })
     }
   }
 }
@@ -537,6 +754,40 @@ export default {
       align-items: center;
       width: 38px;
       height: 100%;
+    }
+  }
+  .messageBox {
+    overflow: hidden;
+    padding: 0;
+    .inputBox {
+      width: 100%;
+      height: calc(100% - 100px);
+      overflow-y: scroll;
+      margin: 50px 0px;
+      padding: 0 46px;
+      box-sizing: border-box;
+    }
+    .title {
+      line-height: 50px;
+      height: 50px;
+      width: inherit;
+      padding-left: 16px;
+      border-bottom: 1px solid rgb(233, 233, 233);
+      background: #fff;
+      z-index: 2;
+    }
+    .footer {
+      background: #fff;
+      z-index: 2;
+    }
+    .elInput {
+      width: 320px;
+    }
+    .samllInput {
+      width: 156px;
+      &.marginRight {
+        margin-right: 8px;
+      }
     }
   }
 }

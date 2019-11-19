@@ -100,7 +100,11 @@
                 </div>
                 <div class="items">
                   <span class="labels">品类:</span>
-                  <div class="contents">{{productDetail|filterType}}{{productDetail.flower_id ? '/' + productDetail.flower_id : ''}}</div>
+                  <div class="contents">{{productDetail|filterType}}</div>
+                </div>
+                <div class="items">
+                  <span class="labels">花型:</span>
+                  <div class="contents">{{productDetail.flower_id  + (productDetail.needle_type ? '(' + productDetail.needle_type + ')' : '')}}</div>
                 </div>
                 <div class="items">
                   <span class="labels">成分:</span>
@@ -129,7 +133,7 @@
                   </div>
                 </div>
                 <div class="items"
-                  style="margin-top:30px;">
+                  style="margin-top:20px;">
                   <div class="contents col">
                     <img :src="qrCodeUrl"
                       class="qrCode"
@@ -603,7 +607,7 @@ export default {
     display: none;
     .items {
       width: 100%;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       line-height: 1em;
       min-height: 0;
       display: flex;
