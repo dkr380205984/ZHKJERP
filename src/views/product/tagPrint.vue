@@ -13,6 +13,10 @@
         <div class="contents">{{type}}</div>
       </div>
       <div class="items">
+        <span class="labels">花型:</span>
+        <div class="contents">{{flower}}</div>
+      </div>
+      <div class="items">
         <span class="labels">成分:</span>
         <div class="contents">{{materials|filterMaterial}}</div>
       </div>
@@ -38,8 +42,7 @@
           <span>{{description ? description : '暂无'}}</span>
         </div>
       </div>
-      <div class="items"
-        style="margin-top:10px;">
+      <div class="items">
         <div class="contents col">
           <img :src="qrCodeUrl"
             class="qrCode"
@@ -62,6 +65,7 @@ export default {
       size: [],
       description: '',
       type: '',
+      flower: '',
       qrCodeUrl: '',
       materials: []
     }
@@ -81,7 +85,8 @@ export default {
         this.size = detail.size.find(key => key.measurement === this.$route.params.size)
         this.description = detail.description
         this.materials = detail.materials
-        this.type = detail.category_info.product_category + '/' + detail.type_name + '/' + detail.style_name + (detail.flower_id ? '/' + detail.flower_id : '')
+        this.type = detail.category_info.product_category + '/' + detail.type_name + '/' + detail.style_name
+        this.flower = detail.flower_id + (detail.needle_type ? '(' + detail.needle_type + ')' : '')
         this.loading = false
       }
     })
@@ -122,7 +127,7 @@ body {
     color: #000;
     .items {
       width: 100%;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       line-height: 1em;
       min-height: 0;
       display: flex;

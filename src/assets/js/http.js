@@ -26,11 +26,11 @@ axios.interceptors.response.use(
       Message.Message.error('登录信息过期，请重新登录')
       router.push({ path: '/login' })
     } else if (res.data.code === 1002) {
-      Message.Message.error('没有数据')
+      Message.Message.error(res.data.message)
     } else if (res.data.code === 1003) {
-      Message.Message.error('操作被拒绝，请联系管理员')
+      Message.Message.error(res.data.message)
     } else if (res.data.code === 1004) {
-      Message.Message.error('数据保存失败')
+      Message.Message.error(res.data.message)
     } else if (res.data.code === 1005) {
       Message.Message.error('服务器错误，请联系管理员')
     }

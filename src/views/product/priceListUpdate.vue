@@ -1260,7 +1260,7 @@ export default {
           this.production_info = JSON.parse(detail.production_info)
           this.user_info_price = detail.no_product_cost
           this.otherArr = JSON.parse(detail.desc_info)
-          this.fileArr = JSON.parse(detail.file_url).map(items => {
+          this.fileArr = JSON.parse(detail.file_url ? detail.file_url : '[]').map(items => {
             return {
               url: items
             }
@@ -1504,7 +1504,7 @@ export default {
       this.product_need = detail.product_need
       this.productArr.length = 0
       this.productArr = detail.product_info
-      this.fileArr = JSON.parse(detail.file_url).map(items => {
+      this.fileArr = JSON.parse(detail.file_url ? detail.file_url : '[]').map(items => {
         return {
           url: items
         }

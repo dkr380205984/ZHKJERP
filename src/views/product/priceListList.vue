@@ -90,7 +90,7 @@
               v-for="(itemPro,indexPro) in item.product_info"
               style="height:60px;text-align:center;justify-content:space-around"
               :key="indexPro">
-              {{itemPro.product_info.product_code}}({{itemPro.product_info.category_name}}/{{itemPro.product_info.type_name}}/{{itemPro.product_info.style_name}})
+              {{itemPro.product_info.product_code ? itemPro.product_info.product_code + '(' + [itemPro.product_info.category_name ,itemPro.product_info.type_name,itemPro.product_info.style_name].join('/') + ')' : '' }}
             </div>
           </div>
           <div class="tableColumn">
@@ -358,6 +358,29 @@ export default {
         product_code: this.searchProVal
       }).then((res) => {
         this.total = res.data.meta.total
+        res.data.data.forEach(item => {
+          if (item.file_url && JSON.parse(item.file_url)) {
+            if (item.product_info && item.product_info[0] && item.product_info[0].product_info && item.product_info[0].product_info.images && item.product_info[0].product_info.images[0]) {
+              item.product_info[0].product_info.images = item.product_info[0].product_info.images.concat(JSON.parse(item.file_url).map(vals => {
+                return {
+                  image_url: vals,
+                  thumb: vals
+                }
+              }))
+            } else {
+              item.product_info = [{
+                product_info: {
+                  images: JSON.parse(item.file_url).map(vals => {
+                    return {
+                      image_url: vals,
+                      thumb: vals
+                    }
+                  })
+                }
+              }]
+            }
+          }
+        })
         this.list = res.data.data.map((item) => {
           return {
             id: item.id,

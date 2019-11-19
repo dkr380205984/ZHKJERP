@@ -167,6 +167,19 @@
             </div>
           </div>
         </div>
+        <div class="lineCtn">
+          <div class="inputCtn">
+            <span class="label">上传图片:</span>
+            <div class="content">
+              <el-image style="width: 100px; height: 100px"
+                v-if="priceTableDetail.img[0]"
+                :src="priceTableDetail.img[0]"
+                :preview-src-list="priceTableDetail.img">
+              </el-image>
+              <template v-else>暂无上传图片</template>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="card"
         style="margin-top:16px;padding-bottom:60px;">
@@ -535,7 +548,7 @@ export default {
       this.priceTableDetail.reasonText = (data.reason ? JSON.parse(data.reason).join(',') + (data.reason_text ? '(' + data.reason_text + ')' : '') : '')
       this.priceTableDetail.need = data.product_need
       this.priceTableDetail.desc = data.product_need_desc
-      this.priceTableDetail.img = data.file_url
+      this.priceTableDetail.img = JSON.parse(data.file_url ? data.file_url : '[]')
       this.priceTableDetail.status = data.status
       this.product_info = data.product_info.map(item => {
         return {
