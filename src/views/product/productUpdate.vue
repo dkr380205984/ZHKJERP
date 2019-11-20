@@ -106,7 +106,7 @@
           <div class="column">
             <el-select clearable
               v-model="item.size"
-              :disabled="item.disabled && (has_craft !== 0 || has_plan !== 0 || in_order !== 0)"
+              :disabled="item.disabled && (has_craft === 1 || has_plan === 1 || in_order === 1)"
               class="smallInputItem"
               @change="noRepeat(item.size,key,size,'size')"
               placeholder="选择规格">
@@ -152,7 +152,7 @@
             allow-create
             class="inputItem"
             v-model="item.color"
-            :disabled="item.disabled && (has_craft !== 0 || has_plan !== 0 || in_order !== 0)"
+            :disabled="item.disabled && (has_craft === 1 || has_plan === 1 || in_order === 1)"
             @change="noRepeat(item.color,key,color,'color')"
             placeholder="请选择配色">
             <el-option v-for="item in colorArr"

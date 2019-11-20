@@ -69,7 +69,8 @@ export default {
       materialProcess: '',
       semiProcess: '',
       semiProcessArr: [],
-      materialProcessArr: []
+      materialProcessArr: [],
+      lock: true
     }
   },
   created () {
@@ -87,17 +88,23 @@ export default {
     // 添加原料工序
     saveMaterialProcess () {
       if (this.materialProcess) {
-        settingCourse({
-          name: this.materialProcess,
-          type: 1
-        }).then(res => {
-          if (!res.data.status) {
-            this.$message.error(res.data.message)
-          } else {
-            this.materialProcessArr.push(res.data.data)
-            this.$message.success('添加成功')
-          }
-        })
+        if (this.lock) {
+          this.lock = false
+          settingCourse({
+            name: this.materialProcess,
+            type: 1
+          }).then(res => {
+            this.lock = true
+            if (!res.data.status) {
+              this.$message.error(res.data.message)
+            } else {
+              this.materialProcessArr.push(res.data.data)
+              this.$message.success('添加成功')
+            }
+          })
+        } else {
+          this.$message.warning('请勿频繁点击')
+        }
       } else {
         this.$message.warning('检测到未填写工序名称')
       }
@@ -107,17 +114,23 @@ export default {
     },
     saveSemiProcess () {
       if (this.semiProcess) {
-        settingCourse({
-          name: this.semiProcess,
-          type: 2
-        }).then(res => {
-          if (!res.data.status) {
-            this.$message.error(res.data.message)
-          } else {
-            this.semiProcessArr.push(res.data.data)
-            this.$message.success('添加成功')
-          }
-        })
+        if (this.lock) {
+          this.lock = false
+          settingCourse({
+            name: this.semiProcess,
+            type: 2
+          }).then(res => {
+            this.lock = true
+            if (!res.data.status) {
+              this.$message.error(res.data.message)
+            } else {
+              this.semiProcessArr.push(res.data.data)
+              this.$message.success('添加成功')
+            }
+          })
+        } else {
+          this.$message.warning('请勿频繁点击')
+        }
       } else {
         this.$message.warning('检测到未填写工序名称')
       }

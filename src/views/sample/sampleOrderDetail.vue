@@ -15,7 +15,7 @@
         </div>
         <div class="appendInfos">
           <div class="keyBtn">
-            <el-dropdown size="medium"
+            <!-- <el-dropdown size="medium"
               @command="showMessage"
               split-button
               type="primary">
@@ -32,7 +32,29 @@
                   command="cancle"
                   style="color:#FF4D4D">样单取消</el-dropdown-item>
               </el-dropdown-menu>
-            </el-dropdown>
+            </el-dropdown> -->
+            <el-menu class="editMenu"
+              mode="horizontal"
+              @select="showMessage">
+              <el-submenu index="1">
+                <template slot="title">操作</template>
+                <el-menu-item index="waitConfirm"
+                  class="elMenuItem">待客户确认</el-menu-item>
+                <!-- <el-menu-item index="1-2">已确认</el-menu-item> -->
+                <el-submenu index="1-2"
+                  class="elMenuItem">
+                  <template slot="title">已确认</template>
+                  <el-menu-item index="change"
+                    class="elMenuItem">继续打样</el-menu-item>
+                  <el-menu-item index="ok"
+                    class="elMenuItem">不继续打样</el-menu-item>
+                  <el-menu-item index="addOrder"
+                    class="elMenuItem">大货生产</el-menu-item>
+                </el-submenu>
+                <el-menu-item index="cancle"
+                  class="elMenuItem">取消样单</el-menu-item>
+              </el-submenu>
+            </el-menu>
           </div>
           <div class="infoCtn">
             <div class="labelInfo">
@@ -232,7 +254,7 @@
               <div class="item-info">
                 <div class="items">
                   <span class="label">客户确认:</span>
-                  <span :class="{'content':true,'success':order_info.client_confirm,'error':(!order_info.client_confirm)  && order_info.status === 1,'running':!order_info.client_confirm && order_info.status === 0}">{{order_info.client_confirm ? '已确认' : (order_info.status  === 1 ? '未确认' : '待确认')}}</span>
+                  <span :class="{'content':true,'success':order_info.client_confirm,'error':(!order_info.client_confirm)  && order_info.status === 1,'running':!order_info.client_confirm}">{{order_info.client_confirm ? '已确认' : '待确认'}}</span>
                 </div>
                 <div class="items">
                   <span class="label">样单类型:</span>
@@ -1130,7 +1152,6 @@
                     v-else
                     @click="submitInfo.createProInfo.splice(key,1)">删除样品</span>
                 </div>
-
               </div>
             </template>
             <div class="item"
@@ -1243,9 +1264,10 @@
     </div>
     <!-- 点击去修改样品时候的弹窗 -->
     <div class="message"
-      v-show="handleType === 'changeSample'">
+      v-show="handleType === 'changeSample' || handleType === 'changeSample_change'">
       <div class="messageBox">
         <div class="title">请选择你要修改的产品<span @click="orderStatus(10)"
+            v-if="handleType === 'changeSample'"
             style="color:#1a95ff;cursor: pointer;margin-left:20px;">无需修改</span></div>
         <div class="inputBox"
           style="padding: 20px 0;">
@@ -1261,13 +1283,13 @@
         </div>
         <div class="footer">
           <span class="cancel"
-            @click="handleType = 'ok'">取消</span>
+            @click="handleType = 'ok',showMessageBox = false">取消</span>
           <span class="ok"
             @click="submitInfo.changeSamplePro ? $router.push('/index/productUpdate/' + submitInfo.changeSamplePro) : $message.warning('请选择要修改的样品')">去修改</span>
         </div>
         <span class="close el-icon-close"
           style="z-index:3;"
-          @click="handleType = 'ok'"></span>
+          @click="handleType = 'ok',showMessageBox = false"></span>
       </div>
     </div>
     <!-- 点击去修改工艺单时候的弹窗 -->
@@ -1611,17 +1633,44 @@ export default {
               })
             }
           })
+        } else if (type === 'waitConfirm') {
+
         }
       }
     },
     showMessage (type) {
-      if (type === 'cancle') {
+      if (type === 'cancle') { // 取消样单
         this.showStep = true
-      } else if (type === 'yes') {
-        this.orderStatus(1)
-      } else {
-        this.showMessageBox = true
-        this.handleType = type
+        // } else if (type === 'yes') {
+        //   this.orderStatus(1)
+      } else if (type === 'change') { // 确认并再次打样
+        this.$confirm('是否需要修改样品信息?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.handleType = 'changeSample_change'
+          this.showMessageBox = true
+          // this.handleType = type
+        }).catch(() => {
+          this.showMessageBox = true
+          this.handleType = type
+        })
+      } else if (type === 'addOrder') { // 确认并进行添加订单
+        this.orderStatus(1, true, true) // 后面的true是为了判断是否需要跳转至添加订单页面
+      } else if (type === 'ok') { // 确认并转成产品
+        this.$confirm('是否需要将样品转为产品?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.showMessageBox = true
+          this.handleType = type
+        }).catch(() => {
+          this.orderStatus(1, true)
+        })
+      } else if (type === 'waitConfirm') { // 等待用户确认
+        this.orderStatus(1, false)
       }
     },
     // 日期格式化
@@ -1740,7 +1789,7 @@ export default {
       }
       return parseInt(rate) + '%'
     },
-    orderStatus (state) {
+    orderStatus (state, clientConfirm, goOrder) {
       let filterArr = ['', '样单状态', '样单生产状态', '样单物料状态', '样单检验状态', '样单收发状态', '样单出库状态', '', '', '', '申请流程样品状态', '申请流程工艺单状态', '申请流程配料单状态']
       if (state < 8) {
         this.$confirm('该操作将直接修改' + filterArr[state] + ',你无法再对该样单的相关步骤进行操作, 请确认是否修改?', '提示', {
@@ -1753,7 +1802,8 @@ export default {
             company_id: window.sessionStorage.getItem('company_id'),
             type: state,
             product_data: [],
-            material_data: []
+            material_data: [],
+            client_confirm: clientConfirm
           }).then((res) => {
             if (res.data.status) {
               this.$message.success({
@@ -1776,6 +1826,9 @@ export default {
                 this.order_info.status_pop_push = 1
               } else if (state === 6) {
                 this.order_info.status_stock_out = 1
+              }
+              if (goOrder) {
+                this.$router.push('/index/orderCreate')
               }
             } else {
               this.$message.error({
@@ -2682,6 +2735,56 @@ export default {
   }
   .el-carousel__arrow {
     background: #1a95ff;
+  }
+  //操作按钮重写
+  .editMenu {
+    width: auto;
+    background: #1a95ff;
+    height: 32px;
+    border-radius: 4px;
+    .el-submenu {
+      width: auto;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .el-submenu__title {
+        width: 100%;
+        padding: 0 8px;
+        line-height: 32px;
+        height: 100%;
+        border-bottom: none;
+        padding: none;
+        color: #fff;
+        i {
+          color: #fff;
+        }
+        &:hover {
+          background: transparent !important;
+        }
+      }
+    }
+  }
+}
+//操作按钮重写
+.elMenuItem {
+  color: #999 !important;
+  &.is-active {
+    color: #999 !important;
+    .el-submenu__title {
+      color: #999 !important;
+    }
+  }
+  &:hover {
+    background: #1a95ff !important;
+    color: #fff !important;
+    .el-submenu__title:hover {
+      background: transparent !important;
+      color: #fff !important;
+      i {
+        color: #fff;
+      }
+    }
   }
 }
 .el-popover {

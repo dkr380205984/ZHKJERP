@@ -722,14 +722,14 @@ export default {
       }
       orderSave(obj).then((res) => {
         if (res.data.status) {
-          if (this.msgFlag) {
-            this.msgUrl = '/index/sampleOrderDetail/' + res.data.data.id
-            this.content = '<span style="color:#1A95FF">添加</span>了一张新样单<span style="color:#1A95FF">' + res.data.data.order_code + '</span>'
-            this.sendMsg()
-          } else {
-            this.$message.success('添加成功')
-            this.$router.push('/index/sampleOrderDetail/' + res.data.data.id)
-          }
+          // if (this.msgFlag) {
+          //   this.msgUrl = '/index/sampleOrderDetail/' + res.data.data.id
+          //   this.content = '<span style="color:#1A95FF">添加</span>了一张新样单<span style="color:#1A95FF">' + res.data.data.order_code + '</span>'
+          //   this.sendMsg()
+          // } else {
+          this.$message.success('添加成功')
+          this.$router.push('/index/sampleOrderDetail/' + res.data.data.id)
+          // }
         }
       })
     }
