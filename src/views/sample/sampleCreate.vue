@@ -467,16 +467,6 @@ export default {
           this.showError = true
         }
       }
-    },
-    client_name (newVal) {
-      let client = this.clientArr.find(items => items.id === this.client_name)
-      let type = this.orderTypeArr.find(items => items.id === this.orderType)
-      this.order_title = [(client ? client.name : ''), (type ? type.name : '')].join('-')
-    },
-    orderType (newVal) {
-      let client = this.clientArr.find(items => items.id === this.client_name)
-      let type = this.orderTypeArr.find(items => items.id === this.orderType)
-      this.order_title = [(client ? client.name : ''), (type ? type.name : '')].join('-')
     }
   },
   computed: {
@@ -636,6 +626,7 @@ export default {
             if (res.data.status) {
               this.id = res.data.data.id
               this.code = res.data.data.product_code
+              this.order_title = this.code
               this.lock = true
               if (this.msgFlag) {
                 this.msgUrl = '/index/sampleDetail/' + res.data.data.id
@@ -686,6 +677,24 @@ export default {
       this.addSampleOrderFlag = true
     },
     submit () {
+      if (!this.client_name) {
+        this.$message.error('请选择合作公司')
+        return
+      }
+      if (!this.order_time) {
+        this.$message.error('请选择交货时间')
+        return
+      }
+      let flag = false // 打样数量flag
+      this.sizeColor.forEach(items => {
+        if (items.number) {
+          flag = true
+        }
+      })
+      if (!flag) {
+        this.$message.error('检测到未填写打样数量，请最少选择一种尺码颜色进行打样')
+        return
+      }
       let obj = {
         order_code: this.order_title,
         sample_order_type: this.orderType,

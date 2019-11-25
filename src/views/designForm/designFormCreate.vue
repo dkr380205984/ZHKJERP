@@ -547,6 +547,7 @@
           </div>
           <div class="treeCtn">
             <div class="node"
+              style="width:600px"
               v-for="(item1,index1) in repeatPM"
               :key="index1">
               <div class="numbers">{{romanNum[index1]}}</div>
@@ -1018,7 +1019,7 @@
               <div class="content"
                 v-for="(item,index) in allMaterial"
                 :key="index">
-                <el-input style="width:340px;margin-bottom:16px;"
+                <el-input style="width:450px;margin-bottom:16px;"
                   v-model="coefficient[index]"
                   placeholder="系数">
                   <template slot="prepend">{{item}}</template>
@@ -1031,7 +1032,7 @@
             <div class="box box2">
               <div class="label">备注信息：</div>
               <div class="content">
-                <el-input style="width:340px"
+                <el-input style="width:450px"
                   v-model="desc"
                   placeholder="请输入备注信息"></el-input>
               </div>

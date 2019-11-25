@@ -174,8 +174,9 @@
             <div style="margin:auto">
               <span class="btns success"
                 @click="$router.push('/index/sampleOrderDetail/' + item.id)">详情</span>
-              <!-- <span class="btns warning"
-                @click="$router.push('/index/orderUpdate/' + item.id)">修改</span> -->
+              <span class="btns warning"
+                :style="{'background-color':item.has_log === 1 || item.status !== 0 ? '#BBB' : false,'cursor': 'not-allowed'}"
+                @click="item.has_log === 0 && item.status === 0 ? $router.push('/index/sampleOrderUpdate/' + item.id) : $message.error('只能修改未进行任何操作的样单')">修改</span>
               <span class="btns error"
                 style="display:none"
                 @click="deleteOrder(item.id)">删除</span>

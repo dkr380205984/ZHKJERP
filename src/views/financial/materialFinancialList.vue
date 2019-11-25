@@ -49,10 +49,10 @@
               @click="item.flag = !item.flag">
               <div class="list">
                 <span style="line-height:59px;">{{item.material_name}}</span>
-                <span>{{item.use_total}}{{item.type === 1 ? 'kg' : '个'}}</span>
-                <span>{{item.reserve_number}}{{item.type === 1 ? 'kg' : '个'}}</span>
-                <span>{{item.order_number}}{{item.type === 1 ? 'kg' : '个'}}</span>
-                <span>{{item.stock_number}}{{item.type === 1 ? 'kg' : '个'}}</span>
+                <span>{{item.use_total|filterFixed}}{{item.type === 1 ? 'kg' : '个'}}</span>
+                <span>{{item.reserve_number|filterFixed}}{{item.type === 1 ? 'kg' : '个'}}</span>
+                <span>{{item.order_number|filterFixed}}{{item.type === 1 ? 'kg' : '个'}}</span>
+                <span>{{item.stock_number|filterFixed}}{{item.type === 1 ? 'kg' : '个'}}</span>
                 <span>{{(item.price_total/(Number(item.reserve_number) + Number(item.order_number))).toFixed(2)}}元/{{item.type === 1 ? 'kg' : '个'}}</span>
                 <span>{{item.price_total}}元</span>
                 <!-- <span>
@@ -102,7 +102,7 @@ export default {
       materialFinancialTotal({
         company_id: window.sessionStorage.getItem('company_id')
       }).then(res => {
-        res.data.data.forEach(item => {
+        res.data.forEach(item => {
           let flag = this.list.find(key => key.material_name === item.material_name)
           if (!flag) {
             this.list.push({
@@ -175,6 +175,9 @@ export default {
   filters: {
     filterNumber (val) {
       return Number((val / 10000).toFixed(2)).toLocaleString()
+    },
+    filterFixed (val) {
+      return Number(val).toFixed(2)
     }
   }
 }

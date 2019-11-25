@@ -956,6 +956,11 @@ export default {
         newVal.price = materialPriceInfo.price
         this.computedPrice(newVal, true)
         newVal.isReferencePrice = true
+      } else {
+        newVal.price = ''
+        newVal.total_price = ''
+        this.computedTotalPrice()
+        newVal.isReferencePrice = false
       }
     },
     afterSave (data) {
